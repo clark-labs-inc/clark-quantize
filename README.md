@@ -4,16 +4,20 @@
 generative transformers.**
 
 Clark-Quantize compresses the matrix-heavy weights of a transformer to
-`{-1, 0, +1}` with a single FP16 scale per group of weights — **no calibration
-data, no gradients, no fine-tuning** — and still generates coherent images from a
-diffusion model whose trunk is 94.6% ternary.
+`{-1, 0, +1}` with a single FP16 scale per group of weights, and reaches
+**near-FP16 image quality at 2.1 bits/weight** with 94.6% of the diffusion trunk
+ternary. It offers two tiers:
 
-The whole story in one figure (Sana 1.6B, identical prompts and seed):
+- **Data-free** (no data at all): the MSE-optimal scale — recognizable images.
+- **Activation-aware** (self-calibrated on the model's *own* outputs, no external
+  dataset): GPTQ + an incoherence rotation — near-FP16.
 
-![before / after](assets/compare_final.png)
+The full progression at the **same 2.1-bit budget** (Sana 1.6B, identical seed):
 
-*Left: FP16 baseline. Middle: Clark-Quantize ternary at group 128 (2.1 bits/wt).
-Right: group 32 (2.5 bits/wt). Both are fully data-free.*
+![activation-aware](assets/compare_activation_aware.png)
+
+*Left→right: FP16 baseline · data-free optimal scale (9.5 dB, noise) · + GPTQ
+self-calibration (14.9 dB) · + incoherence rotation (17.0 dB, near-FP16).*
 
 ## The one idea that matters: the scale
 
@@ -48,37 +52,54 @@ pipe("a bowl of ramen, steam rising, photoreal").images[0].save("ramen.png")
 
 ## Results (Sana 1.6B, 512px, 20 steps, 3 prompts, seed 0)
 
-| Method | eff. bits/wt | % params ternary | PSNR vs FP16 ↑ | outcome |
+| Method | data | eff. bits/wt | PSNR vs FP16 ↑ | outcome |
 |---|---|---|---|---|
-| `absmean`, g128 | 2.1 | 94.6 | 9.08 dB | noise |
-| error-feedback, g128 | 2.1 | 94.6 | 9.38 dB | noise |
-| **optimal, g128** | **2.1** | **94.6** | **9.52 dB** | recognizable |
-| **optimal, g32** | **2.5** | **94.6** | **12.01 dB** | **near-baseline** |
+| `absmean`, g128 | none | 2.1 | 9.08 dB | noise |
+| error-feedback, g128 | none | 2.1 | 9.38 dB | noise |
+| **optimal scale, g128** | **none** | 2.1 | 9.52 dB | recognizable |
+| **optimal scale, g32** | **none** | 2.5 | 12.01 dB | near-baseline |
+| **+ GPTQ, g128** | self | 2.1 | 14.91 dB | good |
+| **+ GPTQ, g32** | self | 2.5 | 16.53 dB | strong |
+| **+ GPTQ + rotation, g128** | self | **2.1** | **17.01 dB** | **near-FP16** |
 
-Only **6 tiny layers** (adaptive-norm modulation, text/time conditioning, final
-projection — 5.4% of params) are kept at original precision; everything else is
-ternary. Error feedback and per-row gain correction were tested and did **not**
-help (error feedback hurt). See [`paper/clark-quantize.tex`](paper/clark-quantize.tex).
+All variants keep only **6 tiny layers** (adaptive-norm modulation, text/time
+conditioning, final projection — 5.4% of params) at original precision. "self"
+means self-calibrated on the model's own generations — no external dataset.
+
+**Why activation-aware wins.** The optimal scale minimizes `‖W − Wq‖` (per
+weight); what the network needs is `‖(W − Wq)x‖` (per output). GPTQ retargets the
+objective by pushing each column's rounding error onto not-yet-quantized columns
+via `H⁻¹` (`H = Σ xxᵀ`). The incoherence rotation `R` (`W→WRᵀ`, `x→xRᵀ`, exact)
+then spreads outliers so one group scale suffices — a single shared `R` serves all
+164 same-width layers and the Hessian rotates analytically (`H→RHRᵀ`). See
+[`paper/clark-quantize.tex`](paper/clark-quantize.tex).
 
 ## Repository layout
 
 ```
-clark_quantize/ternary.py   core algorithm (optimal-scale ternary + ablations)
-scripts/quantize_sana.py    quantize a Sana transformer and generate images
-scripts/make_montage.py     build labelled before/after comparison grids
-assets/                     before/ (FP16) and after/ (ternary) example images
-paper/clark-quantize.tex    short technical paper with the derivation + results
+clark_quantize/ternary.py        data-free optimal-scale ternary (+ ablations)
+clark_quantize/gptq.py           activation-aware: GPTQ + incoherence rotation
+scripts/quantize_sana.py         data-free quantize + generate
+scripts/quantize_sana_gptq.py    activation-aware quantize + generate (self-calib)
+scripts/make_montage.py          labelled before/after comparison grids
+assets/                          before/ (FP16) and after/ example images
+paper/clark-quantize.tex         technical paper: derivation + results + PDF
 ```
 
 ## Reproduce
 
 ```bash
 pip install -r requirements.txt
+
+# data-free tier
 python scripts/quantize_sana.py --mode fp16            --tag fp16        # baseline
-python scripts/quantize_sana.py --method absmean --group 128 --tag absmean  # noise
-python scripts/quantize_sana.py --method optimal --group 32  --tag opt_g32   # best
-python scripts/make_montage.py --out assets/compare_final.png \
-    fp16:"FP16 baseline" opt_g32:"Clark-Quantize g32"
+python scripts/quantize_sana.py --method optimal --group 32  --tag opt_g32
+
+# activation-aware tier (near-FP16 at 2.1 bits) -- self-calibrated, no dataset
+python scripts/quantize_sana_gptq.py --group 128 --rotate --tag gptqrot_g128
+
+python scripts/make_montage.py --out assets/compare.png \
+    fp16:"FP16 baseline" gptqrot_g128:"Clark-Quantize 2.1-bit"
 ```
 
 Fits a single 24 GB GPU (CPU offload enabled). Quantization is "fake" (weights

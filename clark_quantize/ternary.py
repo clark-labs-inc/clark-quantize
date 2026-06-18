@@ -32,6 +32,18 @@ import torch.nn as nn
 
 
 @torch.no_grad()
+def _optimal_scale_rows(Wblk: torch.Tensor) -> torch.Tensor:
+    """Per-row MSE-optimal ternary scale for a block [out, g]: returns [out, 1].
+    Maximizes (sum_top-k |w|)^2 / k, the closed-form minimum-MSE ternary scale.
+    """
+    a, _ = torch.sort(Wblk.abs(), dim=1, descending=True)
+    cs = a.cumsum(1)
+    ks = torch.arange(1, Wblk.shape[1] + 1, device=Wblk.device, dtype=cs.dtype)
+    kbest = (cs * cs / ks).argmax(1)
+    return (cs.gather(1, kbest[:, None]) / (kbest[:, None].to(cs.dtype) + 1)).clamp_min(1e-8)
+
+
+@torch.no_grad()
 def ternarize(W: torch.Tensor, group: int = 128, method: str = "optimal",
               error_feedback: bool = False, row_gain: bool = False):
     """Ternarize a 2D weight [out, in]; groups run along the input dimension.

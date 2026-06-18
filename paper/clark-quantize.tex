@@ -32,9 +32,11 @@ $(\sum_{\text{top-}k}|w|)^2/k$ per group---recovers coherent, prompt-faithful
 image generation with $94.6\%$ of the transformer's weights ternary and only six
 small layers kept at original precision. On Sana~1.6B the optimal-scale quantizer
 improves PSNR-to-baseline from $9.1$\,dB (\texttt{absmean}, indistinguishable from
-noise) to $12.0$\,dB at group size $32$, entirely data-free. We provide the
-derivation, an open implementation, and ablations showing that error feedback and
-per-row gain correction do not help.
+noise) to $12.0$\,dB at group size $32$, entirely data-free. We then show that a
+self-calibrated activation-aware extension---GPTQ with a shared incoherence
+rotation, using only the model's own generations and no external dataset---reaches
+$17.0$\,dB at the $2.1$-bit budget, i.e.\ near-FP16 image quality. We provide the
+derivation, an open implementation, and ablations.
 \end{abstract}
 
 \section{Introduction}
@@ -171,14 +173,66 @@ images at the same bit-width. (2) Smaller groups help monotonically but modestly
 sensitive layers in higher precision is necessary; protecting additional whole
 blocks was not.
 
+\section{Activation-aware ternary: closing the gap to FP16}
+The data-free optimal scale minimizes the per-weight error $\|W-W_q\|_F$, but the
+network is sensitive to the per-output error $\|(W-W_q)X\|_F$ over its activations
+$X$. We close the remaining gap with two activation-aware components, calibrated on
+the model's \emph{own generations} (six generic prompts; no external dataset).
+
+\paragraph{GPTQ.} We quantize the columns of $W$ left to right; after quantizing
+column $i$ with error $e_i$, we update the not-yet-quantized columns by
+$-e_i\,H^{-1}_{i,\,>i}/H^{-1}_{ii}$, where $H=\mathbb{E}[xx^\top]=\tfrac1N\sum xx^\top$
+is the input second moment, so the error is steered into directions the
+activations tolerate. The per-column quantizer is our group-wise optimal-scale
+ternary, with the group scale recomputed from the running weight at each group
+boundary.
+
+\paragraph{Incoherence rotation.} Outliers that a single group scale cannot
+capture are removed by a shared random orthogonal $R$. For each linear we quantize
+in the rotated basis,
+\begin{equation}
+  y = Wx = (WR^\top)(Rx),\qquad R^\top R = I,
+\end{equation}
+i.e.\ we store the quantized $WR^\top$ and apply $x\mapsto Rx$ at inference. A
+\emph{single} $R$ serves every same-width layer (the identity holds per layer), and
+the Hessian rotates analytically, $H\mapsto RHR^\top$, so no re-calibration is
+needed. The rotation mixes coordinates so that no weight is an outlier, making each
+group near-uniform in magnitude.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Method & data & eff.\ bits/wt & PSNR vs FP16 $\uparrow$ & outcome\\
+\midrule
+optimal scale, $g{=}128$            & none & 2.1 & 9.52  & recognizable\\
+optimal scale, $g{=}32$             & none & 2.5 & 12.01 & near-baseline\\
+\;+ GPTQ, $g{=}128$                 & self & 2.1 & 14.91 & good\\
+\;+ GPTQ, $g{=}32$                  & self & 2.5 & 16.53 & strong\\
+\textbf{+ GPTQ + rotation}, $g{=}128$ & self & \textbf{2.1} & \textbf{17.01} & \textbf{near-FP16}\\
+\bottomrule
+\end{tabular}
+\caption{Activation-aware ternary at the same $2.1$-bit budget reaches near-FP16
+quality. ``self'' = self-calibrated on the model's own generations.}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{../assets/compare_activation_aware.png}
+\caption{Same $2.1$-bit budget ($g{=}128$, identical seed). Left to right: FP16
+baseline; data-free optimal scale ($9.5$\,dB, noise); $+$GPTQ self-calibration
+($14.9$\,dB); $+$incoherence rotation ($17.0$\,dB, near-FP16).}
+\end{figure}
+
 \section{Discussion and limitations}
 At ternary precision $\sim\!43\%$ of the weight magnitude is discarded, so outputs
 are stylized/posterized rather than pixel-identical; this is intrinsic to the
-bit-width, not the method. The natural next data-free lever is an incoherence
-transform (e.g.\ a Hadamard rotation folded through the residual stream) to spread
-outliers before quantization, which we expect to narrow the remaining gap at
-$g{=}128$. We focus on a diffusion transformer here; the same optimal-scale
-quantizer applies unchanged to decoder-only language models.
+bit-width, not the method. Our rotation uses a dense random orthogonal matrix for
+clarity; a deployment would replace it with a structured fast Hadamard transform
+($O(d\log d)$) folded through the residual stream, removing the per-layer matmul
+overhead. We focus on a diffusion transformer here; both the data-free optimal
+scale and the activation-aware extension apply unchanged to decoder-only language
+models.
 
 \section{Conclusion}
 Data-free ternary quantization is far more capable than the standard
