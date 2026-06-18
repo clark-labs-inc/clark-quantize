@@ -1,4 +1,21 @@
-# Clark-Quantize
+# Clark-Quantize → **Clark-Compress**
+
+**Data-free, training-free image-model compression.** The productized method is
+called **Clark-Compress**.
+
+![Clark-Compress: FP16 vs Clark-Compress vs Prism](assets/clark_compress_demo.png)
+
+*FP16 (full precision) vs **Clark-Compress** (ours, Sana 1.6B) vs Prism Bonsai
+(1-bit, FLUX.2). Clark-Compress is **4.4× smaller (77% space saved)** at near-FP16
+quality, with **zero training data and zero calibration images** — the model
+self-calibrates on its own noise prior.*
+
+| | Size | Compression | Data used |
+|---|---|---|---|
+| FP16 | 3.21 GB | 1× | — |
+| **Clark-Compress** | **0.72 GB** | **4.4× (77% smaller)** | **none** |
+
+---
 
 **Data-free, optimal-scale ternary (1.58-bit) post-training quantization for
 generative transformers.**
