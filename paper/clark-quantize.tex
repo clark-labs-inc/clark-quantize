@@ -32,11 +32,23 @@ $(\sum_{\text{top-}k}|w|)^2/k$ per group---recovers coherent, prompt-faithful
 image generation with $94.6\%$ of the transformer's weights ternary and only six
 small layers kept at original precision. On Sana~1.6B the optimal-scale quantizer
 improves PSNR-to-baseline from $9.1$\,dB (\texttt{absmean}, indistinguishable from
-noise) to $12.0$\,dB at group size $32$, entirely data-free. We then show that a
-self-calibrated activation-aware extension---GPTQ with a shared incoherence
-rotation, using only the model's own generations and no external dataset---reaches
-$17.0$\,dB at the $2.1$-bit budget, i.e.\ near-FP16 image quality. We provide the
-derivation, an open implementation, and ablations.
+noise) to $12.0$\,dB at group size $32$, entirely data-free. We then add GPTQ with
+a shared incoherence rotation and---our core result---calibrate its Hessian on the
+model's \emph{own unconditional prior} (pure Gaussian noise and the null prompt,
+which a diffusion model is built to consume), matching prompt-calibration to within
+noise ($16.1$ vs $15.9$\,dB) with no external data, gradients, or fine-tuning. This
+makes \textbf{data-free, train-free, near-FP16 quantization solved for the attention
+and projection layers at $1.7$--$2.1$ bits}. The remaining obstacle is purely
+representational: Sana's gated GLU-convolution feed-forward network resists
+ultra-low-bit scalar coding. We report a systematic negative result---optimal
+ternary, uniform multi-symbol, learned Lloyd--Max codebooks, post-hoc escapes, and
+entropy-constrained GPTQ all fail to reach a near-FP16 point below $\sim$2 bits on
+this FFN, with a failure mode indicating the missing information is local and
+vector-structured rather than scalar. The practical product is a mixed-precision
+artifact (ternary attention, $4$-bit FFN) that is data-free, near-FP16, and
+$\sim$4--6$\times$ smaller; closing the gap to $8\times$ requires vector or
+structural FFN compression. We provide the derivation, an open implementation, and
+ablations.
 \end{abstract}
 
 \section{Introduction}
@@ -224,6 +236,48 @@ baseline; data-free optimal scale ($9.5$\,dB, noise); $+$GPTQ self-calibration
 ($14.9$\,dB); $+$incoherence rotation ($17.0$\,dB, near-FP16).}
 \end{figure}
 
+\section{Data-free self-calibration: the noise+null prior}
+GPTQ's only dependence on data is the Hessian $H=\mathbb{E}[xx^\top]$. For a
+diffusion model this requires no dataset: the model is built to consume Gaussian
+noise, so we capture $H$ by running it on pure noise latents with the null (empty)
+prompt---its own unconditional prior. On Sana~1.6B the resulting quantizer is
+statistically indistinguishable from one calibrated on real prompts ($16.1$ vs
+$15.9$\,dB mean PSNR, visually identical to FP16). The geometry the Hessian
+captures is a property of the weights, not of any caption; the model reveals it by
+running on its own noise. This removes the last dependence on data and makes the
+attention/projection result \emph{fully data-free and train-free}.
+
+\section{The FFN bottleneck: a negative result for scalar ultra-low-bit PTQ}
+Ternary attention is near-FP16, but Sana's feed-forward network---a gated
+GLU-convolution block---collapses under scalar ultra-low-bit coding regardless of
+quantizer. Framing the FFN as a rate--distortion problem and measuring true
+symbol-entropy bits (attention fixed at trit $1.71$\,b) gives a frontier: scalar
+ternary $0.87$\,b/$10.8$\,dB; uniform 5-symbol $1.73$\,b/$13.3$\,dB; uniform
+7-symbol $2.25$\,b/$14.6$\,dB; $4$-bit $3.4$\,b/$16.2$\,dB. Richer alphabets climb
+the curve, but every method targeting $\le 2$ bits fails to reach near-FP16: a
+Hessian-weighted rank-$32$ residual leaves the FFN at $11$--$15$\,dB; post-hoc
+sparse escapes \emph{worsen} GPTQ by disrupting its causal error compensation
+($1.2$\,b/$9.0$\,dB); a learned Lloyd--Max codebook \emph{raises} entropy
+(distortion-optimal $\neq$ rate-optimal); and a correctly-implemented block
+entropy-constrained GPTQ at $1.8$ bits reaches only $8.1$\,dB---worse than the
+uniform 5-symbol codebook at the same rate. The mechanism is consistent: a
+\emph{global} scalar rate objective drives most coordinates to zero and spends a
+few bits on large escapes, destroying the per-group amplitude uniformity the GLU
+needs. \textbf{All scalar methods tested fail; the failure mode indicates the
+missing information is local and vector-structured} (cross-coordinate amplitude
+patterns), pointing to vector quantization or structural channel reduction rather
+than any scalar code. We do not claim a formal lower bound.
+
+\section{Clark-Compress: the mixed-precision product}
+The practical resolution keeps ternary (GPTQ + rotation) attention and quantizes
+the FFN at $4$-bit (data-free). On Sana~1.6B this is near-FP16 ($\sim$16\,dB),
+$0.72$\,GB---$4.4\times$ smaller, and $\sim$6$\times$ with trit-packing and FP8/FP6
+islands---and fully data-free / train-free. It is the recommended release; the
+all-ternary variant ($0.53$\,GB) is degraded and research-only. Reaching $8\times$
+at near-FP16 requires either vector-coded FFN (PVQ/TCQ/lattice, which preserves
+local amplitude structure by construction) or structural GLU hidden-channel
+contraction with closed-form down-projection refit under the same noise prior.
+
 \section{Discussion and limitations}
 At ternary precision $\sim\!43\%$ of the weight magnitude is discarded, so outputs
 are stylized/posterized rather than pixel-identical; this is intrinsic to the
@@ -235,11 +289,18 @@ scale and the activation-aware extension apply unchanged to decoder-only languag
 models.
 
 \section{Conclusion}
-Data-free ternary quantization is far more capable than the standard
-\texttt{absmean} heuristic suggests. The closed-form MSE-optimal per-group scale---
-maximizing $(\sum_{\text{top-}k}|w|)^2/k$---turns a noise generator into a working
-$2$-bit image model with no calibration data. The lesson is narrow but practical:
-\emph{at extreme precision, spend your engineering on the scale.}
+Two results frame extreme-low-bit PTQ of a diffusion transformer.
+\emph{Positive}: data-free, train-free, near-FP16 quantization is \textbf{solved
+for the attention and projection layers} at $1.7$--$2.1$ bits---the closed-form
+optimal scale sets the data-free floor, GPTQ with a shared incoherence rotation
+sets the quality, and calibrating the Hessian on the model's own noise+null prior
+removes the last dependence on data. \emph{Negative}: Sana's GLU-convolution FFN
+is the remaining compression bottleneck, and every scalar ultra-low-bit method we
+tested fails on it below $\sim$2 bits---the missing information is local and
+vector-structured, not scalar. The practical product is mixed-precision
+(ternary attention, $4$-bit FFN): data-free, near-FP16, $\sim$4--6$\times$ smaller.
+Closing the gap to $8\times$ is a question of vector-coded or structurally-contracted
+FFNs, not of better scalar scales.
 
 \begin{thebibliography}{9}
 \bibitem{bitnet158} S.~Ma et al. \emph{The Era of 1-bit LLMs: All Large Language

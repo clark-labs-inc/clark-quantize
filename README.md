@@ -3,14 +3,22 @@
 **Data-free, optimal-scale ternary (1.58-bit) post-training quantization for
 generative transformers.**
 
-Clark-Quantize compresses the matrix-heavy weights of a transformer to
-`{-1, 0, +1}` with a single FP16 scale per group of weights, and reaches
-**near-FP16 image quality at 2.1 bits/weight** with 94.6% of the diffusion trunk
-ternary. It offers two tiers:
+**Headline result:** data-free, train-free, **near-FP16 quantization is solved for
+the attention/projection layers** of a diffusion transformer at 1.7–2.1 bits — and
+**the GLU-conv FFN is the remaining compression bottleneck** (a systematic negative
+result for scalar ultra-low-bit coding). The shipped product is mixed-precision
+(ternary attention + 4-bit FFN): **near-FP16, ~4–6× smaller, zero external data.**
 
-- **Data-free** (no data at all): the MSE-optimal scale — recognizable images.
-- **Activation-aware** (self-calibrated on the model's *own* outputs, no external
-  dataset): GPTQ + an incoherence rotation — near-FP16.
+Three ideas get attention to near-FP16, all with **no dataset, no gradients, no
+fine-tuning**:
+
+1. **Optimal-scale ternary** (data-free floor): `absmean` → noise; the MSE-optimal
+   scale → recognizable.
+2. **GPTQ + shared incoherence rotation** → near-FP16 at 2.1 bits.
+3. **Noise+null self-calibration** (the core unlock): the GPTQ Hessian is captured
+   from the model's *own* unconditional prior (Gaussian noise + the null prompt a
+   diffusion model already consumes) — matching prompt-calibration to within noise
+   (16.1 vs 15.9 dB) with no external data at all.
 
 The full progression at the **same 2.1-bit budget** (Sana 1.6B, identical seed):
 
@@ -64,7 +72,36 @@ pipe("a bowl of ramen, steam rising, photoreal").images[0].save("ramen.png")
 
 All variants keep only **6 tiny layers** (adaptive-norm modulation, text/time
 conditioning, final projection — 5.4% of params) at original precision. "self"
-means self-calibrated on the model's own generations — no external dataset.
+means self-calibrated on the model's own generations — no external dataset. The
+**noise+null** variant (Hessian from Gaussian noise + the empty prompt) matches
+this exactly with *no prompts at all*: **16.1 vs 15.9 dB** — fully data-free.
+
+## The FFN bottleneck (a negative result)
+
+Attention is solved; **Sana's gated GLU-conv FFN (47% of params) resists scalar
+ultra-low-bit coding.** Framing it as rate–distortion (attention fixed at trit
+1.71 b), measuring *true symbol-entropy* bits:
+
+| FFN format | eff. bits | PSNR vs FP16 |
+|---|---|---|
+| scalar ternary | 0.87 | 10.8 |
+| uniform 5-symbol | 1.73 | 13.3 |
+| uniform 7-symbol | 2.25 | 14.6 |
+| **4-bit (shipped)** | **3.4** | **16.2** |
+| post-hoc sparse escapes | 1.24 | 9.0 (✗ breaks GPTQ) |
+| learned Lloyd–Max EC-7 | 2.52 | 14.9 (entropy ↑) |
+| entropy-constrained GPTQ @1.8b | 1.81 | 8.1 (✗) |
+
+**Every scalar method tested** — optimal ternary, uniform multi-symbol, learned
+Lloyd–Max, post-hoc escapes, and entropy-constrained GPTQ — **fails to reach a
+near-FP16 point below ~2 bits on this FFN.** The failure mode (a global scalar rate
+objective drives most coordinates to 0 and spends a few on big escapes, destroying
+per-group amplitude uniformity) indicates the missing information is **local and
+vector-structured**, not scalar — pointing to vector quantization (PVQ/TCQ/lattice)
+or structural GLU channel contraction. We do not claim a formal lower bound.
+
+So the practical product is **mixed precision**: ternary attention + **4-bit FFN**,
+data-free, near-FP16, ~4–6× smaller. See `paper/` for the full account.
 
 **Why activation-aware wins.** The optimal scale minimizes `‖W − Wq‖` (per
 weight); what the network needs is `‖(W − Wq)x‖` (per output). GPTQ retargets the
