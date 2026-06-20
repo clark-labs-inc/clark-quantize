@@ -28,7 +28,7 @@ POOL=os.environ.get("POOL","sana_calib_256.jsonl"); TAG=os.environ.get("TAG","ct
 ROUNDS=int(os.environ.get("ROUNDS","6")); SPR=int(os.environ.get("STEPS_PER_ROUND","200")); KSCORE=int(os.environ.get("KSCORE","8"))
 BUDGET=float(os.environ.get("BUDGET","0.002")); KBPTD=int(os.environ.get("KBPTD","2"))
 PEN_ACT=float(os.environ.get("PEN_ACT","0.0")); PEN_DEACT=float(os.environ.get("PEN_DEACT","0.5")); PEN_FLIP=float(os.environ.get("PEN_FLIP","2.5"))
-HARDFILE=os.environ.get("HARDFILE","shared_hard.json"); NHARD=4; DBG=int(os.environ.get("DBG","0"))
+HARDFILE=os.environ.get("HARDFILE","shared_hard.json"); NHARD=4; DBG=int(os.environ.get("DBG","0")); GCLIP=float(os.environ.get("GCLIP","1.0"))
 log(f"[cfg] POOL={POOL} ROUNDS={ROUNDS} SPR={SPR} BUDGET={BUDGET} KSCORE={KSCORE} pen(a{PEN_ACT}/d{PEN_DEACT}/f{PEN_FLIP}) TAG={TAG} | DDP world={WORLD} rank={RANK}")
 
 def is_trunk_lin(n,m): return isinstance(m,nn.Linear) and n.startswith("transformer_blocks") and (".attn1." in n or ".attn2." in n) and any(s in n for s in ("to_q","to_k","to_v","to_out.0"))
@@ -71,6 +71,11 @@ class CTDTernary(nn.Module):
                 self._ck=_TOK[0]
             w=self._cw
         return w.reshape(self.cs) if self.cs else w
+    @torch.no_grad()
+    def recompute_scale(self):   # closed-form optimal per-group scale for the CURRENT support (PTQ scale becomes wrong once support moves; gradient can't fix it -> reset analytically)
+        active=(self.code!=0).float()
+        num=(self.Wfp.float().abs()*active).sum(-1); den=active.sum(-1).clamp_min(1.)
+        self.log_scale.data=(num/den).clamp_min(1e-6).log()
     @torch.no_grad()
     def zero_frac(self): return (self.code==0).float().mean().item()
 
@@ -224,13 +229,15 @@ for rnd in range(1,ROUNDS+1):
             for p in trainable:
                 if p.grad is None: p.grad=torch.zeros_like(p)
                 dist.all_reduce(p.grad, op=dist.ReduceOp.AVG)
-        gn=torch.nn.utils.clip_grad_norm_(trainable,0.5)
+        gn=torch.nn.utils.clip_grad_norm_(trainable,GCLIP)
         if torch.isfinite(gn): opt.step()
         if MAIN and DBG and step%50==0:
             sg=sum((p.grad.norm().item()**2 for p in scale_params if p.grad is not None))**0.5
             log(f"  [dbg r{rnd} s{step}] L{L.item():.3e} gn{gn:.3f} smean{torch.cat([m.log_scale.flatten() for _,m in slt]).exp().mean().item():.5f}")
     # score + mutate support (DDP: leaf grads already all-reduced -> identical transitions)
-    score_pass(); moved,tot,na,nd,nf=apply_transitions(BUDGET); _TOK[0]+=1
+    score_pass(); moved,tot,na,nd,nf=apply_transitions(BUDGET)
+    for _,m in slt: m.recompute_scale()   # re-fit scales closed-form to the new support
+    _TOK[0]+=1
     # alpha=1 hard verdict (the only render/eval that counts; rank0 only)
     sv=ALPHA[0]; ALPHA[0]=1.0; _TOK[0]+=1
     if MAIN:
