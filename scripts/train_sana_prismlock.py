@@ -14,7 +14,7 @@ from PIL import Image
 dev="cuda"; MODEL="models/Sana_1600M_512px"; K=20; G=112; GUID=4.5; M8=8
 POOL=os.environ.get("POOL","sana_calib_256.jsonl"); TAG=os.environ.get("TAG","plock"); STEPS=int(os.environ.get("STEPS","6000"))
 TARGET_ZERO=float(os.environ.get("TARGET_ZERO","0.38")); SCALE_RATIO=float(os.environ.get("SCALE_RATIO","0.625"))
-DENS_RAMP=int(os.environ.get("DENSITY_RAMP","1500")); KBPTD=int(os.environ.get("KBPTD","4"))
+DENS_RAMP=int(os.environ.get("DENSITY_RAMP","1500")); KBPTD=int(os.environ.get("KBPTD","2"))
 LAM_DENS=float(os.environ.get("LAM_DENS","0.01")); LAM_SM=float(os.environ.get("LAM_SCALE_MEAN","0.001")); LAM_SV=float(os.environ.get("LAM_SCALE_VAR","0.001"))
 RENDER_EVERY=int(os.environ.get("RENDER_EVERY","1000")); CKPT_EVERY=int(os.environ.get("CKPT_EVERY","1000")); NHARD=4
 HARDFILE=os.environ.get("HARDFILE","shared_hard.json"); LATENTS=1
@@ -40,7 +40,7 @@ class SignLockedTernary(nn.Module):
     def __init__(self, base_w, conv_shape=None, init_mask=None, init_scale=None):
         super().__init__()
         W=base_w.reshape(base_w.shape[0],-1).float(); o,i=W.shape; self.o,self.i,self.ng=o,i,i//G; self.cs=conv_shape
-        self.register_buffer("sign", torch.where(W>=0,1.,-1.))
+        self.register_buffer("sign", torch.where(W>=0,1,-1).to(torch.int8))      # int8 frozen signs
         Wg=W.view(o,self.ng,G); d=0.7*Wg.abs().mean(-1,keepdim=True); m0=(Wg.abs()>d).float()
         s0=(Wg.abs()*m0).sum(-1,keepdim=True)/m0.sum(-1,keepdim=True).clamp_min(1.)
         self.register_buffer("ptq_logs", s0.squeeze(-1).clamp_min(1e-6).log())   # PTQ log scale [o,ng] (prior target ref)
@@ -51,8 +51,9 @@ class SignLockedTernary(nn.Module):
     def mask(self):
         hard=(self.a>0).float(); soft=torch.sigmoid(self.a); return hard+(soft-soft.detach())
     def W(self):
-        m=self.mask().view(self.o,self.i); s=self.log_scale.exp().clamp_min(1e-6).unsqueeze(-1).expand(self.o,self.ng,G).reshape(self.o,self.i)
-        w=s*self.sign*m; return w.reshape(self.cs) if self.cs else w
+        m=self.mask().view(self.o,self.i).to(torch.bfloat16)
+        s=self.log_scale.exp().clamp_min(1e-6).to(torch.bfloat16).unsqueeze(-1).expand(self.o,self.ng,G).reshape(self.o,self.i)
+        w=s*self.sign.to(torch.bfloat16)*m; return w.reshape(self.cs) if self.cs else w
     @torch.no_grad()
     def zero_frac(self): return ((self.a<=0).float().mean()).item()
 
@@ -109,6 +110,7 @@ for idx,(n,m) in enumerate(qmods_list):
             return F.conv2d(x,w,bias) if is_conv else F.linear(x,w,bias)
         return f
     orig.forward=mkfwd(mod, cs is not None, orig.bias)
+    orig.weight.data=torch.empty(0,device=dev)   # free unused FP16 weight (forward uses sign-locked W())
     setattr(orig,"_slt",mod); slt.append((n,mod)); depthmult.append(_blk(n))
 for p in tf.parameters(): p.requires_grad_(False)
 mask_params=[]; scale_params=[]; island_params=[]
@@ -120,6 +122,8 @@ import bitsandbytes as bnb
 groups=[{"params":mask_params,"lr":2e-5},{"params":scale_params,"lr":5e-5}]
 for p,lr in island_params: groups.append({"params":[p],"lr":lr})
 opt=bnb.optim.AdamW8bit(groups,betas=(0.9,0.95))
+try: tf.enable_gradient_checkpointing()   # recompute W() in backward instead of storing 200 reconstructions
+except Exception as e: print("[warn] no grad-ckpt",e,flush=True)
 print(f"[prismlock] {len(slt)} sign-locked trunk | islands {len(island_params)} | GPU {torch.cuda.memory_allocated()/1e9:.1f}GB",flush=True)
 
 def tf_call(hs,ehs,ts,ex):
