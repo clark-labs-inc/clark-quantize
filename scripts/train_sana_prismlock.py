@@ -49,11 +49,9 @@ class SignLockedTernary(nn.Module):
         scl=init_scale if init_scale is not None else s0.squeeze(-1)             # warm-start scale or PTQ scale
         self.a=nn.Parameter(torch.where(mask.view(o,i).bool(),2.0,-2.0))         # mask logits (sigmoid>0.5 active)
         self.log_scale=nn.Parameter(scl.clamp_min(1e-6).log().clone())
-    def mask(self):   # top-k per group by TRAINED logit at the scheduled density DENSITY[0] (no reset -> ranking preserved)
-        a=self.a.view(self.o,self.ng,G); k=max(1,min(G,int(round(DENSITY[0]*G))))
-        thr=a.topk(k,dim=-1).values[...,-1:]
-        hard=(a>=thr).float(); soft=torch.sigmoid(a-thr)
-        return (hard+(soft-soft.detach())).view(self.o,self.i)
+    def mask(self):   # FREE support mask: support moves via task loss through STE (universal: don't force a model-specific density)
+        hard=(self.a>0).float(); soft=torch.sigmoid(self.a)
+        return hard+(soft-soft.detach())
     def W(self):
         m=self.mask().view(self.o,self.i).to(torch.bfloat16)
         s=self.log_scale.exp().clamp_min(1e-6).to(torch.bfloat16).unsqueeze(-1).expand(self.o,self.ng,G).reshape(self.o,self.i)
@@ -152,7 +150,7 @@ def fmt(d): return f"E {d['E']:.3f} M {d['M']:.3f} L {d['L']:.3f}"
 def vel_loss(ti,k):
     d=traj[(ti,k)]; ehs,ex=ehs_pool[ti]; v=tf_call(d["hs"],ehs,d["ts"],ex); return F.mse_loss(v.float(),d["vT"].float())
 @torch.no_grad()
-def global_zero(): return 1.0-DENSITY[0]   # mask is top-(DENSITY*G) per group, so zero fraction = 1-DENSITY
+def global_zero(): return sum((m.a.data<=0).float().mean().item()*m.a.numel() for _,m in slt)/sum(m.a.numel() for _,m in slt)
 @torch.no_grad()
 def render(tag):
     qs=[pipe(prompt=p,num_inference_steps=K,height=512,width=512,guidance_scale=GUID,generator=torch.Generator(dev).manual_seed(9000+j)).images[0] for j,p in enumerate(hardP)]
@@ -165,12 +163,9 @@ def save_ckpt():
                 "sign":[m.sign.detach().cpu() for _,m in slt],"cs":[m.cs for _,m in slt],
                 "islands":{n:p.detach().cpu() for n,p in tf.named_parameters() if island_lr(n)>0},"step":step}, f"ckpt_{TAG}.pt")
 
-ACTIVE0=sum((m.a.data>0).float().mean().item() for _,m in slt)/len(slt)   # q1024t active fraction (warm-start)
-DENSITY[0]=ACTIVE0
-print(f"[init] zero {1-ACTIVE0:.3f} (active {ACTIVE0:.3f} -> {1-TARGET_ZERO:.3f}) chunk8 {fmt(eval_c8())}",flush=True); render("s0")
+print(f"[init] zero {global_zero():.3f} chunk8 {fmt(eval_c8())}  (support moves via task loss; scale-shrink prior toward {SCALE_RATIO}x)",flush=True); render("s0")
 t0=time.time()
 for step in range(1,STEPS+1):
-    frac=min(1.0,step/float(DENS_RAMP)); DENSITY[0]=ACTIVE0+(1-TARGET_ZERO-ACTIVE0)*frac   # density schedule (mask uses it)
     opt.zero_grad(set_to_none=True)
     ti,k=random.choice(calib_states); Lv=vel_loss(ti,k)
     cti,ck=random.choice(calib_chunks); xS=roll8(cti,ck,KBPTD); xT=traj[(cti,ck+M8)]["hs"][:1].float(); Lm=F.mse_loss(xS,xT)
