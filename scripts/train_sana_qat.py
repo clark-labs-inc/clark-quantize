@@ -79,8 +79,18 @@ for n,m in tf.named_modules():
 island_p=[]
 for n,p in tf.named_parameters():
     if is_island(n): p.requires_grad_(True); island_p.append(p)
-opt=BM.BonsaiMuon(BM.collect_bonsai_param_groups(tf, muon_lr=2e-5, scale_lr=5e-5, island_lr=2e-6, prox_rho=0.0, max_flip_rate=1e-4))
 ste_mods=[m for m in tf.modules() if isinstance(m,BM._GroupwiseSTEBase)]
+OPT=os.environ.get("OPT","adamw")  # adamw (fast, manual prox pull) | muon (Newton-Schulz, ~3x slower)
+if OPT=="muon":
+    opt=BM.BonsaiMuon(BM.collect_bonsai_param_groups(tf, muon_lr=2e-5, scale_lr=5e-5, island_lr=2e-6, prox_rho=0.0, max_flip_rate=1e-4))
+else:
+    import bitsandbytes as bnb
+    masters=[m.weight_master for m in ste_mods]; scales=[m.log_scales for m in ste_mods]
+    opt=bnb.optim.AdamW8bit([{"params":masters,"lr":2e-5},{"params":scales,"lr":5e-5},{"params":island_p,"lr":2e-6}], betas=(0.9,0.95), weight_decay=0.0)
+@torch.no_grad()
+def prox_pull(rho):  # Prism-like: pull masters toward active codebook (BonsaiMuon does this internally; AdamW needs it manual)
+    if rho<=0: return
+    for m in ste_mods: m.weight_master.data.lerp_(m._quantized_matrix_detached(), rho)
 print(f"[replace] {len(ste_mods)} STE modules | GPU {torch.cuda.memory_allocated()/1e9:.1f}GB",flush=True)
 
 def tf_call(hs,ehs,ts,ex):
@@ -129,8 +139,8 @@ BM.set_bonsai_forward_blend_alpha(tf,1.0); print(f"[P0 a=1] vel {vel_loss(*calib
 best=[9e9]; t0=time.time()
 for step in range(1,STEPS+1):
     a=min(1.0, step/float(RAMP)); BM.set_bonsai_forward_blend_alpha(tf,a)
-    rho=0.0 if step<P2START else (0.01 if step<3000 else (0.03 if step<8000 else 0.05)); opt.set_prox_rho(rho)
-    opt.set_max_flip_rate((1e-4 if step<RAMP else None) if FLIP else None)  # FLIP off by default: binary search every step is 15x too slow, gn already healthy
+    rho=0.0 if step<P2START else (0.01 if step<3000 else (0.03 if step<8000 else 0.05))
+    if OPT=="muon": opt.set_prox_rho(rho); opt.set_max_flip_rate((1e-4 if step<RAMP else None) if FLIP else None)
     opt.zero_grad(set_to_none=True)
     ti,k=samp(cs_b); Lv=vel_loss(ti,k); L=0.7*Lv; logm=0.0
     if step>=P2START:
@@ -138,6 +148,7 @@ for step in range(1,STEPS+1):
         cti,ck=random.choice(cs); xS=roll8(cti,ck,KBPTD); xT=traj[(cti,ck+M8)]["hs"][:1].float(); Lm=F.mse_loss(xS,xT); L=0.25*Lv+1.0*Lm; logm=Lm.item()
     L.backward(); gn=torch.nn.utils.clip_grad_norm_([p for g in opt.param_groups for p in g["params"]],0.5)
     if torch.isfinite(gn): opt.step()
+    if OPT!="muon": prox_pull(rho)   # AdamW: manual codebook proximal pull (Muon does it internally)
     if step%500==0 or step==1:
         c8=eval_c8(); mx=max(c8.values()); best[0]=min(best[0],mx) if a>=1.0 else best[0]
         print(f"[s{step}] a{a:.2f} rho{rho} Lv{Lv.item():.2e} Lm{logm:.2e} gn{gn:.1f} val-chunk8 {fmt(c8)} | best {best[0]:.3f} ({time.time()-t0:.0f}s)",flush=True)
