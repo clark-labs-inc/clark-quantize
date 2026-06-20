@@ -34,6 +34,7 @@ def island_lr(n):
     if any(k in n for k in ("time_embed","caption_projection")): return 5e-6
     return 0.0
 
+DENSITY=[1.0]   # global active-fraction schedule (mask = top-(DENSITY*G) per group)
 class SignLockedTernary(nn.Module):
     """weight = scale_g * sign(W_fp16) * mask(a). Only mask logits 'a' and log_scale trained. Signs frozen.
     init: PTQ support/scale by default; if init_mask/init_scale given (warm-start from q1024t), use those."""
@@ -48,8 +49,11 @@ class SignLockedTernary(nn.Module):
         scl=init_scale if init_scale is not None else s0.squeeze(-1)             # warm-start scale or PTQ scale
         self.a=nn.Parameter(torch.where(mask.view(o,i).bool(),2.0,-2.0))         # mask logits (sigmoid>0.5 active)
         self.log_scale=nn.Parameter(scl.clamp_min(1e-6).log().clone())
-    def mask(self):
-        hard=(self.a>0).float(); soft=torch.sigmoid(self.a); return hard+(soft-soft.detach())
+    def mask(self):   # top-k per group by TRAINED logit at the scheduled density DENSITY[0] (no reset -> ranking preserved)
+        a=self.a.view(self.o,self.ng,G); k=max(1,min(G,int(round(DENSITY[0]*G))))
+        thr=a.topk(k,dim=-1).values[...,-1:]
+        hard=(a>=thr).float(); soft=torch.sigmoid(a-thr)
+        return (hard+(soft-soft.detach())).view(self.o,self.i)
     def W(self):
         m=self.mask().view(self.o,self.i).to(torch.bfloat16)
         s=self.log_scale.exp().clamp_min(1e-6).to(torch.bfloat16).unsqueeze(-1).expand(self.o,self.ng,G).reshape(self.o,self.i)
@@ -148,7 +152,7 @@ def fmt(d): return f"E {d['E']:.3f} M {d['M']:.3f} L {d['L']:.3f}"
 def vel_loss(ti,k):
     d=traj[(ti,k)]; ehs,ex=ehs_pool[ti]; v=tf_call(d["hs"],ehs,d["ts"],ex); return F.mse_loss(v.float(),d["vT"].float())
 @torch.no_grad()
-def global_zero(): return sum(m.zero_frac()*m.a.numel() for _,m in slt)/sum(m.a.numel() for _,m in slt)
+def global_zero(): return 1.0-DENSITY[0]   # mask is top-(DENSITY*G) per group, so zero fraction = 1-DENSITY
 @torch.no_grad()
 def render(tag):
     qs=[pipe(prompt=p,num_inference_steps=K,height=512,width=512,guidance_scale=GUID,generator=torch.Generator(dev).manual_seed(9000+j)).images[0] for j,p in enumerate(hardP)]
@@ -161,17 +165,12 @@ def save_ckpt():
                 "sign":[m.sign.detach().cpu() for _,m in slt],"cs":[m.cs for _,m in slt],
                 "islands":{n:p.detach().cpu() for n,p in tf.named_parameters() if island_lr(n)>0},"step":step}, f"ckpt_{TAG}.pt")
 
-ACTIVE0=1.0-global_zero()   # q1024t active fraction (warm-start) -> anneal to (1-TARGET_ZERO)
-print(f"[init] zero {global_zero():.3f} (active {ACTIVE0:.3f} -> {1-TARGET_ZERO:.3f}) chunk8 {fmt(eval_c8())}",flush=True); render("s0")
-@torch.no_grad()
-def project_density(active_t):   # hard-project each group to top-k active by TRAINED logit ranking
-    ka=max(1,min(G,int(round(active_t*G))))
-    for _,m in slt:
-        a=m.a.data.view(m.o,m.ng,G); thr=a.topk(ka,dim=-1).values[...,-1:]
-        m.a.data=torch.where(a>=thr,2.0,-2.0).view(m.o,m.i)
+ACTIVE0=sum((m.a.data>0).float().mean().item() for _,m in slt)/len(slt)   # q1024t active fraction (warm-start)
+DENSITY[0]=ACTIVE0
+print(f"[init] zero {1-ACTIVE0:.3f} (active {ACTIVE0:.3f} -> {1-TARGET_ZERO:.3f}) chunk8 {fmt(eval_c8())}",flush=True); render("s0")
 t0=time.time()
 for step in range(1,STEPS+1):
-    frac=min(1.0,step/float(DENS_RAMP)); active_t=ACTIVE0+(1-TARGET_ZERO-ACTIVE0)*frac   # density schedule
+    frac=min(1.0,step/float(DENS_RAMP)); DENSITY[0]=ACTIVE0+(1-TARGET_ZERO-ACTIVE0)*frac   # density schedule (mask uses it)
     opt.zero_grad(set_to_none=True)
     ti,k=random.choice(calib_states); Lv=vel_loss(ti,k)
     cti,ck=random.choice(calib_chunks); xS=roll8(cti,ck,KBPTD); xT=traj[(cti,ck+M8)]["hs"][:1].float(); Lm=F.mse_loss(xS,xT)
@@ -182,9 +181,8 @@ for step in range(1,STEPS+1):
     L=Lm+0.25*Lv+LAM_SM*Lsm+LAM_SV*Lsv
     L.backward(); gn=torch.nn.utils.clip_grad_norm_(mask_params+scale_params+[p for p,_ in island_params],0.5)
     if torch.isfinite(gn): opt.step()
-    project_density(active_t)   # enforce density budget; trained logits pick which weights fill it
     if step%200==0 or step==1:
-        print(f"[s{step}] Lm{Lm.item():.3e} Lv{Lv.item():.3e} Lsm{Lsm.item():.3e} zero{global_zero():.3f}(tgt{1-active_t:.3f}) gn{gn:.1f} chunk8 {fmt(eval_c8())} ({time.time()-t0:.0f}s)",flush=True)
+        print(f"[s{step}] Lm{Lm.item():.3e} Lv{Lv.item():.3e} Lsm{Lsm.item():.3e} zero{global_zero():.3f} gn{gn:.1f} chunk8 {fmt(eval_c8())} ({time.time()-t0:.0f}s)",flush=True)
     if step%RENDER_EVERY==0: render(f"s{step}")
     if step%CKPT_EVERY==0: save_ckpt()
 render("final"); save_ckpt(); print("[done]",flush=True)
