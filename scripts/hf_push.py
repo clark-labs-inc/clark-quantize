@@ -10,8 +10,11 @@ from huggingface_hub import HfApi, whoami
 REPO=os.environ.get("REPO","clark-labs/clark-compress-sana-1.6b")
 ART=os.environ.get("ARTIFACT","out/clark-air-sana-ternary-unpacked")
 ACTION=os.environ.get("ACTION","inspect")
+CLEAN=os.environ.get("CLEAN","0")=="1"  # delete stale old-draft files (only the original repo needs this)
 api=HfApi(token=os.environ["HF_TOKEN"])
 print("[auth]", whoami(token=os.environ["HF_TOKEN"]).get("name"), flush=True)
+if ACTION=="upload":
+    api.create_repo(REPO, repo_type="model", private=True, exist_ok=True); print(f"[repo] ensured {REPO} (private)", flush=True)
 try:
     info=api.repo_info(REPO, repo_type="model")
     print(f"[repo] {REPO} | private={info.private}", flush=True)
@@ -22,10 +25,11 @@ except Exception as e:
     print(f"[repo] {REPO} not accessible / new: {type(e).__name__}: {str(e)[:120]}", flush=True)
 
 if ACTION=="upload":
-    # 1) delete stale/proprietary old-draft files
-    for f in ["clark_compress_mixed.safetensors","load_clark_compress.py","manifest.json"]:
-        try: api.delete_file(path_in_repo=f, repo_id=REPO, repo_type="model"); print(f"[delete] {f}", flush=True)
-        except Exception as e: print(f"[delete] {f} skip ({type(e).__name__})", flush=True)
+    # 1) delete stale/proprietary old-draft files (original repo only)
+    if CLEAN:
+        for f in ["clark_compress_mixed.safetensors","load_clark_compress.py","manifest.json"]:
+            try: api.delete_file(path_in_repo=f, repo_id=REPO, repo_type="model"); print(f"[delete] {f}", flush=True)
+            except Exception as e: print(f"[delete] {f} skip ({type(e).__name__})", flush=True)
     # 2) upload new marketing README + bf16 transformer + coherent demo
     api.upload_file(path_or_fileobj=os.path.join(ART,"README.md"), path_in_repo="README.md", repo_id=REPO, repo_type="model")
     print("[upload] README.md", flush=True)
