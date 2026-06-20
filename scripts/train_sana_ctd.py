@@ -27,7 +27,8 @@ MODEL="models/Sana_1600M_512px"; K=20; G=112; GUID=4.5; M8=8
 POOL=os.environ.get("POOL","sana_calib_256.jsonl"); TAG=os.environ.get("TAG","ctd")
 ROUNDS=int(os.environ.get("ROUNDS","6")); SPR=int(os.environ.get("STEPS_PER_ROUND","200")); KSCORE=int(os.environ.get("KSCORE","8"))
 BUDGET=float(os.environ.get("BUDGET","0.002")); KBPTD=int(os.environ.get("KBPTD","2"))
-PEN_ACT=float(os.environ.get("PEN_ACT","0.0")); PEN_DEACT=float(os.environ.get("PEN_DEACT","0.5")); PEN_FLIP=float(os.environ.get("PEN_FLIP","2.5"))
+# per-type budgets (Prism image transition matrix is asymmetric: activation-heavy, deactivation-light, flips ~0). default back to global BUDGET.
+B_ACT=float(os.environ.get("BUDGET_ACT", str(BUDGET))); B_DEACT=float(os.environ.get("BUDGET_DEACT", str(BUDGET))); B_FLIP=float(os.environ.get("BUDGET_FLIP", "0.0"))
 HARDFILE=os.environ.get("HARDFILE","shared_hard.json"); NHARD=4; DBG=int(os.environ.get("DBG","0")); GCLIP=float(os.environ.get("GCLIP","1.0"))
 log(f"[cfg] POOL={POOL} ROUNDS={ROUNDS} SPR={SPR} BUDGET={BUDGET} KSCORE={KSCORE} pen(a{PEN_ACT}/d{PEN_DEACT}/f{PEN_FLIP}) TAG={TAG} | DDP world={WORLD} rank={RANK}")
 
@@ -183,27 +184,28 @@ def save_ckpt(tag):
                 "group_size":G,"round":tag}, f"ckpt_{TAG}_{tag}.pt")
 
 @torch.no_grad()
-def apply_transitions(budget):
-    moved=0; tot=0; nact=ndeact=nflip=0
+def apply_transitions(b_act, b_deact, b_flip):
+    # per-type budgets: rank each transition type separately (Prism image is activation-dominated). only apply predicted improvements (score<0).
+    mat={'0+':0,'0-':0,'+0':0,'-0':0,'+-':0,'-+':0}; moved=0; tot=0
     for _,m in slt:
-        g=m._leaf.grad.reshape(m.o,m.ng,m.G).float()                  # dL/dw (DDP: already all-reduced)
-        s=m.log_scale.exp().unsqueeze(-1)                             # [o,ng,1]
-        code=m.code.float(); base=m.base_sign.float(); BIG=1e30
-        sc_act=torch.where(code==0, g*(s*base),       torch.full_like(g,BIG))   # 0 -> base sign
-        sc_de =torch.where(code!=0, g*(s*(-code)),    torch.full_like(g,BIG))   # active -> 0
-        sc_fl =torch.where(code!=0, g*(s*(-2*code)),  torch.full_like(g,BIG))   # flip
-        valid=torch.cat([sc_act[code==0],sc_de[code!=0],sc_fl[code!=0]])
-        sd=valid.std().clamp_min(1e-12) if valid.numel() else torch.tensor(1.,device=g.device)
-        sc_act=sc_act/sd+PEN_ACT; sc_de=sc_de/sd+PEN_DEACT; sc_fl=sc_fl/sd+PEN_FLIP
-        stack=torch.stack([sc_act,sc_de,sc_fl],0); best,arg=stack.min(0)        # best transition per weight
-        k=max(1,int(budget*best.numel())); flat=best.flatten()
-        vals,idx=flat.topk(k,largest=False); sel=idx[vals<0.0]                  # only predicted improvements
-        if sel.numel()==0: continue
-        a=arg.flatten()[sel]; cflat=m.code.view(-1); bflat=m.base_sign.reshape(-1).float()
-        newc=torch.where(a==0, bflat[sel], torch.where(a==1, torch.zeros_like(bflat[sel]), -cflat[sel].float()))
-        cflat[sel]=newc.to(torch.int8)
-        nact+=int((a==0).sum()); ndeact+=int((a==1).sum()); nflip+=int((a==2).sum()); moved+=sel.numel(); tot+=best.numel()
-    return moved,tot,nact,ndeact,nflip
+        g=m._leaf.grad.reshape(m.o,m.ng,m.G).float(); s=m.log_scale.exp().unsqueeze(-1)
+        code=m.code; codef=code.float(); base=m.base_sign.float(); N=code.numel()
+        BIG=torch.full_like(g,1e30); cf=m.code.view(-1); bf=base.reshape(-1)
+        def pick(score, valid, frac):   # top-(frac*N) most-negative scores among valid, predicted-improving only
+            if frac<=0: return None
+            sc=torch.where(valid, score, BIG); k=max(1,int(frac*N))
+            vals,idx=sc.flatten().topk(k,largest=False); return idx[vals<0.0]
+        sel_a=pick(g*s*base,      code==0, b_act)    # 0 -> base sign  (delta_w = s*base)
+        sel_d=pick(-g*s*codef,    code!=0, b_deact)  # active -> 0     (delta_w = -s*code)
+        sel_f=pick(-2*g*s*codef,  code!=0, b_flip)   # flip            (delta_w = -2*s*code)
+        if sel_a is not None and sel_a.numel():
+            sgn=bf[sel_a]; cf[sel_a]=sgn.to(torch.int8); mat['0+']+=int((sgn>0).sum()); mat['0-']+=int((sgn<0).sum()); moved+=sel_a.numel()
+        if sel_d is not None and sel_d.numel():
+            old=cf[sel_d].clone(); cf[sel_d]=0; mat['+0']+=int((old>0).sum()); mat['-0']+=int((old<0).sum()); moved+=sel_d.numel()
+        if sel_f is not None and sel_f.numel():
+            old=cf[sel_f].clone(); cf[sel_f]=(-old).to(torch.int8); mat['+-']+=int((old>0).sum()); mat['-+']+=int((old<0).sum()); moved+=sel_f.numel()
+        tot+=N
+    return moved,tot,mat
 
 def score_pass():   # accumulate dL/dw on leaves over KSCORE minibatches
     for _,m in slt: m._score=True; m.make_leaf()
@@ -235,14 +237,14 @@ for rnd in range(1,ROUNDS+1):
             sg=sum((p.grad.norm().item()**2 for p in scale_params if p.grad is not None))**0.5
             log(f"  [dbg r{rnd} s{step}] L{L.item():.3e} gn{gn:.3f} smean{torch.cat([m.log_scale.flatten() for _,m in slt]).exp().mean().item():.5f}")
     # score + mutate support (DDP: leaf grads already all-reduced -> identical transitions)
-    score_pass(); moved,tot,na,nd,nf=apply_transitions(BUDGET)
+    score_pass(); moved,tot,mat=apply_transitions(B_ACT,B_DEACT,B_FLIP)
     for _,m in slt: m.recompute_scale()   # re-fit scales closed-form to the new support
     _TOK[0]+=1
     # alpha=1 hard verdict (the only render/eval that counts; rank0 only)
     sv=ALPHA[0]; ALPHA[0]=1.0; _TOK[0]+=1
     if MAIN:
         hd=eval_c8(); hard=hd['M']+hd['L']; zm,zs=scale_stats()
-        log(f"[r{rnd}] train_a{sv:.2f} moved {moved} (act{na} de{nd} fl{nf}) zero {global_zero():.3f} scale(m{zm:.3f} s{zs:.3f}) | alpha=1 {fmt(hd)} ({time.time()-t0:.0f}s)")
+        log(f"[r{rnd}] a{sv:.2f} mov{moved} [0+{mat['0+']/1e6:.2f}M 0-{mat['0-']/1e6:.2f}M +0{mat['+0']/1e6:.2f}M -0{mat['-0']/1e6:.2f}M fl{mat['+-']+mat['-+']}] zero {global_zero():.3f} scl(m{zm:.3f} s{zs:.3f}) | a=1 {fmt(hd)} ({time.time()-t0:.0f}s)")
         render(f"r{rnd}")
         if hard<best[0]: best[0]=hard; save_ckpt("best")
 if MAIN: render("final"); save_ckpt("final"); log("[done]")
