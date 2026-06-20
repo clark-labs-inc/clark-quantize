@@ -18,7 +18,7 @@ MODE=os.environ.get("MODE","ternary"); STEPS=int(os.environ.get("STEPS","12000")
 POOL=os.environ.get("POOL","sana_calib_256.jsonl"); LATENTS=int(os.environ.get("LATENTS","2"))
 RAMP=int(os.environ.get("RAMP","1500")); P2START=int(os.environ.get("P2START",str(RAMP))); KBPTD=int(os.environ.get("KBPTD","4"))
 CKPT_EVERY=int(os.environ.get("CKPT_EVERY","1000")); RENDER_EVERY=int(os.environ.get("RENDER_EVERY","2000"))
-NHARD=int(os.environ.get("NHARD","4"))
+NHARD=int(os.environ.get("NHARD","4")); FLIP=int(os.environ.get("FLIP","0"))  # flip-trust-region off by default (too slow; gn healthy)
 print(f"[cfg] MODE={MODE} POOL={POOL} LATENTS={LATENTS} STEPS={STEPS} RAMP={RAMP} KBPTD={KBPTD} TAG={TAG}",flush=True)
 
 def is_trunk_lin(n,m): return isinstance(m,nn.Linear) and n.startswith("transformer_blocks") and (".attn1." in n or ".attn2." in n) and any(s in n for s in ("to_q","to_k","to_v","to_out.0"))
@@ -26,8 +26,10 @@ def is_trunk_conv(n,m): return isinstance(m,nn.Conv2d) and n.startswith("transfo
 def predicate(n,m): return is_trunk_lin(n,m) or is_trunk_conv(n,m)
 def is_island(n): return any(k in n for k in ("patch_embed","time_embed","caption_projection","caption_norm","scale_shift_table","norm_out","proj_out"))
 
+HARDFILE=os.environ.get("HARDFILE","")   # shared held-out render set across ablations (comparable renders)
 pool=[json.loads(l) for l in open(POOL)]
-calibP=[r["prompt"] for r in pool if r["split"]=="calib"]; valP=[r["prompt"] for r in pool if r["split"]=="val"]; hardP=[r["prompt"] for r in pool if r["split"]=="hard"][:NHARD]
+calibP=[r["prompt"] for r in pool if r["split"]=="calib"]; valP=[r["prompt"] for r in pool if r["split"]=="val"]
+hardP=(json.load(open(HARDFILE)) if HARDFILE else [r["prompt"] for r in pool if r["split"]=="hard"])[:NHARD]
 print(f"[pool] calib {len(calibP)} val {len(valP)} hard {len(hardP)}",flush=True)
 pipe=SanaPipeline.from_pretrained(MODEL,torch_dtype=torch.bfloat16); pipe.to(dev); tf=pipe.transformer
 pipe.scheduler.set_timesteps(K,device=dev); SIG=pipe.scheduler.sigmas.float().to(dev)
@@ -51,7 +53,7 @@ with torch.no_grad():
         for pi,p in enumerate(prompts):
             for s in range(nlat):
                 tinfo["ti"]=ti; cur[0]=0; sink.append(ti)
-                pipe(prompt=p,num_inference_steps=K,height=512,width=512,guidance_scale=GUID,generator=torch.Generator(dev).manual_seed(ti*7+s))
+                pipe(prompt=p,num_inference_steps=K,height=512,width=512,guidance_scale=GUID,output_type="latent",generator=torch.Generator(dev).manual_seed(ti*7+s))  # skip VAE decode (only need transformer traj)
                 ti+=1
 h.remove()
 def chunks_of(tis): return [(ti,k) for ti in tis for k in range(K-M8)]
@@ -128,7 +130,7 @@ best=[9e9]; t0=time.time()
 for step in range(1,STEPS+1):
     a=min(1.0, step/float(RAMP)); BM.set_bonsai_forward_blend_alpha(tf,a)
     rho=0.0 if step<P2START else (0.01 if step<3000 else (0.03 if step<8000 else 0.05)); opt.set_prox_rho(rho)
-    opt.set_max_flip_rate(1e-4 if step<RAMP else None)
+    opt.set_max_flip_rate((1e-4 if step<RAMP else None) if FLIP else None)  # FLIP off by default: binary search every step is 15x too slow, gn already healthy
     opt.zero_grad(set_to_none=True)
     ti,k=samp(cs_b); Lv=vel_loss(ti,k); L=0.7*Lv; logm=0.0
     if step>=P2START:
