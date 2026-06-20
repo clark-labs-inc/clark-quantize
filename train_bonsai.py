@@ -440,6 +440,7 @@ def apply_ptq_ternary(model, group=128):
             out, inp, kh, kw = W.shape
             Wq = (t.reshape(out, inp, kh, kw) * s.unsqueeze(-1).unsqueeze(-1))
         else:
+            # s is [out, 1], t is [out, inp] — broadcast works directly
             Wq = t * s
         mod.weight.data.copy_(Wq.to(mod.weight.dtype))
 

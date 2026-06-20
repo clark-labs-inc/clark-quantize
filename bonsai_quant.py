@@ -57,8 +57,9 @@ def optimal_ternary_codes(W: torch.Tensor, group: int = 128) -> Tuple[torch.Tens
     t = t.reshape(out, G * group)[:, :inp]
     if W.dim() == 4:
         t = t.reshape(out, inp, kh, kw)
-    s = s.mean(-1)  # average across groups -> per-row scale
-    return t, s.unsqueeze(-1)
+    # s is [out, G, 1] -> mean over G -> [out, 1]
+    s = s.squeeze(-1).mean(-1, keepdim=True)  # [out, 1]
+    return t, s
 
 
 # ---------------------------------------------------------------------------
