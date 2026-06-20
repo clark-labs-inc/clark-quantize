@@ -15,7 +15,7 @@ dev="cuda"; MODEL="models/Sana_1600M_512px"; K=20; G=112; GUID=4.5; M8=8
 POOL=os.environ.get("POOL","sana_calib_256.jsonl"); TAG=os.environ.get("TAG","plock"); STEPS=int(os.environ.get("STEPS","6000"))
 TARGET_ZERO=float(os.environ.get("TARGET_ZERO","0.38")); SCALE_RATIO=float(os.environ.get("SCALE_RATIO","0.625"))
 DENS_RAMP=int(os.environ.get("DENSITY_RAMP","1500")); KBPTD=int(os.environ.get("KBPTD","2"))
-LAM_DENS=float(os.environ.get("LAM_DENS","0.01")); LAM_SM=float(os.environ.get("LAM_SCALE_MEAN","0.001")); LAM_SV=float(os.environ.get("LAM_SCALE_VAR","0.001"))
+LAM_DENS=float(os.environ.get("LAM_DENS","1.0")); LAM_SM=float(os.environ.get("LAM_SCALE_MEAN","0.05")); LAM_SV=float(os.environ.get("LAM_SCALE_VAR","0.02"))
 RENDER_EVERY=int(os.environ.get("RENDER_EVERY","1000")); CKPT_EVERY=int(os.environ.get("CKPT_EVERY","1000")); NHARD=4
 HARDFILE=os.environ.get("HARDFILE","shared_hard.json"); LATENTS=1
 print(f"[cfg] POOL={POOL} STEPS={STEPS} TARGET_ZERO={TARGET_ZERO} SCALE_RATIO={SCALE_RATIO} DENS_RAMP={DENS_RAMP} TAG={TAG}",flush=True)
@@ -168,13 +168,13 @@ for step in range(1,STEPS+1):
     opt.zero_grad(set_to_none=True)
     ti,k=random.choice(calib_states); Lv=vel_loss(ti,k)
     cti,ck=random.choice(calib_chunks); xS=roll8(cti,ck,KBPTD); xT=traj[(cti,ck+M8)]["hs"][:1].float(); Lm=F.mse_loss(xS,xT)
-    # density + scale priors (sampled subset of modules per step for speed)
-    Ld=Lsm=Lsv=0.0; sub=random.sample(slt,min(40,len(slt)))
-    for _,m in sub:
+    # density + scale priors over ALL modules every step (density must overcome trajectory-loss inertia)
+    Ld=Lsm=Lsv=0.0
+    for _,m in slt:
         active=torch.sigmoid(m.a).mean(); Ld=Ld+(active-(1-TARGET_ZERO)).pow(2)
         Lsm=Lsm+(m.log_scale.mean()-(m.ptq_logs.mean()+torch.log(torch.tensor(SCALE_RATIO,device=dev)))).pow(2)
         Lsv=Lsv+m.log_scale.var()
-    Ld/=len(sub); Lsm/=len(sub); Lsv/=len(sub)
+    Ld/=len(slt); Lsm/=len(slt); Lsv/=len(slt)
     L=Lm+0.25*Lv+dens_w*Ld+LAM_SM*Lsm+LAM_SV*Lsv
     L.backward(); gn=torch.nn.utils.clip_grad_norm_(mask_params+scale_params+[p for p,_ in island_params],0.5)
     if torch.isfinite(gn): opt.step()

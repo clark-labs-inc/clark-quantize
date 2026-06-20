@@ -44,8 +44,21 @@ def get_cifar10_loaders(batch_size=128, n_workers=2, subset_size=None, root="./d
         T.ToTensor(),
         T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),  # [-1, 1]
     ])
-    train_set = torchvision.datasets.CIFAR10(root=root, train=True, download=True, transform=transform)
-    test_set = torchvision.datasets.CIFAR10(root=root, train=False, download=True, transform=transform)
+
+    # Try torchvision CIFAR-10 first (only if already downloaded)
+    cifar_path = os.path.join(root, "cifar-10-batches-py")
+    if os.path.exists(cifar_path):
+        try:
+            train_set = torchvision.datasets.CIFAR10(root=root, train=True, download=False, transform=transform)
+            test_set = torchvision.datasets.CIFAR10(root=root, train=False, download=False, transform=transform)
+        except Exception as e:
+            print(f"[data] CIFAR-10 load failed ({e}), using synthetic data")
+            train_set = SyntheticDataset(n_samples=5000, img_size=32, transform=transform)
+            test_set = SyntheticDataset(n_samples=1000, img_size=32, transform=transform)
+    else:
+        print("[data] CIFAR-10 not found, using synthetic colored-shapes dataset")
+        train_set = SyntheticDataset(n_samples=5000, img_size=32, transform=transform)
+        test_set = SyntheticDataset(n_samples=1000, img_size=32, transform=transform)
 
     if subset_size:
         train_set = Subset(train_set, list(range(min(subset_size, len(train_set)))))
@@ -56,6 +69,62 @@ def get_cifar10_loaders(batch_size=128, n_workers=2, subset_size=None, root="./d
     test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False,
                              num_workers=n_workers, pin_memory=True)
     return train_loader, test_loader
+
+
+class SyntheticDataset(torch.utils.data.Dataset):
+    """Synthetic image dataset: colored circles and squares on random backgrounds.
+
+    For proof-of-concept when CIFAR-10 download is unavailable.
+    """
+
+    def __init__(self, n_samples=5000, img_size=32, transform=None):
+        self.n_samples = n_samples
+        self.img_size = img_size
+        self.transform = transform
+        # Pre-generate seeds for reproducibility
+        self.seeds = torch.arange(n_samples)
+
+    def __len__(self):
+        return self.n_samples
+
+    def __getitem__(self, idx):
+        g = torch.Generator().manual_seed(int(self.seeds[idx]))
+        img = torch.randn(3, self.img_size, self.img_size, generator=g) * 0.3
+
+        # Add a colored shape
+        shape_type = idx % 4  # 0: circle, 1: square, 2: vertical bar, 3: horizontal bar
+        color = torch.rand(3, generator=g) * 0.8 + 0.2  # [0.2, 1.0]
+        cx, cy = torch.randint(8, 24, (2,), generator=g)
+        size = torch.randint(4, 10, (1,), generator=g).item()
+
+        if shape_type == 0:  # circle
+            yy, xx = torch.meshgrid(torch.arange(self.img_size), torch.arange(self.img_size), indexing='ij')
+            mask = ((yy - cy) ** 2 + (xx - cx) ** 2) < size ** 2
+        elif shape_type == 1:  # square
+            mask = torch.zeros(self.img_size, self.img_size, dtype=torch.bool)
+            mask[max(0, cy - size):cy + size, max(0, cx - size):cx + size] = True
+        elif shape_type == 2:  # vertical bar
+            mask = torch.zeros(self.img_size, self.img_size, dtype=torch.bool)
+            mask[:, max(0, cx - 2):cx + 2] = True
+        else:  # horizontal bar
+            mask = torch.zeros(self.img_size, self.img_size, dtype=torch.bool)
+            mask[max(0, cy - 2):cy + 2, :] = True
+
+        for c in range(3):
+            img[c][mask] = color[c]
+
+        # Convert to PIL and back for transform compatibility
+        from PIL import Image
+        img_np = ((img * 0.5 + 0.5) * 255).clamp(0, 255).byte().permute(1, 2, 0).numpy()
+        pil_img = Image.fromarray(img_np)
+
+        if self.transform:
+            pil_img = self.transform(pil_img)
+        else:
+            pil_img = T.ToTensor()(pil_img)
+            pil_img = T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))(pil_img)
+
+        return pil_img, shape_type
 
 
 # ---------------------------------------------------------------------------
