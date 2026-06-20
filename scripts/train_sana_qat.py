@@ -13,7 +13,9 @@ from diffusers import SanaPipeline
 from PIL import Image
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from clark_quantize import bonsai_muon as BM
-dev="cuda"; MODEL="models/Sana_1600M_512px"; K=20; G=112; GUID=4.5; M8=8
+dev="cuda"; MODEL="models/Sana_1600M_512px"; K=20; G=int(os.environ.get("GSIZE","112")); GUID=4.5; M8=8
+GFFN=int(os.environ.get("GFFN",str(G))); GLATE=int(os.environ.get("GLATE",str(G))); NLATE=int(os.environ.get("NLATE","5"))  # per-family group size
+RESUME=os.environ.get("RESUME","")   # warm-start trunk+islands from a trained checkpoint (Stage 9B)
 MODE=os.environ.get("MODE","ternary"); STEPS=int(os.environ.get("STEPS","12000")); TAG=os.environ.get("TAG","q256t")
 POOL=os.environ.get("POOL","sana_calib_256.jsonl"); LATENTS=int(os.environ.get("LATENTS","2"))
 RAMP=int(os.environ.get("RAMP","1500")); P2START=int(os.environ.get("P2START",str(RAMP))); KBPTD=int(os.environ.get("KBPTD","4"))
@@ -25,6 +27,13 @@ def is_trunk_lin(n,m): return isinstance(m,nn.Linear) and n.startswith("transfor
 def is_trunk_conv(n,m): return isinstance(m,nn.Conv2d) and n.startswith("transformer_blocks") and (".ff.conv_inverted" in n or ".ff.conv_point" in n)
 def predicate(n,m): return is_trunk_lin(n,m) or is_trunk_conv(n,m)
 def is_island(n): return any(k in n for k in ("patch_embed","time_embed","caption_projection","caption_norm","scale_shift_table","norm_out","proj_out"))
+def _blk(n):
+    try: return int(n.split("transformer_blocks.")[1].split(".")[0])
+    except: return -1
+def group_for(n):   # per-family group size: FFN and late blocks can use finer scales (Stage 9B)
+    if ".ff." in n: return GFFN
+    if _blk(n)>=20-NLATE: return GLATE
+    return G
 
 HARDFILE=os.environ.get("HARDFILE","")   # shared held-out render set across ablations (comparable renders)
 pool=[json.loads(l) for l in open(POOL)]
