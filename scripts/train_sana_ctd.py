@@ -28,7 +28,7 @@ POOL=os.environ.get("POOL","sana_calib_256.jsonl"); TAG=os.environ.get("TAG","ct
 ROUNDS=int(os.environ.get("ROUNDS","6")); SPR=int(os.environ.get("STEPS_PER_ROUND","200")); KSCORE=int(os.environ.get("KSCORE","8"))
 BUDGET=float(os.environ.get("BUDGET","0.002")); KBPTD=int(os.environ.get("KBPTD","2"))
 PEN_ACT=float(os.environ.get("PEN_ACT","0.0")); PEN_DEACT=float(os.environ.get("PEN_DEACT","0.5")); PEN_FLIP=float(os.environ.get("PEN_FLIP","2.5"))
-HARDFILE=os.environ.get("HARDFILE","shared_hard.json"); NHARD=4
+HARDFILE=os.environ.get("HARDFILE","shared_hard.json"); NHARD=4; DBG=int(os.environ.get("DBG","0"))
 log(f"[cfg] POOL={POOL} ROUNDS={ROUNDS} SPR={SPR} BUDGET={BUDGET} KSCORE={KSCORE} pen(a{PEN_ACT}/d{PEN_DEACT}/f{PEN_FLIP}) TAG={TAG} | DDP world={WORLD} rank={RANK}")
 
 def is_trunk_lin(n,m): return isinstance(m,nn.Linear) and n.startswith("transformer_blocks") and (".attn1." in n or ".attn2." in n) and any(s in n for s in ("to_q","to_k","to_v","to_out.0"))
@@ -46,7 +46,7 @@ class CTDTernary(nn.Module):
     forward weight = (1-ALPHA)*W_fp16 + ALPHA * (scale_g * code). Scoring mode exposes a grad-leaf = forward weight."""
     def __init__(self, base_w, conv_shape=None):
         super().__init__()
-        W=base_w.reshape(base_w.shape[0],-1).float(); o,i=W.shape; ng=i//G; self.o,self.i,self.ng,self.cs=o,i,ng,conv_shape
+        W=base_w.reshape(base_w.shape[0],-1).float(); o,i=W.shape; ng=i//G; self.o,self.i,self.ng,self.G,self.cs=o,i,ng,G,conv_shape
         Wg=W.view(o,ng,G); d=0.7*Wg.abs().mean(-1,keepdim=True); m0=(Wg.abs()>d).float()   # optimal-scale PTQ ternary
         s0=(Wg.abs()*m0).sum(-1,keepdim=True)/m0.sum(-1,keepdim=True).clamp_min(1.)
         sign=torch.where(Wg>=0,1.,-1.)
@@ -127,7 +127,8 @@ for n,p in tf.named_parameters():
     lr=island_lr(n)
     if lr>0: p.requires_grad_(True); island_params.append((p,lr))
 import bitsandbytes as bnb
-groups=[{"params":scale_params,"lr":5e-5}]+[{"params":[p],"lr":lr} for p,lr in island_params]
+SCALE_LR=float(os.environ.get("SCALE_LR","2e-4"))   # scales were starved at 5e-5 (islands dwarf them); give them room
+groups=[{"params":scale_params,"lr":SCALE_LR}]+[{"params":[p],"lr":lr} for p,lr in island_params]
 opt=bnb.optim.AdamW8bit(groups,betas=(0.9,0.95))
 trainable=scale_params+[p for p,_ in island_params]
 try: tf.enable_gradient_checkpointing()
@@ -208,13 +209,14 @@ def score_pass():   # accumulate dL/dw on leaves over KSCORE minibatches
     for _,m in slt: m._score=False
 
 # ---- run ----
-alpha_steps=[0.6,0.74,0.85,0.93,1.0]; ai=[0]; ALPHA[0]=alpha_steps[0]; best=[1e9]
+best=[1e9]; A0=float(os.environ.get("ALPHA0","0.7")); ASTEP=float(os.environ.get("ALPHA_STEP","0.15"))
 _TOK[0]+=1
 if MAIN:
-    zm,zs=scale_stats(); log(f"[init] alpha {ALPHA[0]:.2f} zero {global_zero():.3f} scale(mean {zm:.3f} std {zs:.3f}) PTQ ternary")
+    zm,zs=scale_stats(); log(f"[init] zero {global_zero():.3f} scale(mean {zm:.3f} std {zs:.3f}) PTQ ternary | scale_lr {SCALE_LR}")
 t0=time.time()
 for rnd in range(1,ROUNDS+1):
-    # retrain scales + islands at current alpha (codes frozen)
+    ALPHA[0]=min(1.0, A0+ASTEP*(rnd-1)); _TOK[0]+=1   # SCHEDULED soft-land: reach alpha=1 by ~round 3, then train PURE ternary
+    # retrain scales + islands at this alpha (codes frozen)
     for step in range(SPR):
         _TOK[0]+=1; opt.zero_grad(set_to_none=True)
         L,lm,lv=task_loss(); L.backward()
@@ -224,20 +226,17 @@ for rnd in range(1,ROUNDS+1):
                 dist.all_reduce(p.grad, op=dist.ReduceOp.AVG)
         gn=torch.nn.utils.clip_grad_norm_(trainable,0.5)
         if torch.isfinite(gn): opt.step()
+        if MAIN and DBG and step%50==0:
+            sg=sum((p.grad.norm().item()**2 for p in scale_params if p.grad is not None))**0.5
+            log(f"  [dbg r{rnd} s{step}] L{L.item():.3e} gn{gn:.3f} smean{torch.cat([m.log_scale.flatten() for _,m in slt]).exp().mean().item():.5f}")
     # score + mutate support (DDP: leaf grads already all-reduced -> identical transitions)
     score_pass(); moved,tot,na,nd,nf=apply_transitions(BUDGET); _TOK[0]+=1
-    # alpha=1 hard verdict (only render/eval that counts; rank0 only)
+    # alpha=1 hard verdict (the only render/eval that counts; rank0 only)
     sv=ALPHA[0]; ALPHA[0]=1.0; _TOK[0]+=1
-    improved=torch.zeros(1,device=dev); hard=0.0
     if MAIN:
         hd=eval_c8(); hard=hd['M']+hd['L']; zm,zs=scale_stats()
         log(f"[r{rnd}] train_a{sv:.2f} moved {moved} (act{na} de{nd} fl{nf}) zero {global_zero():.3f} scale(m{zm:.3f} s{zs:.3f}) | alpha=1 {fmt(hd)} ({time.time()-t0:.0f}s)")
         render(f"r{rnd}")
-        if hard<best[0]-1e-6: improved[0]=1.0
         if hard<best[0]: best[0]=hard; save_ckpt("best")
-    # adaptive alpha: advance toward 1 only when alpha=1 improves (broadcast so all ranks agree)
-    if DDP: dist.broadcast(improved, src=0)
-    if improved.item()>0.5 and ai[0]<len(alpha_steps)-1: ai[0]+=1
-    ALPHA[0]=alpha_steps[ai[0]]; _TOK[0]+=1
 if MAIN: render("final"); save_ckpt("final"); log("[done]")
 if DDP: dist.barrier(); dist.destroy_process_group()
