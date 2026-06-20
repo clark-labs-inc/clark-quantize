@@ -161,25 +161,30 @@ def save_ckpt():
                 "sign":[m.sign.detach().cpu() for _,m in slt],"cs":[m.cs for _,m in slt],
                 "islands":{n:p.detach().cpu() for n,p in tf.named_parameters() if island_lr(n)>0},"step":step}, f"ckpt_{TAG}.pt")
 
-print(f"[init] zero {global_zero():.3f} chunk8 {fmt(eval_c8())}",flush=True); render("s0")
+ACTIVE0=1.0-global_zero()   # q1024t active fraction (warm-start) -> anneal to (1-TARGET_ZERO)
+print(f"[init] zero {global_zero():.3f} (active {ACTIVE0:.3f} -> {1-TARGET_ZERO:.3f}) chunk8 {fmt(eval_c8())}",flush=True); render("s0")
+@torch.no_grad()
+def project_density(active_t):   # hard-project each group to top-k active by TRAINED logit ranking
+    ka=max(1,min(G,int(round(active_t*G))))
+    for _,m in slt:
+        a=m.a.data.view(m.o,m.ng,G); thr=a.topk(ka,dim=-1).values[...,-1:]
+        m.a.data=torch.where(a>=thr,2.0,-2.0).view(m.o,m.i)
 t0=time.time()
 for step in range(1,STEPS+1):
-    dens_w=min(1.0,step/float(DENS_RAMP))*LAM_DENS
+    frac=min(1.0,step/float(DENS_RAMP)); active_t=ACTIVE0+(1-TARGET_ZERO-ACTIVE0)*frac   # density schedule
     opt.zero_grad(set_to_none=True)
     ti,k=random.choice(calib_states); Lv=vel_loss(ti,k)
     cti,ck=random.choice(calib_chunks); xS=roll8(cti,ck,KBPTD); xT=traj[(cti,ck+M8)]["hs"][:1].float(); Lm=F.mse_loss(xS,xT)
-    # density + scale priors over ALL modules every step (density must overcome trajectory-loss inertia)
-    Ld=Lsm=Lsv=0.0
+    Lsm=Lsv=0.0   # scale-shrink + homogenization priors (toward 0.625x PTQ, narrow)
     for _,m in slt:
-        active=torch.sigmoid(m.a).mean(); Ld=Ld+(active-(1-TARGET_ZERO)).pow(2)
-        Lsm=Lsm+(m.log_scale.mean()-(m.ptq_logs.mean()+torch.log(torch.tensor(SCALE_RATIO,device=dev)))).pow(2)
-        Lsv=Lsv+m.log_scale.var()
-    Ld/=len(slt); Lsm/=len(slt); Lsv/=len(slt)
-    L=Lm+0.25*Lv+dens_w*Ld+LAM_SM*Lsm+LAM_SV*Lsv
+        Lsm=Lsm+(m.log_scale.mean()-(m.ptq_logs.mean()+torch.log(torch.tensor(SCALE_RATIO,device=dev)))).pow(2); Lsv=Lsv+m.log_scale.var()
+    Lsm/=len(slt); Lsv/=len(slt)
+    L=Lm+0.25*Lv+LAM_SM*Lsm+LAM_SV*Lsv
     L.backward(); gn=torch.nn.utils.clip_grad_norm_(mask_params+scale_params+[p for p,_ in island_params],0.5)
     if torch.isfinite(gn): opt.step()
+    project_density(active_t)   # enforce density budget; trained logits pick which weights fill it
     if step%200==0 or step==1:
-        print(f"[s{step}] Lm{Lm.item():.3e} Lv{Lv.item():.3e} Ld{Ld.item():.3e} zero{global_zero():.3f} gn{gn:.1f} chunk8 {fmt(eval_c8())} ({time.time()-t0:.0f}s)",flush=True)
+        print(f"[s{step}] Lm{Lm.item():.3e} Lv{Lv.item():.3e} Lsm{Lsm.item():.3e} zero{global_zero():.3f}(tgt{1-active_t:.3f}) gn{gn:.1f} chunk8 {fmt(eval_c8())} ({time.time()-t0:.0f}s)",flush=True)
     if step%RENDER_EVERY==0: render(f"s{step}")
     if step%CKPT_EVERY==0: save_ckpt()
 render("final"); save_ckpt(); print("[done]",flush=True)
