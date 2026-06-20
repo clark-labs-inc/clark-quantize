@@ -8,6 +8,15 @@ __pycache__/
 out/
 models/
 
+# QAT runtime artifacts (large/ephemeral — produced on the GPU box)
+*.png
+*.pt
+*.ckpt
+bonsai_*.log
+render_*.log
+calib_prompts*.json
+holdout_prompts*.json
+
 # latex build artifacts
 paper/*.aux
 paper/*.log
