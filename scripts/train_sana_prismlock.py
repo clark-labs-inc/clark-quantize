@@ -43,6 +43,7 @@ def island_lr(n):
     return 0.0
 
 ALPHA=[1.0]   # soft-landing blend: W_fwd = (1-ALPHA)*W_fp16 + ALPHA*ternary (ramp 0->1 from cold PTQ start)
+_TOK=[0]      # step token: bumped each step so no_grad weight cache invalidates when params/ALPHA change
 class SignLockedTernary(nn.Module):
     """weight = scale_g * sign(W_fp16) * mask(a). Only mask logits 'a' and log_scale trained. Signs frozen.
     init: PTQ support/scale by default; if init_mask/init_scale given (warm-start from q1024t), use those."""
@@ -58,15 +59,22 @@ class SignLockedTernary(nn.Module):
         scl=init_scale if init_scale is not None else s0.squeeze(-1)             # warm-start scale or PTQ scale
         self.a=nn.Parameter(torch.where(mask.view(o,i).bool(),2.0,-2.0))         # mask logits (sigmoid>0.5 active)
         self.log_scale=nn.Parameter(scl.clamp_min(1e-6).log().clone())
+        self._ck=-1; self._cw=None                                              # no_grad weight cache (token, weight)
     def mask(self):   # FREE support mask: support moves via task loss through STE (universal: don't force a model-specific density)
         hard=(self.a>0).float(); soft=torch.sigmoid(self.a)
         return hard+(soft-soft.detach())
-    def W(self):
+    def _build(self):
         m=self.mask().view(self.o,self.i).to(torch.bfloat16)
         s=self.log_scale.exp().clamp_min(1e-6).to(torch.bfloat16).unsqueeze(-1).expand(self.o,self.ng,G).reshape(self.o,self.i)
         wq=s*self.sign.to(torch.bfloat16)*m
         a=ALPHA[0]; w=wq if a>=1.0 else (1.0-a)*self.Wfp+a*wq   # soft landing: blend FP16->ternary over SOFT_LAND steps
         return w.reshape(self.cs) if self.cs else w
+    def W(self):   # grad path reconstructs (autograd through mask/scale); no_grad path reuses per-step cache
+        if torch.is_grad_enabled(): return self._build()
+        if self._ck!=_TOK[0]:
+            with torch.no_grad(): self._cw=self._build()
+            self._ck=_TOK[0]
+        return self._cw
     @torch.no_grad()
     def zero_frac(self): return ((self.a<=0).float().mean()).item()
 
@@ -183,6 +191,7 @@ if MAIN: log(f"[init] alpha {ALPHA[0]:.2f} zero {global_zero():.3f} chunk8 {fmt(
 t0=time.time()
 for step in range(1,STEPS+1):
     ALPHA[0]=min(1.0, step/float(SOFT_LAND)) if SOFT_LAND>0 else 1.0
+    _TOK[0]+=1   # invalidate no_grad weight cache (params + ALPHA change each step)
     opt.zero_grad(set_to_none=True)
     ti,k=random.choice(calib_states); Lv=vel_loss(ti,k)
     cti,ck=random.choice(calib_chunks); xS=roll8(cti,ck,KBPTD); xT=traj[(cti,ck+M8)]["hs"][:1].float(); Lm=F.mse_loss(xS,xT)
@@ -192,12 +201,13 @@ for step in range(1,STEPS+1):
     Lsm/=len(slt); Lsv/=len(slt)
     L=Lm+0.25*Lv+LAM_SM*Lsm+LAM_SV*Lsv
     L.backward()
-    if DDP:   # average gradients across replicas (effective batch = world_size chunks)
+    if DDP:   # average grads across replicas (effective batch = world_size); fixed order + materialized zeros = no collective divergence
         for p in trainable:
-            if p.grad is not None: dist.all_reduce(p.grad, op=dist.ReduceOp.AVG)
+            if p.grad is None: p.grad=torch.zeros_like(p)
+            dist.all_reduce(p.grad, op=dist.ReduceOp.AVG)
     gn=torch.nn.utils.clip_grad_norm_(trainable,0.5)
-    if torch.isfinite(gn): opt.step()
-    if (step%200==0 or step==1) and MAIN:
+    if torch.isfinite(gn): opt.step(); _TOK[0]+=1   # bump again: eval/render below must see post-update weights
+    if (step%100==0 or step==1) and MAIN:
         log(f"[s{step}] a{ALPHA[0]:.2f} Lm{Lm.item():.3e} Lv{Lv.item():.3e} Lsm{Lsm.item():.3e} zero{global_zero():.3f} gn{gn:.1f} chunk8 {fmt(eval_c8())} ({time.time()-t0:.0f}s)")
     if step%RENDER_EVERY==0 and MAIN: render(f"s{step}")
     if step%CKPT_EVERY==0 and MAIN: save_ckpt()
