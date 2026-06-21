@@ -174,7 +174,7 @@ def render(tag):
     M.save(f"render_{TAG}_{tag}.png"); log(f"[render] render_{TAG}_{tag}.png")
 @torch.no_grad()
 def save_ckpt(tag):
-    torch.save({"code":[((m.a>0).to(torch.int8)*m.sign.view(m.o,m.ng,m.G)).cpu() for _,m in slt],
+    torch.save({"code":[((m.a>0).view(m.o,m.ng,m.G).to(torch.int8)*m.sign.view(m.o,m.ng,m.G)).cpu() for _,m in slt],
                 "log_scale":[m.log_scale.detach().cpu() for _,m in slt],"cs":[m.cs for _,m in slt],
                 "islands":{n:p.detach().cpu() for n,p in tf.named_parameters() if island_lr(n)>0},"group_size":G,"step":tag}, f"ckpt_{TAG}_{tag}.pt")
 
