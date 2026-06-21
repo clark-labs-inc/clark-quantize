@@ -37,12 +37,14 @@ def predicate(n,m): return is_trunk_lin(n,m) or is_trunk_conv(n,m)   # conv_dept
 def _blk(n):
     try: return int(n.split("transformer_blocks.")[1].split(".")[0])
     except: return -1
-def island_lr(n):   # differentiated: caption_norm = Sana final-norm compensator (HIGH); proj_out frozen; norm_out parameter-free
-    if "proj_out" in n: return 0.0
-    if "caption_norm" in n or "norm_out" in n: return 2e-4
-    if any(k in n for k in ("time_embed","caption_projection")): return 2e-5
-    if "patch_embed" in n: return 2e-6
-    if "scale_shift_table" in n: return 1e-6
+CAPNORM_LR=float(os.environ.get("CAPNORM_LR","1e-4")); COND_LR=float(os.environ.get("COND_LR","1e-5")); PATCH_LR=float(os.environ.get("PATCH_LR","1e-6"))
+def island_lr(n):   # Prism image policy: proj_out FROZEN; caption_norm = Sana final-norm compensator (norm_out is parameter-free here)
+    if "proj_out" in n: return 0.0                                              # frozen (Prism: bit-identical to base)
+    if "norm_out" in n: return 1e-4                                             # parameter-free SanaModulatedNorm -> no-op on Sana
+    if "caption_norm" in n: return CAPNORM_LR                                   # routes the compensator LR here (norm_out absent)
+    if any(k in n for k in ("time_embed","caption_projection")): return COND_LR
+    if "patch_embed" in n: return PATCH_LR
+    if "scale_shift_table" in n: return 0.0
     return 0.0
 def is_island(n): return island_lr(n)>0 or "proj_out" in n
 
