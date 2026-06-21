@@ -23,12 +23,14 @@ def _blk(n):
 def is_ffn(n): return ".ff." in n
 def is_late(n): return _blk(n)>=20-NLATE
 
+import sys as _sys, os as _os
+_sys.path.insert(0,_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+from clark_quantize.ternary import ternarize
 @torch.no_grad()
-def qter(W,g):   # closed-form ternary at group g (pad to multiple of g)
+def qter(W,g):   # MSE-OPTIMAL ternary at group g: closed-form top-k support + optimal scale (AUDIT FIX: was 0.7xabsmean heuristic, which never chose the support -> understated g32/g64)
     o,i=W.shape; pad=(-i)%g; Wp=torch.cat([W,torch.zeros(o,pad,device=W.device,dtype=W.dtype)],1) if pad else W
-    Wg=Wp.float().view(o,-1,g); d=0.7*Wg.abs().mean(-1,keepdim=True); m=(Wg.abs()>d).float()
-    s=(Wg.abs()*m).sum(-1,keepdim=True)/m.sum(-1,keepdim=True).clamp_min(1.)
-    return (s*torch.where(Wg>=0,1.,-1.)*m).view(o,-1)[:,:i].to(W.dtype)
+    Wq,_=ternarize(Wp.float(), group=g, method="optimal")
+    return Wq[:,:i].to(W.dtype)
 
 ck=torch.load(CKPT,map_location="cpu")
 def dequant(code,ls,in_f):

@@ -8,8 +8,10 @@ If the endpoint row is sharper than q1024t -> densify+shrink IS the lever (build
 If not -> capacity ceiling, take the recipe to FLUX.
 ENV: CKPT=ckpt_ternary_preview_v0.pt PROMPTS=shared_hard.json OUT=oracle_endpoint.png TZERO=0.38 SR=0.625
 """
-import torch, torch.nn as nn, os, json
+import torch, torch.nn as nn, os, sys, json
 os.environ["HF_HUB_OFFLINE"]="1"
+sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from clark_quantize.ternary import ternarize
 from diffusers import SanaPipeline
 from PIL import Image, ImageDraw
 dev="cuda"; DT=torch.bfloat16; MODEL="models/Sana_1600M_512px"; K=20; GUID=4.5; G=112
@@ -22,10 +24,9 @@ def predicate(n,m): return is_trunk_lin(n,m) or is_trunk_conv(n,m)
 def is_island(n): return any(k in n for k in ("patch_embed","time_embed","caption_projection","caption_norm","scale_shift_table","norm_out","proj_out"))
 
 @torch.no_grad()
-def ptq_natural(W):   # standard ternary g112 (0.7 threshold) -> dequant weight [out,in]
-    o,i=W.shape; Wg=W.float().view(o,i//G,G); d=0.7*Wg.abs().mean(-1,keepdim=True); m=(Wg.abs()>d).float()
-    s=(Wg.abs()*m).sum(-1,keepdim=True)/m.sum(-1,keepdim=True).clamp_min(1.)
-    return (s*torch.where(Wg>=0,1.,-1.)*m).view(o,i).to(W.dtype)
+def ptq_natural(W):   # MSE-OPTIMAL ternary g112 PTQ baseline (AUDIT FIX: was 0.7xabsmean heuristic that never chose support)
+    Wq,_=ternarize(W.float(), group=G, method="optimal")
+    return Wq.to(W.dtype)
 @torch.no_grad()
 def endpoint(W, tzero, sr):   # top-(1-tzero) magnitude per group active, scale = sr * absmean(active)
     o,i=W.shape; Wg=W.float().view(o,i//G,G); a=Wg.abs()

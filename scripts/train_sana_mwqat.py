@@ -47,6 +47,20 @@ def island_lr(n):   # Prism image policy: proj_out FROZEN; caption_norm = Sana f
     if "scale_shift_table" in n: return 0.0
     return 0.0
 def is_island(n): return island_lr(n)>0 or "proj_out" in n
+GFFN=int(os.environ.get("GFFN",str(G))); GLATE=int(os.environ.get("GLATE",str(G))); NLATE=int(os.environ.get("NLATE","5")); PER_MODULE_GROUP=int(os.environ.get("PER_MODULE_GROUP","0"))
+def group_for(n):   # per-module group size for mixed-rate (run B): FFN + late blocks can use finer scales
+    if ".ff." in n: return GFFN
+    if _blk(n)>=20-NLATE: return GLATE
+    return G
+def replace_per_module(model, pred, gfn, mode):   # AUDIT FIX: actually apply per-module group size (BM.replace hard-codes one group)
+    _init="mse_ternary" if mode=="ternary" else "absmean"
+    for name,module in list(model.named_modules()):
+        if not pred(name,module): continue
+        g=gfn(name)
+        if isinstance(module,nn.Linear): new=BM.QuantizedLinearSTE.from_linear(module, mode=mode, group_size=g, init=_init, forward_blend_alpha=1.0)
+        elif isinstance(module,nn.Conv2d): new=BM.QuantizedConv1x1STE.from_conv2d(module, mode=mode, group_size=g, init=_init, forward_blend_alpha=1.0)
+        else: continue
+        parent,child=BM._get_parent_and_child(model,name); setattr(parent,child,new.to(next(model.parameters()).device))
 
 pool=[json.loads(l) for l in open(POOL)]
 calibP=[r["prompt"] for r in pool if r["split"]=="calib"]; valP=[r["prompt"] for r in pool if r["split"]=="val"]
@@ -88,7 +102,10 @@ if MAIN:
 log(f"[bank] rank{RANK} {len(traj)} states | calib_tis {len(calib_tis)} val_tis {len(val_tis)} | refs {len(refs)}")
 
 # ---- quantize (master-weight STE) ----
-BM.replace_modules_with_bonsai_quant(tf, predicate, mode=MODE, group_size=G, init=("mse_ternary" if MODE=="ternary" else "absmean"), forward_blend_alpha=1.0)
+if PER_MODULE_GROUP:
+    replace_per_module(tf, predicate, group_for, MODE); log(f"[quant] per-module groups: G{G} FFN{GFFN} late{GLATE}x{NLATE}")
+else:
+    BM.replace_modules_with_bonsai_quant(tf, predicate, mode=MODE, group_size=G, init=("mse_ternary" if MODE=="ternary" else "absmean"), forward_blend_alpha=1.0)
 for p in tf.parameters(): p.requires_grad_(False)
 ste_mods=[m for m in tf.modules() if isinstance(m,BM._GroupwiseSTEBase)]
 for m in ste_mods: m.weight_master.requires_grad_(True); m.log_scales.requires_grad_(True)
