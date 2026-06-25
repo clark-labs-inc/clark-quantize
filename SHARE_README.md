@@ -1,7 +1,7 @@
 # Clark Air · Sana 1.6B
 
 **A Sana 1.6B text-to-image transformer compressed to ternary (~2 bits/weight) with
-quantization-aware training — 6.2× smaller than FP16, near-FP16 quality, data-free.**
+quantization-aware training — 8.6× smaller than FP16, near-FP16 quality, data-free.**
 
 ![FP16 vs Clark Air, Sana 1.6B](demo.png)
 
@@ -22,17 +22,23 @@ over a data-free optimal-scale PTQ initialization.
 | Artifact | Size | vs FP16 | What it is |
 |---|---|---|---|
 | FP16 transformer | 3.21 GB | 1× (100%) | reference |
-| **Clark Air — packed** | **517 MB** | **6.2× (≈16%)** | 40 ternary symbols per `uint64` + 6-bit log-scales + FP8 islands |
+| **Clark Air — packed** | **374 MB** | **8.6× (≈12%)** | 40 ternary symbols per `uint64` + 6-bit log-scales + FP8 islands, flat `safetensors` |
 | Clark Air — unpacked | 3.21 GB | compatibility | dequantized bf16 `diffusers` transformer |
 
-- **Measured 1.85 bits/weight** (≈8× by information content; the 6.2× / 517 MB figure
-  is the actual packed file on disk ÷ the FP16 transformer).
-- Ternary codes round-trip **exactly** (`roundtrip_bad_modules == 0`).
+- **Measured 1.85 effective bits/weight → 8.6× smaller** (374 MB packed ÷ 3.21 GB FP16).
+- Ternary codes round-trip **exactly** (`roundtrip_bad_modules == 0`); the compact
+  container is bit-identical to the reference pack (lossless).
+- **Tighter than other shipped ternary image transformers** — Prism Bonsai Image 4B
+  is 6.4× (~2.5 eff bpw, FP16 islands), 1.58-bit FLUX is 7.7×. Clark Air reaches 8.6×
+  by keeping the conditioning/projection islands at **FP8** (not FP16) plus 6-bit
+  log-scales — on a *smaller* model where the island tail is proportionally costlier.
 
-> ⚠️ **The unpacked safetensors is a compatibility format, not the compressed size.**
-> It dequantizes the ternary weights back to bf16 so any `diffusers` install can load
-> the model with no custom kernels — so it is the *same 3.21 GB* as FP16. The real
-> compressed artifact is the **517 MB packed** file.
+> ⚠️ **Honest scope.** (1) The **unpacked** safetensors is a compatibility format, not
+> the compressed size — it dequantizes to bf16 so any `diffusers` install loads it with
+> no custom kernels, so it is the *same 3.21 GB* as FP16; the real compressed artifact
+> is the **374 MB packed** file. (2) This is **transformer-body, on-disk** compression;
+> the full pipeline (text encoder + VAE) adds weight, and there is no 2-bit GPU kernel
+> yet, so runtime VRAM is unchanged until a GemLite/MLX 2-bit path lands.
 
 ## Using the unpacked artifact (drop-in `diffusers`)
 
