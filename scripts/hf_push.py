@@ -1,11 +1,35 @@
-"""Inspect or push a Clark-Compress artifact to HuggingFace. Token from /workspace/.env (HF_TOKEN).
+"""Inspect or push a Clark Air artifact to HuggingFace.
+Token resolution (first hit wins): HF_TOKEN env -> HUGGINGFACE_TOKEN/HF_API_TOKEN env -> /workspace/.env -> ~/.env -> ./.env
 ACTION=inspect : list existing repo files (to find stale/proprietary content to remove)
 ACTION=upload  : upload TRANSFORMER dir + README to REPO (keeps repo private; never flips visibility)
-ENV: REPO=clark-labs/clark-compress-sana-1.6b ARTIFACT=out/clark-air-sana-ternary-unpacked ACTION=inspect
+ENV: REPO=clark-labs/clark-quantize-sana-1.6b ARTIFACT=out/clark-air-sana-1.6b-unpacked ACTION=inspect
 """
 import os
-for line in open("/workspace/.env"):
-    if line.startswith("HF_TOKEN="): os.environ["HF_TOKEN"]=line.strip().split("=",1)[1]
+
+def _load_hf_token():
+    for var in ("HF_TOKEN", "HUGGINGFACE_TOKEN", "HF_API_TOKEN"):
+        tok = os.environ.get(var)
+        if tok and tok.strip():
+            return tok.strip()
+    for env_path in ("/workspace/.env", os.path.expanduser("~/.env"), ".env"):
+        try:
+            with open(env_path) as fh:
+                for line in fh:
+                    line = line.strip()
+                    if line.startswith(("HF_TOKEN=", "HUGGINGFACE_TOKEN=", "HF_API_TOKEN=")):
+                        return line.split("=", 1)[1].strip().strip('"').strip("'")
+        except FileNotFoundError:
+            continue
+    try:  # last resort: token cached by `huggingface-cli login`
+        from huggingface_hub import get_token
+        cached = get_token()
+        if cached:
+            return cached.strip()
+    except Exception:
+        pass
+    raise SystemExit("[fatal] no HF token: export HF_TOKEN=..., add HF_TOKEN=... to /workspace/.env or ~/.env, or run `huggingface-cli login`")
+
+os.environ["HF_TOKEN"] = _load_hf_token()
 from huggingface_hub import HfApi, whoami
 REPO=os.environ.get("REPO","clark-labs/clark-compress-sana-1.6b")
 ART=os.environ.get("ARTIFACT","out/clark-air-sana-ternary-unpacked")

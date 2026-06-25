@@ -1,21 +1,37 @@
-# Clark-Quantize → **Clark-Compress**
+# Clark Air
 
-**Data-free, training-free image-model compression.** The productized method is
-called **Clark-Compress**.
+**Low-bit weight compression for image-generation models.** **Clark Air** packs a
+Sana 1.6B diffusion transformer down to **ternary (~2 bits/weight)** via
+quantization-aware training over a data-free PTQ initialization — **6.2× smaller
+than FP16 at near-FP16 quality**.
 
-![Clark-Compress: FP16 vs Clark-Compress vs Prism](assets/clark_compress_demo.png)
+![Clark Air: FP16 vs Clark Air, Sana 1.6B](assets/clark_air_release_compare.png)
 
-*FP16 (full precision) vs **Clark-Compress** (ours, Sana 1.6B) vs Prism Bonsai
-(1-bit, FLUX.2). Clark-Compress is **4.4× smaller (77% space saved)** at near-FP16
-quality, with **zero training data and zero calibration images** — the model
-self-calibrates on its own noise prior.*
+*FP16 (top) vs **Clark Air** (bottom) — Sana 1.6B, identical prompts and seed.
+Attention and GLU-FFN weights are quantized to ternary; the conditioning/projection
+"islands" (~5.4% of params) stay high-precision.*
 
-| | Size | Compression | Data used |
+## Clark Air Sana 1.6B
+
+| Artifact | Size | vs FP16 | Format |
 |---|---|---|---|
-| FP16 | 3.21 GB | 1× | — |
-| **Clark-Compress** | **0.72 GB** | **4.4× (77% smaller)** | **none** |
+| FP16 transformer | 3.21 GB | 1× (100%) | bf16 safetensors |
+| **Clark Air — packed** | **517 MB** | **6.2× (≈16%)** | 40-trit/uint64 codes + 6-bit log-scales + FP8 islands |
+| Clark Air — unpacked | 3.21 GB | compatibility | dequantized bf16 safetensors (drop-in `diffusers`) |
+
+Measured at **1.85 bits/weight** (≈8× by information content). The **unpacked**
+safetensors is a drop-in `diffusers` compatibility format — it is *not* the
+compressed footprint; the **packed** 517 MB file is the real on-disk artifact.
+Ternary codes round-trip exactly (`roundtrip_bad_modules == 0`); the packed file's
+only lossy steps are 6-bit log-scale quantization and FP8 islands.
+
+> **Naming.** **Clark Air** is the productized algorithm and model line. The earlier
+> research names **Clark-Quantize** / **Clark-Compress** refer to the data-free PTQ
+> method documented below — the initialization that Clark Air's QAT builds on.
 
 ---
+
+## Foundation: data-free Clark PTQ
 
 **Data-free, optimal-scale ternary (1.58-bit) post-training quantization for
 generative transformers.**

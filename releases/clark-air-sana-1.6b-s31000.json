@@ -1,0 +1,63 @@
+{
+  "release": "Clark Air Sana 1.6B",
+  "algorithm": "Clark Air",
+  "base_model": "Efficient-Large-Model/Sana_1600M_512px",
+  "checkpoint": {
+    "step": 31000,
+    "mode": "ternary",
+    "group_size": 112,
+    "trainer": "scripts/train_sana_mwqat.py",
+    "tag": "sana_t112_science_fresh_muon_g112"
+  },
+  "quantization": {
+    "trunk": "ternary {-1,0,+1}, per-group log-scale, group_size 112",
+    "trunk_modules": 200,
+    "trunk_params": 1555456000,
+    "islands_trained": 13,
+    "islands_frozen_at_base": 23,
+    "islands_frozen_names": ["scale_shift_table", "transformer_blocks.*.scale_shift_table", "proj_out.weight", "proj_out.bias"],
+    "island_params": 48558752,
+    "zeros_fraction": 0.477
+  },
+  "artifacts": {
+    "packed": {
+      "file": "clark-air-sana-1.6b-pack40-log6-fp8.pt",
+      "format": "sana_t112_40trit_logscale_fp8_v1",
+      "description": "40 ternary symbols per uint64 + 6-bit log-scales + FP8 (e4m3) islands",
+      "file_size_bytes": 517204719,
+      "scale_bits": 6,
+      "roundtrip_bad_modules": 0
+    },
+    "unpacked": {
+      "dir": "clark-air-sana-1.6b-unpacked",
+      "format": "dequantized bf16 diffusers transformer (compatibility, NOT compressed size)",
+      "file_size_bytes": 3208971544
+    }
+  },
+  "footprint": {
+    "fp16_transformer_bytes": 3208971544,
+    "packed_bytes": 517204719,
+    "packed_vs_fp16_fraction": 0.1612,
+    "packed_compression_x": 6.205,
+    "measured_payload_bits_per_weight": 1.8457,
+    "information_compression_x": 8.015,
+    "note": "Headline 6.2x / ~16% is actual packed file on disk / FP16 transformer. 8x / 12.5% is information-content basis (1.85 bpw)."
+  },
+  "evaluation": {
+    "prompts": [
+      "a yellow wall with the word KA-BOOM on it",
+      "a half empty bottle of red wine",
+      "a harp without any strings",
+      "a man chasing a horse"
+    ],
+    "resolution": 512,
+    "num_inference_steps": 20,
+    "guidance_scale": 4.5,
+    "comparison_image": "assets/clark_air_release_compare.png",
+    "comparison_note": "FP16 (top row) vs Clark Air (bottom row), identical prompts and seed, step 31000"
+  },
+  "naming": {
+    "current": "Clark Air / Clark Air Sana 1.6B",
+    "legacy_research_names": ["Clark-Quantize", "Clark-Compress"]
+  }
+}
