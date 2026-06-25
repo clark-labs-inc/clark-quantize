@@ -3,8 +3,8 @@
 **Low-bit weight compression for image-generation models.** **Clark Air** packs a
 Sana 1.6B diffusion transformer down to **ternary (1.85 bits/weight)** via
 quantization-aware training over a data-free PTQ initialization — **8.6× smaller
-than FP16 at near-FP16 quality** (374 MB vs 3.21 GB), the tightest of the shipped
-ternary image transformers (Prism Bonsai 6.4×, 1.58-bit FLUX 7.7×).
+than FP16 at near-FP16 quality** (374 MB vs 3.21 GB) — the tightest ternary image
+transformer we're aware of, shipped or published (Prism Bonsai 6.4×, 1.58-bit FLUX 7.7×).
 
 ![Clark Air: FP16 vs Clark Air, Sana 1.6B](assets/clark_air_release_compare.png)
 
