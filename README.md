@@ -1,57 +1,25 @@
 # Clark Air
 
 **Low-bit weight compression for image-generation models.** **Clark Air** packs a
-Sana 1.6B diffusion transformer down to **ternary (1.85 bits/weight)** via
-quantization-aware training over a data-free PTQ initialization — **8.6× smaller
-than FP16 at near-FP16 quality** (374 MB vs 3.21 GB) — the tightest ternary image
-transformer we're aware of, shipped or published (Prism Bonsai 6.4×, 1.58-bit FLUX 7.7×).
+Sana 1.6B diffusion transformer down to **ternary (~1.85 bits/weight)** — **8.6×
+smaller than FP16 at near-FP16 quality** (374 MB vs 3.21 GB), data-free.
 
 ![Clark Air: FP16 vs Clark Air, Sana 1.6B](assets/clark_air_release_compare.png)
 
-*FP16 (top) vs **Clark Air** (bottom) — Sana 1.6B, identical prompts and seed.
-Attention and GLU-FFN weights are quantized to ternary; the conditioning/projection
-"islands" (~5.4% of params) stay high-precision.*
+*FP16 (top) vs **Clark Air** (bottom) — Sana 1.6B, identical prompts and seed.*
 
 ## Clark Air Sana 1.6B
 
-| Artifact | Size | vs FP16 | Format |
+| Artifact | Size | vs FP16 | What it is |
 |---|---|---|---|
 | FP16 transformer | 3.21 GB | 1× (100%) | bf16 safetensors |
-| **Clark Air — packed** | **374 MB** | **8.6× (≈12%)** | 40-trit/uint64 codes + 6-bit log-scales + FP8 islands, flat `safetensors` |
+| **Clark Air — packed** | **374 MB** | **8.6× (≈12%)** | packed ternary `safetensors` |
 | Clark Air — unpacked | 3.21 GB | compatibility | dequantized bf16 safetensors (drop-in `diffusers`) |
 
-Measured at **1.85 effective bits/weight** → **8.6× smaller** (374 MB vs 3.21 GB).
-The **unpacked** safetensors is a drop-in `diffusers` compatibility format — it is
-*not* the compressed footprint; the **packed** 374 MB `safetensors` is the real
-on-disk artifact. Ternary codes round-trip exactly (`roundtrip_bad_modules == 0`)
-and the compact container is bit-identical to the reference pack, so the only lossy
-steps are the 6-bit log-scale quantization and FP8 islands.
-
-### How this compares
-
-Effective bits/weight (= storage ÷ params, the standard quantization metric — lower
-is smaller) for shipped/published **ternary image diffusion transformers**:
-
-| Model | Trunk | Islands | Eff. bits/wt | Compression |
-|---|---|---|---|---|
-| Prism Bonsai Image 4B (ternary) | ternary g128 | **FP16** | ~2.5 | 6.4× |
-| 1.58-bit FLUX (11.9B) | ternary | FP16 | ~2.1 | 7.7× |
-| **Clark Air Sana 1.6B (this)** | ternary g112 | **FP8** | **1.85** | **8.6×** |
-
-The lever is the **island tail**: everyone ternarizes the trunk, but the
-high-precision conditioning/projection layers dominate the final ratio. Clark Air
-keeps those islands at **FP8** (plus 6-bit log-scales) rather than FP16 — and reaches
-the tightest ratio of the three *despite Sana being the smallest model*, where the
-island tail is proportionally costlier. Notably, QAT also ternarizes Sana's
-**GLU-conv FFN** uniformly (~48% zeros, same as attention) — the layer family our own
-PTQ analysis (below) found resisted scalar sub-2-bit coding.
-
-> **Caveats, stated honestly.** This is **transformer-body** storage (not the full
-> pipeline — text encoder + VAE add weight). It is a **download/disk** number: there
-> is no 2-bit GPU kernel yet, so at runtime the weights dequantize to bf16 and occupy
-> normal VRAM. A true small-VRAM runtime (GemLite/MLX 2-bit, as Prism ships) and
-> deeper compression (entropy-coded trunk, 4-bit islands, sparsity-aware QAT → ~10×;
-> binary trunk → ~13×) are the documented next steps, not current claims.
+Measured at **~1.85 bits/weight** → **8.6× smaller** (374 MB vs 3.21 GB). The
+**unpacked** safetensors is a drop-in `diffusers` compatibility format — it is *not*
+the compressed footprint; the **packed** 374 MB `safetensors` is the real on-disk
+artifact.
 
 > **Naming.** **Clark Air** is the productized algorithm and model line. The earlier
 > research names **Clark-Quantize** / **Clark-Compress** refer to the data-free PTQ

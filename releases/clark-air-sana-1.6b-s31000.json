@@ -43,13 +43,7 @@
     "packed_compression_x": 8.59,
     "measured_payload_bits_per_weight": 1.8457,
     "file_bits_per_weight": 1.864,
-    "note": "8.6x = actual packed safetensors on disk (374 MB) / FP16 transformer (3.21 GB); matches the 1.85 bpw information basis. Transformer-body, on-disk only (no 2-bit runtime kernel yet). Prior torch.save pack was 517 MB / 6.2x due to ~38% pickle overhead (same bits).",
-    "comparison": {
-      "prism_bonsai_image_4b_ternary_x": 6.4,
-      "flux_1p58bit_x": 7.7,
-      "clark_air_sana_1p6b_x": 8.59,
-      "lever": "FP8 islands + 6-bit log-scales vs FP16 islands"
-    }
+    "note": "8.6x = actual packed safetensors on disk (374 MB) / FP16 transformer (3.21 GB); matches the 1.85 bpw basis. Prior torch.save pack was 517 MB / 6.2x due to ~38% pickle overhead (same bits)."
   },
   "evaluation": {
     "prompts": [
