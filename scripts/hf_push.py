@@ -2,7 +2,7 @@
 Token resolution (first hit wins): HF_TOKEN env -> HUGGINGFACE_TOKEN/HF_API_TOKEN env -> /workspace/.env -> ~/.env -> ./.env
 ACTION=inspect : list existing repo files (to find stale/proprietary content to remove)
 ACTION=upload  : upload TRANSFORMER dir + README to REPO (keeps repo private; never flips visibility)
-ENV: REPO=clark-labs/clark-quantize-sana-1.6b ARTIFACT=out/clark-air-sana-1.6b-unpacked ACTION=inspect
+ENV: REPO=clark-labs/clark-air-sana-1.6b-1.58bit ARTIFACT=out/clark-air-sana-1.6b-unpacked ACTION=inspect
 """
 import os
 

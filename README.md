@@ -2,7 +2,7 @@
 
 **Low-bit weight compression for image-generation models.** **Clark Air** packs a
 Sana 1.6B diffusion transformer down to **ternary (~1.85 bits/weight)** — **8.6×
-smaller than FP16 at near-FP16 quality** (374 MB vs 3.21 GB), data-free.
+smaller than FP16 at near-FP16 quality** (374 MB vs 3.21 GB).
 
 ![Clark Air: FP16 vs Clark Air, Sana 1.6B](assets/clark_air_release_compare.png)
 
