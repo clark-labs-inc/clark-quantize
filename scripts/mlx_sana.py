@@ -42,24 +42,50 @@ def gelu_tanh(x):
     return 0.5 * x * (1 + mx.tanh(math.sqrt(2 / math.pi) * (x + 0.044715 * x ** 3)))
 
 
+def mse_ternary(W, g):
+    """MSE-optimal ternary, group g along in-dim -> codes[out,in]{-1,0,1}, scales[out,ng]."""
+    out, inn = W.shape
+    Wg = W.reshape(out, inn // g, g).astype(mx.float32)
+    A = mx.abs(Wg)
+    a = -mx.sort(-A, axis=-1)  # descending
+    cs = mx.cumsum(a, axis=-1)
+    ks = mx.arange(1, g + 1, dtype=mx.float32)
+    k = mx.argmax(cs * cs / ks, axis=-1, keepdims=True)
+    s = mx.take_along_axis(cs, k, axis=-1) / (k.astype(mx.float32) + 1)
+    thr = mx.take_along_axis(a, k, axis=-1)
+    t = mx.sign(Wg) * (A >= thr)
+    return t.reshape(out, inn), s.squeeze(-1)
+
+
+def pack_ternary_mlx(code, scale):
+    """Inject our ternary into MLX 2-bit slots. levels=code+1{0,1,2}, scale/bias chosen
+    so MLX affine dequant (level*scale+bias) reproduces code*scale exactly."""
+    out, inn = code.shape
+    lev = (code + 1).astype(mx.uint32).reshape(out, inn // 16, 16)
+    pow4 = mx.array([4], dtype=mx.uint32) ** mx.arange(16, dtype=mx.uint32)
+    wq = (lev * pow4[None, None, :]).sum(axis=2).astype(mx.uint32)
+    return wq, scale, -scale
+
+
 class QLinear:
-    """Linear backed by an MLX-quantized weight (or plain fp16 if not quantized)."""
-    def __init__(self, w, bias=None, bits=None, group_size=64):
+    """Linear: plain fp16 (islands) or ternary injected into MLX 2-bit (trunk)."""
+    def __init__(self, w, bias=None, ternary=False, group_size=64):
         self.bias = bias
-        self.q = None
-        if bits is None:
-            self.w = w  # [out, in] fp16
+        if not ternary:
+            self.q = None
+            self.w = w
         else:
-            self.q = mx.quantize(w, group_size=group_size, bits=bits)  # (wq, scales, biases)
-            self.gs, self.bits = group_size, bits
+            code, scale = mse_ternary(w.astype(mx.float32), group_size)
+            self.wq, self.scales, self.biases = pack_ternary_mlx(code, scale.astype(mx.float16))
+            self.gs = group_size
+            self.q = True
 
     def __call__(self, x):
         if self.q is None:
             y = x @ self.w.T
         else:
-            wq, scales, biases = self.q
-            y = mx.quantized_matmul(x, wq, scales=scales, biases=biases,
-                                    transpose=True, group_size=self.gs, bits=self.bits)
+            y = mx.quantized_matmul(x, self.wq, scales=self.scales, biases=self.biases,
+                                    transpose=True, group_size=self.gs, bits=2)
         if self.bias is not None:
             y = y + self.bias
         return y
@@ -75,21 +101,24 @@ def pow2_group(inn, cap=128):
 
 
 class SanaMLX:
-    def __init__(self, sd, quant_bits=None):
-        # sd: dict of mx.array keyed by diffusers PyTorch names. quant_bits: None|2|1
+    def __init__(self, sd, quantize=False):
+        # sd: dict of mx.array keyed by diffusers PyTorch names. quantize: ternary trunk -> MLX 2-bit
         self.sd = sd
-        self.qbits = quant_bits
+        self.quantize = quantize
         g = lambda k: sd[k]
         self.g = g
-        # trunk (quantizable) linear weights, with per-layer pow2 group
+        self._cache = {}
+        # trunk (quantizable) linear weights, with per-layer pow2 group (cached across forwards)
         def trunk(k_w, k_b=None):
+            if k_w in self._cache:
+                return self._cache[k_w]
             w = sd[k_w]
             if w.ndim == 4:  # 1x1 conv -> [out,in]
                 w = w.reshape(w.shape[0], w.shape[1])
             b = sd[k_b] if (k_b and k_b in sd) else None
-            if quant_bits is None:
-                return QLinear(w, b)
-            return QLinear(w, b, bits=quant_bits, group_size=pow2_group(w.shape[1]))
+            ql = QLinear(w, b, ternary=True, group_size=pow2_group(w.shape[1])) if quantize else QLinear(w, b)
+            self._cache[k_w] = ql
+            return ql
         def island(k_w, k_b=None):
             w = sd[k_w]
             if w.ndim == 4:
