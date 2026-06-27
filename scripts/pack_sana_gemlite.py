@@ -101,7 +101,7 @@ def main():
         by_g[g] = by_g.get(g, 0) + 1
     print(f"[gemlite] packed {len(mods)} trunk modules | group histogram: {dict(sorted(by_g.items()))}", flush=True)
 
-    hard = json.load(open("shared_hard.json"))[:NREND]
+    hard = json.load(open(os.environ.get("PROMPTS", "shared_hard.json")))[:NREND]
     imgs = [pipe(prompt=p, num_inference_steps=K, height=512, width=512, guidance_scale=GUID,
                  generator=torch.Generator(DEV).manual_seed(SEED0 + j)).images[0] for j, p in enumerate(hard)]
     grid = Image.new("RGB", (512 * len(imgs), 512), (20, 20, 20))
