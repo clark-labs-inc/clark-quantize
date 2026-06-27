@@ -126,11 +126,11 @@ class SanaMLX:
             return QLinear(w, sd[k_b] if (k_b and k_b in sd) else None)
         self.trunk, self.island = trunk, island
 
-    def block(self, x, enc, temb, H, W, i):
+    def block(self, x, enc, enc_bias, temb, H, W, i):
         p = f"transformer_blocks.{i}."
         g = self.g
         ss = g(p + "scale_shift_table")[None] + temb.reshape(temb.shape[0], 6, -1)
-        shift_msa, scale_msa, gate_msa, shift_mlp, scale_mlp, gate_mlp = [ss[:, j] for j in range(6)]
+        shift_msa, scale_msa, gate_msa, shift_mlp, scale_mlp, gate_mlp = [ss[:, j:j + 1] for j in range(6)]
         # 1. linear self-attention
         h = layernorm(x) * (1 + scale_msa) + shift_msa
         q = self.trunk(p + "attn1.to_q.weight")(h)
@@ -157,7 +157,7 @@ class SanaMLX:
         q = q.reshape(B, N, X_HEADS, X_HEAD_DIM).transpose(0, 2, 1, 3)
         k = k.reshape(B, M, X_HEADS, X_HEAD_DIM).transpose(0, 2, 1, 3)
         v = v.reshape(B, M, X_HEADS, X_HEAD_DIM).transpose(0, 2, 1, 3)
-        o = mx.fast.scaled_dot_product_attention(q, k, v, scale=1.0 / math.sqrt(X_HEAD_DIM))
+        o = mx.fast.scaled_dot_product_attention(q, k, v, scale=1.0 / math.sqrt(X_HEAD_DIM), mask=enc_bias)
         o = o.transpose(0, 2, 1, 3).reshape(B, N, X_HEADS * X_HEAD_DIM)
         o = self.trunk(p + "attn2.to_out.0.weight", p + "attn2.to_out.0.bias")(o)
         x = x + o
@@ -179,10 +179,13 @@ class SanaMLX:
         x = x + gate_mlp * h
         return x
 
-    def __call__(self, latent, enc, t):
+    def __call__(self, latent, enc, t, enc_mask=None):
         # latent [B,32,16,16] (NCHW torch convention from caller); enc [B,M,2304]; t [B]
         g = self.g
         B = latent.shape[0]
+        enc_bias = None
+        if enc_mask is not None:
+            enc_bias = ((1.0 - enc_mask.astype(mx.float32)) * -1e4)[:, None, None, :]  # [B,1,1,M]
         H = W = latent.shape[-1]
         # patch_embed: 1x1 conv 32->2240 + flatten
         x = latent.transpose(0, 2, 3, 1).reshape(B, H * W, 32)  # tokens [B,256,32]
@@ -200,7 +203,7 @@ class SanaMLX:
         cw = g("caption_norm.weight")
         enc = (enc.astype(mx.float32) * mx.rsqrt((enc.astype(mx.float32) ** 2).mean(-1, keepdims=True) + 1e-5)).astype(enc.dtype) * cw
         for i in range(N_LAYERS):
-            x = self.block(x, enc, temb, H, W, i)
+            x = self.block(x, enc, enc_bias, temb, H, W, i)
         # norm_out (modulated) + proj_out
         ss = g("scale_shift_table")[None] + emb[:, None]
         shift, scale = ss[:, 0:1], ss[:, 1:2]
