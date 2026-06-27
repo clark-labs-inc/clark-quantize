@@ -67,11 +67,41 @@ def pack_ternary_mlx(code, scale):
     return wq, scale, -scale
 
 
+def is_trunk_key(k):  # diffusers weight key -> is it a quantizable trunk linear/1x1-conv?
+    if not (k.startswith("transformer_blocks") and k.endswith(".weight")):
+        return False
+    attn = (".attn1." in k or ".attn2." in k) and any(s + ".weight" in k for s in ("to_q", "to_k", "to_v", "to_out.0"))
+    ff = (".ff.conv_inverted.weight" in k or ".ff.conv_point.weight" in k)
+    return attn or ff
+
+
+def build_packed(sd):
+    """Build a serializable mlx-2bit dict: trunk -> ternary in MLX 2-bit (k::wq/scales/biases/gs),
+    everything else copied fp16."""
+    out = {}
+    for k, w in sd.items():
+        if is_trunk_key(k):
+            ww = w.reshape(w.shape[0], w.shape[1]) if w.ndim == 4 else w
+            g = pow2_group(ww.shape[1])
+            code, scale = mse_ternary(ww.astype(mx.float32), g)
+            wq, sc, bi = pack_ternary_mlx(code, scale.astype(mx.float16))
+            out[k + "::wq"] = wq
+            out[k + "::scales"] = sc
+            out[k + "::biases"] = bi
+            out[k + "::gs"] = mx.array([g], dtype=mx.int32)
+        else:
+            out[k] = w
+    return out
+
+
 class QLinear:
     """Linear: plain fp16 (islands) or ternary injected into MLX 2-bit (trunk)."""
-    def __init__(self, w, bias=None, ternary=False, group_size=64):
+    def __init__(self, w=None, bias=None, ternary=False, group_size=64, packed=None):
         self.bias = bias
-        if not ternary:
+        if packed is not None:
+            self.wq, self.scales, self.biases, self.gs = packed
+            self.q = True
+        elif not ternary:
             self.q = None
             self.w = w
         else:
@@ -112,11 +142,15 @@ class SanaMLX:
         def trunk(k_w, k_b=None):
             if k_w in self._cache:
                 return self._cache[k_w]
-            w = sd[k_w]
-            if w.ndim == 4:  # 1x1 conv -> [out,in]
-                w = w.reshape(w.shape[0], w.shape[1])
             b = sd[k_b] if (k_b and k_b in sd) else None
-            ql = QLinear(w, b, ternary=True, group_size=pow2_group(w.shape[1])) if quantize else QLinear(w, b)
+            if k_w + "::wq" in sd:  # pre-packed mlx-2bit artifact
+                ql = QLinear(bias=b, packed=(sd[k_w + "::wq"], sd[k_w + "::scales"],
+                                             sd[k_w + "::biases"], int(sd[k_w + "::gs"][0].item())))
+            else:
+                w = sd[k_w]
+                if w.ndim == 4:  # 1x1 conv -> [out,in]
+                    w = w.reshape(w.shape[0], w.shape[1])
+                ql = QLinear(w, b, ternary=True, group_size=pow2_group(w.shape[1])) if quantize else QLinear(w, b)
             self._cache[k_w] = ql
             return ql
         def island(k_w, k_b=None):
