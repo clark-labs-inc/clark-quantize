@@ -84,10 +84,9 @@ def build_packed(sd):
             ww = w.reshape(w.shape[0], w.shape[1]) if w.ndim == 4 else w
             g = pow2_group(ww.shape[1])
             code, scale = mse_ternary(ww.astype(mx.float32), g)
-            wq, sc, bi = pack_ternary_mlx(code, scale.astype(mx.float16))
+            wq, sc, _bi = pack_ternary_mlx(code, scale.astype(mx.float16))  # bias == -scale, derived on load
             out[k + "::wq"] = wq
             out[k + "::scales"] = sc
-            out[k + "::biases"] = bi
             out[k + "::gs"] = mx.array([g], dtype=mx.int32)
         else:
             out[k] = w
@@ -143,9 +142,9 @@ class SanaMLX:
             if k_w in self._cache:
                 return self._cache[k_w]
             b = sd[k_b] if (k_b and k_b in sd) else None
-            if k_w + "::wq" in sd:  # pre-packed mlx-2bit artifact
-                ql = QLinear(bias=b, packed=(sd[k_w + "::wq"], sd[k_w + "::scales"],
-                                             sd[k_w + "::biases"], int(sd[k_w + "::gs"][0].item())))
+            if k_w + "::wq" in sd:  # pre-packed mlx-2bit artifact (bias == -scale)
+                sc = sd[k_w + "::scales"]
+                ql = QLinear(bias=b, packed=(sd[k_w + "::wq"], sc, -sc, int(sd[k_w + "::gs"][0].item())))
             else:
                 w = sd[k_w]
                 if w.ndim == 4:  # 1x1 conv -> [out,in]
