@@ -1,0 +1,53 @@
+{
+  "description": "Known visual preferences for validating the Sana render reward heads.",
+  "preferences": [
+    {
+      "goal": "composition",
+      "better": "render_sana_t112_science_fresh_muon_g112_s29750",
+      "worse": "render_sana_replay_q2_anchor_g112_pilot_s1000",
+      "note": "bad replay loses global composition"
+    },
+    {
+      "goal": "relations",
+      "better": "render_sana_t112_science_fresh_muon_g112_s32000",
+      "worse": "render_sana_t112_bellman_s30250_probe2_final",
+      "note": "Bellman final drifts into two-horse or rider relation"
+    },
+    {
+      "goal": "objects",
+      "better": "render_sana_t112_science_fresh_muon_g112_s29750",
+      "worse": "render_sana_t112_bellman_s30250_probe2_final",
+      "note": "Bellman probe did not improve wine/object preservation"
+    },
+    {
+      "goal": "geometry",
+      "better": "render_mwq_v2_mix_late64_from_render_best_s4500",
+      "worse": "render_mwq_v2_t112_resume_s5000",
+      "note": "mixed late-g64 had the harp/string detail advantage"
+    },
+    {
+      "goal": "relations",
+      "better": "render_mwq_v2_t112_resume_s5000",
+      "worse": "render_mwq_v2_mix_late64_from_render_best_s4500",
+      "note": "mixed late-g64 paid a composition/relation cost"
+    },
+    {
+      "goal": "overall",
+      "better": "render_sana_t112_science_fresh_muon_g112_s29750",
+      "worse": "render_sana_t112_bellman_s30250_probe2_final",
+      "note": "Bellman value shaping was technically viable but not a promotion"
+    },
+    {
+      "goal": "overall",
+      "better": "render_q256t_s7500",
+      "worse": "render_q256b_s7500",
+      "note": "ternary beats binary on hard compositions"
+    },
+    {
+      "goal": "overall",
+      "better": "render_sana_t112_science_fresh_muon_g112_s29750",
+      "worse": "render_q256b_s7500",
+      "note": "science-fresh ternary beats pure binary"
+    }
+  ]
+}

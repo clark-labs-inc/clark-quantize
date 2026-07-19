@@ -5,9 +5,11 @@ Prism ternary targets: sign_flips ~0% (signs frozen from FP16), zero_frac ~38% (
 100-150% (main compensator), block modulation ~1-2%, late blocks move more than early.
 ENV: CKPT=ckpt_ternary_preview_v0.pt
 """
-import torch, torch.nn as nn, os, json
+import torch, torch.nn as nn, os, sys, json
 os.environ["HF_HUB_OFFLINE"]="1"
 from diffusers import SanaPipeline
+sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from clark_quantize.sana_ckpt import island_values, load_compact_checkpoint, validate_quant_names
 dev="cuda"; MODEL="models/Sana_1600M_512px"; G=112
 CKPT=os.environ.get("CKPT","ckpt_ternary_preview_v0.pt")
 def is_trunk_lin(n,m): return isinstance(m,nn.Linear) and n.startswith("transformer_blocks") and (".attn1." in n or ".attn2." in n) and any(s in n for s in ("to_q","to_k","to_v","to_out.0"))
@@ -20,13 +22,26 @@ def _blk(n):
 
 @torch.no_grad()
 def ptq_ternary(W):  # closed-form optimal ternary at g=G -> codes[out,ng,G] (-1/0/1), scales[out,ng]
-    o,i=W.shape; Wg=W.float().view(o,i//G,G); d=0.7*Wg.abs().mean(-1,keepdim=True); m=(Wg.abs()>d).float()
-    s=(Wg.abs()*m).sum(-1,keepdim=True)/m.sum(-1,keepdim=True).clamp_min(1.)
-    return (torch.where(Wg>=0,1.,-1.)*m), s.squeeze(-1)
+    o,i=W.shape; pad=(-i)%G
+    Wp=torch.cat([W.float(),torch.zeros(o,pad,device=W.device,dtype=torch.float32)],1) if pad else W.float()
+    Wg=Wp.view(o,Wp.shape[1]//G,G); a=Wg.abs()
+    sorted_abs, sorted_idx=torch.sort(a,dim=-1,descending=True)
+    prefix=torch.cumsum(sorted_abs,dim=-1)
+    k=torch.arange(1,G+1,device=W.device,dtype=prefix.dtype).view(1,1,G)
+    best_idx=torch.argmax(prefix.square()/k,dim=-1)
+    scale=(torch.gather(prefix,-1,best_idx.unsqueeze(-1)).squeeze(-1)/(best_idx.to(prefix.dtype)+1)).clamp_min(1e-8)
+    rank=torch.arange(G,device=W.device).view(1,1,G)
+    active_sorted=rank<=best_idx.unsqueeze(-1)
+    sorted_sign=torch.gather(torch.sign(Wg),-1,sorted_idx)
+    sorted_codes=sorted_sign*active_sorted.to(Wg.dtype)
+    codes=torch.zeros_like(Wg); codes.scatter_(-1,sorted_idx,sorted_codes)
+    if pad: codes.reshape(o,-1)[:,i:]=0
+    return codes, scale
 
-ck=torch.load(CKPT,map_location="cpu")
+ck=load_compact_checkpoint(CKPT)
 pipe=SanaPipeline.from_pretrained(MODEL,torch_dtype=torch.bfloat16); pipe.to(dev); tf=pipe.transformer
 qmods=[(n,m) for n,m in tf.named_modules() if predicate(n,m)]
+validate_quant_names(ck,[n for n,_ in qmods])
 print(f"[forensics] {CKPT} step {ck['step']} | {len(qmods)} trunk mods",flush=True)
 
 # global accumulators
@@ -62,7 +77,7 @@ for b in sorted(blk_delta):
 # islands
 print("\n=== island deltas (trained vs FP16) ===",flush=True)
 island_named=[(n,p) for n,p in tf.named_parameters() if is_island(n)]
-for (n,p),tr in zip(island_named,ck["islands"]):
+for (n,p),tr in zip(island_named,island_values(ck,island_named)):
     base=p.data.float().to(dev); t=tr.float().to(dev); d=(t-base).norm()/base.norm().clamp_min(1e-9)
     tag=""
     if "proj_out" in n: tag=" <- Prism FROZEN (0%)"

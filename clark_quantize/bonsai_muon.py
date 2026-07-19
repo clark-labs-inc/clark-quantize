@@ -183,8 +183,11 @@ class _GroupwiseSTEBase(nn.Module):
     def _attach_bonsai_metadata(self) -> None:
         self.weight_master._bonsai_make_quantized = self._quantized_matrix_detached
         self.weight_master._bonsai_codes_from_weight = self._codes_from_matrix_detached
+        self.weight_master._bonsai_get_scales = self._scales
+        self.weight_master._bonsai_refresh_scales = self.reset_quant_scales
         self.weight_master._bonsai_quant_mode = self.mode
         self.weight_master._bonsai_group_size = self.group_size
+        self.weight_master._bonsai_threshold_factor = self.threshold_factor
 
     def set_forward_blend_alpha(self, alpha: float) -> None:
         self.forward_blend_alpha = float(max(0.0, min(1.0, alpha)))
@@ -382,11 +385,12 @@ def collect_bonsai_param_groups(model, *, muon_lr=2e-5, scale_lr=5e-5, island_lr
 
 
 @torch.no_grad()
-def newton_schulz_orthogonalize(g: Tensor, *, steps: int = 5, eps: float = 1e-7) -> Tensor:
+def newton_schulz_orthogonalize(g: Tensor, *, steps: int = 5, eps: float = 1e-7,
+                                compute_dtype: Optional[torch.dtype] = None) -> Tensor:
     if g.ndim != 2:
         return g
     orig_dtype = g.dtype
-    x = g.float()
+    x = g.to(compute_dtype) if compute_dtype is not None else g.float()
     norm = torch.linalg.norm(x)
     if not torch.isfinite(norm) or norm.item() == 0.0:
         return torch.zeros_like(g)
@@ -496,7 +500,9 @@ class BonsaiMuon(torch.optim.Optimizer):
             update_raw = grad.detach().float() + momentum * buf.float()
         else:
             update_raw = buf.float()
-        update = newton_schulz_orthogonalize(update_raw, steps=ns_steps)
+        ns_dtype = group.get("ns_dtype", None)  # e.g. bf16: NS on tensor cores
+        update = newton_schulz_orthogonalize(update_raw, steps=ns_steps, compute_dtype=ns_dtype)
+        update = update.float()
         if rms_match:
             raw_rms = _rms(update_raw); upd_rms = _rms(update)
             update = update * (raw_rms / (upd_rms + 1e-12))

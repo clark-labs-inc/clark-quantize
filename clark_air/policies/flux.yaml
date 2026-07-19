@@ -1,0 +1,14 @@
+name: flux
+family: diffusion_transformer
+default_group_size: 128
+rates:
+  trunk: [binary, ternary]
+  islands: [bf16, fp8]
+protect:
+  - embeddings
+  - norms
+  - final_projection
+objective:
+  teacher_behavior: symmetric_velocity
+  geometry: hidden_cka
+  codebook: attraction

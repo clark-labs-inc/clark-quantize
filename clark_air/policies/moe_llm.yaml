@@ -1,0 +1,23 @@
+name: moe_llm
+family: causal_lm_moe
+default_group_size: 128
+rates:
+  trunk: [binary, ternary]
+  router: [bf16, fp8]
+  islands: [bf16, fp8]
+protect:
+  - token_embeddings
+  - final_norm
+  - router
+allocation:
+  expert_damage_weight: router_utilization
+objective:
+  teacher_behavior: teacher_kl
+  on_policy: true
+  geometry: hidden_cka
+  codebook: attraction
+metrics:
+  - perplexity
+  - teacher_kl
+  - logit_agreement
+  - packed_size

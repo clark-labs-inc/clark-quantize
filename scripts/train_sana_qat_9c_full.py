@@ -14,6 +14,7 @@ from PIL import Image
 import lpips as lpips_lib
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from clark_quantize import bonsai_muon as BM
+from clark_quantize.sana_ckpt import island_values, load_compact_checkpoint, validate_quant_names
 dev="cuda"; MODEL="models/Sana_1600M_512px"; K=20; G=112; GUID=4.5
 RESUME=os.environ["RESUME"]; POOL=os.environ.get("POOL","sana_calib_256.jsonl"); TAG=os.environ.get("TAG","p9cf")
 STEPS=int(os.environ.get("STEPS","500")); BPTT=int(os.environ.get("BPTT","4")); FREEZE_ATTN=int(os.environ.get("FREEZE_ATTN","1000"))
@@ -74,14 +75,16 @@ with torch.no_grad():
 print(f"[fp16] {len(refs)} hard refs | teacher imgs cached {len(IT)}",flush=True)
 
 # ---- warm-start + quantize ----
-ck=torch.load(RESUME,map_location="cpu")
+ck=load_compact_checkpoint(RESUME)
 def dequant(code,ls,in_f):
     o,ng,g=code.shape; s=torch.exp(ls.float()).unsqueeze(-1); return (code.float()*s).reshape(o,ng*g)[:,:in_f]
 qmods=[(n,m) for n,m in tf.named_modules() if predicate(n,m)]
+validate_quant_names(ck,[n for n,_ in qmods])
 with torch.no_grad():
     for (n,m),code,ls,s in zip(qmods,ck["codes"],ck["log_scales"],ck["shapes"]):
         m.weight.data.copy_(dequant(code,ls,s[1]).reshape(m.weight.shape).to(m.weight.dtype).to(dev))
-    for p,c in zip([p for nm,p in tf.named_parameters() if is_island(nm)],ck["islands"]): p.data.copy_(c.to(p.dtype).to(dev))
+    island_named=[(nm,p) for nm,p in tf.named_parameters() if is_island(nm)]
+    for (_,p),c in zip(island_named,island_values(ck,island_named)): p.data.copy_(c.to(p.dtype).to(dev))
 print(f"[warm-start] step {ck['step']}",flush=True)
 BM.replace_modules_with_bonsai_quant(tf, predicate, mode="ternary", group_size=G, init="mse_ternary", forward_blend_alpha=1.0)
 for p in tf.parameters(): p.requires_grad_(False)

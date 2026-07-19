@@ -12,6 +12,7 @@ import torch, torch.nn as nn, os, sys, json
 os.environ["HF_HUB_OFFLINE"]="1"
 sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from clark_quantize.ternary import ternarize
+from clark_quantize.sana_ckpt import island_values, load_compact_checkpoint, validate_quant_names
 from diffusers import SanaPipeline
 from PIL import Image, ImageDraw
 dev="cuda"; DT=torch.bfloat16; MODEL="models/Sana_1600M_512px"; K=20; GUID=4.5; G=112
@@ -35,17 +36,18 @@ def endpoint(W, tzero, sr):   # top-(1-tzero) magnitude per group active, scale 
     s=sr*((a*m).sum(-1,keepdim=True)/m.sum(-1,keepdim=True).clamp_min(1.))
     return (s*torch.where(Wg>=0,1.,-1.)*m).view(o,i).to(W.dtype)
 
-ck=torch.load(CKPT,map_location="cpu")
+ck=load_compact_checkpoint(CKPT)
 def dequant(code,ls,in_f):
     o,ng,g=code.shape; s=torch.exp(ls.float()).unsqueeze(-1); return (code.float()*s).reshape(o,ng*g)[:,:in_f]
 pipe=SanaPipeline.from_pretrained(MODEL,torch_dtype=DT); pipe.to(dev); tf=pipe.transformer
 qmods=[(n,m) for n,m in tf.named_modules() if predicate(n,m)]
+validate_quant_names(ck,[n for n,_ in qmods])
 Wfp={n:m.weight.data.clone() for n,m in qmods}
 Wq={}
 for (n,m),code,ls,s in zip(qmods,ck["codes"],ck["log_scales"],ck["shapes"]):
     Wq[n]=dequant(code,ls,s[1]).reshape(m.weight.shape).to(m.weight.dtype).to(dev)
 island_p=[(n,p) for n,p in tf.named_parameters() if is_island(n)]
-ISL_tr=[c.to(dev) for c in ck["islands"]]; ISL_fp=[p.data.clone() for n,p in island_p]
+ISL_tr=[c.to(dev) for c in island_values(ck,island_p)]; ISL_fp=[p.data.clone() for n,p in island_p]
 print(f"[endpoint] {len(qmods)} trunk | step {ck['step']} | tzero {TZERO} sr {SR}",flush=True)
 
 @torch.no_grad()

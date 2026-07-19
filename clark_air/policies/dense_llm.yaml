@@ -1,0 +1,21 @@
+name: dense_llm
+family: causal_lm
+default_group_size: 128
+rates:
+  trunk: [binary, ternary]
+  islands: [bf16, fp8]
+protect:
+  - token_embeddings
+  - final_norm
+policy_test:
+  - lm_head
+objective:
+  teacher_behavior: teacher_kl
+  on_policy: true
+  geometry: hidden_cka
+  codebook: attraction
+metrics:
+  - perplexity
+  - teacher_kl
+  - logit_agreement
+  - packed_size

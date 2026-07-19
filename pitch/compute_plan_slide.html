@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Compute Plan — 12 Months</title>
+<style>
+  :root{
+    --surface:#fcfcfb; --ink:#0b0b0b; --ink-2:#52514e; --ink-3:#8a8984;
+    --base:#2a78d6; --contingency:#86b6ef; --rule:#e8e7e3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#c9c8c2;display:flex;justify-content:center;padding:24px;
+       font-family:-apple-system,"Helvetica Neue",Inter,Arial,sans-serif}
+  .slide{width:1280px;height:720px;background:var(--surface);color:var(--ink);
+         padding:52px 60px 40px;display:flex;flex-direction:column;position:relative;
+         box-shadow:0 2px 24px rgba(0,0,0,.18)}
+  .kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+  h1{font-size:34px;font-weight:700;letter-spacing:-.01em;margin-top:6px}
+  h1 .amt{color:var(--base)}
+  .sub{font-size:15.5px;color:var(--ink-2);margin-top:6px;max-width:900px}
+  .cols{display:flex;gap:44px;flex:1;margin-top:26px;min-height:0}
+  /* chart */
+  .chart{width:660px;display:flex;flex-direction:column}
+  .legend{display:flex;gap:18px;font-size:12.5px;color:var(--ink-2);margin-bottom:10px}
+  .legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+  .plot{height:320px;display:flex;align-items:flex-end;gap:34px;border-bottom:1.5px solid var(--rule);padding:0 8px}
+  .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+  .total{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
+  .seg-cont{width:58px;background:var(--contingency);border-radius:4px 4px 0 0}
+  .seg-base{width:58px;background:var(--base);margin-top:2px}
+  .xrow{display:flex;gap:34px;padding:0 8px}
+  .xlab{flex:1;margin-top:10px;text-align:center;display:flex;flex-direction:column;align-items:center}
+  .xlab b{display:block;font-size:13.5px;color:var(--ink)}
+  .xlab span{display:block;font-size:11.5px;color:var(--ink-2);line-height:1.35;margin-top:3px;max-width:150px}
+  /* right column */
+  .right{flex:1;display:flex;flex-direction:column;gap:0}
+  .buy{border-top:1.5px solid var(--rule);padding:11px 0 10px}
+  .buy:first-child{border-top:none;padding-top:2px}
+  .buy .q{font-size:12px;font-weight:700;color:var(--base);letter-spacing:.06em}
+  .buy .what{font-size:13.5px;color:var(--ink);margin-top:2px;line-height:1.4}
+  .buy .what em{font-style:normal;color:var(--ink-2)}
+  .foot{margin-top:auto;border-top:1.5px solid var(--rule);padding-top:12px;
+        font-size:11.5px;color:var(--ink-3);line-height:1.55;display:flex;gap:36px}
+  .foot b{color:var(--ink-2);font-weight:600}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="kicker">Use of funds — compute</div>
+  <h1>12 months to state of the art: <span class="amt">$1.45&hairsp;M</span> base&ensp;·&ensp;$1.9&hairsp;M with reserve</h1>
+  <div class="sub">Quarterly cadence of ~$300–405k buys one frontier-model conversion sprint per quarter plus a
+    continuously running development bench — every major open model shipped as a ternary release within days of its drop.</div>
+
+  <div class="cols">
+    <div class="chart">
+      <div class="legend">
+        <span><span class="sw" style="background:var(--base)"></span>Planned runs</span>
+        <span><span class="sw" style="background:var(--contingency)"></span>Re-run / iteration reserve (+30%)</span>
+      </div>
+      <div class="plot">
+        <!-- scale: $1k = 0.55px -->
+        <div class="bar-col">
+          <div class="total">$377k</div>
+          <div class="seg-cont" style="height:48px"></div>
+          <div class="seg-base" style="height:160px"></div>
+        </div>
+        <div class="bar-col">
+          <div class="total">$527k</div>
+          <div class="seg-cont" style="height:67px"></div>
+          <div class="seg-base" style="height:223px"></div>
+        </div>
+        <div class="bar-col">
+          <div class="total">$527k</div>
+          <div class="seg-cont" style="height:67px"></div>
+          <div class="seg-base" style="height:223px"></div>
+        </div>
+        <div class="bar-col">
+          <div class="total">$455k</div>
+          <div class="seg-cont" style="height:58px"></div>
+          <div class="seg-base" style="height:193px"></div>
+        </div>
+      </div>
+      <div class="xrow">
+        <div class="xlab"><b>Q1 — $290k</b><span>dev bench + 128× B200 week; MoE trainer hardening</span></div>
+        <div class="xlab"><b>Q2 — $405k</b><span>portfolio sprint: 256× B200 week + dev</span></div>
+        <div class="xlab"><b>Q3 — $405k</b><span>parity-grade budgets on the giants + eval hardening</span></div>
+        <div class="xlab"><b>Q4 — $350k</b><span>day-N conversions of new drops; sub-2-bit research</span></div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="buy">
+        <div class="q">Q1 DELIVERS</div>
+        <div class="what">Clark 4B + 9B ternary releases; MiniMax-M3 v0 <em>(first ternary ~440B MoE)</em>; multi-GPU trainer + kernels proven</div>
+      </div>
+      <div class="buy">
+        <div class="q">Q2 DELIVERS</div>
+        <div class="what">GLM-5.2 (~740B) + Kimi-K2.7-Code (~1T) ternary v0 — <em>each converted in ≤ 24 h on 256× B200; a 1T-class model in ~220 GB</em></div>
+      </div>
+      <div class="buy">
+        <div class="q">Q3 DELIVERS</div>
+        <div class="what">Parity-grade (3.75 tok/active-param) refresh of all releases; public eval suite matching incumbent benchmark discipline</div>
+      </div>
+      <div class="buy">
+        <div class="q">Q4 DELIVERS</div>
+        <div class="what">Same-week ternary release for every major model drop; sub-2-bit packing (1.58 b/w vs incumbents&rsquo; 2.125); optional 2B from-scratch ternary pretrain</div>
+      </div>
+      <div class="foot">
+        <div><b>Cost basis</b><br>B200 @ $8.87–9.86 /GPU·hr, 1-week cluster blocks (quoted July &rsquo;26). One frontier conversion ≈ 256× B200 × 1 week = $381k.</div>
+        <div><b>Upside</b><br>Annual reserved pricing typically −30–50% and GPU prices decay — same dollars buy ~1.5–2× the runs by Q4.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

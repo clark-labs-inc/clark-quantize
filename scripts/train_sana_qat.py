@@ -9,6 +9,12 @@ ENV: POOL=sana_calib_256.jsonl MODE=ternary|binary LATENTS=2 STEPS=12000 RAMP=15
 """
 import torch, torch.nn as nn, torch.nn.functional as F, os, sys, time, random, json
 os.environ["HF_HUB_OFFLINE"]="1"; os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF","expandable_segments:True")
+if os.environ.get("ALLOW_LEGACY_SANA_QAT","0")!="1":
+    import runpy
+    target=os.path.join(os.path.dirname(os.path.abspath(__file__)),"train_sana_mwqat.py")
+    print(f"[redirect] scripts/train_sana_qat.py is legacy; running {target}. Set ALLOW_LEGACY_SANA_QAT=1 to use the old script.",flush=True)
+    runpy.run_path(target,run_name="__main__")
+    raise SystemExit
 from diffusers import SanaPipeline
 from PIL import Image
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

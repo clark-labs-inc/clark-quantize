@@ -1,0 +1,145 @@
+{
+  "description": "Prompt-specific rubrics for VLM pairwise judging of the Sana hard render suite.",
+  "rubrics": {
+    "wall_text": {
+      "prompt_id": "wall_text",
+      "panel_index": 0,
+      "prompt": "A room with a yellow wall and visible text or glyphs on the wall.",
+      "primary_heads": ["prompt_fidelity", "reference_similarity", "text_quality", "geometry", "fine_detail"],
+      "requirements": [
+        {
+          "id": "yellow_wall_present",
+          "type": "object",
+          "description": "The yellow wall and room layout from the FP16 reference are preserved.",
+          "critical": true
+        },
+        {
+          "id": "text_region_present",
+          "type": "text",
+          "description": "The dark text or glyph region appears in the correct wall area.",
+          "critical": true
+        },
+        {
+          "id": "glyphs_readable",
+          "type": "text",
+          "description": "The glyphs are coherent text-like marks, not generic black smudges or texture.",
+          "critical": true
+        },
+        {
+          "id": "layout_preserved",
+          "type": "composition",
+          "description": "Furniture and room geometry remain close to the FP16 reference.",
+          "critical": false
+        }
+      ]
+    },
+    "wine_glass": {
+      "prompt_id": "wine_glass",
+      "panel_index": 1,
+      "prompt": "A wine bottle, a separate wine glass, and grapes arranged on a surface.",
+      "primary_heads": ["prompt_fidelity", "reference_similarity", "objects", "relations", "geometry", "fine_detail"],
+      "requirements": [
+        {
+          "id": "bottle_present",
+          "type": "object",
+          "description": "A clearly recognizable wine bottle is visible.",
+          "critical": true
+        },
+        {
+          "id": "glass_present",
+          "type": "object",
+          "description": "A clearly recognizable wine glass is visible.",
+          "critical": true
+        },
+        {
+          "id": "grapes_present",
+          "type": "object",
+          "description": "A cluster of grapes or grape-like fruit is visible.",
+          "critical": false
+        },
+        {
+          "id": "glass_separate",
+          "type": "relation",
+          "description": "The glass is spatially separate from the bottle and is not merged into it.",
+          "critical": true
+        },
+        {
+          "id": "arrangement_preserved",
+          "type": "composition",
+          "description": "The object count, placement, and tabletop arrangement are close to the FP16 reference.",
+          "critical": false
+        }
+      ]
+    },
+    "harp_strings": {
+      "prompt_id": "harp_strings",
+      "panel_index": 2,
+      "prompt": "A harp with a solid frame and many individually visible strings.",
+      "primary_heads": ["prompt_fidelity", "reference_similarity", "geometry", "fine_detail"],
+      "requirements": [
+        {
+          "id": "harp_body_present",
+          "type": "object",
+          "description": "A clearly recognizable harp body and frame are visible.",
+          "critical": true
+        },
+        {
+          "id": "solid_frame",
+          "type": "geometry",
+          "description": "The harp frame is solid and physically coherent rather than a soft translucent mass.",
+          "critical": true
+        },
+        {
+          "id": "individual_strings",
+          "type": "geometry",
+          "description": "Multiple individual strings are visible as separate lines.",
+          "critical": true
+        },
+        {
+          "id": "strings_inside_frame",
+          "type": "relation",
+          "description": "The string lines remain inside the harp frame rather than becoming arbitrary vertical texture.",
+          "critical": true
+        }
+      ]
+    },
+    "horse_person": {
+      "prompt_id": "horse_person",
+      "panel_index": 3,
+      "prompt": "One person running beside or chasing one galloping horse.",
+      "primary_heads": ["prompt_fidelity", "reference_similarity", "objects", "relations", "geometry", "fine_detail"],
+      "requirements": [
+        {
+          "id": "horse_present",
+          "type": "object",
+          "description": "Exactly one clearly recognizable horse is visible.",
+          "critical": true
+        },
+        {
+          "id": "person_present",
+          "type": "object",
+          "description": "A clearly recognizable human is visible.",
+          "critical": true
+        },
+        {
+          "id": "person_separate",
+          "type": "relation",
+          "description": "The person is spatially separate from the horse, not merged with it and not riding it.",
+          "critical": true
+        },
+        {
+          "id": "running_relation",
+          "type": "relation",
+          "description": "The person appears to be running beside or chasing the horse.",
+          "critical": true
+        },
+        {
+          "id": "limb_structure",
+          "type": "geometry",
+          "description": "Horse legs, mane, and human limbs have coherent structure.",
+          "critical": false
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "description": "Prompt-contrastive counterfactuals for the Sana hard render suite. These are used by scripts/self_oracle_sana_rank.py to score whether the FP16 teacher explains a candidate final latent better under the true prompt than under minimal missing-object or wrong-relation prompts.",
+  "items": [
+    {
+      "prompt_id": "wall_text",
+      "prompt": "A room with a yellow wall and visible text or glyphs on the wall.",
+      "positive": "A room with a yellow wall and visible text or glyphs on the wall.",
+      "negatives": [
+        "A room with a yellow wall and no text or glyphs on the wall.",
+        "A room with a blank yellow wall.",
+        "A room with abstract dark smudges on a yellow wall instead of readable text."
+      ],
+      "assertions": [
+        {
+          "id": "text_present",
+          "positive": "A yellow wall with bold black text.",
+          "negative": "A blank yellow wall with no text."
+        },
+        {
+          "id": "glyph_not_smudge",
+          "positive": "A yellow wall with visible text or glyphs.",
+          "negative": "A yellow wall with abstract dark smudges instead of text."
+        }
+      ],
+      "critical_concepts": ["yellow wall", "text region", "glyphs"],
+      "critical_relations": []
+    },
+    {
+      "prompt_id": "wine_glass",
+      "prompt": "A wine bottle, a separate wine glass, and grapes arranged on a surface.",
+      "positive": "A wine bottle, a separate wine glass, and grapes arranged on a surface.",
+      "negatives": [
+        "A wine bottle and grapes arranged on a surface, without a wine glass.",
+        "Two wine bottles and grapes arranged on a surface.",
+        "A single wine bottle alone on a surface.",
+        "A wine bottle and grapes with the glass merged into the bottle."
+      ],
+      "assertions": [
+        {
+          "id": "glass_present",
+          "positive": "A wine bottle, a separate wine glass, and grapes.",
+          "negative": "A wine bottle and grapes, with no wine glass."
+        },
+        {
+          "id": "glass_separate",
+          "positive": "A wine bottle beside a separate wine glass.",
+          "negative": "A wine bottle with no separate glass."
+        }
+      ],
+      "critical_concepts": ["wine bottle", "wine glass", "grapes"],
+      "critical_relations": [["wine bottle", "wine glass", "separate"]]
+    },
+    {
+      "prompt_id": "harp_strings",
+      "prompt": "A harp with a solid frame and many individually visible strings.",
+      "positive": "A harp with a solid frame and many individually visible strings.",
+      "negatives": [
+        "A harp without visible strings.",
+        "A wooden sculpture shaped like a harp.",
+        "A soft translucent harp-shaped object with no solid frame.",
+        "A harp with generic vertical texture instead of individual strings."
+      ],
+      "assertions": [
+        {
+          "id": "harp_present",
+          "positive": "A solid wooden harp.",
+          "negative": "An abstract harp-shaped sculpture."
+        },
+        {
+          "id": "strings_visible",
+          "positive": "A harp with many clearly visible individual strings.",
+          "negative": "A harp without strings."
+        }
+      ],
+      "critical_concepts": ["harp", "solid frame", "individual strings"],
+      "critical_relations": [["strings", "harp frame", "inside"]]
+    },
+    {
+      "prompt_id": "horse_person",
+      "prompt": "One person running beside or chasing one galloping horse.",
+      "positive": "One person running beside or chasing one galloping horse.",
+      "negatives": [
+        "A man riding a galloping horse.",
+        "Two galloping horses with no person.",
+        "A horse without a person.",
+        "A person running alone without a horse.",
+        "A person merged with a horse."
+      ],
+      "assertions": [
+        {
+          "id": "person_present",
+          "positive": "A man running beside a galloping horse.",
+          "negative": "A galloping horse with no person."
+        },
+        {
+          "id": "running_not_riding",
+          "positive": "A man running beside a galloping horse.",
+          "negative": "A man riding a galloping horse."
+        },
+        {
+          "id": "one_horse",
+          "positive": "One horse and one running man.",
+          "negative": "Two galloping horses."
+        }
+      ],
+      "critical_concepts": ["horse", "person"],
+      "critical_relations": [["person", "horse", "separate"], ["person", "horse", "running beside or chasing"]]
+    }
+  ]
+}

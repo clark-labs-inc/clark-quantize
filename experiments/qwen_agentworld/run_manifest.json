@@ -1,0 +1,45 @@
+{
+  "model_id": "Qwen/Qwen-AgentWorld-35B-A3B",
+  "dataset_id": "Qwen/AgentWorldBench",
+  "official_repo": "https://github.com/QwenLM/Qwen-AgentWorld",
+  "validation_metric": "AgentWorldBench official judged overall and per-domain scores",
+  "baseline_endpoint": "http://127.0.0.1:8000/v1",
+  "single_a100_mode": {
+    "max_model_len": 8192,
+    "purpose": "smoke and reduced-context subset validation",
+    "limitation": "official README uses tensor parallel size 4 for 262144 context; single-A100 smoke results are not final validation"
+  },
+  "full_official_mode": {
+    "max_model_len": 262144,
+    "tensor_parallel_size": 4,
+    "purpose": "full-context baseline and final reported benchmark"
+  },
+  "judge": {
+    "provider": "OpenRouter",
+    "model": "qwen/qwen3.5-flash-02-23",
+    "status": "confirmed_by_user_and_used_for_smoke_judging"
+  },
+  "subsets": {
+    "smoke_1x7": "/workspace/AgentWorldBench_smoke_1x7",
+    "smoke_3x7": "/workspace/AgentWorldBench_smoke_3x7",
+    "full": "/workspace/AgentWorldBench"
+  },
+  "current_reduced_context_gate": {
+    "subset": "smoke_3x7",
+    "max_model_len": 8192,
+    "max_tokens": 64,
+    "bf16_score": 6.43,
+    "best_low_bit_score": 4.29,
+    "best_low_bit_surface": "measured MoE ternary-only",
+    "latest_pruned_score": 3.57,
+    "read": "1x7 is only a canary; 3x7 currently rejects the measured MoE ternary-only policy as a promotion candidate. These are still reduced-context smoke gates, not final validation."
+  },
+  "full_fidelity_gate": {
+    "max_model_len": 262144,
+    "max_tokens": 32768,
+    "tensor_parallel_size": 4,
+    "setup": "experiments/qwen_agentworld/setup_full_fidelity_node.sh",
+    "runner": "experiments/qwen_agentworld/run_full_fidelity_eval.sh",
+    "current_a100_status": "cannot_run_full_fidelity_bf16_on_1x_a100"
+  }
+}

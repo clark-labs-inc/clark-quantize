@@ -1,0 +1,20 @@
+name: sana
+family: diffusion_transformer
+default_group_size: 112
+rates:
+  trunk: [binary, ternary]
+  islands: [bf16, fp8]
+protect:
+  - patch_embed
+  - time_embed
+  - caption_projection
+  - caption_norm
+  - scale_shift_table
+  - norm_out
+  - conv_depth
+freeze:
+  - proj_out
+objective:
+  teacher_behavior: symmetric_velocity
+  geometry: hidden_cka
+  codebook: attraction

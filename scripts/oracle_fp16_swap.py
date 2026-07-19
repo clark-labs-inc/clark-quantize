@@ -5,10 +5,12 @@ whose render most restores FP16 sharpness localizes the fidelity gap -> where to
 Output: grid montage (rows=configs, cols=prompts) for visual comparison.
 ENV: CKPT=ckpt_ternary_preview_v0.pt PROMPTS=shared_hard.json OUT=oracle_fp16_swap.png
 """
-import torch, torch.nn as nn, os, json
+import torch, torch.nn as nn, os, sys, json
 os.environ["HF_HUB_OFFLINE"]="1"
 from diffusers import SanaPipeline
 from PIL import Image, ImageDraw
+sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from clark_quantize.sana_ckpt import island_values, load_compact_checkpoint, validate_quant_names
 dev="cuda"; DT=torch.bfloat16; MODEL="models/Sana_1600M_512px"; K=20; GUID=4.5
 CKPT=os.environ.get("CKPT","ckpt_ternary_preview_v0.pt"); OUT=os.environ.get("OUT","oracle_fp16_swap.png")
 PROMPTS=json.load(open(os.environ.get("PROMPTS","shared_hard.json")))[:4]
@@ -26,18 +28,19 @@ def is_qk(n): return is_attn(n) and ("to_q" in n or "to_k" in n)
 def is_ffn(n): return ".ff." in n
 NLAST=5  # last 5 of 20 blocks = late
 
-ck=torch.load(CKPT,map_location="cpu"); G=ck["group_size"]
+ck=load_compact_checkpoint(CKPT); G=ck["group_size"]
 def dequant(code,ls,in_f):
     o,ng,g=code.shape; s=torch.exp(ls.float()).unsqueeze(-1); return (code.float()*s).reshape(o,ng*g)[:,:in_f]
 pipe=SanaPipeline.from_pretrained(MODEL,torch_dtype=DT); pipe.to(dev); tf=pipe.transformer
 qmods=[(n,m) for n,m in tf.named_modules() if predicate(n,m)]
+validate_quant_names(ck,[n for n,_ in qmods])
 Wfp={n:m.weight.data.clone() for n,m in qmods}                       # FP16 teacher trunk
 Wq={}
 for (n,m),code,ls,shp in zip(qmods,ck["codes"],ck["log_scales"],ck["shapes"]):
     Wq[n]=dequant(code,ls,shp[1]).reshape(m.weight.shape).to(m.weight.dtype).to(dev)
 island_p=[(n,p) for n,p in tf.named_parameters() if is_island(n)]
 Wfp_isl={n:p.data.clone() for n,p in island_p}
-isl_trained=[c.to(dev) for c in ck["islands"]]
+isl_trained=[c.to(dev) for c in island_values(ck,island_p)]
 print(f"[oracle] {len(qmods)} trunk mods, {len(island_p)} islands | ckpt step {ck['step']}",flush=True)
 
 @torch.no_grad()

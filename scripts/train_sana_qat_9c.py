@@ -14,6 +14,7 @@ from diffusers import SanaPipeline
 from PIL import Image
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from clark_quantize import bonsai_muon as BM
+from clark_quantize.sana_ckpt import island_values, load_compact_checkpoint, validate_quant_names
 dev="cuda"; MODEL="models/Sana_1600M_512px"; K=20; G=112; GUID=4.5; M8=8
 RESUME=os.environ["RESUME"]; POOL=os.environ.get("POOL","sana_calib_256.jsonl"); TAG=os.environ.get("TAG","p9c")
 STEPS=int(os.environ.get("STEPS","400")); LAM_HF=float(os.environ.get("LAM_HF","0.05")); LAM_FFN=float(os.environ.get("LAM_FFN","0.10"))
@@ -72,15 +73,16 @@ for i in LATE:
 print(f"[teacher-ffn] copied late blocks {LATE}",flush=True)
 
 # ---- warm-start trunk+islands from checkpoint, then quantize ----
-ck=torch.load(RESUME,map_location="cpu")
+ck=load_compact_checkpoint(RESUME)
 def dequant(code,ls,in_f):
     o,ng,g=code.shape; s=torch.exp(ls.float()).unsqueeze(-1); return (code.float()*s).reshape(o,ng*g)[:,:in_f]
 qmods=[(n,m) for n,m in tf.named_modules() if predicate(n,m)]
+validate_quant_names(ck,[n for n,_ in qmods])
 with torch.no_grad():
     for (n,m),code,ls,s in zip(qmods,ck["codes"],ck["log_scales"],ck["shapes"]):
         m.weight.data.copy_(dequant(code,ls,s[1]).reshape(m.weight.shape).to(m.weight.dtype).to(dev))
-    isl_p0=[p for nm,p in tf.named_parameters() if is_island(nm)]
-    for p,c in zip(isl_p0,ck["islands"]): p.data.copy_(c.to(p.dtype).to(dev))
+    isl_p0=[(nm,p) for nm,p in tf.named_parameters() if is_island(nm)]
+    for (_,p),c in zip(isl_p0,island_values(ck,isl_p0)): p.data.copy_(c.to(p.dtype).to(dev))
 print(f"[warm-start] from {RESUME} step {ck['step']}",flush=True)
 BM.replace_modules_with_bonsai_quant(tf, predicate, mode="ternary", group_size=G, init="mse_ternary", forward_blend_alpha=1.0)
 for p in tf.parameters(): p.requires_grad_(False)
