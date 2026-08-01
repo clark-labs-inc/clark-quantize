@@ -2112,3 +2112,25 @@ changes only those two WebAssembly identities, and pins the current runtime
 before any new evaluation. The q4 reference, quality gates, dataset, artifact
 size, required browsers, numerical limits, and JavaScript harness identities
 are unchanged.
+
+## 2026-08-01 — Scientist and research-agent evidence consolidated
+
+**Verified.** The exact structured proposal from Clark Scientist run
+`20260731T180026Z-deepseek-swin-scientist` is now stored under this dossier's
+`scientist_runs/` registry. Its SHA-256 remains
+`11c2ea03c1b697873ee65102fb3c176e26c92ed0b60239c347e900064a509ba5`.
+The run receipt records the identities and hashes of the locally retained raw
+responses, event stream, worker configuration, and private trajectory without
+committing hidden reasoning or environment details.
+
+The bounded Prism/Bonsai, Clark Scientist runtime, and Swin2SR precision-map
+agent reports are now stored under `research_agent_reviews/` with their source
+task and session identities. They are explicitly classified as research leads;
+promotion decisions still require primary checkpoints, manifests, official
+upstream artifacts, and deterministic evaluations.
+
+**Decision.** `clark-quantize` is the single Git authority for durable
+BackdropKit quantization research artifacts. The `clark-scientist` repository
+owns the reusable engine, not this program's scientific outputs. Machine-
+private provider trajectories, credentials, caches, and Codex session stores
+remain outside Git by policy and are represented only by provenance receipts.

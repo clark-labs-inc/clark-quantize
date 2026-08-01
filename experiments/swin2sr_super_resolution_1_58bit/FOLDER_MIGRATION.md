@@ -18,6 +18,9 @@ cosmetic relocation.
   `policies/PROMOTION_POLICY_V10_AMENDMENT_20260801.md`
 - chronological findings and decisions: `SCIENTIFIC_JOURNAL.md`
 - canonical evidence map: `ARTIFACT_INDEX.md`
+- canonical structured Scientist outputs and run receipts: `scientist_runs/`
+- bounded research-agent reports with source identities:
+  `research_agent_reviews/`
 
 ## Intentionally pinned to `../browser_swin2sr/`
 
@@ -47,6 +50,11 @@ shared trainers, evaluators, and runtimes remain at the implementation root.
 Raw datasets, generated media, model payloads, checkpoints, and build caches
 are excluded from Git and represented by committed manifests, hashes, ledgers,
 and public artifact revisions.
+
+Raw provider responses, hidden reasoning trajectories, credentials, and Codex
+session databases are also excluded. Durable structured proposals and reviews
+are copied into this dossier; excluded private sources are identified by
+run/session ID and content hash where appropriate.
 
 ## Intended post-writer layout
 

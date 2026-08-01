@@ -11,6 +11,28 @@ hash, and manifest are part of the evidence.
 - chronological findings and corrections: `SCIENTIFIC_JOURNAL.md`
 - provenance-preserving folder plan: `FOLDER_MIGRATION.md`
 
+## Scientist and research-agent records
+
+- Clark Scientist run registry: `scientist_runs/README.md`
+- exact DeepSeek 07/31 structured proposal and provenance receipt:
+  `scientist_runs/20260731T180026Z-deepseek-swin-scientist/proposal.json`,
+  `scientist_runs/20260731T180026Z-deepseek-swin-scientist/run-receipt.json`
+- bounded research-agent review registry and content ledger:
+  `research_agent_reviews/README.md`, `research_agent_reviews/manifest.json`
+- Prism/Bonsai precision review:
+  `research_agent_reviews/20260731-bonsai-prisma-primary.md`
+- Clark Scientist runtime safety review:
+  `research_agent_reviews/20260731-clark-scientist-runtime-audit.md`
+- exact Swin2SR deployed-precision review:
+  `research_agent_reviews/20260731-swin-precision-map.md`
+- earlier distilled Scientist receipt and study context:
+  `../browser_swin2sr/prism_bonsai_transfer_20260731/SCIENTIST_DEEPSEEK_0731.md`,
+  `../browser_swin2sr/prism_bonsai_transfer_20260731/SCIENTIFIC_JOURNAL.md`
+
+Private hidden-reasoning trajectories, credentials, caches, and complete Codex
+session databases are intentionally excluded. The run receipt records hashes
+and source identities for locally retained private inputs.
+
 ## Current selected still-image release: G3
 
 - experiment protocol and chronological evidence:

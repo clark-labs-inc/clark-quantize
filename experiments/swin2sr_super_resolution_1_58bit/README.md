@@ -44,6 +44,10 @@ Sealed run folders remain at their recorded paths.
 - `methods/` — stable method maps and cross-experiment lessons.
 - `studies/` — preregistered study descriptions.
 - `policies/` — promotion-policy amendments.
+- `scientist_runs/` — canonical structured Clark Scientist proposals and
+  provenance receipts for this program.
+- `research_agent_reviews/` — bounded research-agent reports retained as
+  leads with their source task identities.
 - `FOLDER_MIGRATION.md` — what has already been consolidated and what remains
   intentionally pinned to a legacy path.
 

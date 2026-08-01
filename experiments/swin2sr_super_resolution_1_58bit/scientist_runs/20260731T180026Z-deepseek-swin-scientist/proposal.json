@@ -1,0 +1,69 @@
+{
+  "statement": "Among the three supplied explanations for the remaining q4 gap, the image-I/O sign alphabet is not the binding constraint; the binding constraint is the ternary alphabet on the intra-RSTB residual-fusion convolutions. Holding the refined dense FP16 scale channel fixed, a gradually trained q4 island placed only on those residual-fusion convolution weights will move the paired ground-truth lower-95 bootstrap bound by at least 0.1 dB toward the -0.10 dB q4 noninferiority margin, while the same island placed only on the image-I/O convolution weights will not.",
+  "rationale": "The frozen preregistration's hypothesis is that a role-and-sensitivity-selected trainable FP16/q4 island with a dense magnitude channel improves quality per stored bit over the all-ternary refined state. The supplied negative static result is the key prior observation: the best static q1-core/q4-image-I/O/q2-position/q2-residual map still lost 1.93448 dB versus the refined FP16-scale state, so abrupt combined compression of codes and scales is not the route. The active scale-codebook study already owns the magnitude-density alternative, which corresponds to explanation 2. That leaves one untested and maximally discriminating boundary: explanation 1, where the image-I/O sign tensors themselves must escape the ternary alphabet, versus explanation 3, where a different interior structural island must do so. Freezing every FP16 scale at the refined values in both arms controls explanation 2, because the scale channel is dense and identical in both arms and the only difference is which weight tensor set is trained in q4. Prisma evidence indicates role-specific BF16 islands in interior fusion/norm-like tensors rather than only first/last-layer tensors, and the RSTB residual-fusion convolutions are the closest Swin2SR analog to such an interior structural island. This is therefore one intervention, an island-location contrast under a fixed dense scale channel, not a sequential roadmap.",
+  "falsification_test": "Use the exact continuous-master checkpoint from the lineage that produced the refined surface-group g2 state. Run three seeded replications; in each replication, train both Arm A and Arm B from that master with the identical recipe, data order, objective, optimizer, sampler, evaluator, and development split, changing only the declared q4 island tensor set. Arm A lifts only the two image-I/O convolution weight tensors (8,100 weights per the supplied inventory) from ternary to trainable q4. Arm B lifts only the 3x3 residual-fusion convolution weights inside each RSTB (the module-level conv attribute, excluding conv_first, conv_after_body, conv_before_upsample, and conv_last) from ternary to trainable q4. In both arms, every other ternary code and every FP16 scale tensor is held byte-identical to the refined g2 state; no scale-codebook training or scale compression is performed. All development conclusions use exact paired samples with 10,000 bootstrap resamples for paired_ground_truth_delta_vs_q4_lower95, paired_edge_delta_vs_q4_lower95, and paired_teacher_delta_vs_q4_lower95. Stop a seed on numerical failure or a preregistered development futility boundary. The hypothesis is falsified if Arm B fails to improve paired_ground_truth_delta_vs_q4_lower95 by at least 0.1 dB over the refined g2 baseline, or if Arm A alone improves it by at least 0.1 dB while Arm B does not. The hypothesis is supported only if Arm B crosses the 0.1 dB threshold without violating artifact_bytes, edge, teacher, p10, source, script, or language gates, and Arm A does not.",
+  "expected_effect": "Arm B is expected to increase paired_ground_truth_delta_vs_q4_lower95 by at least 0.1 dB relative to the refined g2 baseline while staying below the 2,838,021-byte artifact maximum and clearing the edge lower-95 bound of -0.15 dB and teacher lower-95 bound of -0.25 dB. Arm A is expected to show no improvement of 0.1 dB or more. The observed pattern would therefore select the RSTB residual-conv q4 island over the image-I/O q4 island, with scale-channel density held constant and the active scale-codebook study not duplicated.",
+  "intervention": {
+    "type": "island_location_contrast_under_fixed_dense_scale_channel",
+    "master": "exact continuous-master checkpoint from the lineage that produced refined surface-group g2, resolved by hash before launch",
+    "baseline": "refined surface-group g2 all-ternary state, including its FP16 per-group scale tensors, reused byte-identically in both arms",
+    "replications": "three seeds; each seed trains both arms so each arm has three seeded replications",
+    "arms": [
+      {
+        "id": "image_io_q4_island",
+        "treats_explanation": 1,
+        "changed_tensors": "the input and output image-I/O convolution weights, together the supplied inventory's 8,100 weights",
+        "alphabet": "trainable q4, symmetric, 16 levels, zero-point = -scale, FP16 scale, initialized from the continuous master, trained with straight-through gradient",
+        "frozen": "all remaining ternary codes and every FP16 scale tensor at refined g2 values"
+      },
+      {
+        "id": "rstb_residual_conv_q4_island",
+        "treats_explanation": 3,
+        "changed_tensors": "the 3x3 residual-fusion convolution weights inside each RSTB (module attribute conv, excluding conv_first, conv_after_body, conv_before_upsample, and conv_last)",
+        "alphabet": "same trainable q4 format as Arm A, initialized from the continuous master, trained with straight-through gradient",
+        "frozen": "all remaining ternary codes and every FP16 scale tensor at refined g2 values"
+      }
+    ],
+    "held_fixed": [
+      "development paired samples",
+      "data order",
+      "objective",
+      "optimizer",
+      "sampler",
+      "evaluator",
+      "three seeds per arm",
+      "10000 bootstrap resamples",
+      "frozen p10/source/script/language gates"
+    ],
+    "explicitly_excluded": [
+      "no scale-codebook training or scale compression",
+      "no position-encoding or residual-map alphabet changes",
+      "no final heldout access"
+    ]
+  },
+  "planned_replications": 3,
+  "assumptions": [
+    "The supplied q4 reference, refined g2, artifact-byte gate, edge/teacher thresholds, and static-compression loss values are accepted as provenance observations, not as model recall.",
+    "The exact continuous-master checkpoint and refined g2 artifact are available and bit-addressable so both arms differ from the baseline only in the declared tensor set.",
+    "The RSTB residual-fusion convolution set can be resolved unambiguously by module path and parameter-count log; a resolution failure aborts the run before any scientific claim is drawn.",
+    "The q4 island container's quantization geometry is identical across arms and locked before execution; measured geometry is logged in provenance.",
+    "All scale tensors reused from refined g2 remain exactly FP16-representable, so freezing them introduces no format mismatch.",
+    "Three seeded replications per arm are sufficient to compute the preregistered paired bootstrap lower-95 bounds with fixed 10,000 resamples.",
+    "The active scale-codebook study is not duplicated, altered, or consumed by this experiment."
+  ],
+  "limitations": [
+    "This experiment contrasts island locations but does not optimize the scale channel; explanation 2 is controlled but not adjudicated here.",
+    "If Arm A alone succeeds, the stated hypothesis is falsified and explanation 1 is indicated; if both arms succeed, effect sizes and artifact bytes arbitrate but were not uniquely preregistered for that outcome.",
+    "The residual-conv tensor set is defined by assumed module naming; wrong name resolution produces a technical failure, not a scientific result.",
+    "The exact parameter count of the RSTB residual-fusion convs is not in the supplied evidence, so the artifact-bytes risk is estimated rather than measured before packing.",
+    "All conclusions are development-only; the final heldout remains locked until artifact identity is frozen.",
+    "Execution must not mutate or roll back the active dirty research tree or the parallel scale-codebook study."
+  ],
+  "protected_metric_risks": [
+    "artifact_bytes: both islands add bytes relative to refined g2, and the residual arm risks exceeding the 2,838,021-byte maximum if the resolved tensor set is larger than assumed; exact packing must be re-run before selection.",
+    "paired_edge_delta_vs_q4_lower95: the straight-through q4 island updates can change high-frequency edge behavior; the -0.15 dB minimum is a hard gate and a seed violating it is stopped by the futility policy.",
+    "paired_teacher_delta_vs_q4_lower95: the -0.25 dB minimum must be monitored with the same paired bootstrap; a teacher-gate violation blocks promotion even if ground-truth improves.",
+    "frozen p10/source/script/language gates: the intervention changes only precision tensors, but any packer or container metadata change must be revalidated before artifact identity is frozen.",
+    "Development selection only: no reading of the final heldout is permitted before artifact precommit, so any apparently favorable development result is not a promotion until the locked heldout evaluation is run."
+  ]
+}
