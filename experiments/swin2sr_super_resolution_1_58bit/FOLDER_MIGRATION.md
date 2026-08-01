@@ -55,8 +55,8 @@ Complete Clark Scientist provider responses and trajectories may be committed
 inside their run folder when the repository is private, the run is in program
 scope, and a credential scan passes. Credentials, caches, unrelated machine-
 private data, and Codex session databases remain excluded. Codex sessions are
-not Clark Scientist artifacts; only their bounded research reports belong in
-this dossier.
+not Clark Scientist artifacts; their bounded research reports and complete
+visible assistant-output stream belong in this dossier.
 
 ## Intended post-writer layout
 

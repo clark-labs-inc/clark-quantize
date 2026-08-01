@@ -2154,3 +2154,18 @@ described as locally executed model inference.
 **Boundary.** Codex session databases and Codex internal reasoning are not
 Clark Scientist model artifacts and are not copied. Their bounded terminal
 research reports remain in `research_agent_reviews/` with source session IDs.
+
+## 2026-08-01 — Visible Codex research outputs retained
+
+**Clarification.** The requested Codex material is the visible assistant output,
+not hidden reasoning or raw session machinery. The complete visible output
+stream for the three bounded Bonsai/Prisma, Clark Scientist runtime, and Swin2SR
+precision-map turns is now stored as JSONL under
+`research_agent_reviews/codex_outputs/`. It contains four messages: three final
+answers and the precision-map progress update, with timestamps, phases, message
+IDs, task IDs, session IDs, turn IDs, roles, and output text.
+
+**Verified.** The archive excludes inherited conversation history, user
+messages, system/developer instructions, hidden reasoning, tool internals,
+credentials, and machine-private session machinery. Its manifest pins every
+file by message count, byte size, and SHA-256.

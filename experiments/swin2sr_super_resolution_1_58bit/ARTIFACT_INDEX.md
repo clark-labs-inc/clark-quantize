@@ -22,6 +22,8 @@ hash, and manifest are part of the evidence.
   `scientist_runs/20260731T180026Z-deepseek-swin-scientist/raw/`
 - bounded research-agent review registry and content ledger:
   `research_agent_reviews/README.md`, `research_agent_reviews/manifest.json`
+- complete visible Codex commentary and final-answer output for the bounded
+  research turns: `research_agent_reviews/codex_outputs/`
 - Prism/Bonsai precision review:
   `research_agent_reviews/20260731-bonsai-prisma-primary.md`
 - Clark Scientist runtime safety review:
@@ -32,9 +34,9 @@ hash, and manifest are part of the evidence.
   `../browser_swin2sr/prism_bonsai_transfer_20260731/SCIENTIST_DEEPSEEK_0731.md`,
   `../browser_swin2sr/prism_bonsai_transfer_20260731/SCIENTIFIC_JOURNAL.md`
 
-Credentials, caches, unrelated machine-private data, and complete Codex session
-databases are intentionally excluded. Codex sessions are not Clark Scientist
-model artifacts; their captured research reports are indexed above.
+Credentials, caches, unrelated machine-private data, and raw Codex session
+databases are intentionally excluded. Every visible Codex output from the
+bounded research turns is retained in the indexed output archive above.
 
 ## Current selected still-image release: G3
 
