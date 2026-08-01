@@ -18,6 +18,27 @@ render_*.log
 calib_prompts*.json
 holdout_prompts*.json
 
+# Browser-Swin2SR generated artifacts. Canonical hashes, metrics, manifests,
+# and public Hugging Face revisions are committed; rebuildable model payloads,
+# media, raw ingests, and Rust/WASM build outputs stay local.
+experiments/browser_swin2sr/**/*.onnx
+experiments/browser_swin2sr/**/*.safetensors
+experiments/browser_swin2sr/**/*.bin
+experiments/browser_swin2sr/**/*.gz
+experiments/browser_swin2sr/**/*.mp4
+experiments/browser_swin2sr/**/*.npz
+experiments/browser_swin2sr/**/*.log
+experiments/browser_swin2sr/**/train.jsonl
+experiments/browser_swin2sr/**/metrics.json
+experiments/browser_swin2sr/**/result.json
+experiments/browser_swin2sr/**/runtime-fixture*.json
+experiments/browser_swin2sr/runtime/target/
+experiments/browser_swin2sr/video_training_data_*/index/*.jsonl
+
+# Archived LLM gate preparation can generate large resumable streams locally.
+# The sealed protocols, universes, and source code are the committed record.
+experiments/large_scale_ternary/data/
+
 # latex build artifacts
 paper/*.aux
 paper/*.log

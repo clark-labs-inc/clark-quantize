@@ -1,0 +1,47 @@
+{
+  "format": "backdropkit-swin2sr-batch-capacity-decision-v1",
+  "protocol": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/max_stable_batch_20260731/protocol.json",
+  "protocol_sha256": "becfea1bb9bf165d1246126f3425daca9e88f1dd1220283d9ea36bf73f6d52e4",
+  "status": "capacity_bounded",
+  "largest_stable_physical_batch": 56,
+  "first_rejected_or_failed_batch": 64,
+  "search_quantum": 8,
+  "selection_rule": "Largest multiple-of-eight batch with five measured finite updates and peak MPS driver allocation no greater than 75% of the process recommended maximum. A fresh process is required per batch.",
+  "accepted_receipts": {
+    "8": {
+      "sha256": "51a5044b657b9e13af9734a62c73592d8931e84b695a122a2d5826c6f9fd029b",
+      "compute_images_per_second": 19.07719437663931,
+      "driver_fraction": 0.10195247111971642
+    },
+    "16": {
+      "sha256": "c7ccef338ebd9e545ea5c6791661c61814a1217d1700ae13c518b9212703deb8",
+      "compute_images_per_second": 18.76451226121608,
+      "driver_fraction": 0.2150558649927135
+    },
+    "32": {
+      "sha256": "f543027814c8960e9205a6e7ae24d04eda6fe4ac520fed28d3bd28c817bd946e",
+      "compute_images_per_second": 16.537356596570657,
+      "driver_fraction": 0.38938278153180667
+    },
+    "48": {
+      "sha256": "07bb17ba8e20449db14f7d170339aa453f23aa21cc25109516fd696f8aa93f73",
+      "compute_images_per_second": 12.97010085631218,
+      "driver_fraction": 0.5446079589990778
+    },
+    "56": {
+      "sha256": "52187bc94b5ea2746ed5381dd4f5155d178e084e14b18b9c8751d00efa84f3d6",
+      "compute_images_per_second": 12.905101854411685,
+      "driver_fraction": 0.6606500819600475
+    }
+  },
+  "tested_batches": [
+    8,
+    16,
+    32,
+    48,
+    56,
+    64
+  ],
+  "elapsed_seconds": 181.25456500053406,
+  "next_gate": "Matched equal-images batch and learning-rate study; this capacity screen alone does not authorize changing the training default."
+}

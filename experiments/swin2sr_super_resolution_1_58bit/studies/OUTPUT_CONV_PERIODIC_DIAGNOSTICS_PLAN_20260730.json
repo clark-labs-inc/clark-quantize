@@ -1,0 +1,47 @@
+{
+  "format": "backdropkit-swin2sr-output-periodic-diagnostics-plan-v1",
+  "created_at": "2026-07-31T03:43:30Z",
+  "selection_source": "development",
+  "diagnostic_only": true,
+  "created_before_output_training_outcome": true,
+  "purpose": "Complete the preregistered step-20000, step-22000, and step-24000 hard-started fixed-crop and ternary-signature record without using those diagnostics for output-recipe selection.",
+  "execution_order": "After all three output arms and their frozen full-development decision complete, before optimizer-transfer training starts. Run serially on MPS so diagnostics do not overlap a training or development-evaluation process.",
+  "validation_data": "/Users/stan/Documents/git/clark-desktop/promos",
+  "crop_size": 128,
+  "device": "mps",
+  "steps": [
+    20000,
+    22000,
+    24000
+  ],
+  "sources": {
+    "experiments/browser_swin2sr/evaluate_hard_started_checkpoints.py": "d56416ecbf7a4baccd35ddd5f4dd22cb0558736983db5468310e71092baca7d8",
+    "experiments/browser_swin2sr/analyze_surface_signatures.py": "1f587bb3c58fbc1270c37e36255d861385806701b7cbad34d5a7ddfeed3231ec"
+  },
+  "validation_files": {
+    "/Users/stan/Documents/git/clark-desktop/promos/source-ui-composer-current.png": "27bb60639781d97b623ce94c5e6944fc0243fbde5efb0bcbf3b60e1cfe967c34",
+    "/Users/stan/Documents/git/clark-desktop/promos/source-ui-chat-current.png": "f3f8ea752eeab6a1c5e8e9a36d7a22c9cb91cd83203f91ae7014f085fa3419c0",
+    "/Users/stan/Documents/git/clark-desktop/promos/source-ui-research-current.png": "c012b92f05bd0d20fbda5e4fb16931f3a1800dbc854cdb98f26e35edf80c05d8",
+    "/Users/stan/Documents/git/clark-desktop/promos/clark-code-ad-parallel-research-vertical-poster.png": "73e7bd7af4f848200d4d9585c4b8a32fb905d8e5e493ef44c1d144c572e5d649"
+  },
+  "arms": {
+    "output-g9": {
+      "study_manifest": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g9/study-manifest.json",
+      "study_manifest_sha256": "343cc37af8ba45c96bcf917cf9ba6e25e10c6627fba5cb3de1418cb1abc4a3a7"
+    },
+    "output-g3": {
+      "study_manifest": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g3/study-manifest.json",
+      "study_manifest_sha256": "dc686f562724a8caea92f008882206ff99b93eb47e15cd7edb08bd82f94e768e"
+    },
+    "output-g2": {
+      "study_manifest": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/study-manifest.json",
+      "study_manifest_sha256": "0efde3152a9b80668c6fc0a1bbb9d4efef620c9dd9da4a562657bd992419977b"
+    }
+  },
+  "selection_boundary": {
+    "output_recipe_selector_inputs": "Only the three sealed step-24000 full-development reports.",
+    "periodic_diagnostics_may_change_selection": false,
+    "model_promotion_authorized": false,
+    "final_heldout_locked": true
+  }
+}

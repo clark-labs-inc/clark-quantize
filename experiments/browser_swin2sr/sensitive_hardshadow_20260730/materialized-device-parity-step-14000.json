@@ -1,0 +1,25 @@
+{
+  "format": "backdropkit-swin2sr-materialized-device-parity-v1",
+  "diagnostic_only": true,
+  "interpretation": "The checkpoint was projected once on source_device with every target surface hard. Both devices then consumed the same dense materialized tensors; no device reprojected continuous masters.",
+  "checkpoint": "sensitive_hardshadow_20260730/checkpoint-surface-14000.pt",
+  "checkpoint_sha256": "4f4abd928f11dfd1d110487232e6cbc5ddda9e11e8ae7a99a58dd1b2b766c45a",
+  "surface_step": 14000,
+  "source_device": "mps",
+  "comparison_device": "cpu",
+  "materialized_state_sha256": "9bc0be01fa5a71e53f632fe6b4469d2e3a8ec0704944cfdf8c30ca5842975053",
+  "materialized_state_values": 1005348,
+  "max_absolute_tolerance": 0.0002,
+  "minimum_output_psnr_requirement_db": 70.0,
+  "metrics": {
+    "samples": 4,
+    "maximum_absolute_error": 5.960464477539062e-07,
+    "mean_absolute_error": 7.762810128042474e-08,
+    "minimum_output_psnr_db": 99.0,
+    "mean_output_psnr_db": 99.0,
+    "source_mean_gt_psnr_db": 16.854567318811732,
+    "comparison_mean_gt_psnr_db": 16.854567904353246,
+    "mean_gt_psnr_delta_db": -5.855415139421893e-07
+  },
+  "passed": true
+}

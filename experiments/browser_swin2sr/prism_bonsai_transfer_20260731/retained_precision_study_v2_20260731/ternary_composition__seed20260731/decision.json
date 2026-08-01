@@ -1,0 +1,86 @@
+{
+  "format": "backdropkit-swin2sr-disjoint-ternary-composition-decision-v1",
+  "protocol": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/disjoint-ternary-composition-protocol.json",
+  "protocol_sha256": "e717b3c6bf343e152b9f1e032bde13860c4cbd6b532d2e674c82971a63026628",
+  "composition_manifest": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/ternary_composition__seed20260731/materialized/composition.json",
+  "composition_manifest_sha256": "e66be324dc2e7741922ec6a037db1bbee0791d199adab85aa54a9c86783e1fb2",
+  "composition_state_sha256": "210fb02bbe18fb948b94900fce7d29c6a81056f434ab899ccf52eef0cde37087",
+  "comparisons": {
+    "image_vs_parent": {
+      "passed": true,
+      "checks": {
+        "ground_truth_lower_95_positive": true,
+        "edge_mean_nonnegative": true,
+        "teacher_mean_nonnegative": true
+      },
+      "ground_truth_lower_95": 0.9759469330316086,
+      "ground_truth_mean": 1.0175702220987712,
+      "edge_mean": 1.0653059946589067,
+      "teacher_mean": 2.652836573473182,
+      "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/ternary_composition__seed20260731/comparisons/image-vs-parent.json",
+      "comparison_sha256": "c4517e7a53e5abb55ddf5066e2353e11c54beb8b164762143043988123026869"
+    },
+    "rstb_vs_parent": {
+      "passed": true,
+      "checks": {
+        "ground_truth_lower_95_positive": true,
+        "edge_mean_nonnegative": true,
+        "teacher_mean_nonnegative": true
+      },
+      "ground_truth_lower_95": 0.40737744641682583,
+      "ground_truth_mean": 0.42656904600406337,
+      "edge_mean": 0.402606274238624,
+      "teacher_mean": 1.1571783171740053,
+      "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/ternary_composition__seed20260731/comparisons/rstb-vs-parent.json",
+      "comparison_sha256": "19c98de03cc3d551a4d455302b3ee381dd240b1f724915de83240938ded1c122"
+    },
+    "composition_vs_parent": {
+      "passed": true,
+      "checks": {
+        "ground_truth_lower_95_positive": true,
+        "edge_mean_nonnegative": true,
+        "teacher_mean_nonnegative": true
+      },
+      "ground_truth_lower_95": 0.7705694038569769,
+      "ground_truth_mean": 0.8058399343243934,
+      "edge_mean": 0.9205842746127244,
+      "teacher_mean": 2.209415735460416,
+      "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/ternary_composition__seed20260731/comparisons/composition-vs-parent.json",
+      "comparison_sha256": "c447911241bcc5b462942e86c29ae627c6a11a79ca8e6bf92ed82b6e4ff181cf"
+    },
+    "composition_vs_image": {
+      "passed": false,
+      "checks": {
+        "ground_truth_lower_95_positive": false,
+        "edge_mean_nonnegative": false,
+        "teacher_mean_nonnegative": false
+      },
+      "ground_truth_lower_95": -0.22705418221117732,
+      "ground_truth_mean": -0.21173028777437802,
+      "edge_mean": -0.1447217200461825,
+      "teacher_mean": -0.4434208380127659,
+      "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/ternary_composition__seed20260731/comparisons/composition-vs-image.json",
+      "comparison_sha256": "bc6b4774608e4d149366d14b0806edaaeff78dee437b8f4bb2a0bd346fc1e0c5"
+    },
+    "composition_vs_rstb": {
+      "passed": true,
+      "checks": {
+        "ground_truth_lower_95_positive": true,
+        "edge_mean_nonnegative": true,
+        "teacher_mean_nonnegative": true
+      },
+      "ground_truth_lower_95": 0.35870186114483593,
+      "ground_truth_mean": 0.37927088832032996,
+      "edge_mean": 0.5179780003741005,
+      "teacher_mean": 1.0522374182864112,
+      "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/ternary_composition__seed20260731/comparisons/composition-vs-rstb.json",
+      "comparison_sha256": "7eddfcc374fe0d06522cd067477530a59372329fdaa8c73e407f85c271eb281d"
+    }
+  },
+  "accepted_as_next_ternary_research_parent": false,
+  "reason": "one or more preregistered development gates failed",
+  "storage_delta_bytes": 0,
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false
+}

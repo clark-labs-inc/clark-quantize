@@ -1,0 +1,47 @@
+{
+  "format": "backdropkit-swin2sr-retained-precision-preflight-v1",
+  "study_manifest_sha256": "7e164fdc5e5f69ea806e24cf0fe9c919849a9189ede853d861e7bcd4e6c453b8",
+  "training_results_existed_before_preflight": false,
+  "unit_tests": {
+    "passed": 8,
+    "failed": 0
+  },
+  "immutable_inspections": {
+    "image_io_fp16__ternary": {
+      "trainable_values": 8100,
+      "maximum_initial_delta": 0.0,
+      "maximum_allowed_delta": 4.76837158203125e-7
+    },
+    "image_io_fp16__fp16": {
+      "trainable_values": 8100,
+      "maximum_initial_delta_after_fp16_roundtrip": 0.0
+    },
+    "rstb_fusion_fp16__ternary": {
+      "trainable_values": 129600,
+      "maximum_initial_delta": 7.450580596923828e-9,
+      "maximum_allowed_delta": 4.76837158203125e-7
+    },
+    "rstb_fusion_fp16__fp16": {
+      "trainable_values": 129600,
+      "maximum_initial_delta_after_fp16_roundtrip": 0.0
+    }
+  },
+  "one_step_fp16_smoke": {
+    "trainable_values": 8100,
+    "gradient_finite": true,
+    "gradient_l2": 0.24599201601078013,
+    "gradient_max_abs": 0.03561488166451454,
+    "checkpoint_sha256": "f387e344fd1e87a8fddf6c01b0ba1ba2f4ab2ddde2d43e5ffbc01dc87f03e9d4",
+    "materialized_tensor_count": 484,
+    "materialized_value_count": 1005348,
+    "dense_file_sha256": "a1e0a7348e77c411670b7e341691705d1a34c04be2533a425cda9617aca4e403",
+    "dense_tensor_sha256": "e024add66d5c664b71bd410e31d045005a3cf040c1943b99e3756383a880a186"
+  },
+  "interruption_resume_smoke": {
+    "interrupted_after_checkpoint_step": 4,
+    "checkpoint_sha256": "5e5def36b940535e2865a2207592f372ba5b906ee062178cf646d041e39d3b70",
+    "restored_start_step": 4,
+    "exact_data_resume": true,
+    "restored_trainable_values": 8100
+  }
+}

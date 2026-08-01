@@ -126,6 +126,26 @@ class BonsaiQAT8(torch.optim.Optimizer):
             if group.get("role", "matrix_qat8") == "matrix_qat8":
                 group["use_muon"] = bool(value)
 
+    def state_dict(self) -> Dict[str, Any]:
+        state = super().state_dict()
+        state["bonsai_global_step"] = int(self.global_step)
+        return state
+
+    def load_state_dict(self, state_dict: Dict[str, Any]) -> None:
+        state = dict(state_dict)
+        saved_global_step = state.pop("bonsai_global_step", None)
+        if saved_global_step is None:
+            saved_global_step = max(
+                (
+                    int(item.get("step", 0))
+                    for item in state.get("state", {}).values()
+                    if isinstance(item, dict)
+                ),
+                default=0,
+            )
+        super().load_state_dict(state)
+        self.global_step = int(saved_global_step)
+
     @torch.no_grad()
     def step(self, closure: Optional[Callable] = None):
         loss = None

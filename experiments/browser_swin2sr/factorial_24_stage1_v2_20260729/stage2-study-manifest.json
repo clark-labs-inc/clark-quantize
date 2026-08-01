@@ -1,0 +1,98 @@
+{
+  "config": {
+    "batch_size": 8,
+    "checkpoint_every": 500,
+    "concurrency": 2,
+    "crop_size": 128,
+    "data": [
+      "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+      "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-v1"
+    ],
+    "device": "mps",
+    "eval_manifest": [
+      "/Users/stan/.cache/clark-quantize/swin2sr-rico-heldout-v1/manifest.jsonl",
+      "/Users/stan/.cache/clark-quantize/swin2sr-flores200-devtest-2040-v1/manifest.jsonl"
+    ],
+    "eval_max_samples": 300,
+    "learning_rate": 2e-05,
+    "only": null,
+    "out": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/factorial_24_stage1_v2_20260729",
+    "promote_count": 8,
+    "promote_from": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage1-summary.json",
+    "resume_stage": "stage1",
+    "resume_step": 500,
+    "schedule_steps": 500,
+    "seed": 20260729,
+    "stage": "stage2",
+    "steps": 2000,
+    "validate_every": 250,
+    "validation_data": "/Users/stan/Documents/git/clark-desktop/promos"
+  },
+  "created_at_unix": 1785394052.296122,
+  "matrix": [
+    {
+      "name": "optimal_mse__none__adamw",
+      "optimizer": "adamw",
+      "quantizer": "optimal_mse",
+      "rotation": "none"
+    },
+    {
+      "name": "optimal_mse__none__bonsai_qat8",
+      "optimizer": "bonsai_qat8",
+      "quantizer": "optimal_mse",
+      "rotation": "none"
+    },
+    {
+      "name": "optimal_mse__none__bonsai_qat8_muon",
+      "optimizer": "bonsai_qat8_muon",
+      "quantizer": "optimal_mse",
+      "rotation": "none"
+    },
+    {
+      "name": "optimal_mse__hadamard__adamw",
+      "optimizer": "adamw",
+      "quantizer": "optimal_mse",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "optimal_mse__hadamard__bonsai_qat8",
+      "optimizer": "bonsai_qat8",
+      "quantizer": "optimal_mse",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "optimal_mse__hadamard__bonsai_qat8_muon",
+      "optimizer": "bonsai_qat8_muon",
+      "quantizer": "optimal_mse",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "absmean__hadamard__bonsai_qat8",
+      "optimizer": "bonsai_qat8",
+      "quantizer": "absmean",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "absmean__hadamard__bonsai_qat8_muon",
+      "optimizer": "bonsai_qat8_muon",
+      "quantizer": "absmean",
+      "rotation": "hadamard"
+    }
+  ],
+  "pid": 96433,
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "schema_version": 1,
+  "source": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/run_factorial_race.py",
+  "source_files": {
+    "artifact_state.py": "6b09fb1062628c3db11a612ad6cd96d01e894bb379df5fe65c4b63f413a2faf0",
+    "data_pipeline.py": "8dd9a33ef886c97fe70a33db01612112a545ba8b7e3243de2ea9e040cd8c7671",
+    "optimizer_controls.py": "18a16c6d5220ad0f965452f1baadea1ae2c96a155e6d00718fc554d71502b01b",
+    "qat_objective.py": "22fa683897a8dc938a873e7fae9d6836c5cba30243223513c2b1b828587fe95c",
+    "quantizer_controls.py": "1480eee113c789ff1cde5d484a5416c9f5bfb5f03dad1144165333397c86a843",
+    "rotation_control.py": "29e360be76d94a54266d4e0afdf2db15303e9d69f4452db24dea450f250481b2",
+    "run_state.py": "2bb0e607c6bce5514fab3751037eca7d7707b39b4eb8b92fc7755ccce488067f",
+    "train_swin2sr_qat.py": "f4730dca84e5c3cdacc607b603abaf4e7b8575877689f43a717ab3075b34b87d"
+  },
+  "source_sha256": "b5632b7aaa02bcc84772f925a807998381a9fb36f8a0702cb71364d27e37ba02",
+  "stage": "stage2"
+}

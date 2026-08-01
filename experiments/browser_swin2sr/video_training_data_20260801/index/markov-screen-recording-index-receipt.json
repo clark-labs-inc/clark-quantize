@@ -1,0 +1,93 @@
+{
+  "format": "backdropkit-video-source-index-v1",
+  "repo_id": "markov-ai/computer-use-large",
+  "revision": "b50aeccec6d24a56ed4f8fbb9f5b2a16846b46a9",
+  "license": "cc-by-4.0",
+  "metadata_files": [
+    {
+      "path": "data/autocad/metadata.jsonl",
+      "bytes": 1019606,
+      "sha256": "13d9f4b8941fd4ed555121b1a736615a8dc5ed09baa2b27606dfe6625451c00b"
+    },
+    {
+      "path": "data/autocad_2/metadata.jsonl",
+      "bytes": 6124,
+      "sha256": "2cdd30257b39afe35b50ee1659c4ad4a4235a184e23f0292881d564217676fd0"
+    },
+    {
+      "path": "data/blender/metadata.jsonl",
+      "bytes": 1021126,
+      "sha256": "badc10152993b071a5e6d9001e685a14af2af69359851395a4751fa0f18885da"
+    },
+    {
+      "path": "data/blender_2/metadata.jsonl",
+      "bytes": 152569,
+      "sha256": "0f3256cb09c0c8c3d62e5f9152484f0e84da381be11b0221727af0eb20aaa2f2"
+    },
+    {
+      "path": "data/excel/metadata.jsonl",
+      "bytes": 811067,
+      "sha256": "bb7187f7c043ce6b22a5c96377c22c783f0c194bcd394256c6fb4d6d8d873d44"
+    },
+    {
+      "path": "data/photoshop/metadata.jsonl",
+      "bytes": 1039265,
+      "sha256": "34ad1c50126fc039a98411d1412a8c6cfd7ba5991f565ca825fa2e932f7e2698"
+    },
+    {
+      "path": "data/photoshop_2/metadata.jsonl",
+      "bytes": 73302,
+      "sha256": "e2c8ff2b5986ddec0b671e7913a4024b42095defce721736aca9bb92e73db2ba"
+    },
+    {
+      "path": "data/salesforce/metadata.jsonl",
+      "bytes": 817452,
+      "sha256": "14e23c109af9ae87e71d846573f0dcae0a4e00edd46a63015bc62d3fd45d9d4e"
+    },
+    {
+      "path": "data/vscode/metadata.jsonl",
+      "bytes": 30761,
+      "sha256": "d462eeda1338c0023c32646e4eae514fd2fc4a227946e6969048ef03df949f91"
+    }
+  ],
+  "index": {
+    "path": "markov-screen-recording-index.jsonl",
+    "bytes": 22819649,
+    "sha256": "82c6e36508e0f4401bf9a0e8016bb3ebf82af130ab9b698b748c8ef72a56dbf4"
+  },
+  "rows": 48477,
+  "rows_quarantined_for_missing_identity": 1,
+  "quarantined_identity_rows": [
+    {
+      "source_metadata": "data/photoshop/metadata.jsonl",
+      "source_line": 4466,
+      "missing": [
+        "category"
+      ]
+    }
+  ],
+  "rows_with_complete_duration": 48426,
+  "rows_quarantined_for_incomplete_metadata": 51,
+  "split_rows": {
+    "test": 307,
+    "train": 40342,
+    "validation": 7828
+  },
+  "split_hours": {
+    "test": 127.09455555555556,
+    "train": 9829.39622222227,
+    "validation": 2324.713861111108
+  },
+  "initial_ingest": {
+    "target_hours": 1000.0,
+    "selected_videos": 4282,
+    "selected_hours": 1001.5061944444448,
+    "selected_hours_by_category": {
+      "autocad": 250.82094444444473,
+      "blender": 250.01527777777784,
+      "excel": 250.15972222222223,
+      "photoshop": 250.51025
+    },
+    "selection": "stable SHA-256 priority, equal target hours per training category"
+  }
+}

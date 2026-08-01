@@ -1,0 +1,65 @@
+{
+  "format": "backdropkit-swin2sr-recovery-v1",
+  "base_checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage3/absmean__hadamard__bonsai_qat8_muon/checkpoint-5000.pt",
+  "base_step": 5000,
+  "initial_global_step": 5000,
+  "recovery_steps_before": 0,
+  "optimizer": {
+    "name": "bonsai_qat8_muon",
+    "learning_rate": 1e-06,
+    "weight_decay": 0.0001,
+    "muon_every": 16,
+    "muon_steps": 2,
+    "scalar_lr_multiplier": 100.0,
+    "reset_from_base": true
+  },
+  "island_policy": "frozen",
+  "scalar_decomposition": true,
+  "localized_stage_steps": 100,
+  "loss_recipe": "teacher_heavy",
+  "loss_weights": {
+    "teacher": 0.72,
+    "ground_truth": 0.08,
+    "edge": 0.08,
+    "feature": 0.12
+  },
+  "feature_normalization": "l2",
+  "group_size": 30,
+  "scalar_storage_bytes": 576,
+  "sampler": {
+    "format": "backdropkit-product-source-language-v2",
+    "epoch_images": 206500,
+    "source_weights": {
+      "aria_ui": 0.15,
+      "flores200_balanced_synthetic_ui": 0.2,
+      "pd12m": 0.1,
+      "rico": 0.35,
+      "websight": 0.2
+    },
+    "source_quotas": {
+      "aria_ui": 30975,
+      "flores200_balanced_synthetic_ui": 41300,
+      "pd12m": 20650,
+      "rico": 72275,
+      "websight": 41300
+    },
+    "languages_per_source": {
+      "aria_ui": 0,
+      "flores200_balanced_synthetic_ui": 204,
+      "pd12m": 0,
+      "rico": 0,
+      "websight": 0
+    }
+  },
+  "steps": 500,
+  "final_global_step": 5500,
+  "baseline": {
+    "psnr_vs_ground_truth": 41.84554407689067,
+    "psnr_vs_teacher": 46.404315944924576
+  },
+  "final": {
+    "psnr_vs_ground_truth": 42.88210160845447,
+    "psnr_vs_teacher": 47.719860961640634
+  },
+  "elapsed_seconds": 564.123593333
+}

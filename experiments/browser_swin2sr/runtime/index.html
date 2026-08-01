@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clark Air browser runtime proof</title>
+    <style>
+      :root { color-scheme: light dark; font: 16px/1.5 system-ui, sans-serif; }
+      body { margin: 0; display: grid; min-height: 100vh; place-items: center; background: #151221; }
+      main { width: min(44rem, calc(100% - 2rem)); padding: 2rem; border-radius: 1.5rem;
+        background: #211c31; color: #f8f5ff; box-shadow: 0 2rem 6rem #0008; }
+      h1 { margin-top: 0; }
+      code { color: #c8ff56; }
+      .pass { color: #c8ff56; }
+      .fail { color: #ff8a9a; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Clark-packed browser inference</h1>
+      <p>A batched real Swin2SR 60×60 attention projection, packed as 20 trits per uint32.</p>
+      <p id="status">Testing WebGPU with automatic WASM fallback…</p>
+      <pre id="result"></pre>
+    </main>
+    <script type="module">
+      import { runFixture } from "./runtime.js?v=2";
+
+      const preference = new URLSearchParams(location.search).get("backend") ?? "auto";
+      const fixture = await fetch("./fixture.json").then((response) => response.json());
+      try {
+        const cold = await runFixture(fixture, preference);
+        const result = await runFixture(fixture, preference);
+        result.coldElapsedMs = cold.elapsedMs;
+        window.__clarkRuntimeResults = result;
+        const passed = result.maxAbsoluteError < 1e-4;
+        document.querySelector("#status").className = passed ? "pass" : "fail";
+        document.querySelector("#status").textContent = passed ? "Numerical check passed" : "Numerical check failed";
+        document.querySelector("#result").textContent = JSON.stringify(result, null, 2);
+      } catch (error) {
+        window.__clarkRuntimeResults = { error: String(error?.stack ?? error) };
+        document.querySelector("#status").className = "fail";
+        document.querySelector("#status").textContent = "Runtime failed";
+        document.querySelector("#result").textContent = window.__clarkRuntimeResults.error;
+      }
+    </script>
+  </body>
+</html>

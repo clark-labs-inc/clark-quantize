@@ -1,0 +1,215 @@
+{
+  "format": "backdropkit-swin2sr-optimizer-decision-v1",
+  "diagnostic_only": true,
+  "selection_source": "development",
+  "promotion_is_not_final_acceptance": true,
+  "rule": "Among arms paired-noninferior to the empirical GT-PSNR best and teacher-PSNR best, minimize maximum optimizer-state bytes; then maximize GT PSNR, teacher PSNR, and use name as a final deterministic tie-break.",
+  "aggregate": "experiments/browser_swin2sr/optimizer_replicates_20260730/ground-truth-aggregate.json",
+  "aggregate_sha256": "cb2a329b4c4e40c9e47a6c80f30897d451c1004f753ed2a6e48c58bd90a750c5",
+  "ground_truth_margin_db": 0.1,
+  "teacher_margin_db": 0.1,
+  "summaries": [
+    {
+      "path": "experiments/browser_swin2sr/optimizer_replicate_seed20260730/summary-receipt.json",
+      "sha256": "97256b3f2ee55cc4792f0a222a0a373aaadd4fe22add28d17a5dc96d5a28d2b6",
+      "seed": 20260730
+    },
+    {
+      "path": "experiments/browser_swin2sr/optimizer_replicate_seed20260731/summary-receipt.json",
+      "sha256": "3a415f11ad37f8d974c45fcbe8ba996cfb3c35c9b797f3931a2a1758b7dba10b",
+      "seed": 20260731
+    },
+    {
+      "path": "experiments/browser_swin2sr/optimizer_replicate_seed20260732/summary-receipt.json",
+      "sha256": "d3bd1d3130090fe6a582236c2e40197753c00d9520f852ca71e40d47aa41c56f",
+      "seed": 20260732
+    }
+  ],
+  "empirical_quality_best": "adamw__lr_x4",
+  "ground_truth_gates": {
+    "mirror_sgd__lr_x4": {
+      "best": "adamw__lr_x4",
+      "candidate": "mirror_sgd__lr_x4",
+      "delta_definition": "best_minus_candidate",
+      "count": 3,
+      "mean": 0.25518063486720877,
+      "sample_stddev": 0.41325326166255644,
+      "ci95_low": -0.771480232795166,
+      "ci95_high": 1.2818415025295835,
+      "best_statistically_superior": false,
+      "candidate_noninferior_within_margin": false,
+      "paired_deltas": [
+        -0.006815683460125399,
+        0.04078524290125074,
+        0.731572345160501
+      ]
+    },
+    "factored_adafactor__lr_x4": {
+      "best": "adamw__lr_x4",
+      "candidate": "factored_adafactor__lr_x4",
+      "delta_definition": "best_minus_candidate",
+      "count": 3,
+      "mean": 0.7015193816528864,
+      "sample_stddev": 0.8944499390472953,
+      "ci95_low": -1.5205967773544518,
+      "ci95_high": 2.9236355406602246,
+      "best_statistically_superior": false,
+      "candidate_noninferior_within_margin": false,
+      "paired_deltas": [
+        -0.27289543436127417,
+        1.4852525359464863,
+        0.8922010433734471
+      ]
+    },
+    "bonsai_qat8_muon__lr_x4": {
+      "best": "adamw__lr_x4",
+      "candidate": "bonsai_qat8_muon__lr_x4",
+      "delta_definition": "best_minus_candidate",
+      "count": 3,
+      "mean": 0.824796556711199,
+      "sample_stddev": 0.49530720109241605,
+      "ci95_low": -0.4057140478201937,
+      "ci95_high": 2.0553071612425917,
+      "best_statistically_superior": false,
+      "candidate_noninferior_within_margin": false,
+      "paired_deltas": [
+        0.8879311524983606,
+        1.2855094032121457,
+        0.3009491144230907
+      ]
+    }
+  },
+  "teacher_gates": {
+    "bonsai_qat8_muon__lr_x4": {
+      "best": "adamw__lr_x4",
+      "candidate": "bonsai_qat8_muon__lr_x4",
+      "delta_definition": "best_minus_candidate",
+      "count": 3,
+      "mean": 1.5921088407607844,
+      "sample_stddev": 0.9490015550079235,
+      "ci95_low": -0.7655319821033031,
+      "ci95_high": 3.949749663624872,
+      "noninferiority_margin_db": 0.1,
+      "candidate_noninferior_within_margin": false,
+      "paired_deltas": [
+        1.2618209820361699,
+        2.6621209368699326,
+        0.852384603376251
+      ]
+    },
+    "factored_adafactor__lr_x4": {
+      "best": "adamw__lr_x4",
+      "candidate": "factored_adafactor__lr_x4",
+      "delta_definition": "best_minus_candidate",
+      "count": 3,
+      "mean": 1.3221626297282587,
+      "sample_stddev": 2.430758711242187,
+      "ci95_low": -4.716664111824583,
+      "ci95_high": 7.3609893712811,
+      "noninferiority_margin_db": 0.1,
+      "candidate_noninferior_within_margin": false,
+      "paired_deltas": [
+        -1.4417700975031664,
+        3.127324954789813,
+        2.2809330318981296
+      ]
+    },
+    "mirror_sgd__lr_x4": {
+      "best": "adamw__lr_x4",
+      "candidate": "mirror_sgd__lr_x4",
+      "delta_definition": "best_minus_candidate",
+      "count": 3,
+      "mean": 1.3142945118311193,
+      "sample_stddev": 1.0112008336951523,
+      "ci95_low": -1.1978703556057784,
+      "ci95_high": 3.826459379268017,
+      "noninferiority_margin_db": 0.1,
+      "candidate_noninferior_within_margin": false,
+      "paired_deltas": [
+        0.1488042081289649,
+        1.9582882558943098,
+        1.8357910714700836
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "name": "adamw__lr_x4",
+      "optimizer": "adamw",
+      "ground_truth_mean_db": 43.57561336012894,
+      "teacher_mean_db": 49.3211309963512,
+      "optimizer_state_bytes_by_seed": [
+        5669376,
+        5669376,
+        5669376
+      ],
+      "optimizer_state_bytes_max": 5669376,
+      "ground_truth_noninferior": true,
+      "teacher_noninferior": true,
+      "eligible": true
+    },
+    {
+      "name": "bonsai_qat8_muon__lr_x4",
+      "optimizer": "bonsai_qat8_muon",
+      "ground_truth_mean_db": 42.75081680341774,
+      "teacher_mean_db": 47.72902215559042,
+      "optimizer_state_bytes_by_seed": [
+        1006080,
+        1006080,
+        1006080
+      ],
+      "optimizer_state_bytes_max": 1006080,
+      "ground_truth_noninferior": false,
+      "teacher_noninferior": false,
+      "eligible": false
+    },
+    {
+      "name": "factored_adafactor__lr_x4",
+      "optimizer": "factored_adafactor",
+      "ground_truth_mean_db": 42.874093978476054,
+      "teacher_mean_db": 47.99896836662294,
+      "optimizer_state_bytes_by_seed": [
+        149760,
+        149760,
+        149760
+      ],
+      "optimizer_state_bytes_max": 149760,
+      "ground_truth_noninferior": false,
+      "teacher_noninferior": false,
+      "eligible": false
+    },
+    {
+      "name": "mirror_sgd__lr_x4",
+      "optimizer": "mirror_sgd",
+      "ground_truth_mean_db": 43.32043272526173,
+      "teacher_mean_db": 48.00683648452008,
+      "optimizer_state_bytes_by_seed": [
+        0,
+        0,
+        0
+      ],
+      "optimizer_state_bytes_max": 0,
+      "ground_truth_noninferior": false,
+      "teacher_noninferior": false,
+      "eligible": false
+    }
+  ],
+  "eligible_low_state_set": [
+    "adamw__lr_x4"
+  ],
+  "selected": {
+    "name": "adamw__lr_x4",
+    "optimizer": "adamw",
+    "ground_truth_mean_db": 43.57561336012894,
+    "teacher_mean_db": 49.3211309963512,
+    "optimizer_state_bytes_by_seed": [
+      5669376,
+      5669376,
+      5669376
+    ],
+    "optimizer_state_bytes_max": 5669376,
+    "ground_truth_noninferior": true,
+    "teacher_noninferior": true,
+    "eligible": true
+  }
+}

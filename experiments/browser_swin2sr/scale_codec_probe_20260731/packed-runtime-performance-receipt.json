@@ -1,0 +1,50 @@
+{
+  "format": "backdropkit-swin2sr-packed-runtime-performance-v1",
+  "date": "2026-07-31",
+  "diagnostic_only": true,
+  "promotion_authorized": false,
+  "input_shape": [1, 3, 64, 64],
+  "output_shape": [1, 3, 128, 128],
+  "artifact": {
+    "manifest_bytes": 113989,
+    "manifest_sha256": "5b52b6e9c980dbd89c84752c9b9745004a2ee39553ecc9e79b30ae6636bd814f",
+    "binary_bytes": 322224,
+    "binary_sha256": "391dd8ba0bf6b302546925f1fc22ba91a93ead02453d7ba550d5ff328ad294fb"
+  },
+  "fixture_sha256": "c3cfaa8c67f9db2c965fc281fb8bcde6ce40f4ca3577a164695df681fb753154",
+  "build": {
+    "release_opt_level": 3,
+    "lto": true,
+    "codegen_units": 1,
+    "scalar_wasm_bytes": 157830,
+    "scalar_wasm_sha256": "32c3c928e285d23c6599f721dd6a15be8bb9e5e80a5617e69e1b465356496f60",
+    "simd_wasm_bytes": 163090,
+    "simd_wasm_sha256": "020be662fab85bcf3c07f73c7126b8da6ec8a9ebdcb921c172082341a3105c4d"
+  },
+  "native_rust": {
+    "seconds": [1.66629425, 1.646872084, 1.611910375],
+    "median_seconds": 1.646872084,
+    "maximum_absolute_error": 0.000742495059967041,
+    "mean_absolute_error": 0.00011367660348090188
+  },
+  "browser_scalar_wasm": {
+    "browser": "Codex in-app Chromium",
+    "milliseconds": [3024.3, 2318.9, 2347.2],
+    "median_milliseconds": 2347.2,
+    "maximum_absolute_error": 0.0007422566413879395,
+    "mean_absolute_error": 0.00011367568307226368
+  },
+  "browser_simd_wasm": {
+    "browser": "Codex in-app Chromium",
+    "milliseconds": [2564.2, 1876.0, 1858.5],
+    "median_milliseconds": 1876.0,
+    "maximum_absolute_error": 0.0007424354553222656,
+    "mean_absolute_error": 0.00011367790981845853
+  },
+  "adaptive_loader": {
+    "simd_preferred": true,
+    "scalar_on_simd_initialization_failure": true,
+    "forced_scalar_receipt_verified": true
+  },
+  "interpretation": "The packed independent runner is numerically conformant and universally loadable. SIMD is optional and reduced warm browser latency by 20.1% versus scalar WASM. At this crop it remains slower than BackdropKit's shipped ONNX Runtime path, so it is infrastructure evidence rather than the product default."
+}

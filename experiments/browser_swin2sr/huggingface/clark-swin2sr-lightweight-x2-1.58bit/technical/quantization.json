@@ -1,0 +1,144 @@
+{
+  "format": "clark-ternary-swin2sr-release-v3",
+  "base_model": "caidas/swin2SR-lightweight-x2-64",
+  "base_model_revision": "07e8e61492ce6daf4f34c651622960faf110c17f",
+  "variant": "mixed ternary with int7 residual-group and FP16 image-I/O islands",
+  "dense_state_sha256": "308b7fc0de513a4983563d519219c100ff8f13bb0a5143d5cd3e1d4204d2a612",
+  "parameter_values": 1005348,
+  "ternary_weight_values": 839904,
+  "ternary_fraction_of_parameters": 0.8354360878024326,
+  "ternary_tensors": 198,
+  "retained_precision": {
+    "int7": {
+      "weight_values": 129600,
+      "tensors": 4,
+      "granularity": "per_output"
+    },
+    "float16": {
+      "weight_values": 8100,
+      "tensors": [
+        "swin2sr.first_convolution.weight",
+        "upsample.conv.weight"
+      ]
+    }
+  },
+  "storage": {
+    "packed_trunk_bits_per_quantized_weight": 2.644090173944615,
+    "lossless_transport_bits_per_parameter": 3.0246800112995698,
+    "lossless_transport_bytes": 380107
+  },
+  "artifacts": {
+    "model.safetensors": {
+      "bytes": 4082952,
+      "sha256": "864fa0412b73e2564ff5939a75d200131fe3507a9752adb6d35288b95c697434"
+    },
+    "onnx/model.onnx": {
+      "bytes": 5326998,
+      "sha256": "4b1e0e6835c0f2d4fb56e921fa612014c95b630b25bbc48d9c198f77471a23a3"
+    },
+    "onnx/model.onnx.gz": {
+      "bytes": 808002,
+      "sha256": "a5e32c6b853f32e6c2fd39615ff27f7780e076fdac504dc3f2be1e822e3e085c"
+    },
+    "native/swin2sr-ternary-bonsai-x2.bdk.gz": {
+      "bytes": 380107,
+      "sha256": "9e05fcb9f16f4ea2e4dbef2121a84e374f83ba8aa390b9d13ac3bc4dac320912"
+    }
+  },
+  "development_3040": {
+    "samples": 3040,
+    "psnr_vs_ground_truth_db": 34.307506301938034,
+    "edge_psnr_vs_ground_truth_db": 37.873078710714445,
+    "psnr_vs_teacher_db": 41.70367931075755,
+    "psnr_gain_over_bicubic_db": 6.205912195038015,
+    "gain_over_release_db": {
+      "psnr_vs_ground_truth": 0.20935090195693526,
+      "edge_psnr_vs_ground_truth": 0.15016738846987002,
+      "psnr_vs_teacher": 0.7217666160429803
+    },
+    "all_tested_groups_non_regressing": true
+  },
+  "set5_x2_rgb_psnr": {
+    "samples": 5,
+    "bicubic_mean_db": 31.786759975999097,
+    "ternary_mean_db": 35.30229163002258,
+    "gain_mean_db": 3.51553165402348
+  },
+  "conformance": {
+    "portable_onnx": true,
+    "chromium_webgpu": true,
+    "chromium_wasm": true,
+    "wasm_simd": true,
+    "wasm_scalar": true,
+    "browser_receipt": {
+      "format": "backdropkit-swin2sr-portable-onnx-browser-conformance-v1",
+      "tested_at": "2026-08-01T15:48:23Z",
+      "browser": "chromium",
+      "fixture_sha256": "178691661a064367073afbde022c03d8605daf3e5d655820fbbc5d7f67cfbcf7",
+      "hard_state_sha256": "308b7fc0de513a4983563d519219c100ff8f13bb0a5143d5cd3e1d4204d2a612",
+      "compressed_model": {
+        "compression": "gzip",
+        "bytes": 808002,
+        "sha256": "a5e32c6b853f32e6c2fd39615ff27f7780e076fdac504dc3f2be1e822e3e085c"
+      },
+      "expanded_model": {
+        "bytes": 5326998,
+        "sha256": "4b1e0e6835c0f2d4fb56e921fa612014c95b630b25bbc48d9c198f77471a23a3"
+      },
+      "input_shape": [
+        1,
+        3,
+        64,
+        64
+      ],
+      "output_shape": [
+        1,
+        3,
+        128,
+        128
+      ],
+      "decompression_ms": 5.5,
+      "receipts": [
+        {
+          "backend": "webgpu",
+          "surface": "chromium-webgpu",
+          "session_ms": 3144.2,
+          "inference_ms": [
+            97.2,
+            30.4,
+            28.3
+          ],
+          "warm_inference_ms": 30.4,
+          "maximum_error": 0.00014257431030273438,
+          "mean_error": 2.2182205005568296e-05,
+          "passed": true
+        },
+        {
+          "backend": "wasm",
+          "surface": "chromium-wasm",
+          "session_ms": 3256.8,
+          "inference_ms": [
+            390.6,
+            367.0,
+            377.3
+          ],
+          "warm_inference_ms": 377.3,
+          "maximum_error": 0.00014281272888183594,
+          "mean_error": 2.2179275523133885e-05,
+          "passed": true
+        }
+      ],
+      "harness_files": {
+        "full_onnx_smoke_browser.html": "5dd2b6956b20ac2eb52062042fe5072ea81021e475ac6ab97b28029e68e4073a",
+        "runtime_surface.mjs": "b7ad36ac79e7c4ba4ebda964c879e4a061144c4c8eecfccad7dfb877c4b9516c"
+      },
+      "console": {
+        "unexpected_errors": 0,
+        "expected_notices": [
+          "ONNX Runtime assigns shape-only operations to CPU even when WebGPU is preferred."
+        ]
+      },
+      "passed": true
+    }
+  }
+}

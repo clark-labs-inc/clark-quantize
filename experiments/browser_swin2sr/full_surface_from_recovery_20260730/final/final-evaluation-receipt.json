@@ -1,0 +1,61 @@
+{
+  "candidate_metrics": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/full_surface_from_recovery_20260730/final/candidate-metrics.json",
+  "candidate_metrics_sha256": "08a75e658bbcad1c172737187bfb5b373385cf3d11603b6b66294fc329ee5c31",
+  "format": "backdropkit-swin2sr-final-evaluation-v1",
+  "overall": {
+    "bicubic_psnr_vs_ground_truth": {
+      "mean": 28.058198793613542,
+      "median": 26.864558728307422,
+      "p10": 22.68135259358343,
+      "p90": 34.927674035305806
+    },
+    "edge_psnr_vs_ground_truth": {
+      "mean": 28.497983626527926,
+      "median": 28.159178776755986,
+      "p10": 25.12825244056093,
+      "p90": 32.01482435735205
+    },
+    "psnr_gain_over_bicubic": {
+      "mean": -14.91783503669134,
+      "p10": -22.102924092009935
+    },
+    "psnr_vs_ground_truth": {
+      "mean": 13.140363756922206,
+      "median": 12.317688801918301,
+      "p10": 11.981707751829171,
+      "p90": 15.49321361507917
+    },
+    "psnr_vs_teacher": {
+      "mean": 13.219561110330682,
+      "median": 12.371178640298734,
+      "p10": 12.04253704323269,
+      "p90": 15.592024171012607
+    },
+    "samples": 3040,
+    "student_seconds": {
+      "mean": 0.08934812704802626,
+      "median": 0.08615097900000279,
+      "p10": 0.07595180420000247,
+      "p90": 0.10494395450001263
+    },
+    "teacher_psnr_vs_ground_truth": {
+      "mean": 35.59876743369713,
+      "median": 35.116553387340886,
+      "p10": 27.084261931282878,
+      "p90": 45.44364408351857
+    },
+    "teacher_seconds": {
+      "mean": 0.08981229102697388,
+      "median": 0.0864811670000023,
+      "p10": 0.07611378779999427,
+      "p90": 0.10580309580001028
+    }
+  },
+  "precommit_sha256": "b86eefc1f89350c714fb9a952afcc9a1fc37c0fcbd07608211286ac5c6865bbf",
+  "samples": 3040,
+  "selected_lane": "fp32",
+  "source_files": {
+    "evaluate_final_candidate.py": "c99a8108dba0a76ed649e3c4df4901f0d3ee404f260e339f46af87b92117f161",
+    "evaluate_stratified.py": "b1f7a88ee08e8d405378187c083c87dfcad104e246562586395d36d76a42b05e"
+  }
+}

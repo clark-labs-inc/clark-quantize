@@ -1,0 +1,2900 @@
+{
+  "format": "backdropkit-swin2sr-layer-sensitivity-v1",
+  "checkpoint": "experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage2/optimal_mse__none__bonsai_qat8/checkpoint-2000.pt",
+  "checkpoint_step": 2000,
+  "quantization": {
+    "mode": "ternary",
+    "method": "optimal_mse",
+    "group_size": 60,
+    "rotation": "none",
+    "rotation_block": 4
+  },
+  "samples": 40,
+  "samples_per_source": 20,
+  "sources": [
+    "flores200_balanced_synthetic_ui",
+    "rico_screen2words_heldout"
+  ],
+  "ranking": [
+    {
+      "rank": 1,
+      "name": "swin2sr.encoder.stages.3.layers.5.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 1.5862705739339193,
+          "relative_mse": 0.445641239205454
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 1.5970193227132161,
+          "relative_mse": 0.3472839004314587
+        }
+      },
+      "mse": 1.5916449483235677,
+      "relative_mse": 0.3901988335805441,
+      "worst_source_relative_mse": 0.445641239205454
+    },
+    {
+      "rank": 2,
+      "name": "swin2sr.encoder.stages.3.layers.1.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 2.245043830871582,
+          "relative_mse": 0.3672361175104618
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 2.098823331197103,
+          "relative_mse": 0.21082471502784436
+        }
+      },
+      "mse": 2.1719335810343425,
+      "relative_mse": 0.2703317598074594,
+      "worst_source_relative_mse": 0.3672361175104618
+    },
+    {
+      "rank": 3,
+      "name": "swin2sr.encoder.stages.3.layers.1.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 1.9825739669799805,
+          "relative_mse": 0.36463190029081644
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 1.8882349522908528,
+          "relative_mse": 0.22164476321517268
+        }
+      },
+      "mse": 1.9354044596354167,
+      "relative_mse": 0.27735034052342666,
+      "worst_source_relative_mse": 0.36463190029081644
+    },
+    {
+      "rank": 4,
+      "name": "swin2sr.encoder.stages.3.layers.0.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 1.155237356821696,
+          "relative_mse": 0.3406304577031044
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 1.2101599597930908,
+          "relative_mse": 0.2838387149207887
+        }
+      },
+      "mse": 1.1826986583073933,
+      "relative_mse": 0.3089996533325357,
+      "worst_source_relative_mse": 0.3406304577031044
+    },
+    {
+      "rank": 5,
+      "name": "swin2sr.encoder.stages.2.layers.1.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.5784896008173624,
+          "relative_mse": 0.3340261175885133
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.5367708508173624,
+          "relative_mse": 0.28593716631479094
+        }
+      },
+      "mse": 0.5576302258173624,
+      "relative_mse": 0.3090132001072961,
+      "worst_source_relative_mse": 0.3340261175885133
+    },
+    {
+      "rank": 6,
+      "name": "swin2sr.encoder.stages.3.layers.5.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 2.7654544830322267,
+          "relative_mse": 0.31046170641975046
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 2.7825938669840493,
+          "relative_mse": 0.22199144020609163
+        }
+      },
+      "mse": 2.774024175008138,
+      "relative_mse": 0.2587438290015944,
+      "worst_source_relative_mse": 0.31046170641975046
+    },
+    {
+      "rank": 7,
+      "name": "swin2sr.encoder.stages.3.layers.0.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 2.743076655069987,
+          "relative_mse": 0.3011049971682433
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 2.5519343439737954,
+          "relative_mse": 0.2187390470957021
+        }
+      },
+      "mse": 2.647505499521891,
+      "relative_mse": 0.25485450654401404,
+      "worst_source_relative_mse": 0.3011049971682433
+    },
+    {
+      "rank": 8,
+      "name": "swin2sr.encoder.stages.3.layers.0.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 2.404099915822347,
+          "relative_mse": 0.29983010921611336
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 2.3504612032572427,
+          "relative_mse": 0.23294727847459706
+        }
+      },
+      "mse": 2.377280559539795,
+      "relative_mse": 0.2625624381197433,
+      "worst_source_relative_mse": 0.29983010921611336
+    },
+    {
+      "rank": 9,
+      "name": "swin2sr.encoder.stages.3.layers.1.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 1.4469494247436523,
+          "relative_mse": 0.2717734654170171
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 1.4544426314036052,
+          "relative_mse": 0.27838727217694664
+        }
+      },
+      "mse": 1.4506960280736287,
+      "relative_mse": 0.2750491540818199,
+      "worst_source_relative_mse": 0.27838727217694664
+    },
+    {
+      "rank": 10,
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.5794292624791463,
+          "relative_mse": 0.2685390629446319
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.55376296043396,
+          "relative_mse": 0.2067616090422131
+        }
+      },
+      "mse": 0.5665961114565531,
+      "relative_mse": 0.23432538522635513,
+      "worst_source_relative_mse": 0.2685390629446319
+    },
+    {
+      "rank": 11,
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 2.0873004404703774,
+          "relative_mse": 0.268200540838024
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 2.2278445879618327,
+          "relative_mse": 0.2074882849799788
+        }
+      },
+      "mse": 2.1575725142161053,
+      "relative_mse": 0.2330014879045132,
+      "worst_source_relative_mse": 0.268200540838024
+    },
+    {
+      "rank": 12,
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 1.042314780553182,
+          "relative_mse": 0.2675559577591424
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 1.1561440308888753,
+          "relative_mse": 0.2430057937121229
+        }
+      },
+      "mse": 1.0992294057210286,
+      "relative_mse": 0.25405811248847027,
+      "worst_source_relative_mse": 0.2675559577591424
+    },
+    {
+      "rank": 13,
+      "name": "swin2sr.encoder.stages.3.layers.4.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 1.0253114191691082,
+          "relative_mse": 0.2525247235760268
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 1.1668768692016602,
+          "relative_mse": 0.23540769472957132
+        }
+      },
+      "mse": 1.0960941441853842,
+      "relative_mse": 0.2431152128554356,
+      "worst_source_relative_mse": 0.2525247235760268
+    },
+    {
+      "rank": 14,
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 1.1740960884094238,
+          "relative_mse": 0.24570480614989104
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 1.2479513676961262,
+          "relative_mse": 0.23506692233006746
+        }
+      },
+      "mse": 1.2110237280527751,
+      "relative_mse": 0.24010617238025575,
+      "worst_source_relative_mse": 0.24570480614989104
+    },
+    {
+      "rank": 15,
+      "name": "swin2sr.encoder.stages.1.layers.3.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.253744486172994,
+          "relative_mse": 0.24278619860318368
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.24776720762252807,
+          "relative_mse": 0.20664396936182663
+        }
+      },
+      "mse": 0.25075584689776104,
+      "relative_mse": 0.2234760363474379,
+      "worst_source_relative_mse": 0.24278619860318368
+    },
+    {
+      "rank": 16,
+      "name": "swin2sr.encoder.stages.3.layers.2.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.15505550066630044,
+          "relative_mse": 0.19796012233822663
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.16191978414853414,
+          "relative_mse": 0.22525330082120962
+        }
+      },
+      "mse": 0.1584876424074173,
+      "relative_mse": 0.21102134566016578,
+      "worst_source_relative_mse": 0.22525330082120962
+    },
+    {
+      "rank": 17,
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.1893206477165222,
+          "relative_mse": 0.22507792666567394
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.21072115341822306,
+          "relative_mse": 0.20720972645549365
+        }
+      },
+      "mse": 0.20002090056737265,
+      "relative_mse": 0.2152984775296626,
+      "worst_source_relative_mse": 0.22507792666567394
+    },
+    {
+      "rank": 18,
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 2.283260498046875,
+          "relative_mse": 0.2244656713599849
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 2.2758274205525715,
+          "relative_mse": 0.18411634896808882
+        }
+      },
+      "mse": 2.279543959299723,
+      "relative_mse": 0.20233124809446779,
+      "worst_source_relative_mse": 0.2244656713599849
+    },
+    {
+      "rank": 19,
+      "name": "swin2sr.encoder.stages.2.layers.5.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.4543641392389933,
+          "relative_mse": 0.22357953227927416
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.4911649974187215,
+          "relative_mse": 0.21481448432528966
+        }
+      },
+      "mse": 0.47276456832885744,
+      "relative_mse": 0.2189390150604934,
+      "worst_source_relative_mse": 0.22357953227927416
+    },
+    {
+      "rank": 20,
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.12151529947916667,
+          "relative_mse": 0.22123503415951115
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.11938671429951986,
+          "relative_mse": 0.19818872932351655
+        }
+      },
+      "mse": 0.12045100688934327,
+      "relative_mse": 0.20918027211676302,
+      "worst_source_relative_mse": 0.22123503415951115
+    },
+    {
+      "rank": 21,
+      "name": "swin2sr.encoder.stages.1.layers.4.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.22264495929082234,
+          "relative_mse": 0.22090031666078633
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.23578177611033121,
+          "relative_mse": 0.2166982164281549
+        }
+      },
+      "mse": 0.2292133677005768,
+      "relative_mse": 0.21871890469967484,
+      "worst_source_relative_mse": 0.22090031666078633
+    },
+    {
+      "rank": 22,
+      "name": "swin2sr.encoder.stages.1.layers.2.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.17888833284378053,
+          "relative_mse": 0.21522258275848055
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.2138777224222819,
+          "relative_mse": 0.21191251791107363
+        }
+      },
+      "mse": 0.1963830276330312,
+      "relative_mse": 0.2134073974674229,
+      "worst_source_relative_mse": 0.21522258275848055
+    },
+    {
+      "rank": 23,
+      "name": "swin2sr.encoder.stages.3.layers.4.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 2.144055830637614,
+          "relative_mse": 0.2149545476426027
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 2.3022280375162762,
+          "relative_mse": 0.17473726116134228
+        }
+      },
+      "mse": 2.223141934076945,
+      "relative_mse": 0.19206549854515229,
+      "worst_source_relative_mse": 0.2149545476426027
+    },
+    {
+      "rank": 24,
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.5292626810073853,
+          "relative_mse": 0.20919506466557822
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.5315377696355184,
+          "relative_mse": 0.19618493441781523
+        }
+      },
+      "mse": 0.5304002253214518,
+      "relative_mse": 0.2024672921329625,
+      "worst_source_relative_mse": 0.20919506466557822
+    },
+    {
+      "rank": 25,
+      "name": "swin2sr.encoder.stages.2.layers.1.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.6014671945571899,
+          "relative_mse": 0.20882771950448217
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.5944174591700236,
+          "relative_mse": 0.1516822842210487
+        }
+      },
+      "mse": 0.5979423268636068,
+      "relative_mse": 0.17589021902784496,
+      "worst_source_relative_mse": 0.20882771950448217
+    },
+    {
+      "rank": 26,
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.1275963544845581,
+          "relative_mse": 0.20146914870243315
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.12567017594973245,
+          "relative_mse": 0.16758549073413656
+        }
+      },
+      "mse": 0.1266332652171453,
+      "relative_mse": 0.18309970745303855,
+      "worst_source_relative_mse": 0.20146914870243315
+    },
+    {
+      "rank": 27,
+      "name": "swin2sr.encoder.stages.2.layers.5.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.6351416524251302,
+          "relative_mse": 0.19760728560370325
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.6242675145467123,
+          "relative_mse": 0.14179423761218923
+        }
+      },
+      "mse": 0.6297045834859212,
+      "relative_mse": 0.16534643091277862,
+      "worst_source_relative_mse": 0.19760728560370325
+    },
+    {
+      "rank": 28,
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 1.5876157697041828,
+          "relative_mse": 0.19708890465218948
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 1.8698697916666667,
+          "relative_mse": 0.15270941347326
+        }
+      },
+      "mse": 1.7287427806854248,
+      "relative_mse": 0.17031986430431456,
+      "worst_source_relative_mse": 0.19708890465218948
+    },
+    {
+      "rank": 29,
+      "name": "swin2sr.encoder.stages.2.layers.2.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.6325884358088175,
+          "relative_mse": 0.1957749218777891
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.6671424198150635,
+          "relative_mse": 0.1557446784390195
+        }
+      },
+      "mse": 0.6498654278119406,
+      "relative_mse": 0.17295689805707098,
+      "worst_source_relative_mse": 0.1957749218777891
+    },
+    {
+      "rank": 30,
+      "name": "swin2sr.encoder.stages.3.layers.1.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.09263376792271932,
+          "relative_mse": 0.1804060012698908
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.09385427872339884,
+          "relative_mse": 0.1867057994786954
+        }
+      },
+      "mse": 0.09324402332305909,
+      "relative_mse": 0.18352245816602147,
+      "worst_source_relative_mse": 0.1867057994786954
+    },
+    {
+      "rank": 31,
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.28323135296503704,
+          "relative_mse": 0.18333583163730777
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.26619687080383303,
+          "relative_mse": 0.16881020820104994
+        }
+      },
+      "mse": 0.274714111884435,
+      "relative_mse": 0.175998518261689,
+      "worst_source_relative_mse": 0.18333583163730777
+    },
+    {
+      "rank": 32,
+      "name": "swin2sr.encoder.stages.3.layers.5.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.09718124230702718,
+          "relative_mse": 0.14005996487846017
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.11931862950325012,
+          "relative_mse": 0.18161243089882856
+        }
+      },
+      "mse": 0.10824993590513865,
+      "relative_mse": 0.16026930845525247,
+      "worst_source_relative_mse": 0.18161243089882856
+    },
+    {
+      "rank": 33,
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 2.091957836151123,
+          "relative_mse": 0.18051651832942567
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 2.210442899068197,
+          "relative_mse": 0.13938069406378084
+        }
+      },
+      "mse": 2.15120036760966,
+      "relative_mse": 0.15674866906168178,
+      "worst_source_relative_mse": 0.18051651832942567
+    },
+    {
+      "rank": 34,
+      "name": "swin2sr.encoder.stages.3.layers.4.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 2.193496411641439,
+          "relative_mse": 0.17711785889898646
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 2.2382467714945475,
+          "relative_mse": 0.12540672233634445
+        }
+      },
+      "mse": 2.215871591567993,
+      "relative_mse": 0.1465897296704117,
+      "worst_source_relative_mse": 0.17711785889898646
+    },
+    {
+      "rank": 35,
+      "name": "swin2sr.encoder.stages.2.layers.3.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.43773018519083656,
+          "relative_mse": 0.17407354709354692
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.4623923174540202,
+          "relative_mse": 0.16593525969260348
+        }
+      },
+      "mse": 0.4500612513224284,
+      "relative_mse": 0.1697956542201085,
+      "worst_source_relative_mse": 0.17407354709354692
+    },
+    {
+      "rank": 36,
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.2747032189369202,
+          "relative_mse": 0.17310980427370198
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.3107110126813253,
+          "relative_mse": 0.16204743990524798
+        }
+      },
+      "mse": 0.29270711580912273,
+      "relative_mse": 0.16705690312526852,
+      "worst_source_relative_mse": 0.17310980427370198
+    },
+    {
+      "rank": 37,
+      "name": "swin2sr.encoder.stages.0.layers.2.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.3770372605323791,
+          "relative_mse": 0.17220092258755362
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.3448814161618551,
+          "relative_mse": 0.1493565878130585
+        }
+      },
+      "mse": 0.36095933834711713,
+      "relative_mse": 0.16047510039382715,
+      "worst_source_relative_mse": 0.17220092258755362
+    },
+    {
+      "rank": 38,
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.16993484258651734,
+          "relative_mse": 0.1709689337356696
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.16811422348022462,
+          "relative_mse": 0.1158285798602134
+        }
+      },
+      "mse": 0.16902453303337098,
+      "relative_mse": 0.13824119404871482,
+      "worst_source_relative_mse": 0.1709689337356696
+    },
+    {
+      "rank": 39,
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.31389381726582843,
+          "relative_mse": 0.1702987704613995
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.3267871101697286,
+          "relative_mse": 0.13880826660409498
+        }
+      },
+      "mse": 0.3203404637177785,
+      "relative_mse": 0.1526365266443776,
+      "worst_source_relative_mse": 0.1702987704613995
+    },
+    {
+      "rank": 40,
+      "name": "swin2sr.encoder.stages.2.layers.2.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.39954299132029214,
+          "relative_mse": 0.16959647127751426
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.4281803305943807,
+          "relative_mse": 0.16760213204965294
+        }
+      },
+      "mse": 0.41386166095733645,
+      "relative_mse": 0.168558912438836,
+      "worst_source_relative_mse": 0.16959647127751426
+    },
+    {
+      "rank": 41,
+      "name": "swin2sr.encoder.stages.3.layers.3.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.10086825052897136,
+          "relative_mse": 0.15364100110685466
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.10810270388921102,
+          "relative_mse": 0.16816782502147767
+        }
+      },
+      "mse": 0.10448547720909118,
+      "relative_mse": 0.1608278697126823,
+      "worst_source_relative_mse": 0.16816782502147767
+    },
+    {
+      "rank": 42,
+      "name": "swin2sr.encoder.stages.2.layers.1.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.6725227785110474,
+          "relative_mse": 0.16769346673837107
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.7060351181030273,
+          "relative_mse": 0.13696849999062
+        }
+      },
+      "mse": 0.6892789483070374,
+      "relative_mse": 0.15041293147843843,
+      "worst_source_relative_mse": 0.16769346673837107
+    },
+    {
+      "rank": 43,
+      "name": "swin2sr.encoder.stages.1.layers.0.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.1576198943456014,
+          "relative_mse": 0.16495636031091324
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.1356959656874339,
+          "relative_mse": 0.1312041889474757
+        }
+      },
+      "mse": 0.14665793001651764,
+      "relative_mse": 0.1474126965017721,
+      "worst_source_relative_mse": 0.16495636031091324
+    },
+    {
+      "rank": 44,
+      "name": "swin2sr.encoder.stages.3.layers.5.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 2.0403105290730794,
+          "relative_mse": 0.1615582821341179
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 2.340612277984619,
+          "relative_mse": 0.1325556369936274
+        }
+      },
+      "mse": 2.1904614035288494,
+      "relative_mse": 0.14464922481411352,
+      "worst_source_relative_mse": 0.1615582821341179
+    },
+    {
+      "rank": 45,
+      "name": "swin2sr.encoder.stages.1.layers.3.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.29091668605804444,
+          "relative_mse": 0.15969530032199672
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.3336328784624735,
+          "relative_mse": 0.12796632664600402
+        }
+      },
+      "mse": 0.312274782260259,
+      "relative_mse": 0.14101713783136732,
+      "worst_source_relative_mse": 0.15969530032199672
+    },
+    {
+      "rank": 46,
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.14375439683596294,
+          "relative_mse": 0.15763509113550736
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.15121607025464376,
+          "relative_mse": 0.12503919692821677
+        }
+      },
+      "mse": 0.14748523354530335,
+      "relative_mse": 0.13905217292661717,
+      "worst_source_relative_mse": 0.15763509113550736
+    },
+    {
+      "rank": 47,
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.7233118438720703,
+          "relative_mse": 0.15538546173106113
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.7440381224950154,
+          "relative_mse": 0.12395261318905938
+        }
+      },
+      "mse": 0.7336749831835429,
+      "relative_mse": 0.1376816928344187,
+      "worst_source_relative_mse": 0.15538546173106113
+    },
+    {
+      "rank": 48,
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.5363670508066813,
+          "relative_mse": 0.1545268753661183
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.6240729141235352,
+          "relative_mse": 0.14137531520538688
+        }
+      },
+      "mse": 0.5802199824651082,
+      "relative_mse": 0.14716447659610726,
+      "worst_source_relative_mse": 0.1545268753661183
+    },
+    {
+      "rank": 49,
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.15401783148447673,
+          "relative_mse": 0.15334260017696338
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.1699988615512848,
+          "relative_mse": 0.12127884863205955
+        }
+      },
+      "mse": 0.16200834651788076,
+      "relative_mse": 0.13466343036039102,
+      "worst_source_relative_mse": 0.15334260017696338
+    },
+    {
+      "rank": 50,
+      "name": "swin2sr.encoder.stages.2.layers.3.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.6011048348744711,
+          "relative_mse": 0.15320446709913801
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.6672940508524576,
+          "relative_mse": 0.129761958899009
+        }
+      },
+      "mse": 0.6341994428634643,
+      "relative_mse": 0.13990731862820627,
+      "worst_source_relative_mse": 0.15320446709913801
+    },
+    {
+      "rank": 51,
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.15952362338701884,
+          "relative_mse": 0.15196629064449202
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.15953266263008117,
+          "relative_mse": 0.13079267179235007
+        }
+      },
+      "mse": 0.15952814300855,
+      "relative_mse": 0.14058641917074527,
+      "worst_source_relative_mse": 0.15196629064449202
+    },
+    {
+      "rank": 52,
+      "name": "swin2sr.encoder.stages.3.layers.4.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.07612127522627513,
+          "relative_mse": 0.13554417200465238
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.07635245621204376,
+          "relative_mse": 0.15168605958287246
+        }
+      },
+      "mse": 0.07623686571915944,
+      "relative_mse": 0.14317374101070326,
+      "worst_source_relative_mse": 0.15168605958287246
+    },
+    {
+      "rank": 53,
+      "name": "swin2sr.encoder.stages.0.layers.3.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.17120499531428018,
+          "relative_mse": 0.13671584587909702
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.18326297005017597,
+          "relative_mse": 0.15035009216650652
+        }
+      },
+      "mse": 0.1772339826822281,
+      "relative_mse": 0.14344093870151273,
+      "worst_source_relative_mse": 0.15035009216650652
+    },
+    {
+      "rank": 54,
+      "name": "swin2sr.encoder.stages.0.layers.3.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.23322152733802795,
+          "relative_mse": 0.15017021072625578
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.2022939948240916,
+          "relative_mse": 0.1296908765986973
+        }
+      },
+      "mse": 0.21775776108105976,
+      "relative_mse": 0.139908277855528,
+      "worst_source_relative_mse": 0.15017021072625578
+    },
+    {
+      "rank": 55,
+      "name": "swin2sr.encoder.stages.1.layers.4.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.2751858846346537,
+          "relative_mse": 0.14781496196852564
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.3134802810351054,
+          "relative_mse": 0.12259807718022038
+        }
+      },
+      "mse": 0.2943330828348796,
+      "relative_mse": 0.13322256247265676,
+      "worst_source_relative_mse": 0.14781496196852564
+    },
+    {
+      "rank": 56,
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.2835508855183919,
+          "relative_mse": 0.14738229522062307
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.294767951965332,
+          "relative_mse": 0.11827500620157551
+        }
+      },
+      "mse": 0.28915941874186196,
+      "relative_mse": 0.1309557485702276,
+      "worst_source_relative_mse": 0.14738229522062307
+    },
+    {
+      "rank": 57,
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.555798142751058,
+          "relative_mse": 0.1436007120849737
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.552608494758606,
+          "relative_mse": 0.11204954864366468
+        }
+      },
+      "mse": 0.554203318754832,
+      "relative_mse": 0.12592290322553246,
+      "worst_source_relative_mse": 0.1436007120849737
+    },
+    {
+      "rank": 58,
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.3331888723373413,
+          "relative_mse": 0.14210279960291863
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.3655822658538818,
+          "relative_mse": 0.11855513743014298
+        }
+      },
+      "mse": 0.3493855690956116,
+      "relative_mse": 0.12872623344913617,
+      "worst_source_relative_mse": 0.14210279960291863
+    },
+    {
+      "rank": 59,
+      "name": "swin2sr.encoder.stages.0.layers.0.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.13800245761871338,
+          "relative_mse": 0.13271569682170783
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.15741047302881878,
+          "relative_mse": 0.1413228166442441
+        }
+      },
+      "mse": 0.14770646532376608,
+      "relative_mse": 0.13716712873592446,
+      "worst_source_relative_mse": 0.1413228166442441
+    },
+    {
+      "rank": 60,
+      "name": "swin2sr.encoder.stages.0.layers.3.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.22991807778676351,
+          "relative_mse": 0.14042499730511893
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.21235994299252828,
+          "relative_mse": 0.11255844777322077
+        }
+      },
+      "mse": 0.2211390103896459,
+      "relative_mse": 0.12550577902002666,
+      "worst_source_relative_mse": 0.14042499730511893
+    },
+    {
+      "rank": 61,
+      "name": "swin2sr.encoder.stages.0.layers.0.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.02801979919274648,
+          "relative_mse": 0.1396687708504724
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.03487392316261927,
+          "relative_mse": 0.10989562684804956
+        }
+      },
+      "mse": 0.031446861177682875,
+      "relative_mse": 0.12142750889738638,
+      "worst_source_relative_mse": 0.1396687708504724
+    },
+    {
+      "rank": 62,
+      "name": "swin2sr.encoder.stages.3.layers.0.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.09793468753496806,
+          "relative_mse": 0.12550444943612743
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.09973326047261556,
+          "relative_mse": 0.13921295711949508
+        }
+      },
+      "mse": 0.0988339740037918,
+      "relative_mse": 0.13206598137799008,
+      "worst_source_relative_mse": 0.13921295711949508
+    },
+    {
+      "rank": 63,
+      "name": "swin2sr.encoder.stages.1.layers.2.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.13552013874053956,
+          "relative_mse": 0.1342863600122762
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.1581908408800761,
+          "relative_mse": 0.13713053989932303
+        }
+      },
+      "mse": 0.14685548981030783,
+      "relative_mse": 0.13580339167193062,
+      "worst_source_relative_mse": 0.13713053989932303
+    },
+    {
+      "rank": 64,
+      "name": "swin2sr.encoder.stages.0.layers.4.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.21753159205118816,
+          "relative_mse": 0.13617358322127873
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.23443727175394694,
+          "relative_mse": 0.1168427063492067
+        }
+      },
+      "mse": 0.22598443190256753,
+      "relative_mse": 0.12541129221139405,
+      "worst_source_relative_mse": 0.13617358322127873
+    },
+    {
+      "rank": 65,
+      "name": "swin2sr.encoder.stages.1.layers.2.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.23509308497111003,
+          "relative_mse": 0.13550093250702694
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.28582289536794026,
+          "relative_mse": 0.12409662165767094
+        }
+      },
+      "mse": 0.26045799016952514,
+      "relative_mse": 0.128996401094369,
+      "worst_source_relative_mse": 0.13550093250702694
+    },
+    {
+      "rank": 66,
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.2503055818875631,
+          "relative_mse": 0.13494586741016934
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.24264490286509197,
+          "relative_mse": 0.12911677778514738
+        }
+      },
+      "mse": 0.2464752423763275,
+      "relative_mse": 0.13201227189231698,
+      "worst_source_relative_mse": 0.13494586741016934
+    },
+    {
+      "rank": 67,
+      "name": "swin2sr.encoder.stages.1.layers.3.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.3291822425524394,
+          "relative_mse": 0.13463593988410327
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.3942811330159505,
+          "relative_mse": 0.11134567623602962
+        }
+      },
+      "mse": 0.36173168778419496,
+      "relative_mse": 0.1208585236875923,
+      "worst_source_relative_mse": 0.13463593988410327
+    },
+    {
+      "rank": 68,
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.3030192518234253,
+          "relative_mse": 0.13443095102603475
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.2684787050882975,
+          "relative_mse": 0.11814479426782984
+        }
+      },
+      "mse": 0.2857489784558614,
+      "relative_mse": 0.12625483225134698,
+      "worst_source_relative_mse": 0.13443095102603475
+    },
+    {
+      "rank": 69,
+      "name": "swin2sr.encoder.stages.0.layers.3.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.3099209721883138,
+          "relative_mse": 0.13360783011518026
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.29099914312362674,
+          "relative_mse": 0.11212683869849126
+        }
+      },
+      "mse": 0.3004600576559703,
+      "relative_mse": 0.12226498956488822,
+      "worst_source_relative_mse": 0.13360783011518026
+    },
+    {
+      "rank": 70,
+      "name": "swin2sr.encoder.stages.2.layers.5.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.5258895556131998,
+          "relative_mse": 0.1324243022363138
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.6406816879908244,
+          "relative_mse": 0.11459717125183669
+        }
+      },
+      "mse": 0.5832856218020122,
+      "relative_mse": 0.12200107380828144,
+      "worst_source_relative_mse": 0.1324243022363138
+    },
+    {
+      "rank": 71,
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.3079551847775777,
+          "relative_mse": 0.13037349423452427
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.2667442766825358,
+          "relative_mse": 0.1211975892120077
+        }
+      },
+      "mse": 0.28734973073005676,
+      "relative_mse": 0.1259476185777971,
+      "worst_source_relative_mse": 0.13037349423452427
+    },
+    {
+      "rank": 72,
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.4096970494588216,
+          "relative_mse": 0.12913524353030462
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.5386403210957845,
+          "relative_mse": 0.11121664968366421
+        }
+      },
+      "mse": 0.47416868527730305,
+      "relative_mse": 0.11830876922941622,
+      "worst_source_relative_mse": 0.12913524353030462
+    },
+    {
+      "rank": 73,
+      "name": "swin2sr.encoder.stages.2.layers.3.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.7359679921468099,
+          "relative_mse": 0.127144345899076
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.7244787883758544,
+          "relative_mse": 0.10032010361616513
+        }
+      },
+      "mse": 0.7302233902613322,
+      "relative_mse": 0.11225471229457436,
+      "worst_source_relative_mse": 0.127144345899076
+    },
+    {
+      "rank": 74,
+      "name": "swin2sr.encoder.stages.0.layers.5.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.3103641128540039,
+          "relative_mse": 0.12555815555222083
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.2973379000027974,
+          "relative_mse": 0.11597049263491828
+        }
+      },
+      "mse": 0.3038510064284007,
+      "relative_mse": 0.12067671149432144,
+      "worst_source_relative_mse": 0.12555815555222083
+    },
+    {
+      "rank": 75,
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.3204430898030599,
+          "relative_mse": 0.12524856301907114
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.3988288458188375,
+          "relative_mse": 0.12114001784743723
+        }
+      },
+      "mse": 0.3596359678109487,
+      "relative_mse": 0.12293663033762324,
+      "worst_source_relative_mse": 0.12524856301907114
+    },
+    {
+      "rank": 76,
+      "name": "swin2sr.encoder.stages.0.layers.1.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.2429173199335734,
+          "relative_mse": 0.12323599299385812
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.26364373683929443,
+          "relative_mse": 0.1147567757496994
+        }
+      },
+      "mse": 0.25328052838643395,
+      "relative_mse": 0.11867234024781176,
+      "worst_source_relative_mse": 0.12323599299385812
+    },
+    {
+      "rank": 77,
+      "name": "swin2sr.encoder.stages.1.layers.0.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.29071613868077595,
+          "relative_mse": 0.12264738300640746
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.32111588478088376,
+          "relative_mse": 0.11383835329182154
+        }
+      },
+      "mse": 0.3059160117308299,
+      "relative_mse": 0.11786066394953665,
+      "worst_source_relative_mse": 0.12264738300640746
+    },
+    {
+      "rank": 78,
+      "name": "swin2sr.encoder.stages.1.layers.2.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.2808434279759725,
+          "relative_mse": 0.12190645901903015
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.359663511912028,
+          "relative_mse": 0.11548276089538023
+        }
+      },
+      "mse": 0.3202534699440002,
+      "relative_mse": 0.11821405165271075,
+      "worst_source_relative_mse": 0.12190645901903015
+    },
+    {
+      "rank": 79,
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.2456991696357727,
+          "relative_mse": 0.11828711319773724
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.22351826786994933,
+          "relative_mse": 0.11955678233775875
+        }
+      },
+      "mse": 0.23460871875286102,
+      "relative_mse": 0.11888855731666635,
+      "worst_source_relative_mse": 0.11955678233775875
+    },
+    {
+      "rank": 80,
+      "name": "swin2sr.encoder.stages.1.layers.1.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.17616501967112222,
+          "relative_mse": 0.10093698318078786
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.22108130931854247,
+          "relative_mse": 0.1192078491295251
+        }
+      },
+      "mse": 0.19862316449483236,
+      "relative_mse": 0.11034976109158115,
+      "worst_source_relative_mse": 0.1192078491295251
+    },
+    {
+      "rank": 81,
+      "name": "swin2sr.encoder.stages.2.layers.2.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.4971691592534383,
+          "relative_mse": 0.11866452153516989
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.5963640483220418,
+          "relative_mse": 0.10853064580761866
+        }
+      },
+      "mse": 0.5467666037877401,
+      "relative_mse": 0.11291471530479928,
+      "worst_source_relative_mse": 0.11866452153516989
+    },
+    {
+      "rank": 82,
+      "name": "swin2sr.encoder.stages.3.layers.5.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 1.0593990262349446,
+          "relative_mse": 0.11344665456542213
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 1.054980551401774,
+          "relative_mse": 0.11721146981832127
+        }
+      },
+      "mse": 1.0571897888183595,
+      "relative_mse": 0.11529440489086155,
+      "worst_source_relative_mse": 0.11721146981832127
+    },
+    {
+      "rank": 83,
+      "name": "swin2sr.encoder.stages.1.layers.4.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.09888439456621806,
+          "relative_mse": 0.11614664049411867
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.08297648986180624,
+          "relative_mse": 0.1148274716490259
+        }
+      },
+      "mse": 0.09093044221401214,
+      "relative_mse": 0.1155410117073778,
+      "worst_source_relative_mse": 0.11614664049411867
+    },
+    {
+      "rank": 84,
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.3812514034907023,
+          "relative_mse": 0.11595360811166731
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.4231608025232951,
+          "relative_mse": 0.10269587324486486
+        }
+      },
+      "mse": 0.4022061030069987,
+      "relative_mse": 0.10857979486113141,
+      "worst_source_relative_mse": 0.11595360811166731
+    },
+    {
+      "rank": 85,
+      "name": "swin2sr.encoder.stages.1.layers.2.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.28903048356374106,
+          "relative_mse": 0.11450067126381744
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.30811047395070396,
+          "relative_mse": 0.11578206278216967
+        }
+      },
+      "mse": 0.2985704787572225,
+      "relative_mse": 0.11515827658831415,
+      "worst_source_relative_mse": 0.11578206278216967
+    },
+    {
+      "rank": 86,
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.6454279963175455,
+          "relative_mse": 0.1139411615412895
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.659771801630656,
+          "relative_mse": 0.08973189746499795
+        }
+      },
+      "mse": 0.6525998989741008,
+      "relative_mse": 0.1002667560818668,
+      "worst_source_relative_mse": 0.1139411615412895
+    },
+    {
+      "rank": 87,
+      "name": "swin2sr.encoder.stages.1.layers.5.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.27113848765691123,
+          "relative_mse": 0.11389843481300338
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.2625930118560791,
+          "relative_mse": 0.10281731752480089
+        }
+      },
+      "mse": 0.2668657497564952,
+      "relative_mse": 0.10816312555278232,
+      "worst_source_relative_mse": 0.11389843481300338
+    },
+    {
+      "rank": 88,
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.09642162442207336,
+          "relative_mse": 0.11376331007442378
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.08559380014737447,
+          "relative_mse": 0.10782753768043529
+        }
+      },
+      "mse": 0.09100771228472392,
+      "relative_mse": 0.11089263286179281,
+      "worst_source_relative_mse": 0.11376331007442378
+    },
+    {
+      "rank": 89,
+      "name": "swin2sr.encoder.stages.2.layers.0.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.597075777053833,
+          "relative_mse": 0.11323994245988662
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.5662271579106649,
+          "relative_mse": 0.10420924089094488
+        }
+      },
+      "mse": 0.5816514674822489,
+      "relative_mse": 0.10865673231742873,
+      "worst_source_relative_mse": 0.11323994245988662
+    },
+    {
+      "rank": 90,
+      "name": "swin2sr.encoder.stages.3.layers.4.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.20179513613382974,
+          "relative_mse": 0.10315094645978792
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.21251262187957765,
+          "relative_mse": 0.11141170136896718
+        }
+      },
+      "mse": 0.2071538790067037,
+      "relative_mse": 0.10722909690279897,
+      "worst_source_relative_mse": 0.11141170136896718
+    },
+    {
+      "rank": 91,
+      "name": "swin2sr.encoder.stages.2.layers.5.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.2059308608373006,
+          "relative_mse": 0.11030218036950232
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.1997150746981303,
+          "relative_mse": 0.10726785808809101
+        }
+      },
+      "mse": 0.20282296776771547,
+      "relative_mse": 0.10878710844969305,
+      "worst_source_relative_mse": 0.11030218036950232
+    },
+    {
+      "rank": 92,
+      "name": "swin2sr.encoder.stages.0.layers.1.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.22807159423828124,
+          "relative_mse": 0.10916260386029543
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.2480168930689494,
+          "relative_mse": 0.10356850701472707
+        }
+      },
+      "mse": 0.23804424365361532,
+      "relative_mse": 0.1061750327464231,
+      "worst_source_relative_mse": 0.10916260386029543
+    },
+    {
+      "rank": 93,
+      "name": "swin2sr.encoder.stages.1.layers.4.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.3059655570983887,
+          "relative_mse": 0.10703995556496558
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.3069968334833781,
+          "relative_mse": 0.10431628920127474
+        }
+      },
+      "mse": 0.30648119529088336,
+      "relative_mse": 0.10565828218322146,
+      "worst_source_relative_mse": 0.10703995556496558
+    },
+    {
+      "rank": 94,
+      "name": "swin2sr.encoder.stages.2.layers.4.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.053168450395266215,
+          "relative_mse": 0.09822520449364286
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.05204058686892191,
+          "relative_mse": 0.10649108477101604
+        }
+      },
+      "mse": 0.05260451863209407,
+      "relative_mse": 0.1021470532490446,
+      "worst_source_relative_mse": 0.10649108477101604
+    },
+    {
+      "rank": 95,
+      "name": "swin2sr.encoder.stages.0.layers.4.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.1586254858970642,
+          "relative_mse": 0.1025086459821297
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.19159204244613648,
+          "relative_mse": 0.10589171000917
+        }
+      },
+      "mse": 0.17510876417160035,
+      "relative_mse": 0.10433214690871714,
+      "worst_source_relative_mse": 0.10589171000917
+    },
+    {
+      "rank": 96,
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.17853228251139322,
+          "relative_mse": 0.08623398192661254
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.1922748366991679,
+          "relative_mse": 0.10517829375348778
+        }
+      },
+      "mse": 0.18540355960528057,
+      "relative_mse": 0.09511755723563199,
+      "worst_source_relative_mse": 0.10517829375348778
+    },
+    {
+      "rank": 97,
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.14119964917500813,
+          "relative_mse": 0.09965886219231414
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.12210431774457296,
+          "relative_mse": 0.10504111729965229
+        }
+      },
+      "mse": 0.13165198345979054,
+      "relative_mse": 0.10208457104582647,
+      "worst_source_relative_mse": 0.10504111729965229
+    },
+    {
+      "rank": 98,
+      "name": "swin2sr.encoder.stages.3.layers.1.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.7294140021006267,
+          "relative_mse": 0.10451343074018499
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.5544964440663656,
+          "relative_mse": 0.09594433184198498
+        }
+      },
+      "mse": 0.6419552230834961,
+      "relative_mse": 0.10063179235932004,
+      "worst_source_relative_mse": 0.10451343074018499
+    },
+    {
+      "rank": 99,
+      "name": "swin2sr.encoder.stages.1.layers.4.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.23213957786560058,
+          "relative_mse": 0.1017901074817034
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.3280936551094055,
+          "relative_mse": 0.09824477504462194
+        }
+      },
+      "mse": 0.2801166164875031,
+      "relative_mse": 0.09968342341636292,
+      "worst_source_relative_mse": 0.1017901074817034
+    },
+    {
+      "rank": 100,
+      "name": "swin2sr.encoder.stages.3.layers.0.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.39635309696197507,
+          "relative_mse": 0.09597972171583369
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.39582274119059246,
+          "relative_mse": 0.10158056847109717
+        }
+      },
+      "mse": 0.39608791907628377,
+      "relative_mse": 0.09869887959314047,
+      "worst_source_relative_mse": 0.10158056847109717
+    },
+    {
+      "rank": 101,
+      "name": "swin2sr.encoder.stages.1.layers.3.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.2989681967099508,
+          "relative_mse": 0.09603123503099552
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.30287684440612794,
+          "relative_mse": 0.10113169360320626
+        }
+      },
+      "mse": 0.30092252055803936,
+      "relative_mse": 0.09853204579247785,
+      "worst_source_relative_mse": 0.10113169360320626
+    },
+    {
+      "rank": 102,
+      "name": "swin2sr.encoder.stages.2.layers.1.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.08975886424382527,
+          "relative_mse": 0.10094450170450064
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.07972117443879445,
+          "relative_mse": 0.10100144573223593
+        }
+      },
+      "mse": 0.08474001934130987,
+      "relative_mse": 0.10097127942380386,
+      "worst_source_relative_mse": 0.10100144573223593
+    },
+    {
+      "rank": 103,
+      "name": "swin2sr.encoder.stages.3.layers.5.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.14157797733942667,
+          "relative_mse": 0.07914997354901238
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.16280663768450418,
+          "relative_mse": 0.10047830353470408
+        }
+      },
+      "mse": 0.15219230751196544,
+      "relative_mse": 0.08928730593570568,
+      "worst_source_relative_mse": 0.10047830353470408
+    },
+    {
+      "rank": 104,
+      "name": "swin2sr.encoder.stages.2.layers.3.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.15932100216547648,
+          "relative_mse": 0.09008483418032723
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.17537544846534728,
+          "relative_mse": 0.09890084233918803
+        }
+      },
+      "mse": 0.16734822531541188,
+      "relative_mse": 0.09449866149364136,
+      "worst_source_relative_mse": 0.09890084233918803
+    },
+    {
+      "rank": 105,
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.18511760393778484,
+          "relative_mse": 0.09876981509084123
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.1793979064623515,
+          "relative_mse": 0.09567785857694755
+        }
+      },
+      "mse": 0.18225775520006815,
+      "relative_mse": 0.09722351210598591,
+      "worst_source_relative_mse": 0.09876981509084123
+    },
+    {
+      "rank": 106,
+      "name": "swin2sr.encoder.stages.2.layers.2.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.1461472741762797,
+          "relative_mse": 0.08819123527318756
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.16332119703292847,
+          "relative_mse": 0.09760483669405214
+        }
+      },
+      "mse": 0.1547342356046041,
+      "relative_mse": 0.09292082729133858,
+      "worst_source_relative_mse": 0.09760483669405214
+    },
+    {
+      "rank": 107,
+      "name": "swin2sr.encoder.stages.2.layers.5.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.4685096009572347,
+          "relative_mse": 0.0954293388773325
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.43587088902791343,
+          "relative_mse": 0.08747688690807719
+        }
+      },
+      "mse": 0.45219024499257404,
+      "relative_mse": 0.09142368749532902,
+      "worst_source_relative_mse": 0.0954293388773325
+    },
+    {
+      "rank": 108,
+      "name": "swin2sr.encoder.stages.2.layers.1.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.6623016913731893,
+          "relative_mse": 0.09479001293488018
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.5735592524210612,
+          "relative_mse": 0.0886487371517506
+        }
+      },
+      "mse": 0.6179304718971252,
+      "relative_mse": 0.09183734867781115,
+      "worst_source_relative_mse": 0.09479001293488018
+    },
+    {
+      "rank": 109,
+      "name": "swin2sr.encoder.stages.2.layers.5.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.04540123681227366,
+          "relative_mse": 0.09008038256703707
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.04582739770412445,
+          "relative_mse": 0.09467278102764419
+        }
+      },
+      "mse": 0.045614317258199054,
+      "relative_mse": 0.09233022627681023,
+      "worst_source_relative_mse": 0.09467278102764419
+    },
+    {
+      "rank": 110,
+      "name": "swin2sr.encoder.stages.2.layers.0.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.09101429184277852,
+          "relative_mse": 0.08637513707230456
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.08766026973724365,
+          "relative_mse": 0.09189351846851665
+        }
+      },
+      "mse": 0.08933728079001109,
+      "relative_mse": 0.08899720089020767,
+      "worst_source_relative_mse": 0.09189351846851665
+    },
+    {
+      "rank": 111,
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.09664302706718444,
+          "relative_mse": 0.07601517603963134
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.11714272737503052,
+          "relative_mse": 0.09010451504560807
+        }
+      },
+      "mse": 0.10689287722110748,
+      "relative_mse": 0.08313850219691944,
+      "worst_source_relative_mse": 0.09010451504560807
+    },
+    {
+      "rank": 112,
+      "name": "swin2sr.encoder.stages.1.layers.4.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.07055201530456542,
+          "relative_mse": 0.08871527816640513
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.06139490028222402,
+          "relative_mse": 0.09007839440764842
+        }
+      },
+      "mse": 0.06597345779339472,
+      "relative_mse": 0.08934436774596292,
+      "worst_source_relative_mse": 0.09007839440764842
+    },
+    {
+      "rank": 113,
+      "name": "swin2sr.encoder.stages.1.layers.2.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.0635969215631485,
+          "relative_mse": 0.07972005645004827
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.07256185710430145,
+          "relative_mse": 0.08991026273195712
+        }
+      },
+      "mse": 0.06807938933372498,
+      "relative_mse": 0.0848446686838912,
+      "worst_source_relative_mse": 0.08991026273195712
+    },
+    {
+      "rank": 114,
+      "name": "swin2sr.encoder.stages.1.layers.1.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.065625661611557,
+          "relative_mse": 0.08973684646356515
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.06947190960248312,
+          "relative_mse": 0.07655124471639797
+        }
+      },
+      "mse": 0.06754878560702006,
+      "relative_mse": 0.08243518011049784,
+      "worst_source_relative_mse": 0.08973684646356515
+    },
+    {
+      "rank": 115,
+      "name": "swin2sr.encoder.stages.3.layers.3.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.6879987366994222,
+          "relative_mse": 0.08345901615079009
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.9020762570699056,
+          "relative_mse": 0.0889213749518703
+        }
+      },
+      "mse": 0.7950374968846639,
+      "relative_mse": 0.08647256359589948,
+      "worst_source_relative_mse": 0.0889213749518703
+    },
+    {
+      "rank": 116,
+      "name": "swin2sr.encoder.stages.1.layers.5.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.0540225288271904,
+          "relative_mse": 0.08121299995301846
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.04890278945366541,
+          "relative_mse": 0.08886006928416638
+        }
+      },
+      "mse": 0.051462659140427906,
+      "relative_mse": 0.08467523214213359,
+      "worst_source_relative_mse": 0.08886006928416638
+    },
+    {
+      "rank": 117,
+      "name": "swin2sr.encoder.stages.1.layers.3.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.09003547271092732,
+          "relative_mse": 0.08821898325703527
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.07825668354829153,
+          "relative_mse": 0.08486934793738526
+        }
+      },
+      "mse": 0.08414607812960942,
+      "relative_mse": 0.08662908996140374,
+      "worst_source_relative_mse": 0.08821898325703527
+    },
+    {
+      "rank": 118,
+      "name": "swin2sr.encoder.stages.2.layers.3.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.05128431995709737,
+          "relative_mse": 0.08808773756788313
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.048526137073834734,
+          "relative_mse": 0.0879136602232915
+        }
+      },
+      "mse": 0.049905228515466055,
+      "relative_mse": 0.08800301811654727,
+      "worst_source_relative_mse": 0.08808773756788313
+    },
+    {
+      "rank": 119,
+      "name": "swin2sr.encoder.stages.3.layers.4.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.9447820663452149,
+          "relative_mse": 0.08226411307455274
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.9535243288675944,
+          "relative_mse": 0.08659203670864164
+        }
+      },
+      "mse": 0.9491531976064046,
+      "relative_mse": 0.0843825710626334,
+      "worst_source_relative_mse": 0.08659203670864164
+    },
+    {
+      "rank": 120,
+      "name": "swin2sr.encoder.stages.0.layers.1.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.22181238651275634,
+          "relative_mse": 0.08512296072761419
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.23359745661417644,
+          "relative_mse": 0.08411552683116749
+        }
+      },
+      "mse": 0.2277049215634664,
+      "relative_mse": 0.08460321259074001,
+      "worst_source_relative_mse": 0.08512296072761419
+    },
+    {
+      "rank": 121,
+      "name": "swin2sr.encoder.stages.0.layers.1.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.2581382163365682,
+          "relative_mse": 0.0848488943682262
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.2559850557645162,
+          "relative_mse": 0.08425130819705137
+        }
+      },
+      "mse": 0.2570616360505422,
+      "relative_mse": 0.08455029672800239,
+      "worst_source_relative_mse": 0.0848488943682262
+    },
+    {
+      "rank": 122,
+      "name": "swin2sr.encoder.stages.3.layers.2.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 1.5689992014567058,
+          "relative_mse": 0.08134375866037179
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 1.396194486618042,
+          "relative_mse": 0.08418898842201544
+        }
+      },
+      "mse": 1.4825968440373738,
+      "relative_mse": 0.08265912186990222,
+      "worst_source_relative_mse": 0.08418898842201544
+    },
+    {
+      "rank": 123,
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.09256370623906453,
+          "relative_mse": 0.08290299125291319
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.08471599916617076,
+          "relative_mse": 0.07503329409235522
+        }
+      },
+      "mse": 0.08863985270261765,
+      "relative_mse": 0.07894621288617806,
+      "worst_source_relative_mse": 0.08290299125291319
+    },
+    {
+      "rank": 124,
+      "name": "swin2sr.encoder.stages.2.layers.2.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.6564748700459798,
+          "relative_mse": 0.08278167367930438
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.6178184159596761,
+          "relative_mse": 0.07964670803105671
+        }
+      },
+      "mse": 0.637146643002828,
+      "relative_mse": 0.08123149816069461,
+      "worst_source_relative_mse": 0.08278167367930438
+    },
+    {
+      "rank": 125,
+      "name": "swin2sr.encoder.stages.1.layers.3.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.06632662494977315,
+          "relative_mse": 0.08225046601615119
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.06394558688004812,
+          "relative_mse": 0.07731677322974116
+        }
+      },
+      "mse": 0.06513610591491063,
+      "relative_mse": 0.07975241660309695,
+      "worst_source_relative_mse": 0.08225046601615119
+    },
+    {
+      "rank": 126,
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.22252134482065836,
+          "relative_mse": 0.06650259719120298
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.25887346744537354,
+          "relative_mse": 0.0795971291421627
+        }
+      },
+      "mse": 0.24069740613301596,
+      "relative_mse": 0.07295683064191363,
+      "worst_source_relative_mse": 0.0795971291421627
+    },
+    {
+      "rank": 127,
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.3609246810277303,
+          "relative_mse": 0.06921697938619875
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.3551233458518982,
+          "relative_mse": 0.07836895424452459
+        }
+      },
+      "mse": 0.35802401343981427,
+      "relative_mse": 0.07347229153793423,
+      "worst_source_relative_mse": 0.07836895424452459
+    },
+    {
+      "rank": 128,
+      "name": "swin2sr.encoder.stages.0.layers.3.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.13051092207431794,
+          "relative_mse": 0.07751716442297646
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.1109659073750178,
+          "relative_mse": 0.07037977862358417
+        }
+      },
+      "mse": 0.12073841472466787,
+      "relative_mse": 0.07406555488372046,
+      "worst_source_relative_mse": 0.07751716442297646
+    },
+    {
+      "rank": 129,
+      "name": "swin2sr.encoder.stages.2.layers.4.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.3341820923487345,
+          "relative_mse": 0.07374606770076768
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.37788328965504964,
+          "relative_mse": 0.07734328146075553
+        }
+      },
+      "mse": 0.3560326910018921,
+      "relative_mse": 0.07561233619098862,
+      "worst_source_relative_mse": 0.07734328146075553
+    },
+    {
+      "rank": 130,
+      "name": "swin2sr.encoder.stages.3.layers.1.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 1.604134604136149,
+          "relative_mse": 0.07500822773407075
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 1.3952346642812092,
+          "relative_mse": 0.07623816150524852
+        }
+      },
+      "mse": 1.4996846342086791,
+      "relative_mse": 0.07557538960536361,
+      "worst_source_relative_mse": 0.07623816150524852
+    },
+    {
+      "rank": 131,
+      "name": "swin2sr.encoder.stages.3.layers.0.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.9880999183654785,
+          "relative_mse": 0.07467308443854083
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 1.029965607325236,
+          "relative_mse": 0.07603014556296107
+        }
+      },
+      "mse": 1.0090327628453573,
+      "relative_mse": 0.07535958284385835,
+      "worst_source_relative_mse": 0.07603014556296107
+    },
+    {
+      "rank": 132,
+      "name": "swin2sr.encoder.stages.2.layers.3.intermediate.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 9830400,
+          "mse": 0.6489784336090088,
+          "relative_mse": 0.07491224311547955
+        },
+        "rico_screen2words_heldout": {
+          "values": 9830400,
+          "mse": 0.5373605219523112,
+          "relative_mse": 0.07289434106201202
+        }
+      },
+      "mse": 0.59316947778066,
+      "relative_mse": 0.07398455013406322,
+      "worst_source_relative_mse": 0.07491224311547955
+    },
+    {
+      "rank": 133,
+      "name": "swin2sr.encoder.stages.2.layers.2.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.04692581415176392,
+          "relative_mse": 0.05847886987121982
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.05508924921353658,
+          "relative_mse": 0.07297049577556051
+        }
+      },
+      "mse": 0.05100753168265025,
+      "relative_mse": 0.06550374298671263,
+      "worst_source_relative_mse": 0.07297049577556051
+    },
+    {
+      "rank": 134,
+      "name": "swin2sr.encoder.stages.0.layers.1.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.16621166706085205,
+          "relative_mse": 0.06709620370087578
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.18448036432266235,
+          "relative_mse": 0.07144431770372554
+        }
+      },
+      "mse": 0.1753460156917572,
+      "relative_mse": 0.06931535509525256,
+      "worst_source_relative_mse": 0.07144431770372554
+    },
+    {
+      "rank": 135,
+      "name": "swin2sr.encoder.stages.0.layers.3.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.062409959236780804,
+          "relative_mse": 0.06622468480906964
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.07354403078556061,
+          "relative_mse": 0.0708549178914744
+        }
+      },
+      "mse": 0.0679769950111707,
+      "relative_mse": 0.068651509566632,
+      "worst_source_relative_mse": 0.0708549178914744
+    },
+    {
+      "rank": 136,
+      "name": "swin2sr.encoder.stages.2.layers.1.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.1779753088951111,
+          "relative_mse": 0.06920802460805747
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.15917353789011637,
+          "relative_mse": 0.07011968526604304
+        }
+      },
+      "mse": 0.16857442339261372,
+      "relative_mse": 0.06963546239239912,
+      "worst_source_relative_mse": 0.07011968526604304
+    },
+    {
+      "rank": 137,
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.07233172535896301,
+          "relative_mse": 0.059436549970264214
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.08708316683769227,
+          "relative_mse": 0.06665822085330625
+        }
+      },
+      "mse": 0.07970744609832764,
+      "relative_mse": 0.06317539316964042,
+      "worst_source_relative_mse": 0.06665822085330625
+    },
+    {
+      "rank": 138,
+      "name": "swin2sr.encoder.stages.0.layers.2.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.059791675011316936,
+          "relative_mse": 0.0642628641810993
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.06976217925548553,
+          "relative_mse": 0.06376223067310959
+        }
+      },
+      "mse": 0.06477692713340123,
+      "relative_mse": 0.06399231021671377,
+      "worst_source_relative_mse": 0.0642628641810993
+    },
+    {
+      "rank": 139,
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.self.key",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.13019413471221924,
+          "relative_mse": 0.05444113365075692
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.13885462443033855,
+          "relative_mse": 0.06385004080156705
+        }
+      },
+      "mse": 0.13452437957127888,
+      "relative_mse": 0.05892225514385836,
+      "worst_source_relative_mse": 0.06385004080156705
+    },
+    {
+      "rank": 140,
+      "name": "swin2sr.encoder.stages.0.layers.5.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.058708704511324566,
+          "relative_mse": 0.057359525195558224
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.0638642652829488,
+          "relative_mse": 0.06194486852146677
+        }
+      },
+      "mse": 0.06128648489713669,
+      "relative_mse": 0.05966052623425146,
+      "worst_source_relative_mse": 0.06194486852146677
+    },
+    {
+      "rank": 141,
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.self.value",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.2907480629285177,
+          "relative_mse": 0.054513585309417474
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.22680296738942465,
+          "relative_mse": 0.06055205934806278
+        }
+      },
+      "mse": 0.2587755151589711,
+      "relative_mse": 0.0570047646728974,
+      "worst_source_relative_mse": 0.06055205934806278
+    },
+    {
+      "rank": 142,
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.self.query",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.19552973429361978,
+          "relative_mse": 0.051991718062432454
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.19611472368240357,
+          "relative_mse": 0.0588721264462422
+        }
+      },
+      "mse": 0.1958222289880117,
+      "relative_mse": 0.055223536260362215,
+      "worst_source_relative_mse": 0.0588721264462422
+    },
+    {
+      "rank": 143,
+      "name": "swin2sr.encoder.stages.0.layers.1.output.dense",
+      "weight_values": 7200,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.03452874064445496,
+          "relative_mse": 0.05303662925246645
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.053335412244002026,
+          "relative_mse": 0.05105508159405783
+        }
+      },
+      "mse": 0.04393207644422849,
+      "relative_mse": 0.0518158638286177,
+      "worst_source_relative_mse": 0.05303662925246645
+    },
+    {
+      "rank": 144,
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.output.dense",
+      "weight_values": 3600,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "values": 4915200,
+          "mse": 0.5364461859067281,
+          "relative_mse": 0.022837481300877222
+        },
+        "rico_screen2words_heldout": {
+          "values": 4915200,
+          "mse": 0.3723774234453837,
+          "relative_mse": 0.023645178847548007
+        }
+      },
+      "mse": 0.4544118046760559,
+      "relative_mse": 0.02316165629766881,
+      "worst_source_relative_mse": 0.023645178847548007
+    }
+  ]
+}

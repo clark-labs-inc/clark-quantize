@@ -1,0 +1,185 @@
+{
+  "format": "backdropkit-swin2sr-conv-grouping-probe-v1",
+  "base_checkpoint": "recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/checkpoint-final.pt",
+  "base_checkpoint_sha256": "a1d9b2d778c3269e22df6f4c61d96bf9c02e94280810299f013392cbf18fe3a1",
+  "validation_data": "/Users/stan/Documents/git/clark-desktop/promos",
+  "categories": "upsample_conv",
+  "default_group_size": 60,
+  "results": [
+    {
+      "grouping": "fp32",
+      "method": null,
+      "metrics": {
+        "psnr_vs_ground_truth": 44.82076233791541,
+        "psnr_vs_teacher": 51.52954026418479
+      },
+      "ledger": [],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": 0.0,
+        "psnr_vs_teacher": 0.0
+      }
+    },
+    {
+      "grouping": "flat",
+      "method": "absmean",
+      "metrics": {
+        "psnr_vs_ground_truth": 16.336925602555333,
+        "psnr_vs_teacher": 16.390384945561255
+      },
+      "ledger": [
+        {
+          "name": "upsample.conv",
+          "category": "image_io_conv",
+          "shape": [
+            12,
+            60,
+            3,
+            3
+          ],
+          "values": 6480,
+          "group_size": 60,
+          "scale_count": 108
+        }
+      ],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": -28.48383673536008,
+        "psnr_vs_teacher": -35.13915531862354
+      }
+    },
+    {
+      "grouping": "output_channel",
+      "method": "absmean",
+      "metrics": {
+        "psnr_vs_ground_truth": 16.006146002589333,
+        "psnr_vs_teacher": 16.055790650608504
+      },
+      "ledger": [
+        {
+          "name": "upsample.conv",
+          "category": "image_io_conv",
+          "shape": [
+            12,
+            60,
+            3,
+            3
+          ],
+          "values": 6480,
+          "group_size": 540,
+          "scale_count": 12
+        }
+      ],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": -28.81461633532608,
+        "psnr_vs_teacher": -35.47374961357629
+      }
+    },
+    {
+      "grouping": "kernel",
+      "method": "absmean",
+      "metrics": {
+        "psnr_vs_ground_truth": 18.11794798001277,
+        "psnr_vs_teacher": 18.193966090896176
+      },
+      "ledger": [
+        {
+          "name": "upsample.conv",
+          "category": "image_io_conv",
+          "shape": [
+            12,
+            60,
+            3,
+            3
+          ],
+          "values": 6480,
+          "group_size": 9,
+          "scale_count": 720
+        }
+      ],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": -26.702814357902643,
+        "psnr_vs_teacher": -33.33557417328861
+      }
+    },
+    {
+      "grouping": "flat",
+      "method": "optimal_mse",
+      "metrics": {
+        "psnr_vs_ground_truth": 22.999109698756666,
+        "psnr_vs_teacher": 23.198794520674635
+      },
+      "ledger": [
+        {
+          "name": "upsample.conv",
+          "category": "image_io_conv",
+          "shape": [
+            12,
+            60,
+            3,
+            3
+          ],
+          "values": 6480,
+          "group_size": 60,
+          "scale_count": 108
+        }
+      ],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": -21.821652639158746,
+        "psnr_vs_teacher": -28.330745743510153
+      }
+    },
+    {
+      "grouping": "output_channel",
+      "method": "optimal_mse",
+      "metrics": {
+        "psnr_vs_ground_truth": 22.61151271200034,
+        "psnr_vs_teacher": 22.80003497504922
+      },
+      "ledger": [
+        {
+          "name": "upsample.conv",
+          "category": "image_io_conv",
+          "shape": [
+            12,
+            60,
+            3,
+            3
+          ],
+          "values": 6480,
+          "group_size": 540,
+          "scale_count": 12
+        }
+      ],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": -22.20924962591507,
+        "psnr_vs_teacher": -28.72950528913557
+      }
+    },
+    {
+      "grouping": "kernel",
+      "method": "optimal_mse",
+      "metrics": {
+        "psnr_vs_ground_truth": 25.571186036358107,
+        "psnr_vs_teacher": 25.908091327691714
+      },
+      "ledger": [
+        {
+          "name": "upsample.conv",
+          "category": "image_io_conv",
+          "shape": [
+            12,
+            60,
+            3,
+            3
+          ],
+          "values": 6480,
+          "group_size": 9,
+          "scale_count": 720
+        }
+      ],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": -19.249576301557305,
+        "psnr_vs_teacher": -25.621448936493074
+      }
+    }
+  ]
+}

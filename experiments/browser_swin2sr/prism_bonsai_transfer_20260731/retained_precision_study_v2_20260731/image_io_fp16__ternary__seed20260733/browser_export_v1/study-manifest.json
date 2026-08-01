@@ -1,0 +1,54 @@
+{
+  "format": "backdropkit-swin2sr-retained-browser-export-study-v1",
+  "status": "sealed_before_browser_materialization",
+  "selection_source": "confirmed_development_leader",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false,
+  "source_materialization": "prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/materialized/materialization.json",
+  "source_materialization_sha256": "2b6edf173814cc40b9c04fcff912f4d9ea848a1e426e209108f6c36486862abb",
+  "source_checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/run/checkpoint-island-4000.pt",
+  "source_checkpoint_sha256": "22350f29385e06097500ecbf62094f3ac6c20c39e3add6839051a5fd1531d824",
+  "development_report": "prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/development/metrics.json",
+  "development_report_sha256": "5174ff7a6b0a209b1a25e0c995ff1bcdcf934f9b1597453f59d4e663071ec2b7",
+  "development_psnr_vs_ground_truth": 34.000033359530164,
+  "base_sealed_sources": "scale_codebook_qat_v2_20260731/sealed_sources",
+  "sealed_overlay": "prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/browser_export_v1/sealed_overlay",
+  "source_sha256": {
+    "experiments/browser_swin2sr/retained_precision_state.py": "3dbf8f4f1cece05d13092552e0a115e6df6fef3fc5f644724c70f8cdaa1bd562",
+    "experiments/browser_swin2sr/train_retained_fp16_island.py": "182ce9ef1dc25ce0036d28cfe40f74d458c5500be865b17430568fc4be1a9758",
+    "experiments/browser_swin2sr/materialize_retained_precision_checkpoint.py": "7e18e9ed3fa3023561633313b5cd3b130c799835c0ee99b8ffc9d7cd431cae9f",
+    "experiments/browser_swin2sr/materialize_surface_states.py": "c4790151ddc85f07a1f433d58687adcf3a08e07e15a95d41e81fb48916f6fa27",
+    "experiments/browser_swin2sr/export_browser_artifact.py": "7cd98827e28fa49c6a40a7afc32db9cde75c2525c56ae645d124adc4d8304dad",
+    "experiments/browser_swin2sr/seal_retained_browser_artifact.py": "f1644501ed68d06047ae14e880be04a879accf1df63b14fb794aa40016591c32"
+  },
+  "materialization_command": [
+    "/usr/bin/env",
+    "PYTHONPATH=prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/browser_export_v1/sealed_overlay/experiments/browser_swin2sr:scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:scale_codebook_qat_v2_20260731/sealed_sources",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/browser_export_v1/sealed_overlay/experiments/browser_swin2sr/materialize_retained_precision_checkpoint.py",
+    "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/run/checkpoint-island-4000.pt",
+    "--out",
+    "prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/browser_export_v1/browser_materialized",
+    "--source-device",
+    "cpu"
+  ],
+  "materialization": "prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/browser_export_v1/browser_materialized/materialization.json",
+  "artifact_command": [
+    "/usr/bin/env",
+    "PYTHONPATH=prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/browser_export_v1/sealed_overlay/experiments/browser_swin2sr:scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:scale_codebook_qat_v2_20260731/sealed_sources",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/browser_export_v1/sealed_overlay/experiments/browser_swin2sr/export_browser_artifact.py",
+    "prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/browser_export_v1/browser_materialized/materialization.json",
+    "--out",
+    "prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/browser_export_v1/browser_artifact"
+  ],
+  "artifact": "prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/browser_export_v1/browser_artifact",
+  "required_next_gates": [
+    "materialization_dense_state_exactly_matches_source",
+    "packed_runtime_numerical_conformance",
+    "cross_browser_webgpu_wasm_cpu_latency_and_memory",
+    "robustness",
+    "official_q4_quality"
+  ]
+}

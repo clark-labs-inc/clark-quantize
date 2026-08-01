@@ -1,0 +1,299 @@
+{
+  "checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/run/checkpoint-surface-17000.pt",
+  "checkpoint_receipt": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/hard-started-validation-step-17000-mps.json",
+  "checkpoint_receipt_sha256": "a8a2c9477d73a2e75f30a8a4045e8d43ebbc9d793b354803ed5cc10b55e20495",
+  "checkpoint_sha256": "b7138ce2188e4321f9bdbaf3a69f85a05eaf9ba31c4f2163274b18b785eaeac5",
+  "command": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/train_swin2sr_full_surface.py",
+    "--base-checkpoint",
+    "experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/run/checkpoint-surface-17000.pt",
+    "--validation-data",
+    "/Users/stan/Documents/git/clark-desktop/promos",
+    "--out",
+    "experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/run",
+    "--steps",
+    "19000",
+    "--schedule-steps",
+    "24000",
+    "--batch-size",
+    "8",
+    "--crop-size",
+    "128",
+    "--learning-rate",
+    "1e-06",
+    "--loss-recipe",
+    "balanced",
+    "--validate-every",
+    "500",
+    "--checkpoint-every",
+    "1000",
+    "--hard-shadow-weight-start",
+    "0.05",
+    "--hard-shadow-weight-end",
+    "0.25",
+    "--hard-shadow-every",
+    "2",
+    "--device",
+    "mps",
+    "--seed",
+    "20260730",
+    "--data",
+    "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+    "--data",
+    "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2"
+  ],
+  "created_at_unix": 1785466827.455604,
+  "final_heldout_locked": true,
+  "finished_at_unix": 1785468435.0944,
+  "format": "backdropkit-swin2sr-sealed-resume-v1",
+  "lineage_policy": {
+    "evaluator_resume_checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/fork-step14000.pt",
+    "resume_chain_checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/run/checkpoint-surface-17000.pt",
+    "resume_chain_checkpoint_sha256": "b7138ce2188e4321f9bdbaf3a69f85a05eaf9ba31c4f2163274b18b785eaeac5",
+    "training_state_modified": false
+  },
+  "local_import_closure": {
+    "artifact_state": {
+      "mtime_unix": 1785386379.0590408,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/artifact_state.py",
+      "recorded_path": "experiments/browser_swin2sr/artifact_state.py",
+      "sha256": "6b09fb1062628c3db11a612ad6cd96d01e894bb379df5fe65c4b63f413a2faf0",
+      "source_kind": "fallback"
+    },
+    "clark_air": {
+      "mtime_unix": 1782582423.6687284,
+      "path": "/Users/stan/Documents/git/clark-quantize/clark_air/__init__.py",
+      "recorded_path": "clark_air/__init__.py",
+      "sha256": "80970c6e93d7313669f6fb41c11384ce04a5491ec2801cd83b9c320d0a91f542",
+      "source_kind": "fallback"
+    },
+    "clark_air.quant": {
+      "mtime_unix": 1782582378.963239,
+      "path": "/Users/stan/Documents/git/clark-quantize/clark_air/quant/__init__.py",
+      "recorded_path": "clark_air/quant/__init__.py",
+      "sha256": "17fde496925605a5e26133c3a2fc9024eb0820cf2b6245e54f3d743fc458a0a1",
+      "source_kind": "fallback"
+    },
+    "clark_air.quant.binary": {
+      "mtime_unix": 1782582378.9634933,
+      "path": "/Users/stan/Documents/git/clark-quantize/clark_air/quant/binary.py",
+      "recorded_path": "clark_air/quant/binary.py",
+      "sha256": "695c3f92c815e242b2b6b8a8af44415a115f18a71cf60de36ffa517cff5dcec4",
+      "source_kind": "fallback"
+    },
+    "clark_air.quant.master_weight_qat": {
+      "mtime_unix": 1782686393.341636,
+      "path": "/Users/stan/Documents/git/clark-quantize/clark_air/quant/master_weight_qat.py",
+      "recorded_path": "clark_air/quant/master_weight_qat.py",
+      "sha256": "587c31d911b84ad3c4a509e4d8c99964d68871293b041d5516275975da08fa48",
+      "source_kind": "fallback"
+    },
+    "clark_air.quant.optimal_ternary": {
+      "mtime_unix": 1782582378.9633794,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/clark_air/quant/optimal_ternary.py",
+      "recorded_path": "clark_air/quant/optimal_ternary.py",
+      "sha256": "1b3138db657bfbf7fac26f5570fa9257379cee2eabea30787ccabcb2f0957cce",
+      "source_kind": "sealed"
+    },
+    "clark_air.quant.packing": {
+      "mtime_unix": 1785365487.3165634,
+      "path": "/Users/stan/Documents/git/clark-quantize/clark_air/quant/packing.py",
+      "recorded_path": "clark_air/quant/packing.py",
+      "sha256": "a36c332020f1b8744bfcc37311db2b4d2604bc195061c86c39bf3c7d5dce06a1",
+      "source_kind": "fallback"
+    },
+    "clark_quantize": {
+      "mtime_unix": 1781750404.0669637,
+      "path": "/Users/stan/Documents/git/clark-quantize/clark_quantize/__init__.py",
+      "recorded_path": "clark_quantize/__init__.py",
+      "sha256": "d2ad0ad2b56c44bda35a0f7934b2b12caeeac3fb3f9e2ed17b3ad4f1d43ba956",
+      "source_kind": "fallback"
+    },
+    "clark_quantize.bonsai_muon": {
+      "mtime_unix": 1783053053.7044442,
+      "path": "/Users/stan/Documents/git/clark-quantize/clark_quantize/bonsai_muon.py",
+      "recorded_path": "clark_quantize/bonsai_muon.py",
+      "sha256": "dde2052c9d7499c3550886042b95812f0dd14d9bdb00a29fc09556b22b02fb8f",
+      "source_kind": "fallback"
+    },
+    "clark_quantize.bonsai_qat8": {
+      "mtime_unix": 1785386124.8624132,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/clark_quantize/bonsai_qat8.py",
+      "recorded_path": "clark_quantize/bonsai_qat8.py",
+      "sha256": "6673c400adc00e81800693a61728a74f6925a82d9ea4026041a69f9ff0f5d8f2",
+      "source_kind": "sealed"
+    },
+    "clark_quantize.gptq": {
+      "mtime_unix": 1781750385.1499882,
+      "path": "/Users/stan/Documents/git/clark-quantize/clark_quantize/gptq.py",
+      "recorded_path": "clark_quantize/gptq.py",
+      "sha256": "c1f2120092ab3108ff7a5e572437c427b63b6b54cd53d3a2e1a1f821482222d7",
+      "source_kind": "fallback"
+    },
+    "clark_quantize.qat_optimizer_variants": {
+      "mtime_unix": 1785442395.8173542,
+      "path": "/Users/stan/Documents/git/clark-quantize/clark_quantize/qat_optimizer_variants.py",
+      "recorded_path": "clark_quantize/qat_optimizer_variants.py",
+      "sha256": "e0c395b860aae8c86fcf1b72dc96e77bf347e3f29276731aeb7145b2799ed202",
+      "source_kind": "fallback"
+    },
+    "clark_quantize.ternary": {
+      "mtime_unix": 1781750395.2828903,
+      "path": "/Users/stan/Documents/git/clark-quantize/clark_quantize/ternary.py",
+      "recorded_path": "clark_quantize/ternary.py",
+      "sha256": "f50c1361d21f94762876748ca6de6dd2be48362ff313f6c6f69ff84b0922cbc0",
+      "source_kind": "fallback"
+    },
+    "clark_quantize.ternary_kd": {
+      "mtime_unix": 1783828182.0,
+      "path": "/Users/stan/Documents/git/clark-quantize/clark_quantize/ternary_kd.py",
+      "recorded_path": "clark_quantize/ternary_kd.py",
+      "sha256": "e6a89eda7bafddc122a927e289ec269467a3723127021ad6a206b22e727579a1",
+      "source_kind": "fallback"
+    },
+    "data_pipeline": {
+      "mtime_unix": 1785383994.5826864,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/data_pipeline.py",
+      "recorded_path": "experiments/browser_swin2sr/data_pipeline.py",
+      "sha256": "8dd9a33ef886c97fe70a33db01612112a545ba8b7e3243de2ea9e040cd8c7671",
+      "source_kind": "sealed"
+    },
+    "island_policy": {
+      "mtime_unix": 1785390268.982804,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/island_policy.py",
+      "recorded_path": "experiments/browser_swin2sr/island_policy.py",
+      "sha256": "e7a72ca1c1c142d5d982fdcfd6c0e9be62a9f5ee6a13080e17033358b6b9bc65",
+      "source_kind": "fallback"
+    },
+    "optimizer_controls": {
+      "mtime_unix": 1785442412.5351136,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/optimizer_controls.py",
+      "recorded_path": "experiments/browser_swin2sr/optimizer_controls.py",
+      "sha256": "8c722f68ce70c5ef3580f756a044f69ecdba9cf1dd8bb383aa144175d3ec904f",
+      "source_kind": "sealed"
+    },
+    "qat_objective": {
+      "mtime_unix": 1785381405.9295433,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/qat_objective.py",
+      "recorded_path": "experiments/browser_swin2sr/qat_objective.py",
+      "sha256": "22fa683897a8dc938a873e7fae9d6836c5cba30243223513c2b1b828587fe95c",
+      "source_kind": "sealed"
+    },
+    "quantizer_controls": {
+      "mtime_unix": 1785386313.0447924,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/quantizer_controls.py",
+      "recorded_path": "experiments/browser_swin2sr/quantizer_controls.py",
+      "sha256": "1480eee113c789ff1cde5d484a5416c9f5bfb5f03dad1144165333397c86a843",
+      "source_kind": "sealed"
+    },
+    "recovery_controls": {
+      "mtime_unix": 1785399476.1140563,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/recovery_controls.py",
+      "recorded_path": "experiments/browser_swin2sr/recovery_controls.py",
+      "sha256": "99cbb941ff5a95c4adbe770d698fb03c00d37cb38accee77037aa2bf4153b397",
+      "source_kind": "sealed"
+    },
+    "recovery_corpus_identity": {
+      "mtime_unix": 1785407607.0413954,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/recovery_corpus_identity.py",
+      "recorded_path": "experiments/browser_swin2sr/recovery_corpus_identity.py",
+      "sha256": "715b2c52d10a5e163cbb262c85ebb2d90ae1947ae5d1e7b45c4e196f4d0dfed5",
+      "source_kind": "fallback"
+    },
+    "recovery_data": {
+      "mtime_unix": 1785410475.2264283,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/recovery_data.py",
+      "recorded_path": "experiments/browser_swin2sr/recovery_data.py",
+      "sha256": "caa88a8f9151d2648e8af24d3da712f418e24bebb5d0fedd724b35cb14d29005",
+      "source_kind": "sealed"
+    },
+    "recovery_resume_policy": {
+      "mtime_unix": 1785407710.2358239,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/recovery_resume_policy.py",
+      "recorded_path": "experiments/browser_swin2sr/recovery_resume_policy.py",
+      "sha256": "221007e3b071db75cf2e2b24f2cade6be4c13337b0b8f344551f43d80aecac9e",
+      "source_kind": "fallback"
+    },
+    "rotation_control": {
+      "mtime_unix": 1785384113.7599409,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/rotation_control.py",
+      "recorded_path": "experiments/browser_swin2sr/rotation_control.py",
+      "sha256": "29e360be76d94a54266d4e0afdf2db15303e9d69f4452db24dea450f250481b2",
+      "source_kind": "sealed"
+    },
+    "run_state": {
+      "mtime_unix": 1785386420.3240433,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/run_state.py",
+      "recorded_path": "experiments/browser_swin2sr/run_state.py",
+      "sha256": "2bb0e607c6bce5514fab3751037eca7d7707b39b4eb8b92fc7755ccce488067f",
+      "source_kind": "sealed"
+    },
+    "surface_artifact_state": {
+      "mtime_unix": 1785399922.1917512,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/surface_artifact_state.py",
+      "recorded_path": "experiments/browser_swin2sr/surface_artifact_state.py",
+      "sha256": "d5513426a0a3bef02d6ede631513c1840e88a2cd676e9e987eb6ac8a4c9df213",
+      "source_kind": "sealed"
+    },
+    "surface_curriculum": {
+      "mtime_unix": 1785435789.7224581,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/surface_curriculum.py",
+      "recorded_path": "experiments/browser_swin2sr/surface_curriculum.py",
+      "sha256": "ac56e6d06ca0a1adc21ba8c98d6f2187d2ccc361a61c973ca6d06ed3c23a822b",
+      "source_kind": "sealed"
+    },
+    "surface_model_state": {
+      "mtime_unix": 1785451298.3304179,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/surface_model_state.py",
+      "recorded_path": "experiments/browser_swin2sr/surface_model_state.py",
+      "sha256": "e08688f9a63aaf3572b5f3567125f0984c2a0a4f435445a4247d115b1ee992f4",
+      "source_kind": "sealed"
+    },
+    "surface_quantization": {
+      "mtime_unix": 1785451298.329229,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/surface_quantization.py",
+      "recorded_path": "experiments/browser_swin2sr/surface_quantization.py",
+      "sha256": "1ce0e44777f6fbbb509707c243aaebcf79080c18467b2ac1bf3922cf052846bb",
+      "source_kind": "sealed"
+    },
+    "surface_run_state": {
+      "mtime_unix": 1785451311.836505,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/surface_run_state.py",
+      "recorded_path": "experiments/browser_swin2sr/surface_run_state.py",
+      "sha256": "7b68dcae272cd76245eb2dc373c72eeea8993397c0c6afed052106a7c3adbc02",
+      "source_kind": "sealed"
+    },
+    "surface_schedule": {
+      "mtime_unix": 1785434328.1343608,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/surface_schedule.py",
+      "recorded_path": "experiments/browser_swin2sr/surface_schedule.py",
+      "sha256": "083db652b58cfe93d7c9b787ec7ade80c634c74c72fa59db1324748d0e55f530",
+      "source_kind": "sealed"
+    },
+    "train_swin2sr_qat": {
+      "mtime_unix": 1785442415.6149588,
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/train_swin2sr_qat.py",
+      "recorded_path": "experiments/browser_swin2sr/train_swin2sr_qat.py",
+      "sha256": "b8c2c8ceb8cac1a5820ac322a4a91f8a27657c6bf1b14bfe33f5be52dcc7b9e4",
+      "source_kind": "fallback"
+    }
+  },
+  "model_promotion_authorized": false,
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "runner": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/run_sealed_sensitive_resume.py",
+  "runner_sha256": "6b8ffc2fc35e393f924603405feea0e04a73f3b11d82b757f366054da2642cc4",
+  "sealed_source_root": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025",
+  "sealed_trainer": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/sealed_sources-restart-g9-lr025/experiments/browser_swin2sr/train_swin2sr_full_surface.py",
+  "sealed_trainer_sha256": "bdd267cd4e82b1035146f2aac0123e1c239815cf5c328ad76a150dfff240f513",
+  "selection_source": "development",
+  "status": "complete",
+  "study_manifest": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/study-manifest-restart-g9-lr025.json",
+  "study_manifest_sha256": "3e61205a193c3bdd84e9c8b4222870d20d903b81258f42aeabac6f0a0fb0fdc1",
+  "surface_step": 17000,
+  "target_checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/run/checkpoint-surface-19000.pt",
+  "target_checkpoint_sha256": "eca1f2e9dec3937dc206964392b2c287a9ea4957463df059abe2cc55d28cae9f",
+  "target_step": 19000,
+  "torch": "2.8.0",
+  "transformers": "4.57.6"
+}

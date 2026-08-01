@@ -1,0 +1,866 @@
+{
+  "format": "backdropkit-swin2sr-mixfrag-scale-qat-decision-v1",
+  "selection_source": "development",
+  "protocol": "mixfrag_scale_allocation_20260731/qat_v1/decision_gate_v2/decision-protocol.json",
+  "protocol_sha256": "4faa02a96ca4449efdd5d1f9a87eab01538ce177409c2a16b88232f2639badcf",
+  "checkpoint": "mixfrag_scale_allocation_20260731/qat_v1/run/checkpoint-scale-4000.pt",
+  "checkpoint_sha256": "3bb712c0291b031449aed190267f17ec654a22b1eb0a502de518da2075967570",
+  "materialization": "mixfrag_scale_allocation_20260731/qat_v1/materialized/materialization.json",
+  "materialization_sha256": "e0446127538d44859c78bf61979e43954686c72b0ff3d0d98499de31173c75d8",
+  "development_report": "mixfrag_scale_allocation_20260731/qat_v1/development/metrics.json",
+  "development_report_sha256": "c0b64354ac2f28057ed09b7b19d5294002d5c46723682b8d5bd90501ca80dbd9",
+  "artifact_manifest": "mixfrag_scale_allocation_20260731/qat_v1/artifact/model.json",
+  "artifact_manifest_sha256": "f0938a95270a6d4ec8dbde7cab87196d440dde8148c1377ca8dcfa63f1499a7c",
+  "artifact_binary": "mixfrag_scale_allocation_20260731/qat_v1/artifact/model.bin",
+  "artifact_binary_sha256": "51ae05e7cffea3be00d076fe3f15c1206fac2bfa6f02a1fa735adc260ceffa7d",
+  "storage_ledger": {
+    "parameter_values": 1005348,
+    "state_values": 1005348,
+    "quantized_values": 977604,
+    "quantized_fraction_of_parameters": 0.9724035856240824,
+    "code_bytes": 195636,
+    "scale_bytes": 9836,
+    "raw_tensor_bytes": 55488,
+    "alignment_bytes": 132,
+    "binary_bytes": 261092,
+    "ideal_code_bits_per_quantized_weight": 1.584962500721156,
+    "packed_code_bits_per_quantized_weight": 1.600942713000356,
+    "scale_bits_per_quantized_weight": 0.08049066902344917,
+    "packed_trunk_bits_per_quantized_weight": 1.6814333820238052,
+    "whole_model_data_bits_per_parameter": 2.0776248622367577
+  },
+  "storage_passed": false,
+  "candidate_means": {
+    "psnr_vs_ground_truth": 32.58292605958481,
+    "edge_psnr_vs_ground_truth": 36.371816002891194,
+    "psnr_vs_teacher": 37.36757793211756,
+    "psnr_gain_over_bicubic": 4.481331952684783
+  },
+  "reference_means": {
+    "q4": {
+      "psnr_vs_ground_truth": 34.923646052887975,
+      "edge_psnr_vs_ground_truth": 38.43321909086869,
+      "psnr_vs_teacher": 46.93279955627636,
+      "psnr_gain_over_bicubic": 6.822051945987962
+    },
+    "refined_parent": {
+      "psnr_vs_ground_truth": 33.00248238976449,
+      "edge_psnr_vs_ground_truth": 36.57672151276254,
+      "psnr_vs_teacher": 38.13455422836188,
+      "psnr_gain_over_bicubic": 4.900888282864471
+    },
+    "released_ternary": {
+      "psnr_vs_ground_truth": 32.896689950382964,
+      "edge_psnr_vs_ground_truth": 36.555819572350096,
+      "psnr_vs_teacher": 38.21936141603402,
+      "psnr_gain_over_bicubic": 4.795095843482945
+    },
+    "sensitive_bridge": {
+      "psnr_vs_ground_truth": 32.9114202618038,
+      "edge_psnr_vs_ground_truth": 36.69398236764893,
+      "psnr_vs_teacher": 38.00548593144121,
+      "psnr_gain_over_bicubic": 4.809826154903783
+    },
+    "all_ternary_leader_seed_mean": {
+      "psnr_vs_ground_truth": 33.99699096112409,
+      "edge_psnr_vs_ground_truth": 37.63230567917326,
+      "psnr_vs_teacher": 40.70072982497072,
+      "psnr_gain_over_bicubic": 5.8953968542240816
+    }
+  },
+  "candidate_minus_reference": {
+    "q4": {
+      "psnr_vs_ground_truth": -2.3407199933031677,
+      "edge_psnr_vs_ground_truth": -2.061403087977496,
+      "psnr_vs_teacher": -9.565221624158795,
+      "psnr_gain_over_bicubic": -2.3407199933031793
+    },
+    "refined_parent": {
+      "psnr_vs_ground_truth": -0.41955633017968097,
+      "edge_psnr_vs_ground_truth": -0.20490550987134526,
+      "psnr_vs_teacher": -0.7669762962443158,
+      "psnr_gain_over_bicubic": -0.4195563301796881
+    },
+    "released_ternary": {
+      "psnr_vs_ground_truth": -0.3137638907981568,
+      "edge_psnr_vs_ground_truth": -0.18400356945890195,
+      "psnr_vs_teacher": -0.8517834839164564,
+      "psnr_gain_over_bicubic": -0.31376389079816214
+    },
+    "sensitive_bridge": {
+      "psnr_vs_ground_truth": -0.32849420221899095,
+      "edge_psnr_vs_ground_truth": -0.3221663647577344,
+      "psnr_vs_teacher": -0.6379079993236445,
+      "psnr_gain_over_bicubic": -0.3284942022190007
+    },
+    "all_ternary_leader_seed_mean": {
+      "psnr_vs_ground_truth": -1.4140649015392839,
+      "edge_psnr_vs_ground_truth": -1.260489676282063,
+      "psnr_vs_teacher": -3.3331518928531594,
+      "psnr_gain_over_bicubic": -1.414064901539299
+    }
+  },
+  "noninferiority_vs_refined_parent": {
+    "paired": {
+      "psnr_vs_ground_truth": {
+        "samples": 3040,
+        "candidate_minus_reference_mean": -0.41955633017968813,
+        "candidate_minus_reference_median": -0.26700072775398453,
+        "candidate_minus_reference_p10": -1.2039092905018272,
+        "paired_bootstrap_95ci": [
+          -0.4430667249535758,
+          -0.3959400412320562
+        ],
+        "noninferiority_margin": -0.1,
+        "p10_delta_minimum": -0.75,
+        "improved": false,
+        "passed": false
+      },
+      "edge_psnr_vs_ground_truth": {
+        "samples": 3040,
+        "candidate_minus_reference_mean": -0.20490550987135125,
+        "candidate_minus_reference_median": -0.12925336185602454,
+        "candidate_minus_reference_p10": -0.812182658950816,
+        "paired_bootstrap_95ci": [
+          -0.22480762931613776,
+          -0.18454391527159078
+        ],
+        "noninferiority_margin": -0.15,
+        "p10_delta_minimum": -1.0,
+        "improved": false,
+        "passed": false
+      },
+      "psnr_vs_teacher": {
+        "samples": 3040,
+        "candidate_minus_reference_mean": -0.7669762962443195,
+        "candidate_minus_reference_median": -0.677611657578634,
+        "candidate_minus_reference_p10": -1.8193948179452213,
+        "paired_bootstrap_95ci": [
+          -0.7959067791908713,
+          -0.7378828469433122
+        ],
+        "noninferiority_margin": -0.25,
+        "p10_delta_minimum": -1.25,
+        "improved": false,
+        "passed": false
+      }
+    },
+    "stratified": [
+      {
+        "key": "source",
+        "metric": "psnr_vs_ground_truth",
+        "minimum_samples": 1000,
+        "mean_delta_minimum": -0.15,
+        "groups": 2,
+        "failed_groups": [
+          "flores200_balanced_synthetic_ui",
+          "rico_screen2words_heldout"
+        ],
+        "worst_groups": [
+          {
+            "name": "flores200_balanced_synthetic_ui",
+            "samples": 2040,
+            "mean_delta": -0.4455820227441458,
+            "passed": false
+          },
+          {
+            "name": "rico_screen2words_heldout",
+            "samples": 1000,
+            "mean_delta": -0.3664639173481946,
+            "passed": false
+          }
+        ],
+        "passed": false
+      },
+      {
+        "key": "script",
+        "metric": "edge_psnr_vs_ground_truth",
+        "minimum_samples": 10,
+        "mean_delta_minimum": -0.5,
+        "groups": 29,
+        "failed_groups": [
+          "Hant",
+          "Laoo",
+          "Thai"
+        ],
+        "worst_groups": [
+          {
+            "name": "Laoo",
+            "samples": 10,
+            "mean_delta": -0.695474108020884,
+            "passed": false
+          },
+          {
+            "name": "Thai",
+            "samples": 10,
+            "mean_delta": -0.6056304149965811,
+            "passed": false
+          },
+          {
+            "name": "Hant",
+            "samples": 20,
+            "mean_delta": -0.5812796566184204,
+            "passed": false
+          },
+          {
+            "name": "Taml",
+            "samples": 10,
+            "mean_delta": -0.4058315729806118,
+            "passed": true
+          },
+          {
+            "name": "Hang",
+            "samples": 10,
+            "mean_delta": -0.34696970077683176,
+            "passed": true
+          },
+          {
+            "name": "Orya",
+            "samples": 10,
+            "mean_delta": -0.32112215901288754,
+            "passed": true
+          },
+          {
+            "name": "Beng",
+            "samples": 30,
+            "mean_delta": -0.32078678701682045,
+            "passed": true
+          },
+          {
+            "name": "Gujr",
+            "samples": 10,
+            "mean_delta": -0.3085738169534988,
+            "passed": true
+          },
+          {
+            "name": "Mymr",
+            "samples": 20,
+            "mean_delta": -0.30541610291553384,
+            "passed": true
+          },
+          {
+            "name": "Geor",
+            "samples": 10,
+            "mean_delta": -0.28699131435689085,
+            "passed": true
+          }
+        ],
+        "passed": false
+      },
+      {
+        "key": "language",
+        "metric": "psnr_vs_ground_truth",
+        "minimum_samples": 10,
+        "mean_delta_minimum": -0.5,
+        "groups": 204,
+        "failed_groups": [
+          "aeb_Arab",
+          "aka_Latn",
+          "apc_Arab",
+          "arb_Arab",
+          "arb_Latn",
+          "ars_Arab",
+          "ary_Arab",
+          "asm_Beng",
+          "ast_Latn",
+          "azj_Latn",
+          "bam_Latn",
+          "ban_Latn",
+          "bem_Latn",
+          "bod_Tibt",
+          "cym_Latn",
+          "epo_Latn",
+          "eus_Latn",
+          "ewe_Latn",
+          "fur_Latn",
+          "gaz_Latn",
+          "gla_Latn",
+          "gle_Latn",
+          "glg_Latn",
+          "guj_Gujr",
+          "hin_Deva",
+          "hrv_Latn",
+          "hun_Latn",
+          "ibo_Latn",
+          "jav_Latn",
+          "jpn_Jpan",
+          "kam_Latn",
+          "kas_Deva",
+          "kat_Geor",
+          "kaz_Cyrl",
+          "kea_Latn",
+          "kik_Latn",
+          "kmb_Latn",
+          "kmr_Latn",
+          "knc_Latn",
+          "kor_Hang",
+          "lao_Laoo",
+          "lua_Latn",
+          "lug_Latn",
+          "luo_Latn",
+          "lus_Latn",
+          "mai_Deva",
+          "mar_Deva",
+          "min_Arab",
+          "min_Latn",
+          "mni_Beng",
+          "mos_Latn",
+          "nus_Latn",
+          "ory_Orya",
+          "pag_Latn",
+          "pap_Latn",
+          "pbt_Arab",
+          "pol_Latn",
+          "por_Latn",
+          "quy_Latn",
+          "run_Latn",
+          "sag_Latn",
+          "scn_Latn",
+          "shn_Mymr",
+          "slk_Latn",
+          "slv_Latn",
+          "sot_Latn",
+          "tam_Taml",
+          "taq_Latn",
+          "tha_Thai",
+          "tir_Ethi",
+          "tsn_Latn",
+          "tso_Latn",
+          "tum_Latn",
+          "uig_Arab",
+          "umb_Latn",
+          "uzn_Latn",
+          "vie_Latn",
+          "wol_Latn",
+          "ydd_Hebr",
+          "yor_Latn",
+          "yue_Hant",
+          "zho_Hant",
+          "zul_Latn"
+        ],
+        "worst_groups": [
+          {
+            "name": "lao_Laoo",
+            "samples": 10,
+            "mean_delta": -1.2998263547495754,
+            "passed": false
+          },
+          {
+            "name": "yor_Latn",
+            "samples": 10,
+            "mean_delta": -1.1988736024622022,
+            "passed": false
+          },
+          {
+            "name": "sag_Latn",
+            "samples": 10,
+            "mean_delta": -1.075955553364765,
+            "passed": false
+          },
+          {
+            "name": "gla_Latn",
+            "samples": 10,
+            "mean_delta": -1.0408610452046314,
+            "passed": false
+          },
+          {
+            "name": "tha_Thai",
+            "samples": 10,
+            "mean_delta": -0.962911367676363,
+            "passed": false
+          },
+          {
+            "name": "yue_Hant",
+            "samples": 10,
+            "mean_delta": -0.9559393738095601,
+            "passed": false
+          },
+          {
+            "name": "vie_Latn",
+            "samples": 10,
+            "mean_delta": -0.9141027617379368,
+            "passed": false
+          },
+          {
+            "name": "gle_Latn",
+            "samples": 10,
+            "mean_delta": -0.8497854486132056,
+            "passed": false
+          },
+          {
+            "name": "ban_Latn",
+            "samples": 10,
+            "mean_delta": -0.7951474371125989,
+            "passed": false
+          },
+          {
+            "name": "pag_Latn",
+            "samples": 10,
+            "mean_delta": -0.792782959292385,
+            "passed": false
+          }
+        ],
+        "passed": false
+      }
+    ],
+    "passed": false
+  },
+  "official_quality_vs_q4": {
+    "paired": {
+      "psnr_vs_ground_truth": {
+        "samples": 3040,
+        "candidate_minus_reference_mean": -2.3407199933031793,
+        "candidate_minus_reference_median": -1.686966823224214,
+        "candidate_minus_reference_p10": -5.616786220196315,
+        "paired_bootstrap_95ci": [
+          -2.4237012848478754,
+          -2.259879276779052
+        ],
+        "noninferiority_margin": -0.1,
+        "p10_delta_minimum": -0.75,
+        "improved": false,
+        "passed": false
+      },
+      "edge_psnr_vs_ground_truth": {
+        "samples": 3040,
+        "candidate_minus_reference_mean": -2.0614030879774936,
+        "candidate_minus_reference_median": -1.4740785779912642,
+        "candidate_minus_reference_p10": -5.00800972507211,
+        "paired_bootstrap_95ci": [
+          -2.138056489062371,
+          -1.9859027348831395
+        ],
+        "noninferiority_margin": -0.15,
+        "p10_delta_minimum": -1.0,
+        "improved": false,
+        "passed": false
+      },
+      "psnr_vs_teacher": {
+        "samples": 3040,
+        "candidate_minus_reference_mean": -9.565221624158795,
+        "candidate_minus_reference_median": -9.314389825032062,
+        "candidate_minus_reference_p10": -13.837304586534588,
+        "paired_bootstrap_95ci": [
+          -9.674635747027725,
+          -9.458509086228453
+        ],
+        "noninferiority_margin": -0.25,
+        "p10_delta_minimum": -1.25,
+        "improved": false,
+        "passed": false
+      }
+    },
+    "stratified": [
+      {
+        "key": "source",
+        "metric": "psnr_vs_ground_truth",
+        "minimum_samples": 1000,
+        "mean_delta_minimum": -0.15,
+        "groups": 2,
+        "failed_groups": [
+          "flores200_balanced_synthetic_ui",
+          "rico_screen2words_heldout"
+        ],
+        "worst_groups": [
+          {
+            "name": "rico_screen2words_heldout",
+            "samples": 1000,
+            "mean_delta": -2.765469562693056,
+            "passed": false
+          },
+          {
+            "name": "flores200_balanced_synthetic_ui",
+            "samples": 2040,
+            "mean_delta": -2.1325094200728474,
+            "passed": false
+          }
+        ],
+        "passed": false
+      },
+      {
+        "key": "script",
+        "metric": "edge_psnr_vs_ground_truth",
+        "minimum_samples": 10,
+        "mean_delta_minimum": -0.5,
+        "groups": 29,
+        "failed_groups": [
+          "Arab",
+          "Armn",
+          "Beng",
+          "Cyrl",
+          "Deva",
+          "Ethi",
+          "Geor",
+          "Grek",
+          "Gujr",
+          "Guru",
+          "Hang",
+          "Hans",
+          "Hant",
+          "Hebr",
+          "Jpan",
+          "Khmr",
+          "Knda",
+          "Laoo",
+          "Latn",
+          "Mlym",
+          "Mymr",
+          "Olck",
+          "Orya",
+          "Sinh",
+          "Taml",
+          "Telu",
+          "Tfng",
+          "Thai",
+          "Tibt"
+        ],
+        "worst_groups": [
+          {
+            "name": "Thai",
+            "samples": 10,
+            "mean_delta": -3.154398829089618,
+            "passed": false
+          },
+          {
+            "name": "Laoo",
+            "samples": 10,
+            "mean_delta": -2.9266616672641286,
+            "passed": false
+          },
+          {
+            "name": "Olck",
+            "samples": 10,
+            "mean_delta": -2.904389308784338,
+            "passed": false
+          },
+          {
+            "name": "Hant",
+            "samples": 20,
+            "mean_delta": -2.550276482948468,
+            "passed": false
+          },
+          {
+            "name": "Tibt",
+            "samples": 20,
+            "mean_delta": -2.4278925593651244,
+            "passed": false
+          },
+          {
+            "name": "Geor",
+            "samples": 10,
+            "mean_delta": -2.322774947846457,
+            "passed": false
+          },
+          {
+            "name": "Deva",
+            "samples": 100,
+            "mean_delta": -2.2756231615627422,
+            "passed": false
+          },
+          {
+            "name": "Hebr",
+            "samples": 20,
+            "mean_delta": -2.224734561198154,
+            "passed": false
+          },
+          {
+            "name": "Jpan",
+            "samples": 10,
+            "mean_delta": -2.1998715973733054,
+            "passed": false
+          },
+          {
+            "name": "Tfng",
+            "samples": 20,
+            "mean_delta": -2.1876104396291103,
+            "passed": false
+          }
+        ],
+        "passed": false
+      },
+      {
+        "key": "language",
+        "metric": "psnr_vs_ground_truth",
+        "minimum_samples": 10,
+        "mean_delta_minimum": -0.5,
+        "groups": 204,
+        "failed_groups": [
+          "ace_Arab",
+          "ace_Latn",
+          "acm_Arab",
+          "acq_Arab",
+          "aeb_Arab",
+          "afr_Latn",
+          "ajp_Arab",
+          "aka_Latn",
+          "als_Latn",
+          "amh_Ethi",
+          "apc_Arab",
+          "arb_Arab",
+          "arb_Latn",
+          "ars_Arab",
+          "ary_Arab",
+          "arz_Arab",
+          "asm_Beng",
+          "ast_Latn",
+          "awa_Deva",
+          "ayr_Latn",
+          "azb_Arab",
+          "azj_Latn",
+          "bak_Cyrl",
+          "bam_Latn",
+          "ban_Latn",
+          "bel_Cyrl",
+          "bem_Latn",
+          "ben_Beng",
+          "bho_Deva",
+          "bjn_Arab",
+          "bjn_Latn",
+          "bod_Tibt",
+          "bos_Latn",
+          "bug_Latn",
+          "bul_Cyrl",
+          "cat_Latn",
+          "ceb_Latn",
+          "ces_Latn",
+          "cjk_Latn",
+          "ckb_Arab",
+          "crh_Latn",
+          "cym_Latn",
+          "dan_Latn",
+          "deu_Latn",
+          "dik_Latn",
+          "dyu_Latn",
+          "dzo_Tibt",
+          "ell_Grek",
+          "eng_Latn",
+          "epo_Latn",
+          "est_Latn",
+          "eus_Latn",
+          "ewe_Latn",
+          "fao_Latn",
+          "fij_Latn",
+          "fin_Latn",
+          "fon_Latn",
+          "fra_Latn",
+          "fur_Latn",
+          "fuv_Latn",
+          "gaz_Latn",
+          "gla_Latn",
+          "gle_Latn",
+          "glg_Latn",
+          "grn_Latn",
+          "guj_Gujr",
+          "hat_Latn",
+          "hau_Latn",
+          "heb_Hebr",
+          "hin_Deva",
+          "hne_Deva",
+          "hrv_Latn",
+          "hun_Latn",
+          "hye_Armn",
+          "ibo_Latn",
+          "ilo_Latn",
+          "ind_Latn",
+          "isl_Latn",
+          "ita_Latn",
+          "jav_Latn",
+          "jpn_Jpan",
+          "kab_Latn",
+          "kac_Latn",
+          "kam_Latn",
+          "kan_Knda",
+          "kas_Arab",
+          "kas_Deva",
+          "kat_Geor",
+          "kaz_Cyrl",
+          "kbp_Latn",
+          "kea_Latn",
+          "khk_Cyrl",
+          "khm_Khmr",
+          "kik_Latn",
+          "kin_Latn",
+          "kir_Cyrl",
+          "kmb_Latn",
+          "kmr_Latn",
+          "knc_Arab",
+          "knc_Latn",
+          "kon_Latn",
+          "kor_Hang",
+          "lao_Laoo",
+          "lij_Latn",
+          "lim_Latn",
+          "lin_Latn",
+          "lit_Latn",
+          "lmo_Latn",
+          "ltg_Latn",
+          "ltz_Latn",
+          "lua_Latn",
+          "lug_Latn",
+          "luo_Latn",
+          "lus_Latn",
+          "lvs_Latn",
+          "mag_Deva",
+          "mai_Deva",
+          "mal_Mlym",
+          "mar_Deva",
+          "min_Arab",
+          "min_Latn",
+          "mkd_Cyrl",
+          "mlt_Latn",
+          "mni_Beng",
+          "mos_Latn",
+          "mri_Latn",
+          "mya_Mymr",
+          "nld_Latn",
+          "nno_Latn",
+          "nob_Latn",
+          "npi_Deva",
+          "nso_Latn",
+          "nus_Latn",
+          "nya_Latn",
+          "oci_Latn",
+          "ory_Orya",
+          "pag_Latn",
+          "pan_Guru",
+          "pap_Latn",
+          "pbt_Arab",
+          "pes_Arab",
+          "plt_Latn",
+          "pol_Latn",
+          "por_Latn",
+          "prs_Arab",
+          "quy_Latn",
+          "ron_Latn",
+          "run_Latn",
+          "rus_Cyrl",
+          "sag_Latn",
+          "san_Deva",
+          "sat_Olck",
+          "scn_Latn",
+          "shn_Mymr",
+          "sin_Sinh",
+          "slk_Latn",
+          "slv_Latn",
+          "smo_Latn",
+          "sna_Latn",
+          "snd_Arab",
+          "som_Latn",
+          "sot_Latn",
+          "spa_Latn",
+          "srd_Latn",
+          "srp_Cyrl",
+          "ssw_Latn",
+          "sun_Latn",
+          "swe_Latn",
+          "swh_Latn",
+          "szl_Latn",
+          "tam_Taml",
+          "taq_Latn",
+          "taq_Tfng",
+          "tat_Cyrl",
+          "tel_Telu",
+          "tgk_Cyrl",
+          "tgl_Latn",
+          "tha_Thai",
+          "tir_Ethi",
+          "tpi_Latn",
+          "tsn_Latn",
+          "tso_Latn",
+          "tuk_Latn",
+          "tum_Latn",
+          "tur_Latn",
+          "twi_Latn",
+          "tzm_Tfng",
+          "uig_Arab",
+          "ukr_Cyrl",
+          "umb_Latn",
+          "urd_Arab",
+          "uzn_Latn",
+          "vec_Latn",
+          "vie_Latn",
+          "war_Latn",
+          "wol_Latn",
+          "xho_Latn",
+          "ydd_Hebr",
+          "yor_Latn",
+          "yue_Hant",
+          "zho_Hans",
+          "zho_Hant",
+          "zsm_Latn",
+          "zul_Latn"
+        ],
+        "worst_groups": [
+          {
+            "name": "gla_Latn",
+            "samples": 10,
+            "mean_delta": -5.181246850450657,
+            "passed": false
+          },
+          {
+            "name": "yor_Latn",
+            "samples": 10,
+            "mean_delta": -4.367394287842437,
+            "passed": false
+          },
+          {
+            "name": "sag_Latn",
+            "samples": 10,
+            "mean_delta": -4.297719765131957,
+            "passed": false
+          },
+          {
+            "name": "gle_Latn",
+            "samples": 10,
+            "mean_delta": -4.20208606460863,
+            "passed": false
+          },
+          {
+            "name": "umb_Latn",
+            "samples": 10,
+            "mean_delta": -3.8371177335291073,
+            "passed": false
+          },
+          {
+            "name": "wol_Latn",
+            "samples": 10,
+            "mean_delta": -3.8121187888221812,
+            "passed": false
+          },
+          {
+            "name": "tha_Thai",
+            "samples": 10,
+            "mean_delta": -3.611535807669758,
+            "passed": false
+          },
+          {
+            "name": "ydd_Hebr",
+            "samples": 10,
+            "mean_delta": -3.5766114859820775,
+            "passed": false
+          },
+          {
+            "name": "ars_Arab",
+            "samples": 10,
+            "mean_delta": -3.5194524231183024,
+            "passed": false
+          },
+          {
+            "name": "bem_Latn",
+            "samples": 10,
+            "mean_delta": -3.503001652996546,
+            "passed": false
+          }
+        ],
+        "passed": false
+      }
+    ],
+    "passed": false
+  },
+  "mechanism_advances": false,
+  "new_all_ternary_quality_leader": false,
+  "next_action": "reject_or_revise_scale_qat",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false
+}

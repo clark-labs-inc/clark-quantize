@@ -1,0 +1,105 @@
+{
+  "format": "backdropkit-swin2sr-expanded-surface-group-full-decision-v1",
+  "selection_source": "development",
+  "diagnostic_only": true,
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "protocol": "experiments/browser_swin2sr/surface_group_broad_confirmation_20260731/full-development-protocol.json",
+  "protocol_sha256": "37d8f880e0a4af64446c2f0f7aa8fd4fba63ade0741f1f4f1c3b43359066cbcb",
+  "decision_source_sha256": "a2a7510d863ca0170e72b497a0ac18392611a3c2192d892d6457aa7f48efca56",
+  "baseline_report": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/full-development/metrics.json",
+  "baseline_report_sha256": "a41ffbb8765cb560eea1683495ab6cd01818dff4125d9843de28b4e054871367",
+  "candidate_report": "experiments/browser_swin2sr/surface_group_broad_confirmation_20260731/full-development/development/metrics.json",
+  "candidate_report_sha256": "4bed1631ac1ddd24c38a6cec53851e286201a2e9dac78bed96c053a279c0a1a1",
+  "fork_receipt": "experiments/browser_swin2sr/surface_group_broad_confirmation_20260731/full-development/fork-receipt.json",
+  "fork_receipt_sha256": "aea5b98f6aebd07c88086508035631a42209fcead18aa4bbd0820211e12ee0e4",
+  "materialization": "experiments/browser_swin2sr/surface_group_broad_confirmation_20260731/full-development/canonical/materialization.json",
+  "materialization_sha256": "5e4e79e88d75fe3e7a7802d22034e89bfef44d7b6db529ac5abdee5af6d6d829",
+  "sample_count": 3040,
+  "paired_candidate_minus_g2": {
+    "psnr_vs_ground_truth": {
+      "mean": 0.13710166557766096,
+      "median": 0.08488487444001258,
+      "lower_95": 0.12357783950751229,
+      "upper_95": 0.15131633002521358,
+      "win_fraction": 0.6904605263157895
+    },
+    "edge_psnr_vs_ground_truth": {
+      "mean": 0.2016248264694608,
+      "median": 0.11081782129133444,
+      "lower_95": 0.18773604762121698,
+      "upper_95": 0.21589393710078084,
+      "win_fraction": 0.774671052631579
+    },
+    "psnr_vs_teacher": {
+      "mean": -0.1172519143623821,
+      "median": -0.11979112667106762,
+      "lower_95": -0.13422430117456272,
+      "upper_95": -0.09995412446298188,
+      "win_fraction": 0.38717105263157897
+    }
+  },
+  "candidate_minus_g2_by_source": {
+    "flores200_balanced_synthetic_ui": 0.18048084013708107,
+    "rico_screen2words_heldout": 0.04860814947644387
+  },
+  "candidate_minus_q4": {
+    "psnr_vs_ground_truth": {
+      "mean": -1.8898544369273562,
+      "median": -1.448328494759366,
+      "lower_95": -1.9578423272754133,
+      "upper_95": -1.823221872522389,
+      "win_fraction": 0.13486842105263158
+    },
+    "edge_psnr_vs_ground_truth": {
+      "mean": -1.6757746920491303,
+      "median": -1.260628752592151,
+      "lower_95": -1.7378091074089332,
+      "upper_95": -1.614120226531389,
+      "win_fraction": 0.14210526315789473
+    },
+    "psnr_vs_teacher": {
+      "mean": -8.830690054604723,
+      "median": -8.665382034186086,
+      "lower_95": -8.921726816031633,
+      "upper_95": -8.73963604908508,
+      "win_fraction": 0.0003289473684210526
+    }
+  },
+  "selected_surface_group_sizes": {
+    "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.0": 3,
+    "swin2sr.encoder.stages.0.layers.1.output.dense": 6,
+    "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.0": 6,
+    "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.2.layers.2.attention.self.value": 6,
+    "swin2sr.encoder.stages.2.layers.3.attention.self.value": 6,
+    "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.3.layers.2.attention.output.dense": 3,
+    "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.3.layers.3.attention.output.dense": 3,
+    "swin2sr.encoder.stages.3.layers.4.intermediate.dense": 6,
+    "swin2sr.encoder.stages.3.layers.5.attention.output.dense": 6
+  },
+  "selected_scale_bytes_delta": 17810,
+  "decision_rule": {
+    "bootstrap_seed": 20260731,
+    "bootstrap_samples": 10000,
+    "ground_truth_lower_95_min_db": 0.0,
+    "edge_mean_min_db": -0.1,
+    "teacher_mean_min_db": -0.1,
+    "every_source_ground_truth_mean_min_db": -0.1,
+    "scale_byte_budget": 65536
+  },
+  "gates": {
+    "ground_truth_positive_lower_95": true,
+    "edge_mean_guard": true,
+    "teacher_mean_guard": false,
+    "every_source_ground_truth_guard": true,
+    "scale_byte_budget": true
+  },
+  "expanded_map_recovery_selected": false,
+  "selected_checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+  "selected_checkpoint_sha256": "ad5e76db8c378c16da689a4cf37d96eb6e204f7b9de543199efc103c0d371469"
+}

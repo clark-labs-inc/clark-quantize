@@ -1,0 +1,1113 @@
+{
+  "format": "backdropkit-realtime-student-training-v1",
+  "teacher": {
+    "model": "caidas/swin2SR-lightweight-x2-64",
+    "revision": "07e8e61492ce6daf4f34c651622960faf110c17f"
+  },
+  "student": {
+    "channels": 12,
+    "blocks": 3,
+    "parameters": 8496,
+    "color_mode": "rgb"
+  },
+  "training": {
+    "steps": 5000,
+    "batch_size": 16,
+    "crop_size": 128,
+    "learning_rate": 0.0003,
+    "loss_weights": {
+      "ground_truth": 0.55,
+      "teacher": 0.25,
+      "edge": 0.2
+    },
+    "seed": 20260731,
+    "device": "mps"
+  },
+  "initialization": {
+    "method": "exact-luma-to-rgb",
+    "checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/realtime_1080p_to_4k_20260731/run_1000step_12ch_20260731/checkpoint-final.pt",
+    "checkpoint_sha256": "a3e58b7dcc04369490be0966e737349751410c93c4da708844d45cd5ad3836ee"
+  },
+  "data_roots": [
+    "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+    "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-v1"
+  ],
+  "training_images": 206232,
+  "validation_images": 268,
+  "validation_groups": 208,
+  "sampling": [
+    {
+      "group": "flores/ace_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ace_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/acm_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/acq_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/aeb_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/afr_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ajp_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/aka_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/als_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/amh_Ethi",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/apc_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/arb_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/arb_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ars_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ary_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/arz_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/asm_Beng",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ast_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/awa_Deva",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ayr_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/azb_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/azj_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/bak_Cyrl",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/bam_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ban_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/bel_Cyrl",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/bem_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ben_Beng",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/bho_Deva",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/bjn_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/bjn_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/bod_Tibt",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/bos_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/bug_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/bul_Cyrl",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/cat_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ceb_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ces_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/cjk_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ckb_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/crh_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/cym_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/dan_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/deu_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/dik_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/dyu_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/dzo_Tibt",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ell_Grek",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/eng_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/epo_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/est_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/eus_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ewe_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/fao_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/fij_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/fin_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/fon_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/fra_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/fur_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/fuv_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/gaz_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/gla_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/gle_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/glg_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/grn_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/guj_Gujr",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/hat_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/hau_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/heb_Hebr",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/hin_Deva",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/hne_Deva",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/hrv_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/hun_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/hye_Armn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ibo_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ilo_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ind_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/isl_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ita_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/jav_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/jpn_Jpan",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kab_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kac_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kam_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kan_Knda",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kas_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kas_Deva",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kat_Geor",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kaz_Cyrl",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kbp_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kea_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/khk_Cyrl",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/khm_Khmr",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kik_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kin_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kir_Cyrl",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kmb_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kmr_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/knc_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/knc_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kon_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/kor_Hang",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/lao_Laoo",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/lij_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/lim_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/lin_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/lit_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/lmo_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ltg_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ltz_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/lua_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/lug_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/luo_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/lus_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/lvs_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/mag_Deva",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/mai_Deva",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/mal_Mlym",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/mar_Deva",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/min_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/min_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/mkd_Cyrl",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/mlt_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/mni_Beng",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/mos_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/mri_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/mya_Mymr",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/nld_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/nno_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/nob_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/npi_Deva",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/nso_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/nus_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/nya_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/oci_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ory_Orya",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/pag_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/pan_Guru",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/pap_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/pbt_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/pes_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/plt_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/pol_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/por_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/prs_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/quy_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ron_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/run_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/rus_Cyrl",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/sag_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/san_Deva",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/sat_Olck",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/scn_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/shn_Mymr",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/sin_Sinh",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/slk_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/slv_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/smo_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/sna_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/snd_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/som_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/sot_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/spa_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/srd_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/srp_Cyrl",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ssw_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/sun_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/swe_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/swh_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/szl_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tam_Taml",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/taq_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/taq_Tfng",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tat_Cyrl",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tel_Telu",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tgk_Cyrl",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tgl_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tha_Thai",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tir_Ethi",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tpi_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tsn_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tso_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tuk_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tum_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tur_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/twi_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/tzm_Tfng",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/uig_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ukr_Cyrl",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/umb_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/urd_Arab",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/uzn_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/vec_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/vie_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/war_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/wol_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/xho_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/ydd_Hebr",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/yor_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/yue_Hant",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/zho_Hans",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/zho_Hant",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/zsm_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "flores/zul_Latn",
+      "images": 499,
+      "weight": 0.0009803921568627457
+    },
+    {
+      "group": "image/aria_ui",
+      "images": 2984,
+      "weight": 0.1500000000000001
+    },
+    {
+      "group": "image/pd12m",
+      "images": 1984,
+      "weight": 0.10000000000000007
+    },
+    {
+      "group": "image/rico",
+      "images": 15484,
+      "weight": 0.3500000000000002
+    },
+    {
+      "group": "image/websight",
+      "images": 83984,
+      "weight": 0.20000000000000015
+    }
+  ],
+  "baseline_validation": {
+    "product_weighted_psnr_vs_ground_truth": 28.788123630892997,
+    "product_weighted_psnr_vs_teacher": 31.540088970520916,
+    "sample_weighted_psnr_vs_ground_truth": 30.37219524383545,
+    "sample_weighted_psnr_vs_teacher": 33.985356814825714,
+    "by_source": {
+      "aria_ui": {
+        "samples": 16,
+        "psnr_vs_ground_truth": 28.30267059803009,
+        "psnr_vs_teacher": 31.08053231239319
+      },
+      "flores": {
+        "samples": 204,
+        "psnr_vs_ground_truth": 30.867799010931275,
+        "psnr_vs_teacher": 34.678068076863006
+      },
+      "pd12m": {
+        "samples": 16,
+        "psnr_vs_ground_truth": 31.70082437992096,
+        "psnr_vs_teacher": 35.88059616088867
+      },
+      "rico": {
+        "samples": 16,
+        "psnr_vs_ground_truth": 27.772088050842285,
+        "psnr_vs_teacher": 28.831265687942505
+      },
+      "websight": {
+        "samples": 16,
+        "psnr_vs_ground_truth": 27.39424991607666,
+        "psnr_vs_teacher": 31.316964507102966
+      }
+    }
+  }
+}

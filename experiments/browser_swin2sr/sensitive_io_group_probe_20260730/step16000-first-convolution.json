@@ -1,0 +1,615 @@
+{
+  "format": "backdropkit-swin2sr-sensitive-io-group-probe-v1",
+  "diagnostic_only": true,
+  "selection_source": "development",
+  "checkpoint": "experiments/browser_swin2sr/sensitive_hardshadow_20260730/checkpoint-surface-16000.pt",
+  "checkpoint_sha256": "f82331d1f224f146cac5b98862f1c6f2da29d187a40da03af9eaf6217442c9e9",
+  "study_manifest": "experiments/browser_swin2sr/sensitive_hardshadow_20260730/study-manifest.json",
+  "study_manifest_sha256": "18ff244d741b904ca6fd6a9c365517491a781fc3c38f4a1aeea050868f6adada",
+  "verified_sealed_sources": {
+    "clark_air/quant/optimal_ternary.py": "1b3138db657bfbf7fac26f5570fa9257379cee2eabea30787ccabcb2f0957cce",
+    "clark_quantize/bonsai_qat8.py": "6673c400adc00e81800693a61728a74f6925a82d9ea4026041a69f9ff0f5d8f2",
+    "experiments/browser_swin2sr/data_pipeline.py": "8dd9a33ef886c97fe70a33db01612112a545ba8b7e3243de2ea9e040cd8c7671",
+    "experiments/browser_swin2sr/optimizer_controls.py": "18a16c6d5220ad0f965452f1baadea1ae2c96a155e6d00718fc554d71502b01b",
+    "experiments/browser_swin2sr/qat_objective.py": "22fa683897a8dc938a873e7fae9d6836c5cba30243223513c2b1b828587fe95c",
+    "experiments/browser_swin2sr/quantizer_controls.py": "1480eee113c789ff1cde5d484a5416c9f5bfb5f03dad1144165333397c86a843",
+    "experiments/browser_swin2sr/recovery_controls.py": "99cbb941ff5a95c4adbe770d698fb03c00d37cb38accee77037aa2bf4153b397",
+    "experiments/browser_swin2sr/recovery_data.py": "caa88a8f9151d2648e8af24d3da712f418e24bebb5d0fedd724b35cb14d29005",
+    "experiments/browser_swin2sr/rotation_control.py": "29e360be76d94a54266d4e0afdf2db15303e9d69f4452db24dea450f250481b2",
+    "experiments/browser_swin2sr/run_state.py": "2bb0e607c6bce5514fab3751037eca7d7707b39b4eb8b92fc7755ccce488067f",
+    "experiments/browser_swin2sr/surface_artifact_state.py": "d5513426a0a3bef02d6ede631513c1840e88a2cd676e9e987eb6ac8a4c9df213",
+    "experiments/browser_swin2sr/surface_curriculum.py": "ac56e6d06ca0a1adc21ba8c98d6f2187d2ccc361a61c973ca6d06ed3c23a822b",
+    "experiments/browser_swin2sr/surface_model_state.py": "df42439a259b9f4e451923e6cb31c0c251e4cabcf9c9d723a3a521509d082834",
+    "experiments/browser_swin2sr/surface_quantization.py": "3da350a00cb6107b30358ee906a19a45e32999de3b8ec1182c3a271e2da16b6b",
+    "experiments/browser_swin2sr/surface_run_state.py": "e4c3929d9552590eaa4d6a2299e125b9cce80f86feafdcfc2a9f8285ad7c73d3",
+    "experiments/browser_swin2sr/surface_schedule.py": "083db652b58cfe93d7c9b787ec7ade80c634c74c72fa59db1324748d0e55f530",
+    "experiments/browser_swin2sr/train_swin2sr_full_surface.py": "390571c8681339c9987723343a413bb0083d787ba04c2257b6f1e3cb9d4302e2"
+  },
+  "probe_source_sha256": "dc2ec1c1023b5487ed237de5b8b08d061eac718ad98eecc8871b4fa6aa75ad73",
+  "device": "mps",
+  "crop_size": 128,
+  "validation_files": [
+    {
+      "path": "/Users/stan/Documents/git/clark-desktop/promos/source-ui-composer-current.png",
+      "sha256": "27bb60639781d97b623ce94c5e6944fc0243fbde5efb0bcbf3b60e1cfe967c34"
+    },
+    {
+      "path": "/Users/stan/Documents/git/clark-desktop/promos/source-ui-chat-current.png",
+      "sha256": "f3f8ea752eeab6a1c5e8e9a36d7a22c9cb91cd83203f91ae7014f085fa3419c0"
+    },
+    {
+      "path": "/Users/stan/Documents/git/clark-desktop/promos/source-ui-research-current.png",
+      "sha256": "c012b92f05bd0d20fbda5e4fb16931f3a1800dbc854cdb98f26e35edf80c05d8"
+    },
+    {
+      "path": "/Users/stan/Documents/git/clark-desktop/promos/clark-code-ad-parallel-research-vertical-poster.png",
+      "sha256": "73e7bd7af4f848200d4d9585c4b8a32fb905d8e5e493ef44c1d144c572e5d649"
+    }
+  ],
+  "surface_step": 16000,
+  "target": "swin2sr.first_convolution",
+  "target_shape": [
+    60,
+    3,
+    3,
+    3
+  ],
+  "target_values": 1620,
+  "reference_method": "optimal_mse",
+  "reference_group_size": 9,
+  "total_quantized_values": 977604,
+  "results": [
+    {
+      "method": "optimal_mse",
+      "group_size": 1,
+      "metrics": {
+        "psnr_vs_ground_truth": 30.180786264859407,
+        "psnr_vs_teacher": 30.84758796841877
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 1,
+        "scale_count": 1620,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 25920,
+        "layer_bits_per_weight": 17.584962500721154,
+        "whole_model_bit_delta_vs_reference": 0.02356782500889931
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 2,
+      "metrics": {
+        "psnr_vs_ground_truth": 30.721973285725866,
+        "psnr_vs_teacher": 31.432451889306932
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 2,
+        "scale_count": 810,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 12960,
+        "layer_bits_per_weight": 9.584962500721156,
+        "whole_model_bit_delta_vs_reference": 0.010310923441393447
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 3,
+      "metrics": {
+        "psnr_vs_ground_truth": 23.49818251054303,
+        "psnr_vs_teacher": 23.71515448435784
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 3,
+        "scale_count": 540,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 8640,
+        "layer_bits_per_weight": 6.918295834054489,
+        "whole_model_bit_delta_vs_reference": 0.005891956252224827
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 24.562044202110176,
+        "psnr_vs_teacher": 24.803853036829267
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 6,
+        "scale_count": 270,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 4320,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.0014729890630562068
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 9,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.832513878386283,
+        "psnr_vs_teacher": 23.03585242244663
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 9,
+        "scale_count": 180,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 2880,
+        "layer_bits_per_weight": 3.3627402784989338,
+        "whole_model_bit_delta_vs_reference": 0.0
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 15,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.846735919267736,
+        "psnr_vs_teacher": 23.056898382315733
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 15,
+        "scale_count": 108,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 1728,
+        "layer_bits_per_weight": 2.6516291673878225,
+        "whole_model_bit_delta_vs_reference": -0.0011783912504449655
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 27,
+      "metrics": {
+        "psnr_vs_ground_truth": 20.290808039340366,
+        "psnr_vs_teacher": 20.417991671670556
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 27,
+        "scale_count": 60,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 960,
+        "layer_bits_per_weight": 2.1775550933137486,
+        "whole_model_bit_delta_vs_reference": -0.0019639854174082756
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 45,
+      "metrics": {
+        "psnr_vs_ground_truth": 21.142558182749525,
+        "psnr_vs_teacher": 21.28643300154083
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 45,
+        "scale_count": 36,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 576,
+        "layer_bits_per_weight": 1.9405180562767117,
+        "whole_model_bit_delta_vs_reference": -0.002356782500889931
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 90,
+      "metrics": {
+        "psnr_vs_ground_truth": 24.471728111022745,
+        "psnr_vs_teacher": 24.730315384939175
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 90,
+        "scale_count": 18,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 288,
+        "layer_bits_per_weight": 1.7627402784989339,
+        "whole_model_bit_delta_vs_reference": -0.002651380313501172
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 270,
+      "metrics": {
+        "psnr_vs_ground_truth": 26.24218912909602,
+        "psnr_vs_teacher": 26.574898984998047
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 270,
+        "scale_count": 6,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 96,
+        "layer_bits_per_weight": 1.6442217599804154,
+        "whole_model_bit_delta_vs_reference": -0.0028477788552419996
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 1620,
+      "metrics": {
+        "psnr_vs_ground_truth": 25.574587982784067,
+        "psnr_vs_teacher": 25.878496187158685
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 1620,
+        "scale_count": 1,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 16,
+        "layer_bits_per_weight": 1.5948390439310327,
+        "whole_model_bit_delta_vs_reference": -0.0029296115809673445
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 1,
+      "metrics": {
+        "psnr_vs_ground_truth": 30.180786264859407,
+        "psnr_vs_teacher": 30.84758796841877
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 1,
+        "scale_count": 1620,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 25920,
+        "layer_bits_per_weight": 17.584962500721154,
+        "whole_model_bit_delta_vs_reference": 0.02356782500889931
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 2,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.826491125142482,
+        "psnr_vs_teacher": 23.04395174758423
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 2,
+        "scale_count": 810,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 12960,
+        "layer_bits_per_weight": 9.584962500721156,
+        "whole_model_bit_delta_vs_reference": 0.010310923441393447
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 3,
+      "metrics": {
+        "psnr_vs_ground_truth": 20.89653810759244,
+        "psnr_vs_teacher": 21.034614579822208
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 3,
+        "scale_count": 540,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 8640,
+        "layer_bits_per_weight": 6.918295834054489,
+        "whole_model_bit_delta_vs_reference": 0.005891956252224827
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.670231459892698,
+        "psnr_vs_teacher": 22.86823718622939
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 6,
+        "scale_count": 270,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 4320,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.0014729890630562068
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 9,
+      "metrics": {
+        "psnr_vs_ground_truth": 21.04474636404429,
+        "psnr_vs_teacher": 21.194268399606383
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 9,
+        "scale_count": 180,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 2880,
+        "layer_bits_per_weight": 3.3627402784989338,
+        "whole_model_bit_delta_vs_reference": 0.0
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 15,
+      "metrics": {
+        "psnr_vs_ground_truth": 19.76659203299816,
+        "psnr_vs_teacher": 19.8787441411838
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 15,
+        "scale_count": 108,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 1728,
+        "layer_bits_per_weight": 2.6516291673878225,
+        "whole_model_bit_delta_vs_reference": -0.0011783912504449655
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 27,
+      "metrics": {
+        "psnr_vs_ground_truth": 20.766831695257235,
+        "psnr_vs_teacher": 20.90357430945068
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 27,
+        "scale_count": 60,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 960,
+        "layer_bits_per_weight": 2.1775550933137486,
+        "whole_model_bit_delta_vs_reference": -0.0019639854174082756
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 45,
+      "metrics": {
+        "psnr_vs_ground_truth": 18.974315387201923,
+        "psnr_vs_teacher": 19.067564447748474
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 45,
+        "scale_count": 36,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 576,
+        "layer_bits_per_weight": 1.9405180562767117,
+        "whole_model_bit_delta_vs_reference": -0.002356782500889931
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 90,
+      "metrics": {
+        "psnr_vs_ground_truth": 19.294557223230957,
+        "psnr_vs_teacher": 19.39394095175768
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 90,
+        "scale_count": 18,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 288,
+        "layer_bits_per_weight": 1.7627402784989339,
+        "whole_model_bit_delta_vs_reference": -0.002651380313501172
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 270,
+      "metrics": {
+        "psnr_vs_ground_truth": 20.724829573714814,
+        "psnr_vs_teacher": 20.857136257720214
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 270,
+        "scale_count": 6,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 96,
+        "layer_bits_per_weight": 1.6442217599804154,
+        "whole_model_bit_delta_vs_reference": -0.0028477788552419996
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 1620,
+      "metrics": {
+        "psnr_vs_ground_truth": 20.59537835544014,
+        "psnr_vs_teacher": 20.725549158345128
+      },
+      "storage": {
+        "values": 1620,
+        "group_size": 1620,
+        "scale_count": 1,
+        "ideal_code_bits": 2567.639251168273,
+        "scale_bits": 16,
+        "layer_bits_per_weight": 1.5948390439310327,
+        "whole_model_bit_delta_vs_reference": -0.0029296115809673445
+      }
+    }
+  ],
+  "ranking": [
+    {
+      "rank": 1,
+      "method": "optimal_mse",
+      "group_size": 2,
+      "psnr_vs_ground_truth": 30.721973285725866,
+      "psnr_vs_teacher": 31.432451889306932,
+      "whole_model_bit_delta_vs_reference": 0.010310923441393447
+    },
+    {
+      "rank": 2,
+      "method": "optimal_mse",
+      "group_size": 1,
+      "psnr_vs_ground_truth": 30.180786264859407,
+      "psnr_vs_teacher": 30.84758796841877,
+      "whole_model_bit_delta_vs_reference": 0.02356782500889931
+    },
+    {
+      "rank": 3,
+      "method": "absmean",
+      "group_size": 1,
+      "psnr_vs_ground_truth": 30.180786264859407,
+      "psnr_vs_teacher": 30.84758796841877,
+      "whole_model_bit_delta_vs_reference": 0.02356782500889931
+    },
+    {
+      "rank": 4,
+      "method": "optimal_mse",
+      "group_size": 270,
+      "psnr_vs_ground_truth": 26.24218912909602,
+      "psnr_vs_teacher": 26.574898984998047,
+      "whole_model_bit_delta_vs_reference": -0.0028477788552419996
+    },
+    {
+      "rank": 5,
+      "method": "optimal_mse",
+      "group_size": 1620,
+      "psnr_vs_ground_truth": 25.574587982784067,
+      "psnr_vs_teacher": 25.878496187158685,
+      "whole_model_bit_delta_vs_reference": -0.0029296115809673445
+    },
+    {
+      "rank": 6,
+      "method": "optimal_mse",
+      "group_size": 6,
+      "psnr_vs_ground_truth": 24.562044202110176,
+      "psnr_vs_teacher": 24.803853036829267,
+      "whole_model_bit_delta_vs_reference": 0.0014729890630562068
+    },
+    {
+      "rank": 7,
+      "method": "optimal_mse",
+      "group_size": 90,
+      "psnr_vs_ground_truth": 24.471728111022745,
+      "psnr_vs_teacher": 24.730315384939175,
+      "whole_model_bit_delta_vs_reference": -0.002651380313501172
+    },
+    {
+      "rank": 8,
+      "method": "optimal_mse",
+      "group_size": 3,
+      "psnr_vs_ground_truth": 23.49818251054303,
+      "psnr_vs_teacher": 23.71515448435784,
+      "whole_model_bit_delta_vs_reference": 0.005891956252224827
+    },
+    {
+      "rank": 9,
+      "method": "optimal_mse",
+      "group_size": 15,
+      "psnr_vs_ground_truth": 22.846735919267736,
+      "psnr_vs_teacher": 23.056898382315733,
+      "whole_model_bit_delta_vs_reference": -0.0011783912504449655
+    },
+    {
+      "rank": 10,
+      "method": "optimal_mse",
+      "group_size": 9,
+      "psnr_vs_ground_truth": 22.832513878386283,
+      "psnr_vs_teacher": 23.03585242244663,
+      "whole_model_bit_delta_vs_reference": 0.0
+    },
+    {
+      "rank": 11,
+      "method": "absmean",
+      "group_size": 2,
+      "psnr_vs_ground_truth": 22.826491125142482,
+      "psnr_vs_teacher": 23.04395174758423,
+      "whole_model_bit_delta_vs_reference": 0.010310923441393447
+    },
+    {
+      "rank": 12,
+      "method": "absmean",
+      "group_size": 6,
+      "psnr_vs_ground_truth": 22.670231459892698,
+      "psnr_vs_teacher": 22.86823718622939,
+      "whole_model_bit_delta_vs_reference": 0.0014729890630562068
+    },
+    {
+      "rank": 13,
+      "method": "optimal_mse",
+      "group_size": 45,
+      "psnr_vs_ground_truth": 21.142558182749525,
+      "psnr_vs_teacher": 21.28643300154083,
+      "whole_model_bit_delta_vs_reference": -0.002356782500889931
+    },
+    {
+      "rank": 14,
+      "method": "absmean",
+      "group_size": 9,
+      "psnr_vs_ground_truth": 21.04474636404429,
+      "psnr_vs_teacher": 21.194268399606383,
+      "whole_model_bit_delta_vs_reference": 0.0
+    },
+    {
+      "rank": 15,
+      "method": "absmean",
+      "group_size": 3,
+      "psnr_vs_ground_truth": 20.89653810759244,
+      "psnr_vs_teacher": 21.034614579822208,
+      "whole_model_bit_delta_vs_reference": 0.005891956252224827
+    },
+    {
+      "rank": 16,
+      "method": "absmean",
+      "group_size": 27,
+      "psnr_vs_ground_truth": 20.766831695257235,
+      "psnr_vs_teacher": 20.90357430945068,
+      "whole_model_bit_delta_vs_reference": -0.0019639854174082756
+    },
+    {
+      "rank": 17,
+      "method": "absmean",
+      "group_size": 270,
+      "psnr_vs_ground_truth": 20.724829573714814,
+      "psnr_vs_teacher": 20.857136257720214,
+      "whole_model_bit_delta_vs_reference": -0.0028477788552419996
+    },
+    {
+      "rank": 18,
+      "method": "absmean",
+      "group_size": 1620,
+      "psnr_vs_ground_truth": 20.59537835544014,
+      "psnr_vs_teacher": 20.725549158345128,
+      "whole_model_bit_delta_vs_reference": -0.0029296115809673445
+    },
+    {
+      "rank": 19,
+      "method": "optimal_mse",
+      "group_size": 27,
+      "psnr_vs_ground_truth": 20.290808039340366,
+      "psnr_vs_teacher": 20.417991671670556,
+      "whole_model_bit_delta_vs_reference": -0.0019639854174082756
+    },
+    {
+      "rank": 20,
+      "method": "absmean",
+      "group_size": 15,
+      "psnr_vs_ground_truth": 19.76659203299816,
+      "psnr_vs_teacher": 19.8787441411838,
+      "whole_model_bit_delta_vs_reference": -0.0011783912504449655
+    },
+    {
+      "rank": 21,
+      "method": "absmean",
+      "group_size": 90,
+      "psnr_vs_ground_truth": 19.294557223230957,
+      "psnr_vs_teacher": 19.39394095175768,
+      "whole_model_bit_delta_vs_reference": -0.002651380313501172
+    },
+    {
+      "rank": 22,
+      "method": "absmean",
+      "group_size": 45,
+      "psnr_vs_ground_truth": 18.974315387201923,
+      "psnr_vs_teacher": 19.067564447748474,
+      "whole_model_bit_delta_vs_reference": -0.002356782500889931
+    }
+  ]
+}

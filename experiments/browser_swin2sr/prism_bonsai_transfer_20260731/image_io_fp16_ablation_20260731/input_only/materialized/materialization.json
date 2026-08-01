@@ -1,0 +1,39 @@
+{
+  "format": "backdropkit-swin2sr-image-io-fp16-ablation-v1",
+  "interpretation": "The same-seed hard-ternary image-I/O arm with exactly one declared convolution replaced by its paired trained FP16 value.",
+  "seed": 20260731,
+  "parent_checkpoint_sha256": "0b155f9ada8b747544ba1abb83596e160927fdc91a4c33bf36879ff3f77ce00f",
+  "sources": {
+    "ternary": {
+      "materialization": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260731/materialized/materialization.json",
+      "sha256": "64eca69e010b64503fdf2447a4db0957739f44f1219e828a174a06e30ed26355",
+      "state_sha256": "6a9e57164c2e2f08c5b182d032e4a119ba3546a3ad2a93728bdc0ab7bd0f28f6"
+    },
+    "fp16": {
+      "materialization": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__fp16__seed20260731/materialized/materialization.json",
+      "sha256": "134cb4203a3e64d5ddb2e9491b0b07e080bc5302d0c70bfa66c10f28c8902b56",
+      "state_sha256": "c372457bd7f763a016f3d2bdeae9e2276728a634687c521b9710e077cfabec31"
+    }
+  },
+  "intervention": {
+    "choice": "input",
+    "retained_fp16_tensor": "swin2sr.first_convolution.weight",
+    "retained_fp16_values": 1620,
+    "changed_from_ternary": [
+      "swin2sr.first_convolution.weight"
+    ]
+  },
+  "storage": {
+    "ternary_code_bytes": 324,
+    "ternary_scale_bytes": 1620,
+    "retained_fp16_bytes": 3240,
+    "projected_data_byte_delta": 1296
+  },
+  "dense_state": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/input_only/materialized/dense-hard.pt",
+    "file_sha256": "21c0adf1c3fb894a4b819d16ae5c73590a107b15226c961b4d05f2bb1b121f0e",
+    "tensor_sha256": "12e445461189b62ae316380c27c1f73673a0f06fc9aa425b18ff5903e160324f",
+    "tensors": 484,
+    "values": 1005348
+  }
+}

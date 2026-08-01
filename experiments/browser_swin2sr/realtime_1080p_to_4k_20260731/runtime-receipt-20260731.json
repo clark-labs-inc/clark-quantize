@@ -1,0 +1,57 @@
+{
+  "format": "backdropkit-realtime-1080p-to-4k-receipt-v1",
+  "device": "Apple M5",
+  "browser": "Chrome 150 WebGPU",
+  "input": { "width": 1920, "height": 1080, "fps": 60 },
+  "output": { "width": 3840, "height": 2160 },
+  "model": {
+    "profile": "live-4k60",
+    "channels": 12,
+    "blocks": 3,
+    "parameters": 8016,
+    "fp16_bytes": 16032,
+    "sha256": "9865d62d03c220d172916d6c71d484271d4df65c2451c5773992874445e09b25",
+    "gmac_per_frame": 4.1554944,
+    "resident_feature_bytes": 24883200
+  },
+  "kernel": {
+    "name": "two-convolution workgroup-fused residual block",
+    "tile": [8, 8],
+    "workgroup_bytes": 5856,
+    "separate_core_median_ms": 8.9,
+    "fused_core_median_ms": 6.5,
+    "core_speedup_percent": 26.97
+  },
+  "trained_end_to_end_300_frames": {
+    "median_ms": 7.7,
+    "p95_ms": 8.3,
+    "maximum_ms": 9.0,
+    "encoded_chunks": 300,
+    "encoder_error": null,
+    "maximum_encode_queue": 1,
+    "busy_callbacks": 1,
+    "presented_callbacks": 316
+  },
+  "sustained_architecture_600_frames": {
+    "median_ms": 7.7,
+    "p95_ms": 8.3,
+    "maximum_ms": 8.5,
+    "encoded_chunks": 600,
+    "encoder_error": null,
+    "maximum_encode_queue": 1,
+    "busy_callbacks": 1,
+    "presented_callbacks": 616
+  },
+  "training": {
+    "steps": 1000,
+    "training_images": 206232,
+    "held_out_images": 268,
+    "baseline_product_weighted_ground_truth_psnr": 27.184472386626638,
+    "final_product_weighted_ground_truth_psnr": 28.788123905775592,
+    "ground_truth_gain_db": 1.6036515191489542,
+    "baseline_product_weighted_teacher_psnr": 29.225467194762885,
+    "final_product_weighted_teacher_psnr": 31.540089223548478,
+    "teacher_gain_db": 2.3146220287855925
+  },
+  "promotion_status": "research candidate; cross-browser, video-quality, muxing, and tensor-parity gates remain"
+}

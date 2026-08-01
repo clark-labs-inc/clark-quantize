@@ -1,0 +1,193 @@
+{
+  "format": "backdropkit-swin2sr-surface-group-sensitivity-v1",
+  "diagnostic_only": true,
+  "selection_source": "development_screen",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+  "checkpoint_sha256": "ad5e76db8c378c16da689a4cf37d96eb6e204f7b9de543199efc103c0d371469",
+  "surface_step": 24000,
+  "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "bundle_manifest_sha256": "e35334e5c567d7c6c9212eb2008507e73f6e0a3b17c041abbefb3bd82e59720d",
+  "device": "cpu",
+  "torch_threads": 1,
+  "sample_count": 2,
+  "samples": [
+    {
+      "sha256": "27428cfb08bf4f27add4deb9c6f5c29a96d75df867dbcc2d08816cbac1f92f63",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ace_Arab"
+    },
+    {
+      "sha256": "00e51d2bc9151b55dfc7ab8f92e6e633a4ef20eb36826e2c5c20821c2409d19c",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    }
+  ],
+  "target_group_size": 2,
+  "candidate_method": "current",
+  "surface_count": 5,
+  "total_quantized_values": 977604,
+  "hard": {
+    "psnr_vs_ground_truth": 30.878408105092277,
+    "edge_psnr_vs_ground_truth": 34.20579687462235,
+    "psnr_vs_teacher": 36.32804610134147
+  },
+  "surfaces": [
+    {
+      "name": "swin2sr.encoder.stages.3.layers.4.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 2,
+      "metrics": {
+        "psnr_vs_ground_truth": 30.98114551999184,
+        "edge_psnr_vs_ground_truth": 34.312152174849686,
+        "psnr_vs_teacher": 36.39038104499247
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.10273741489956478,
+        "edge_psnr_vs_ground_truth": 0.10635530022733519,
+        "psnr_vs_teacher": 0.06233494365100256
+      },
+      "storage": {
+        "values": 7200,
+        "group_size": 2,
+        "scale_count": 3600,
+        "ideal_code_bits": 11411.730005192323,
+        "scale_bits": 57600,
+        "layer_bits_per_weight": 9.584962500721156,
+        "whole_model_bit_delta_vs_reference": 0.05695557710484,
+        "scale_bytes_delta": 6960
+      },
+      "ground_truth_db_per_added_kib": 0.015115389778326773
+    },
+    {
+      "name": "upsample.conv",
+      "category": "image_io_conv",
+      "values": 6480,
+      "reference_method": "optimal_mse",
+      "reference_group_size": 2,
+      "candidate_method": "optimal_mse",
+      "candidate_group_size": 2,
+      "metrics": {
+        "psnr_vs_ground_truth": 30.878408105092277,
+        "edge_psnr_vs_ground_truth": 34.20579687462235,
+        "psnr_vs_teacher": 36.32804610134147
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.0,
+        "edge_psnr_vs_ground_truth": 0.0,
+        "psnr_vs_teacher": 0.0
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 2,
+        "scale_count": 3240,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 51840,
+        "layer_bits_per_weight": 9.584962500721156,
+        "whole_model_bit_delta_vs_reference": 0.0,
+        "scale_bytes_delta": 0
+      },
+      "ground_truth_db_per_added_kib": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.conv",
+      "category": "residual_body_conv",
+      "values": 32400,
+      "reference_method": "optimal_mse",
+      "reference_group_size": 9,
+      "candidate_method": "optimal_mse",
+      "candidate_group_size": 2,
+      "metrics": {
+        "psnr_vs_ground_truth": 30.814123920657615,
+        "edge_psnr_vs_ground_truth": 34.183487706939836,
+        "psnr_vs_teacher": 35.78590253208332
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.064284184434662,
+        "edge_psnr_vs_ground_truth": -0.022309167682514897,
+        "psnr_vs_teacher": -0.5421435692581511
+      },
+      "storage": {
+        "values": 32400,
+        "group_size": 2,
+        "scale_count": 16200,
+        "ideal_code_bits": 51352.78502336545,
+        "scale_bits": 259200,
+        "layer_bits_per_weight": 9.584962500721156,
+        "whole_model_bit_delta_vs_reference": 0.20621846882786896,
+        "scale_bytes_delta": 25200
+      },
+      "ground_truth_db_per_added_kib": -0.0026121827325830908
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.patch_embed.projection",
+      "category": "residual_body_conv",
+      "values": 3600,
+      "reference_method": "optimal_mse",
+      "reference_group_size": 60,
+      "candidate_method": "optimal_mse",
+      "candidate_group_size": 2,
+      "metrics": {
+        "psnr_vs_ground_truth": 30.601034260489755,
+        "edge_psnr_vs_ground_truth": 33.96194009781381,
+        "psnr_vs_teacher": 35.70062000468859
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.277373844602522,
+        "edge_psnr_vs_ground_truth": -0.243856776808542,
+        "psnr_vs_teacher": -0.6274260966528828
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 2,
+        "scale_count": 1800,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 28800,
+        "layer_bits_per_weight": 9.584962500721156,
+        "whole_model_bit_delta_vs_reference": 0.02847778855242,
+        "scale_bytes_delta": 3480
+      },
+      "ground_truth_db_per_added_kib": -0.0816180508255697
+    },
+    {
+      "name": "swin2sr.conv_after_body",
+      "category": "residual_body_conv",
+      "values": 32400,
+      "reference_method": "optimal_mse",
+      "reference_group_size": 9,
+      "candidate_method": "optimal_mse",
+      "candidate_group_size": 2,
+      "metrics": {
+        "psnr_vs_ground_truth": 30.390677336536385,
+        "edge_psnr_vs_ground_truth": 33.91124653766117,
+        "psnr_vs_teacher": 34.686962745257524
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.4877307685558918,
+        "edge_psnr_vs_ground_truth": -0.29455033696117994,
+        "psnr_vs_teacher": -1.6410833560839464
+      },
+      "storage": {
+        "values": 32400,
+        "group_size": 2,
+        "scale_count": 16200,
+        "ideal_code_bits": 51352.78502336545,
+        "scale_bits": 259200,
+        "layer_bits_per_weight": 9.584962500721156,
+        "whole_model_bit_delta_vs_reference": 0.20621846882786896,
+        "scale_bytes_delta": 25200
+      },
+      "ground_truth_db_per_added_kib": -0.019818901071477508
+    }
+  ],
+  "elapsed_seconds": 2.8460603339999997,
+  "peak_process_rss_bytes": 534183936
+}

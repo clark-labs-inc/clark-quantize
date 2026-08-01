@@ -1,0 +1,42 @@
+{
+  "format": "backdropkit-swin2sr-int7-layer-scale-mask-study-v1",
+  "sealed_at": "2026-08-01",
+  "hypothesis": "The global Lloyd scale loses teacher fidelity because one or more RSTB fusion layers are scale-sensitive. Selecting max-range or Lloyd scaling independently for each of the four layers can retain the ground-truth and edge gains without changing the packed representation size.",
+  "reference": {
+    "state": "int7_per_output/materialized/dense-hard.pt",
+    "state_sha256": "308b7fc0de513a4983563d519219c100ff8f13bb0a5143d5cd3e1d4204d2a612",
+    "scale": "max-range signed int7 per output"
+  },
+  "alternate": {
+    "state": "rstb_int7_mse_scale_seed20260804/materialized/dense-hard.pt",
+    "state_sha256": "fa3fdb744bd594db63350979c77873932e0cf526acf9c4c34b8414c6976ae89d",
+    "scale": "four-step Lloyd signed int7 per output"
+  },
+  "factors": {
+    "layers": [
+      "swin2sr.encoder.stages.0.conv.weight",
+      "swin2sr.encoder.stages.1.conv.weight",
+      "swin2sr.encoder.stages.2.conv.weight",
+      "swin2sr.encoder.stages.3.conv.weight"
+    ],
+    "levels": ["max", "lloyd"],
+    "masks": 16
+  },
+  "diagnostic_gate": {
+    "samples": 404,
+    "composition": "200 deterministic RICO held-out frames plus one deterministic sample from each of 204 FLORES languages",
+    "rank": "Pareto-first on ground-truth, edge, and teacher PSNR relative to mask 0; then largest minimum of the three deltas",
+    "advance": "At most four non-endpoint masks advance to the complete development bundle. A mask must be nonnegative on at least two of the three diagnostic metrics."
+  },
+  "development_gate": {
+    "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+    "samples": 3040,
+    "metrics": [
+      "psnr_vs_ground_truth",
+      "edge_psnr_vs_ground_truth",
+      "psnr_vs_teacher"
+    ],
+    "selection": "Largest positive ground-truth gain among candidates with positive aggregate deltas on all three metrics and no negative mean in any source, split, script, or language group. Otherwise retain mask 0."
+  },
+  "runtime_constraint": "The selected candidate must use the existing four signed-int7 per-output tensors and therefore have identical packed bytes and kernel behavior to mask 0."
+}

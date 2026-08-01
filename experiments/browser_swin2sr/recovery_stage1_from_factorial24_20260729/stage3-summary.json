@@ -1,0 +1,95 @@
+{
+  "completed": 3,
+  "failed": 0,
+  "promote_names": [
+    "g60__scalar__frozen__balanced",
+    "g60__scalar__norms_and_residual__balanced",
+    "g60__scalar__norms_and_residual__teacher_heavy"
+  ],
+  "ranking": [
+    {
+      "elapsed_seconds": 5509.327659130096,
+      "mean_deltas": {
+        "edge_psnr_vs_ground_truth": 0.3040714764981371,
+        "psnr_vs_ground_truth": 0.33652193346980747,
+        "psnr_vs_teacher": -1.322465777003287
+      },
+      "name": "g60__scalar__frozen__balanced",
+      "promotion_slacks": {
+        "edge_psnr": 0.45407147649813706,
+        "overall_psnr": 0.4365219334698075,
+        "teacher_psnr": -1.072465777003287,
+        "worst_source_psnr": 0.2616346155656118
+      },
+      "rank": 1,
+      "samples": 3040,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "mean_psnr_delta": 0.4467608147953936,
+          "samples": 2040
+        },
+        "rico_screen2words_heldout": {
+          "mean_psnr_delta": 0.1116346155656118,
+          "samples": 1000
+        }
+      },
+      "worst_source_psnr_delta": 0.1116346155656118
+    },
+    {
+      "elapsed_seconds": 5759.109618186951,
+      "mean_deltas": {
+        "edge_psnr_vs_ground_truth": 0.24873904729436427,
+        "psnr_vs_ground_truth": 0.2774959587548947,
+        "psnr_vs_teacher": -1.3291603731924884
+      },
+      "name": "g60__scalar__norms_and_residual__balanced",
+      "promotion_slacks": {
+        "edge_psnr": 0.39873904729436427,
+        "overall_psnr": 0.3774959587548947,
+        "teacher_psnr": -1.0791603731924884,
+        "worst_source_psnr": 0.2479446952326264
+      },
+      "rank": 2,
+      "samples": 3040,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "mean_psnr_delta": 0.36551128401090927,
+          "samples": 2040
+        },
+        "rico_screen2words_heldout": {
+          "mean_psnr_delta": 0.09794469523262643,
+          "samples": 1000
+        }
+      },
+      "worst_source_psnr_delta": 0.09794469523262643
+    },
+    {
+      "elapsed_seconds": 10038.307024002075,
+      "mean_deltas": {
+        "edge_psnr_vs_ground_truth": 0.15684936670655478,
+        "psnr_vs_ground_truth": 0.1820654131373421,
+        "psnr_vs_teacher": -1.3757179805393647
+      },
+      "name": "g60__scalar__norms_and_residual__teacher_heavy",
+      "promotion_slacks": {
+        "edge_psnr": 0.30684936670655477,
+        "overall_psnr": 0.2820654131373421,
+        "teacher_psnr": -1.1257179805393647,
+        "worst_source_psnr": 0.213335251028331
+      },
+      "rank": 3,
+      "samples": 3040,
+      "sources": {
+        "flores200_balanced_synthetic_ui": {
+          "mean_psnr_delta": 0.24026647299470036,
+          "samples": 2040
+        },
+        "rico_screen2words_heldout": {
+          "mean_psnr_delta": 0.06333525102833101,
+          "samples": 1000
+        }
+      },
+      "worst_source_psnr_delta": 0.06333525102833101
+    }
+  ]
+}

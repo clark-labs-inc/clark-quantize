@@ -1,0 +1,94 @@
+{
+  "format": "backdropkit-swin2sr-rstb-precision-boundary-materialization-v1",
+  "protocol": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/compression-protocol.json",
+  "protocol_sha256": "089a1a8a772c6b74cd0e794ee9d81fae127f553568bab3e0ed68b20c4e1a887b",
+  "arm": "int5_per_kernel",
+  "quantization": {
+    "bits": 5,
+    "granularity": "per_kernel"
+  },
+  "sources": {
+    "ternary_materialization_sha256": "3047626c2f89ce604967345e128b8328db8fb72e394db2d148dfc7f2885952ab",
+    "fp16_materialization_sha256": "7e05a783f856a6438d19cb2f629646a93ed7d8ed59201f0fe4603455196a3230"
+  },
+  "tensors": [
+    {
+      "name": "swin2sr.encoder.stages.0.conv.weight",
+      "bits": 5,
+      "granularity": "per_kernel",
+      "values": 32400,
+      "scales": 3600,
+      "code_bytes": 20250,
+      "scale_bytes": 7200,
+      "data_bytes": 27450,
+      "code_min": -15,
+      "code_max": 15,
+      "scale_fp16_roundtrip_exact": true,
+      "max_abs_error": 0.0092010498046875,
+      "mean_abs_error": 0.0012894326355308294
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.conv.weight",
+      "bits": 5,
+      "granularity": "per_kernel",
+      "values": 32400,
+      "scales": 3600,
+      "code_bytes": 20250,
+      "scale_bytes": 7200,
+      "data_bytes": 27450,
+      "code_min": -15,
+      "code_max": 15,
+      "scale_fp16_roundtrip_exact": true,
+      "max_abs_error": 0.00736236572265625,
+      "mean_abs_error": 0.0011928010499104857
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.conv.weight",
+      "bits": 5,
+      "granularity": "per_kernel",
+      "values": 32400,
+      "scales": 3600,
+      "code_bytes": 20250,
+      "scale_bytes": 7200,
+      "data_bytes": 27450,
+      "code_min": -15,
+      "code_max": 15,
+      "scale_fp16_roundtrip_exact": true,
+      "max_abs_error": 0.0077056884765625,
+      "mean_abs_error": 0.0012644424568861723
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.conv.weight",
+      "bits": 5,
+      "granularity": "per_kernel",
+      "values": 32400,
+      "scales": 3600,
+      "code_bytes": 20250,
+      "scale_bytes": 7200,
+      "data_bytes": 27450,
+      "code_min": -15,
+      "code_max": 15,
+      "scale_fp16_roundtrip_exact": true,
+      "max_abs_error": 0.00904083251953125,
+      "mean_abs_error": 0.0014803672675043344
+    }
+  ],
+  "changed_tensors": [
+    "swin2sr.encoder.stages.0.conv.weight",
+    "swin2sr.encoder.stages.1.conv.weight",
+    "swin2sr.encoder.stages.2.conv.weight",
+    "swin2sr.encoder.stages.3.conv.weight"
+  ],
+  "storage": {
+    "data_bytes": 109800,
+    "ternary_rstb_data_bytes": 54720,
+    "incremental_data_bytes": 55080
+  },
+  "dense_state": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int5_per_kernel/materialized/dense-hard.pt",
+    "file_sha256": "d3997756d8d22211f747f7d102a6faee71f10095dd826f7fa975ef6820ca2713",
+    "tensor_sha256": "c483d4b196e292f9991859b75b8a2db878a7d5b070d3be031f7b4912b2a97c86",
+    "tensors": 484,
+    "values": 1005348
+  }
+}

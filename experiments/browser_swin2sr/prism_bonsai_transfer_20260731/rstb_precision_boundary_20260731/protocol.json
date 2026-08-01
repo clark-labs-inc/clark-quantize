@@ -1,0 +1,178 @@
+{
+  "format": "backdropkit-swin2sr-rstb-precision-boundary-protocol-v1",
+  "created_at_utc": "2026-07-31T22:04:18Z",
+  "status": "sealed_before_boundary_materialization",
+  "timing_receipt": {
+    "prior_int4_int8_results_available": true,
+    "boundary_materializations_started": false,
+    "interpretation": "This sequential refinement was frozen after int8/output passed and int4 failed, but before any 5/6/7-bit state or metric existed. Every representation smaller than the int8 winner in the declared geometry is included."
+  },
+  "hypothesis": "A 5/6/7-bit RSTB representation can preserve at least 90% of every FP16-over-ternary gain while using fewer bytes than the passing int8/output arm.",
+  "source_files": {
+    "materializer": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/materialize_rstb_precision_boundary.py",
+      "sha256": "94e3d3e33764bbaed3286643c9c29b84ec2b733ba570839600bb4ec3298c642b"
+    },
+    "materializer_tests": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/test_materialize_rstb_precision_boundary.py",
+      "sha256": "739da339e3dc937de898f6cd53387fc87103495212a831d648564fe1c74f523f"
+    },
+    "decision": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/decide_rstb_precision_boundary.py",
+      "sha256": "763f7eaa85459d0f0246fd8d8fcdce6ec075a1c76af15971434560940e58a211"
+    },
+    "decision_tests": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/test_decide_rstb_precision_boundary.py",
+      "sha256": "7172d0d690e4a0a8b613a1afc3dfdddcdd71796fba7f9d6bb7ec9ca93bfb443b"
+    },
+    "mixed_materializer_dependency": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/materialize_rstb_mixed_precision.py",
+      "sha256": "b8c8d011bc450b6434e06676667f242fe050f67bc8ba7298afcd0b94d28b4dbf"
+    },
+    "mixed_decision_dependency": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/decide_rstb_mixed_precision.py",
+      "sha256": "8d099f45b84bfd529c9b6755bbb92d75d33c085ea7051103789e1eeee2070dbe"
+    },
+    "comparison": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/sealed_overlay/experiments/browser_swin2sr/compare_evaluations.py",
+      "sha256": "b764a1fe01ccb0340efe5171b1688fb93634ac2abd5a0003be9ca7037d54c9c5"
+    },
+    "evaluation": {
+      "path": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/evaluate_stratified.py",
+      "sha256": "b1f7a88ee08e8d405378187c083c87dfcad104e246562586395d36d76a42b05e"
+    },
+    "bundle": {
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+      "sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9"
+    },
+    "ternary_materialization": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/materialized/materialization.json",
+      "sha256": "de10153a2d6c747aa9f94023feaa5dee244e9e9356349595f45f490a45feca17"
+    },
+    "fp16_materialization": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260731/materialized/materialization.json",
+      "sha256": "aef96351f7f13c0042287a44452ac4816b04996beee430be1ad3334957afb9ca"
+    },
+    "fp16_comparison": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__seed20260731__fp16-vs-ternary.json",
+      "sha256": "dc4c75c76e4764f94cc9adf969a7141531e557b8e047ea24c4204e91b1d37e21"
+    },
+    "prior_mixed_decision": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/decision.json",
+      "sha256": "5f7ff513a73adda531fc03ce08bb788c6e2b2aea72a9c61a0071bb7909377847"
+    },
+    "prior_int8_comparison": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/int8_per_output-vs-ternary.json",
+      "sha256": "19106b41fd03b8a524b81ae7b791ecbfea76ad4f3ed637e4bd82196ba76b212f"
+    }
+  },
+  "sources": {
+    "ternary_materialization": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/materialized/materialization.json",
+    "fp16_materialization": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260731/materialized/materialization.json",
+    "ternary_development_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/development/metrics.json",
+    "fp16_development_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260731/development/metrics.json",
+    "fp16_vs_ternary_comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__seed20260731__fp16-vs-ternary.json",
+    "prior_int8_winner": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/int8_per_output/development/metrics.json"
+  },
+  "storage": {
+    "weight_values": 129600,
+    "ternary_rstb_data_bytes": 54720,
+    "prior_int8_data_bytes": 130080,
+    "prior_int8_incremental_data_bytes": 75360
+  },
+  "arms": {
+    "int5_per_output": {"bits": 5, "granularity": "per_output", "data_bytes": 81480, "incremental_data_bytes": 26760},
+    "int6_per_output": {"bits": 6, "granularity": "per_output", "data_bytes": 97680, "incremental_data_bytes": 42960},
+    "int5_per_kernel": {"bits": 5, "granularity": "per_kernel", "data_bytes": 109800, "incremental_data_bytes": 55080},
+    "int7_per_output": {"bits": 7, "granularity": "per_output", "data_bytes": 113880, "incremental_data_bytes": 59160},
+    "int6_per_kernel": {"bits": 6, "granularity": "per_kernel", "data_bytes": 126000, "incremental_data_bytes": 71280}
+  },
+  "projected_incremental_data_bytes": {
+    "int5_per_output": 26760,
+    "int6_per_output": 42960,
+    "int5_per_kernel": 55080,
+    "int7_per_output": 59160,
+    "int6_per_kernel": 71280,
+    "int8_per_output": 75360
+  },
+  "materialization_command_template": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/materialize_rstb_precision_boundary.py",
+    "--protocol",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/protocol.json",
+    "--ternary-materialization",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/materialized/materialization.json",
+    "--fp16-materialization",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260731/materialized/materialization.json",
+    "--arm",
+    "{arm}",
+    "--out",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/{arm}/materialized"
+  ],
+  "evaluation_command_template": [
+    "/usr/bin/env",
+    "PYTHONPATH=experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/sealed_overlay/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/evaluate_stratified.py",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/{arm}/materialized/dense-hard.pt",
+    "--bundle",
+    "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+    "--out",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/{arm}/development",
+    "--device",
+    "mps"
+  ],
+  "comparisons": {
+    "fp16_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260731/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__seed20260731__fp16-vs-ternary.json"
+    },
+    "int5_per_output_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int5_per_output/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int5_per_output-vs-ternary.json"
+    },
+    "int6_per_output_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int6_per_output/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int6_per_output-vs-ternary.json"
+    },
+    "int5_per_kernel_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int5_per_kernel/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int5_per_kernel-vs-ternary.json"
+    },
+    "int7_per_output_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int7_per_output/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int7_per_output-vs-ternary.json"
+    },
+    "int6_per_kernel_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int6_per_kernel/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int6_per_kernel-vs-ternary.json"
+    }
+  },
+  "comparison_contract": {"bootstrap_samples": 10000, "seed": 20260731, "samples": 3040},
+  "selection_rule": {
+    "minimum_fp16_effect_retention": 0.9,
+    "ground_truth_paired_bootstrap_95ci_lower": "> 0.0 dB",
+    "edge_mean": ">= 0.0 dB",
+    "teacher_mean": ">= 0.0 dB",
+    "tie_break": "smallest incremental data bytes",
+    "fallback": "retain the prior int8/output winner"
+  },
+  "decision_command": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/decide_rstb_precision_boundary.py",
+    "--protocol",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/protocol.json",
+    "--out",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/decision.json"
+  ],
+  "development_only": true,
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false
+}

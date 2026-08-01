@@ -1,0 +1,99 @@
+{
+  "format": "backdropkit-swin2sr-portable-onnx-browser-receipt-v1",
+  "recorded_at_utc": "2026-07-30T19:14:56Z",
+  "purpose": "Runtime infrastructure proof only; this smoke checkpoint is not a promoted quality candidate.",
+  "source_checkpoint": "/tmp/backdropkit-swin-hard-shadow-smoke-v3-20260730/checkpoint-final.pt",
+  "artifact": {
+    "format": "clark-portable-onnx-ternary-v2",
+    "path": "/tmp/backdropkit-swin-mixed-groups-v2.onnx",
+    "bytes": 4840032,
+    "sha256": "beca7f9fcd28154f3dfb39f2fcb0d58c3d171bc7542e85baa6670d191423493e",
+    "matrix_group_size": 60,
+    "convolution_group_size": 9,
+    "quantized_weights": 977604
+  },
+  "fixture": {
+    "path": "/tmp/backdropkit-swin-mixed-groups-v2.fixture16.json",
+    "bytes": 73068,
+    "sha256": "851851ab55b1a30ca28f30705b74ed53dbc5d3ec6333d82df1dea835ddebf8dd",
+    "input_shape": [
+      1,
+      3,
+      16,
+      16
+    ],
+    "output_shape": [
+      1,
+      3,
+      32,
+      32
+    ]
+  },
+  "harness": {
+    "browser": "chromium",
+    "navigator_gpu": true,
+    "full_onnx_smoke_browser_sha256": "d2939e8ae632701bcfbaa47e1cc3608840886e5d40cdcdac0b47d5f951947a5f",
+    "runtime_surface_sha256": "34042f57cfd9e88d72dcf05ea768c2ae05fbb8799236dfaccaa716d12b227d40",
+    "onnxruntime_web": "repository-pinned dependency",
+    "wasm_threads": 1,
+    "iterations": 3,
+    "error_limits": {
+      "maximum": 0.001,
+      "mean": 0.0001
+    }
+  },
+  "receipts": [
+    {
+      "surface": "chromium-webgpu",
+      "backend": "webgpu",
+      "session_ms": 3691.6999999284744,
+      "inference_ms": [
+        103.10000002384186,
+        38.699999928474426,
+        32.200000047683716
+      ],
+      "warm_inference_ms": 38.699999928474426,
+      "maximum_error": 0.0002353191375732422,
+      "mean_error": 0.000038984352916789554,
+      "heap_bytes": {
+        "before_session": 11505346,
+        "after_session": 12412643,
+        "after_inference": 13056883
+      },
+      "passed": true
+    },
+    {
+      "surface": "chromium-wasm",
+      "backend": "wasm",
+      "session_ms": 4115.600000023842,
+      "inference_ms": [
+        37.60000002384186,
+        31.5,
+        34.700000047683716
+      ],
+      "warm_inference_ms": 34.700000047683716,
+      "maximum_error": 0.00023508071899414062,
+      "mean_error": 0.00003898290257590512,
+      "heap_bytes": {
+        "before_session": 13056883,
+        "after_session": 13255927,
+        "after_inference": 13443567
+      },
+      "passed": true
+    }
+  ],
+  "console": {
+    "backend_failures": [],
+    "warnings": [
+      "ONNX Runtime assigned some shape-related nodes to CPU instead of the preferred execution provider.",
+      "ONNX Runtime noted that verbose output on a non-minimal build can show the exact node assignments."
+    ],
+    "interpretation": "Expected ONNX Runtime execution-provider partitioning warning; both requested backends completed and passed the numerical gate."
+  },
+  "passed": true,
+  "limitations": [
+    "The portable ONNX file reconstructs dense weights through standard operators and is a correctness fallback, not the final compact packed runtime.",
+    "The compact native artifact has separate WASM and CPU full-graph receipts; a compact packed WebGPU full graph remains a performance implementation task.",
+    "A passing runtime smoke does not promote the source checkpoint or satisfy the held-out quality gate."
+  ]
+}

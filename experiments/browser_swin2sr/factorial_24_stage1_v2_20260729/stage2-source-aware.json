@@ -1,0 +1,199 @@
+{
+  "format": "backdropkit-swin2sr-source-aware-ranking-v1",
+  "stage": "experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage2",
+  "completed": 8,
+  "ranking": [
+    {
+      "rank": 1,
+      "name": "optimal_mse__none__bonsai_qat8_muon",
+      "result": "experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage2/optimal_mse__none__bonsai_qat8_muon/result.json",
+      "paired_q4": {
+        "samples": 300,
+        "mean_deltas": {
+          "psnr_vs_ground_truth": 0.2279721885959994,
+          "edge_psnr_vs_ground_truth": 0.20957034188249654,
+          "psnr_vs_teacher": -2.865132564061305
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 200,
+            "mean_psnr_delta": 0.4366608144250016
+          },
+          "rico_screen2words_heldout": {
+            "samples": 100,
+            "mean_psnr_delta": -0.18940506306200508
+          }
+        },
+        "worst_source_psnr_delta": -0.18940506306200508
+      }
+    },
+    {
+      "rank": 2,
+      "name": "optimal_mse__none__bonsai_qat8",
+      "result": "experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage2/optimal_mse__none__bonsai_qat8/result.json",
+      "paired_q4": {
+        "samples": 300,
+        "mean_deltas": {
+          "psnr_vs_ground_truth": 0.009543522100049806,
+          "edge_psnr_vs_ground_truth": 0.0041727826662762745,
+          "psnr_vs_teacher": -2.9516322159067787
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 200,
+            "mean_psnr_delta": 0.13575171073312337
+          },
+          "rico_screen2words_heldout": {
+            "samples": 100,
+            "mean_psnr_delta": -0.24287285516609733
+          }
+        },
+        "worst_source_psnr_delta": -0.24287285516609733
+      }
+    },
+    {
+      "rank": 3,
+      "name": "absmean__hadamard__bonsai_qat8",
+      "result": "experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage2/absmean__hadamard__bonsai_qat8/result.json",
+      "paired_q4": {
+        "samples": 300,
+        "mean_deltas": {
+          "psnr_vs_ground_truth": 0.11480826665749926,
+          "edge_psnr_vs_ground_truth": 0.0986104974793794,
+          "psnr_vs_teacher": -2.8056351107355963
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 200,
+            "mean_psnr_delta": 0.3143915962668045
+          },
+          "rico_screen2words_heldout": {
+            "samples": 100,
+            "mean_psnr_delta": -0.2843583925611113
+          }
+        },
+        "worst_source_psnr_delta": -0.2843583925611113
+      }
+    },
+    {
+      "rank": 4,
+      "name": "optimal_mse__none__adamw",
+      "result": "experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage2/optimal_mse__none__adamw/result.json",
+      "paired_q4": {
+        "samples": 300,
+        "mean_deltas": {
+          "psnr_vs_ground_truth": -0.007323781942648348,
+          "edge_psnr_vs_ground_truth": -0.007601157103291787,
+          "psnr_vs_teacher": -3.2327951851433308
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 200,
+            "mean_psnr_delta": 0.14928523668712054
+          },
+          "rico_screen2words_heldout": {
+            "samples": 100,
+            "mean_psnr_delta": -0.3205418192021861
+          }
+        },
+        "worst_source_psnr_delta": -0.3205418192021861
+      }
+    },
+    {
+      "rank": 5,
+      "name": "absmean__hadamard__bonsai_qat8_muon",
+      "result": "experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage2/absmean__hadamard__bonsai_qat8_muon/result.json",
+      "paired_q4": {
+        "samples": 300,
+        "mean_deltas": {
+          "psnr_vs_ground_truth": 0.1404235603528186,
+          "edge_psnr_vs_ground_truth": 0.13343490317736717,
+          "psnr_vs_teacher": -3.052568438668005
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 200,
+            "mean_psnr_delta": 0.381219886617908
+          },
+          "rico_screen2words_heldout": {
+            "samples": 100,
+            "mean_psnr_delta": -0.34116909217736036
+          }
+        },
+        "worst_source_psnr_delta": -0.34116909217736036
+      }
+    },
+    {
+      "rank": 6,
+      "name": "optimal_mse__hadamard__bonsai_qat8",
+      "result": "experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage2/optimal_mse__hadamard__bonsai_qat8/result.json",
+      "paired_q4": {
+        "samples": 300,
+        "mean_deltas": {
+          "psnr_vs_ground_truth": -0.0650956610391229,
+          "edge_psnr_vs_ground_truth": -0.07641461551273981,
+          "psnr_vs_teacher": -2.9496697110005075
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 200,
+            "mean_psnr_delta": 0.08566442684542581
+          },
+          "rico_screen2words_heldout": {
+            "samples": 100,
+            "mean_psnr_delta": -0.36661583680822035
+          }
+        },
+        "worst_source_psnr_delta": -0.36661583680822035
+      }
+    },
+    {
+      "rank": 7,
+      "name": "optimal_mse__hadamard__bonsai_qat8_muon",
+      "result": "experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage2/optimal_mse__hadamard__bonsai_qat8_muon/result.json",
+      "paired_q4": {
+        "samples": 300,
+        "mean_deltas": {
+          "psnr_vs_ground_truth": -0.07672625266503946,
+          "edge_psnr_vs_ground_truth": -0.07819241135872604,
+          "psnr_vs_teacher": -2.9776554182466852
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 200,
+            "mean_psnr_delta": 0.1076808910586077
+          },
+          "rico_screen2words_heldout": {
+            "samples": 100,
+            "mean_psnr_delta": -0.44554054011233385
+          }
+        },
+        "worst_source_psnr_delta": -0.44554054011233385
+      }
+    },
+    {
+      "rank": 8,
+      "name": "optimal_mse__hadamard__adamw",
+      "result": "experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage2/optimal_mse__hadamard__adamw/result.json",
+      "paired_q4": {
+        "samples": 300,
+        "mean_deltas": {
+          "psnr_vs_ground_truth": -0.07456838376268578,
+          "edge_psnr_vs_ground_truth": -0.07759717148596097,
+          "psnr_vs_teacher": -3.188013554073672
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 200,
+            "mean_psnr_delta": 0.14341056382176778
+          },
+          "rico_screen2words_heldout": {
+            "samples": 100,
+            "mean_psnr_delta": -0.5105262789315929
+          }
+        },
+        "worst_source_psnr_delta": -0.5105262789315929
+      }
+    }
+  ]
+}

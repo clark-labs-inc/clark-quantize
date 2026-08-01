@@ -1,0 +1,278 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>BackdropKit 1080p to 4K realtime pipeline benchmark</title>
+<style>body{font:14px ui-monospace,monospace;margin:16px}video,canvas{display:none}</style>
+<pre id="result">running</pre>
+<video id="source" muted playsinline loop></video>
+<canvas id="output" width="3840" height="2160"></canvas>
+<script type="module">
+  const result = document.querySelector("#result");
+  const video = document.querySelector("#source");
+  const canvas = document.querySelector("#output");
+  const parameters = new URLSearchParams(location.search);
+  const sourceUrl = parameters.get("video") ??
+    "/Documents/git/clark-quantize/experiments/browser_swin2sr/" +
+    "realtime_1080p_to_4k_20260731/assets/synthetic_product_demo_1080p60.mp4";
+  const warmupFrames = Math.max(1, Number(parameters.get("warmup") ?? 15));
+  const measuredFrames = Math.max(1, Number(parameters.get("frames") ?? 120));
+  const encodeRequested = parameters.get("encode") === "1";
+  const sharpen = Math.max(0, Math.min(1, Number(parameters.get("sharpen") ?? .22)));
+
+  const shader = /* wgsl */ `
+    struct Frame {
+      inverse_source_size: vec2<f32>,
+      sharpen: f32,
+      padding: f32,
+    }
+    @group(0) @binding(0) var source: texture_external;
+    @group(0) @binding(1) var source_sampler: sampler;
+    @group(0) @binding(2) var<uniform> frame: Frame;
+
+    @vertex
+    fn vertex_main(@builtin(vertex_index) index: u32) -> @builtin(position) vec4<f32> {
+      let position = array<vec2<f32>, 3>(
+        vec2<f32>(-1.0, -1.0),
+        vec2<f32>(3.0, -1.0),
+        vec2<f32>(-1.0, 3.0),
+      );
+      return vec4<f32>(position[index], 0.0, 1.0);
+    }
+
+    @fragment
+    fn fragment_main(@builtin(position) position: vec4<f32>) -> @location(0) vec4<f32> {
+      let output_size = vec2<f32>(3840.0, 2160.0);
+      let uv = position.xy / output_size;
+      let center = textureSampleBaseClampToEdge(source, source_sampler, uv);
+      let north = textureSampleBaseClampToEdge(source, source_sampler, uv - vec2<f32>(0.0, frame.inverse_source_size.y));
+      let south = textureSampleBaseClampToEdge(source, source_sampler, uv + vec2<f32>(0.0, frame.inverse_source_size.y));
+      let west = textureSampleBaseClampToEdge(source, source_sampler, uv - vec2<f32>(frame.inverse_source_size.x, 0.0));
+      let east = textureSampleBaseClampToEdge(source, source_sampler, uv + vec2<f32>(frame.inverse_source_size.x, 0.0));
+      let laplacian = center.rgb * 4.0 - north.rgb - south.rgb - west.rgb - east.rgb;
+      let local_range = max(max(abs(center.rgb - north.rgb), abs(center.rgb - south.rgb)),
+        max(abs(center.rgb - west.rgb), abs(center.rgb - east.rgb)));
+      let limiter = clamp(1.0 - max(local_range.r, max(local_range.g, local_range.b)) * 1.8, 0.15, 1.0);
+      return vec4<f32>(clamp(center.rgb + laplacian * frame.sharpen * limiter, vec3<f32>(0.0), vec3<f32>(1.0)), 1.0);
+    }
+  `;
+
+  function median(values) {
+    const sorted = [...values].sort((left, right) => left - right);
+    return sorted[Math.floor(sorted.length / 2)];
+  }
+
+  function percentile(values, fraction) {
+    const sorted = [...values].sort((left, right) => left - right);
+    return sorted[Math.min(sorted.length - 1, Math.ceil(sorted.length * fraction) - 1)];
+  }
+
+  async function waitForVideo() {
+    video.src = sourceUrl;
+    await new Promise((resolve, reject) => {
+      video.addEventListener("loadeddata", resolve, { once: true });
+      video.addEventListener("error", () => reject(video.error ?? new Error("video load failed")), { once: true });
+    });
+  }
+
+  async function chooseEncoder() {
+    if (!encodeRequested || !("VideoEncoder" in window)) return null;
+    const candidates = [
+      { codec: "avc1.640033", avc: { format: "annexb" } },
+      { codec: "vp09.00.51.08" },
+      { codec: "av01.0.12M.08" },
+    ];
+    for (const candidate of candidates) {
+      const config = {
+        ...candidate,
+        width: 3840,
+        height: 2160,
+        bitrate: 20_000_000,
+        framerate: 60,
+        hardwareAcceleration: "prefer-hardware",
+        latencyMode: "realtime",
+      };
+      try {
+        const support = await VideoEncoder.isConfigSupported(config);
+        if (support.supported) return support.config;
+      } catch {}
+    }
+    return null;
+  }
+
+  try {
+    if (!navigator.gpu) throw new Error("WebGPU is unavailable.");
+    await waitForVideo();
+    const adapter = await navigator.gpu.requestAdapter({ powerPreference: "high-performance" });
+    if (!adapter) throw new Error("No WebGPU adapter.");
+    const device = await adapter.requestDevice();
+    const context = canvas.getContext("webgpu");
+    const format = navigator.gpu.getPreferredCanvasFormat();
+    context.configure({ device, format, alphaMode: "opaque" });
+    const module = device.createShaderModule({ code: shader });
+    const compilation = await module.getCompilationInfo();
+    const errors = compilation.messages.filter((message) => message.type === "error");
+    if (errors.length) throw new Error(errors.map((message) => message.message).join("\n"));
+    const pipeline = await device.createRenderPipelineAsync({
+      layout: "auto",
+      vertex: { module, entryPoint: "vertex_main" },
+      fragment: { module, entryPoint: "fragment_main", targets: [{ format }] },
+      primitive: { topology: "triangle-list" },
+    });
+    const uniformValues = new Float32Array([1 / video.videoWidth, 1 / video.videoHeight, sharpen, 0]);
+    const uniform = device.createBuffer({
+      mappedAtCreation: true,
+      size: 16,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    });
+    new Float32Array(uniform.getMappedRange()).set(uniformValues);
+    uniform.unmap();
+    const sampler = device.createSampler({
+      magFilter: "linear",
+      minFilter: "linear",
+      addressModeU: "clamp-to-edge",
+      addressModeV: "clamp-to-edge",
+    });
+
+    const encoderConfig = await chooseEncoder();
+    const encodeEnqueue = new Map();
+    const encodeLatencies = [];
+    let encodedBytes = 0;
+    let encoderError = null;
+    const encoder = encoderConfig ? new VideoEncoder({
+      output: (chunk) => {
+        encodedBytes += chunk.byteLength;
+        const queuedAt = encodeEnqueue.get(chunk.timestamp);
+        if (queuedAt !== undefined) {
+          encodeLatencies.push(performance.now() - queuedAt);
+          encodeEnqueue.delete(chunk.timestamp);
+        }
+      },
+      error: (error) => { encoderError = String(error?.stack ?? error); },
+    }) : null;
+    encoder?.configure(encoderConfig);
+
+    const gpuTimings = [];
+    const callbackIntervals = [];
+    const mediaIntervals = [];
+    const totalTimings = [];
+    let previousCallback = null;
+    let previousMediaTime = null;
+    let presentedFramesStart = null;
+    let processed = 0;
+
+    async function renderFrame(now, metadata) {
+      if (previousCallback !== null) callbackIntervals.push(now - previousCallback);
+      if (previousMediaTime !== null) mediaIntervals.push((metadata.mediaTime - previousMediaTime) * 1000);
+      previousCallback = now;
+      previousMediaTime = metadata.mediaTime;
+      if (presentedFramesStart === null) presentedFramesStart = metadata.presentedFrames;
+      const totalStarted = performance.now();
+      const gpuStarted = performance.now();
+      const external = device.importExternalTexture({ source: video });
+      const bindGroup = device.createBindGroup({
+        layout: pipeline.getBindGroupLayout(0),
+        entries: [
+          { binding: 0, resource: external },
+          { binding: 1, resource: sampler },
+          { binding: 2, resource: { buffer: uniform } },
+        ],
+      });
+      const command = device.createCommandEncoder();
+      const pass = command.beginRenderPass({
+        colorAttachments: [{
+          view: context.getCurrentTexture().createView(),
+          clearValue: { r: 0, g: 0, b: 0, a: 1 },
+          loadOp: "clear",
+          storeOp: "store",
+        }],
+      });
+      pass.setPipeline(pipeline);
+      pass.setBindGroup(0, bindGroup);
+      pass.draw(3);
+      pass.end();
+      device.queue.submit([command.finish()]);
+      await device.queue.onSubmittedWorkDone();
+      const gpuElapsed = performance.now() - gpuStarted;
+      const timestamp = Math.round(metadata.mediaTime * 1_000_000);
+      if (encoder && processed >= warmupFrames) {
+        const frame = new VideoFrame(canvas, { timestamp, duration: 16667 });
+        encodeEnqueue.set(timestamp, performance.now());
+        encoder.encode(frame, { keyFrame: (processed - warmupFrames) % 120 === 0 });
+        frame.close();
+      }
+      if (processed >= warmupFrames) {
+        gpuTimings.push(gpuElapsed);
+        totalTimings.push(performance.now() - totalStarted);
+      }
+      processed += 1;
+    }
+
+    await video.play();
+    await new Promise((resolve, reject) => {
+      const onFrame = async (now, metadata) => {
+        try {
+          await renderFrame(now, metadata);
+          if (gpuTimings.length >= measuredFrames) return resolve();
+          video.requestVideoFrameCallback(onFrame);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      video.requestVideoFrameCallback(onFrame);
+    });
+    video.pause();
+    const flushStarted = performance.now();
+    if (encoder) await encoder.flush();
+    const encodeFlushMs = performance.now() - flushStarted;
+    const receipt = {
+      adapter: {
+        features: [...adapter.features].sort(),
+        limits: {
+          maxComputeInvocationsPerWorkgroup: adapter.limits.maxComputeInvocationsPerWorkgroup,
+          maxComputeWorkgroupStorageSize: adapter.limits.maxComputeWorkgroupStorageSize,
+        },
+      },
+      browser: navigator.userAgent,
+      input: { width: video.videoWidth, height: video.videoHeight, nominalFps: 60, url: sourceUrl },
+      output: { width: canvas.width, height: canvas.height },
+      shader: "bilinear external texture plus limited five-tap luma/RGB sharpen",
+      sharpen,
+      warmupFrames,
+      measuredFrames,
+      gpu: {
+        medianMs: median(gpuTimings),
+        p95Ms: percentile(gpuTimings, .95),
+        maximumMs: Math.max(...gpuTimings),
+        framesPerSecondFromMedian: 1000 / median(gpuTimings),
+      },
+      totalRender: {
+        medianMs: median(totalTimings),
+        p95Ms: percentile(totalTimings, .95),
+      },
+      decodedFrameCallbacks: {
+        medianIntervalMs: median(callbackIntervals.slice(warmupFrames)),
+        p95IntervalMs: percentile(callbackIntervals.slice(warmupFrames), .95),
+        medianMediaIntervalMs: median(mediaIntervals.slice(warmupFrames)),
+        presentedFramesAdvanced: callbackIntervals.length + 1,
+      },
+      encode: {
+        requested: encodeRequested,
+        supportedConfig: encoderConfig,
+        error: encoderError,
+        encodedBytes,
+        outputChunks: encodeLatencies.length,
+        medianLatencyMs: encodeLatencies.length ? median(encodeLatencies) : null,
+        p95LatencyMs: encodeLatencies.length ? percentile(encodeLatencies, .95) : null,
+        flushMs: encodeFlushMs,
+        remainingQueue: encoder?.encodeQueueSize ?? null,
+      },
+    };
+    encoder?.close();
+    window.__backdropRealtimePipelineBenchmark = receipt;
+    result.textContent = JSON.stringify(receipt, null, 2);
+    result.dataset.status = "complete";
+  } catch (error) {
+    window.__backdropRealtimePipelineBenchmark = { error: String(error?.stack ?? error) };
+    result.textContent = String(error?.stack ?? error);
+    result.dataset.status = "failed";
+  }
+</script>

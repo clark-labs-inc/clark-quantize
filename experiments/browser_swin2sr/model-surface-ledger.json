@@ -1,0 +1,352 @@
+{
+  "format": "backdropkit-swin2sr-surface-ledger-v1",
+  "model": "caidas/swin2SR-lightweight-x2-64",
+  "model_revision": "07e8e61492ce6daf4f34c651622960faf110c17f",
+  "parameters": 1005348,
+  "categories": {
+    "core_linear": {
+      "tensors": 144,
+      "values": 691200
+    },
+    "image_io_conv": {
+      "tensors": 2,
+      "values": 8100
+    },
+    "non_weight_parameter": {
+      "tensors": 230,
+      "values": 24744
+    },
+    "other_weight": {
+      "tensors": 50,
+      "values": 3000
+    },
+    "position_bias_linear": {
+      "tensors": 48,
+      "values": 98304
+    },
+    "residual_body_conv": {
+      "tensors": 10,
+      "values": 180000
+    }
+  },
+  "policies": {
+    "current_core": [
+      {
+        "group_size": 60,
+        "selected_categories": [
+          "core_linear"
+        ],
+        "ternary_values": 691200,
+        "ternary_fraction": 0.6875231263204383,
+        "packed_code_bits": 1105920,
+        "scale_bits": 184320,
+        "protected_fp16_weight_bits": 4630464,
+        "other_parameter_bits": 395904,
+        "other_parameter_precision": 16,
+        "total_bits": 6316608,
+        "projected_bytes": 789576,
+        "whole_model_bits_per_parameter": 6.2830064813378055
+      },
+      {
+        "group_size": 60,
+        "selected_categories": [
+          "core_linear"
+        ],
+        "ternary_values": 691200,
+        "ternary_fraction": 0.6875231263204383,
+        "packed_code_bits": 1105920,
+        "scale_bits": 184320,
+        "protected_fp16_weight_bits": 4630464,
+        "other_parameter_bits": 197952,
+        "other_parameter_precision": 8,
+        "total_bits": 6118656,
+        "projected_bytes": 764832,
+        "whole_model_bits_per_parameter": 6.08610749710548
+      },
+      {
+        "group_size": 120,
+        "selected_categories": [
+          "core_linear"
+        ],
+        "ternary_values": 691200,
+        "ternary_fraction": 0.6875231263204383,
+        "packed_code_bits": 1105920,
+        "scale_bits": 92160,
+        "protected_fp16_weight_bits": 4630464,
+        "other_parameter_bits": 395904,
+        "other_parameter_precision": 16,
+        "total_bits": 6224448,
+        "projected_bytes": 778056,
+        "whole_model_bits_per_parameter": 6.191336731161747
+      },
+      {
+        "group_size": 120,
+        "selected_categories": [
+          "core_linear"
+        ],
+        "ternary_values": 691200,
+        "ternary_fraction": 0.6875231263204383,
+        "packed_code_bits": 1105920,
+        "scale_bits": 92160,
+        "protected_fp16_weight_bits": 4630464,
+        "other_parameter_bits": 197952,
+        "other_parameter_precision": 8,
+        "total_bits": 6026496,
+        "projected_bytes": 753312,
+        "whole_model_bits_per_parameter": 5.994437746929422
+      },
+      {
+        "group_size": 240,
+        "selected_categories": [
+          "core_linear"
+        ],
+        "ternary_values": 691200,
+        "ternary_fraction": 0.6875231263204383,
+        "packed_code_bits": 1105920,
+        "scale_bits": 46080,
+        "protected_fp16_weight_bits": 4630464,
+        "other_parameter_bits": 395904,
+        "other_parameter_precision": 16,
+        "total_bits": 6178368,
+        "projected_bytes": 772296,
+        "whole_model_bits_per_parameter": 6.145501856073718
+      },
+      {
+        "group_size": 240,
+        "selected_categories": [
+          "core_linear"
+        ],
+        "ternary_values": 691200,
+        "ternary_fraction": 0.6875231263204383,
+        "packed_code_bits": 1105920,
+        "scale_bits": 46080,
+        "protected_fp16_weight_bits": 4630464,
+        "other_parameter_bits": 197952,
+        "other_parameter_precision": 8,
+        "total_bits": 5980416,
+        "projected_bytes": 747552,
+        "whole_model_bits_per_parameter": 5.948602871841392
+      }
+    ],
+    "core_plus_residual": [
+      {
+        "group_size": 60,
+        "selected_categories": [
+          "core_linear",
+          "residual_body_conv"
+        ],
+        "ternary_values": 871200,
+        "ternary_fraction": 0.8665656071330524,
+        "packed_code_bits": 1393920,
+        "scale_bits": 232320,
+        "protected_fp16_weight_bits": 1750464,
+        "other_parameter_bits": 395904,
+        "other_parameter_precision": 16,
+        "total_bits": 3772608,
+        "projected_bytes": 471576,
+        "whole_model_bits_per_parameter": 3.752539419186192
+      },
+      {
+        "group_size": 60,
+        "selected_categories": [
+          "core_linear",
+          "residual_body_conv"
+        ],
+        "ternary_values": 871200,
+        "ternary_fraction": 0.8665656071330524,
+        "packed_code_bits": 1393920,
+        "scale_bits": 232320,
+        "protected_fp16_weight_bits": 1750464,
+        "other_parameter_bits": 197952,
+        "other_parameter_precision": 8,
+        "total_bits": 3574656,
+        "projected_bytes": 446832,
+        "whole_model_bits_per_parameter": 3.5556404349538666
+      },
+      {
+        "group_size": 120,
+        "selected_categories": [
+          "core_linear",
+          "residual_body_conv"
+        ],
+        "ternary_values": 871200,
+        "ternary_fraction": 0.8665656071330524,
+        "packed_code_bits": 1393920,
+        "scale_bits": 116160,
+        "protected_fp16_weight_bits": 1750464,
+        "other_parameter_bits": 395904,
+        "other_parameter_precision": 16,
+        "total_bits": 3656448,
+        "projected_bytes": 457056,
+        "whole_model_bits_per_parameter": 3.6369973382351186
+      },
+      {
+        "group_size": 120,
+        "selected_categories": [
+          "core_linear",
+          "residual_body_conv"
+        ],
+        "ternary_values": 871200,
+        "ternary_fraction": 0.8665656071330524,
+        "packed_code_bits": 1393920,
+        "scale_bits": 116160,
+        "protected_fp16_weight_bits": 1750464,
+        "other_parameter_bits": 197952,
+        "other_parameter_precision": 8,
+        "total_bits": 3458496,
+        "projected_bytes": 432312,
+        "whole_model_bits_per_parameter": 3.440098354002793
+      },
+      {
+        "group_size": 240,
+        "selected_categories": [
+          "core_linear",
+          "residual_body_conv"
+        ],
+        "ternary_values": 871200,
+        "ternary_fraction": 0.8665656071330524,
+        "packed_code_bits": 1393920,
+        "scale_bits": 58080,
+        "protected_fp16_weight_bits": 1750464,
+        "other_parameter_bits": 395904,
+        "other_parameter_precision": 16,
+        "total_bits": 3598368,
+        "projected_bytes": 449796,
+        "whole_model_bits_per_parameter": 3.5792262977595817
+      },
+      {
+        "group_size": 240,
+        "selected_categories": [
+          "core_linear",
+          "residual_body_conv"
+        ],
+        "ternary_values": 871200,
+        "ternary_fraction": 0.8665656071330524,
+        "packed_code_bits": 1393920,
+        "scale_bits": 58080,
+        "protected_fp16_weight_bits": 1750464,
+        "other_parameter_bits": 197952,
+        "other_parameter_precision": 8,
+        "total_bits": 3400416,
+        "projected_bytes": 425052,
+        "whole_model_bits_per_parameter": 3.3823273135272562
+      }
+    ],
+    "all_matrix_and_conv": [
+      {
+        "group_size": 60,
+        "selected_categories": [
+          "core_linear",
+          "image_io_conv",
+          "position_bias_linear",
+          "residual_body_conv"
+        ],
+        "ternary_values": 977604,
+        "ternary_fraction": 0.9724035856240824,
+        "packed_code_bits": 1565088,
+        "scale_bits": 261360,
+        "protected_fp16_weight_bits": 48000,
+        "other_parameter_bits": 395904,
+        "other_parameter_precision": 16,
+        "total_bits": 2270352,
+        "projected_bytes": 283794,
+        "whole_model_bits_per_parameter": 2.2582747466548896
+      },
+      {
+        "group_size": 60,
+        "selected_categories": [
+          "core_linear",
+          "image_io_conv",
+          "position_bias_linear",
+          "residual_body_conv"
+        ],
+        "ternary_values": 977604,
+        "ternary_fraction": 0.9724035856240824,
+        "packed_code_bits": 1565088,
+        "scale_bits": 261360,
+        "protected_fp16_weight_bits": 48000,
+        "other_parameter_bits": 197952,
+        "other_parameter_precision": 8,
+        "total_bits": 2072400,
+        "projected_bytes": 259050,
+        "whole_model_bits_per_parameter": 2.061375762422564
+      },
+      {
+        "group_size": 120,
+        "selected_categories": [
+          "core_linear",
+          "image_io_conv",
+          "position_bias_linear",
+          "residual_body_conv"
+        ],
+        "ternary_values": 977604,
+        "ternary_fraction": 0.9724035856240824,
+        "packed_code_bits": 1565088,
+        "scale_bits": 130688,
+        "protected_fp16_weight_bits": 48000,
+        "other_parameter_bits": 395904,
+        "other_parameter_precision": 16,
+        "total_bits": 2139680,
+        "projected_bytes": 267460,
+        "whole_model_bits_per_parameter": 2.1282978630285236
+      },
+      {
+        "group_size": 120,
+        "selected_categories": [
+          "core_linear",
+          "image_io_conv",
+          "position_bias_linear",
+          "residual_body_conv"
+        ],
+        "ternary_values": 977604,
+        "ternary_fraction": 0.9724035856240824,
+        "packed_code_bits": 1565088,
+        "scale_bits": 130688,
+        "protected_fp16_weight_bits": 48000,
+        "other_parameter_bits": 197952,
+        "other_parameter_precision": 8,
+        "total_bits": 1941728,
+        "projected_bytes": 242716,
+        "whole_model_bits_per_parameter": 1.931398878796198
+      },
+      {
+        "group_size": 240,
+        "selected_categories": [
+          "core_linear",
+          "image_io_conv",
+          "position_bias_linear",
+          "residual_body_conv"
+        ],
+        "ternary_values": 977604,
+        "ternary_fraction": 0.9724035856240824,
+        "packed_code_bits": 1565088,
+        "scale_bits": 65536,
+        "protected_fp16_weight_bits": 48000,
+        "other_parameter_bits": 395904,
+        "other_parameter_precision": 16,
+        "total_bits": 2074528,
+        "projected_bytes": 259316,
+        "whole_model_bits_per_parameter": 2.0634924424179486
+      },
+      {
+        "group_size": 240,
+        "selected_categories": [
+          "core_linear",
+          "image_io_conv",
+          "position_bias_linear",
+          "residual_body_conv"
+        ],
+        "ternary_values": 977604,
+        "ternary_fraction": 0.9724035856240824,
+        "packed_code_bits": 1565088,
+        "scale_bits": 65536,
+        "protected_fp16_weight_bits": 48000,
+        "other_parameter_bits": 197952,
+        "other_parameter_precision": 8,
+        "total_bits": 1876576,
+        "projected_bytes": 234572,
+        "whole_model_bits_per_parameter": 1.8665934581856234
+      }
+    ]
+  }
+}

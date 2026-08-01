@@ -1,0 +1,1176 @@
+{
+  "format": "backdropkit-swin2sr-optimizer-transfer-decision-v1",
+  "selection_source": "development",
+  "study_manifest": "experiments/browser_swin2sr/optimizer_transfer_20260730/study-manifest.json",
+  "study_manifest_sha256": "3d74bbaaa5ef6302f62e7b7d260ec8aa758469ea8f4916f2209ac3ba64ee50ed",
+  "q4_reference": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+  "q4_reference_sha256": "d54b7ced6bdfb77ea278a50bccde0b41dbf402cac3dc04aa629b66ea75476e0d",
+  "promotion_policy": "experiments/browser_swin2sr/promotion_policy_glyphsafe_v8.json",
+  "promotion_policy_sha256": "1f56a1a34de8e235de40392d85e1331b3a9f6cb45fa42b3565625293b3d43c96",
+  "development_quality_screen": {
+    "seed": 20260729,
+    "bootstrap_samples": 10000,
+    "paired_quality_gates": {
+      "psnr_vs_ground_truth": {
+        "noninferiority_margin": -0.1,
+        "p10_delta_minimum": -0.75
+      },
+      "edge_psnr_vs_ground_truth": {
+        "noninferiority_margin": -0.15,
+        "p10_delta_minimum": -1.0
+      },
+      "psnr_vs_teacher": {
+        "noninferiority_margin": -0.25,
+        "p10_delta_minimum": -1.25
+      }
+    },
+    "stratified_gates": [
+      {
+        "key": "source",
+        "metric": "psnr_vs_ground_truth",
+        "minimum_samples": 1000,
+        "mean_delta_minimum": -0.15
+      },
+      {
+        "key": "script",
+        "metric": "edge_psnr_vs_ground_truth",
+        "minimum_samples": 10,
+        "mean_delta_minimum": -0.5
+      },
+      {
+        "key": "language",
+        "metric": "psnr_vs_ground_truth",
+        "minimum_samples": 10,
+        "mean_delta_minimum": -0.5
+      }
+    ]
+  },
+  "ranking_policy": [
+    "worst_source_psnr_delta",
+    "overall_psnr_delta",
+    "edge_psnr_delta",
+    "teacher_psnr_delta",
+    "optimizer_arm_stable_tiebreak"
+  ],
+  "candidates": [
+    {
+      "optimizer_arm": "adamw",
+      "report": "experiments/browser_swin2sr/optimizer_transfer_20260730/adamw/development/metrics.json",
+      "report_sha256": "a3fc26a2aac63cc28aa6b9b876ffbc60674761ca219c5d7081757039480fa9f3",
+      "canonical_evidence": {
+        "checkpoint": "experiments/browser_swin2sr/optimizer_transfer_20260730/adamw/run/checkpoint-final.pt",
+        "checkpoint_sha256": "2f4db3128104ad0b3531ae680a2a6feb6355d6b8f8894da5c2c509c140978004",
+        "materialization": "experiments/browser_swin2sr/optimizer_transfer_20260730/adamw/canonical/materialization.json",
+        "materialization_sha256": "09e261fd0836aefd4260db153ef457444a384039ff039cb466b5e6b867a3e0ca",
+        "dense_state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/optimizer_transfer_20260730/adamw/canonical/dense-hard.pt",
+        "dense_state_sha256": "ccd5f47a4c4741a3e7361528506e313f949870c6088446e6c708f9263ee6722e",
+        "dense_state_tensor_sha256": "3f214696be5969949805ba7f5e2d78bd0a832fc2fe438f0f1077786b131fb5c4",
+        "runtime_state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/optimizer_transfer_20260730/adamw/canonical/runtime-hard.pt",
+        "runtime_state_sha256": "3305e11112e522d9df8c215272a75a662d4c0b69de650ba161af8893006a7334"
+      },
+      "versus_q4": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": -1.8948886246121308,
+            "median": -1.363754015115358,
+            "paired_bootstrap_95ci": [
+              -1.9656497204260002,
+              -1.8263547716141482
+            ],
+            "candidate_win_fraction": 0.1069078947368421
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": -1.6197638456193288,
+            "median": -1.14129020521737,
+            "paired_bootstrap_95ci": [
+              -1.6828266640375673,
+              -1.5574203644784985
+            ],
+            "candidate_win_fraction": 0.12796052631578947
+          },
+          "psnr_vs_teacher": {
+            "mean": -8.672984009061091,
+            "median": -8.314733572258904,
+            "paired_bootstrap_95ci": [
+              -8.771990372492548,
+              -8.578040961796265
+            ],
+            "candidate_win_fraction": 0.0006578947368421052
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": -1.6511037046098254
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": -2.3922098614168346
+          }
+        },
+        "worst_source_psnr_delta": -2.3922098614168346
+      },
+      "development_quality_gate": {
+        "paired_quality": {
+          "psnr_vs_ground_truth": {
+            "samples": 3040,
+            "candidate_minus_reference_mean": -1.8948886246121308,
+            "candidate_minus_reference_median": -1.363754015115358,
+            "candidate_minus_reference_p10": -4.572457903923897,
+            "paired_bootstrap_95ci": [
+              -1.9656497204260002,
+              -1.8263547716141482
+            ],
+            "noninferiority_margin": -0.1,
+            "p10_delta_minimum": -0.75,
+            "improved": false,
+            "passed": false
+          },
+          "edge_psnr_vs_ground_truth": {
+            "samples": 3040,
+            "candidate_minus_reference_mean": -1.6197638456193288,
+            "candidate_minus_reference_median": -1.14129020521737,
+            "candidate_minus_reference_p10": -3.995964903269392,
+            "paired_bootstrap_95ci": [
+              -1.6828266640375673,
+              -1.5574203644784985
+            ],
+            "noninferiority_margin": -0.15,
+            "p10_delta_minimum": -1.0,
+            "improved": false,
+            "passed": false
+          },
+          "psnr_vs_teacher": {
+            "samples": 3040,
+            "candidate_minus_reference_mean": -8.672984009061091,
+            "candidate_minus_reference_median": -8.314733572258904,
+            "candidate_minus_reference_p10": -12.510977670256871,
+            "paired_bootstrap_95ci": [
+              -8.771990372492548,
+              -8.578040961796265
+            ],
+            "noninferiority_margin": -0.25,
+            "p10_delta_minimum": -1.25,
+            "improved": false,
+            "passed": false
+          }
+        },
+        "stratified_quality": [
+          {
+            "key": "source",
+            "metric": "psnr_vs_ground_truth",
+            "minimum_samples": 1000,
+            "mean_delta_minimum": -0.15,
+            "groups": 2,
+            "failed_groups": [
+              "flores200_balanced_synthetic_ui",
+              "rico_screen2words_heldout"
+            ],
+            "worst_groups": [
+              {
+                "name": "rico_screen2words_heldout",
+                "samples": 1000,
+                "mean_delta": -2.3922098614168346,
+                "passed": false
+              },
+              {
+                "name": "flores200_balanced_synthetic_ui",
+                "samples": 2040,
+                "mean_delta": -1.6511037046098254,
+                "passed": false
+              }
+            ],
+            "passed": false
+          },
+          {
+            "key": "script",
+            "metric": "edge_psnr_vs_ground_truth",
+            "minimum_samples": 10,
+            "mean_delta_minimum": -0.5,
+            "groups": 29,
+            "failed_groups": [
+              "Arab",
+              "Armn",
+              "Beng",
+              "Cyrl",
+              "Deva",
+              "Ethi",
+              "Geor",
+              "Grek",
+              "Gujr",
+              "Guru",
+              "Hang",
+              "Hans",
+              "Hant",
+              "Hebr",
+              "Jpan",
+              "Khmr",
+              "Knda",
+              "Laoo",
+              "Latn",
+              "Mlym",
+              "Mymr",
+              "Olck",
+              "Orya",
+              "Sinh",
+              "Taml",
+              "Telu",
+              "Tfng",
+              "Thai",
+              "Tibt"
+            ],
+            "worst_groups": [
+              {
+                "name": "Olck",
+                "samples": 10,
+                "mean_delta": -2.524087841828225,
+                "passed": false
+              },
+              {
+                "name": "Thai",
+                "samples": 10,
+                "mean_delta": -2.177278401392953,
+                "passed": false
+              },
+              {
+                "name": "Tibt",
+                "samples": 20,
+                "mean_delta": -1.9285649119618593,
+                "passed": false
+              },
+              {
+                "name": "Deva",
+                "samples": 100,
+                "mean_delta": -1.7112994933816401,
+                "passed": false
+              },
+              {
+                "name": "Geor",
+                "samples": 10,
+                "mean_delta": -1.7081956555606659,
+                "passed": false
+              },
+              {
+                "name": "Hans",
+                "samples": 10,
+                "mean_delta": -1.6821190756103377,
+                "passed": false
+              },
+              {
+                "name": "Gujr",
+                "samples": 10,
+                "mean_delta": -1.645982796200166,
+                "passed": false
+              },
+              {
+                "name": "Tfng",
+                "samples": 20,
+                "mean_delta": -1.5957132544672472,
+                "passed": false
+              },
+              {
+                "name": "Arab",
+                "samples": 220,
+                "mean_delta": -1.5834145122615246,
+                "passed": false
+              },
+              {
+                "name": "Jpan",
+                "samples": 10,
+                "mean_delta": -1.5407687371209424,
+                "passed": false
+              }
+            ],
+            "passed": false
+          },
+          {
+            "key": "language",
+            "metric": "psnr_vs_ground_truth",
+            "minimum_samples": 10,
+            "mean_delta_minimum": -0.5,
+            "groups": 204,
+            "failed_groups": [
+              "ace_Arab",
+              "ace_Latn",
+              "acm_Arab",
+              "acq_Arab",
+              "aeb_Arab",
+              "afr_Latn",
+              "ajp_Arab",
+              "aka_Latn",
+              "als_Latn",
+              "amh_Ethi",
+              "apc_Arab",
+              "arb_Arab",
+              "arb_Latn",
+              "ars_Arab",
+              "ary_Arab",
+              "arz_Arab",
+              "asm_Beng",
+              "ast_Latn",
+              "awa_Deva",
+              "ayr_Latn",
+              "azb_Arab",
+              "azj_Latn",
+              "bak_Cyrl",
+              "bam_Latn",
+              "ban_Latn",
+              "bel_Cyrl",
+              "bem_Latn",
+              "ben_Beng",
+              "bho_Deva",
+              "bjn_Arab",
+              "bod_Tibt",
+              "bos_Latn",
+              "bug_Latn",
+              "bul_Cyrl",
+              "cat_Latn",
+              "ceb_Latn",
+              "ces_Latn",
+              "cjk_Latn",
+              "ckb_Arab",
+              "crh_Latn",
+              "cym_Latn",
+              "dan_Latn",
+              "deu_Latn",
+              "dik_Latn",
+              "dyu_Latn",
+              "dzo_Tibt",
+              "ell_Grek",
+              "eng_Latn",
+              "epo_Latn",
+              "est_Latn",
+              "eus_Latn",
+              "ewe_Latn",
+              "fao_Latn",
+              "fij_Latn",
+              "fin_Latn",
+              "fon_Latn",
+              "fra_Latn",
+              "fur_Latn",
+              "fuv_Latn",
+              "gaz_Latn",
+              "gla_Latn",
+              "gle_Latn",
+              "glg_Latn",
+              "grn_Latn",
+              "guj_Gujr",
+              "hat_Latn",
+              "hau_Latn",
+              "hin_Deva",
+              "hne_Deva",
+              "hrv_Latn",
+              "hun_Latn",
+              "hye_Armn",
+              "ibo_Latn",
+              "ilo_Latn",
+              "ind_Latn",
+              "isl_Latn",
+              "ita_Latn",
+              "jav_Latn",
+              "jpn_Jpan",
+              "kab_Latn",
+              "kac_Latn",
+              "kam_Latn",
+              "kan_Knda",
+              "kas_Arab",
+              "kas_Deva",
+              "kat_Geor",
+              "kaz_Cyrl",
+              "kbp_Latn",
+              "kea_Latn",
+              "khk_Cyrl",
+              "khm_Khmr",
+              "kik_Latn",
+              "kin_Latn",
+              "kir_Cyrl",
+              "kmb_Latn",
+              "kmr_Latn",
+              "knc_Arab",
+              "knc_Latn",
+              "kon_Latn",
+              "kor_Hang",
+              "lao_Laoo",
+              "lij_Latn",
+              "lim_Latn",
+              "lin_Latn",
+              "lit_Latn",
+              "lmo_Latn",
+              "ltz_Latn",
+              "lua_Latn",
+              "lug_Latn",
+              "luo_Latn",
+              "lus_Latn",
+              "lvs_Latn",
+              "mag_Deva",
+              "mai_Deva",
+              "mal_Mlym",
+              "mar_Deva",
+              "min_Arab",
+              "min_Latn",
+              "mkd_Cyrl",
+              "mlt_Latn",
+              "mni_Beng",
+              "mos_Latn",
+              "mri_Latn",
+              "mya_Mymr",
+              "nld_Latn",
+              "nno_Latn",
+              "nob_Latn",
+              "npi_Deva",
+              "nso_Latn",
+              "nus_Latn",
+              "nya_Latn",
+              "oci_Latn",
+              "ory_Orya",
+              "pag_Latn",
+              "pan_Guru",
+              "pap_Latn",
+              "pbt_Arab",
+              "pes_Arab",
+              "plt_Latn",
+              "pol_Latn",
+              "por_Latn",
+              "prs_Arab",
+              "quy_Latn",
+              "ron_Latn",
+              "run_Latn",
+              "rus_Cyrl",
+              "sag_Latn",
+              "san_Deva",
+              "sat_Olck",
+              "scn_Latn",
+              "shn_Mymr",
+              "sin_Sinh",
+              "slk_Latn",
+              "slv_Latn",
+              "smo_Latn",
+              "sna_Latn",
+              "snd_Arab",
+              "som_Latn",
+              "sot_Latn",
+              "spa_Latn",
+              "srd_Latn",
+              "srp_Cyrl",
+              "ssw_Latn",
+              "sun_Latn",
+              "swe_Latn",
+              "swh_Latn",
+              "szl_Latn",
+              "tam_Taml",
+              "taq_Latn",
+              "taq_Tfng",
+              "tat_Cyrl",
+              "tel_Telu",
+              "tgk_Cyrl",
+              "tgl_Latn",
+              "tha_Thai",
+              "tir_Ethi",
+              "tpi_Latn",
+              "tsn_Latn",
+              "tso_Latn",
+              "tuk_Latn",
+              "tum_Latn",
+              "tur_Latn",
+              "twi_Latn",
+              "tzm_Tfng",
+              "uig_Arab",
+              "umb_Latn",
+              "urd_Arab",
+              "uzn_Latn",
+              "vec_Latn",
+              "vie_Latn",
+              "war_Latn",
+              "wol_Latn",
+              "xho_Latn",
+              "ydd_Hebr",
+              "yor_Latn",
+              "yue_Hant",
+              "zho_Hans",
+              "zho_Hant",
+              "zsm_Latn",
+              "zul_Latn"
+            ],
+            "worst_groups": [
+              {
+                "name": "gla_Latn",
+                "samples": 10,
+                "mean_delta": -4.064461431983867,
+                "passed": false
+              },
+              {
+                "name": "umb_Latn",
+                "samples": 10,
+                "mean_delta": -3.365772283480838,
+                "passed": false
+              },
+              {
+                "name": "gle_Latn",
+                "samples": 10,
+                "mean_delta": -3.233719247880363,
+                "passed": false
+              },
+              {
+                "name": "wol_Latn",
+                "samples": 10,
+                "mean_delta": -3.1864014366546374,
+                "passed": false
+              },
+              {
+                "name": "yor_Latn",
+                "samples": 10,
+                "mean_delta": -3.1400398580728517,
+                "passed": false
+              },
+              {
+                "name": "sag_Latn",
+                "samples": 10,
+                "mean_delta": -2.9921198521973715,
+                "passed": false
+              },
+              {
+                "name": "luo_Latn",
+                "samples": 10,
+                "mean_delta": -2.816151341399089,
+                "passed": false
+              },
+              {
+                "name": "ckb_Arab",
+                "samples": 10,
+                "mean_delta": -2.75673493787974,
+                "passed": false
+              },
+              {
+                "name": "sat_Olck",
+                "samples": 10,
+                "mean_delta": -2.738894367372699,
+                "passed": false
+              },
+              {
+                "name": "ewe_Latn",
+                "samples": 10,
+                "mean_delta": -2.7020659157563,
+                "passed": false
+              }
+            ],
+            "passed": false
+          }
+        ],
+        "passed": false
+      },
+      "eligible": false,
+      "versus_other_optimizer": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": 0.412508579532597,
+            "median": 0.2736002774361257,
+            "paired_bootstrap_95ci": [
+              0.3881567295560193,
+              0.4381570256837986
+            ],
+            "candidate_win_fraction": 0.8151315789473684
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": 0.6911388341908979,
+            "median": 0.4279088788368597,
+            "paired_bootstrap_95ci": [
+              0.6628656407100025,
+              0.7201792757376895
+            ],
+            "candidate_win_fraction": 0.9279605263157895
+          },
+          "psnr_vs_teacher": {
+            "mean": 0.6189304207380886,
+            "median": 0.5459749469010866,
+            "paired_bootstrap_95ci": [
+              0.5834328760122108,
+              0.6547249049067443
+            ],
+            "candidate_win_fraction": 0.743421052631579
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": 0.5214150395176298
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": 0.1903394011631299
+          }
+        },
+        "worst_source_psnr_delta": 0.1903394011631299
+      }
+    },
+    {
+      "optimizer_arm": "qat8",
+      "report": "experiments/browser_swin2sr/optimizer_transfer_20260730/qat8/development/metrics.json",
+      "report_sha256": "999a2b2e1be4f1ff08569d45ce5365fe57c69057c89300a30f6445eea39e50d1",
+      "canonical_evidence": {
+        "checkpoint": "experiments/browser_swin2sr/optimizer_transfer_20260730/qat8/run/checkpoint-final.pt",
+        "checkpoint_sha256": "5816e027a2cf8f5880afdb59f3ad2a252560fc1c73b6c6d86839d7f73a1f1d53",
+        "materialization": "experiments/browser_swin2sr/optimizer_transfer_20260730/qat8/canonical/materialization.json",
+        "materialization_sha256": "94fdcc4a14fa46f06016f2d6ff5651ad449c14a522958e686f5544e5318f36c5",
+        "dense_state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/optimizer_transfer_20260730/qat8/canonical/dense-hard.pt",
+        "dense_state_sha256": "eaed3ee9bd31ac62f7e0697f659fa581802d1dd75c63acac554ba066f2cb6cd8",
+        "dense_state_tensor_sha256": "2b9024eb29e57d226f6620fe3d88125ec703ea4517f9ad1557f25851f91ff8b2",
+        "runtime_state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/optimizer_transfer_20260730/qat8/canonical/runtime-hard.pt",
+        "runtime_state_sha256": "02b968d6da72fe3badcdd8e8dc064e9493980966cd3aa8f5b4ff9d46944ef4fc"
+      },
+      "versus_q4": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": -2.307397204144728,
+            "median": -1.7820868211940049,
+            "paired_bootstrap_95ci": [
+              -2.383262321758488,
+              -2.2328374588774946
+            ],
+            "candidate_win_fraction": 0.04506578947368421
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": -2.3109026798102263,
+            "median": -1.7014965200507106,
+            "paired_bootstrap_95ci": [
+              -2.3919806186640797,
+              -2.230541662250789
+            ],
+            "candidate_win_fraction": 0.03980263157894737
+          },
+          "psnr_vs_teacher": {
+            "mean": -9.291914429799181,
+            "median": -8.978118388103162,
+            "paired_bootstrap_95ci": [
+              -9.399040358540141,
+              -9.188446680179293
+            ],
+            "candidate_win_fraction": 0.0
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": -2.172518744127456
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": -2.582549262579964
+          }
+        },
+        "worst_source_psnr_delta": -2.582549262579964
+      },
+      "development_quality_gate": {
+        "paired_quality": {
+          "psnr_vs_ground_truth": {
+            "samples": 3040,
+            "candidate_minus_reference_mean": -2.307397204144728,
+            "candidate_minus_reference_median": -1.7820868211940049,
+            "candidate_minus_reference_p10": -5.253322861392702,
+            "paired_bootstrap_95ci": [
+              -2.383262321758488,
+              -2.2328374588774946
+            ],
+            "noninferiority_margin": -0.1,
+            "p10_delta_minimum": -0.75,
+            "improved": false,
+            "passed": false
+          },
+          "edge_psnr_vs_ground_truth": {
+            "samples": 3040,
+            "candidate_minus_reference_mean": -2.3109026798102263,
+            "candidate_minus_reference_median": -1.7014965200507106,
+            "candidate_minus_reference_p10": -5.3914263189733065,
+            "paired_bootstrap_95ci": [
+              -2.3919806186640797,
+              -2.230541662250789
+            ],
+            "noninferiority_margin": -0.15,
+            "p10_delta_minimum": -1.0,
+            "improved": false,
+            "passed": false
+          },
+          "psnr_vs_teacher": {
+            "samples": 3040,
+            "candidate_minus_reference_mean": -9.291914429799181,
+            "candidate_minus_reference_median": -8.978118388103162,
+            "candidate_minus_reference_p10": -13.626546670782535,
+            "paired_bootstrap_95ci": [
+              -9.399040358540141,
+              -9.188446680179293
+            ],
+            "noninferiority_margin": -0.25,
+            "p10_delta_minimum": -1.25,
+            "improved": false,
+            "passed": false
+          }
+        },
+        "stratified_quality": [
+          {
+            "key": "source",
+            "metric": "psnr_vs_ground_truth",
+            "minimum_samples": 1000,
+            "mean_delta_minimum": -0.15,
+            "groups": 2,
+            "failed_groups": [
+              "flores200_balanced_synthetic_ui",
+              "rico_screen2words_heldout"
+            ],
+            "worst_groups": [
+              {
+                "name": "rico_screen2words_heldout",
+                "samples": 1000,
+                "mean_delta": -2.582549262579964,
+                "passed": false
+              },
+              {
+                "name": "flores200_balanced_synthetic_ui",
+                "samples": 2040,
+                "mean_delta": -2.172518744127456,
+                "passed": false
+              }
+            ],
+            "passed": false
+          },
+          {
+            "key": "script",
+            "metric": "edge_psnr_vs_ground_truth",
+            "minimum_samples": 10,
+            "mean_delta_minimum": -0.5,
+            "groups": 29,
+            "failed_groups": [
+              "Arab",
+              "Armn",
+              "Beng",
+              "Cyrl",
+              "Deva",
+              "Ethi",
+              "Geor",
+              "Grek",
+              "Gujr",
+              "Guru",
+              "Hang",
+              "Hans",
+              "Hant",
+              "Hebr",
+              "Jpan",
+              "Khmr",
+              "Knda",
+              "Laoo",
+              "Latn",
+              "Mlym",
+              "Mymr",
+              "Olck",
+              "Orya",
+              "Sinh",
+              "Taml",
+              "Telu",
+              "Tfng",
+              "Thai",
+              "Tibt"
+            ],
+            "worst_groups": [
+              {
+                "name": "Olck",
+                "samples": 10,
+                "mean_delta": -3.4967736390754496,
+                "passed": false
+              },
+              {
+                "name": "Thai",
+                "samples": 10,
+                "mean_delta": -3.384010661166388,
+                "passed": false
+              },
+              {
+                "name": "Hant",
+                "samples": 20,
+                "mean_delta": -2.93796752724029,
+                "passed": false
+              },
+              {
+                "name": "Tibt",
+                "samples": 20,
+                "mean_delta": -2.8682651466668805,
+                "passed": false
+              },
+              {
+                "name": "Laoo",
+                "samples": 10,
+                "mean_delta": -2.7569004211983645,
+                "passed": false
+              },
+              {
+                "name": "Hebr",
+                "samples": 20,
+                "mean_delta": -2.740953478416437,
+                "passed": false
+              },
+              {
+                "name": "Tfng",
+                "samples": 20,
+                "mean_delta": -2.653874905062745,
+                "passed": false
+              },
+              {
+                "name": "Deva",
+                "samples": 100,
+                "mean_delta": -2.60787129032229,
+                "passed": false
+              },
+              {
+                "name": "Jpan",
+                "samples": 10,
+                "mean_delta": -2.482135436020024,
+                "passed": false
+              },
+              {
+                "name": "Arab",
+                "samples": 220,
+                "mean_delta": -2.4466578377477477,
+                "passed": false
+              }
+            ],
+            "passed": false
+          },
+          {
+            "key": "language",
+            "metric": "psnr_vs_ground_truth",
+            "minimum_samples": 10,
+            "mean_delta_minimum": -0.5,
+            "groups": 204,
+            "failed_groups": [
+              "ace_Arab",
+              "ace_Latn",
+              "acm_Arab",
+              "acq_Arab",
+              "aeb_Arab",
+              "afr_Latn",
+              "ajp_Arab",
+              "aka_Latn",
+              "als_Latn",
+              "amh_Ethi",
+              "apc_Arab",
+              "arb_Arab",
+              "arb_Latn",
+              "ars_Arab",
+              "ary_Arab",
+              "arz_Arab",
+              "asm_Beng",
+              "ast_Latn",
+              "awa_Deva",
+              "ayr_Latn",
+              "azb_Arab",
+              "azj_Latn",
+              "bak_Cyrl",
+              "bam_Latn",
+              "ban_Latn",
+              "bel_Cyrl",
+              "bem_Latn",
+              "ben_Beng",
+              "bho_Deva",
+              "bjn_Arab",
+              "bjn_Latn",
+              "bod_Tibt",
+              "bos_Latn",
+              "bug_Latn",
+              "bul_Cyrl",
+              "cat_Latn",
+              "ceb_Latn",
+              "ces_Latn",
+              "cjk_Latn",
+              "ckb_Arab",
+              "crh_Latn",
+              "cym_Latn",
+              "dan_Latn",
+              "deu_Latn",
+              "dik_Latn",
+              "dyu_Latn",
+              "dzo_Tibt",
+              "ell_Grek",
+              "eng_Latn",
+              "epo_Latn",
+              "est_Latn",
+              "eus_Latn",
+              "ewe_Latn",
+              "fao_Latn",
+              "fij_Latn",
+              "fin_Latn",
+              "fon_Latn",
+              "fra_Latn",
+              "fur_Latn",
+              "fuv_Latn",
+              "gaz_Latn",
+              "gla_Latn",
+              "gle_Latn",
+              "glg_Latn",
+              "grn_Latn",
+              "guj_Gujr",
+              "hat_Latn",
+              "hau_Latn",
+              "heb_Hebr",
+              "hin_Deva",
+              "hne_Deva",
+              "hrv_Latn",
+              "hun_Latn",
+              "hye_Armn",
+              "ibo_Latn",
+              "ilo_Latn",
+              "ind_Latn",
+              "isl_Latn",
+              "ita_Latn",
+              "jav_Latn",
+              "jpn_Jpan",
+              "kab_Latn",
+              "kac_Latn",
+              "kam_Latn",
+              "kan_Knda",
+              "kas_Arab",
+              "kas_Deva",
+              "kat_Geor",
+              "kaz_Cyrl",
+              "kbp_Latn",
+              "kea_Latn",
+              "khk_Cyrl",
+              "khm_Khmr",
+              "kik_Latn",
+              "kin_Latn",
+              "kir_Cyrl",
+              "kmb_Latn",
+              "kmr_Latn",
+              "knc_Arab",
+              "knc_Latn",
+              "kon_Latn",
+              "kor_Hang",
+              "lao_Laoo",
+              "lij_Latn",
+              "lim_Latn",
+              "lin_Latn",
+              "lit_Latn",
+              "lmo_Latn",
+              "ltg_Latn",
+              "ltz_Latn",
+              "lua_Latn",
+              "lug_Latn",
+              "luo_Latn",
+              "lus_Latn",
+              "lvs_Latn",
+              "mag_Deva",
+              "mai_Deva",
+              "mal_Mlym",
+              "mar_Deva",
+              "min_Arab",
+              "min_Latn",
+              "mkd_Cyrl",
+              "mlt_Latn",
+              "mni_Beng",
+              "mos_Latn",
+              "mri_Latn",
+              "mya_Mymr",
+              "nld_Latn",
+              "nno_Latn",
+              "nob_Latn",
+              "npi_Deva",
+              "nso_Latn",
+              "nus_Latn",
+              "nya_Latn",
+              "oci_Latn",
+              "ory_Orya",
+              "pag_Latn",
+              "pan_Guru",
+              "pap_Latn",
+              "pbt_Arab",
+              "pes_Arab",
+              "plt_Latn",
+              "pol_Latn",
+              "por_Latn",
+              "prs_Arab",
+              "quy_Latn",
+              "ron_Latn",
+              "run_Latn",
+              "rus_Cyrl",
+              "sag_Latn",
+              "san_Deva",
+              "sat_Olck",
+              "scn_Latn",
+              "shn_Mymr",
+              "sin_Sinh",
+              "slk_Latn",
+              "slv_Latn",
+              "smo_Latn",
+              "sna_Latn",
+              "snd_Arab",
+              "som_Latn",
+              "sot_Latn",
+              "spa_Latn",
+              "srd_Latn",
+              "srp_Cyrl",
+              "ssw_Latn",
+              "sun_Latn",
+              "swe_Latn",
+              "swh_Latn",
+              "szl_Latn",
+              "tam_Taml",
+              "taq_Latn",
+              "taq_Tfng",
+              "tat_Cyrl",
+              "tel_Telu",
+              "tgk_Cyrl",
+              "tgl_Latn",
+              "tha_Thai",
+              "tir_Ethi",
+              "tpi_Latn",
+              "tsn_Latn",
+              "tso_Latn",
+              "tuk_Latn",
+              "tum_Latn",
+              "tur_Latn",
+              "twi_Latn",
+              "tzm_Tfng",
+              "uig_Arab",
+              "ukr_Cyrl",
+              "umb_Latn",
+              "urd_Arab",
+              "uzn_Latn",
+              "vec_Latn",
+              "vie_Latn",
+              "war_Latn",
+              "wol_Latn",
+              "xho_Latn",
+              "ydd_Hebr",
+              "yor_Latn",
+              "yue_Hant",
+              "zho_Hans",
+              "zho_Hant",
+              "zsm_Latn",
+              "zul_Latn"
+            ],
+            "worst_groups": [
+              {
+                "name": "gla_Latn",
+                "samples": 10,
+                "mean_delta": -4.888350004645337,
+                "passed": false
+              },
+              {
+                "name": "sag_Latn",
+                "samples": 10,
+                "mean_delta": -3.872887400933134,
+                "passed": false
+              },
+              {
+                "name": "yor_Latn",
+                "samples": 10,
+                "mean_delta": -3.85235983480748,
+                "passed": false
+              },
+              {
+                "name": "umb_Latn",
+                "samples": 10,
+                "mean_delta": -3.833819753081273,
+                "passed": false
+              },
+              {
+                "name": "gle_Latn",
+                "samples": 10,
+                "mean_delta": -3.755949386537492,
+                "passed": false
+              },
+              {
+                "name": "bem_Latn",
+                "samples": 10,
+                "mean_delta": -3.747538100136926,
+                "passed": false
+              },
+              {
+                "name": "ydd_Hebr",
+                "samples": 10,
+                "mean_delta": -3.737694852289465,
+                "passed": false
+              },
+              {
+                "name": "wol_Latn",
+                "samples": 10,
+                "mean_delta": -3.616059046177367,
+                "passed": false
+              },
+              {
+                "name": "ckb_Arab",
+                "samples": 10,
+                "mean_delta": -3.5077765119418407,
+                "passed": false
+              },
+              {
+                "name": "tha_Thai",
+                "samples": 10,
+                "mean_delta": -3.3674796773270557,
+                "passed": false
+              }
+            ],
+            "passed": false
+          }
+        ],
+        "passed": false
+      },
+      "eligible": false,
+      "versus_other_optimizer": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": -0.412508579532597,
+            "median": -0.2736002774361257,
+            "paired_bootstrap_95ci": [
+              -0.4381570256837986,
+              -0.3881567295560193
+            ],
+            "candidate_win_fraction": 0.18486842105263157
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": -0.6911388341908979,
+            "median": -0.4279088788368597,
+            "paired_bootstrap_95ci": [
+              -0.7201792757376895,
+              -0.6628656407100025
+            ],
+            "candidate_win_fraction": 0.07203947368421053
+          },
+          "psnr_vs_teacher": {
+            "mean": -0.6189304207380886,
+            "median": -0.5459749469010866,
+            "paired_bootstrap_95ci": [
+              -0.6547249049067443,
+              -0.5834328760122108
+            ],
+            "candidate_win_fraction": 0.2565789473684211
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": -0.5214150395176298
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": -0.1903394011631299
+          }
+        },
+        "worst_source_psnr_delta": -0.5214150395176298
+      }
+    }
+  ],
+  "selected_optimizer": null,
+  "selected_checkpoint": null,
+  "selected_checkpoint_sha256": null,
+  "selected_materialization": null,
+  "selected_materialization_sha256": null,
+  "selected_dense_state": null,
+  "selected_dense_state_sha256": null,
+  "selected_runtime_state": null,
+  "selected_runtime_state_sha256": null,
+  "optimizer_recipe_selected": false,
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "required_next_gate": "No optimizer arm passed the development quality screen; revise all-hard recovery without opening final heldout."
+}

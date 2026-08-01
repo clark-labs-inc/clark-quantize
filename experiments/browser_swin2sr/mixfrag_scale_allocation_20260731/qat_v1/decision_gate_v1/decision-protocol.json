@@ -1,0 +1,85 @@
+{
+  "format": "backdropkit-swin2sr-mixfrag-scale-qat-decision-protocol-v1",
+  "status": "sealed_before_first_major_qat_checkpoint",
+  "selection_source": "development",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false,
+  "leader_seeds": [
+    20260731,
+    20260732,
+    20260733
+  ],
+  "exact_scale_bytes": 10012,
+  "mechanism_rule": "Exact 10,012 scale bytes, official paired and stratified noninferiority versus the refined parent, and positive mean ground-truth PSNR delta versus both released ternary and the prior sensitive bridge.",
+  "leader_rule": "The mechanism rule plus positive mean ground-truth and edge PSNR delta versus the three-seed all-ternary leader mean.",
+  "inputs": [
+    {
+      "name": "study_manifest",
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/qat_v1/study-manifest.json",
+      "sha256": "071ded64168e5db7c08a3791369809b96375e082af9778561790bb2ed3c4adfc"
+    },
+    {
+      "name": "target_map",
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/qat_v1/target-map.json",
+      "sha256": "6b03989221024733de40460ca6611371fd9e13e4256dd7fbc66e4a98135a52f4"
+    },
+    {
+      "name": "q4_reference",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+      "sha256": "d54b7ced6bdfb77ea278a50bccde0b41dbf402cac3dc04aa629b66ea75476e0d"
+    },
+    {
+      "name": "promotion_policy",
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/promotion_policy_glyphsafe_v8.json",
+      "sha256": "1f56a1a34de8e235de40392d85e1331b3a9f6cb45fa42b3565625293b3d43c96"
+    },
+    {
+      "name": "refined_parent_report",
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/surface_group_recovery_20260731/refined/development/metrics.json",
+      "sha256": "143631fbcca1068b5a606dc3a6483326f585007be7f0792d16ba4d1398b7757e"
+    },
+    {
+      "name": "released_ternary_report",
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/full-development/metrics.json",
+      "sha256": "a41ffbb8765cb560eea1683495ab6cd01818dff4125d9843de28b4e054871367"
+    },
+    {
+      "name": "sensitive_bridge_report",
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/development/metrics.json",
+      "sha256": "707d403cc1c7b47bca299d54ceabf59a6fd569d807e108b0257eabda3e789740"
+    },
+    {
+      "name": "all_ternary_leader_seed_20260731",
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260731/development/metrics.json",
+      "sha256": "efb0504682aed61a12323b62c3449bf6219aee479cc048695a2a37aa6e4dd43e"
+    },
+    {
+      "name": "all_ternary_leader_seed_20260732",
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260732/development/metrics.json",
+      "sha256": "5bd8f714ad691d4e757e8b2ba68d9f6dfd52cd8dbbf4aa8b7b920289739a500c"
+    },
+    {
+      "name": "all_ternary_leader_seed_20260733",
+      "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/development/metrics.json",
+      "sha256": "5174ff7a6b0a209b1a25e0c995ff1bcdcf934f9b1597453f59d4e663071ec2b7"
+    }
+  ],
+  "sealed_source_root": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/qat_v1/decision_gate_v1/decision_sealed_sources",
+  "source_sha256": {
+    "experiments/browser_swin2sr/decide_mixfrag_qat.py": "4c9f46bd4c549b6518796d2c9c3c7a719b2a909bc2fa7efd9302463cec0515b8",
+    "experiments/browser_swin2sr/evaluate_promotion.py": "703b9cd46ac9468d2b9ef7c0cf854048b05c98d452481acbbfc3c9d30fa3127d",
+    "experiments/browser_swin2sr/full_surface_provenance.py": "f33ff9fa21aa258cec16c98171907a8d031f5092977d4168444b1e86fb2328ca",
+    "experiments/browser_swin2sr/seal_mixfrag_qat_decision.py": "cd986179b3008e54aeb42de1cab6ca1936f25e1c4f232f1595e673ae737160e5"
+  },
+  "decision_command": [
+    "/usr/bin/env",
+    "PYTHONPATH=mixfrag_scale_allocation_20260731/qat_v1/decision_gate_v1/decision_sealed_sources/experiments/browser_swin2sr:mixfrag_scale_allocation_20260731/qat_v1/decision_gate_v1/decision_sealed_sources",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "mixfrag_scale_allocation_20260731/qat_v1/decision_gate_v1/decision_sealed_sources/experiments/browser_swin2sr/decide_mixfrag_qat.py",
+    "--protocol",
+    "mixfrag_scale_allocation_20260731/qat_v1/decision_gate_v1/decision-protocol.json",
+    "--out",
+    "mixfrag_scale_allocation_20260731/qat_v1/decision_gate_v1/decision.json"
+  ]
+}

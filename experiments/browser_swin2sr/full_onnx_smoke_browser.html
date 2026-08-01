@@ -1,0 +1,227 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>BackdropKit full packed ONNX smoke</title>
+<pre id="result">running</pre>
+<script type="module">
+  import {
+    decompressModelArtifact,
+    detectRuntimeSurface,
+    runtimeSurface,
+  } from "./runtime_surface.mjs";
+
+  const result = document.querySelector("#result");
+  const parameters = new URLSearchParams(location.search);
+  const ortUrl = parameters.get("ort")
+    ?? "/Documents/git/clark/saas-products/backdrop/node_modules/onnxruntime-web/dist/ort.webgpu.min.mjs";
+  const ort = await import(ortUrl);
+  const browserSurface = detectRuntimeSurface(navigator);
+  const expectedBrowserSurface = parameters.get("browser");
+  const fixtureUrl = parameters.get("fixture")
+    ?? "/.cache/clark-quantize/swin2sr-portable-onnx-core-smoke-v1.fixture.json";
+  const wasmRoot = parameters.get("wasm")
+    ?? "/Documents/git/clark/saas-products/backdrop/node_modules/onnxruntime-web/dist/";
+  ort.env.wasm.wasmPaths = wasmRoot;
+  ort.env.wasm.numThreads = 1;
+
+  function errors(actual, expected) {
+    let maximum = 0;
+    let total = 0;
+    for (let index = 0; index < expected.length; index += 1) {
+      const error = Math.abs(actual[index] - expected[index]);
+      maximum = Math.max(maximum, error);
+      total += error;
+    }
+    return { maximum, mean: total / expected.length };
+  }
+
+  function heapBytes() {
+    return Number.isFinite(performance.memory?.usedJSHeapSize)
+      ? performance.memory.usedJSHeapSize
+      : null;
+  }
+
+  async function sha256Bytes(bytes) {
+    const digest = await crypto.subtle.digest("SHA-256", bytes);
+    return [...new Uint8Array(digest)]
+      .map((value) => value.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  async function sha256Url(url) {
+    const bytes = await fetch(url).then((response) => response.arrayBuffer());
+    return sha256Bytes(bytes);
+  }
+
+  async function run(
+    backend,
+    fixture,
+    modelBytes,
+    harnessFiles,
+    artifactIdentity,
+    fixtureIdentity,
+  ) {
+    const heapBeforeSession = heapBytes();
+    const sessionStarted = performance.now();
+    const session = await ort.InferenceSession.create(modelBytes, {
+      executionProviders: [backend],
+      graphOptimizationLevel: "all",
+    });
+    const sessionMs = performance.now() - sessionStarted;
+    const heapAfterSession = heapBytes();
+    const input = new ort.Tensor(
+      "float32",
+      new Float32Array(fixture.input),
+      fixture.input_shape,
+    );
+    const timings = [];
+    let output;
+    for (let iteration = 0; iteration < 3; iteration += 1) {
+      const started = performance.now();
+      output = await session.run({ [fixture.input_name]: input });
+      timings.push(performance.now() - started);
+    }
+    const tensor = output[fixture.output_name];
+    const measuredErrors = errors(tensor.data, fixture.expected);
+    const receipt = {
+      backend,
+      heapBytes: {
+        afterInference: heapBytes(),
+        afterSession: heapAfterSession,
+        beforeSession: heapBeforeSession,
+      },
+      sessionMs,
+      inferenceMs: timings,
+      errors: measuredErrors,
+      fixtureHardStateSha256: fixtureIdentity.hardStateSha256,
+      fixtureSha256: fixtureIdentity.sha256,
+      inputShape: fixture.input_shape,
+      outputShape: tensor.dims,
+      passed: (
+        measuredErrors.maximum <= 0.001
+        && measuredErrors.mean <= 0.0001
+      ),
+      browser: browserSurface,
+      decompressionMs: artifactIdentity.decompressionMs,
+      expandedModelBytes: modelBytes.byteLength,
+      expandedModelSha256: fixture.model_sha256,
+      modelBytes: artifactIdentity.bytes,
+      modelCompression: artifactIdentity.compression,
+      modelSha256: artifactIdentity.sha256,
+      harnessFiles,
+      surface: runtimeSurface(navigator, backend),
+      warmInferenceMs: Math.max(...timings.slice(1)),
+    };
+    await session.release?.();
+    return receipt;
+  }
+
+  try {
+    if (
+      expectedBrowserSurface
+      && expectedBrowserSurface !== browserSurface
+    ) {
+      throw new Error(
+        `expected ${expectedBrowserSurface}, detected ${browserSurface}`,
+      );
+    }
+    const fixtureBytes = await fetch(fixtureUrl)
+      .then((response) => response.arrayBuffer());
+    const fixtureSha256 = await sha256Bytes(fixtureBytes);
+    const fixture = JSON.parse(new TextDecoder().decode(fixtureBytes));
+    if (!fixture.model || !fixture.model_sha256) {
+      throw new Error("fixture is missing portable model identity");
+    }
+    if (!fixture.hard_state_sha256) {
+      throw new Error("fixture is missing canonical hard-state identity");
+    }
+    const fixtureIdentity = {
+      hardStateSha256: fixture.hard_state_sha256,
+      sha256: fixtureSha256,
+    };
+    const modelUrl = parameters.get("model")
+      ?? (fixture.model_package ?? fixture.model).replace("/Users/stan", "");
+    const compression = parameters.get("compression")
+      ?? fixture.model_package_compression
+      ?? "none";
+    const artifactBytes = await fetch(modelUrl)
+      .then((response) => response.arrayBuffer());
+    const artifactSha256 = await sha256Bytes(artifactBytes);
+    const expectedArtifactSha256 = fixture.model_package_sha256
+      ?? fixture.model_sha256;
+    const expectedArtifactBytes = fixture.model_package_bytes
+      ?? artifactBytes.byteLength;
+    if (
+      artifactSha256 !== expectedArtifactSha256
+      || artifactBytes.byteLength !== expectedArtifactBytes
+    ) {
+      throw new Error("runtime model artifact identity mismatch");
+    }
+    const decompressionStarted = performance.now();
+    const modelBytes = await decompressModelArtifact(
+      artifactBytes,
+      compression,
+    );
+    const decompressionMs = performance.now() - decompressionStarted;
+    if (await sha256Bytes(modelBytes) !== fixture.model_sha256) {
+      throw new Error("expanded portable model identity mismatch");
+    }
+    const artifactIdentity = {
+      bytes: artifactBytes.byteLength,
+      compression,
+      decompressionMs,
+      sha256: artifactSha256,
+    };
+    const harnessFiles = {
+      "full_onnx_smoke_browser.html": await sha256Url(location.pathname),
+      "runtime_surface.mjs": await sha256Url(
+        new URL("./runtime_surface.mjs", location.href),
+      ),
+    };
+    const receipts = [];
+    for (const backend of ["webgpu", "wasm"]) {
+      try {
+        receipts.push(await run(
+          backend,
+          fixture,
+          modelBytes,
+          harnessFiles,
+          artifactIdentity,
+          fixtureIdentity,
+        ));
+      } catch (error) {
+        receipts.push({
+          backend,
+          browser: browserSurface,
+          error: String(error?.message ?? error),
+          expandedModelBytes: modelBytes.byteLength,
+          expandedModelSha256: fixture.model_sha256,
+          fixtureHardStateSha256: fixtureIdentity.hardStateSha256,
+          fixtureSha256: fixtureIdentity.sha256,
+          modelBytes: artifactIdentity.bytes,
+          modelCompression: artifactIdentity.compression,
+          modelSha256: artifactIdentity.sha256,
+          harnessFiles,
+          passed: false,
+          surface: runtimeSurface(navigator, backend),
+        });
+      }
+    }
+    result.textContent = JSON.stringify({
+      browser: browserSurface,
+      expanded_model_sha256: fixture.model_sha256,
+      fixture_hard_state_sha256: fixtureIdentity.hardStateSha256,
+      fixture_sha256: fixtureIdentity.sha256,
+      model_compression: artifactIdentity.compression,
+      model_sha256: artifactIdentity.sha256,
+      harnessFiles,
+      navigatorGpu: Boolean(navigator.gpu),
+      expandedModelBytes: modelBytes.byteLength,
+      modelBytes: artifactIdentity.bytes,
+      receipts,
+    }, null, 2);
+    result.dataset.status = "complete";
+  } catch (error) {
+    result.textContent = String(error?.stack ?? error);
+    result.dataset.status = "failed";
+  }
+</script>

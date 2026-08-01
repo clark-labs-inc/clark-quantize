@@ -1,0 +1,130 @@
+{
+  "format": "backdropkit-swin2sr-rstb-precision-boundary-decision-v1",
+  "protocol": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/protocol.json",
+  "protocol_sha256": "57f6ff13ecda04cb1606a85a249278cac32248bd1d8572656b2567671bdceaad",
+  "fp16_comparison_sha256": "dc4c75c76e4764f94cc9adf969a7141531e557b8e047ea24c4204e91b1d37e21",
+  "minimum_fp16_effect_retention": 0.9,
+  "candidates": {
+    "int5_per_output": {
+      "passed": false,
+      "checks": {
+        "ground_truth_lower_95_positive": true,
+        "edge_mean_nonnegative": true,
+        "teacher_mean_nonnegative": true,
+        "psnr_vs_ground_truth_retains_at_least_90pct": false,
+        "edge_psnr_vs_ground_truth_retains_at_least_90pct": false,
+        "psnr_vs_teacher_retains_at_least_90pct": false
+      },
+      "means": {
+        "psnr_vs_ground_truth": 0.18528536390121272,
+        "edge_psnr_vs_ground_truth": 0.18133769452227894,
+        "psnr_vs_teacher": 0.4069315506668312
+      },
+      "fp16_retention_ratios": {
+        "psnr_vs_ground_truth": 0.3729077687280365,
+        "edge_psnr_vs_ground_truth": 0.37433865646586545,
+        "psnr_vs_teacher": 0.3183065370651108
+      },
+      "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int5_per_output-vs-ternary.json",
+      "comparison_sha256": "401c84d3c64d3bfe1fdec4b60fb10c092640c601aa8447c084330b1f1be5f9f8"
+    },
+    "int6_per_output": {
+      "passed": false,
+      "checks": {
+        "ground_truth_lower_95_positive": true,
+        "edge_mean_nonnegative": true,
+        "teacher_mean_nonnegative": true,
+        "psnr_vs_ground_truth_retains_at_least_90pct": true,
+        "edge_psnr_vs_ground_truth_retains_at_least_90pct": true,
+        "psnr_vs_teacher_retains_at_least_90pct": false
+      },
+      "means": {
+        "psnr_vs_ground_truth": 0.4488584319141254,
+        "edge_psnr_vs_ground_truth": 0.4598535936519861,
+        "psnr_vs_teacher": 0.9973210793309603
+      },
+      "fp16_retention_ratios": {
+        "psnr_vs_ground_truth": 0.903378403968832,
+        "edge_psnr_vs_ground_truth": 0.9492840243291804,
+        "psnr_vs_teacher": 0.7801160135744475
+      },
+      "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int6_per_output-vs-ternary.json",
+      "comparison_sha256": "5173e2167682d0b079626b8816981c2987da97272c8dba20196993a3c2594fd8"
+    },
+    "int5_per_kernel": {
+      "passed": true,
+      "checks": {
+        "ground_truth_lower_95_positive": true,
+        "edge_mean_nonnegative": true,
+        "teacher_mean_nonnegative": true,
+        "psnr_vs_ground_truth_retains_at_least_90pct": true,
+        "edge_psnr_vs_ground_truth_retains_at_least_90pct": true,
+        "psnr_vs_teacher_retains_at_least_90pct": true
+      },
+      "means": {
+        "psnr_vs_ground_truth": 0.47954918816627784,
+        "edge_psnr_vs_ground_truth": 0.47290810659135196,
+        "psnr_vs_teacher": 1.157281644537733
+      },
+      "fp16_retention_ratios": {
+        "psnr_vs_ground_truth": 0.9651470250492761,
+        "edge_psnr_vs_ground_truth": 0.9762326896213713,
+        "psnr_vs_teacher": 0.9052390066048718
+      },
+      "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int5_per_kernel-vs-ternary.json",
+      "comparison_sha256": "56210c01a71f8d81b2a1a5e0a1a2f686523b8cfb484f7e1b53e1a78f567d63b2"
+    },
+    "int7_per_output": {
+      "passed": true,
+      "checks": {
+        "ground_truth_lower_95_positive": true,
+        "edge_mean_nonnegative": true,
+        "teacher_mean_nonnegative": true,
+        "psnr_vs_ground_truth_retains_at_least_90pct": true,
+        "edge_psnr_vs_ground_truth_retains_at_least_90pct": true,
+        "psnr_vs_teacher_retains_at_least_90pct": true
+      },
+      "means": {
+        "psnr_vs_ground_truth": 0.49255288979361905,
+        "edge_psnr_vs_ground_truth": 0.4773621366887886,
+        "psnr_vs_teacher": 1.2831075563541807
+      },
+      "fp16_retention_ratios": {
+        "psnr_vs_ground_truth": 0.9913184465634025,
+        "edge_psnr_vs_ground_truth": 0.9854272238682381,
+        "psnr_vs_teacher": 1.003661481337348
+      },
+      "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int7_per_output-vs-ternary.json",
+      "comparison_sha256": "4b52678ec65a01f58768a1850f9cb01809115ea5d4f42bcd01014e12ea6f298b"
+    },
+    "int6_per_kernel": {
+      "passed": true,
+      "checks": {
+        "ground_truth_lower_95_positive": true,
+        "edge_mean_nonnegative": true,
+        "teacher_mean_nonnegative": true,
+        "psnr_vs_ground_truth_retains_at_least_90pct": true,
+        "edge_psnr_vs_ground_truth_retains_at_least_90pct": true,
+        "psnr_vs_teacher_retains_at_least_90pct": true
+      },
+      "means": {
+        "psnr_vs_ground_truth": 0.4984680137813423,
+        "edge_psnr_vs_ground_truth": 0.4871166062716121,
+        "psnr_vs_teacher": 1.2706577111848443
+      },
+      "fp16_retention_ratios": {
+        "psnr_vs_ground_truth": 1.00322330316712,
+        "edge_psnr_vs_ground_truth": 1.0055635504482734,
+        "psnr_vs_teacher": 0.9939230693209917
+      },
+      "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/int6_per_kernel-vs-ternary.json",
+      "comparison_sha256": "e066b47e927c4ca0e80cc37d6abf09a87fbc7a5df5774430e4e2fefab20e089b"
+    }
+  },
+  "selected_rstb_precision": "int5_per_kernel",
+  "selected_projected_incremental_data_bytes": 55080,
+  "interpretation": "smallest boundary arm preserving at least 90% of every FP16 gain",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false
+}

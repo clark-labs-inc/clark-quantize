@@ -1,0 +1,173 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>BackdropKit 1080p to 4K CNN core benchmark</title>
+<pre id="result">running</pre>
+<script type="module">
+  const result = document.querySelector("#result");
+  const parameters = new URLSearchParams(location.search);
+  const width = Math.max(8, Number(parameters.get("width") ?? 960));
+  const height = Math.max(8, Number(parameters.get("height") ?? 540));
+  const channels = Math.max(4, Number(parameters.get("channels") ?? 16));
+  const layers = Math.max(1, Number(parameters.get("layers") ?? 6));
+  const measuredRuns = Math.max(1, Number(parameters.get("runs") ?? 20));
+  const warmupRuns = Math.max(1, Number(parameters.get("warmup") ?? 5));
+  const precision = parameters.get("precision") === "f32" ? "f32" : "f16";
+
+  function percentile(values, fraction) {
+    const sorted = [...values].sort((left, right) => left - right);
+    return sorted[Math.min(sorted.length - 1, Math.ceil(sorted.length * fraction) - 1)];
+  }
+  function median(values) { return percentile(values, .5); }
+
+  function f32ToF16(value) {
+    const float = new Float32Array(1);
+    const bits = new Uint32Array(float.buffer);
+    float[0] = value;
+    const x = bits[0];
+    const sign = (x >>> 16) & 0x8000;
+    let exponent = ((x >>> 23) & 0xff) - 127 + 15;
+    let mantissa = x & 0x7fffff;
+    if (exponent <= 0) {
+      if (exponent < -10) return sign;
+      mantissa = (mantissa | 0x800000) >>> (1 - exponent);
+      return sign | ((mantissa + 0x1000) >>> 13);
+    }
+    if (exponent >= 31) return sign | 0x7c00;
+    return sign | (exponent << 10) | ((mantissa + 0x1000) >>> 13);
+  }
+
+  function storageData(length, generator) {
+    if (precision === "f32") {
+      return Float32Array.from({ length }, (_, index) => generator(index));
+    }
+    return Uint16Array.from({ length }, (_, index) => f32ToF16(generator(index)));
+  }
+
+  function bufferWithData(device, values, usage) {
+    const size = Math.max(16, Math.ceil(values.byteLength / 4) * 4);
+    const buffer = device.createBuffer({ size, usage, mappedAtCreation: true });
+    new Uint8Array(buffer.getMappedRange()).set(
+      new Uint8Array(values.buffer, values.byteOffset, values.byteLength),
+    );
+    buffer.unmap();
+    return buffer;
+  }
+
+  const scalar = precision === "f16" ? "f16" : "f32";
+  const zero = precision === "f16" ? "0.0h" : "0.0";
+  const shader = /* wgsl */ `
+    ${precision === "f16" ? "enable f16;" : ""}
+    struct Dimensions { width: u32, height: u32, channels: u32, padding: u32 }
+    @group(0) @binding(0) var<storage, read> input: array<${scalar}>;
+    @group(0) @binding(1) var<storage, read> weights: array<${scalar}>;
+    @group(0) @binding(2) var<storage, read_write> output: array<${scalar}>;
+    @group(0) @binding(3) var<uniform> dimensions: Dimensions;
+
+    @compute @workgroup_size(8, 8, 1)
+    fn main(@builtin(global_invocation_id) id: vec3<u32>) {
+      let x = id.x;
+      let y = id.y;
+      let output_channel = id.z;
+      if (x >= dimensions.width || y >= dimensions.height || output_channel >= dimensions.channels) { return; }
+      var sum: ${scalar} = ${zero};
+      for (var kernel_y = 0u; kernel_y < 3u; kernel_y += 1u) {
+        let source_y = clamp(i32(y) + i32(kernel_y) - 1, 0, i32(dimensions.height) - 1);
+        for (var kernel_x = 0u; kernel_x < 3u; kernel_x += 1u) {
+          let source_x = clamp(i32(x) + i32(kernel_x) - 1, 0, i32(dimensions.width) - 1);
+          for (var input_channel = 0u; input_channel < dimensions.channels; input_channel += 1u) {
+            let input_index = (u32(source_y) * dimensions.width + u32(source_x)) * dimensions.channels + input_channel;
+            let weight_index = ((output_channel * 3u + kernel_y) * 3u + kernel_x) * dimensions.channels + input_channel;
+            sum += input[input_index] * weights[weight_index];
+          }
+        }
+      }
+      output[(y * dimensions.width + x) * dimensions.channels + output_channel] = max(sum, ${zero});
+    }
+  `;
+
+  try {
+    if (!navigator.gpu) throw new Error("WebGPU is unavailable.");
+    const adapter = await navigator.gpu.requestAdapter({ powerPreference: "high-performance" });
+    if (!adapter) throw new Error("No WebGPU adapter.");
+    if (precision === "f16" && !adapter.features.has("shader-f16")) {
+      throw new Error("shader-f16 is unavailable.");
+    }
+    const device = await adapter.requestDevice({
+      requiredFeatures: precision === "f16" ? ["shader-f16"] : [],
+    });
+    const featureValues = storageData(width * height * channels, (index) => ((index * 17) % 101) / 505);
+    const weightValues = storageData(3 * 3 * channels * channels, (index) => ((index * 29) % 17 - 8) / (channels * 24));
+    const usage = GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST;
+    const first = bufferWithData(device, featureValues, usage);
+    const second = device.createBuffer({ size: first.size, usage });
+    const weights = bufferWithData(device, weightValues, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
+    const dimensions = bufferWithData(
+      device,
+      new Uint32Array([width, height, channels, 0]),
+      GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    );
+    const module = device.createShaderModule({ code: shader });
+    const compilation = await module.getCompilationInfo();
+    const errors = compilation.messages.filter((message) => message.type === "error");
+    if (errors.length) throw new Error(errors.map((message) => message.message).join("\n"));
+    const pipeline = await device.createComputePipelineAsync({ layout: "auto", compute: { module, entryPoint: "main" } });
+    const bindGroups = [
+      device.createBindGroup({
+        layout: pipeline.getBindGroupLayout(0),
+        entries: [first, weights, second, dimensions].map((buffer, binding) => ({ binding, resource: { buffer } })),
+      }),
+      device.createBindGroup({
+        layout: pipeline.getBindGroupLayout(0),
+        entries: [second, weights, first, dimensions].map((buffer, binding) => ({ binding, resource: { buffer } })),
+      }),
+    ];
+
+    async function execute() {
+      const command = device.createCommandEncoder();
+      const pass = command.beginComputePass();
+      pass.setPipeline(pipeline);
+      for (let layer = 0; layer < layers; layer += 1) {
+        pass.setBindGroup(0, bindGroups[layer & 1]);
+        pass.dispatchWorkgroups(Math.ceil(width / 8), Math.ceil(height / 8), channels);
+      }
+      pass.end();
+      const started = performance.now();
+      device.queue.submit([command.finish()]);
+      await device.queue.onSubmittedWorkDone();
+      return performance.now() - started;
+    }
+
+    for (let index = 0; index < warmupRuns; index += 1) await execute();
+    const timings = [];
+    for (let index = 0; index < measuredRuns; index += 1) timings.push(await execute());
+    const macs = width * height * layers * channels * channels * 9;
+    const medianMs = median(timings);
+    const receipt = {
+      adapter: { features: [...adapter.features].sort() },
+      width,
+      height,
+      channels,
+      layers,
+      precision,
+      macs,
+      gmacs: macs / 1e9,
+      residentFeatureBytesPerBuffer: featureValues.byteLength,
+      residentPingPongBytes: featureValues.byteLength * 2,
+      weightsBytes: weightValues.byteLength,
+      measuredRuns,
+      warmupRuns,
+      medianMs,
+      p95Ms: percentile(timings, .95),
+      maximumMs: Math.max(...timings),
+      effectiveGmacPerSecond: macs / medianMs / 1e6,
+      timingsMs: timings,
+    };
+    window.__backdropCnnCoreBenchmark = receipt;
+    result.textContent = JSON.stringify(receipt, null, 2);
+    result.dataset.status = "complete";
+  } catch (error) {
+    window.__backdropCnnCoreBenchmark = { error: String(error?.stack ?? error) };
+    result.textContent = String(error?.stack ?? error);
+    result.dataset.status = "failed";
+  }
+</script>

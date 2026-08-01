@@ -1,0 +1,104 @@
+{
+  "format": "backdropkit-swin2sr-promotion-policy-v1",
+  "amendment": {
+    "supersedes": "promotion_policy_glyphsafe_v6.json",
+    "superseded_policy_sha256": "991f1f9cd3aab4b1151cd089592a577d1d4282aeeb291a671a51527e08684fa6",
+    "scope": "compressed portable-model runtime identity",
+    "reason": "The exact deployable artifact is now a deterministic gzip package containing the portable base-3 ONNX graph. The browser harness verifies the compressed package hash and byte count, expands it locally, verifies the expanded ONNX identity, and then runs the unchanged graph through WebGPU or WASM. V7 pins that harness and requires gzip plus both identities. Quality, reference identity, evaluation data, artifact-size threshold, runtime surfaces, input shape, numerical limits, and latency limits are unchanged.",
+    "quality_contract_unchanged": true
+  },
+  "seed": 20260729,
+  "bootstrap_samples": 10000,
+  "reference": {
+    "model": "Xenova/swin2SR-lightweight-x2-64",
+    "revision": "54ccc3f9ed678912a9c47dc14f6c478855380a2b",
+    "dtype": "q4",
+    "model_sha256": "b75c09757a7159f32ad279919a77fb185c3389676674cf226a467eaf2f7928f1",
+    "artifact_bytes": 5676042,
+    "bundle_manifest_sha256": "e1c59db675dbebb95a0693933878ccd605c4c0290123e6d1cebccabdb0d5da87",
+    "samples": 3040
+  },
+  "paired_quality_gates": {
+    "psnr_vs_ground_truth": {
+      "noninferiority_margin": -0.1,
+      "p10_delta_minimum": -0.75
+    },
+    "edge_psnr_vs_ground_truth": {
+      "noninferiority_margin": -0.15,
+      "p10_delta_minimum": -1.0
+    },
+    "psnr_vs_teacher": {
+      "noninferiority_margin": -0.25,
+      "p10_delta_minimum": -1.25
+    }
+  },
+  "stratified_gates": [
+    {
+      "key": "source",
+      "metric": "psnr_vs_ground_truth",
+      "minimum_samples": 1000,
+      "mean_delta_minimum": -0.15
+    },
+    {
+      "key": "script",
+      "metric": "edge_psnr_vs_ground_truth",
+      "minimum_samples": 10,
+      "mean_delta_minimum": -0.5
+    },
+    {
+      "key": "language",
+      "metric": "psnr_vs_ground_truth",
+      "minimum_samples": 10,
+      "mean_delta_minimum": -0.5
+    }
+  ],
+  "artifact_gate": {
+    "candidate_bytes_less_than_reference": true,
+    "maximum_fraction_of_reference": 0.5
+  },
+  "runtime_artifact_compression": "gzip",
+  "required_runtime_surfaces": [
+    "chromium-webgpu",
+    "chromium-wasm",
+    "firefox-wasm",
+    "safari-wasm",
+    "ios-safari-wasm",
+    "android-chrome-wasm"
+  ],
+  "runtime_input_shape": [
+    1,
+    3,
+    128,
+    128
+  ],
+  "runtime_harness_sha256": {
+    "full_onnx_smoke_browser.html": "598496a941325d0925589d73dfae03932f8afd43469dd0d282af0e2400800923",
+    "runtime_surface.mjs": "b7ad36ac79e7c4ba4ebda964c879e4a061144c4c8eecfccad7dfb877c4b9516c"
+  },
+  "runtime_limits": {
+    "chromium-webgpu": {
+      "max_session_ms": 5000,
+      "max_warm_inference_ms": 250
+    },
+    "chromium-wasm": {
+      "max_session_ms": 5000,
+      "max_warm_inference_ms": 2000
+    },
+    "firefox-wasm": {
+      "max_session_ms": 7000,
+      "max_warm_inference_ms": 2500
+    },
+    "safari-wasm": {
+      "max_session_ms": 7000,
+      "max_warm_inference_ms": 2500
+    },
+    "ios-safari-wasm": {
+      "max_session_ms": 9000,
+      "max_warm_inference_ms": 3500
+    },
+    "android-chrome-wasm": {
+      "max_session_ms": 9000,
+      "max_warm_inference_ms": 3500
+    }
+  }
+}

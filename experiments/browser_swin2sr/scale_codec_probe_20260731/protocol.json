@@ -1,0 +1,831 @@
+{
+  "format": "backdropkit-swin2sr-scale-codebook-protocol-v1",
+  "status": "preregistered_before_scale_codebook_image_results",
+  "selection_source": "development",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false,
+  "materialization": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/product-release-canonical/materialization.json",
+  "materialization_sha256": "ce2553f4d975df2991a05d4cf29ed5ec666cd9837c917913539715b569b81f5b",
+  "runtime_state_sha256": "c5574d9d2cba31190312a7223216e91799a58bd74f7e05ca9016ce0eade9c221",
+  "dense_state_sha256": "2f452c3a5d0c73348d02512e987fd91d75b23b5d43262b9e0742a868590d3654",
+  "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "bundle_manifest_sha256": "e35334e5c567d7c6c9212eb2008507e73f6e0a3b17c041abbefb3bd82e59720d",
+  "q4_reference": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+  "q4_reference_sha256": "d54b7ced6bdfb77ea278a50bccde0b41dbf402cac3dc04aa629b66ea75476e0d",
+  "excluded_prior_protocol": "experiments/browser_swin2sr/residual_gain_probe_20260731/protocol.json",
+  "excluded_prior_protocol_sha256": "224752636b68280d6fe79f3fab6f27ec19d7bf91d76922ce8e274214d44383b1",
+  "excluded_prior_sample_count": 384,
+  "fold_seed": 20260801,
+  "screen": [
+    {
+      "sha256": "655b27a887794f41d766013378d342a0ba4e83b5ab5bbe78bddc5f0008324626",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "390a7705a4cce1f7e5543bdc8a8901e97401ce5ac88051a537d8c5366d740a99",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "4314e705f7eb576454d4551fab4b4dbaef1755af52ff9a228b6b354e462cd238",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "17a203c8943baa4c870f8ec9770c761fffd04663d369fcd98ad08ba7760359f9",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "1c30dc5ad2156b873b6fdcedf8c148298ec5a9ce554a31b49a2eb6479e1ea4ac",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "22925f7a33641bea73fa7448c2f5211147aa2042c450b87aa315da91c13a7afe",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "785aef1a5b36f4e9d28f2eb948d5311d0f40c25af6e7634f1b27a8dc0722d6e0",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "2cde37611247747cc88efc432e27b67275c1f787d5552241dab8c347f448500b",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "f40680c709bed3f6e3d4fd855df0ab1b74d1d05f6fc18fd0dd3b012c6254d2cb",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "9d0c57cb4ab1c15947cbc2e7b1968c1655f1e428271f75437448c3c057654be4",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "a6e709f4636256c95c84784474790264bb3b85b859b57d6288f496552f880d12",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "3201499d6cc93a3514c5b2edb7c9f8b5f2a821b6428c21a8e1927429754247a1",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "bd7f2ae7d715b5b1fa8a5c1c0448bd427b921ddf5f0d3af855e21647495567a7",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "cff25a578ad043df8f18162082026d03553f7b94268fbef338f0e9179c5aa7ec",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "09b6d68225a400c99ae2470d0e67a3df58801532740810755caf2d082807da1b",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "805ba2acffcbacea2c2172c9827ceefa1a8386c93c16471004b3043d69f7718d",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "36f7d017db34fd138294dc376ee03dc30d5e0035a8b052677ad7bc58f06cbdb8",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "f59cbb7ab89f5236c5641b6ecf478810f7c1e4c77f41d4a8a91d611713ab5e10",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "5552b77783cfac474c8b4d0512dbecb284aa7ac4dc935454f430c69ae9a9050d",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "2a9df075ce8c6e902ed4f688ff72b0f7399111edc9675961d3771468cb4a686c",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "72764d8cf3aebc45c7a214c8feba6afdf135c93ad7b901110310b0184430693b",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "5c66b4ca48814176e060586c79af9a0e6bef857002d59a14fd6b7639f682ce4d",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "db3dc051812058413cb565b420798ef858dfc292ef160bc0baed1bd811e09d35",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "e319c1124a86e340e723a29709e9fc96299650f111173f1b9a85e668faf442db",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "2c31f384cde469e0dbcd785548106a2d3108544e8a12da726a748fa19921bfa6",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "9057fef4c64bf492c3f02dcf0f46883c73ce579500b078a72d49161b140e5635",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "07557daed0b3cac1be39fa9de37322d4317de1a773749998b4a5f5cb79ac1f2d",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "b4e1571a000daa6e250702c7fb5b08aef412ca3343a05bd67348f1cbfba8b1db",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "f805aca65f7c745448030d0890f8291050d67c5933c6482560e76d2c8267bdd5",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "d27183ef873be3b402fe4fea625fe552c5e6b210ab2720bcc100146bb448c17b",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "97f7988d26bc61d5b2de1d8af1130c94357259d131ceb1efe1a77e58d264db8e",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "96b3c5c27a0693042ba5e14d33b95677191f604aed7bb5d13f0470e904bd2305",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "c6ef9a585714c86d3e8bcaab22911e7fec794f3d3c2e060248c0a17d3c361dbc",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "e69d5a4ef9d80a366b23abe0ad08e3cd18b56fedce31e4619f0e43fcd7d8d397",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "515cfb48c76fbfc4dcb700b76734703bf6b173cc7a102a35637f62f22f7bda78",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "fca81027abb27f6d0f4115a57e57f2858d7e325d8c6472b1e4f2769d281b1f4a",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "7d4c7518dd243ec9f96c19d7f263760406760c5155b18cb262dfcad270bf4f7f",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "88261daa365d407c3c8792eca0e3b44d87c3e938ec43f6819a756ebe4f077bf1",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "031e17a14c04d5739e7c14fff8943c1b4e86e74d36b8576c50d087851abd7c82",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "45d7648813c11d317625c0a21b93dc2ec5c0d240e52bbb552a913aae9334af87",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "0a5b6b749eab7123bb9b2709c799eb8f6245ae6f2a99cf324f146b7af443d8ba",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "a53560ec8846404866cb9a8b08c317b0519d13ef3c196b710218816dbc9d28f0",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "c1a6bd07880f8230757001db73eb782030826bd1efcb3700538aabf9fac644fe",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "b16cd4ef7b0f8f75aa427b8b8c364d0de56ed2e384b25356292f84779d39f04a",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "d7e6a9f77b0eb27d229003aadb7aa2aa6f3246c490a77ba5622c729425942fa7",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "95538ca12762322c5b09c7251e10752a7c3e3acf03b5ee61678a50295f96539d",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "c74f10084ccc979a5a16b44199e2e9cfdd1b6547ddabe966a58c81570b3d18d5",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "8b703fd3b5f9e451438feac3aea9cf49b7c43c10cceff9909607f222414fcf2c",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "28cfe1a75c678c50b68d59a0aee2145e1d2792004d44955652f669ce43a599de",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "672464f50c887ec24181c98c09b1734c5588aabe063ea00facae288f3d4e8ba9",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "b2437f7e5d7ca21911be58e4f83670ab44e745f6f59306fe244daa8b800b3759",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "697180aabeab85fd8626fb9f867f6b6931a9eefa44ec49ebaaed663d4f7cdec4",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "1572463c3b0df8bb0740c0cfb60cd713c036c7e4f18807e649019ec545c67c49",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "139517ddc628ca81264d043936b9663f154d9b3a84949b6f7afd321b3588c8b1",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "3a2ec135f6022f5c97f33a0b1894edb1537b5154579177507b368968bc8dd6ff",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "8ce5475021dd1188bd85dbb638d2f5ad75b6fdcdc45cf7af4a474487654bed12",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "df2ed7fa72be7f4d0f943d9b3809d321e154a680cff1c0e181a3cb887f778ff0",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "6245d178b83c32cf6e2a34819627d1736e1b375e2597779da7f2ed71dbfaf870",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "5241116f39cffc3195dba449800d642e0a8975d6e23968de72996a72680dfed6",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "3cc784889e9c29b8ab07cf6a7a56c349db59fa715c0c33efe6fd843328b13082",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "227a98a0ebfedf88355e5c0fa8db80c69d9282704ecd9c86a541250c5059e751",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "7e6c6e51d28d8fc06e6bd70eeb745b4b9bef3248123ef78d467e1faa6f529e05",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "4d5c4f96da08c0ab99af1e6826eb07f9560aced2ab75b18aa9d6fdae4ed16e2d",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "818d18dec2cac6f18113920674c2b1cf08997885461ab22d6d565c3bdc1a8077",
+      "source": "rico_screen2words_heldout"
+    }
+  ],
+  "screen_source_counts": {
+    "flores200_balanced_synthetic_ui": 32,
+    "rico_screen2words_heldout": 32
+  },
+  "confirmation": [
+    {
+      "sha256": "86d17280b4a8da96b0e574467ce115ac446064baed83504a7d34e53252269a73",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "e60b7b0008364b4cca14de6600a9bc706a450de47c0be52bbb68de1b28dfd51e",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "399ffab4c841d8f58368b1190628ae6a6769b4c7bc37b4b868caccda081cd761",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "55df7553240a2315c5fe3eef03675ba4a573ba0d1280679bf355d444754ea4be",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "30d8ba2fd4fb302c66cbcc24be5d13ff59e9a4ccb723191ab8494939e0b18c40",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "8939fa19231ab0521c193ee9f839535df0e88b12ec08d5198a1ae50488bd9511",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "43c94d39d7929826c0aa428e3ba7795f390801badecd69e6fc4e0b53b09d3ee2",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "15b2670a36de73a7e94b80c5868b6f5adc325bf96e0da7e042db9d67d5c38a54",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "62b9402cc526f99f1cce1dbe41ccc005017283b6330ddb39155197c00b29af92",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "03d19036e3bd638bc2e0c138d1a8a68121dbb94cf5dc718e5f24759b7da02bec",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "0a905a9cbfe821766dae5782edf9ce5451267a22300269bf2075022c3322150b",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "1fc14497739d334e37ed3b010ae311e69b2b4551a1fcdd8317975a0d25ec1797",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "a3209cd02b7f9acc2964ca4746a0aed32d335b1b102f7398de9b74164183fb69",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "c20b0f9e825979fcf67bebc0508a7807ad8709e4d67893c7bb4246f0ca1b5969",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "440afb10775024e9774374beab5f5bdf55e45b4b6e1b56985991e097022b9def",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "9d648383fabf09f3fdeea6010f74223cfa7d7351d593341955e833ffd4e94c16",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "3c4d9e2b87c29ccc242add31fd9ec92b81f3941d219fe77f7df93dfe3278216f",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "9c5da8303393d82e228248fb2540931ec91b3200def5e2d2258e716e7d1df192",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "214b893ad8b6cc416cd39eeaf85a21a3072b2786e613826f63787b52e08cc52c",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "49ddc1cb95333d1ca8a887d7698a1265ced26a67a748be70ba8a6ae7c6212c15",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "7e2268043abcbeb339ac4e154767749e24d0b34e40b666e4f8d7483fe78e0dfe",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "b5a05f5eeea472b949fa1687f60eb4b2189cba5f310ce1f1f34c331de871e01f",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "022bca65585e3e9c190865fdabf403481329746f145dc56723c8720c2ed0f785",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "4e52e96ccc5d4a0a6544c162f898131caa573f01724b29cc30fec89f1e976a12",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "5b7123e651a505bfca882536fd7e590e0509f5e99db293599796f6c0007f1115",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "64ed061d3bf9263b6db8bea00b128b4fb6be76f35f50bfb9b8acee11d66abe99",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "e7d180444330e562be28bb3ef44957192d9c755b099a2ef6a15ee72c297fc878",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "e83aee6f4ee90f68ec0fc7f8324dece979aeec7ecaaf395438e209536d41e4fa",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "0accf38c8e5c1a27574e392fbdf298521bd1c142acc125dc13238edbdce89294",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "63463bd9cf9e60a7b6078603aadb7179066851183c8721962975ea1b07902ec6",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "622bcffbc15275155802ad6ed2edbf1de9277558114d928d2c4835c0f989c3f2",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "184bc3ff562b568c30b3d69cd12dcbd8ae86e116a49a50d2c0a4a48bf17b32b1",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "4e970b7e7f51d62d9af33bdf3d212a77f3716299016c91b09c304bc5e6fb3047",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "595e5f80cf09e02e9bf7ac4339203e877bf45dc9ce75b0ef0f61e56ba252c5ed",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "3cf6e124128eb6be76081ee940dc31cac3be75c97939c0c26881fd61e01958c9",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "671ee7549c214e0ad4a6486f36e90a6f017848d80de86ba2ff7907149d6bc6a0",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "9d34d3f8da48a721df53cb7297a20ed870f1a391acc7e70a5aada490cb0114ce",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "759a7299d5357f16ddab35d1a8adb9d0d173ce7f4b714f420391cba221dff6bc",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "cd9b5d36fce0dc2f73afe73399cdb747fd365768e61af1faa3bd1e6069a9bdf6",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "3c1063b049b06c3a1ffe218788c549f6c9582af0ca0db871919a000529a5719e",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "572b1b303858d674ab6d49d1800c3b2fb60372a448e8453190fa00fae799da8a",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "00a0839a1fba2c915970756716bf413031f1e0d40e95d913fe7aa665dfc0d19b",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "e004455e92f88d1f9bb784992b6c4dab587098e34db301e93c5561756243ecfd",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "c821f6ca159b7cef1dd182d1fab1365996ae9a9a46007e9eb6dfd109f6a9d989",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "58d1de03b0919c9343014fdcc7a6501caa2b549d2542bd10778484f934e6aab0",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "4678441deddce8f7418611274ca7ae08bb566a0eb4fd0044877f10f5bc5072d2",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "2fadc107ca8a302fdbdefbd74fec5a26e73143b35b911e9f1a23ded5494b2ee7",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "636ff835c659548455bb511168fe6aa9f538f91f56d5c2835d448aa634baabce",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "f199a48ba591df17724f63471d53b550a6928ee4782226baa3a3465ea58b97cd",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "d2962c16fc88365cbb872efa50f172f87695429e8b4e2341493929543021131b",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "fc8fc77b66436c22fb4c5daa952eea8e73a02d39af74c0963d7bd13737fddc5d",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "32221cd3488c740af1893115bab76145fd8c723ad18b45e4883f36610a9fad0e",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "e3407b8ed337c551d7c331171e2044cbc5e4c1e7f2649f9123ad59cdcf4c6dd3",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "88bb204c812f6c51834215d00ac49c00ab8f6358bf9cf59ceb00a55d113c6761",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "5e9e200e82413e942dc1618abee7528d68565df4273a419cdefd0a124144428a",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "440be02caa28c9ecf720262b41a3c67f5fd2d9c2f20d15ba1e4676fa87eaf5eb",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "a887be6ce22aa0eaa793085071eed97cb7d7bc6aac9a65dcb08fa61a1e9fa2a6",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "2bd44d6825a05070243a1c7758e9c53981fdbc913cf3d44a65f30fab9f3ebf2b",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "a25a08fe0448782e9c71a345799018ee79bbeafcf02ef3761b5bccf434137a68",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "ed00779ca66bc642c7dc154c13102a28f0b299083551b109ca37c6376eb8e85b",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "ea27253fc324dbf92ef5cab0e20597608d2f1abce2f82227eb37e60e2b575038",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "904d493001fa953ec476b157b34bd99484341b1119036a18bcb6de5f2cf43da6",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "49109eaa0fabd24edafffd0b976ab1caa88987a0f0aa97e1d733f324ac93c6a6",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "9784b218de0f64691d5d0a0ac1e988dd489b15abc49a731580db2150c0b2555c",
+      "source": "flores200_balanced_synthetic_ui"
+    },
+    {
+      "sha256": "2d6841c2894f4621beee10b7a3d9dea3f9e4b91d884bef433edc4fed1661a443",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "1169fad0bb99a6f571bd16d1f0979727dfd406310906ddd1f5619d095c4bb0d5",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "b1d62c82d0dd060b75923c1f12e3f2b071bbc4086229267a08f58c76b7bb684e",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "5eac53b795ab746bbf77b5cbc91a082eb25e82f2b6c0f2cf9c1531d3ddb567e2",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "d2a80d6bffaad739c7aa7f082e96354329ec419c6b70114ddb120d1aaf1e1f8e",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "0da3fb0ceb96f84e98f09144f9b3d38a35f9f97b96bd5b3538207d29ccde0443",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "49795cadd5864f6b4986e47916b2d3862ac3a611482c854bfd7c32910539ee27",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "b6496194ebf29ac0b3e5ccb3f4ac7cdb7440a9ed3e5cb5314c4838bc90e19958",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "53553eeeef0dc50150ff6f4b6bf34e8c7d3c3a25047c5d9ba79e612cc360df2d",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "7ac9e4a3e85fdfc51c22fde9d3896e0a09ccc43831e4f6ee96bea72a6f81e480",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "be32e8fe627465395bf8212cb0e88f84462eb54fa33ae67736bb0caf04ce0d42",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "86fda36329177aa28ca87fdff7d3740d8e6cc6e7b3f39005301d5670dd0f6b6a",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "73cdb8c7c82c7a47f76ce28d710e36cf30e48dead2c20f46fad5696ac64ae499",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "bb963f694e50ec00dca877c5e082541daaf1351f1dbae9d8e247e5a8e7631920",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "efd7e79985e88c0a76d6d8b0faf0c2a1a7b8c2fbe4f9ddce7ad820ac308dab41",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "a4d28e7c255ac0e140013776a25f9206d59de0e24434a884f64cdbba6e646d81",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "eb4f259641fcdb3b938b41c793c1a2c1e0a546686423a1fa1064012ad65a7246",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "c4d36b686e5caf934f91ac12e2735edaacf46373b334baaf23080cdeb91deab8",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "cf3347879e1b71cbe5e10592ea9dcaf3cf4a08f5614ed4d1f9d81b9b8186928e",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "5fe87ca54646af31f1606dfe60ff1c86840e18f82bcca837a379560cb7ba3838",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "09d3f68d6d79afafbd1db823d9e4b1c9b9e9135ae50d67887b66b02c3ba24b0b",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "0e18634cbd812abd4936c1fd6a5759323c5677bc15177311930c9c9b71e3600b",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "d5d85a3a30cc450b7f5fc32ff9734092719ae183fe9c6dce4709210d508f37b5",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "cf788d79f25eacfceed1689538076aeb922412198deaa2f54512d70e1174dc8c",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "b909a9ed87217f53618307b6e4e011174e910a1ee3dd140b97255581ee659d93",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "76b41e725c0e53cf4d9e483b21d113997d5e28e80a26645a46bad199e83c7d99",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "082d4eb958c25fcd7c81f8435e3580e80904b662ed061090ea9825a177a8f72c",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "49c50d0e3596cdea6eefce0eede97761f515e3556b421fb39313538294b2bab9",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "cc6e05176249bfe474ff45eec4d77abad13305e89414715ea5d229f1d6cf843a",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "1fdc2e463421addc5987029550443909773f477cafaf4a07d6d513cd83d8fc74",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "5b55c052399c5d45decb0db3f620ec6e1942954b0bd35f702e6585246d83c785",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "8e451c70d2c04012874001c550e84c348c20fa05f33ac4c859a73f18544af3ec",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "b84b5954b4442525fba63a25a55b4e2d1f5ec8f5df7cc69cdef95662033c6510",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "23965c2c7a3bc4ae96d33cac303fe4275e07dfed19639b7304c112d487d77d70",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "ac3390ab492953f6c7815f877bcdb19c5750b02d4146ab5ade63c5e5dfd9ee7d",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "9a546bc980b4b0926c8f932b22442286833e7da51843af31593bfdfbd8083286",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "a65e21988376ef22ac4923691f6e071d5da606805a670c405c201736a1b8db38",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "0fb52da34c685aa9eb7c2206ff6f6f61b66d11ba9205b02f12a85765fe42ffb8",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "4f0e6308a63919b1c59d9d1168621a042ddba4c9135ebfb2aa885c749cbd06d4",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "bb2000e6f83dc2ea7ae3538699475643199651b7d755ff2ac3c748a5218c3766",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "71df79cb23c6d01cc129a455e046a0c6a069a201b70530dff313738f439815a0",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "3d04cad3ba02e3d06ed1f9d9c5495ae84d2d11215888313b8206488770540a05",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "edf20ac06139a01c675d5a2b4ac74b51e47f837260b860a73a38650fdbda7daa",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "87e27ec30d79f63a88b47ccc126b1c84f9d3208529e074cf51293c733ab8184d",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "aa195b5fc34cdfa74d5f36614cdfe6956093c39900e5c4e430ff04edb189930f",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "d9a844996a6a016c04d76bd08e323570a7c23230fd4b2e7102ab5eea0b6a7738",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "d22ef572ab63d5afdf06d6c4f3c75b1ee2b037fe60cbadf5d99eb3f6c3d5189e",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "865e81c94b56ba23ec2f11058bc4504b77a6340c93e0540312a82c0b5b2ef408",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "f83af320b4a6d16ca5f108d9f849995568c1e221aacbc9995abaacd5fc395cb0",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "1abc4a1f0ddab3309f218baa25befd3727681336d5107b7c67c4c6b07f3db13d",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "620e3bbbaf2b5b2ab497af0ae60ade245e7e0daed16791d3581c37c70e5a1558",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "9456362e55fc88dedf30c8119896fba5d6720cdc4cca0679ba8fbb5d68b18974",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "f57213694c2af48c28328f0bc0929b1f7a7a1ba8281fce00d9583200128cd14a",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "2bf4ac7d2fefcb1018b8c348ef37ee22ef1f1ee487c5ccec066df14466d4dec2",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "e752248c9cff18fa3b182271911b9a264eddcfb5f71294ce6a182ab8dda15b79",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "d64bcf74d17ee322ab43544b63a5ed2445a7b00c6b993f8fdd292e5457537633",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "b0e3f67d4d5f1cdd2b0f97f095e1a5ed3a3f55881adb369f55a17979f5f480ba",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "84b6b99b666d6376fd74664f9e1c8da2bbb9ab12d8c9628e8ec239c46c351d70",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "d238c1bbb6fd6a648b4627315ec3d691def884f62b61da3f48c24b700530aae0",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "18e1bbe76fca6a3714501144a0f43a8ac4a021f795b71b4fba8bbc1e5fd48156",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "e1614e3ad6044b368fc3d4a7fafa1c921e1f25988b6fad0a7f2e9c907add885d",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "e8ea38939f573089760fce99fa1de6d8064efd383b3ed073ba08c586ff27bd9f",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "5b2889a37ba35e8d37f40489628b6ea54921d5bfcbdab2ce0c3618f289d71353",
+      "source": "rico_screen2words_heldout"
+    },
+    {
+      "sha256": "a468518a70845f6496d44063503d423667ba04e0226fe6b6465ec41573a18761",
+      "source": "rico_screen2words_heldout"
+    }
+  ],
+  "confirmation_source_counts": {
+    "flores200_balanced_synthetic_ui": 64,
+    "rico_screen2words_heldout": 64
+  },
+  "candidate_scale_index_bits": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    8
+  ],
+  "reference_codec": "fp16_per_group",
+  "selection_order": "smallest_passing_packed_trunk_bits",
+  "decision_rule": {
+    "bootstrap_seed": 20260801,
+    "bootstrap_samples": 5000,
+    "ground_truth_lower_95_min_db": -0.02,
+    "edge_mean_min_db": -0.02,
+    "teacher_lower_95_min_db": -0.03,
+    "every_source_ground_truth_mean_min_db": -0.03,
+    "minimum_scale_storage_reduction_fraction": 0.5
+  },
+  "passing_result": "smallest confirmed codec advances to packed-runtime integration; it does not authorize model promotion",
+  "failing_result": "retain FP16 per-group scales",
+  "source_sha256": {
+    "experiments/browser_swin2sr/scale_codebook.py": "3b6989b6e2c911bec3d5567e510bf32c2ab8dc36908b9f7129815830364d46c6",
+    "experiments/browser_swin2sr/evaluate_scale_codebooks.py": "97f724dca52a608bb73729c08f0944652d54b2d93a3da05c5a3a087a325df8cb",
+    "experiments/browser_swin2sr/evaluate_stratified.py": "b1f7a88ee08e8d405378187c083c87dfcad104e246562586395d36d76a42b05e",
+    "experiments/browser_swin2sr/materialize_surface_states.py": "a97d23fbee85a212261f08647faa451abe698038a96d8f02235afadf088a844a",
+    "experiments/browser_swin2sr/residual_gain.py": "529ff487427eadefb4c6e6186c08e7b431363581291a73993e483a9a15ad87b7",
+    "experiments/browser_swin2sr/rewrite_onnx_ternary.py": "36105148eafced37a9e814a69f6f883fc3be3adb6abbfdd4979190875ece463f",
+    "experiments/browser_swin2sr/rotation_control.py": "29e360be76d94a54266d4e0afdf2db15303e9d69f4452db24dea450f250481b2"
+  }
+}

@@ -1,0 +1,680 @@
+{
+  "format": "backdropkit-swin2sr-broad-surface-group-confirmation-v1",
+  "diagnostic_only": true,
+  "selection_source": "disjoint_development_confirmation",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "protocol": "experiments/browser_swin2sr/surface_group_broad_search_20260731/protocol.json",
+  "protocol_sha256": "cd1e5e1ca709dd63e67f289cf3d5b5fa4e04552cd5405b14ddc107b3be24e548",
+  "screens": [
+    {
+      "path": "experiments/browser_swin2sr/surface_group_broad_search_20260731/group3-all-screen8.json",
+      "sha256": "73b82a8af8dd64db723a1ad849b98179d44a2afd786a5d72a8eab6dfdbb98d7e",
+      "group_size": 3
+    },
+    {
+      "path": "experiments/browser_swin2sr/surface_group_broad_search_20260731/group6-all-screen8.json",
+      "sha256": "2d0675f0aeb70386bce0e106f97560f1cff3d313f102799c8c2ec55852a0c56a",
+      "group_size": 6
+    }
+  ],
+  "checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+  "checkpoint_sha256": "ad5e76db8c378c16da689a4cf37d96eb6e204f7b9de543199efc103c0d371469",
+  "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "existing_surface_group_sizes": {
+    "swin2sr.encoder.stages.3.layers.2.attention.output.dense": 3,
+    "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0": 2
+  },
+  "existing_scale_bytes_delta": 4256,
+  "scale_byte_budget": 65536,
+  "selected_total_scale_bytes_delta": 65318,
+  "candidate_count": 40,
+  "candidates": [
+    {
+      "name": "swin2sr.encoder.stages.3.layers.5.attention.output.dense",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.04304223175950028,
+        "edge_psnr_vs_ground_truth": 0.054246566124909634,
+        "psnr_vs_teacher": 0.05500652519289417
+      },
+      "ground_truth_db_per_added_kib": 0.0408104123349336
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.3.attention.output.dense",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.01929996385397459,
+        "edge_psnr_vs_ground_truth": 0.031234380573373244,
+        "psnr_vs_teacher": -0.013695275009332875
+      },
+      "ground_truth_db_per_added_kib": 0.018299224987472204
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.3.attention.self.key",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.014597320458790364,
+        "edge_psnr_vs_ground_truth": 0.020188144944782493,
+        "psnr_vs_teacher": 0.002827840561458572
+      },
+      "ground_truth_db_per_added_kib": 0.01384042236092716
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.5.attention.self.key",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.014233806742886657,
+        "edge_psnr_vs_ground_truth": 0.014186798246363708,
+        "psnr_vs_teacher": 0.023659811472668935
+      },
+      "ground_truth_db_per_added_kib": 0.013495757504366608
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.output.dense",
+      "category": "core_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 2280,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.02988966467187737,
+        "edge_psnr_vs_ground_truth": 0.012034793402200705,
+        "psnr_vs_teacher": -0.011825949545468006
+      },
+      "ground_truth_db_per_added_kib": 0.013424130098246678
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.self.query",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.013591538113885804,
+        "edge_psnr_vs_ground_truth": 0.012521159193404685,
+        "psnr_vs_teacher": -0.0037881580109058177
+      },
+      "ground_truth_db_per_added_kib": 0.012886791693165799
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.5.attention.self.query",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.01292974469387076,
+        "edge_psnr_vs_ground_truth": 0.008032586564041821,
+        "psnr_vs_teacher": 0.020014002068080572
+      },
+      "ground_truth_db_per_added_kib": 0.012259313487521906
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 306,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.00356461011539011,
+        "edge_psnr_vs_ground_truth": 0.002908288395623515,
+        "psnr_vs_teacher": 0.0044322564671617215
+      },
+      "ground_truth_db_per_added_kib": 0.011928629928625728
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 920,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.009329110834066512,
+        "edge_psnr_vs_ground_truth": 0.01072543246682045,
+        "psnr_vs_teacher": -0.0013526561988896901
+      },
+      "ground_truth_db_per_added_kib": 0.010383705971830552
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.key",
+      "category": "core_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 2280,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.022935392876803462,
+        "edge_psnr_vs_ground_truth": 0.03137993588375565,
+        "psnr_vs_teacher": 0.0011358496376345784
+      },
+      "ground_truth_db_per_added_kib": 0.010300808028880152
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.3.attention.self.value",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.010816355210025108,
+        "edge_psnr_vs_ground_truth": 0.012275236732932626,
+        "psnr_vs_teacher": -0.017383710409930586
+      },
+      "ground_truth_db_per_added_kib": 0.01025550716209788
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.1.output.dense",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 2160,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.020190854634968503,
+        "edge_psnr_vs_ground_truth": 0.009362803321728563,
+        "psnr_vs_teacher": -0.044462426876485495
+      },
+      "ground_truth_db_per_added_kib": 0.00957196071583692
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.2.attention.self.query",
+      "category": "core_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 2280,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.01888662178988909,
+        "edge_psnr_vs_ground_truth": 0.021226274653223243,
+        "psnr_vs_teacher": -0.01199022486027701
+      },
+      "ground_truth_db_per_added_kib": 0.008482412593353698
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.1.attention.self.query",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.007936704182199605,
+        "edge_psnr_vs_ground_truth": 0.0031618893515314994,
+        "psnr_vs_teacher": 0.0155481961911903
+      },
+      "ground_truth_db_per_added_kib": 0.007525171372752219
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.self.value",
+      "category": "core_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 2280,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.015632559918223876,
+        "edge_psnr_vs_ground_truth": 0.030861371476468946,
+        "psnr_vs_teacher": 0.016863416669181674
+      },
+      "ground_truth_db_per_added_kib": 0.007020939191342653
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.output.dense",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 2160,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.014761300677314182,
+        "edge_psnr_vs_ground_truth": 0.0044347022164217265,
+        "psnr_vs_teacher": 0.007391034374826688
+      },
+      "ground_truth_db_per_added_kib": 0.006997949950726723
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.self.query",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.0073104904034551055,
+        "edge_psnr_vs_ground_truth": 0.0029291458348197352,
+        "psnr_vs_teacher": 0.0020771380848501053
+      },
+      "ground_truth_db_per_added_kib": 0.006931427938090767
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 306,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.001847656799164099,
+        "edge_psnr_vs_ground_truth": 0.001953471267142959,
+        "psnr_vs_teacher": -0.00010763477315123282
+      },
+      "ground_truth_db_per_added_kib": 0.006183008373673325
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.intermediate.dense",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 2160,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.012322891991260576,
+        "edge_psnr_vs_ground_truth": 0.0017038349217060045,
+        "psnr_vs_teacher": -0.003206311680180818
+      },
+      "ground_truth_db_per_added_kib": 0.00584196361067168
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.3.attention.self.query",
+      "category": "core_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 2280,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.012382138651680918,
+        "edge_psnr_vs_ground_truth": 0.010012461369719006,
+        "psnr_vs_teacher": 0.006962314516734125
+      },
+      "ground_truth_db_per_added_kib": 0.00556110086812336
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 306,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.001661518389518335,
+        "edge_psnr_vs_ground_truth": 0.0013648950400764193,
+        "psnr_vs_teacher": 0.0014634271739737414
+      },
+      "ground_truth_db_per_added_kib": 0.005560113826362009
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.4.output.dense",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 2160,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.011094199755476097,
+        "edge_psnr_vs_ground_truth": 0.013523211542484148,
+        "psnr_vs_teacher": -0.006031934699130659
+      },
+      "ground_truth_db_per_added_kib": 0.00525947247667015
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.1.attention.self.key",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.005541704256877722,
+        "edge_psnr_vs_ground_truth": 0.005917487306099645,
+        "psnr_vs_teacher": 0.016856884854639986
+      },
+      "ground_truth_db_per_added_kib": 0.005254356628743321
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.self.query",
+      "category": "core_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 2280,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.01169280848210974,
+        "edge_psnr_vs_ground_truth": 0.011110359173578388,
+        "psnr_vs_teacher": -0.0163287395035141
+      },
+      "ground_truth_db_per_added_kib": 0.005251506967403672
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.self.query",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.005276191372288963,
+        "edge_psnr_vs_ground_truth": 0.006725006476244744,
+        "psnr_vs_teacher": -0.0009528315802640464
+      },
+      "ground_truth_db_per_added_kib": 0.005002611078911017
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.1.intermediate.dense",
+      "category": "core_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 4560,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.019311847056684428,
+        "edge_psnr_vs_ground_truth": 0.01627922080113109,
+        "psnr_vs_teacher": 0.033905826883341206
+      },
+      "ground_truth_db_per_added_kib": 0.0043366954793958015
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.4.intermediate.dense",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 2160,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.008993980475551666,
+        "edge_psnr_vs_ground_truth": 0.041029117513808444,
+        "psnr_vs_teacher": -0.009645106910355139
+      },
+      "ground_truth_db_per_added_kib": 0.004263812966187457
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 648,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.0024612917883288787,
+        "edge_psnr_vs_ground_truth": 0.0025655071621883963,
+        "psnr_vs_teacher": 0.0015192153587761936
+      },
+      "ground_truth_db_per_added_kib": 0.003889448751927117
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.self.query",
+      "category": "core_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 2280,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.008412668747169505,
+        "edge_psnr_vs_ground_truth": 0.009869256205313093,
+        "psnr_vs_teacher": 0.011138571371816397
+      },
+      "ground_truth_db_per_added_kib": 0.003778321402237532
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 648,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.0022886589308583893,
+        "edge_psnr_vs_ground_truth": 0.0019035179063919827,
+        "psnr_vs_teacher": 0.002293471416678017
+      },
+      "ground_truth_db_per_added_kib": 0.0036166462117268373
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.self.key",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.003614090496029121,
+        "edge_psnr_vs_ground_truth": 0.0012464791574373635,
+        "psnr_vs_teacher": 0.00023414029504209566
+      },
+      "ground_truth_db_per_added_kib": 0.003426693211049833
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.2.attention.self.value",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.0036009843336159975,
+        "edge_psnr_vs_ground_truth": 0.029349060452751985,
+        "psnr_vs_teacher": -0.06431926736964755
+      },
+      "ground_truth_db_per_added_kib": 0.003414266627428501
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 920,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.0026737896218804735,
+        "edge_psnr_vs_ground_truth": 0.0012247553112487708,
+        "psnr_vs_teacher": 0.0014304446725077469
+      },
+      "ground_truth_db_per_added_kib": 0.0029760441008756574
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.self.key",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.0029712889830406652,
+        "edge_psnr_vs_ground_truth": 0.0011527769679773314,
+        "psnr_vs_teacher": 0.011431131308036413
+      },
+      "ground_truth_db_per_added_kib": 0.0028172221468830013
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.intermediate.dense",
+      "category": "core_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 4560,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.010074633314005155,
+        "edge_psnr_vs_ground_truth": 0.019030987375479924,
+        "psnr_vs_teacher": -0.03980653358957653
+      },
+      "ground_truth_db_per_added_kib": 0.002262373796829228
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 920,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.0019304157368082997,
+        "edge_psnr_vs_ground_truth": 0.002129288080290337,
+        "psnr_vs_teacher": 0.00294657770266582
+      },
+      "ground_truth_db_per_added_kib": 0.002148636646186629
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.4.attention.output.dense",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.0022234198624744295,
+        "edge_psnr_vs_ground_truth": 0.018292440248053765,
+        "psnr_vs_teacher": -0.07973615809557799
+      },
+      "ground_truth_db_per_added_kib": 0.0021081314251609404
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.key",
+      "category": "core_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 2280,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.004165071148143795,
+        "edge_psnr_vs_ground_truth": 0.004629227528106128,
+        "psnr_vs_teacher": -0.023547773542283323
+      },
+      "ground_truth_db_per_added_kib": 0.0018706284454821256
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "group_size": 3,
+      "scale_bytes_delta": 648,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.0010932124253741904,
+        "edge_psnr_vs_ground_truth": 0.0006066197357696979,
+        "psnr_vs_teacher": 2.4864285215642212e-05
+      },
+      "ground_truth_db_per_added_kib": 0.0017275455610851404
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.value",
+      "category": "core_linear",
+      "group_size": 6,
+      "scale_bytes_delta": 1080,
+      "screen_delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.0013030939872038516,
+        "edge_psnr_vs_ground_truth": 0.020919368900244706,
+        "psnr_vs_teacher": -0.03824334191916279
+      },
+      "ground_truth_db_per_added_kib": 0.0012355261508303185
+    }
+  ],
+  "confirmation": {
+    "samples": 64,
+    "excluded_reports": [
+      "experiments/browser_swin2sr/surface_group_confirmation_20260731/group2-confirmation-64.json",
+      "experiments/browser_swin2sr/surface_group_confirmation_20260731/joint-disjoint-256.json",
+      "experiments/browser_swin2sr/surface_group_broad_search_20260731/group3-all-screen8.json",
+      "experiments/browser_swin2sr/surface_group_broad_search_20260731/group6-all-screen8.json"
+    ],
+    "bootstrap": {
+      "method": "paired_nonparametric_mean",
+      "resamples": 5000,
+      "seed": 20260731,
+      "confidence": 0.95
+    },
+    "individual_pass_gate": {
+      "ground_truth_lower_95_db": "> 0",
+      "edge_mean_delta_db": ">= -0.02",
+      "teacher_mean_delta_db": ">= -0.1"
+    }
+  },
+  "commands": {
+    "3": [
+      "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+      "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/analyze_surface_group_sensitivity_disjoint.py",
+      "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+      "--bundle",
+      "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+      "--out",
+      "experiments/browser_swin2sr/surface_group_broad_confirmation_20260731/group3-confirmation-64.json",
+      "--target-group-size",
+      "3",
+      "--method",
+      "current",
+      "--max-samples",
+      "64",
+      "--bootstrap-resamples",
+      "5000",
+      "--bootstrap-seed",
+      "20260731",
+      "--device",
+      "cpu",
+      "--torch-threads",
+      "1",
+      "--exclude-report",
+      "experiments/browser_swin2sr/surface_group_confirmation_20260731/group2-confirmation-64.json",
+      "--exclude-report",
+      "experiments/browser_swin2sr/surface_group_confirmation_20260731/joint-disjoint-256.json",
+      "--exclude-report",
+      "experiments/browser_swin2sr/surface_group_broad_search_20260731/group3-all-screen8.json",
+      "--exclude-report",
+      "experiments/browser_swin2sr/surface_group_broad_search_20260731/group6-all-screen8.json",
+      "--surface",
+      "swin2sr.encoder.stages.3.layers.3.attention.output.dense",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.4.attention.self.key",
+      "--surface",
+      "swin2sr.encoder.stages.2.layers.2.attention.self.query",
+      "--surface",
+      "swin2sr.encoder.stages.1.layers.5.attention.self.value",
+      "--surface",
+      "swin2sr.encoder.stages.1.layers.3.attention.self.query",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.2.attention.self.query",
+      "--surface",
+      "swin2sr.encoder.stages.2.layers.1.intermediate.dense",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "--surface",
+      "swin2sr.encoder.stages.3.layers.2.attention.self.query",
+      "--surface",
+      "swin2sr.encoder.stages.2.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "--surface",
+      "swin2sr.encoder.stages.3.layers.0.intermediate.dense",
+      "--surface",
+      "swin2sr.encoder.stages.2.layers.0.attention.self.key",
+      "--surface",
+      "swin2sr.encoder.stages.1.layers.5.attention.self.continuous_position_bias_mlp.0"
+    ],
+    "6": [
+      "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+      "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/analyze_surface_group_sensitivity_disjoint.py",
+      "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+      "--bundle",
+      "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+      "--out",
+      "experiments/browser_swin2sr/surface_group_broad_confirmation_20260731/group6-confirmation-64.json",
+      "--target-group-size",
+      "6",
+      "--method",
+      "current",
+      "--max-samples",
+      "64",
+      "--bootstrap-resamples",
+      "5000",
+      "--bootstrap-seed",
+      "20260731",
+      "--device",
+      "cpu",
+      "--torch-threads",
+      "1",
+      "--exclude-report",
+      "experiments/browser_swin2sr/surface_group_confirmation_20260731/group2-confirmation-64.json",
+      "--exclude-report",
+      "experiments/browser_swin2sr/surface_group_confirmation_20260731/joint-disjoint-256.json",
+      "--exclude-report",
+      "experiments/browser_swin2sr/surface_group_broad_search_20260731/group3-all-screen8.json",
+      "--exclude-report",
+      "experiments/browser_swin2sr/surface_group_broad_search_20260731/group6-all-screen8.json",
+      "--surface",
+      "swin2sr.encoder.stages.3.layers.5.attention.output.dense",
+      "--surface",
+      "swin2sr.encoder.stages.2.layers.3.attention.output.dense",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.3.attention.self.key",
+      "--surface",
+      "swin2sr.encoder.stages.2.layers.5.attention.self.key",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.5.attention.self.query",
+      "--surface",
+      "swin2sr.encoder.stages.2.layers.5.attention.self.query",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.2.attention.self.continuous_position_bias_mlp.0",
+      "--surface",
+      "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.2",
+      "--surface",
+      "swin2sr.encoder.stages.2.layers.3.attention.self.value",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.1.output.dense",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.1.attention.self.query",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.5.output.dense",
+      "--surface",
+      "swin2sr.encoder.stages.2.layers.4.attention.self.query",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.0",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.4.intermediate.dense",
+      "--surface",
+      "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.0",
+      "--surface",
+      "swin2sr.encoder.stages.1.layers.4.output.dense",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.1.attention.self.key",
+      "--surface",
+      "swin2sr.encoder.stages.3.layers.3.attention.self.query",
+      "--surface",
+      "swin2sr.encoder.stages.3.layers.4.intermediate.dense",
+      "--surface",
+      "swin2sr.encoder.stages.0.layers.0.attention.self.key",
+      "--surface",
+      "swin2sr.encoder.stages.2.layers.2.attention.self.value",
+      "--surface",
+      "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.2",
+      "--surface",
+      "swin2sr.encoder.stages.3.layers.3.attention.self.key",
+      "--surface",
+      "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.2",
+      "--surface",
+      "swin2sr.encoder.stages.1.layers.4.attention.output.dense",
+      "--surface",
+      "swin2sr.encoder.stages.2.layers.0.attention.self.value"
+    ]
+  }
+}

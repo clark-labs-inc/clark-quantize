@@ -1,0 +1,621 @@
+{
+  "format": "backdropkit-swin2sr-scale-codebook-qat-study-v1",
+  "status": "sealed_before_scale_qat_results",
+  "selection_source": "development",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false,
+  "recovery_decision": "experiments/browser_swin2sr/surface_group_recovery_20260731/surface-group-recovery-decision.json",
+  "recovery_decision_sha256": "163a234b068df4ec5337c9ce416c2d7c5aeb03b9712aa4a59010d2130c01e549",
+  "parent_checkpoint": "experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+  "parent_checkpoint_sha256": "0b155f9ada8b747544ba1abb83596e160927fdc91a4c33bf36879ff3f77ce00f",
+  "parent_contract": {
+    "surface_step": 28000,
+    "batch_size": 8,
+    "crop_size": 128,
+    "seed": 20260730,
+    "optimizer": {
+      "name": "bonsai_qat8_muon",
+      "learning_rate": 1e-06,
+      "convolution_learning_rate_multiplier": 4.0,
+      "correction_learning_rate_multiplier": 0.1,
+      "weight_decay": 0.0001,
+      "reset_from_base": false,
+      "matrix_betas": [
+        0.9,
+        0.95
+      ],
+      "muon_every": 16,
+      "muon_steps": 2
+    },
+    "pixel_objective": "psnr_aligned",
+    "surface_group_sizes": {
+      "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0": 2,
+      "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0": 2,
+      "swin2sr.encoder.stages.3.layers.2.attention.output.dense": 3,
+      "swin2sr.first_convolution": 2,
+      "upsample.conv": 2
+    }
+  },
+  "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "q4_reference": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+  "q4_reference_sha256": "d54b7ced6bdfb77ea278a50bccde0b41dbf402cac3dc04aa629b66ea75476e0d",
+  "promotion_policy": "experiments/browser_swin2sr/promotion_policy_glyphsafe_v8.json",
+  "promotion_policy_sha256": "1f56a1a34de8e235de40392d85e1331b3a9f6cb45fa42b3565625293b3d43c96",
+  "training_data": [
+    {
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+      "summary": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/summary.json",
+      "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705",
+      "manifest": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/manifest.jsonl",
+      "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+      "images": 104500,
+      "source": null,
+      "source_revision": null
+    },
+    {
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2",
+      "summary": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/summary.json",
+      "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42",
+      "manifest": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/manifest.jsonl",
+      "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+      "images": 102000,
+      "source": "Muennighoff/flores200",
+      "source_revision": "9660f10339cfc46a369a4d95fccb301a739c3fa8"
+    }
+  ],
+  "validation_data": "/Users/stan/Documents/git/clark-desktop/promos",
+  "steps": 4000,
+  "master_learning_rate": 1e-06,
+  "center_learning_rate": 1e-05,
+  "device": "mps",
+  "arms": {
+    "uniform_q1": {
+      "bits_by_category": {
+        "core_linear": 1,
+        "image_io_conv": 1,
+        "position_bias_linear": 1,
+        "residual_body_conv": 1
+      },
+      "training_command": [
+        "/usr/bin/env",
+        "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/train_scale_codebook_recovery.py",
+        "--parent",
+        "experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+        "--out",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/uniform_q1/run",
+        "--validation-data",
+        "/Users/stan/Documents/git/clark-desktop/promos",
+        "--steps",
+        "4000",
+        "--master-learning-rate",
+        "1e-06",
+        "--center-learning-rate",
+        "1e-05",
+        "--validate-every",
+        "500",
+        "--checkpoint-every",
+        "500",
+        "--hard-shadow-every",
+        "2",
+        "--hard-shadow-weight-start",
+        "0.05",
+        "--hard-shadow-weight-end",
+        "0.25",
+        "--device",
+        "mps",
+        "--target-bits",
+        "core_linear=1",
+        "--target-bits",
+        "image_io_conv=1",
+        "--target-bits",
+        "position_bias_linear=1",
+        "--target-bits",
+        "residual_body_conv=1",
+        "--data",
+        "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+        "--data",
+        "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2"
+      ],
+      "final_checkpoint": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/uniform_q1/run/checkpoint-scale-4000.pt",
+      "materialization_command": [
+        "/usr/bin/env",
+        "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/materialize_scale_codebook.py",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/uniform_q1/run/checkpoint-scale-4000.pt",
+        "--out",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/uniform_q1/materialized",
+        "--source-device",
+        "cpu"
+      ],
+      "materialization": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/uniform_q1/materialized/materialization.json",
+      "evaluation_command": [
+        "/usr/bin/env",
+        "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/evaluate_stratified.py",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/uniform_q1/materialized/dense-hard.pt",
+        "--bundle",
+        "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+        "--out",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/uniform_q1/development",
+        "--device",
+        "mps"
+      ],
+      "development_report": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/uniform_q1/development/metrics.json",
+      "artifact_command": [
+        "/usr/bin/env",
+        "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/export_browser_artifact.py",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/uniform_q1/materialized/materialization.json",
+        "--out",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/uniform_q1/artifact"
+      ],
+      "artifact": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/uniform_q1/artifact"
+    },
+    "image_io_bridge": {
+      "bits_by_category": {
+        "core_linear": 1,
+        "image_io_conv": 4,
+        "position_bias_linear": 1,
+        "residual_body_conv": 1
+      },
+      "training_command": [
+        "/usr/bin/env",
+        "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/train_scale_codebook_recovery.py",
+        "--parent",
+        "experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+        "--out",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/image_io_bridge/run",
+        "--validation-data",
+        "/Users/stan/Documents/git/clark-desktop/promos",
+        "--steps",
+        "4000",
+        "--master-learning-rate",
+        "1e-06",
+        "--center-learning-rate",
+        "1e-05",
+        "--validate-every",
+        "500",
+        "--checkpoint-every",
+        "500",
+        "--hard-shadow-every",
+        "2",
+        "--hard-shadow-weight-start",
+        "0.05",
+        "--hard-shadow-weight-end",
+        "0.25",
+        "--device",
+        "mps",
+        "--target-bits",
+        "core_linear=1",
+        "--target-bits",
+        "image_io_conv=4",
+        "--target-bits",
+        "position_bias_linear=1",
+        "--target-bits",
+        "residual_body_conv=1",
+        "--data",
+        "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+        "--data",
+        "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2"
+      ],
+      "final_checkpoint": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/image_io_bridge/run/checkpoint-scale-4000.pt",
+      "materialization_command": [
+        "/usr/bin/env",
+        "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/materialize_scale_codebook.py",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/image_io_bridge/run/checkpoint-scale-4000.pt",
+        "--out",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/image_io_bridge/materialized",
+        "--source-device",
+        "cpu"
+      ],
+      "materialization": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/image_io_bridge/materialized/materialization.json",
+      "evaluation_command": [
+        "/usr/bin/env",
+        "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/evaluate_stratified.py",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/image_io_bridge/materialized/dense-hard.pt",
+        "--bundle",
+        "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+        "--out",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/image_io_bridge/development",
+        "--device",
+        "mps"
+      ],
+      "development_report": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/image_io_bridge/development/metrics.json",
+      "artifact_command": [
+        "/usr/bin/env",
+        "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/export_browser_artifact.py",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/image_io_bridge/materialized/materialization.json",
+        "--out",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/image_io_bridge/artifact"
+      ],
+      "artifact": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/image_io_bridge/artifact"
+    },
+    "sensitive_bridge": {
+      "bits_by_category": {
+        "core_linear": 1,
+        "image_io_conv": 4,
+        "position_bias_linear": 2,
+        "residual_body_conv": 2
+      },
+      "training_command": [
+        "/usr/bin/env",
+        "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/train_scale_codebook_recovery.py",
+        "--parent",
+        "experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+        "--out",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/run",
+        "--validation-data",
+        "/Users/stan/Documents/git/clark-desktop/promos",
+        "--steps",
+        "4000",
+        "--master-learning-rate",
+        "1e-06",
+        "--center-learning-rate",
+        "1e-05",
+        "--validate-every",
+        "500",
+        "--checkpoint-every",
+        "500",
+        "--hard-shadow-every",
+        "2",
+        "--hard-shadow-weight-start",
+        "0.05",
+        "--hard-shadow-weight-end",
+        "0.25",
+        "--device",
+        "mps",
+        "--target-bits",
+        "core_linear=1",
+        "--target-bits",
+        "image_io_conv=4",
+        "--target-bits",
+        "position_bias_linear=2",
+        "--target-bits",
+        "residual_body_conv=2",
+        "--data",
+        "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+        "--data",
+        "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2"
+      ],
+      "final_checkpoint": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/run/checkpoint-scale-4000.pt",
+      "materialization_command": [
+        "/usr/bin/env",
+        "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/materialize_scale_codebook.py",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/run/checkpoint-scale-4000.pt",
+        "--out",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/materialized",
+        "--source-device",
+        "cpu"
+      ],
+      "materialization": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/materialized/materialization.json",
+      "evaluation_command": [
+        "/usr/bin/env",
+        "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/evaluate_stratified.py",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/materialized/dense-hard.pt",
+        "--bundle",
+        "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+        "--out",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/development",
+        "--device",
+        "mps"
+      ],
+      "development_report": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/development/metrics.json",
+      "artifact_command": [
+        "/usr/bin/env",
+        "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/export_browser_artifact.py",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/materialized/materialization.json",
+        "--out",
+        "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/artifact"
+      ],
+      "artifact": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/artifact"
+    }
+  },
+  "size_rule": {
+    "quality_model_declared_bytes": 5680000,
+    "minimum_reduction_fraction": 0.85,
+    "uniform_q1_max_packed_trunk_bits": 1.66
+  },
+  "source_sha256": {
+    "clark_air/quant/binary.py": "695c3f92c815e242b2b6b8a8af44415a115f18a71cf60de36ffa517cff5dcec4",
+    "clark_air/quant/optimal_ternary.py": "1b3138db657bfbf7fac26f5570fa9257379cee2eabea30787ccabcb2f0957cce",
+    "clark_quantize/bonsai_muon.py": "dde2052c9d7499c3550886042b95812f0dd14d9bdb00a29fc09556b22b02fb8f",
+    "clark_quantize/bonsai_qat8.py": "6673c400adc00e81800693a61728a74f6925a82d9ea4026041a69f9ff0f5d8f2",
+    "clark_quantize/qat_optimizer_variants.py": "e0c395b860aae8c86fcf1b72dc96e77bf347e3f29276731aeb7145b2799ed202",
+    "clark_quantize/ternary_kd.py": "e6a89eda7bafddc122a927e289ec269467a3723127021ad6a206b22e727579a1",
+    "experiments/browser_swin2sr/artifact_state.py": "6b09fb1062628c3db11a612ad6cd96d01e894bb379df5fe65c4b63f413a2faf0",
+    "experiments/browser_swin2sr/data_pipeline.py": "8dd9a33ef886c97fe70a33db01612112a545ba8b7e3243de2ea9e040cd8c7671",
+    "experiments/browser_swin2sr/decide_optimizer_transfer.py": "916d923a3a9c96e6dea1b9afde9ed97b49c7d1ffcc9ccbb164ba587857172c37",
+    "experiments/browser_swin2sr/decide_sensitive_io_development.py": "b273e0f382b1d50135eff1c139ab28dd02d6ce3bce728752f6e6d8520ef59b3e",
+    "experiments/browser_swin2sr/evaluate_hard_started_checkpoints.py": "d56416ecbf7a4baccd35ddd5f4dd22cb0558736983db5468310e71092baca7d8",
+    "experiments/browser_swin2sr/evaluate_hard_started_stratified.py": "09389a6ee8abff172e824f5834cbfea42d74439365798efa049b73254e9352fe",
+    "experiments/browser_swin2sr/evaluate_optimizer_transfer_stratified.py": "4ba85ef291cb31ed991bb8d16f7632802da9d9840f2840bcb7a912c78f44a539",
+    "experiments/browser_swin2sr/evaluate_promotion.py": "703b9cd46ac9468d2b9ef7c0cf854048b05c98d452481acbbfc3c9d30fa3127d",
+    "experiments/browser_swin2sr/evaluate_stratified.py": "b1f7a88ee08e8d405378187c083c87dfcad104e246562586395d36d76a42b05e",
+    "experiments/browser_swin2sr/full_surface_cli.py": "2ec9795918ec1979719439cd8c48b528d5e26e09f18531548ca0da512ecec137",
+    "experiments/browser_swin2sr/full_surface_optimizer.py": "0f2f7603b49ec1fd1dfcb3a11c4f41f9916e03d7049760890cc739edc0003804",
+    "experiments/browser_swin2sr/full_surface_provenance.py": "f33ff9fa21aa258cec16c98171907a8d031f5092977d4168444b1e86fb2328ca",
+    "experiments/browser_swin2sr/island_policy.py": "e7a72ca1c1c142d5d982fdcfd6c0e9be62a9f5ee6a13080e17033358b6b9bc65",
+    "experiments/browser_swin2sr/materialize_surface_states.py": "a97d23fbee85a212261f08647faa451abe698038a96d8f02235afadf088a844a",
+    "experiments/browser_swin2sr/optimizer_controls.py": "8c722f68ce70c5ef3580f756a044f69ecdba9cf1dd8bb383aa144175d3ec904f",
+    "experiments/browser_swin2sr/qat_objective.py": "fca44523e12f864ed9e7e0eb3ac376d5ee6ad1dc8ff2a8f13824c5e82adc5785",
+    "experiments/browser_swin2sr/quantizer_controls.py": "1480eee113c789ff1cde5d484a5416c9f5bfb5f03dad1144165333397c86a843",
+    "experiments/browser_swin2sr/recovery_controls.py": "99cbb941ff5a95c4adbe770d698fb03c00d37cb38accee77037aa2bf4153b397",
+    "experiments/browser_swin2sr/recovery_corpus_identity.py": "715b2c52d10a5e163cbb262c85ebb2d90ae1947ae5d1e7b45c4e196f4d0dfed5",
+    "experiments/browser_swin2sr/recovery_data.py": "caa88a8f9151d2648e8af24d3da712f418e24bebb5d0fedd724b35cb14d29005",
+    "experiments/browser_swin2sr/recovery_resume_policy.py": "221007e3b071db75cf2e2b24f2cade6be4c13337b0b8f344551f43d80aecac9e",
+    "experiments/browser_swin2sr/rotation_control.py": "29e360be76d94a54266d4e0afdf2db15303e9d69f4452db24dea450f250481b2",
+    "experiments/browser_swin2sr/run_state.py": "2bb0e607c6bce5514fab3751037eca7d7707b39b4eb8b92fc7755ccce488067f",
+    "experiments/browser_swin2sr/seal_optimizer_transfer_study.py": "d7a621d0b91a41010f0827f59eb779e49418e956ef7ebe270e773cdeb82caed9",
+    "experiments/browser_swin2sr/surface_artifact_state.py": "4abe9acbbb2b329e5740f8d4541b0964883e751f91a9532beb2b34e5eb3d6cb1",
+    "experiments/browser_swin2sr/surface_curriculum.py": "877356667594596b65e0a86b0309a8ca464d647dbf048d7af1b0ddac51f653ad",
+    "experiments/browser_swin2sr/surface_model_state.py": "f1ee950e89c25c5ed8f47301534de04394bc8a8b4599a6cdbfdff5b84bbcdc1c",
+    "experiments/browser_swin2sr/surface_quantization.py": "bb654ce7d8c6e5650a12391767f125d0d06f73201dbccfcb2c9f677991dbdc3f",
+    "experiments/browser_swin2sr/surface_run_state.py": "80bb881236af15197f47b7835d903bad74505384f3a902c68ecf6e7a99e4a104",
+    "experiments/browser_swin2sr/surface_schedule.py": "083db652b58cfe93d7c9b787ec7ade80c634c74c72fa59db1324748d0e55f530",
+    "experiments/browser_swin2sr/train_swin2sr_full_surface.py": "fe0f8c8fc0313be6ea2e900739e80c7d2460863e83fc13bb88fcb8182e8b87a6",
+    "experiments/browser_swin2sr/train_swin2sr_qat.py": "e4cecf1ad74c80c5fc281985f6472b4bafa5b9a396c8baf1881ccef839e59ac9",
+    "experiments/browser_swin2sr/training_data_contract.py": "6c52ae4fd0a16ff6749701704cfc33f54943ab22180a8e2e7991fde4a9ed5c3b",
+    "clark_air/quant/packing.py": "a36c332020f1b8744bfcc37311db2b4d2604bc195061c86c39bf3c7d5dce06a1",
+    "experiments/browser_swin2sr/artifact_ledger.py": "733ef51cf31fdccbf4120fa1592121531d15fbcc2f831a8eac1464e00802c37b",
+    "experiments/browser_swin2sr/scale_codebook.py": "3b6989b6e2c911bec3d5567e510bf32c2ab8dc36908b9f7129815830364d46c6",
+    "experiments/browser_swin2sr/scale_codebook_qat.py": "30146ef8f40ccc5569843b2a4ec59e6b0cccf0b749ba43d6a55814c5ce8c4bca",
+    "experiments/browser_swin2sr/scale_codebook_state.py": "ea81778765b2fb6e45e7f9b4d41456a38bbd881617c01b0ee160f3726f440222",
+    "experiments/browser_swin2sr/train_scale_codebook_recovery.py": "d38bd006f4da16fa6bfa442eac543f49fc1c79c4c2760ae534c683955bf42fe1",
+    "experiments/browser_swin2sr/materialize_scale_codebook.py": "383b08811dbecaa0fd5cbf014673e1fcbe3ea92092b5dca802bb39581e47fd11",
+    "experiments/browser_swin2sr/export_browser_artifact.py": "7cd98827e28fa49c6a40a7afc32db9cde75c2525c56ae645d124adc4d8304dad",
+    "experiments/browser_swin2sr/onnx_packed_bridge.py": "7796b1ac03e9eb14a06611b70d6a94bf5237f11a65ef55cdd4320c2e0ae4ab68",
+    "experiments/browser_swin2sr/rewrite_onnx_ternary.py": "36105148eafced37a9e814a69f6f883fc3be3adb6abbfdd4979190875ece463f",
+    "experiments/browser_swin2sr/decide_scale_codebook_qat.py": "288908625e62d63291b13836cced0aaae1c8c8eabdc692ef60592156a0dc4dea",
+    "experiments/browser_swin2sr/seal_scale_codebook_qat_study.py": "ab7b2004ed6a989ad9977da62e5fa6e4f6c6ee1735a74fce920da02a8d76feb2"
+  },
+  "source_closure": {
+    "verified": true,
+    "resolved_local_imports": {
+      "clark_air/quant/binary.py": [],
+      "clark_air/quant/optimal_ternary.py": [],
+      "clark_quantize/bonsai_muon.py": [],
+      "clark_quantize/bonsai_qat8.py": [],
+      "clark_quantize/qat_optimizer_variants.py": [],
+      "clark_quantize/ternary_kd.py": [],
+      "experiments/browser_swin2sr/artifact_state.py": [
+        "experiments/browser_swin2sr/rotation_control.py"
+      ],
+      "experiments/browser_swin2sr/data_pipeline.py": [],
+      "experiments/browser_swin2sr/decide_optimizer_transfer.py": [
+        "experiments/browser_swin2sr/decide_sensitive_io_development.py",
+        "experiments/browser_swin2sr/evaluate_promotion.py",
+        "experiments/browser_swin2sr/full_surface_provenance.py"
+      ],
+      "experiments/browser_swin2sr/decide_sensitive_io_development.py": [
+        "experiments/browser_swin2sr/full_surface_provenance.py"
+      ],
+      "experiments/browser_swin2sr/evaluate_hard_started_checkpoints.py": [
+        "experiments/browser_swin2sr/data_pipeline.py",
+        "experiments/browser_swin2sr/full_surface_provenance.py",
+        "experiments/browser_swin2sr/qat_objective.py",
+        "experiments/browser_swin2sr/surface_curriculum.py",
+        "experiments/browser_swin2sr/surface_model_state.py",
+        "experiments/browser_swin2sr/surface_quantization.py",
+        "experiments/browser_swin2sr/train_swin2sr_qat.py"
+      ],
+      "experiments/browser_swin2sr/evaluate_hard_started_stratified.py": [
+        "experiments/browser_swin2sr/evaluate_hard_started_checkpoints.py",
+        "experiments/browser_swin2sr/evaluate_stratified.py",
+        "experiments/browser_swin2sr/surface_curriculum.py",
+        "experiments/browser_swin2sr/surface_model_state.py",
+        "experiments/browser_swin2sr/train_swin2sr_qat.py"
+      ],
+      "experiments/browser_swin2sr/evaluate_optimizer_transfer_stratified.py": [
+        "experiments/browser_swin2sr/evaluate_hard_started_checkpoints.py",
+        "experiments/browser_swin2sr/evaluate_hard_started_stratified.py",
+        "experiments/browser_swin2sr/evaluate_stratified.py",
+        "experiments/browser_swin2sr/materialize_surface_states.py",
+        "experiments/browser_swin2sr/surface_model_state.py",
+        "experiments/browser_swin2sr/train_swin2sr_qat.py"
+      ],
+      "experiments/browser_swin2sr/evaluate_promotion.py": [],
+      "experiments/browser_swin2sr/evaluate_stratified.py": [
+        "experiments/browser_swin2sr/artifact_state.py",
+        "experiments/browser_swin2sr/train_swin2sr_qat.py"
+      ],
+      "experiments/browser_swin2sr/full_surface_cli.py": [
+        "experiments/browser_swin2sr/full_surface_optimizer.py",
+        "experiments/browser_swin2sr/qat_objective.py",
+        "experiments/browser_swin2sr/surface_quantization.py",
+        "experiments/browser_swin2sr/surface_schedule.py"
+      ],
+      "experiments/browser_swin2sr/full_surface_optimizer.py": [
+        "clark_quantize/bonsai_qat8.py"
+      ],
+      "experiments/browser_swin2sr/full_surface_provenance.py": [
+        "experiments/browser_swin2sr/training_data_contract.py"
+      ],
+      "experiments/browser_swin2sr/island_policy.py": [
+        "experiments/browser_swin2sr/surface_schedule.py"
+      ],
+      "experiments/browser_swin2sr/materialize_surface_states.py": [
+        "experiments/browser_swin2sr/evaluate_hard_started_checkpoints.py",
+        "experiments/browser_swin2sr/full_surface_provenance.py",
+        "experiments/browser_swin2sr/surface_artifact_state.py"
+      ],
+      "experiments/browser_swin2sr/optimizer_controls.py": [
+        "clark_quantize/bonsai_muon.py",
+        "clark_quantize/bonsai_qat8.py",
+        "clark_quantize/qat_optimizer_variants.py",
+        "clark_quantize/ternary_kd.py"
+      ],
+      "experiments/browser_swin2sr/qat_objective.py": [],
+      "experiments/browser_swin2sr/quantizer_controls.py": [
+        "clark_air/quant/binary.py",
+        "clark_air/quant/optimal_ternary.py"
+      ],
+      "experiments/browser_swin2sr/recovery_controls.py": [
+        "clark_air/quant/optimal_ternary.py",
+        "clark_quantize/bonsai_qat8.py",
+        "experiments/browser_swin2sr/island_policy.py",
+        "experiments/browser_swin2sr/quantizer_controls.py",
+        "experiments/browser_swin2sr/rotation_control.py"
+      ],
+      "experiments/browser_swin2sr/recovery_corpus_identity.py": [
+        "experiments/browser_swin2sr/training_data_contract.py"
+      ],
+      "experiments/browser_swin2sr/recovery_data.py": [
+        "experiments/browser_swin2sr/data_pipeline.py",
+        "experiments/browser_swin2sr/recovery_corpus_identity.py",
+        "experiments/browser_swin2sr/recovery_resume_policy.py",
+        "experiments/browser_swin2sr/run_state.py"
+      ],
+      "experiments/browser_swin2sr/recovery_resume_policy.py": [],
+      "experiments/browser_swin2sr/rotation_control.py": [],
+      "experiments/browser_swin2sr/run_state.py": [],
+      "experiments/browser_swin2sr/seal_optimizer_transfer_study.py": [
+        "experiments/browser_swin2sr/full_surface_provenance.py",
+        "experiments/browser_swin2sr/training_data_contract.py"
+      ],
+      "experiments/browser_swin2sr/surface_artifact_state.py": [
+        "experiments/browser_swin2sr/rotation_control.py"
+      ],
+      "experiments/browser_swin2sr/surface_curriculum.py": [
+        "experiments/browser_swin2sr/qat_objective.py",
+        "experiments/browser_swin2sr/recovery_controls.py",
+        "experiments/browser_swin2sr/surface_quantization.py"
+      ],
+      "experiments/browser_swin2sr/surface_model_state.py": [
+        "experiments/browser_swin2sr/artifact_state.py",
+        "experiments/browser_swin2sr/full_surface_optimizer.py",
+        "experiments/browser_swin2sr/recovery_controls.py",
+        "experiments/browser_swin2sr/surface_quantization.py",
+        "experiments/browser_swin2sr/surface_run_state.py",
+        "experiments/browser_swin2sr/train_swin2sr_qat.py"
+      ],
+      "experiments/browser_swin2sr/surface_quantization.py": [
+        "experiments/browser_swin2sr/quantizer_controls.py",
+        "experiments/browser_swin2sr/rotation_control.py",
+        "experiments/browser_swin2sr/surface_schedule.py"
+      ],
+      "experiments/browser_swin2sr/surface_run_state.py": [
+        "experiments/browser_swin2sr/run_state.py"
+      ],
+      "experiments/browser_swin2sr/surface_schedule.py": [],
+      "experiments/browser_swin2sr/train_swin2sr_full_surface.py": [
+        "experiments/browser_swin2sr/data_pipeline.py",
+        "experiments/browser_swin2sr/full_surface_cli.py",
+        "experiments/browser_swin2sr/full_surface_optimizer.py",
+        "experiments/browser_swin2sr/optimizer_controls.py",
+        "experiments/browser_swin2sr/qat_objective.py",
+        "experiments/browser_swin2sr/recovery_controls.py",
+        "experiments/browser_swin2sr/recovery_data.py",
+        "experiments/browser_swin2sr/run_state.py",
+        "experiments/browser_swin2sr/surface_artifact_state.py",
+        "experiments/browser_swin2sr/surface_curriculum.py",
+        "experiments/browser_swin2sr/surface_model_state.py",
+        "experiments/browser_swin2sr/surface_quantization.py",
+        "experiments/browser_swin2sr/surface_run_state.py",
+        "experiments/browser_swin2sr/train_swin2sr_qat.py"
+      ],
+      "experiments/browser_swin2sr/train_swin2sr_qat.py": [
+        "experiments/browser_swin2sr/artifact_state.py",
+        "experiments/browser_swin2sr/data_pipeline.py",
+        "experiments/browser_swin2sr/optimizer_controls.py",
+        "experiments/browser_swin2sr/qat_objective.py",
+        "experiments/browser_swin2sr/quantizer_controls.py",
+        "experiments/browser_swin2sr/rotation_control.py",
+        "experiments/browser_swin2sr/run_state.py"
+      ],
+      "experiments/browser_swin2sr/training_data_contract.py": [],
+      "clark_air/quant/packing.py": [],
+      "experiments/browser_swin2sr/artifact_ledger.py": [],
+      "experiments/browser_swin2sr/scale_codebook.py": [
+        "experiments/browser_swin2sr/rewrite_onnx_ternary.py",
+        "experiments/browser_swin2sr/rotation_control.py"
+      ],
+      "experiments/browser_swin2sr/scale_codebook_qat.py": [
+        "experiments/browser_swin2sr/scale_codebook.py"
+      ],
+      "experiments/browser_swin2sr/scale_codebook_state.py": [
+        "experiments/browser_swin2sr/evaluate_hard_started_checkpoints.py",
+        "experiments/browser_swin2sr/full_surface_provenance.py",
+        "experiments/browser_swin2sr/materialize_surface_states.py",
+        "experiments/browser_swin2sr/scale_codebook_qat.py",
+        "experiments/browser_swin2sr/surface_artifact_state.py"
+      ],
+      "experiments/browser_swin2sr/train_scale_codebook_recovery.py": [
+        "experiments/browser_swin2sr/data_pipeline.py",
+        "experiments/browser_swin2sr/evaluate_hard_started_checkpoints.py",
+        "experiments/browser_swin2sr/full_surface_provenance.py",
+        "experiments/browser_swin2sr/qat_objective.py",
+        "experiments/browser_swin2sr/recovery_controls.py",
+        "experiments/browser_swin2sr/recovery_data.py",
+        "experiments/browser_swin2sr/run_state.py",
+        "experiments/browser_swin2sr/scale_codebook_qat.py",
+        "experiments/browser_swin2sr/scale_codebook_state.py",
+        "experiments/browser_swin2sr/surface_model_state.py",
+        "experiments/browser_swin2sr/surface_quantization.py",
+        "experiments/browser_swin2sr/train_swin2sr_qat.py"
+      ],
+      "experiments/browser_swin2sr/materialize_scale_codebook.py": [
+        "experiments/browser_swin2sr/scale_codebook_state.py"
+      ],
+      "experiments/browser_swin2sr/export_browser_artifact.py": [
+        "clark_air/quant/binary.py",
+        "clark_air/quant/optimal_ternary.py",
+        "clark_air/quant/packing.py",
+        "experiments/browser_swin2sr/artifact_ledger.py",
+        "experiments/browser_swin2sr/full_surface_provenance.py",
+        "experiments/browser_swin2sr/materialize_surface_states.py",
+        "experiments/browser_swin2sr/quantizer_controls.py",
+        "experiments/browser_swin2sr/rewrite_onnx_ternary.py",
+        "experiments/browser_swin2sr/scale_codebook_state.py",
+        "experiments/browser_swin2sr/surface_schedule.py"
+      ],
+      "experiments/browser_swin2sr/onnx_packed_bridge.py": [],
+      "experiments/browser_swin2sr/rewrite_onnx_ternary.py": [
+        "experiments/browser_swin2sr/onnx_packed_bridge.py"
+      ],
+      "experiments/browser_swin2sr/decide_scale_codebook_qat.py": [
+        "experiments/browser_swin2sr/evaluate_promotion.py",
+        "experiments/browser_swin2sr/full_surface_provenance.py",
+        "experiments/browser_swin2sr/scale_codebook_state.py",
+        "experiments/browser_swin2sr/seal_scale_codebook_qat_study.py"
+      ],
+      "experiments/browser_swin2sr/seal_scale_codebook_qat_study.py": [
+        "experiments/browser_swin2sr/full_surface_provenance.py",
+        "experiments/browser_swin2sr/seal_optimizer_transfer_study.py",
+        "experiments/browser_swin2sr/training_data_contract.py"
+      ]
+    }
+  },
+  "decision_command": [
+    "/usr/bin/env",
+    "PYTHONPATH=experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/decide_scale_codebook_qat.py",
+    "--study-manifest",
+    "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/study-manifest.json",
+    "--out",
+    "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/scale-codebook-qat-decision.json"
+  ]
+}

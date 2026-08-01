@@ -1,0 +1,99 @@
+{
+  "format": "backdropkit-swin2sr-rstb-int5-confirmation-decision-v1",
+  "protocol": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_int5_confirmation_20260731/protocol.json",
+  "protocol_sha256": "285bd81a84d2b8182f5151950b411938f099407ac8a19f8e4013aac6544b5f02",
+  "required_confirmation_seeds": [
+    20260732,
+    20260733
+  ],
+  "minimum_fp16_effect_retention": 0.9,
+  "seeds": {
+    "20260732": {
+      "passed": true,
+      "fp16": {
+        "passed": true,
+        "checks": {
+          "ground_truth_lower_95_positive": true,
+          "edge_mean_nonnegative": true,
+          "teacher_mean_nonnegative": true
+        },
+        "means": {
+          "psnr_vs_ground_truth": 0.4992359014985063,
+          "edge_psnr_vs_ground_truth": 0.48746172489222084,
+          "psnr_vs_teacher": 1.2604166714364542
+        }
+      },
+      "int5": {
+        "passed": true,
+        "checks": {
+          "ground_truth_lower_95_positive": true,
+          "edge_mean_nonnegative": true,
+          "teacher_mean_nonnegative": true,
+          "psnr_vs_ground_truth_retains_at_least_90pct": true,
+          "edge_psnr_vs_ground_truth_retains_at_least_90pct": true,
+          "psnr_vs_teacher_retains_at_least_90pct": true
+        },
+        "means": {
+          "psnr_vs_ground_truth": 0.4813242953179391,
+          "edge_psnr_vs_ground_truth": 0.47434701443849425,
+          "psnr_vs_teacher": 1.136157299869814
+        },
+        "fp16_retention_ratios": {
+          "psnr_vs_ground_truth": 0.9641219589240202,
+          "edge_psnr_vs_ground_truth": 0.9730959175171624,
+          "psnr_vs_teacher": 0.901414052683843
+        }
+      },
+      "fp16_comparison_sha256": "7172b4579575a7eca4411be0a3c4ca9e76d98f9e0d178be619f66e7c601b17ac",
+      "int5_comparison_sha256": "7b772d61249734fcad4479617bb1412fcea68f38ed4fa960e245ca54f0fdca3d",
+      "int5_materialization_sha256": "ed59fa9eff557edb60593adae30e4b8e6aafdfc15b07db52c6cc0e933e4582b2",
+      "int5_dense_state_sha256": "a3fb9f0f7a919d5128af81a51a13ad635e07602c036a4ed33ea863ef54a291b0"
+    },
+    "20260733": {
+      "passed": false,
+      "fp16": {
+        "passed": true,
+        "checks": {
+          "ground_truth_lower_95_positive": true,
+          "edge_mean_nonnegative": true,
+          "teacher_mean_nonnegative": true
+        },
+        "means": {
+          "psnr_vs_ground_truth": 0.5004776063668069,
+          "edge_psnr_vs_ground_truth": 0.487892683500038,
+          "psnr_vs_teacher": 1.2693416372638342
+        }
+      },
+      "int5": {
+        "passed": false,
+        "checks": {
+          "ground_truth_lower_95_positive": true,
+          "edge_mean_nonnegative": true,
+          "teacher_mean_nonnegative": true,
+          "psnr_vs_ground_truth_retains_at_least_90pct": true,
+          "edge_psnr_vs_ground_truth_retains_at_least_90pct": true,
+          "psnr_vs_teacher_retains_at_least_90pct": false
+        },
+        "means": {
+          "psnr_vs_ground_truth": 0.4786138299169627,
+          "edge_psnr_vs_ground_truth": 0.47077904669802034,
+          "psnr_vs_teacher": 1.140518642835087
+        },
+        "fp16_retention_ratios": {
+          "psnr_vs_ground_truth": 0.9563141763553353,
+          "edge_psnr_vs_ground_truth": 0.9649233583925709,
+          "psnr_vs_teacher": 0.8985119603368285
+        }
+      },
+      "fp16_comparison_sha256": "281cfc81093191ccc84a009ad738690d1d83f3f97b322313bc54bcbcdd0132ee",
+      "int5_comparison_sha256": "cb621bae60fa515cac61022eaf035d22d4c3a648833883865c794d231251239a",
+      "int5_materialization_sha256": "d0fcbc0e4e1c3f04b5ad3c1d84fb5929831d342a982edda9643f64d233dd050c",
+      "int5_dense_state_sha256": "3f894eb649ffd00799a36ee860a5af2d72c851f29bcff304ca5caec5b94cd8fb"
+    }
+  },
+  "int5_per_kernel_confirmed": false,
+  "authorized_effect": "none",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false
+}

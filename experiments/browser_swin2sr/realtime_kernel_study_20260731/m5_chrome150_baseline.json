@@ -1,0 +1,31 @@
+{
+  "date": "2026-07-31",
+  "device": "Apple M5",
+  "browser": "Chrome 150.0.0.0",
+  "model": {
+    "compressed_bytes": 700584,
+    "expanded_bytes": 4869958,
+    "sha256": "b6308e886a0ef07a2b433e2aa83f6a2234d2dbcdbf1427160abedb4e3629aa54"
+  },
+  "webgpu": {
+    "dynamic_session_ms": 3093.2,
+    "fixed_192_session_ms": 1075.8,
+    "cases": [
+      { "size": 32, "median_ms": 23.1, "p95_ms": 24.6, "input_mp_s": 0.0443 },
+      { "size": 64, "median_ms": 24.9, "p95_ms": 25.8, "input_mp_s": 0.1645 },
+      { "size": 96, "median_ms": 32.4, "p95_ms": 32.7, "input_mp_s": 0.2844 },
+      { "size": 128, "median_ms": 51.5, "p95_ms": 52.0, "input_mp_s": 0.3181 },
+      { "size": 192, "median_ms": 111.6, "p95_ms": 113.4, "input_mp_s": 0.3303225806 }
+    ],
+    "linear_1080p_projection": { "milliseconds_per_frame": 6277.5, "fps": 0.159299084 },
+    "graph_capture_attempt": "failed: external GPU buffers required for input and output"
+  },
+  "wasm_threads_4": {
+    "session_ms": 3280.6,
+    "cases": [
+      { "size": 32, "median_ms": 97.0, "p95_ms": 98.7, "input_mp_s": 0.0105567010 },
+      { "size": 64, "median_ms": 376.9, "p95_ms": 379.0, "input_mp_s": 0.0108676041 },
+      { "size": 96, "median_ms": 830.1, "p95_ms": 846.7, "input_mp_s": 0.0111022768 }
+    ]
+  }
+}

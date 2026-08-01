@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "status_date": "2026-07-29",
+  "target": {
+    "minimum_parameters": 1000000000,
+    "weight_codebook": [-1, 0, 1],
+    "required_platforms": ["apple_silicon", "x86_cpu"],
+    "required_controls": ["exact_bf16_parent", "ptq_ternary", "hardware_4bit"]
+  },
+  "gates": [
+    {
+      "id": "A",
+      "name": "trustworthy_small_model_harness",
+      "status": "in_progress",
+      "first_hard_checkpoint": {
+        "step": 7500,
+        "sha256": "023be30140dc02c628aa720a693a9386af9eae8dc7a7856ac42ffa27b201f0b1",
+        "pilot_samples": 200,
+        "ground_truth_psnr_delta_db": 0.9398765181927804,
+        "ground_truth_psnr_bootstrap_95ci": [
+          0.7685915708496894,
+          1.1226129093664299
+        ],
+        "edge_psnr_delta_db": 0.8234855049041007,
+        "teacher_psnr_delta_db": 2.170822076214147,
+        "comparison_sha256": "697db894aee4f199f0305bb4c168ee378c41223601f8703f4df2d05e3d48344b"
+      },
+      "recovery_checkpoint": {
+        "step": 8500,
+        "ground_truth_psnr_delta_vs_step7500_db": 0.11759583425557127,
+        "ground_truth_psnr_bootstrap_95ci": [
+          0.07252035865895712,
+          0.16312506859627937
+        ],
+        "ground_truth_psnr_delta_vs_old_reference_db": 1.0574723524483516
+      },
+      "latest_live_observation": {
+        "step": 8750,
+        "examples_seen": 70000,
+        "fully_hard": true,
+        "finite": true
+      },
+      "registered_controls": {
+        "quantizers": [
+          "optimal_mse",
+          "absmean",
+          "paretoq_seq"
+        ],
+        "shaping": [
+          "none",
+          "block_hadamard"
+        ],
+        "block_hadamard_artifact_verification": {
+          "psnr_vs_checkpoint_db": 68.90230559747268,
+          "mean_absolute_error": 0.0002687294327188283,
+          "max_absolute_error": 0.003056645393371582,
+          "passed": true
+        }
+      },
+      "artifacts": [
+        "experiments/browser_swin2sr/train_swin2sr_qat.py",
+        "experiments/browser_swin2sr/data_pipeline.py",
+        "experiments/browser_swin2sr/quantizer_controls.py",
+        "experiments/browser_swin2sr/rotation_control.py",
+        "experiments/browser_swin2sr/artifact_ledger.py",
+        "experiments/browser_swin2sr/verify_browser_artifact.py",
+        "experiments/browser_swin2sr/run_state.py",
+        "experiments/browser_swin2sr/evaluate_stratified.py",
+        "experiments/browser_swin2sr/compare_evaluations.py"
+      ]
+    },
+    {
+      "id": "B",
+      "name": "qwen35_4b_checkpoint_audit",
+      "status": "pending_user_model_confirmation",
+      "checkpoint_step": 19000,
+      "expected_checkpoint_sha256": "47c1e132d1ba92975e25d1211f883b496f009b2ca50b38dd0009853e352a5822",
+      "artifact_recovery": {
+        "local_copy_found": false,
+        "a100": "stopped_on_changed_ssh_host_key",
+        "4a100": "connection_refused"
+      },
+      "protocol": {
+        "status": "implemented_not_executed",
+        "preregistration": "experiments/large_scale_ternary/gate_b_preregistration.json",
+        "manifest_generator": "experiments/large_scale_ternary/prepare_gate_b_manifest.py",
+        "evaluator": "scripts/eval_ternary_ckpt.py",
+        "paired_comparator": "experiments/large_scale_ternary/compare_gate_b_reports.py",
+        "likelihood_manifest_generator": "experiments/large_scale_ternary/prepare_fineweb2_likelihood_manifest.py",
+        "likelihood_evaluator": "scripts/eval_gate_b_likelihood.py",
+        "fineweb2_test_universe": {
+          "revision": "66d1a3b989bad0c42b88179a7fb60c47ce87af74",
+          "language_script_configs": 1318,
+          "manifest_sha256": "d0a21fadf5919b5eb3153ae6c668d25234228d23529c063a45c16e0b33ae1a79",
+          "sampling": "one_document_per_config",
+          "status": "manifest_generation_in_progress"
+        },
+        "fail_closed_checkpoint_mapping": true,
+        "sealed_dataset_rows_and_prompt_contract": true,
+        "llm_calls_made": 0,
+        "pending_implementations": [
+          "ptq_ternary_loader",
+          "int4_loader",
+          "energy_sampler",
+          "full_packed_graph"
+        ]
+      }
+    },
+    {
+      "id": "C",
+      "name": "controlled_billion_parameter_scaling",
+      "status": "pending"
+    },
+    {
+      "id": "D",
+      "name": "portable_packed_inference",
+      "status": "partial",
+      "existing_proof": "packed_ternary_matvec_webgpu_and_wasm",
+      "numerical_receipt": {
+        "fixture": "real_swin2sr_attention_projection_60x60",
+        "webgpu_max_absolute_error": 2.980232238769531e-7,
+        "wasm_max_absolute_error": 2.384185791015625e-7
+      }
+    }
+  ],
+  "mandatory_metrics": {
+    "quality": [
+      "heldout_perplexity_or_ground_truth_psnr",
+      "teacher_kl_or_teacher_psnr",
+      "capability_slice_scores",
+      "worst_decile"
+    ],
+    "efficiency": [
+      "packed_bytes",
+      "effective_bits_per_weight",
+      "peak_memory_bytes",
+      "prompt_throughput",
+      "decode_throughput",
+      "energy_per_output_unit"
+    ],
+    "reproducibility": [
+      "source_commit",
+      "data_manifest_hash",
+      "checkpoint_sha256",
+      "rng_state",
+      "optimizer_state",
+      "structured_log"
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "artifact": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/full_surface_from_recovery_20260730/fp32/artifact",
+  "reference_state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/full_surface_from_recovery_20260730/fp32/swin2sr-full-surface-hard.pt",
+  "model": "caidas/swin2SR-lightweight-x2-64",
+  "model_revision": "07e8e61492ce6daf4f34c651622960faf110c17f",
+  "mode": "ternary",
+  "group_size": 60,
+  "input_transform": {
+    "kind": "none"
+  },
+  "artifact_binary_sha256": "4a8d9118a0db74e980e6de03f76b5e6dab7a177566b0bceedb5adff891f260f0",
+  "artifact_manifest_sha256": "c1cd8af23e9ee693480c82ead3e207f4ace0e1224787c35b634a8ad776bcd565",
+  "reference_state_sha256": "bb65d56827d450e69d0947a5268f1c0b671ca5099d1680e53a4fb181a03ea949",
+  "input_shape": [
+    1,
+    3,
+    64,
+    64
+  ],
+  "output_shape": [
+    1,
+    3,
+    128,
+    128
+  ],
+  "max_absolute_error": 0.00012373924255371094,
+  "mean_absolute_error": 3.198798731318675e-05,
+  "psnr_vs_reference": 88.20473028002739,
+  "finite": true,
+  "tolerances": {
+    "max_absolute_error": 0.00392156862745098,
+    "mean_absolute_error": 0.001,
+    "minimum_psnr": 60.0
+  },
+  "passed": true
+}

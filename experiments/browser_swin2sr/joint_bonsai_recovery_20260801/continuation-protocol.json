@@ -1,0 +1,46 @@
+{
+  "format": "backdropkit-swin2sr-rstb-continuation-v1",
+  "status": "sealed_before_training_results",
+  "created_at": "2026-08-01",
+  "selection_source": "development_only",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "hypothesis": "A lower-rate continuation of the jointly recovered RSTB island will improve the mostly-ternary int7-island candidate without changing its sensitive image-I/O FP16 island or any hard-ternary surface.",
+  "parent_checkpoint": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_fp16_seed20260801/run/checkpoint-island-4000.pt",
+  "parent_checkpoint_sha256": "4927fc3a5d6cd81c651b0bc50cee05fe25bd4bac1196bbe050e63b0aa94bcc6f",
+  "parent_development_psnr_db": 34.31934997162562,
+  "parent_int7_development_psnr_db": 34.307506301938034,
+  "arm": {
+    "name": "rstb_fp16_continuation_seed20260802",
+    "island": "rstb_fusion_fp16",
+    "precision": "fp16",
+    "seed": 20260802,
+    "steps": 4000,
+    "physical_batch": 8,
+    "learning_rate": 0.000001,
+    "optimizer": "adamw",
+    "weight_decay": 0.0001,
+    "gradient_clip_norm": 1.0,
+    "validate_every": 500,
+    "checkpoint_every": 500,
+    "device": "mps",
+    "trainable_values": 129600,
+    "run_directory": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_fp16_continuation_seed20260802/run"
+  },
+  "training_data": {
+    "images": 206500,
+    "languages": 204,
+    "roots": [
+      "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+      "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2"
+    ]
+  },
+  "initialization_preflight": {
+    "trainable_values": 129600,
+    "maximum_fp16_roundtrip_delta": 0.0,
+    "parent_checkpoint_verified": true
+  },
+  "early_gate": "Continue after step 500 only when gradients are finite and the live validation score is not below the exact continuation start. Full development selection is deferred until the endpoint and never inferred from the small live set.",
+  "compression_gate": "Materialize the endpoint at int7 per output and require at least the same 90 percent retention on ground-truth, edge, and teacher metrics as the selected predecessor.",
+  "promotion_gate": "Beat the current int7 candidate on the complete locked development bundle, preserve every source/split/script/language aggregate, pass packed browser scalar and SIMD parity, then open the final heldout exactly once for a frozen candidate."
+}

@@ -1,0 +1,1669 @@
+{
+  "format": "backdropkit-swin2sr-sensitive-io-group-probe-v1",
+  "diagnostic_only": true,
+  "selection_source": "development",
+  "checkpoint": "experiments/browser_swin2sr/sensitive_hardshadow_20260730/checkpoint-surface-20000.pt",
+  "checkpoint_sha256": "54789cbdf282548f80b3b4b30c3236ca777004e0e27c699171732360641e4588",
+  "study_manifest": "experiments/browser_swin2sr/sensitive_hardshadow_20260730/study-manifest.json",
+  "study_manifest_sha256": "18ff244d741b904ca6fd6a9c365517491a781fc3c38f4a1aeea050868f6adada",
+  "verified_sealed_sources": {
+    "clark_air/quant/optimal_ternary.py": "1b3138db657bfbf7fac26f5570fa9257379cee2eabea30787ccabcb2f0957cce",
+    "clark_quantize/bonsai_qat8.py": "6673c400adc00e81800693a61728a74f6925a82d9ea4026041a69f9ff0f5d8f2",
+    "experiments/browser_swin2sr/data_pipeline.py": "8dd9a33ef886c97fe70a33db01612112a545ba8b7e3243de2ea9e040cd8c7671",
+    "experiments/browser_swin2sr/optimizer_controls.py": "18a16c6d5220ad0f965452f1baadea1ae2c96a155e6d00718fc554d71502b01b",
+    "experiments/browser_swin2sr/qat_objective.py": "22fa683897a8dc938a873e7fae9d6836c5cba30243223513c2b1b828587fe95c",
+    "experiments/browser_swin2sr/quantizer_controls.py": "1480eee113c789ff1cde5d484a5416c9f5bfb5f03dad1144165333397c86a843",
+    "experiments/browser_swin2sr/recovery_controls.py": "99cbb941ff5a95c4adbe770d698fb03c00d37cb38accee77037aa2bf4153b397",
+    "experiments/browser_swin2sr/recovery_data.py": "caa88a8f9151d2648e8af24d3da712f418e24bebb5d0fedd724b35cb14d29005",
+    "experiments/browser_swin2sr/rotation_control.py": "29e360be76d94a54266d4e0afdf2db15303e9d69f4452db24dea450f250481b2",
+    "experiments/browser_swin2sr/run_state.py": "2bb0e607c6bce5514fab3751037eca7d7707b39b4eb8b92fc7755ccce488067f",
+    "experiments/browser_swin2sr/surface_artifact_state.py": "d5513426a0a3bef02d6ede631513c1840e88a2cd676e9e987eb6ac8a4c9df213",
+    "experiments/browser_swin2sr/surface_curriculum.py": "ac56e6d06ca0a1adc21ba8c98d6f2187d2ccc361a61c973ca6d06ed3c23a822b",
+    "experiments/browser_swin2sr/surface_model_state.py": "df42439a259b9f4e451923e6cb31c0c251e4cabcf9c9d723a3a521509d082834",
+    "experiments/browser_swin2sr/surface_quantization.py": "3da350a00cb6107b30358ee906a19a45e32999de3b8ec1182c3a271e2da16b6b",
+    "experiments/browser_swin2sr/surface_run_state.py": "e4c3929d9552590eaa4d6a2299e125b9cce80f86feafdcfc2a9f8285ad7c73d3",
+    "experiments/browser_swin2sr/surface_schedule.py": "083db652b58cfe93d7c9b787ec7ade80c634c74c72fa59db1324748d0e55f530",
+    "experiments/browser_swin2sr/train_swin2sr_full_surface.py": "390571c8681339c9987723343a413bb0083d787ba04c2257b6f1e3cb9d4302e2"
+  },
+  "probe_source_sha256": "b2789253073174bfd3e492df396514b130c2f156bdf0a4cc80f472d7341fbf87",
+  "signature_source_sha256": "1f587bb3c58fbc1270c37e36255d861385806701b7cbad34d5a7ddfeed3231ec",
+  "device": "mps",
+  "crop_size": 128,
+  "validation_files": [
+    {
+      "path": "/Users/stan/Documents/git/clark-desktop/promos/source-ui-composer-current.png",
+      "sha256": "27bb60639781d97b623ce94c5e6944fc0243fbde5efb0bcbf3b60e1cfe967c34"
+    },
+    {
+      "path": "/Users/stan/Documents/git/clark-desktop/promos/source-ui-chat-current.png",
+      "sha256": "f3f8ea752eeab6a1c5e8e9a36d7a22c9cb91cd83203f91ae7014f085fa3419c0"
+    },
+    {
+      "path": "/Users/stan/Documents/git/clark-desktop/promos/source-ui-research-current.png",
+      "sha256": "c012b92f05bd0d20fbda5e4fb16931f3a1800dbc854cdb98f26e35edf80c05d8"
+    },
+    {
+      "path": "/Users/stan/Documents/git/clark-desktop/promos/clark-code-ad-parallel-research-vertical-poster.png",
+      "sha256": "73e7bd7af4f848200d4d9585c4b8a32fb905d8e5e493ef44c1d144c572e5d649"
+    }
+  ],
+  "surface_step": 20000,
+  "target": "upsample.conv",
+  "target_shape": [
+    12,
+    60,
+    3,
+    3
+  ],
+  "target_values": 6480,
+  "reference_method": "optimal_mse",
+  "reference_group_size": 9,
+  "surface_group_sizes": {},
+  "convolution_learning_rate_multiplier": 0.25,
+  "fork_provenance": null,
+  "total_quantized_values": 977604,
+  "results": [
+    {
+      "method": "optimal_mse",
+      "group_size": 1,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.193727086198905,
+        "psnr_vs_teacher": 32.962597068641486
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 44,
+        "zero_codes": 0,
+        "current_nonzero": 6480,
+        "sign_inherited": 6436,
+        "direct_sign_flips": 44,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.006790123456790123,
+        "zero_fraction": 0.0,
+        "sign_inheritance": 0.9932098765432099,
+        "direct_sign_flip_fraction": 0.006790123456790123,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 1,
+        "scale_count": 6480,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 103680,
+        "layer_bits_per_weight": 17.584962500721154,
+        "whole_model_bit_delta_vs_reference": 0.09427130003559724
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 2,
+      "metrics": {
+        "psnr_vs_ground_truth": 29.269024730315234,
+        "psnr_vs_teacher": 29.808177182566826
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 101,
+        "zero_codes": 1679,
+        "current_nonzero": 4801,
+        "sign_inherited": 4798,
+        "direct_sign_flips": 1,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.01558641975308642,
+        "zero_fraction": 0.2591049382716049,
+        "sign_inheritance": 0.9993751301812123,
+        "direct_sign_flip_fraction": 0.00015432098765432098,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 2,
+        "scale_count": 3240,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 51840,
+        "layer_bits_per_weight": 9.584962500721156,
+        "whole_model_bit_delta_vs_reference": 0.04124369376557379
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 3,
+      "metrics": {
+        "psnr_vs_ground_truth": 28.741057623114603,
+        "psnr_vs_teacher": 29.251532338913794
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 113,
+        "zero_codes": 2191,
+        "current_nonzero": 4289,
+        "sign_inherited": 4289,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.01743827160493827,
+        "zero_fraction": 0.3381172839506173,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 3,
+        "scale_count": 2160,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 34560,
+        "layer_bits_per_weight": 6.918295834054489,
+        "whole_model_bit_delta_vs_reference": 0.02356782500889931
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 4,
+      "metrics": {
+        "psnr_vs_ground_truth": 26.20524427878705,
+        "psnr_vs_teacher": 26.532868895395247
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 111,
+        "zero_codes": 2551,
+        "current_nonzero": 3929,
+        "sign_inherited": 3929,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.01712962962962963,
+        "zero_fraction": 0.3936728395061728,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 4,
+        "scale_count": 1620,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 25920,
+        "layer_bits_per_weight": 5.584962500721156,
+        "whole_model_bit_delta_vs_reference": 0.014729890630562069
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 25.621145619174126,
+        "psnr_vs_teacher": 25.90981670574052
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 117,
+        "zero_codes": 2865,
+        "current_nonzero": 3615,
+        "sign_inherited": 3615,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.018055555555555554,
+        "zero_fraction": 0.44212962962962965,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 6,
+        "scale_count": 1080,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 17280,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.005891956252224827
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 9,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.766056850738604,
+        "psnr_vs_teacher": 22.950111679650433
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 113,
+        "zero_codes": 3071,
+        "current_nonzero": 3409,
+        "sign_inherited": 3409,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.01743827160493827,
+        "zero_fraction": 0.47391975308641976,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 9,
+        "scale_count": 720,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 11520,
+        "layer_bits_per_weight": 3.3627402784989338,
+        "whole_model_bit_delta_vs_reference": 0.0
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 12,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.896098163442982,
+        "psnr_vs_teacher": 23.082104930277232
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 105,
+        "zero_codes": 3204,
+        "current_nonzero": 3276,
+        "sign_inherited": 3276,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.016203703703703703,
+        "zero_fraction": 0.49444444444444446,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 12,
+        "scale_count": 540,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 8640,
+        "layer_bits_per_weight": 2.918295834054489,
+        "whole_model_bit_delta_vs_reference": -0.0029459781261124136
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 18,
+      "metrics": {
+        "psnr_vs_ground_truth": 21.43360724741033,
+        "psnr_vs_teacher": 21.579359452326642
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 106,
+        "zero_codes": 3319,
+        "current_nonzero": 3161,
+        "sign_inherited": 3161,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.016358024691358025,
+        "zero_fraction": 0.5121913580246914,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 18,
+        "scale_count": 360,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 5760,
+        "layer_bits_per_weight": 2.473851389610045,
+        "whole_model_bit_delta_vs_reference": -0.005891956252224827
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 24,
+      "metrics": {
+        "psnr_vs_ground_truth": 21.45936944127895,
+        "psnr_vs_teacher": 21.59763958365704
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 119,
+        "zero_codes": 3466,
+        "current_nonzero": 3014,
+        "sign_inherited": 3014,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.0183641975308642,
+        "zero_fraction": 0.5348765432098765,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 24,
+        "scale_count": 270,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 4320,
+        "layer_bits_per_weight": 2.2516291673878226,
+        "whole_model_bit_delta_vs_reference": -0.007364945315281034
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 36,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.739482936459492,
+        "psnr_vs_teacher": 22.923367600515338
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 92,
+        "zero_codes": 3412,
+        "current_nonzero": 3068,
+        "sign_inherited": 3068,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.014197530864197531,
+        "zero_fraction": 0.5265432098765432,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 36,
+        "scale_count": 180,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 2880,
+        "layer_bits_per_weight": 2.0294069451656007,
+        "whole_model_bit_delta_vs_reference": -0.00883793437833724
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 45,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.39506181339834,
+        "psnr_vs_teacher": 22.572468413017898
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 113,
+        "zero_codes": 3420,
+        "current_nonzero": 3060,
+        "sign_inherited": 3060,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.01743827160493827,
+        "zero_fraction": 0.5277777777777778,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 45,
+        "scale_count": 144,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 2304,
+        "layer_bits_per_weight": 1.9405180562767117,
+        "whole_model_bit_delta_vs_reference": -0.009427130003559724
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 60,
+      "metrics": {
+        "psnr_vs_ground_truth": 21.91600535543882,
+        "psnr_vs_teacher": 22.070407670019595
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 109,
+        "zero_codes": 3517,
+        "current_nonzero": 2963,
+        "sign_inherited": 2963,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.01682098765432099,
+        "zero_fraction": 0.542746913580247,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 60,
+        "scale_count": 108,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 1728,
+        "layer_bits_per_weight": 1.8516291673878227,
+        "whole_model_bit_delta_vs_reference": -0.010016325628782206
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 72,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.405339579298396,
+        "psnr_vs_teacher": 22.570822986255372
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 78,
+        "zero_codes": 3480,
+        "current_nonzero": 3000,
+        "sign_inherited": 3000,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.012037037037037037,
+        "zero_fraction": 0.5370370370370371,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 72,
+        "scale_count": 90,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 1440,
+        "layer_bits_per_weight": 1.8071847229433784,
+        "whole_model_bit_delta_vs_reference": -0.010310923441393447
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 90,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.43324689006788,
+        "psnr_vs_teacher": 22.60385765248079
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 93,
+        "zero_codes": 3493,
+        "current_nonzero": 2987,
+        "sign_inherited": 2987,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.014351851851851852,
+        "zero_fraction": 0.5390432098765432,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 90,
+        "scale_count": 72,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 1152,
+        "layer_bits_per_weight": 1.7627402784989339,
+        "whole_model_bit_delta_vs_reference": -0.010605521254004689
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 120,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.208679985905267,
+        "psnr_vs_teacher": 22.3701573383724
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 116,
+        "zero_codes": 3514,
+        "current_nonzero": 2966,
+        "sign_inherited": 2966,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.017901234567901235,
+        "zero_fraction": 0.542283950617284,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 120,
+        "scale_count": 54,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 864,
+        "layer_bits_per_weight": 1.7182958340544894,
+        "whole_model_bit_delta_vs_reference": -0.01090011906661593
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 180,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.34763158556295,
+        "psnr_vs_teacher": 22.516750699590126
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 94,
+        "zero_codes": 3491,
+        "current_nonzero": 2989,
+        "sign_inherited": 2989,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.014506172839506172,
+        "zero_fraction": 0.5387345679012345,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 180,
+        "scale_count": 36,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 576,
+        "layer_bits_per_weight": 1.6738513896100449,
+        "whole_model_bit_delta_vs_reference": -0.011194716879227172
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 360,
+      "metrics": {
+        "psnr_vs_ground_truth": 23.108885942351,
+        "psnr_vs_teacher": 23.298305917258983
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 86,
+        "zero_codes": 3480,
+        "current_nonzero": 3000,
+        "sign_inherited": 3000,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.013271604938271606,
+        "zero_fraction": 0.5370370370370371,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 360,
+        "scale_count": 18,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 288,
+        "layer_bits_per_weight": 1.6294069451656006,
+        "whole_model_bit_delta_vs_reference": -0.011489314691838413
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 720,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.082358429360742,
+        "psnr_vs_teacher": 22.237709922120917
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 74,
+        "zero_codes": 3482,
+        "current_nonzero": 2998,
+        "sign_inherited": 2998,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.011419753086419753,
+        "zero_fraction": 0.5373456790123456,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 720,
+        "scale_count": 9,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 144,
+        "layer_bits_per_weight": 1.6071847229433782,
+        "whole_model_bit_delta_vs_reference": -0.011636613598144033
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 1620,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.75509893354499,
+        "psnr_vs_teacher": 22.930412524215328
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 90,
+        "zero_codes": 3457,
+        "current_nonzero": 3023,
+        "sign_inherited": 3023,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.013888888888888888,
+        "zero_fraction": 0.5334876543209877,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 1620,
+        "scale_count": 4,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 64,
+        "layer_bits_per_weight": 1.5948390439310327,
+        "whole_model_bit_delta_vs_reference": -0.011718446323869378
+      }
+    },
+    {
+      "method": "optimal_mse",
+      "group_size": 6480,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.62138282396842,
+        "psnr_vs_teacher": 22.793324697768746
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 83,
+        "zero_codes": 3480,
+        "current_nonzero": 3000,
+        "sign_inherited": 3000,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.012808641975308642,
+        "zero_fraction": 0.5370370370370371,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 6480,
+        "scale_count": 1,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 16,
+        "layer_bits_per_weight": 1.5874316365236252,
+        "whole_model_bit_delta_vs_reference": -0.011767545959304586
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 1,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.193727086198905,
+        "psnr_vs_teacher": 32.962597068641486
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 44,
+        "zero_codes": 0,
+        "current_nonzero": 6480,
+        "sign_inherited": 6436,
+        "direct_sign_flips": 44,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.006790123456790123,
+        "zero_fraction": 0.0,
+        "sign_inheritance": 0.9932098765432099,
+        "direct_sign_flip_fraction": 0.006790123456790123,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 1,
+        "scale_count": 6480,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 103680,
+        "layer_bits_per_weight": 17.584962500721154,
+        "whole_model_bit_delta_vs_reference": 0.09427130003559724
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 2,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.328704680406965,
+        "psnr_vs_teacher": 22.498911094300208
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 117,
+        "zero_codes": 1365,
+        "current_nonzero": 5115,
+        "sign_inherited": 5112,
+        "direct_sign_flips": 1,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.018055555555555554,
+        "zero_fraction": 0.21064814814814814,
+        "sign_inheritance": 0.9994134897360704,
+        "direct_sign_flip_fraction": 0.00015432098765432098,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 2,
+        "scale_count": 3240,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 51840,
+        "layer_bits_per_weight": 9.584962500721156,
+        "whole_model_bit_delta_vs_reference": 0.04124369376557379
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 3,
+      "metrics": {
+        "psnr_vs_ground_truth": 20.404701076122823,
+        "psnr_vs_teacher": 20.526791291513195
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 118,
+        "zero_codes": 1641,
+        "current_nonzero": 4839,
+        "sign_inherited": 4839,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.018209876543209876,
+        "zero_fraction": 0.25324074074074077,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 3,
+        "scale_count": 2160,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 34560,
+        "layer_bits_per_weight": 6.918295834054489,
+        "whole_model_bit_delta_vs_reference": 0.02356782500889931
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 4,
+      "metrics": {
+        "psnr_vs_ground_truth": 22.628555867563,
+        "psnr_vs_teacher": 22.81255845889305
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 119,
+        "zero_codes": 1814,
+        "current_nonzero": 4666,
+        "sign_inherited": 4666,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.0183641975308642,
+        "zero_fraction": 0.2799382716049383,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 4,
+        "scale_count": 1620,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 25920,
+        "layer_bits_per_weight": 5.584962500721156,
+        "whole_model_bit_delta_vs_reference": 0.014729890630562069
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 19.19175081850259,
+        "psnr_vs_teacher": 19.29260588854871
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 126,
+        "zero_codes": 1905,
+        "current_nonzero": 4575,
+        "sign_inherited": 4575,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.019444444444444445,
+        "zero_fraction": 0.29398148148148145,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 6,
+        "scale_count": 1080,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 17280,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.005891956252224827
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 9,
+      "metrics": {
+        "psnr_vs_ground_truth": 18.955002903754625,
+        "psnr_vs_teacher": 19.04812203210804
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 114,
+        "zero_codes": 1996,
+        "current_nonzero": 4484,
+        "sign_inherited": 4484,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.017592592592592594,
+        "zero_fraction": 0.3080246913580247,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 9,
+        "scale_count": 720,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 11520,
+        "layer_bits_per_weight": 3.3627402784989338,
+        "whole_model_bit_delta_vs_reference": 0.0
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 12,
+      "metrics": {
+        "psnr_vs_ground_truth": 18.39027259932884,
+        "psnr_vs_teacher": 18.473187154988643
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 122,
+        "zero_codes": 2050,
+        "current_nonzero": 4430,
+        "sign_inherited": 4430,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.018827160493827162,
+        "zero_fraction": 0.31635802469135804,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 12,
+        "scale_count": 540,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 8640,
+        "layer_bits_per_weight": 2.918295834054489,
+        "whole_model_bit_delta_vs_reference": -0.0029459781261124136
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 18,
+      "metrics": {
+        "psnr_vs_ground_truth": 17.63986998980177,
+        "psnr_vs_teacher": 17.710775392651207
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 91,
+        "zero_codes": 2083,
+        "current_nonzero": 4397,
+        "sign_inherited": 4397,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.01404320987654321,
+        "zero_fraction": 0.32145061728395063,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 18,
+        "scale_count": 360,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 5760,
+        "layer_bits_per_weight": 2.473851389610045,
+        "whole_model_bit_delta_vs_reference": -0.005891956252224827
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 24,
+      "metrics": {
+        "psnr_vs_ground_truth": 17.8004123141819,
+        "psnr_vs_teacher": 17.873437817864236
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 115,
+        "zero_codes": 2113,
+        "current_nonzero": 4367,
+        "sign_inherited": 4367,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.017746913580246913,
+        "zero_fraction": 0.32608024691358023,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 24,
+        "scale_count": 270,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 4320,
+        "layer_bits_per_weight": 2.2516291673878226,
+        "whole_model_bit_delta_vs_reference": -0.007364945315281034
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 36,
+      "metrics": {
+        "psnr_vs_ground_truth": 17.392821944117408,
+        "psnr_vs_teacher": 17.460048689551616
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 101,
+        "zero_codes": 2165,
+        "current_nonzero": 4315,
+        "sign_inherited": 4315,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.01558641975308642,
+        "zero_fraction": 0.3341049382716049,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 36,
+        "scale_count": 180,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 2880,
+        "layer_bits_per_weight": 2.0294069451656007,
+        "whole_model_bit_delta_vs_reference": -0.00883793437833724
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 45,
+      "metrics": {
+        "psnr_vs_ground_truth": 17.724254875994717,
+        "psnr_vs_teacher": 17.79694710663405
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 107,
+        "zero_codes": 2168,
+        "current_nonzero": 4312,
+        "sign_inherited": 4312,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.016512345679012344,
+        "zero_fraction": 0.3345679012345679,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 45,
+        "scale_count": 144,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 2304,
+        "layer_bits_per_weight": 1.9405180562767117,
+        "whole_model_bit_delta_vs_reference": -0.009427130003559724
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 60,
+      "metrics": {
+        "psnr_vs_ground_truth": 17.167273500918725,
+        "psnr_vs_teacher": 17.2320660347956
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 116,
+        "zero_codes": 2168,
+        "current_nonzero": 4312,
+        "sign_inherited": 4312,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.017901234567901235,
+        "zero_fraction": 0.3345679012345679,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 60,
+        "scale_count": 108,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 1728,
+        "layer_bits_per_weight": 1.8516291673878227,
+        "whole_model_bit_delta_vs_reference": -0.010016325628782206
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 72,
+      "metrics": {
+        "psnr_vs_ground_truth": 16.99098308161247,
+        "psnr_vs_teacher": 17.053403006829807
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 133,
+        "zero_codes": 2183,
+        "current_nonzero": 4297,
+        "sign_inherited": 4297,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.02052469135802469,
+        "zero_fraction": 0.3368827160493827,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 72,
+        "scale_count": 90,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 1440,
+        "layer_bits_per_weight": 1.8071847229433784,
+        "whole_model_bit_delta_vs_reference": -0.010310923441393447
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 90,
+      "metrics": {
+        "psnr_vs_ground_truth": 17.043301769310798,
+        "psnr_vs_teacher": 17.106287924315595
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 122,
+        "zero_codes": 2179,
+        "current_nonzero": 4301,
+        "sign_inherited": 4301,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.018827160493827162,
+        "zero_fraction": 0.3362654320987654,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 90,
+        "scale_count": 72,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 1152,
+        "layer_bits_per_weight": 1.7627402784989339,
+        "whole_model_bit_delta_vs_reference": -0.010605521254004689
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 120,
+      "metrics": {
+        "psnr_vs_ground_truth": 16.80653661704004,
+        "psnr_vs_teacher": 16.866248745958043
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 121,
+        "zero_codes": 2179,
+        "current_nonzero": 4301,
+        "sign_inherited": 4301,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.01867283950617284,
+        "zero_fraction": 0.3362654320987654,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 120,
+        "scale_count": 54,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 864,
+        "layer_bits_per_weight": 1.7182958340544894,
+        "whole_model_bit_delta_vs_reference": -0.01090011906661593
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 180,
+      "metrics": {
+        "psnr_vs_ground_truth": 16.94137420193619,
+        "psnr_vs_teacher": 17.003275127539663
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 120,
+        "zero_codes": 2174,
+        "current_nonzero": 4306,
+        "sign_inherited": 4306,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.018518518518518517,
+        "zero_fraction": 0.3354938271604938,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 180,
+        "scale_count": 36,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 576,
+        "layer_bits_per_weight": 1.6738513896100449,
+        "whole_model_bit_delta_vs_reference": -0.011194716879227172
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 360,
+      "metrics": {
+        "psnr_vs_ground_truth": 16.938125863669146,
+        "psnr_vs_teacher": 17.0002413551355
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 119,
+        "zero_codes": 2187,
+        "current_nonzero": 4293,
+        "sign_inherited": 4293,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.0183641975308642,
+        "zero_fraction": 0.3375,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 360,
+        "scale_count": 18,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 288,
+        "layer_bits_per_weight": 1.6294069451656006,
+        "whole_model_bit_delta_vs_reference": -0.011489314691838413
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 720,
+      "metrics": {
+        "psnr_vs_ground_truth": 17.097997412565373,
+        "psnr_vs_teacher": 17.161512726058135
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 130,
+        "zero_codes": 2187,
+        "current_nonzero": 4293,
+        "sign_inherited": 4293,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.020061728395061727,
+        "zero_fraction": 0.3375,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 720,
+        "scale_count": 9,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 144,
+        "layer_bits_per_weight": 1.6071847229433782,
+        "whole_model_bit_delta_vs_reference": -0.011636613598144033
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 1620,
+      "metrics": {
+        "psnr_vs_ground_truth": 17.034692105372606,
+        "psnr_vs_teacher": 17.097644463747525
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 135,
+        "zero_codes": 2188,
+        "current_nonzero": 4292,
+        "sign_inherited": 4292,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.020833333333333332,
+        "zero_fraction": 0.3376543209876543,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 1620,
+        "scale_count": 4,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 64,
+        "layer_bits_per_weight": 1.5948390439310327,
+        "whole_model_bit_delta_vs_reference": -0.011718446323869378
+      }
+    },
+    {
+      "method": "absmean",
+      "group_size": 6480,
+      "metrics": {
+        "psnr_vs_ground_truth": 16.917225917440582,
+        "psnr_vs_teacher": 16.97859744619513
+      },
+      "target_signature": {
+        "values": 6480,
+        "changed_codes": 124,
+        "zero_codes": 2178,
+        "current_nonzero": 4302,
+        "sign_inherited": 4302,
+        "direct_sign_flips": 0,
+        "master_delta_sq": 0.005102507770061493,
+        "base_energy": 8.07802677154541,
+        "code_churn": 0.019135802469135803,
+        "zero_fraction": 0.33611111111111114,
+        "sign_inheritance": 1.0,
+        "direct_sign_flip_fraction": 0.0,
+        "relative_master_movement": 0.025132702664482125
+      },
+      "storage": {
+        "values": 6480,
+        "group_size": 6480,
+        "scale_count": 1,
+        "ideal_code_bits": 10270.557004673092,
+        "scale_bits": 16,
+        "layer_bits_per_weight": 1.5874316365236252,
+        "whole_model_bit_delta_vs_reference": -0.011767545959304586
+      }
+    }
+  ],
+  "ranking": [
+    {
+      "rank": 1,
+      "method": "optimal_mse",
+      "group_size": 1,
+      "psnr_vs_ground_truth": 32.193727086198905,
+      "psnr_vs_teacher": 32.962597068641486,
+      "whole_model_bit_delta_vs_reference": 0.09427130003559724
+    },
+    {
+      "rank": 2,
+      "method": "absmean",
+      "group_size": 1,
+      "psnr_vs_ground_truth": 32.193727086198905,
+      "psnr_vs_teacher": 32.962597068641486,
+      "whole_model_bit_delta_vs_reference": 0.09427130003559724
+    },
+    {
+      "rank": 3,
+      "method": "optimal_mse",
+      "group_size": 2,
+      "psnr_vs_ground_truth": 29.269024730315234,
+      "psnr_vs_teacher": 29.808177182566826,
+      "whole_model_bit_delta_vs_reference": 0.04124369376557379
+    },
+    {
+      "rank": 4,
+      "method": "optimal_mse",
+      "group_size": 3,
+      "psnr_vs_ground_truth": 28.741057623114603,
+      "psnr_vs_teacher": 29.251532338913794,
+      "whole_model_bit_delta_vs_reference": 0.02356782500889931
+    },
+    {
+      "rank": 5,
+      "method": "optimal_mse",
+      "group_size": 4,
+      "psnr_vs_ground_truth": 26.20524427878705,
+      "psnr_vs_teacher": 26.532868895395247,
+      "whole_model_bit_delta_vs_reference": 0.014729890630562069
+    },
+    {
+      "rank": 6,
+      "method": "optimal_mse",
+      "group_size": 6,
+      "psnr_vs_ground_truth": 25.621145619174126,
+      "psnr_vs_teacher": 25.90981670574052,
+      "whole_model_bit_delta_vs_reference": 0.005891956252224827
+    },
+    {
+      "rank": 7,
+      "method": "optimal_mse",
+      "group_size": 360,
+      "psnr_vs_ground_truth": 23.108885942351,
+      "psnr_vs_teacher": 23.298305917258983,
+      "whole_model_bit_delta_vs_reference": -0.011489314691838413
+    },
+    {
+      "rank": 8,
+      "method": "optimal_mse",
+      "group_size": 12,
+      "psnr_vs_ground_truth": 22.896098163442982,
+      "psnr_vs_teacher": 23.082104930277232,
+      "whole_model_bit_delta_vs_reference": -0.0029459781261124136
+    },
+    {
+      "rank": 9,
+      "method": "optimal_mse",
+      "group_size": 9,
+      "psnr_vs_ground_truth": 22.766056850738604,
+      "psnr_vs_teacher": 22.950111679650433,
+      "whole_model_bit_delta_vs_reference": 0.0
+    },
+    {
+      "rank": 10,
+      "method": "optimal_mse",
+      "group_size": 1620,
+      "psnr_vs_ground_truth": 22.75509893354499,
+      "psnr_vs_teacher": 22.930412524215328,
+      "whole_model_bit_delta_vs_reference": -0.011718446323869378
+    },
+    {
+      "rank": 11,
+      "method": "optimal_mse",
+      "group_size": 36,
+      "psnr_vs_ground_truth": 22.739482936459492,
+      "psnr_vs_teacher": 22.923367600515338,
+      "whole_model_bit_delta_vs_reference": -0.00883793437833724
+    },
+    {
+      "rank": 12,
+      "method": "absmean",
+      "group_size": 4,
+      "psnr_vs_ground_truth": 22.628555867563,
+      "psnr_vs_teacher": 22.81255845889305,
+      "whole_model_bit_delta_vs_reference": 0.014729890630562069
+    },
+    {
+      "rank": 13,
+      "method": "optimal_mse",
+      "group_size": 6480,
+      "psnr_vs_ground_truth": 22.62138282396842,
+      "psnr_vs_teacher": 22.793324697768746,
+      "whole_model_bit_delta_vs_reference": -0.011767545959304586
+    },
+    {
+      "rank": 14,
+      "method": "optimal_mse",
+      "group_size": 90,
+      "psnr_vs_ground_truth": 22.43324689006788,
+      "psnr_vs_teacher": 22.60385765248079,
+      "whole_model_bit_delta_vs_reference": -0.010605521254004689
+    },
+    {
+      "rank": 15,
+      "method": "optimal_mse",
+      "group_size": 72,
+      "psnr_vs_ground_truth": 22.405339579298396,
+      "psnr_vs_teacher": 22.570822986255372,
+      "whole_model_bit_delta_vs_reference": -0.010310923441393447
+    },
+    {
+      "rank": 16,
+      "method": "optimal_mse",
+      "group_size": 45,
+      "psnr_vs_ground_truth": 22.39506181339834,
+      "psnr_vs_teacher": 22.572468413017898,
+      "whole_model_bit_delta_vs_reference": -0.009427130003559724
+    },
+    {
+      "rank": 17,
+      "method": "optimal_mse",
+      "group_size": 180,
+      "psnr_vs_ground_truth": 22.34763158556295,
+      "psnr_vs_teacher": 22.516750699590126,
+      "whole_model_bit_delta_vs_reference": -0.011194716879227172
+    },
+    {
+      "rank": 18,
+      "method": "absmean",
+      "group_size": 2,
+      "psnr_vs_ground_truth": 22.328704680406965,
+      "psnr_vs_teacher": 22.498911094300208,
+      "whole_model_bit_delta_vs_reference": 0.04124369376557379
+    },
+    {
+      "rank": 19,
+      "method": "optimal_mse",
+      "group_size": 120,
+      "psnr_vs_ground_truth": 22.208679985905267,
+      "psnr_vs_teacher": 22.3701573383724,
+      "whole_model_bit_delta_vs_reference": -0.01090011906661593
+    },
+    {
+      "rank": 20,
+      "method": "optimal_mse",
+      "group_size": 720,
+      "psnr_vs_ground_truth": 22.082358429360742,
+      "psnr_vs_teacher": 22.237709922120917,
+      "whole_model_bit_delta_vs_reference": -0.011636613598144033
+    },
+    {
+      "rank": 21,
+      "method": "optimal_mse",
+      "group_size": 60,
+      "psnr_vs_ground_truth": 21.91600535543882,
+      "psnr_vs_teacher": 22.070407670019595,
+      "whole_model_bit_delta_vs_reference": -0.010016325628782206
+    },
+    {
+      "rank": 22,
+      "method": "optimal_mse",
+      "group_size": 24,
+      "psnr_vs_ground_truth": 21.45936944127895,
+      "psnr_vs_teacher": 21.59763958365704,
+      "whole_model_bit_delta_vs_reference": -0.007364945315281034
+    },
+    {
+      "rank": 23,
+      "method": "optimal_mse",
+      "group_size": 18,
+      "psnr_vs_ground_truth": 21.43360724741033,
+      "psnr_vs_teacher": 21.579359452326642,
+      "whole_model_bit_delta_vs_reference": -0.005891956252224827
+    },
+    {
+      "rank": 24,
+      "method": "absmean",
+      "group_size": 3,
+      "psnr_vs_ground_truth": 20.404701076122823,
+      "psnr_vs_teacher": 20.526791291513195,
+      "whole_model_bit_delta_vs_reference": 0.02356782500889931
+    },
+    {
+      "rank": 25,
+      "method": "absmean",
+      "group_size": 6,
+      "psnr_vs_ground_truth": 19.19175081850259,
+      "psnr_vs_teacher": 19.29260588854871,
+      "whole_model_bit_delta_vs_reference": 0.005891956252224827
+    },
+    {
+      "rank": 26,
+      "method": "absmean",
+      "group_size": 9,
+      "psnr_vs_ground_truth": 18.955002903754625,
+      "psnr_vs_teacher": 19.04812203210804,
+      "whole_model_bit_delta_vs_reference": 0.0
+    },
+    {
+      "rank": 27,
+      "method": "absmean",
+      "group_size": 12,
+      "psnr_vs_ground_truth": 18.39027259932884,
+      "psnr_vs_teacher": 18.473187154988643,
+      "whole_model_bit_delta_vs_reference": -0.0029459781261124136
+    },
+    {
+      "rank": 28,
+      "method": "absmean",
+      "group_size": 24,
+      "psnr_vs_ground_truth": 17.8004123141819,
+      "psnr_vs_teacher": 17.873437817864236,
+      "whole_model_bit_delta_vs_reference": -0.007364945315281034
+    },
+    {
+      "rank": 29,
+      "method": "absmean",
+      "group_size": 45,
+      "psnr_vs_ground_truth": 17.724254875994717,
+      "psnr_vs_teacher": 17.79694710663405,
+      "whole_model_bit_delta_vs_reference": -0.009427130003559724
+    },
+    {
+      "rank": 30,
+      "method": "absmean",
+      "group_size": 18,
+      "psnr_vs_ground_truth": 17.63986998980177,
+      "psnr_vs_teacher": 17.710775392651207,
+      "whole_model_bit_delta_vs_reference": -0.005891956252224827
+    },
+    {
+      "rank": 31,
+      "method": "absmean",
+      "group_size": 36,
+      "psnr_vs_ground_truth": 17.392821944117408,
+      "psnr_vs_teacher": 17.460048689551616,
+      "whole_model_bit_delta_vs_reference": -0.00883793437833724
+    },
+    {
+      "rank": 32,
+      "method": "absmean",
+      "group_size": 60,
+      "psnr_vs_ground_truth": 17.167273500918725,
+      "psnr_vs_teacher": 17.2320660347956,
+      "whole_model_bit_delta_vs_reference": -0.010016325628782206
+    },
+    {
+      "rank": 33,
+      "method": "absmean",
+      "group_size": 720,
+      "psnr_vs_ground_truth": 17.097997412565373,
+      "psnr_vs_teacher": 17.161512726058135,
+      "whole_model_bit_delta_vs_reference": -0.011636613598144033
+    },
+    {
+      "rank": 34,
+      "method": "absmean",
+      "group_size": 90,
+      "psnr_vs_ground_truth": 17.043301769310798,
+      "psnr_vs_teacher": 17.106287924315595,
+      "whole_model_bit_delta_vs_reference": -0.010605521254004689
+    },
+    {
+      "rank": 35,
+      "method": "absmean",
+      "group_size": 1620,
+      "psnr_vs_ground_truth": 17.034692105372606,
+      "psnr_vs_teacher": 17.097644463747525,
+      "whole_model_bit_delta_vs_reference": -0.011718446323869378
+    },
+    {
+      "rank": 36,
+      "method": "absmean",
+      "group_size": 72,
+      "psnr_vs_ground_truth": 16.99098308161247,
+      "psnr_vs_teacher": 17.053403006829807,
+      "whole_model_bit_delta_vs_reference": -0.010310923441393447
+    },
+    {
+      "rank": 37,
+      "method": "absmean",
+      "group_size": 180,
+      "psnr_vs_ground_truth": 16.94137420193619,
+      "psnr_vs_teacher": 17.003275127539663,
+      "whole_model_bit_delta_vs_reference": -0.011194716879227172
+    },
+    {
+      "rank": 38,
+      "method": "absmean",
+      "group_size": 360,
+      "psnr_vs_ground_truth": 16.938125863669146,
+      "psnr_vs_teacher": 17.0002413551355,
+      "whole_model_bit_delta_vs_reference": -0.011489314691838413
+    },
+    {
+      "rank": 39,
+      "method": "absmean",
+      "group_size": 6480,
+      "psnr_vs_ground_truth": 16.917225917440582,
+      "psnr_vs_teacher": 16.97859744619513,
+      "whole_model_bit_delta_vs_reference": -0.011767545959304586
+    },
+    {
+      "rank": 40,
+      "method": "absmean",
+      "group_size": 120,
+      "psnr_vs_ground_truth": 16.80653661704004,
+      "psnr_vs_teacher": 16.866248745958043,
+      "whole_model_bit_delta_vs_reference": -0.01090011906661593
+    }
+  ]
+}

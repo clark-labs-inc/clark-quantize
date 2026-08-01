@@ -1,0 +1,97 @@
+{
+  "format": "backdropkit-swin2sr-core-recovery-quality-audit-v3",
+  "status": "sealed_after_affine_contract_unit_tests",
+  "selection_source": "retrospective_inventory_audit",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false,
+  "scientific_limit": "The checkpoint predates this retrospective audit. V3 packages the exact evaluated state with its original affine ternary core representation; it is a measured high-quality mixed-precision baseline, not a preregistered winner.",
+  "failed_predecessors": [
+    "core_recovery_quality_audit_20260731/PRESEAL_FAILURE.md",
+    "core_recovery_quality_audit_v2_20260731/PRESEAL_FAILURE.md"
+  ],
+  "candidate": {
+    "checkpoint": "recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/checkpoint-final.pt",
+    "checkpoint_sha256": "a1d9b2d778c3269e22df6f4c61d96bf9c02e94280810299f013392cbf18fe3a1",
+    "evaluated_state": "recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/swin2sr-ternary-hard.pt",
+    "evaluated_state_sha256": "84a368122fcf96c590258aa1c970813f62c077b2583e200935c95037ec076c4f",
+    "development_report": "recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/heldout/metrics.json",
+    "development_report_sha256": "f26e9aa36eff9f9705b2e60322e6ffd2ad3e4b02cf7405418be92408562e26c1",
+    "samples": 3040,
+    "quantized_surfaces": 144,
+    "representation": "affine_ternary_core_plus_raw_fp16_remainder",
+    "psnr_vs_ground_truth": 35.260167986357786,
+    "edge_psnr_vs_ground_truth": 38.73729056736683,
+    "psnr_vs_teacher": 45.61033377927307
+  },
+  "q4_deltas": {
+    "q4_report": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+    "q4_report_sha256": "d54b7ced6bdfb77ea278a50bccde0b41dbf402cac3dc04aa629b66ea75476e0d",
+    "psnr_vs_ground_truth": 0.3365219334698111,
+    "edge_psnr_vs_ground_truth": 0.30407147649813737,
+    "psnr_vs_teacher": -1.3224657770032877,
+    "policy_result": "ground_truth_edge_and_all_strata_pass_but_teacher_fidelity_fails"
+  },
+  "affine_runtime_contract": {
+    "code_stream": "packed_ternary_1.5849625_ideal_bits",
+    "scale_stream": "one_fp16_per_group",
+    "offset_stream": "one_optional_fp16_per_group",
+    "symmetric_backward_compatibility": "absence_of_offsets_means_zero",
+    "unit_tests": {
+      "python": "2 passed",
+      "rust": "34 passed including 32 library and 2 v3 integration tests"
+    }
+  },
+  "source_sha256": {
+    "materialize_core_recovery_checkpoint.py": "20901a4a9e0c551ee27e5333cfc56e726b70a6927a0cdc8743ab4d38b07dd2c5",
+    "export_browser_artifact.py": "7dab0d8a74c4bb236728274e15fff544cf62b0eb0c02f82401c6a957ae8300f9",
+    "verify_browser_artifact.py": "b7e3e040d2028271cd33dd63a560ff78b027b7cdd0407b807c893e83cbf59400",
+    "artifact_ledger.py": "aecbee8a3a175fbaa8a4de6c1cb834c4caae55b552cf8d7e895b154995bb7152",
+    "runtime/src/artifact.rs": "89c491ae17b492d92458289bbbe7b3006424a575e409de1f80650e1115e7efcb",
+    "runtime/src/lib.rs": "a9214d92d80996f87ef9d7614438f39a99cf41e81344e012a2685745a13c5281",
+    "runtime/src/model.rs": "280f9929353c205d5c0578a4ced30413d293e2ff64cf7fc42be73868eb4235c4",
+    "runtime/src/bin/artifact_conformance.rs": "d1e061c8bae8314d8c5c379fc32442f2e9c62d3953767188a43e25a6af93c39d",
+    "runtime/Cargo.toml": "ad789e7ccfb91f4e3d0fc862739e0982f97010de397109fed1770e466ebcd602",
+    "runtime/Cargo.lock": "70106608bc9fe91073b9ee816765a33d068c7e86d27173904908eabcb979951f"
+  },
+  "materialization_command": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "materialize_core_recovery_checkpoint.py",
+    "recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/checkpoint-final.pt",
+    "--evaluated-state",
+    "recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/swin2sr-ternary-hard.pt",
+    "--out",
+    "core_recovery_quality_audit_v3_20260731/browser_materialized",
+    "--source-device",
+    "cpu"
+  ],
+  "artifact_command": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "export_browser_artifact.py",
+    "core_recovery_quality_audit_v3_20260731/browser_materialized/materialization.json",
+    "--out",
+    "core_recovery_quality_audit_v3_20260731/browser_artifact"
+  ],
+  "python_conformance_command": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "verify_browser_artifact.py",
+    "core_recovery_quality_audit_v3_20260731/browser_artifact",
+    "--reference-state",
+    "core_recovery_quality_audit_v3_20260731/browser_materialized/dense-hard.pt",
+    "--out",
+    "core_recovery_quality_audit_v3_20260731/python-conformance.json",
+    "--device",
+    "cpu"
+  ],
+  "fixture_command": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "generate_full_runtime_fixture.py",
+    "core_recovery_quality_audit_v3_20260731/browser_materialized/dense-hard.pt",
+    "--out",
+    "core_recovery_quality_audit_v3_20260731/runtime-fixture-64.json",
+    "--input-size",
+    "64",
+    "--device",
+    "cpu"
+  ]
+}

@@ -1,0 +1,324 @@
+{
+  "format": "backdropkit-swin2sr-output-conv-decision-v1",
+  "selection_source": "development",
+  "gate_manifest": "experiments/browser_swin2sr/output_conv_rescue_20260730/development-gate-manifest.json",
+  "gate_manifest_sha256": "02a9451a6b0058b2a0dc04ce391a43c3caf78081af98242c0a9ea19ed7c4c4b7",
+  "control_report": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g9/full-development/metrics.json",
+  "control_report_sha256": "fddb3a76ba92276fb3aff1b83f2999ffe4aa24d66a3966cbfb759ddce36dac03",
+  "q4_reference": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+  "q4_reference_sha256": "d54b7ced6bdfb77ea278a50bccde0b41dbf402cac3dc04aa629b66ea75476e0d",
+  "bootstrap_samples": 10000,
+  "seed": 20260730,
+  "source_margin_db": 0.1,
+  "mean_margin_db": 0.1,
+  "parent_checkpoint_sha256": "07ebb2fcc6e2fc12cefcca323f94e00f559876c6991adcf3314487a6ad04365f",
+  "shared_non_output_surface_map": {
+    "swin2sr.first_convolution": 2
+  },
+  "control_ground_truth_db": 31.785767874295342,
+  "control_teacher_db": 35.96689477332746,
+  "best_development_group_size": 2,
+  "candidates": [
+    {
+      "report": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/full-development/metrics.json",
+      "report_sha256": "a41ffbb8765cb560eea1683495ab6cd01818dff4125d9843de28b4e054871367",
+      "checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+      "checkpoint_sha256": "ad5e76db8c378c16da689a4cf37d96eb6e204f7b9de543199efc103c0d371469",
+      "output_group_size": 2,
+      "development_ground_truth_db": 32.896689950382964,
+      "development_teacher_db": 38.21936141603402,
+      "beats_control_ground_truth": true,
+      "beats_control_teacher": true,
+      "versus_control": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": 1.110922076087619,
+            "median": 0.6462451211119298,
+            "paired_bootstrap_95ci": [
+              1.0665624501170403,
+              1.1560787131009989
+            ],
+            "candidate_win_fraction": 0.9161184210526315
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": 1.3740846907533104,
+            "median": 0.8429745444890671,
+            "paired_bootstrap_95ci": [
+              1.3211248931941908,
+              1.4286721595476826
+            ],
+            "candidate_win_fraction": 0.9509868421052632
+          },
+          "psnr_vs_teacher": {
+            "mean": 2.2524666427065556,
+            "median": 1.7947622684012856,
+            "paired_bootstrap_95ci": [
+              2.1964583361235,
+              2.308365152155487
+            ],
+            "candidate_win_fraction": 0.9828947368421053
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": 1.1030161606086588
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": 1.1270501436646987
+          }
+        },
+        "worst_source_psnr_delta": 1.1030161606086588
+      },
+      "versus_q4": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": -2.026956102505017,
+            "median": -1.6055756254996023,
+            "paired_bootstrap_95ci": [
+              -2.09350848580663,
+              -1.9617584524896672
+            ],
+            "candidate_win_fraction": 0.08223684210526316
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": -1.8773995185185912,
+            "median": -1.4352531936562976,
+            "paired_bootstrap_95ci": [
+              -1.9408398076795497,
+              -1.8156303415043864
+            ],
+            "candidate_win_fraction": 0.08256578947368422
+          },
+          "psnr_vs_teacher": {
+            "mean": -8.71343814024234,
+            "median": -8.520223133412436,
+            "paired_bootstrap_95ci": [
+              -8.806796690591982,
+              -8.62074531912903
+            ],
+            "candidate_win_fraction": 0.0
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": -1.8111540889151514
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": -2.4671922102283435
+          }
+        },
+        "worst_source_psnr_delta": -2.4671922102283435
+      },
+      "versus_best_development_arm": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": 0.0,
+            "median": 0.0,
+            "paired_bootstrap_95ci": [
+              0.0,
+              0.0
+            ],
+            "candidate_win_fraction": 0.0
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": 0.0,
+            "median": 0.0,
+            "paired_bootstrap_95ci": [
+              0.0,
+              0.0
+            ],
+            "candidate_win_fraction": 0.0
+          },
+          "psnr_vs_teacher": {
+            "mean": 0.0,
+            "median": 0.0,
+            "paired_bootstrap_95ci": [
+              0.0,
+              0.0
+            ],
+            "candidate_win_fraction": 0.0
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": 0.0
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": 0.0
+          }
+        },
+        "worst_source_psnr_delta": 0.0
+      },
+      "gates": {
+        "beats_control_ground_truth": true,
+        "beats_control_teacher": true,
+        "overall_within_best_margin": true,
+        "every_source_within_best_margin": true
+      },
+      "eligible": true
+    },
+    {
+      "report": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g3/full-development/metrics.json",
+      "report_sha256": "6c9fd5734d0a2c916a6777f734b8e943cdedee791c8a0f05122a77a782fe3de2",
+      "checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g3/run/checkpoint-final.pt",
+      "checkpoint_sha256": "597632ba40db57bae5f7b8b710c89e3488a89746a561598154e1ebc93506e69c",
+      "output_group_size": 3,
+      "development_ground_truth_db": 32.81695731168845,
+      "development_teacher_db": 38.183845924587395,
+      "beats_control_ground_truth": true,
+      "beats_control_teacher": true,
+      "versus_control": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": 1.031189437393109,
+            "median": 0.6283542647344049,
+            "paired_bootstrap_95ci": [
+              0.9915728531101609,
+              1.0717720089742164
+            ],
+            "candidate_win_fraction": 0.8901315789473684
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": 1.2084607987040512,
+            "median": 0.7431629668261852,
+            "paired_bootstrap_95ci": [
+              1.1611029352273279,
+              1.256430637942324
+            ],
+            "candidate_win_fraction": 0.9167763157894737
+          },
+          "psnr_vs_teacher": {
+            "mean": 2.2169511512599303,
+            "median": 1.963929715470858,
+            "paired_bootstrap_95ci": [
+              2.170282382167911,
+              2.2640473413612376
+            ],
+            "candidate_win_fraction": 0.9914473684210526
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": 0.9960819305742944
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": 1.1028087513034903
+          }
+        },
+        "worst_source_psnr_delta": 0.9960819305742944
+      },
+      "versus_q4": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": -2.1066887411995276,
+            "median": -1.6411757322867775,
+            "paired_bootstrap_95ci": [
+              -2.176436265027815,
+              -2.038532941014971
+            ],
+            "candidate_win_fraction": 0.06315789473684211
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": -2.0430234105678506,
+            "median": -1.5730947943818965,
+            "paired_bootstrap_95ci": [
+              -2.1105136590218807,
+              -1.9760047205803584
+            ],
+            "candidate_win_fraction": 0.058223684210526316
+          },
+          "psnr_vs_teacher": {
+            "mean": -8.748953631688966,
+            "median": -8.484104391956595,
+            "paired_bootstrap_95ci": [
+              -8.846350623290276,
+              -8.652209109914264
+            ],
+            "candidate_win_fraction": 0.0003289473684210526
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": -1.9180883189495157
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": -2.491433602589552
+          }
+        },
+        "worst_source_psnr_delta": -2.491433602589552
+      },
+      "versus_best_development_arm": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": -0.0797326386945103,
+            "median": -0.06457460758610978,
+            "paired_bootstrap_95ci": [
+              -0.09509346641809788,
+              -0.06478606464046918
+            ],
+            "candidate_win_fraction": 0.36348684210526316
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": -0.16562389204925945,
+            "median": -0.10031014667849902,
+            "paired_bootstrap_95ci": [
+              -0.17957254141034035,
+              -0.1512272875454878
+            ],
+            "candidate_win_fraction": 0.26480263157894735
+          },
+          "psnr_vs_teacher": {
+            "mean": -0.03551549144662523,
+            "median": -0.03937285127283374,
+            "paired_bootstrap_95ci": [
+              -0.05825479081544166,
+              -0.013137409627775784
+            ],
+            "candidate_win_fraction": 0.4700657894736842
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": -0.10693423003436422
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": -0.02424139236120831
+          }
+        },
+        "worst_source_psnr_delta": -0.10693423003436422
+      },
+      "gates": {
+        "beats_control_ground_truth": true,
+        "beats_control_teacher": true,
+        "overall_within_best_margin": true,
+        "every_source_within_best_margin": false
+      },
+      "eligible": false
+    }
+  ],
+  "selected_output_group_size": 2,
+  "selected_checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+  "selected_checkpoint_sha256": "ad5e76db8c378c16da689a4cf37d96eb6e204f7b9de543199efc103c0d371469",
+  "output_recipe_selected": true,
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "required_next_gate": "Run the preregistered full-surface optimizer-transfer study."
+}

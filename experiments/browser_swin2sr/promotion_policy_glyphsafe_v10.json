@@ -1,0 +1,114 @@
+{
+  "format": "backdropkit-swin2sr-promotion-policy-v1",
+  "amendment": {
+    "supersedes": "promotion_policy_glyphsafe_v9.json",
+    "superseded_policy_sha256": "289854f2bf18097d2f5f8d0f78384c404ffc33ca4656ea70c60339403910a933",
+    "scope": "current packed browser runtime with signed-int7 v4 decoding",
+    "reason": "V9 remains the immutable pre-G3 packed-runtime policy. Before any future candidate evaluation, V10 pins the current native and SIMD WebAssembly payloads that include the signed-int7 v4 decoder used by the selected G3 mixed-precision artifact. Quality, reference identity, evaluation data, artifact-size threshold, runtime surfaces, input shape, numerical limits, latency limits, compression, JavaScript harnesses, and model identities are unchanged.",
+    "quality_contract_unchanged": true
+  },
+  "seed": 20260729,
+  "bootstrap_samples": 10000,
+  "reference": {
+    "model": "Xenova/swin2SR-lightweight-x2-64",
+    "revision": "54ccc3f9ed678912a9c47dc14f6c478855380a2b",
+    "dtype": "q4",
+    "model_sha256": "b75c09757a7159f32ad279919a77fb185c3389676674cf226a467eaf2f7928f1",
+    "artifact_bytes": 5676042,
+    "bundle_manifest_sha256": "e1c59db675dbebb95a0693933878ccd605c4c0290123e6d1cebccabdb0d5da87",
+    "samples": 3040
+  },
+  "paired_quality_gates": {
+    "psnr_vs_ground_truth": {
+      "noninferiority_margin": -0.1,
+      "p10_delta_minimum": -0.75
+    },
+    "edge_psnr_vs_ground_truth": {
+      "noninferiority_margin": -0.15,
+      "p10_delta_minimum": -1.0
+    },
+    "psnr_vs_teacher": {
+      "noninferiority_margin": -0.25,
+      "p10_delta_minimum": -1.25
+    }
+  },
+  "stratified_gates": [
+    {
+      "key": "source",
+      "metric": "psnr_vs_ground_truth",
+      "minimum_samples": 1000,
+      "mean_delta_minimum": -0.15
+    },
+    {
+      "key": "script",
+      "metric": "edge_psnr_vs_ground_truth",
+      "minimum_samples": 10,
+      "mean_delta_minimum": -0.5
+    },
+    {
+      "key": "language",
+      "metric": "psnr_vs_ground_truth",
+      "minimum_samples": 10,
+      "mean_delta_minimum": -0.5
+    }
+  ],
+  "artifact_gate": {
+    "candidate_bytes_less_than_reference": true,
+    "maximum_fraction_of_reference": 0.5
+  },
+  "runtime_artifact_compression": "gzip",
+  "runtime_fixture_contract": {
+    "fixture_sha256_required": true,
+    "canonical_hard_state_sha256_required": true
+  },
+  "required_runtime_surfaces": [
+    "chromium-webgpu",
+    "chromium-wasm",
+    "firefox-wasm",
+    "safari-wasm",
+    "ios-safari-wasm",
+    "android-chrome-wasm"
+  ],
+  "runtime_input_shape": [
+    1,
+    3,
+    128,
+    128
+  ],
+  "runtime_harness_sha256": {
+    "packed_v3_smoke_browser.html": "1a44e25d1ae9801e5b24761d5060c9fae6287ca215beb1b3c0ba8f59626c02ba",
+    "runtime_surface.mjs": "b7ad36ac79e7c4ba4ebda964c879e4a061144c4c8eecfccad7dfb877c4b9516c",
+    "runtime/packedBundle.js": "152abf74eac52f76b8f4ae62d5d2f454413ade3d2c121fe05aa15a3504a0a138",
+    "runtime/packedRuntime.js": "1b807b3e4b9708c2ab64d87214f6f2ee67a13f9d3ca581acf6db4b21efc4fd4d",
+    "runtime/pkg/clark_air_browser_runtime.js": "060ae64714b73e024d07ec7cff48fa5b689e89734d4511404e051050bc87cd16",
+    "runtime/pkg/clark_air_browser_runtime_bg.wasm": "3119f925cb482343b60ad0ce01a7df92338afff607d86eb5a19542c176923364",
+    "runtime/pkg-simd/clark_air_browser_runtime.js": "060ae64714b73e024d07ec7cff48fa5b689e89734d4511404e051050bc87cd16",
+    "runtime/pkg-simd/clark_air_browser_runtime_bg.wasm": "e5966d1d950674dd9abc298ed73fb7b43fee7c980c0e7270a31d168e66ad0833"
+  },
+  "runtime_limits": {
+    "chromium-webgpu": {
+      "max_session_ms": 5000,
+      "max_warm_inference_ms": 250
+    },
+    "chromium-wasm": {
+      "max_session_ms": 5000,
+      "max_warm_inference_ms": 2000
+    },
+    "firefox-wasm": {
+      "max_session_ms": 7000,
+      "max_warm_inference_ms": 2500
+    },
+    "safari-wasm": {
+      "max_session_ms": 7000,
+      "max_warm_inference_ms": 2500
+    },
+    "ios-safari-wasm": {
+      "max_session_ms": 9000,
+      "max_warm_inference_ms": 3500
+    },
+    "android-chrome-wasm": {
+      "max_session_ms": 9000,
+      "max_warm_inference_ms": 3500
+    }
+  }
+}

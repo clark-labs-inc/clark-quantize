@@ -1,0 +1,173 @@
+{
+  "config": {
+    "batch_size": 8,
+    "checkpoint_every": 500,
+    "concurrency": 2,
+    "crop_size": 128,
+    "data": [
+      "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+      "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-v1"
+    ],
+    "device": "mps",
+    "learning_rate": 2e-05,
+    "only": null,
+    "out": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/factorial_24_stage1_20260729",
+    "schedule_steps": 500,
+    "seed": 20260729,
+    "steps": 500,
+    "validate_every": 100,
+    "validation_data": "/Users/stan/Documents/git/clark-desktop/promos"
+  },
+  "created_at_unix": 1785386825.3224761,
+  "matrix": [
+    {
+      "name": "optimal_mse__none__adamw",
+      "optimizer": "adamw",
+      "quantizer": "optimal_mse",
+      "rotation": "none"
+    },
+    {
+      "name": "optimal_mse__none__adamw_prox",
+      "optimizer": "adamw_prox",
+      "quantizer": "optimal_mse",
+      "rotation": "none"
+    },
+    {
+      "name": "optimal_mse__none__bonsai_qat8",
+      "optimizer": "bonsai_qat8",
+      "quantizer": "optimal_mse",
+      "rotation": "none"
+    },
+    {
+      "name": "optimal_mse__none__bonsai_qat8_muon",
+      "optimizer": "bonsai_qat8_muon",
+      "quantizer": "optimal_mse",
+      "rotation": "none"
+    },
+    {
+      "name": "optimal_mse__hadamard__adamw",
+      "optimizer": "adamw",
+      "quantizer": "optimal_mse",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "optimal_mse__hadamard__adamw_prox",
+      "optimizer": "adamw_prox",
+      "quantizer": "optimal_mse",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "optimal_mse__hadamard__bonsai_qat8",
+      "optimizer": "bonsai_qat8",
+      "quantizer": "optimal_mse",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "optimal_mse__hadamard__bonsai_qat8_muon",
+      "optimizer": "bonsai_qat8_muon",
+      "quantizer": "optimal_mse",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "absmean__none__adamw",
+      "optimizer": "adamw",
+      "quantizer": "absmean",
+      "rotation": "none"
+    },
+    {
+      "name": "absmean__none__adamw_prox",
+      "optimizer": "adamw_prox",
+      "quantizer": "absmean",
+      "rotation": "none"
+    },
+    {
+      "name": "absmean__none__bonsai_qat8",
+      "optimizer": "bonsai_qat8",
+      "quantizer": "absmean",
+      "rotation": "none"
+    },
+    {
+      "name": "absmean__none__bonsai_qat8_muon",
+      "optimizer": "bonsai_qat8_muon",
+      "quantizer": "absmean",
+      "rotation": "none"
+    },
+    {
+      "name": "absmean__hadamard__adamw",
+      "optimizer": "adamw",
+      "quantizer": "absmean",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "absmean__hadamard__adamw_prox",
+      "optimizer": "adamw_prox",
+      "quantizer": "absmean",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "absmean__hadamard__bonsai_qat8",
+      "optimizer": "bonsai_qat8",
+      "quantizer": "absmean",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "absmean__hadamard__bonsai_qat8_muon",
+      "optimizer": "bonsai_qat8_muon",
+      "quantizer": "absmean",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "paretoq_seq__none__adamw",
+      "optimizer": "adamw",
+      "quantizer": "paretoq_seq",
+      "rotation": "none"
+    },
+    {
+      "name": "paretoq_seq__none__adamw_prox",
+      "optimizer": "adamw_prox",
+      "quantizer": "paretoq_seq",
+      "rotation": "none"
+    },
+    {
+      "name": "paretoq_seq__none__bonsai_qat8",
+      "optimizer": "bonsai_qat8",
+      "quantizer": "paretoq_seq",
+      "rotation": "none"
+    },
+    {
+      "name": "paretoq_seq__none__bonsai_qat8_muon",
+      "optimizer": "bonsai_qat8_muon",
+      "quantizer": "paretoq_seq",
+      "rotation": "none"
+    },
+    {
+      "name": "paretoq_seq__hadamard__adamw",
+      "optimizer": "adamw",
+      "quantizer": "paretoq_seq",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "paretoq_seq__hadamard__adamw_prox",
+      "optimizer": "adamw_prox",
+      "quantizer": "paretoq_seq",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "paretoq_seq__hadamard__bonsai_qat8",
+      "optimizer": "bonsai_qat8",
+      "quantizer": "paretoq_seq",
+      "rotation": "hadamard"
+    },
+    {
+      "name": "paretoq_seq__hadamard__bonsai_qat8_muon",
+      "optimizer": "bonsai_qat8_muon",
+      "quantizer": "paretoq_seq",
+      "rotation": "hadamard"
+    }
+  ],
+  "pid": 87895,
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "schema_version": 1,
+  "source": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/run_factorial_race.py",
+  "source_sha256": "9290b233195f9d44f8e81c887a3bbfe0f7044f0c0f2b2bc8ac946ccf05233649"
+}

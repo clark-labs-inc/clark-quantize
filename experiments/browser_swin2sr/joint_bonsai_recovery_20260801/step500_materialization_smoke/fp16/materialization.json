@@ -1,0 +1,1762 @@
+{
+  "format": "backdropkit-swin2sr-retained-precision-materialization-v1",
+  "interpretation": "All non-island quantized surfaces are hard ternary. The declared islands are emitted at their trained precision; FP16 island values are exact IEEE FP16 roundtrips represented in a dense state.",
+  "checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_fp16_seed20260801/run/checkpoint-island-500.pt",
+  "checkpoint_sha256": "349c107a21109cb566636540752ba0786d02b049cbf842248d76d92ae3761a24",
+  "parent_checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__fp16__seed20260733/run/checkpoint-island-4000.pt",
+  "parent_checkpoint_sha256": "cb5455bba3154a46eb9f744a6b5aee03497c0807413e632fd7eea070a21a1c87",
+  "parent_step": 32000,
+  "island_step": 500,
+  "source_device": "cpu",
+  "retained_precision_training": {
+    "format": "backdropkit-swin2sr-retained-precision-training-v1",
+    "island": "rstb_fusion_fp16",
+    "precision": "fp16",
+    "seed": 20260801,
+    "steps": 4000,
+    "learning_rate": 4e-06,
+    "optimizer": "adamw",
+    "weight_decay": 0.0001,
+    "gradient_clip_norm": 1.0,
+    "batch_size": 8,
+    "crop_size": 128,
+    "loss_recipe": "balanced",
+    "pixel_objective": "psnr_aligned",
+    "initialization": "hard_ternary_then_fp16_roundtrip_ste",
+    "trainable_scope": "declared_island_weights_only",
+    "sampler": {
+      "format": "backdropkit-product-source-language-v3",
+      "epoch_images": 206500,
+      "source_weights": {
+        "aria_ui": 0.15,
+        "flores200_balanced_synthetic_ui": 0.2,
+        "pd12m": 0.1,
+        "rico": 0.35,
+        "websight": 0.2
+      },
+      "source_quotas": {
+        "aria_ui": 30975,
+        "flores200_balanced_synthetic_ui": 41300,
+        "pd12m": 20650,
+        "rico": 72275,
+        "websight": 41300
+      },
+      "languages_per_source": {
+        "aria_ui": 0,
+        "flores200_balanced_synthetic_ui": 204,
+        "pd12m": 0,
+        "rico": 0,
+        "websight": 0
+      },
+      "corpus_identity": {
+        "format": "backdropkit-swin2sr-recovery-corpus-v1",
+        "datasets": [
+          {
+            "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705",
+            "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+            "images": 104500
+          },
+          {
+            "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42",
+            "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+            "images": 102000
+          }
+        ]
+      }
+    }
+  },
+  "retained_precision_history": [
+    {
+      "format": "backdropkit-swin2sr-retained-precision-training-v1",
+      "island": "image_io_fp16",
+      "precision": "fp16",
+      "seed": 20260733,
+      "steps": 4000,
+      "learning_rate": 4e-06,
+      "optimizer": "adamw",
+      "weight_decay": 0.0001,
+      "gradient_clip_norm": 1.0,
+      "batch_size": 8,
+      "crop_size": 128,
+      "loss_recipe": "balanced",
+      "pixel_objective": "psnr_aligned",
+      "initialization": "hard_ternary_then_fp16_roundtrip_ste",
+      "trainable_scope": "declared_island_weights_only",
+      "sampler": {
+        "format": "backdropkit-product-source-language-v3",
+        "epoch_images": 206500,
+        "source_weights": {
+          "aria_ui": 0.15,
+          "flores200_balanced_synthetic_ui": 0.2,
+          "pd12m": 0.1,
+          "rico": 0.35,
+          "websight": 0.2
+        },
+        "source_quotas": {
+          "aria_ui": 30975,
+          "flores200_balanced_synthetic_ui": 41300,
+          "pd12m": 20650,
+          "rico": 72275,
+          "websight": 41300
+        },
+        "languages_per_source": {
+          "aria_ui": 0,
+          "flores200_balanced_synthetic_ui": 204,
+          "pd12m": 0,
+          "rico": 0,
+          "websight": 0
+        },
+        "corpus_identity": {
+          "format": "backdropkit-swin2sr-recovery-corpus-v1",
+          "datasets": [
+            {
+              "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705",
+              "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+              "images": 104500
+            },
+            {
+              "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42",
+              "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+              "images": 102000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "format": "backdropkit-swin2sr-retained-precision-training-v1",
+      "island": "rstb_fusion_fp16",
+      "precision": "fp16",
+      "seed": 20260801,
+      "steps": 4000,
+      "learning_rate": 4e-06,
+      "optimizer": "adamw",
+      "weight_decay": 0.0001,
+      "gradient_clip_norm": 1.0,
+      "batch_size": 8,
+      "crop_size": 128,
+      "loss_recipe": "balanced",
+      "pixel_objective": "psnr_aligned",
+      "initialization": "hard_ternary_then_fp16_roundtrip_ste",
+      "trainable_scope": "declared_island_weights_only",
+      "sampler": {
+        "format": "backdropkit-product-source-language-v3",
+        "epoch_images": 206500,
+        "source_weights": {
+          "aria_ui": 0.15,
+          "flores200_balanced_synthetic_ui": 0.2,
+          "pd12m": 0.1,
+          "rico": 0.35,
+          "websight": 0.2
+        },
+        "source_quotas": {
+          "aria_ui": 30975,
+          "flores200_balanced_synthetic_ui": 41300,
+          "pd12m": 20650,
+          "rico": 72275,
+          "websight": 41300
+        },
+        "languages_per_source": {
+          "aria_ui": 0,
+          "flores200_balanced_synthetic_ui": 204,
+          "pd12m": 0,
+          "rico": 0,
+          "websight": 0
+        },
+        "corpus_identity": {
+          "format": "backdropkit-swin2sr-recovery-corpus-v1",
+          "datasets": [
+            {
+              "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705",
+              "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+              "images": 104500
+            },
+            {
+              "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42",
+              "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+              "images": 102000
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "initialization": {
+    "precision": "fp16",
+    "initialized": [
+      {
+        "name": "swin2sr.encoder.stages.0.conv",
+        "values": 32400,
+        "initial_fp16_vs_hard_fp16_max_abs": 0.0
+      },
+      {
+        "name": "swin2sr.encoder.stages.1.conv",
+        "values": 32400,
+        "initial_fp16_vs_hard_fp16_max_abs": 0.0
+      },
+      {
+        "name": "swin2sr.encoder.stages.2.conv",
+        "values": 32400,
+        "initial_fp16_vs_hard_fp16_max_abs": 0.0
+      },
+      {
+        "name": "swin2sr.encoder.stages.3.conv",
+        "values": 32400,
+        "initial_fp16_vs_hard_fp16_max_abs": 0.0
+      }
+    ],
+    "trainable_values": 129600
+  },
+  "dense_state": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/step500_materialization_smoke/fp16/dense-hard.pt",
+    "file_sha256": "ce1b0ca0873ac34f0a9abc2eb52da8fff58e0b66c6d666e02822bd09e40d0287",
+    "tensor_sha256": "dbb40893d22296378f6c135ef3f6c8497b779dd4ea2f9fce5086807fc54dd189",
+    "tensors": 484,
+    "values": 1005348
+  },
+  "all_target_surfaces_materialized_hard": true,
+  "quantization": {
+    "mode": "ternary",
+    "method": "absmean",
+    "group_size": 60,
+    "conv_method": "optimal_mse",
+    "conv_grouping": "kernel",
+    "schedule_profile": "sensitive_io_v2",
+    "rotation": "hadamard",
+    "rotation_block": 4,
+    "scope": "all_matrix_and_conv",
+    "surface_group_sizes": {
+      "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0": 2,
+      "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0": 2,
+      "swin2sr.encoder.stages.3.layers.2.attention.output.dense": 3,
+      "swin2sr.first_convolution": 2,
+      "upsample.conv": 2
+    }
+  },
+  "surface_training": {
+    "format": "backdropkit-swin2sr-full-surface-v1",
+    "base_checkpoint": null,
+    "resume_checkpoint": "experiments/browser_swin2sr/surface_group_recovery_20260731/refined/fork-step26000.pt",
+    "initialization": "fp32",
+    "base_global_step": 0,
+    "hard_core_from_start": false,
+    "scope": "all_matrix_and_conv",
+    "group_size": 60,
+    "surface_group_sizes": {
+      "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0": 2,
+      "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0": 2,
+      "swin2sr.encoder.stages.3.layers.2.attention.output.dense": 3,
+      "swin2sr.first_convolution": 2,
+      "upsample.conv": 2
+    },
+    "convolution_learning_rate_multiplier": 4.0,
+    "correction_learning_rate_multiplier": 0.1,
+    "quantizer_method": "absmean",
+    "conv_quantizer_method": "optimal_mse",
+    "conv_grouping": "kernel",
+    "schedule_profile": "sensitive_io_v2",
+    "core_rotation": "hadamard",
+    "schedule_steps": 24000,
+    "seed": 20260730,
+    "batch_size": 8,
+    "crop_size": 128,
+    "loss_recipe": "balanced",
+    "loss_weights": {
+      "teacher": 0.55,
+      "ground_truth": 0.2,
+      "edge": 0.15,
+      "feature": 0.1
+    },
+    "pixel_objective": "psnr_aligned",
+    "ground_truth_mse_floor": 0.00032,
+    "teacher_mse_floor": 2e-05,
+    "hard_shadow_weight_start": 0.05,
+    "hard_shadow_weight_end": 0.25,
+    "hard_shadow_every": 2,
+    "sampler": {
+      "format": "backdropkit-product-source-language-v3",
+      "epoch_images": 206500,
+      "source_weights": {
+        "aria_ui": 0.15,
+        "flores200_balanced_synthetic_ui": 0.2,
+        "pd12m": 0.1,
+        "rico": 0.35,
+        "websight": 0.2
+      },
+      "source_quotas": {
+        "aria_ui": 30975,
+        "flores200_balanced_synthetic_ui": 41300,
+        "pd12m": 20650,
+        "rico": 72275,
+        "websight": 41300
+      },
+      "languages_per_source": {
+        "aria_ui": 0,
+        "flores200_balanced_synthetic_ui": 204,
+        "pd12m": 0,
+        "rico": 0,
+        "websight": 0
+      },
+      "corpus_identity": {
+        "format": "backdropkit-swin2sr-recovery-corpus-v1",
+        "datasets": [
+          {
+            "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705",
+            "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+            "images": 104500
+          },
+          {
+            "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42",
+            "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+            "images": 102000
+          }
+        ]
+      }
+    },
+    "optimizer": {
+      "name": "bonsai_qat8_muon",
+      "learning_rate": 1e-06,
+      "convolution_learning_rate_multiplier": 4.0,
+      "correction_learning_rate_multiplier": 0.1,
+      "weight_decay": 0.0001,
+      "reset_from_base": false,
+      "matrix_betas": [
+        0.9,
+        0.95
+      ],
+      "muon_every": 16,
+      "muon_steps": 2
+    }
+  },
+  "surfaces": {
+    "swin2sr.embeddings.patch_embeddings.projection.weight": {
+      "category": "residual_body_conv",
+      "method": "optimal_mse",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.0.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.0.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.0.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.0.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.0.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.0.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.1.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.1.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.1.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.1.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.1.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.1.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.1.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.1.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.2.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.2.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.2.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.2.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.2.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.2.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.2.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.2.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.3.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.3.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.3.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.3.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.3.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.3.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.3.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.3.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.4.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.4.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.4.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.4.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.4.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.4.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.4.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.4.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.5.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.5.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.5.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.5.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.5.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.layers.5.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.0.patch_embed.projection.weight": {
+      "category": "residual_body_conv",
+      "method": "optimal_mse",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 2,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.0.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.0.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.0.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.0.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.0.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.0.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 2,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.1.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.1.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.1.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.1.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.1.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.1.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.2.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.2.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.2.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.2.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.2.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.2.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.2.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.2.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.3.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.3.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.3.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.3.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.3.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.3.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.4.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.4.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.4.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.4.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.4.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.4.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.4.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.4.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.5.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.5.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.5.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.5.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.5.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.5.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.5.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.layers.5.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.1.patch_embed.projection.weight": {
+      "category": "residual_body_conv",
+      "method": "optimal_mse",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.0.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.0.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.0.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.0.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.0.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.0.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.0.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.0.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.1.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.1.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.1.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.1.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.1.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.1.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.1.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.1.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.2.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.2.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.2.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.2.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.2.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.2.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.2.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.2.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.3.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.3.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.3.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.3.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.3.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.3.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.3.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.3.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.4.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.4.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.4.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.4.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.4.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.4.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.4.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.4.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.5.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.5.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.5.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.5.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.5.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.5.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.5.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.layers.5.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.2.patch_embed.projection.weight": {
+      "category": "residual_body_conv",
+      "method": "optimal_mse",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.0.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.0.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.0.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.0.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.0.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.0.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.0.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.0.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.1.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.1.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.1.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.1.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.1.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.1.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.2.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.2.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.2.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.2.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 3,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.2.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.2.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.3.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.3.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.3.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.3.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.3.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.3.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.3.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.3.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.4.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.4.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.4.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.4.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.4.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.4.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.4.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.4.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.5.attention.self.continuous_position_bias_mlp.0.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.5.attention.self.continuous_position_bias_mlp.2.weight": {
+      "category": "position_bias_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.5.attention.self.query.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.5.attention.self.key.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.5.attention.self.value.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.5.attention.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.5.intermediate.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.layers.5.output.dense.weight": {
+      "category": "core_linear",
+      "method": "absmean",
+      "group_size": 60,
+      "rotation": "hadamard",
+      "rotation_block": 4
+    },
+    "swin2sr.encoder.stages.3.patch_embed.projection.weight": {
+      "category": "residual_body_conv",
+      "method": "optimal_mse",
+      "group_size": 60,
+      "rotation": "none",
+      "rotation_block": 4
+    },
+    "swin2sr.conv_after_body.weight": {
+      "category": "residual_body_conv",
+      "method": "optimal_mse",
+      "group_size": 9,
+      "rotation": "none",
+      "rotation_block": 4
+    }
+  },
+  "runtime_state": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/step500_materialization_smoke/fp16/runtime-hard.pt",
+    "file_sha256": "f8a6819fbcec335f7dc27cd4c2cfb5143ec4f61441a78193f5a3856ec8bab536",
+    "tensor_sha256": "7153c017ce82ecf63d716e8c9f5957049d930d53d09cd75decb17f50381a68ff",
+    "tensors": 484,
+    "values": 1005348
+  },
+  "retained_precision_island": {
+    "name": "rstb_fusion_fp16",
+    "precision": "fp16",
+    "weight_values": 129600,
+    "weights": [
+      "swin2sr.encoder.stages.0.conv.weight",
+      "swin2sr.encoder.stages.1.conv.weight",
+      "swin2sr.encoder.stages.2.conv.weight",
+      "swin2sr.encoder.stages.3.conv.weight"
+    ],
+    "storage_dtype": "float16"
+  },
+  "retained_precision_islands": [
+    {
+      "name": "image_io_fp16",
+      "precision": "fp16",
+      "weight_values": 8100,
+      "weights": [
+        "swin2sr.first_convolution.weight",
+        "upsample.conv.weight"
+      ],
+      "storage_dtype": "float16"
+    },
+    {
+      "name": "rstb_fusion_fp16",
+      "precision": "fp16",
+      "weight_values": 129600,
+      "weights": [
+        "swin2sr.encoder.stages.0.conv.weight",
+        "swin2sr.encoder.stages.1.conv.weight",
+        "swin2sr.encoder.stages.2.conv.weight",
+        "swin2sr.encoder.stages.3.conv.weight"
+      ],
+      "storage_dtype": "float16"
+    }
+  ]
+}

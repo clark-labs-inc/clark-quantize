@@ -1,0 +1,36 @@
+{
+  "format": "backdropkit-swin2sr-broad-surface-group-screen-v1",
+  "status": "preregistered_before_results",
+  "diagnostic_only": true,
+  "selection_source": "disjoint_development_screen",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+  "checkpoint_sha256": "ad5e76db8c378c16da689a4cf37d96eb6e204f7b9de543199efc103c0d371469",
+  "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "analysis_source": "experiments/browser_swin2sr/analyze_surface_group_sensitivity_disjoint.py",
+  "analysis_source_sha256": "0f014211c0e89f72bb9fb8aaa7210d0bd88189211850783adb955d50976e92e1",
+  "excluded_reports": [
+    {
+      "path": "experiments/browser_swin2sr/surface_group_confirmation_20260731/group2-confirmation-64.json",
+      "sha256": "1534e447a194e5c2d7c36cfcffa43c2829ca365be2211592c281552f5633a9fb"
+    },
+    {
+      "path": "experiments/browser_swin2sr/surface_group_confirmation_20260731/joint-disjoint-256.json",
+      "sha256": "c7f4568c7e44e7feb0cabe72b4f9e27ed0b859787a1f0132d4ab6319c5cfd89f"
+    }
+  ],
+  "excluded_unique_sample_count": 320,
+  "target_group_sizes": [3, 6],
+  "surface_count": 204,
+  "sample_count_per_group": 8,
+  "bootstrap": {
+    "method": "paired_nonparametric_mean",
+    "resamples": 2000,
+    "seed": 20260731,
+    "confidence": 0.95
+  },
+  "screen_only": true,
+  "next_gate": "candidate surfaces must be confirmed on a separate 64-sample disjoint development slice before any map or training decision"
+}

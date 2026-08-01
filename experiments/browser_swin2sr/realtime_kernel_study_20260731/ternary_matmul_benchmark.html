@@ -1,0 +1,395 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Clark Swin2SR packed ternary matmul benchmark</title>
+<pre id="result">running</pre>
+<script type="module">
+  const result = document.querySelector("#result");
+  const parameters = new URLSearchParams(location.search);
+  const rows = Math.max(8, Number(parameters.get("rows") ?? 4096));
+  const inner = Math.max(1, Number(parameters.get("inner") ?? 60));
+  const columns = Math.max(1, Number(parameters.get("columns") ?? 60));
+  const measuredRuns = Math.max(1, Number(parameters.get("runs") ?? 12));
+  const warmupRuns = Math.max(1, Number(parameters.get("warmup") ?? 4));
+  const dispatchesPerRun = Math.max(1, Number(parameters.get("dispatches") ?? 8));
+  const groupSize = 60;
+
+  const naiveShader = /* wgsl */ `
+    struct Meta { rows: u32, inner: u32, columns: u32, group_size: u32 }
+    @group(0) @binding(0) var<storage, read> input: array<f32>;
+    @group(0) @binding(1) var<storage, read> packed: array<u32>;
+    @group(0) @binding(2) var<storage, read> scales: array<f32>;
+    @group(0) @binding(3) var<storage, read_write> output: array<f32>;
+    @group(0) @binding(4) var<uniform> dimensions: Meta;
+
+    @compute @workgroup_size(8, 8)
+    fn main(@builtin(global_invocation_id) id: vec3<u32>) {
+      let column = id.x;
+      let row = id.y;
+      if (column >= dimensions.columns || row >= dimensions.rows) { return; }
+      let row_offset = column * dimensions.inner;
+      var packed_index = row_offset / 20u;
+      let packed_offset = row_offset % 20u;
+      var word = packed[packed_index];
+      for (var position = 0u; position < packed_offset; position += 1u) {
+        word /= 3u;
+      }
+      var sum = 0.0;
+      for (var k = 0u; k < dimensions.inner; k += 1u) {
+        let weight_index = row_offset + k;
+        if (k > 0u && weight_index % 20u == 0u) {
+          packed_index += 1u;
+          word = packed[packed_index];
+        }
+        let code = f32(word % 3u) - 1.0;
+        word /= 3u;
+        sum += input[row * dimensions.inner + k]
+          * code
+          * scales[column * ((dimensions.inner + dimensions.group_size - 1u) / dimensions.group_size) + k / dimensions.group_size];
+      }
+      output[row * dimensions.columns + column] = sum;
+    }
+  `;
+
+  const tiledShader = /* wgsl */ `
+    struct Meta {
+      rows: u32,
+      inner: u32,
+      columns: u32,
+      group_size: u32,
+      words_per_row: u32,
+      group_count: u32,
+    }
+    @group(0) @binding(0) var<storage, read> input: array<f32>;
+    @group(0) @binding(1) var<storage, read> packed: array<u32>;
+    @group(0) @binding(2) var<storage, read> scales: array<f32>;
+    @group(0) @binding(3) var<storage, read_write> output: array<f32>;
+    @group(0) @binding(4) var<uniform> dimensions: Meta;
+    var<workgroup> input_tile: array<f32, 128>;
+    var<workgroup> weight_tile: array<f32, 128>;
+
+    fn weight(column: u32, k: u32) -> f32 {
+      let word = packed[column * dimensions.words_per_row + k / 16u];
+      return f32((word >> ((k % 16u) * 2u)) & 3u) - 1.0;
+    }
+
+    @compute @workgroup_size(8, 8)
+    fn main(
+      @builtin(local_invocation_id) local: vec3<u32>,
+      @builtin(local_invocation_index) lane: u32,
+      @builtin(workgroup_id) group: vec3<u32>,
+    ) {
+      let column = group.x * 8u + local.x;
+      let row = group.y * 8u + local.y;
+      var result_value = 0.0;
+      for (var scale_group = 0u; scale_group < dimensions.group_count; scale_group += 1u) {
+        let group_start = scale_group * dimensions.group_size;
+        let group_end = min(dimensions.inner, group_start + dimensions.group_size);
+        var group_sum = 0.0;
+        for (var tile_start = group_start; tile_start < group_end; tile_start += 16u) {
+          for (var load = lane; load < 128u; load += 64u) {
+            let tile_row = load / 16u;
+            let tile_k = load % 16u;
+            let input_row = group.y * 8u + tile_row;
+            let input_k = tile_start + tile_k;
+            var input_value = 0.0;
+            if (input_row < dimensions.rows && input_k < group_end) {
+              input_value = input[input_row * dimensions.inner + input_k];
+            }
+            input_tile[load] = input_value;
+            let weight_column = group.x * 8u + tile_row;
+            var weight_value = 0.0;
+            if (weight_column < dimensions.columns && input_k < group_end) {
+              weight_value = weight(weight_column, input_k);
+            }
+            weight_tile[load] = weight_value;
+          }
+          workgroupBarrier();
+          if (row < dimensions.rows && column < dimensions.columns) {
+            for (var offset = 0u; offset < 16u; offset += 1u) {
+              group_sum += input_tile[local.y * 16u + offset]
+                * weight_tile[local.x * 16u + offset];
+            }
+          }
+          workgroupBarrier();
+        }
+        if (column < dimensions.columns) {
+          result_value += group_sum * scales[column * dimensions.group_count + scale_group];
+        }
+      }
+      if (row < dimensions.rows && column < dimensions.columns) {
+        output[row * dimensions.columns + column] = result_value;
+      }
+    }
+  `;
+
+  const denseShader = /* wgsl */ `
+    struct Meta { rows: u32, inner: u32, columns: u32, padding: u32 }
+    @group(0) @binding(0) var<storage, read> input: array<f32>;
+    @group(0) @binding(1) var<storage, read> weights: array<f32>;
+    @group(0) @binding(2) var<storage, read_write> output: array<f32>;
+    @group(0) @binding(3) var<uniform> dimensions: Meta;
+    var<workgroup> input_tile: array<f32, 128>;
+    var<workgroup> weight_tile: array<f32, 128>;
+
+    @compute @workgroup_size(8, 8)
+    fn main(
+      @builtin(local_invocation_id) local: vec3<u32>,
+      @builtin(local_invocation_index) lane: u32,
+      @builtin(workgroup_id) group: vec3<u32>,
+    ) {
+      let column = group.x * 8u + local.x;
+      let row = group.y * 8u + local.y;
+      var sum = 0.0;
+      for (var tile_start = 0u; tile_start < dimensions.inner; tile_start += 16u) {
+        for (var load = lane; load < 128u; load += 64u) {
+          let tile_row = load / 16u;
+          let tile_k = load % 16u;
+          let input_row = group.y * 8u + tile_row;
+          let k = tile_start + tile_k;
+          var input_value = 0.0;
+          if (input_row < dimensions.rows && k < dimensions.inner) {
+            input_value = input[input_row * dimensions.inner + k];
+          }
+          input_tile[load] = input_value;
+          let weight_column = group.x * 8u + tile_row;
+          var weight_value = 0.0;
+          if (weight_column < dimensions.columns && k < dimensions.inner) {
+            weight_value = weights[weight_column * dimensions.inner + k];
+          }
+          weight_tile[load] = weight_value;
+        }
+        workgroupBarrier();
+        if (row < dimensions.rows && column < dimensions.columns) {
+          for (var offset = 0u; offset < 16u; offset += 1u) {
+            sum += input_tile[local.y * 16u + offset]
+              * weight_tile[local.x * 16u + offset];
+          }
+        }
+        workgroupBarrier();
+      }
+      if (row < dimensions.rows && column < dimensions.columns) {
+        output[row * dimensions.columns + column] = sum;
+      }
+    }
+  `;
+
+  function percentile(values, fraction) {
+    const sorted = [...values].sort((left, right) => left - right);
+    return sorted[Math.min(sorted.length - 1, Math.ceil(sorted.length * fraction) - 1)];
+  }
+
+  function median(values) {
+    return percentile(values, .5);
+  }
+
+  function createData() {
+    const input = new Float32Array(rows * inner);
+    const weights = new Int8Array(columns * inner);
+    const groupCount = Math.ceil(inner / groupSize);
+    const scales = new Float32Array(columns * groupCount);
+    for (let index = 0; index < input.length; index += 1) {
+      input[index] = Math.sin(index * .073) * .7 + Math.cos(index * .017) * .3;
+    }
+    for (let index = 0; index < weights.length; index += 1) {
+      weights[index] = ((index * 17 + Math.floor(index / inner) * 5) % 5 < 2) ? -1
+        : ((index * 11 + 3) % 7 < 2 ? 1 : 0);
+    }
+    for (let index = 0; index < scales.length; index += 1) {
+      scales[index] = .013 + (index % 11) * .0017;
+    }
+    const denseWeights = new Float32Array(weights.length);
+    for (let column = 0; column < columns; column += 1) {
+      for (let k = 0; k < inner; k += 1) {
+        denseWeights[column * inner + k] = weights[column * inner + k]
+          * scales[column * groupCount + Math.floor(k / groupSize)];
+      }
+    }
+    return { denseWeights, groupCount, input, scales, weights };
+  }
+
+  function packBase3(weights) {
+    const words = new Uint32Array(Math.ceil(weights.length / 20));
+    let factor = 1;
+    for (let index = 0; index < weights.length; index += 1) {
+      const offset = index % 20;
+      if (offset === 0) factor = 1;
+      words[Math.floor(index / 20)] += (weights[index] + 1) * factor;
+      factor *= 3;
+    }
+    return words;
+  }
+
+  function packTwoBit(weights) {
+    const wordsPerRow = Math.ceil(inner / 16);
+    const words = new Uint32Array(columns * wordsPerRow);
+    for (let column = 0; column < columns; column += 1) {
+      for (let k = 0; k < inner; k += 1) {
+        words[column * wordsPerRow + Math.floor(k / 16)] |= (weights[column * inner + k] + 1) << ((k % 16) * 2);
+      }
+    }
+    return { words, wordsPerRow };
+  }
+
+  function bufferWithData(device, values, usage) {
+    const buffer = device.createBuffer({
+      mappedAtCreation: true,
+      size: Math.max(16, Math.ceil(values.byteLength / 4) * 4),
+      usage,
+    });
+    const target = new Uint8Array(buffer.getMappedRange());
+    target.set(new Uint8Array(values.buffer, values.byteOffset, values.byteLength));
+    buffer.unmap();
+    return buffer;
+  }
+
+  async function makeKernel(device, code, packed, metadata) {
+    const storageRead = GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST;
+    const storageWrite = GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC;
+    const inputBuffer = bufferWithData(device, data.input, storageRead);
+    const packedBuffer = bufferWithData(device, packed, storageRead);
+    const scaleBuffer = bufferWithData(device, data.scales, storageRead);
+    const outputBuffer = device.createBuffer({ size: rows * columns * 4, usage: storageWrite });
+    const metaBuffer = bufferWithData(device, metadata, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST);
+    const module = device.createShaderModule({ code });
+    const compilation = await module.getCompilationInfo();
+    const errors = compilation.messages.filter((message) => message.type === "error");
+    if (errors.length) throw new Error(errors.map((message) => message.message).join("\n"));
+    const pipeline = await device.createComputePipelineAsync({
+      layout: "auto",
+      compute: { module, entryPoint: "main" },
+    });
+    const bindGroup = device.createBindGroup({
+      layout: pipeline.getBindGroupLayout(0),
+      entries: [inputBuffer, packedBuffer, scaleBuffer, outputBuffer, metaBuffer].map((buffer, binding) => ({
+        binding,
+        resource: { buffer },
+      })),
+    });
+    return { bindGroup, outputBuffer, pipeline };
+  }
+
+  async function makeDenseKernel(device, weights, metadata) {
+    const storageRead = GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST;
+    const storageWrite = GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC;
+    const inputBuffer = bufferWithData(device, data.input, storageRead);
+    const weightBuffer = bufferWithData(device, weights, storageRead);
+    const outputBuffer = device.createBuffer({ size: rows * columns * 4, usage: storageWrite });
+    const metaBuffer = bufferWithData(device, metadata, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST);
+    const module = device.createShaderModule({ code: denseShader });
+    const compilation = await module.getCompilationInfo();
+    const errors = compilation.messages.filter((message) => message.type === "error");
+    if (errors.length) throw new Error(errors.map((message) => message.message).join("\n"));
+    const pipeline = await device.createComputePipelineAsync({ layout: "auto", compute: { module, entryPoint: "main" } });
+    const bindGroup = device.createBindGroup({
+      layout: pipeline.getBindGroupLayout(0),
+      entries: [inputBuffer, weightBuffer, outputBuffer, metaBuffer].map((buffer, binding) => ({
+        binding,
+        resource: { buffer },
+      })),
+    });
+    return { bindGroup, outputBuffer, pipeline };
+  }
+
+  async function execute(device, kernel, dispatchCount = 1) {
+    const encoder = device.createCommandEncoder();
+    const pass = encoder.beginComputePass();
+    pass.setPipeline(kernel.pipeline);
+    pass.setBindGroup(0, kernel.bindGroup);
+    for (let index = 0; index < dispatchCount; index += 1) {
+      pass.dispatchWorkgroups(Math.ceil(columns / 8), Math.ceil(rows / 8));
+    }
+    pass.end();
+    const started = performance.now();
+    device.queue.submit([encoder.finish()]);
+    await device.queue.onSubmittedWorkDone();
+    return (performance.now() - started) / dispatchCount;
+  }
+
+  async function readOutput(device, buffer) {
+    const readback = device.createBuffer({
+      size: rows * columns * 4,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+    });
+    const encoder = device.createCommandEncoder();
+    encoder.copyBufferToBuffer(buffer, 0, readback, 0, rows * columns * 4);
+    device.queue.submit([encoder.finish()]);
+    await readback.mapAsync(GPUMapMode.READ);
+    const values = new Float32Array(readback.getMappedRange().slice(0));
+    readback.unmap();
+    readback.destroy();
+    return values;
+  }
+
+  async function measure(device, kernel) {
+    for (let index = 0; index < warmupRuns; index += 1) await execute(device, kernel, dispatchesPerRun);
+    const timings = [];
+    for (let index = 0; index < measuredRuns; index += 1) {
+      timings.push(await execute(device, kernel, dispatchesPerRun));
+    }
+    return { medianMs: median(timings), p95Ms: percentile(timings, .95), timingsMs: timings };
+  }
+
+  let data;
+  try {
+    if (!navigator.gpu) throw new Error("WebGPU is unavailable.");
+    const adapter = await navigator.gpu.requestAdapter({ powerPreference: "high-performance" });
+    if (!adapter) throw new Error("No WebGPU adapter.");
+    const device = await adapter.requestDevice();
+    data = createData();
+    const base3 = packBase3(data.weights);
+    const twoBit = packTwoBit(data.weights);
+    const naiveMeta = new Uint32Array([rows, inner, columns, groupSize]);
+    const tiledMeta = new Uint32Array([rows, inner, columns, groupSize, twoBit.wordsPerRow, data.groupCount, 0, 0]);
+    const denseMeta = new Uint32Array([rows, inner, columns, 0]);
+    const naive = await makeKernel(device, naiveShader, base3, naiveMeta);
+    const tiled = await makeKernel(device, tiledShader, twoBit.words, tiledMeta);
+    const dense = await makeDenseKernel(device, data.denseWeights, denseMeta);
+    await execute(device, naive);
+    await execute(device, tiled);
+    await execute(device, dense);
+    const naiveOutput = await readOutput(device, naive.outputBuffer);
+    const tiledOutput = await readOutput(device, tiled.outputBuffer);
+    const denseOutput = await readOutput(device, dense.outputBuffer);
+    let maxAbsoluteError = 0;
+    let meanAbsoluteError = 0;
+    let denseMaxAbsoluteError = 0;
+    for (let index = 0; index < naiveOutput.length; index += 1) {
+      const error = Math.abs(naiveOutput[index] - tiledOutput[index]);
+      maxAbsoluteError = Math.max(maxAbsoluteError, error);
+      meanAbsoluteError += error;
+      denseMaxAbsoluteError = Math.max(denseMaxAbsoluteError, Math.abs(naiveOutput[index] - denseOutput[index]));
+    }
+    meanAbsoluteError /= naiveOutput.length;
+    const naiveTiming = await measure(device, naive);
+    const tiledTiming = await measure(device, tiled);
+    const denseTiming = await measure(device, dense);
+    const receipt = {
+      adapter: { features: [...adapter.features].sort() },
+      dispatchesPerRun,
+      groupSize,
+      inner,
+      measuredRuns,
+      rows,
+      columns,
+      transport: {
+        base3Bytes: base3.byteLength,
+        twoBitBytes: twoBit.words.byteLength,
+        expansionFraction: twoBit.words.byteLength / base3.byteLength,
+      },
+      validation: { denseMaxAbsoluteError, maxAbsoluteError, meanAbsoluteError },
+      naiveBase3: naiveTiming,
+      tiledTwoBit: tiledTiming,
+      tiledDenseF32: denseTiming,
+      speedup: naiveTiming.medianMs / tiledTiming.medianMs,
+      speedupVersusDenseF32: denseTiming.medianMs / tiledTiming.medianMs,
+      warmupRuns,
+    };
+    window.__clarkTernaryMatmulBenchmark = receipt;
+    result.textContent = JSON.stringify(receipt, null, 2);
+    result.dataset.status = "complete";
+  } catch (error) {
+    window.__clarkTernaryMatmulBenchmark = { error: String(error?.stack ?? error) };
+    result.textContent = String(error?.stack ?? error);
+    result.dataset.status = "failed";
+  }
+</script>

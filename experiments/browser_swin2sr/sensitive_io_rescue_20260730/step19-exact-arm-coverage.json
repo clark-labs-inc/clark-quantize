@@ -1,0 +1,73 @@
+{
+  "format": "backdropkit-swin2sr-sensitive-io-coverage-v1",
+  "diagnostic_only": true,
+  "selection_source": "development",
+  "surface_step": 19000,
+  "validation_identity": {
+    "device": "mps",
+    "crop_size": 128,
+    "validation_files": [
+      [
+        "/Users/stan/Documents/git/clark-desktop/promos/source-ui-composer-current.png",
+        "27bb60639781d97b623ce94c5e6944fc0243fbde5efb0bcbf3b60e1cfe967c34"
+      ],
+      [
+        "/Users/stan/Documents/git/clark-desktop/promos/source-ui-chat-current.png",
+        "f3f8ea752eeab6a1c5e8e9a36d7a22c9cb91cd83203f91ae7014f085fa3419c0"
+      ],
+      [
+        "/Users/stan/Documents/git/clark-desktop/promos/source-ui-research-current.png",
+        "c012b92f05bd0d20fbda5e4fb16931f3a1800dbc854cdb98f26e35edf80c05d8"
+      ],
+      [
+        "/Users/stan/Documents/git/clark-desktop/promos/clark-code-ad-parallel-research-vertical-poster.png",
+        "73e7bd7af4f848200d4d9585c4b8a32fb905d8e5e493ef44c1d144c572e5d649"
+      ]
+    ]
+  },
+  "shared_fork_parent_sha256": "4f4abd928f11dfd1d110487232e6cbc5ddda9e11e8ae7a99a58dd1b2b766c45a",
+  "control": {
+    "receipt": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/hard-started-validation-step-19000-mps.json",
+    "receipt_sha256": "40e2ba0229d66fe9209f276bd2b73bebaf9d29dfd7a1f6f812ad400a8851c841",
+    "study_manifest": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/study-manifest-restart-g9-lr025.json",
+    "study_manifest_sha256": "3e61205a193c3bdd84e9c8b4222870d20d903b81258f42aeabac6f0a0fb0fdc1",
+    "checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/run/checkpoint-surface-19000.pt",
+    "checkpoint_sha256": "eca1f2e9dec3937dc206964392b2c287a9ea4957463df059abe2cc55d28cae9f",
+    "convolution_learning_rate_multiplier": 0.25
+  },
+  "arms": [
+    {
+      "receipt": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr025/hard-started-validation-step-19000-mps.json",
+      "receipt_sha256": "fbe736ad0459002fe7d4442d3bf51dfae7a91536dfd8f98c1b318e7d9b481143",
+      "study_manifest": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/study-manifest.json",
+      "study_manifest_sha256": "455e3835641d3f98bfe2054ef45a49ecd54cac05debc6f7f1aae0b4489e1eb58",
+      "checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr025/run/checkpoint-surface-19000.pt",
+      "checkpoint_sha256": "c5906da5b3f982f567796adf36824e5e6f8252ec9f1a46d71b543e26333c25ac",
+      "convolution_learning_rate_multiplier": 0.25
+    },
+    {
+      "receipt": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr1/hard-started-validation-step-19000-mps.json",
+      "receipt_sha256": "0f94fcc097ca0201d4dfda158cdaf662d5a882dcc4a43368d6ea8e04ae3924b0",
+      "study_manifest": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/study-manifest-io-g2-lr1.json",
+      "study_manifest_sha256": "f327b82ea570efdb26b7ce20df1ee7aaf7d94db581c018863681b0b3e7dc96f9",
+      "checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr1/run/checkpoint-surface-19000.pt",
+      "checkpoint_sha256": "9f89ae594fa6d101beddee2ad4fe71a4aed8842e80b262d1edb4b9af18ed80fb",
+      "convolution_learning_rate_multiplier": 1.0
+    },
+    {
+      "receipt": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr4/hard-started-validation-step-19000-mps.json",
+      "receipt_sha256": "6e2b68eb3d001e6a881b58e55655ec84d5f888ae65f3c291ca6c506c5e00a6ca",
+      "study_manifest": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/study-manifest-io-g2-lr4.json",
+      "study_manifest_sha256": "68f0874e43c290109adbdf013750336c28b90e209b62473de3c6ff21aa74c966",
+      "checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr4/run/checkpoint-surface-19000.pt",
+      "checkpoint_sha256": "07ebb2fcc6e2fc12cefcca323f94e00f559876c6991adcf3314487a6ad04365f",
+      "convolution_learning_rate_multiplier": 4.0
+    }
+  ],
+  "validator_sha256": "6e7fb1ef4f6cd597cbd9baca95a4b5062fcb4186780c714cb9e72f560e2bc5ff",
+  "sealed_selector_sha256": "25c0c0ef689f769292b81607453e890357bf02fd1aa50107e0b23f04b5028655",
+  "exact_coverage_verified": true,
+  "final_selection_authorized": false,
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true
+}

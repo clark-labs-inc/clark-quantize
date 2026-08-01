@@ -1,0 +1,27 @@
+{
+  "format": "backdropkit-swin2sr-q4-baseline-receipt-v2",
+  "model": "Xenova/swin2SR-lightweight-x2-64",
+  "revision": "54ccc3f9ed678912a9c47dc14f6c478855380a2b",
+  "dtype": "q4",
+  "model_sha256": "b75c09757a7159f32ad279919a77fb185c3389676674cf226a467eaf2f7928f1",
+  "artifact_bytes": 5676042,
+  "bundle_manifest_sha256": "e1c59db675dbebb95a0693933878ccd605c4c0290123e6d1cebccabdb0d5da87",
+  "samples": 3040,
+  "device": "cpu",
+  "runtime_backend": "cpu",
+  "psnr_vs_ground_truth": 34.81351546310771,
+  "edge_psnr_vs_ground_truth": 38.304695551382544,
+  "psnr_vs_teacher": 46.87312852867324,
+  "psnr_gain_over_bicubic": 6.755316669494171,
+  "inference": {
+    "path": "/Users/stan/.cache/clark-quantize/swin2sr-q4-glyphsafe-v4/inference.json",
+    "sha256": "065dba00edbae393be3a5b558b19860743d94a0425b5d52c2ee6969f0cdb4055",
+    "peak_process_rss_bytes": 691306496
+  },
+  "metrics": {
+    "path": "/Users/stan/.cache/clark-quantize/swin2sr-q4-glyphsafe-v4/metrics.json",
+    "sha256": "56cbed366d53f6289a2520a4d1e825c3d0a07698a91245f8fedef41a927a1598"
+  },
+  "heldout_receipt": "experiments/browser_swin2sr/glyphsafe-heldout-receipt.json",
+  "promotion_policy": "experiments/browser_swin2sr/promotion_policy_glyphsafe_v5.json"
+}

@@ -1,0 +1,81 @@
+{
+  "format": "backdropkit-swin2sr-recovery-v1",
+  "base_checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/recovery_stage1_from_factorial24_20260729/stage1/g60__scalar__norms__teacher_heavy/checkpoint-final.pt",
+  "base_step": 5500,
+  "initial_global_step": 5000,
+  "recovery_steps_before": 500,
+  "optimizer": {
+    "name": "bonsai_qat8_muon",
+    "learning_rate": 1e-06,
+    "weight_decay": 0.0001,
+    "muon_every": 16,
+    "muon_steps": 2,
+    "scalar_lr_multiplier": 100.0,
+    "reset_from_base": false
+  },
+  "island_policy": "norms",
+  "scalar_decomposition": true,
+  "localized_stage_steps": 100,
+  "loss_recipe": "teacher_heavy",
+  "data_stream_reset_requested": true,
+  "loss_weights": {
+    "teacher": 0.72,
+    "ground_truth": 0.08,
+    "edge": 0.08,
+    "feature": 0.12
+  },
+  "feature_normalization": "l2",
+  "group_size": 60,
+  "scalar_storage_bytes": 576,
+  "sampler": {
+    "format": "backdropkit-product-source-language-v3",
+    "epoch_images": 206500,
+    "source_weights": {
+      "aria_ui": 0.15,
+      "flores200_balanced_synthetic_ui": 0.2,
+      "pd12m": 0.1,
+      "rico": 0.35,
+      "websight": 0.2
+    },
+    "source_quotas": {
+      "aria_ui": 30975,
+      "flores200_balanced_synthetic_ui": 41300,
+      "pd12m": 20650,
+      "rico": 72275,
+      "websight": 41300
+    },
+    "languages_per_source": {
+      "aria_ui": 0,
+      "flores200_balanced_synthetic_ui": 204,
+      "pd12m": 0,
+      "rico": 0,
+      "websight": 0
+    },
+    "corpus_identity": {
+      "format": "backdropkit-swin2sr-recovery-corpus-v1",
+      "datasets": [
+        {
+          "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705",
+          "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+          "images": 104500
+        },
+        {
+          "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42",
+          "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+          "images": 102000
+        }
+      ]
+    }
+  },
+  "steps": 2000,
+  "final_global_step": 7500,
+  "baseline": {
+    "psnr_vs_ground_truth": 45.05574935061102,
+    "psnr_vs_teacher": 51.93604081069031
+  },
+  "final": {
+    "psnr_vs_ground_truth": 45.56895723516747,
+    "psnr_vs_teacher": 53.10341851191583
+  },
+  "elapsed_seconds": 2020.9681975
+}

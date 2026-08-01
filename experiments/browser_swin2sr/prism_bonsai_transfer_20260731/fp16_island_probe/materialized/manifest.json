@@ -1,0 +1,142 @@
+{
+  "format": "backdropkit-swin2sr-retained-fp16-probe-v1",
+  "interpretation": "Every non-island tensor is byte-identical in tensor value to the sealed refined dense-hard state. Declared island weights are the checkpoint continuous masters rounded through IEEE FP16.",
+  "checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+  "checkpoint_sha256": "0b155f9ada8b747544ba1abb83596e160927fdc91a4c33bf36879ff3f77ce00f",
+  "checkpoint_step": 28000,
+  "canonical_manifest": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/surface_group_recovery_20260731/refined/canonical/materialization.json",
+  "canonical_manifest_sha256": "00c4028e6c2512faf894f32ca38341269d9144434fc7f25dbe954b2571432a55",
+  "canonical_dense_state": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/surface_group_recovery_20260731/refined/canonical/dense-hard.pt",
+    "file_sha256": "3f299134dc571ba18642fafdf1e449c0526c6ee5b23c3a1012ad315c1b81a810",
+    "tensor_sha256": "b00e3113b8b158876c88e37f424b1e88d133a16277c963c8f8451f65961340fb",
+    "tensors": 484,
+    "values": 1005348
+  },
+  "islands": {
+    "image_io_fp16": {
+      "island": "image_io_fp16",
+      "weight_values": 8100,
+      "modules": [
+        {
+          "name": "swin2sr.first_convolution",
+          "values": 1620,
+          "ternary_group_size": 2,
+          "ternary_code_bytes": 324,
+          "ternary_scale_bytes": 1620
+        },
+        {
+          "name": "upsample.conv",
+          "values": 6480,
+          "ternary_group_size": 2,
+          "ternary_code_bytes": 1296,
+          "ternary_scale_bytes": 6480
+        }
+      ],
+      "current_ternary_code_bytes": 1620,
+      "current_fp16_scale_bytes": 8100,
+      "retained_fp16_weight_bytes": 16200,
+      "projected_data_byte_delta": 6480,
+      "changed_weights": [
+        {
+          "name": "swin2sr.first_convolution",
+          "values": 1620,
+          "max_abs_delta_from_hard_ternary": 0.175048828125,
+          "mean_abs_delta_from_hard_ternary": 0.020202787593007088,
+          "fp16_roundtrip_exact": true
+        },
+        {
+          "name": "upsample.conv",
+          "values": 6480,
+          "max_abs_delta_from_hard_ternary": 0.08905029296875,
+          "mean_abs_delta_from_hard_ternary": 0.005100180394947529,
+          "fp16_roundtrip_exact": true
+        }
+      ],
+      "changed_tensor_count": 2,
+      "state": {
+        "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/fp16_island_probe/materialized/image_io_fp16.pt",
+        "file_sha256": "f2d3fad88e5dd3a381e632c4492ee7bc071a7423151adb1a0df1591dfbeffba9",
+        "tensor_sha256": "2f8460e3631a43b4d6dcd4a5f91bdacd02e86bc97e9b10e92970898f992cadbe",
+        "tensors": 484,
+        "values": 1005348
+      }
+    },
+    "rstb_fusion_fp16": {
+      "island": "rstb_fusion_fp16",
+      "weight_values": 129600,
+      "modules": [
+        {
+          "name": "swin2sr.encoder.stages.0.conv",
+          "values": 32400,
+          "ternary_group_size": 9,
+          "ternary_code_bytes": 6480,
+          "ternary_scale_bytes": 7200
+        },
+        {
+          "name": "swin2sr.encoder.stages.1.conv",
+          "values": 32400,
+          "ternary_group_size": 9,
+          "ternary_code_bytes": 6480,
+          "ternary_scale_bytes": 7200
+        },
+        {
+          "name": "swin2sr.encoder.stages.2.conv",
+          "values": 32400,
+          "ternary_group_size": 9,
+          "ternary_code_bytes": 6480,
+          "ternary_scale_bytes": 7200
+        },
+        {
+          "name": "swin2sr.encoder.stages.3.conv",
+          "values": 32400,
+          "ternary_group_size": 9,
+          "ternary_code_bytes": 6480,
+          "ternary_scale_bytes": 7200
+        }
+      ],
+      "current_ternary_code_bytes": 25920,
+      "current_fp16_scale_bytes": 28800,
+      "retained_fp16_weight_bytes": 259200,
+      "projected_data_byte_delta": 204480,
+      "changed_weights": [
+        {
+          "name": "swin2sr.encoder.stages.0.conv",
+          "values": 32400,
+          "max_abs_delta_from_hard_ternary": 0.21481244266033173,
+          "mean_abs_delta_from_hard_ternary": 0.024313852190971375,
+          "fp16_roundtrip_exact": true
+        },
+        {
+          "name": "swin2sr.encoder.stages.1.conv",
+          "values": 32400,
+          "max_abs_delta_from_hard_ternary": 0.1678466796875,
+          "mean_abs_delta_from_hard_ternary": 0.02245916984975338,
+          "fp16_roundtrip_exact": true
+        },
+        {
+          "name": "swin2sr.encoder.stages.2.conv",
+          "values": 32400,
+          "max_abs_delta_from_hard_ternary": 0.22556158900260925,
+          "mean_abs_delta_from_hard_ternary": 0.023940036073327065,
+          "fp16_roundtrip_exact": true
+        },
+        {
+          "name": "swin2sr.encoder.stages.3.conv",
+          "values": 32400,
+          "max_abs_delta_from_hard_ternary": 0.2543947398662567,
+          "mean_abs_delta_from_hard_ternary": 0.026521189138293266,
+          "fp16_roundtrip_exact": true
+        }
+      ],
+      "changed_tensor_count": 4,
+      "state": {
+        "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/fp16_island_probe/materialized/rstb_fusion_fp16.pt",
+        "file_sha256": "bd000569adf9be5f3e71b4645294a186166c10054c337044f961ab1958751061",
+        "tensor_sha256": "bda1e547c3f1b479f6fda9899feaeeda2f28db3d2e19a671dce6e4c70fb3f908",
+        "tensors": 484,
+        "values": 1005348
+      }
+    }
+  }
+}

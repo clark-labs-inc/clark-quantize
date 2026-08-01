@@ -1,0 +1,136 @@
+{
+  "format": "backdropkit-swin2sr-retained-precision-confirmation-decision-v1",
+  "selection_source": "three_seed_development_confirmation",
+  "study_manifest": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/study-manifest.json",
+  "study_manifest_sha256": "7e164fdc5e5f69ea806e24cf0fe9c919849a9189ede853d861e7bcd4e6c453b8",
+  "discovery_decision": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/discovery-decision.json",
+  "discovery_decision_sha256": "8eac45d84864506852f7b4253f307416e895bee370c8533c6836f5bc015f0db2",
+  "islands": {
+    "image_io_fp16": {
+      "discovery_passed": true,
+      "seed_results": {
+        "20260731": {
+          "passed": true,
+          "checks": {
+            "ground_truth_lower_95_positive": true,
+            "edge_mean_nonnegative": true,
+            "teacher_mean_nonnegative": true
+          },
+          "ground_truth_lower_95": 0.09360223690876972,
+          "ground_truth_mean": 0.09741991583573478,
+          "edge_mean": 0.08821470016132214,
+          "teacher_mean": 0.2867487897369656,
+          "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__seed20260731__fp16-vs-ternary.json",
+          "comparison_sha256": "7cb852b0834f8273cce4d89c719b488e9e39aa0672a0864a76890b101ee1434d"
+        },
+        "20260732": {
+          "passed": true,
+          "checks": {
+            "ground_truth_lower_95_positive": true,
+            "edge_mean_nonnegative": true,
+            "teacher_mean_nonnegative": true
+          },
+          "ground_truth_lower_95": 0.09500430287472236,
+          "ground_truth_mean": 0.09900743914692492,
+          "edge_mean": 0.0888417346572018,
+          "teacher_mean": 0.3001719558955942,
+          "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__seed20260732__fp16-vs-ternary.json",
+          "comparison_sha256": "3e49ff3cf8ca8ae5f6e3f60931cc3de457b40dfaed5991a5d32c4d2f61f01c74"
+        },
+        "20260733": {
+          "passed": true,
+          "checks": {
+            "ground_truth_lower_95_positive": true,
+            "edge_mean_nonnegative": true,
+            "teacher_mean_nonnegative": true
+          },
+          "ground_truth_lower_95": 0.09420453663260363,
+          "ground_truth_mean": 0.09812204045093109,
+          "edge_mean": 0.08664701741270284,
+          "teacher_mean": 0.27433196248126535,
+          "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__seed20260733__fp16-vs-ternary.json",
+          "comparison_sha256": "0b93d2c045bef9e5eee2cf5e75184f255118a8bfe4718e93d18a2a3d1128463e"
+        }
+      },
+      "passed": true,
+      "checks": {
+        "all_seed_ground_truth_lower_95_positive": true,
+        "all_seed_edge_means_nonnegative": true,
+        "all_seed_teacher_means_nonnegative": true
+      },
+      "three_seed_means": {
+        "ground_truth_mean": 0.09818313181119694,
+        "edge_mean": 0.08790115074374227,
+        "teacher_mean": 0.2870842360379417
+      }
+    },
+    "rstb_fusion_fp16": {
+      "discovery_passed": true,
+      "seed_results": {
+        "20260731": {
+          "passed": true,
+          "checks": {
+            "ground_truth_lower_95_positive": true,
+            "edge_mean_nonnegative": true,
+            "teacher_mean_nonnegative": true
+          },
+          "ground_truth_lower_95": 0.47964821221609577,
+          "ground_truth_mean": 0.49686646253900457,
+          "edge_mean": 0.4844215028025417,
+          "teacher_mean": 1.278426621139709,
+          "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__seed20260731__fp16-vs-ternary.json",
+          "comparison_sha256": "dc4c75c76e4764f94cc9adf969a7141531e557b8e047ea24c4204e91b1d37e21"
+        },
+        "20260732": {
+          "passed": true,
+          "checks": {
+            "ground_truth_lower_95_positive": true,
+            "edge_mean_nonnegative": true,
+            "teacher_mean_nonnegative": true
+          },
+          "ground_truth_lower_95": 0.4821117698914522,
+          "ground_truth_mean": 0.4992359014985063,
+          "edge_mean": 0.48746172489222084,
+          "teacher_mean": 1.2604166714364542,
+          "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__seed20260732__fp16-vs-ternary.json",
+          "comparison_sha256": "7172b4579575a7eca4411be0a3c4ca9e76d98f9e0d178be619f66e7c601b17ac"
+        },
+        "20260733": {
+          "passed": true,
+          "checks": {
+            "ground_truth_lower_95_positive": true,
+            "edge_mean_nonnegative": true,
+            "teacher_mean_nonnegative": true
+          },
+          "ground_truth_lower_95": 0.48280623836857955,
+          "ground_truth_mean": 0.5004776063668069,
+          "edge_mean": 0.487892683500038,
+          "teacher_mean": 1.2693416372638342,
+          "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__seed20260733__fp16-vs-ternary.json",
+          "comparison_sha256": "281cfc81093191ccc84a009ad738690d1d83f3f97b322313bc54bcbcdd0132ee"
+        }
+      },
+      "passed": true,
+      "checks": {
+        "all_seed_ground_truth_lower_95_positive": true,
+        "all_seed_edge_means_nonnegative": true,
+        "all_seed_teacher_means_nonnegative": true
+      },
+      "three_seed_means": {
+        "ground_truth_mean": 0.4988599901347726,
+        "edge_mean": 0.48659197039826685,
+        "teacher_mean": 1.2693949766133326
+      }
+    }
+  },
+  "supported_islands": [
+    "rstb_fusion_fp16",
+    "image_io_fp16"
+  ],
+  "selected_precision_location": "rstb_fusion_fp16",
+  "precision_location_supported": true,
+  "required_next_gate": "preregister_compression_and_runtime_study_for_selected_location",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false
+}

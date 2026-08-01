@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Upscale screenshots and images 2× with an 808 KB mixed-precision ternary Swin2SR model. WebGPU and WASM run privately in your browser."
+    />
+    <meta name="theme-color" content="#f6f3ff" />
+    <title>Clark Ternary Image Upscaler</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://huggingface.co" crossorigin />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Clark image upscaler home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>Clark <strong>Ternary</strong></span>
+      </a>
+      <div class="runtime-pill" id="runtimePill">
+        <span class="runtime-dot" aria-hidden="true"></span>
+        <span id="runtimeLabel">Preparing local AI…</span>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <p class="eyebrow">Private, browser-native super-resolution</p>
+        <h1>Tiny model. Sharper zooms.</h1>
+        <p class="hero-copy">
+          Double any screenshot or image with an 808 KB mixed-precision ternary Swin2SR model.
+          WebGPU or WASM does the work on your device—nothing is uploaded.
+        </p>
+        <div class="metrics" aria-label="Model highlights">
+          <span><strong>808 KB</strong> portable download</span>
+          <span><strong>2×</strong> width and height</span>
+          <span><strong>+3.52 dB</strong> over bicubic</span>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Image upscaler">
+        <aside class="input-panel">
+          <div
+            class="drop-zone"
+            id="dropZone"
+            role="button"
+            tabindex="0"
+            aria-label="Choose or drop an image"
+          >
+            <input id="fileInput" type="file" accept="image/*" hidden />
+            <img id="sourcePreview" alt="" hidden />
+            <div class="drop-copy" id="dropCopy">
+              <span class="drop-icon" aria-hidden="true">↗</span>
+              <h2>Drop an image here</h2>
+              <p>or choose one from your device</p>
+              <span class="choose-button">Choose image</span>
+            </div>
+            <button class="replace-button" id="replaceButton" type="button" hidden>
+              Replace image
+            </button>
+          </div>
+
+          <div class="file-summary" id="fileSummary" hidden>
+            <div>
+              <strong id="fileName">Image</strong>
+              <span id="fileDetails"></span>
+            </div>
+            <span class="privacy-chip">Stays on this device</span>
+          </div>
+
+          <div class="actions">
+            <button class="primary-button" id="runButton" type="button" disabled>
+              <span>Make it 2× sharper</span>
+              <kbd>↵</kbd>
+            </button>
+            <button class="secondary-button" id="cancelButton" type="button" hidden>
+              Cancel after this tile
+            </button>
+          </div>
+
+          <div class="progress-card" id="progressCard" aria-live="polite">
+            <div class="progress-heading">
+              <strong id="statusTitle">Local AI is warming up</strong>
+              <span id="progressPercent">0%</span>
+            </div>
+            <div
+              class="progress-track"
+              role="progressbar"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+              id="progressTrack"
+            >
+              <span id="progressFill"></span>
+            </div>
+            <p id="statusDetail">
+              The model is being cached so the first click starts faster.
+            </p>
+          </div>
+
+          <div class="examples">
+            <span>Try a benchmark image</span>
+            <div class="example-list">
+              <button type="button" data-example="./butterfly.png">
+                <img src="./butterfly.png" alt="" />
+                Butterfly
+              </button>
+              <button type="button" data-example="./baby.png">
+                <img src="./baby.png" alt="" />
+                Baby
+              </button>
+              <button type="button" data-example="./woman.png">
+                <img src="./woman.png" alt="" />
+                Woman
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <section class="results-panel">
+          <div class="result-header">
+            <div>
+              <p class="eyebrow">Live comparison</p>
+              <h2>Ordinary resize vs. Clark AI</h2>
+            </div>
+            <span id="outputDimensions">Choose an image to begin</span>
+          </div>
+
+          <div class="result-grid">
+            <article class="result-card">
+              <div class="card-label">
+                <span>Before</span>
+                <small>instant bicubic</small>
+              </div>
+              <div class="canvas-stage">
+                <canvas id="bicubicCanvas" hidden></canvas>
+                <div class="empty-state" id="bicubicEmpty">
+                  <span aria-hidden="true">□</span>
+                  <p>Your ordinary 2× preview appears immediately.</p>
+                </div>
+              </div>
+              <button
+                class="download-button"
+                id="downloadBicubic"
+                type="button"
+                disabled
+              >
+                Download bicubic PNG
+              </button>
+            </article>
+
+            <article class="result-card result-card-ai">
+              <div class="card-label">
+                <span>After</span>
+                <small>Clark Ternary</small>
+              </div>
+              <div class="canvas-stage">
+                <canvas id="modelCanvas" hidden></canvas>
+                <div class="empty-state" id="modelEmpty">
+                  <span aria-hidden="true">✦</span>
+                  <p>The sharper result will draw tile by tile.</p>
+                </div>
+                <div class="tile-progress" id="tileProgress" hidden>
+                  <span></span>
+                </div>
+              </div>
+              <button
+                class="download-button download-button-primary"
+                id="downloadModel"
+                type="button"
+                disabled
+              >
+                Download Clark PNG
+              </button>
+            </article>
+          </div>
+
+          <p class="result-note">
+            File size does not determine processing time—pixel dimensions do.
+            Large images remain responsive because completed tiles appear as
+            they finish.
+          </p>
+        </section>
+      </section>
+    </main>
+
+    <footer>
+      <span>No upload · No watermark · Apache 2.0</span>
+      <nav aria-label="Product links">
+        <a
+          href="https://huggingface.co/clark-labs/clark-swin2sr-lightweight-x2-1.58bit"
+          target="_blank"
+          rel="noreferrer"
+        >Model details</a>
+        <a href="https://backdropkit.com" target="_blank" rel="noreferrer"
+        >Made for BackdropKit</a>
+        <a href="https://clarkchat.com" target="_blank" rel="noreferrer"
+        >Agentic work with Clark</a>
+      </nav>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    <script type="module" src="./app.js?v=20260801-worker1"></script>
+  </body>
+</html>

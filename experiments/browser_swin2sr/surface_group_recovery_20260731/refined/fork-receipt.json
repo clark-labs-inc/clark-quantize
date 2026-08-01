@@ -1,0 +1,30 @@
+{
+  "format": "backdropkit-swin2sr-surface-group-map-fork-v1",
+  "created_at": "2026-07-31T15:38:06.029731+00:00",
+  "parent_checkpoint": "experiments/browser_swin2sr/pixel_objective_probe_20260731/psnr_aligned/run/checkpoint-final.pt",
+  "parent_checkpoint_sha256": "6653ad2dd9d65f5c9c4290b2f85be37f59f67a84f8750b3415ddf03c5d30994a",
+  "fork_checkpoint": "experiments/browser_swin2sr/surface_group_recovery_20260731/refined/fork-step26000.pt",
+  "fork_checkpoint_sha256": "33f72f6df755e8655a00e6ce350b819cefa54105d63f15a34ce078d4fa417d56",
+  "surface_step": 26000,
+  "previous_surface_group_sizes": {
+    "swin2sr.first_convolution": 2,
+    "upsample.conv": 2
+  },
+  "added_surface_group_sizes": {
+    "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.3.layers.2.attention.output.dense": 3
+  },
+  "surface_group_sizes": {
+    "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.3.layers.2.attention.output.dense": 3,
+    "swin2sr.first_convolution": 2,
+    "upsample.conv": 2
+  },
+  "training_state_sha256": {
+    "model": "46ee2588950882c7bd47f1f7eb8062e2885b57b82a69169eab5ef86afadeccc1",
+    "optimizer_state": "54bd67841fc37f92e42c1d284c56faf645ca2ded688a4bc7e62cedddad748854",
+    "run_state": "29c9727ad2a30fba16734a7aefdc708b9199b272c574d3b193202243f24bc65b"
+  }
+}

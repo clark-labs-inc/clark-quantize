@@ -1,0 +1,82 @@
+{
+  "format": "backdropkit-swin2sr-core-recovery-quality-audit-v4",
+  "status": "sealed_after_device_projection_root_cause",
+  "selection_source": "retrospective_inventory_audit",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false,
+  "scientific_limit": "The historical candidate was discovered retrospectively. V4 may package it only when MPS reconstruction exactly matches the evaluated 484-tensor state before any affine payload is written.",
+  "failed_predecessors": [
+    "core_recovery_quality_audit_20260731/PRESEAL_FAILURE.md",
+    "core_recovery_quality_audit_v2_20260731/PRESEAL_FAILURE.md",
+    "core_recovery_quality_audit_v3_20260731/PRESEAL_FAILURE.md"
+  ],
+  "candidate": {
+    "checkpoint": "recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/checkpoint-final.pt",
+    "checkpoint_sha256": "a1d9b2d778c3269e22df6f4c61d96bf9c02e94280810299f013392cbf18fe3a1",
+    "evaluated_state": "recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/swin2sr-ternary-hard.pt",
+    "evaluated_state_sha256": "84a368122fcf96c590258aa1c970813f62c077b2583e200935c95037ec076c4f",
+    "evaluated_tensor_sha256": "4874a6d937b9c3a1d068a3f4ca57f757a9faf68dc0bc8314bb6ca17900e7799d",
+    "development_report": "recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/heldout/metrics.json",
+    "development_report_sha256": "f26e9aa36eff9f9705b2e60322e6ffd2ad3e4b02cf7405418be92408562e26c1",
+    "samples": 3040,
+    "quantized_surfaces": 144,
+    "representation": "affine_ternary_core_plus_raw_fp16_remainder",
+    "psnr_vs_ground_truth": 35.260167986357786,
+    "edge_psnr_vs_ground_truth": 38.73729056736683,
+    "psnr_vs_teacher": 45.61033377927307
+  },
+  "q4_deltas": {
+    "q4_report": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+    "q4_report_sha256": "d54b7ced6bdfb77ea278a50bccde0b41dbf402cac3dc04aa629b66ea75476e0d",
+    "psnr_vs_ground_truth": 0.3365219334698111,
+    "edge_psnr_vs_ground_truth": 0.30407147649813737,
+    "psnr_vs_teacher": -1.3224657770032877,
+    "policy_result": "ground_truth_edge_and_all_strata_pass_but_teacher_fidelity_fails"
+  },
+  "source_sha256": {
+    "materialize_core_recovery_checkpoint.py": "363e85115a21463af6da5f19216eaac137da2f677a658b7d51b6d2859284a868",
+    "export_browser_artifact.py": "7dab0d8a74c4bb236728274e15fff544cf62b0eb0c02f82401c6a957ae8300f9",
+    "verify_browser_artifact.py": "b7e3e040d2028271cd33dd63a560ff78b027b7cdd0407b807c893e83cbf59400",
+    "artifact_ledger.py": "aecbee8a3a175fbaa8a4de6c1cb834c4caae55b552cf8d7e895b154995bb7152",
+    "runtime/src/artifact.rs": "89c491ae17b492d92458289bbbe7b3006424a575e409de1f80650e1115e7efcb",
+    "runtime/src/lib.rs": "a9214d92d80996f87ef9d7614438f39a99cf41e81344e012a2685745a13c5281",
+    "runtime/src/model.rs": "280f9929353c205d5c0578a4ced30413d293e2ff64cf7fc42be73868eb4235c4"
+  },
+  "materialization_command": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "materialize_core_recovery_checkpoint.py",
+    "recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/checkpoint-final.pt",
+    "--evaluated-state",
+    "recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/swin2sr-ternary-hard.pt",
+    "--out",
+    "core_recovery_quality_audit_v4_20260731/browser_materialized",
+    "--source-device",
+    "mps"
+  ],
+  "artifact_command": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "export_browser_artifact.py",
+    "core_recovery_quality_audit_v4_20260731/browser_materialized/materialization.json",
+    "--out",
+    "core_recovery_quality_audit_v4_20260731/browser_artifact"
+  ],
+  "python_conformance_command": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "verify_browser_artifact.py",
+    "core_recovery_quality_audit_v4_20260731/browser_artifact",
+    "--reference-state",
+    "core_recovery_quality_audit_v4_20260731/browser_materialized/dense-hard.pt",
+    "--out",
+    "core_recovery_quality_audit_v4_20260731/python-conformance.json",
+    "--device",
+    "cpu"
+  ],
+  "required_next_gates": [
+    "exact_evaluated_tensor_identity",
+    "python_packed_conformance",
+    "native_runtime_conformance",
+    "browser_wasm_conformance",
+    "visual_regression_for_teacher_fidelity_loss"
+  ]
+}

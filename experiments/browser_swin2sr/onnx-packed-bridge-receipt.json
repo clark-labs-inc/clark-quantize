@@ -1,0 +1,43 @@
+{
+  "date": "2026-07-29",
+  "purpose": "portable standard-ONNX proof for a Swin2SR-shaped packed ternary projection",
+  "shape": {
+    "batch": 3,
+    "in_features": 120,
+    "out_features": 60,
+    "group_size": 60
+  },
+  "artifact": {
+    "model_bytes": 8099,
+    "model_sha256": "44c19c01cd3731cbae0eb649752c443555636696a33e8fcd60aa9012f4263d93",
+    "fixture_sha256": "bb3b1ab40416fc57e7476e8e6f43aeb420bf8e96b4b6fa0fa450be96facdef97",
+    "packed_code_bytes": 1440,
+    "scale_bytes": 240,
+    "weight_bits_per_value_including_scales": 1.8666666666666667
+  },
+  "environment": {
+    "os": "macOS 26.4.1 arm64",
+    "browser": "Codex in-app Chromium",
+    "navigator_gpu": true,
+    "onnxruntime_web": "1.26.0-dev.20260416-b7804b056c"
+  },
+  "webgpu": {
+    "session_ms": 70.80000007152557,
+    "cold_inference_ms": 5.799999952316284,
+    "median_warm_inference_ms": 1.399999976158142,
+    "p90_warm_inference_ms": 4.300000071525574,
+    "max_absolute_error": 2.384185791015625e-7
+  },
+  "wasm": {
+    "session_ms": 3.600000023841858,
+    "cold_inference_ms": 0.20000004768371582,
+    "median_warm_inference_ms": 0,
+    "p90_warm_inference_ms": 0.10000002384185791,
+    "max_absolute_error": 2.384185791015625e-7
+  },
+  "limitations": [
+    "This is one real Swin-shaped linear projection, not the complete Swin2SR graph.",
+    "The standard-ONNX bridge reconstructs dense weights at session initialization.",
+    "Steady-state packed execution still requires the native WebGPU or WASM ternary kernel."
+  ]
+}

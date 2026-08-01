@@ -1,0 +1,94 @@
+{
+  "format": "backdropkit-swin2sr-hard-started-validation-v1",
+  "diagnostic_only": true,
+  "interpretation": "At each checkpoint, every surface whose scheduled transition had started was forced to amount=1 while future surfaces remained dense. This measures the branch trained by hard-shadow loss and is not a final all-surface quality evaluation.",
+  "device": "cpu",
+  "crop_size": 128,
+  "validation_files": [
+    {
+      "path": "/Users/stan/Documents/git/clark-desktop/promos/source-ui-composer-current.png",
+      "sha256": "27bb60639781d97b623ce94c5e6944fc0243fbde5efb0bcbf3b60e1cfe967c34"
+    },
+    {
+      "path": "/Users/stan/Documents/git/clark-desktop/promos/source-ui-chat-current.png",
+      "sha256": "f3f8ea752eeab6a1c5e8e9a36d7a22c9cb91cd83203f91ae7014f085fa3419c0"
+    },
+    {
+      "path": "/Users/stan/Documents/git/clark-desktop/promos/source-ui-research-current.png",
+      "sha256": "c012b92f05bd0d20fbda5e4fb16931f3a1800dbc854cdb98f26e35edf80c05d8"
+    },
+    {
+      "path": "/Users/stan/Documents/git/clark-desktop/promos/clark-code-ad-parallel-research-vertical-poster.png",
+      "sha256": "73e7bd7af4f848200d4d9585c4b8a32fb905d8e5e493ef44c1d144c572e5d649"
+    }
+  ],
+  "source_files": {
+    "data_pipeline.py": "8dd9a33ef886c97fe70a33db01612112a545ba8b7e3243de2ea9e040cd8c7671",
+    "surface_curriculum.py": "ac56e6d06ca0a1adc21ba8c98d6f2187d2ccc361a61c973ca6d06ed3c23a822b",
+    "surface_quantization.py": "3da350a00cb6107b30358ee906a19a45e32999de3b8ec1182c3a271e2da16b6b",
+    "train_swin2sr_qat.py": "f4730dca84e5c3cdacc607b603abaf4e7b8575877689f43a717ab3075b34b87d"
+  },
+  "checkpoints": [
+    {
+      "surface_step": 1000,
+      "checkpoint_sha256": "0a34985adfbaee2784b16e3c5cb3366c8b7141fd6d76efc13b910d9b5755dfea",
+      "started_surfaces": 96,
+      "transitioning_surfaces": 96,
+      "fully_hard_surfaces": 0,
+      "blended": {
+        "psnr_vs_ground_truth": 48.85672292359456,
+        "psnr_vs_teacher": 73.04577608524399
+      },
+      "hard_started": {
+        "psnr_vs_ground_truth": 38.340808871445645,
+        "psnr_vs_teacher": 41.37842426281971
+      }
+    },
+    {
+      "surface_step": 2000,
+      "checkpoint_sha256": "c1594189993660f3a8bf3233f81afc4e26d06fb337bf1b339ba89a7477cfbc4d",
+      "started_surfaces": 96,
+      "transitioning_surfaces": 96,
+      "fully_hard_surfaces": 0,
+      "blended": {
+        "psnr_vs_ground_truth": 47.50908278391229,
+        "psnr_vs_teacher": 61.36669578173348
+      },
+      "hard_started": {
+        "psnr_vs_ground_truth": 40.496534163303764,
+        "psnr_vs_teacher": 44.78510754780254
+      }
+    },
+    {
+      "surface_step": 3000,
+      "checkpoint_sha256": "42bbbafcaa21bff5c4f808b1be9b9a087fa8e8df886c81712ce9cefb2b174afa",
+      "started_surfaces": 144,
+      "transitioning_surfaces": 144,
+      "fully_hard_surfaces": 0,
+      "blended": {
+        "psnr_vs_ground_truth": 45.11458708026561,
+        "psnr_vs_teacher": 53.09879679622524
+      },
+      "hard_started": {
+        "psnr_vs_ground_truth": 36.42926407062172,
+        "psnr_vs_teacher": 38.45914731187227
+      }
+    },
+    {
+      "surface_step": 4000,
+      "checkpoint_sha256": "7917f25182c6d2795605aa9827b3ccd606fc9a3715e710f5acf96f68e6fab250",
+      "started_surfaces": 144,
+      "transitioning_surfaces": 48,
+      "fully_hard_surfaces": 96,
+      "blended": {
+        "psnr_vs_ground_truth": 44.410488374595204,
+        "psnr_vs_teacher": 50.490789043846576
+      },
+      "hard_started": {
+        "psnr_vs_ground_truth": 38.229956387582284,
+        "psnr_vs_teacher": 40.94531474429125
+      }
+    }
+  ],
+  "conclusion": "The attention-only hard branch improved from step 1000 to 2000. Starting the additional core surfaces caused a temporary hard-branch drop at step 3000, followed by recovery at step 4000 after all 96 attention surfaces became fully hard. The branch remains far below the dense teacher and is not promotable, but it does not show the one-way endpoint collapse seen in the rejected soft-only curriculum."
+}

@@ -1,0 +1,97 @@
+{
+  "date": "2026-07-30",
+  "purpose": "complete browser-graph portability proof for every quantized Swin2SR matrix and convolution surface",
+  "promotion_status": "infrastructure-only; generated from an untrained hard full-surface smoke state",
+  "artifact": {
+    "scope": "all_matrix_and_conv",
+    "quantization_method": "absmean",
+    "group_size": 60,
+    "ternary_tensors": 204,
+    "ternary_values": 977604,
+    "tensor_local_hadamard_transforms": 144,
+    "packed_code_bytes": 195540,
+    "scale_bytes": 32670,
+    "weight_bits_per_value_including_scales": 1.8675046337780943,
+    "model_bytes": 4807898,
+    "model_sha256": "b19134d6285e33c448a0933e63794351624a20dca09f92e74e813a13d0311724",
+    "hard_state_sha256": "417551d993913ee2d6ebe721f637da12fb7b7c599ba5e9a0efa6f604c398b0ea",
+    "base_onnx_sha256": "c2abbfe0cc8e685b5e11964970f8ebe3d24072e904fd5545a30ac31ec1e110db",
+    "fixture_sha256": "743cf30a4f340f7a6a46d0243db14233e7dd5e9763f0d7f3b5bd575c3b64a0df",
+    "onnx_checker": "passed"
+  },
+  "size_comparison": {
+    "shipped_q4_total_bytes": 5676042,
+    "bytes_saved": 868144,
+    "percent_smaller": 15.294883300722582
+  },
+  "fixture": {
+    "input_shape": [1, 3, 64, 64],
+    "output_shape": [1, 3, 128, 128],
+    "reference": "PyTorch hard effective-state reconstruction"
+  },
+  "environment": {
+    "os": "macOS 26.4.1 arm64",
+    "browser": "Codex in-app Chromium",
+    "navigator_gpu": true,
+    "onnxruntime_web": "1.26.0-dev.20260416-b7804b056c",
+    "wasm_threads": 1
+  },
+  "webgpu": {
+    "session_ms": 4706.600000023842,
+    "inference_ms": [632.8999999761581, 84.0, 72.60000002384186],
+    "max_absolute_error": 0.00009319186210632324,
+    "mean_absolute_error": 0.00001790733585949056,
+    "passed": true
+  },
+  "wasm": {
+    "session_ms": 4135.699999928474,
+    "inference_ms": [389.10000002384186, 392.5, 401.6999999284744],
+    "max_absolute_error": 0.00009307265281677246,
+    "mean_absolute_error": 0.00001790705482562771,
+    "passed": true
+  },
+  "cached_repeat": {
+    "webgpu": {
+      "session_ms": 3301.6999999284744,
+      "inference_ms": [82.20000004768372, 33.59999990463257, 39.700000047683716],
+      "js_heap_bytes": {
+        "before_session": 12980582,
+        "after_session": 13685472,
+        "after_inference": 14579280
+      }
+    },
+    "wasm": {
+      "session_ms": 3820.8000000715256,
+      "inference_ms": [376.5, 377.5, 383.39999997615814],
+      "js_heap_bytes": {
+        "before_session": 14579280,
+        "after_session": 16286932,
+        "after_inference": 16988892
+      }
+    },
+    "memory_scope": "performance.memory JavaScript heap only; excludes WebAssembly linear memory and GPU allocations"
+  },
+  "representative_128_crop": {
+    "input_shape": [1, 3, 128, 128],
+    "output_shape": [1, 3, 256, 256],
+    "webgpu": {
+      "session_ms": 2899.600000023842,
+      "inference_ms": [158.0, 118.19999992847443, 169.80000007152557],
+      "maximum_absolute_error": 0.00009560585021972656,
+      "mean_absolute_error": 0.000018094558678664423,
+      "passed": true
+    },
+    "wasm": {
+      "session_ms": 3342.399999976158,
+      "inference_ms": [1405.6000000238419, 1462.7999999523163, 1439.0],
+      "maximum_absolute_error": 0.00009560585021972656,
+      "mean_absolute_error": 0.000018094412932138464,
+      "passed": true
+    }
+  },
+  "limitations": [
+    "The source state is deliberately untrained and proves infrastructure only, not visual quality.",
+    "The eventual held-out quality winner must pass the same artifact, WebGPU, and WASM checks.",
+    "Safari, Firefox, iOS Safari, and Android Chrome still require direct device or browser receipts."
+  ]
+}

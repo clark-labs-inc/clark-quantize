@@ -1,0 +1,57 @@
+{
+  "format": "backdropkit-swin2sr-int7-island-qat-v1",
+  "status": "sealed_before_training_results",
+  "created_at": "2026-08-01",
+  "selection_source": "development_only",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "hypothesis": "Training through the exact packed int7 per-output forward boundary will recover the small post-training-quantization loss while preserving the 83.54 percent hard-ternary core and the sensitive image-I/O FP16 island.",
+  "parent_checkpoint": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_fp16_seed20260801/run/checkpoint-island-4000.pt",
+  "parent_checkpoint_sha256": "4927fc3a5d6cd81c651b0bc50cee05fe25bd4bac1196bbe050e63b0aa94bcc6f",
+  "deployed_start": {
+    "materialization": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_per_output/materialized/dense-hard.pt",
+    "materialization_sha256": "308b7fc0de513a4983563d519219c100ff8f13bb0a5143d5cd3e1d4204d2a612",
+    "development_psnr_db": 34.307506301938034,
+    "edge_psnr_db": 37.873078710714445,
+    "teacher_psnr_db": 41.70367931075755,
+    "initialization_tensors_compared": 4,
+    "initialization_different_tensors": 0,
+    "initialization_max_abs": 0.0
+  },
+  "arm": {
+    "name": "rstb_int7_qat_seed20260803",
+    "island": "rstb_fusion_fp16",
+    "precision": "int7",
+    "bit_width": 7,
+    "granularity": "per_output",
+    "scale_dtype": "float16",
+    "seed": 20260803,
+    "steps": 4000,
+    "physical_batch": 8,
+    "learning_rate": 0.000001,
+    "optimizer": "adamw",
+    "weight_decay": 0.0001,
+    "gradient_clip_norm": 1.0,
+    "validate_every": 500,
+    "checkpoint_every": 500,
+    "device": "mps",
+    "trainable_values": 129600,
+    "run_directory": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_int7_qat_seed20260803/run"
+  },
+  "frozen_scope": {
+    "hard_ternary_surfaces": 198,
+    "image_io_fp16_values": 8100,
+    "trainable_rstb_int7_values": 129600
+  },
+  "training_data": {
+    "images": 206500,
+    "languages": 204,
+    "roots": [
+      "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+      "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2"
+    ]
+  },
+  "early_gate": "Continue after step 500 when gradients are finite and deployed int7 live validation is above its exact start. Stop an identical negative trajectory early.",
+  "development_gate": "Beat 34.307506302 dB on the complete 3,040-sample locked development bundle and preserve every source, split, script, and language aggregate on ground-truth, edge, and teacher metrics.",
+  "artifact_gate": "Materialize and reload the int7 checkpoint exactly, then pass the existing browser-v4 scalar and SIMD packed-runtime conformance gates before any promotion."
+}

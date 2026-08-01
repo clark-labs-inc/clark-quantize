@@ -1,0 +1,197 @@
+{
+  "format": "clark-seedance-action-video-comparison-v1",
+  "provenance": {
+    "generator": "ByteDance Seedance 2.0",
+    "public_prediction": "https://replicate.com/p/wckk6zjh01rmt0cxdt09fmsdzw",
+    "prompt": "A golden retriever puppy chasing butterflies through a sunlit meadow, soft bokeh background, cinematic camera slowly tracking the puppy",
+    "seed": 42,
+    "source_sha256": "463cfa3152b7e14b2ed0b7e28e9c08112addb79387207ec519e0cdb27c392df6",
+    "deterministic_overlay": "BackdropKit-style product HUD added before downsampling"
+  },
+  "comparison_contract": {
+    "reference": "1280x720 at 24 fps",
+    "real_input": "640x360 Lanczos downsample encoded before either scaler",
+    "bicubic": "ffmpeg bicubic x2 from the decoded real input",
+    "clark": "RGB student x2 from the same decoded real input",
+    "reference_visibility": "held out for metrics; shown only in the labeled still",
+    "detail_crop": [
+      320,
+      80,
+      960,
+      720
+    ]
+  },
+  "metrics": {
+    "frames": 120,
+    "bicubic_psnr_db": 32.48194362681381,
+    "clark_psnr_db": 33.1853086395635,
+    "bicubic_edge_psnr_db": 17.986099802432612,
+    "clark_edge_psnr_db": 20.658625088551315,
+    "bicubic_temporal_psnr_db": 38.51974729131179,
+    "clark_temporal_psnr_db": 37.59777600502855,
+    "psnr_gain_db": 0.7033650127496927,
+    "edge_gain_db": 2.6725252861187023,
+    "temporal_gain_db": -0.9219712862832381
+  },
+  "compressed_200p_stress_test": {
+    "contract": {
+      "held_out_target": "712x400 Lanczos derivative of the 720p reference",
+      "real_input": "356x200 H.264 CRF 32 derivative of the held-out target",
+      "bicubic": "bicubic x2 from the decoded compressed input",
+      "clark": "RGB student x2 from the same decoded compressed input",
+      "detail_crop": [
+        178,
+        40,
+        534,
+        396
+      ]
+    },
+    "metrics": {
+      "frames": 120,
+      "bicubic_psnr_db": 27.054195282516254,
+      "clark_psnr_db": 27.16942725613512,
+      "bicubic_edge_psnr_db": 14.915267531533388,
+      "clark_edge_psnr_db": 16.137056743493964,
+      "bicubic_temporal_psnr_db": 27.891167750451412,
+      "clark_temporal_psnr_db": 27.74449677630969,
+      "psnr_gain_db": 0.11523197361886517,
+      "edge_gain_db": 1.2217892119605764,
+      "temporal_gain_db": -0.14667097414172403
+    }
+  },
+  "compressed_200px_wide_stress_test": {
+    "contract": {
+      "held_out_target": "400x224 Lanczos derivative of the 720p reference",
+      "real_input": "200x112 H.264 CRF 36 derivative of the held-out target",
+      "bicubic": "bicubic x2 from the decoded compressed input",
+      "clark": "RGB student x2 from the same decoded compressed input",
+      "display": "source nearest-neighbor 4x; x2 outputs nearest-neighbor 2x"
+    },
+    "metrics": {
+      "frames": 120,
+      "bicubic_psnr_db": 23.383082163063655,
+      "clark_psnr_db": 23.33781800943331,
+      "bicubic_edge_psnr_db": 12.296378722776026,
+      "clark_edge_psnr_db": 12.537776923891721,
+      "bicubic_temporal_psnr_db": 24.784364514745608,
+      "clark_temporal_psnr_db": 24.665802563480675,
+      "psnr_gain_db": -0.045264153630345305,
+      "edge_gain_db": 0.241398201115695,
+      "temporal_gain_db": -0.11856195126493319
+    }
+  },
+  "artifacts": {
+    "examples/seedance-action/seedance-2-action-original-720p.mp4": {
+      "bytes": 1950352,
+      "sha256": "463cfa3152b7e14b2ed0b7e28e9c08112addb79387207ec519e0cdb27c392df6"
+    },
+    "examples/seedance-action/seedance-2-action-product-reference-720p.mp4": {
+      "bytes": 7603928,
+      "sha256": "66f8d1fdef2dcf670f0a3d348aa97d8dd3f89f2e63e7ff7c5f8acff7af723ea8"
+    },
+    "examples/seedance-action/seedance-2-action-real-input-360p.mp4": {
+      "bytes": 2725824,
+      "sha256": "56dad33586e1177c560df06d9a1c7f3a8e9f74ba76a2b4a677fe3a5775b3a197"
+    },
+    "examples/seedance-action/seedance-2-action-bicubic-x2-720p.mp4": {
+      "bytes": 7930126,
+      "sha256": "8dcaf905d44342e20439230519dfa5f1d8dc93eb72aaa69c26982b098808d8fe"
+    },
+    "examples/seedance-action/seedance-2-action-clark-x2-720p.mp4": {
+      "bytes": 8684658,
+      "sha256": "13db9356c8bceb5e505c44da440d639dd77f3bf9dc4c6ff0bca19202cbb3d56f"
+    },
+    "examples/seedance-action/seedance-2-action-native-triptych.mp4": {
+      "bytes": 15991637,
+      "sha256": "58e63eebf821a3847c9f5c750a59ae91e2df2cfbc21011e4e43b555034a3794c"
+    },
+    "examples/seedance-action/seedance-2-action-triptych-web.mp4": {
+      "bytes": 2097711,
+      "sha256": "7929903161bc142cc00b38ee98aa46709402d9fb62480b9e600e092450ddece0"
+    },
+    "examples/seedance-action/seedance-2-action-detail-triptych.mp4": {
+      "bytes": 8071264,
+      "sha256": "443dc432ccaab00a9f184db0357b63bf84f6171835059b0916649613b616c325"
+    },
+    "examples/seedance-action/seedance-2-action-still-comparison.png": {
+      "bytes": 1466704,
+      "sha256": "7fe2c5ab60b908c4edc70bba628f2ff8416119623a6285e0a9e2e955c5030a9f"
+    },
+    "examples/seedance-action/seedance-2-action-held-out-target-400p.mp4": {
+      "bytes": 3477618,
+      "sha256": "32056e44072343e2fe810e4c9409e7db873d5ba3a2d2eaab4fb442d53fcb5dba"
+    },
+    "examples/seedance-action/seedance-2-action-real-input-200p-crf32.mp4": {
+      "bytes": 178923,
+      "sha256": "e567e6ac578df172b0fb284024daeafbca4933c1f3c6d14255ea78a8113f87c9"
+    },
+    "examples/seedance-action/seedance-2-action-bicubic-x2-400p.mp4": {
+      "bytes": 2817918,
+      "sha256": "eb6332f5882e073f7c03b6f2806dde8bf1d173a790331b16208aa6b8adef8854"
+    },
+    "examples/seedance-action/seedance-2-action-clark-x2-400p.mp4": {
+      "bytes": 3238010,
+      "sha256": "5fa6e7224e16bed5b618d513e0b170a7041b3e3539515cbc721ab6e49118ea48"
+    },
+    "examples/seedance-action/seedance-2-action-200p-triptych.mp4": {
+      "bytes": 5757707,
+      "sha256": "443baf33a4d7e62455eff9dd15d5e78ec68967323cbb0d34595ad56f592f6ae8"
+    },
+    "examples/seedance-action/seedance-2-action-200p-triptych-web.mp4": {
+      "bytes": 2354114,
+      "sha256": "5bc770f3f01fcc27e4863f1b6c35726fb396b79f507869463473322b1361542b"
+    },
+    "examples/seedance-action/seedance-2-action-200p-magnified-detail.mp4": {
+      "bytes": 9174520,
+      "sha256": "4f57efcca0733fd60af72f6924bfc4918ac5e9b082878ea638b2ee0ca53ebdfe"
+    },
+    "examples/seedance-action/seedance-2-action-200p-before-after.mp4": {
+      "bytes": 4111587,
+      "sha256": "e324d9ac8435785d7acfbbf7394f50e268ee03b6f65fd743384f98f64248f6b9"
+    },
+    "examples/seedance-action/seedance-2-action-200p-before-after-magnified.mp4": {
+      "bytes": 5885886,
+      "sha256": "323220e13fa01cfe7f89dcbc376011dfea87e5f7dc093cf9eab77e4a74231875"
+    },
+    "examples/seedance-action/seedance-2-action-200p-before-after-poster.png": {
+      "bytes": 604436,
+      "sha256": "623a7a89cfd43eca6ec0d5573236d888f58287e05eafe189abd492980483bbc0"
+    },
+    "examples/seedance-action/seedance-2-action-held-out-target-400px.mp4": {
+      "bytes": 1401259,
+      "sha256": "065becf9e62e0456beb7d6474aa305761919e0b966abdc9cda3ddbb8302928e9"
+    },
+    "examples/seedance-action/seedance-2-action-real-input-200px-crf36.mp4": {
+      "bytes": 127966,
+      "sha256": "503e06db4b6e92a0f658d5acb0ad334c5f251d4d1e5bf22fe1993cfd0822e7ab"
+    },
+    "examples/seedance-action/seedance-2-action-bicubic-x2-400px.mp4": {
+      "bytes": 1091381,
+      "sha256": "e09c6ff8d6535ccd0e8e1304e503bc3907251bdd9a71af5bb6139d12bd8ab868"
+    },
+    "examples/seedance-action/seedance-2-action-clark-x2-400px.mp4": {
+      "bytes": 1280429,
+      "sha256": "fc1f637292f725a7416479be08ae6eb879ac4584bf8be3fa9d949d521aa8ba68"
+    },
+    "examples/seedance-action/seedance-2-action-200px-triptych.mp4": {
+      "bytes": 5677963,
+      "sha256": "2d999796f28d5367789a65fb0393ac58d7f6d0ebe0a7c35197fcc40b4d8804c7"
+    },
+    "examples/seedance-action/seedance-2-action-200px-before-after.mp4": {
+      "bytes": 3661573,
+      "sha256": "60f66dc27de71c8ea08866043df3fbc6231cb6e1606587bc5ae5233fdce0ee9d"
+    },
+    "examples/seedance-action/seedance-2-action-200px-before-after-poster.png": {
+      "bytes": 411935,
+      "sha256": "57fef502d505a204b2ad06feba3a99c899417850650709c3844342bea739c165"
+    },
+    "examples/seedance-action/seedance-2-action-200px-wipe.mp4": {
+      "bytes": 1978956,
+      "sha256": "b24fc83fca9ac2c616c89bcd48f85f98bee819e2fc00917b7206855e45c2b3d6"
+    },
+    "examples/seedance-action/seedance-2-action-200px-wipe-poster.png": {
+      "bytes": 233801,
+      "sha256": "91bfb43a0de46fcd5022025ef49f98e90f366332228b7aab4a744e84dd23563f"
+    }
+  }
+}

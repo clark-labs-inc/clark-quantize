@@ -1,0 +1,27 @@
+{
+  "format": "backdropkit-swin2sr-stage2-source-gate-v1",
+  "reset_data_stream_required": true,
+  "source_files": {
+    "launch_recovery_full_surface_after_stage1.sh": "0cba1408ba43be3b299a2150e75b030dd181aac74ba1e68749fadaf0ba8cb44d",
+    "recovery_corpus_identity.py": "715b2c52d10a5e163cbb262c85ebb2d90ae1947ae5d1e7b45c4e196f4d0dfed5",
+    "recovery_data.py": "caa88a8f9151d2648e8af24d3da712f418e24bebb5d0fedd724b35cb14d29005",
+    "recovery_resume_policy.py": "221007e3b071db75cf2e2b24f2cade6be4c13337b0b8f344551f43d80aecac9e",
+    "run_recovery_factorial.py": "a20466a82dea01df6ee952f82c087536e6915b7b4c483fd3d503420f6b88f07f",
+    "seal_stage2_source.py": "48eba7d0d8f79ad0150b529247e4d6581cb10c78e858c744ff3e8960975a9035",
+    "train_swin2sr_recovery.py": "8ab403888ac5ae0348f3b46a946b8398c124f08eeafd93fe7da22331be1c6ad9",
+    "training_data_contract.py": "6c52ae4fd0a16ff6749701704cfc33f54943ab22180a8e2e7991fde4a9ed5c3b",
+    "validate_training_corpus.py": "996cc85527b7b81023269417d26731e64193044818f599b57889ecd314a6ba8a"
+  },
+  "stage1_manifest": "experiments/browser_swin2sr/recovery_stage1_from_factorial24_20260729/stage1-study-manifest.json",
+  "stage1_manifest_sha256": "a026891f77bcb81f922564a8239c261a4092adfd774582262e1b5b7c4eb4da8d",
+  "stage1_summary": "experiments/browser_swin2sr/recovery_stage1_from_factorial24_20260729/stage1-summary.json",
+  "stage1_summary_sha256": "9a57a36c8c141ab5f67faca8853ec87941f21004574a10710a6610c3e5453426",
+  "stage1_training_roots": [
+    "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+    "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-v1"
+  ],
+  "stage2_training_manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+  "stage2_training_receipt": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/validation-receipt.json",
+  "stage2_training_receipt_sha256": "9d92dc99cf3066d9530826ad1de0458471041f6bfc23350fdc8d5b4a7cc22e5f",
+  "stage2_training_root": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2"
+}

@@ -1,0 +1,3554 @@
+{
+  "format": "backdropkit-swin2sr-gradient-group-sensitivity-v1",
+  "diagnostic_only": true,
+  "selection_source": "development_screen",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "method": "First-order task-loss change from the current hard projection to a finer ternary scale group, evaluated at the selected g2 checkpoint. Negative candidate-minus-current loss is favorable.",
+  "checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+  "checkpoint_sha256": "ad5e76db8c378c16da689a4cf37d96eb6e204f7b9de543199efc103c0d371469",
+  "surface_step": 24000,
+  "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "bundle_manifest_sha256": "e35334e5c567d7c6c9212eb2008507e73f6e0a3b17c041abbefb3bd82e59720d",
+  "device": "cpu",
+  "torch_threads": 1,
+  "target_group_size": 2,
+  "sample_count": 8,
+  "samples": [
+    {
+      "sha256": "27428cfb08bf4f27add4deb9c6f5c29a96d75df867dbcc2d08816cbac1f92f63",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ace_Arab"
+    },
+    {
+      "sha256": "0c6e64812e39537b6c42c0f3c672915778b930c48b1056ac139beff21b6516c0",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ace_Latn"
+    },
+    {
+      "sha256": "0bfad166ec9da6eec0b623d7d4010bccca731122894a89d02bfb48cc0b147b62",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "acm_Arab"
+    },
+    {
+      "sha256": "0f84bb5c89b0531c63d8a2c6dc5c741b56f6fbce907f91b0663f1d73e2aa20a8",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "acq_Arab"
+    },
+    {
+      "sha256": "00e51d2bc9151b55dfc7ab8f92e6e633a4ef20eb36826e2c5c20821c2409d19c",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "004aad666419cecd23d43b9c84011c33665148aa0977d7515fb7f1917c62acbb",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "02755eec2393f01f0c2bcbe14609dd33712dc674e29c3538d5d691fd9d4adf50",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "004bce118d7e41974d3462a50d0fda91368fd40340bfbaa2c9242793c17641ff",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    }
+  ],
+  "mean_objective_loss": {
+    "charbonnier": 0.010956597630865872,
+    "psnr_aligned": 0.020847614156082273
+  },
+  "surface_count": 204,
+  "surfaces": [
+    {
+      "name": "swin2sr.encoder.stages.0.patch_embed.projection",
+      "category": "residual_body_conv",
+      "values": 3600,
+      "method": "optimal_mse",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.0008097723402897827,
+        "psnr_aligned": -0.001139992968091974
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.0008097723402897827,
+        "psnr_aligned": 0.001139992968091974
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.patch_embed.projection",
+      "category": "residual_body_conv",
+      "values": 3600,
+      "method": "optimal_mse",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.0008396938937949017,
+        "psnr_aligned": -0.0011329202752676792
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.0008396938937949017,
+        "psnr_aligned": 0.0011329202752676792
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.conv",
+      "category": "residual_body_conv",
+      "values": 32400,
+      "method": "optimal_mse",
+      "reference_group_size": 9,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.000953452898102114,
+        "psnr_aligned": -0.0009792808814381715
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.000953452898102114,
+        "psnr_aligned": 0.0009792808814381715
+      },
+      "scale_bytes_delta": 25200
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.0012889262288808823,
+        "psnr_aligned": -0.0009014929200930055
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.0012889262288808823,
+        "psnr_aligned": 0.0009014929200930055
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.conv_after_body",
+      "category": "residual_body_conv",
+      "values": 32400,
+      "method": "optimal_mse",
+      "reference_group_size": 9,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00028628110612771707,
+        "psnr_aligned": -0.0008548163386876695
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00028628110612771707,
+        "psnr_aligned": 0.0008548163386876695
+      },
+      "scale_bytes_delta": 25200
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.patch_embed.projection",
+      "category": "residual_body_conv",
+      "values": 3600,
+      "method": "optimal_mse",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.0007829134592611808,
+        "psnr_aligned": -0.0007163844675233122
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.0007829134592611808,
+        "psnr_aligned": 0.0007163844675233122
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.embeddings.patch_embeddings.projection",
+      "category": "residual_body_conv",
+      "values": 3600,
+      "method": "optimal_mse",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00027595809297054075,
+        "psnr_aligned": -0.0006907470378791913
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00027595809297054075,
+        "psnr_aligned": 0.0006907470378791913
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.conv",
+      "category": "residual_body_conv",
+      "values": 32400,
+      "method": "optimal_mse",
+      "reference_group_size": 9,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.0004407827809700393,
+        "psnr_aligned": -0.0005393386982177617
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.0004407827809700393,
+        "psnr_aligned": 0.0005393386982177617
+      },
+      "scale_bytes_delta": 25200
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.conv",
+      "category": "residual_body_conv",
+      "values": 32400,
+      "method": "optimal_mse",
+      "reference_group_size": 9,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.0003294295929663349,
+        "psnr_aligned": -0.0005218216865614522
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.0003294295929663349,
+        "psnr_aligned": 0.0005218216865614522
+      },
+      "scale_bytes_delta": 25200
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.conv",
+      "category": "residual_body_conv",
+      "values": 32400,
+      "method": "optimal_mse",
+      "reference_group_size": 9,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.0004118075430596946,
+        "psnr_aligned": -0.00041027326915354934
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.0004118075430596946,
+        "psnr_aligned": 0.00041027326915354934
+      },
+      "scale_bytes_delta": 25200
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00038141789991641417,
+        "psnr_aligned": -0.00034846315702452557
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00038141789991641417,
+        "psnr_aligned": 0.00034846315702452557
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.0001992223933484638,
+        "psnr_aligned": -0.0003120352184851072
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.0001992223933484638,
+        "psnr_aligned": 0.0003120352184851072
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.0003359207639732631,
+        "psnr_aligned": -0.00031069453552845516
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.0003359207639732631,
+        "psnr_aligned": 0.00031069453552845516
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00026331011576985475,
+        "psnr_aligned": -0.0002864428986413259
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00026331011576985475,
+        "psnr_aligned": 0.0002864428986413259
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.5.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00014746959186595632,
+        "psnr_aligned": -0.00026991490221917047
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00014746959186595632,
+        "psnr_aligned": 0.00026991490221917047
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00018073967294185422,
+        "psnr_aligned": -0.0002587665439932607
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00018073967294185422,
+        "psnr_aligned": 0.0002587665439932607
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.4.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00018828884515187383,
+        "psnr_aligned": -0.0002191228177252924
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00018828884515187383,
+        "psnr_aligned": 0.0002191228177252924
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00018840744633052964,
+        "psnr_aligned": -0.00021406341238616733
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00018840744633052964,
+        "psnr_aligned": 0.00021406341238616733
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.2.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00015217566760838963,
+        "psnr_aligned": -0.00020838516866206191
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00015217566760838963,
+        "psnr_aligned": 0.00020838516866206191
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -5.6955815580295166e-05,
+        "psnr_aligned": -0.00019828606764349388
+      },
+      "predicted_improvement": {
+        "charbonnier": 5.6955815580295166e-05,
+        "psnr_aligned": 0.00019828606764349388
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.1.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00013292367771100544,
+        "psnr_aligned": -0.0001955384827851958
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00013292367771100544,
+        "psnr_aligned": 0.0001955384827851958
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.3.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00017333984715151018,
+        "psnr_aligned": -0.00019270456414233195
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00017333984715151018,
+        "psnr_aligned": 0.00019270456414233195
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.3.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00015349436034739483,
+        "psnr_aligned": -0.0001926749446283793
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00015349436034739483,
+        "psnr_aligned": 0.0001926749446283793
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00012872917932327255,
+        "psnr_aligned": -0.0001806288323678018
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00012872917932327255,
+        "psnr_aligned": 0.0001806288323678018
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.5.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00023939086440805113,
+        "psnr_aligned": -0.0001584924066264648
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00023939086440805113,
+        "psnr_aligned": 0.0001584924066264648
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.1.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.3274700904730707e-05,
+        "psnr_aligned": -0.00015437698766618269
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.3274700904730707e-05,
+        "psnr_aligned": 0.00015437698766618269
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.patch_embed.projection",
+      "category": "residual_body_conv",
+      "values": 3600,
+      "method": "optimal_mse",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.828897090192186e-05,
+        "psnr_aligned": -0.00014113055112829898
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.828897090192186e-05,
+        "psnr_aligned": 0.00014113055112829898
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.2.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -6.534792419188307e-05,
+        "psnr_aligned": -0.00014002923353473307
+      },
+      "predicted_improvement": {
+        "charbonnier": 6.534792419188307e-05,
+        "psnr_aligned": 0.00014002923353473307
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -8.807174094727088e-05,
+        "psnr_aligned": -0.00013510725045762229
+      },
+      "predicted_improvement": {
+        "charbonnier": 8.807174094727088e-05,
+        "psnr_aligned": 0.00013510725045762229
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.2.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.206854254107384e-05,
+        "psnr_aligned": -0.00013347429512577946
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.206854254107384e-05,
+        "psnr_aligned": 0.00013347429512577946
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.1.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.722040762317192e-05,
+        "psnr_aligned": -0.00012874081312475028
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.722040762317192e-05,
+        "psnr_aligned": 0.00012874081312475028
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -5.5701046676404076e-05,
+        "psnr_aligned": -0.00012868503290519584
+      },
+      "predicted_improvement": {
+        "charbonnier": 5.5701046676404076e-05,
+        "psnr_aligned": 0.00012868503290519584
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -5.511305607797112e-05,
+        "psnr_aligned": -0.00012583791567521985
+      },
+      "predicted_improvement": {
+        "charbonnier": 5.511305607797112e-05,
+        "psnr_aligned": 0.00012583791567521985
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.1.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.0001338709889751044,
+        "psnr_aligned": -0.00012271223295101663
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.0001338709889751044,
+        "psnr_aligned": 0.00012271223295101663
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.1.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -6.664361853836454e-05,
+        "psnr_aligned": -0.00012170739591965685
+      },
+      "predicted_improvement": {
+        "charbonnier": 6.664361853836454e-05,
+        "psnr_aligned": 0.00012170739591965685
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.7276721488742623e-05,
+        "psnr_aligned": -0.00012161557697254466
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.7276721488742623e-05,
+        "psnr_aligned": 0.00012161557697254466
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -9.773405804480717e-05,
+        "psnr_aligned": -0.00012009406282231794
+      },
+      "predicted_improvement": {
+        "charbonnier": 9.773405804480717e-05,
+        "psnr_aligned": 0.00012009406282231794
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.0731219087319914e-05,
+        "psnr_aligned": -0.00011372572271284298
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.0731219087319914e-05,
+        "psnr_aligned": 0.00011372572271284298
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.054374635918066e-05,
+        "psnr_aligned": -0.00011370393349352526
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.054374635918066e-05,
+        "psnr_aligned": 0.00011370393349352526
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.3.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -8.74394236234366e-05,
+        "psnr_aligned": -0.00010963012664433336
+      },
+      "predicted_improvement": {
+        "charbonnier": 8.74394236234366e-05,
+        "psnr_aligned": 0.00010963012664433336
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.2.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00011852086197450262,
+        "psnr_aligned": -0.00010881858202083095
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00011852086197450262,
+        "psnr_aligned": 0.00010881858202083095
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.4.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -5.7665700296638533e-05,
+        "psnr_aligned": -0.0001084836139852996
+      },
+      "predicted_improvement": {
+        "charbonnier": 5.7665700296638533e-05,
+        "psnr_aligned": 0.0001084836139852996
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.2.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.202685547876172e-07,
+        "psnr_aligned": -0.00010838632078957744
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.202685547876172e-07,
+        "psnr_aligned": 0.00010838632078957744
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.3768226873908134e-05,
+        "psnr_aligned": -0.00010798291555147443
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.3768226873908134e-05,
+        "psnr_aligned": 0.00010798291555147443
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.2.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -5.16690065524017e-05,
+        "psnr_aligned": -0.00010463571561558638
+      },
+      "predicted_improvement": {
+        "charbonnier": 5.16690065524017e-05,
+        "psnr_aligned": 0.00010463571561558638
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.5.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.8141280015224766e-05,
+        "psnr_aligned": -0.00010244279883409035
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.8141280015224766e-05,
+        "psnr_aligned": 0.00010244279883409035
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.4.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -7.680741919102729e-05,
+        "psnr_aligned": -0.00010088954718412424
+      },
+      "predicted_improvement": {
+        "charbonnier": 7.680741919102729e-05,
+        "psnr_aligned": 0.00010088954718412424
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.3.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.7757043881138088e-05,
+        "psnr_aligned": -9.835975629357563e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.7757043881138088e-05,
+        "psnr_aligned": 9.835975629357563e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.9517317961544904e-05,
+        "psnr_aligned": -9.789752016331477e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.9517317961544904e-05,
+        "psnr_aligned": 9.789752016331477e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.5.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -6.785307687096065e-05,
+        "psnr_aligned": -9.729916382639203e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 6.785307687096065e-05,
+        "psnr_aligned": 9.729916382639203e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.4.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00011522004115249729,
+        "psnr_aligned": -9.010457324620802e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00011522004115249729,
+        "psnr_aligned": 9.010457324620802e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.59006322444111e-05,
+        "psnr_aligned": -8.874704417394241e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.59006322444111e-05,
+        "psnr_aligned": 8.874704417394241e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.1.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.1368939289677655e-05,
+        "psnr_aligned": -8.873014417076774e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.1368939289677655e-05,
+        "psnr_aligned": 8.873014417076774e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.1.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.6214891136078222e-05,
+        "psnr_aligned": -8.8395433522237e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.6214891136078222e-05,
+        "psnr_aligned": 8.8395433522237e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.1.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.437908458181482e-05,
+        "psnr_aligned": -8.756734496273566e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.437908458181482e-05,
+        "psnr_aligned": 8.756734496273566e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.4.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.524351149053473e-05,
+        "psnr_aligned": -8.250777432294853e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.524351149053473e-05,
+        "psnr_aligned": 8.250777432294853e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.5.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -7.909244504844537e-05,
+        "psnr_aligned": -8.138997600326547e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 7.909244504844537e-05,
+        "psnr_aligned": 8.138997600326547e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.1.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -0.00010854736524379405,
+        "psnr_aligned": -8.081650958047248e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 0.00010854736524379405,
+        "psnr_aligned": 8.081650958047248e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.064680461444368e-05,
+        "psnr_aligned": -7.800218850206875e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.064680461444368e-05,
+        "psnr_aligned": 7.800218850206875e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.3.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -7.15899814167642e-05,
+        "psnr_aligned": -7.781920066918246e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 7.15899814167642e-05,
+        "psnr_aligned": 7.781920066918246e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -7.667224053875543e-05,
+        "psnr_aligned": -7.419134271913208e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 7.667224053875543e-05,
+        "psnr_aligned": 7.419134271913208e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.343733763154887e-05,
+        "psnr_aligned": -7.402415849355748e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.343733763154887e-05,
+        "psnr_aligned": 7.402415849355748e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.351710853394252e-05,
+        "psnr_aligned": -7.39973429517704e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.351710853394252e-05,
+        "psnr_aligned": 7.39973429517704e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 7.097948036971502e-05,
+        "psnr_aligned": -7.352785542025231e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -7.097948036971502e-05,
+        "psnr_aligned": 7.352785542025231e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.5520932240397087e-05,
+        "psnr_aligned": -7.182757758528169e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.5520932240397087e-05,
+        "psnr_aligned": 7.182757758528169e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.3.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -8.423065173701616e-05,
+        "psnr_aligned": -6.947457586647943e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 8.423065173701616e-05,
+        "psnr_aligned": 6.947457586647943e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.4.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.744347191059205e-05,
+        "psnr_aligned": -6.668177138635656e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.744347191059205e-05,
+        "psnr_aligned": 6.668177138635656e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.3.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -9.208466053678421e-05,
+        "psnr_aligned": -6.224130129339756e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 9.208466053678421e-05,
+        "psnr_aligned": 6.224130129339756e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.5.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.8362504622236884e-05,
+        "psnr_aligned": -6.140060042980622e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.8362504622236884e-05,
+        "psnr_aligned": 6.140060042980622e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.9968005403825373e-05,
+        "psnr_aligned": -6.0976015902269864e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.9968005403825373e-05,
+        "psnr_aligned": 6.0976015902269864e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.5.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.641560584810577e-05,
+        "psnr_aligned": -5.846793465025257e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.641560584810577e-05,
+        "psnr_aligned": 5.846793465025257e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.1.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.9791020122283953e-05,
+        "psnr_aligned": -5.775047611678019e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.9791020122283953e-05,
+        "psnr_aligned": 5.775047611678019e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.3.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 9.367583515995648e-06,
+        "psnr_aligned": -5.648355727316812e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -9.367583515995648e-06,
+        "psnr_aligned": 5.648355727316812e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.2102741436592623e-05,
+        "psnr_aligned": -5.487868781983707e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.2102741436592623e-05,
+        "psnr_aligned": 5.487868781983707e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.046785724336587e-05,
+        "psnr_aligned": -5.196170764065755e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.046785724336587e-05,
+        "psnr_aligned": 5.196170764065755e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.046246800091467e-05,
+        "psnr_aligned": -5.086878752535995e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.046246800091467e-05,
+        "psnr_aligned": 5.086878752535995e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.3.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.2536622481084123e-05,
+        "psnr_aligned": -5.005371986044338e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.2536622481084123e-05,
+        "psnr_aligned": 5.005371986044338e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.0.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -5.172420969756786e-06,
+        "psnr_aligned": -4.8021865495684324e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 5.172420969756786e-06,
+        "psnr_aligned": 4.8021865495684324e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.5.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.551703300923691e-05,
+        "psnr_aligned": -4.598535360855749e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.551703300923691e-05,
+        "psnr_aligned": 4.598535360855749e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.2.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.809109032066772e-05,
+        "psnr_aligned": -4.381780524909118e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.809109032066772e-05,
+        "psnr_aligned": 4.381780524909118e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.2.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.507995762674909e-05,
+        "psnr_aligned": -4.215860349177092e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.507995762674909e-05,
+        "psnr_aligned": 4.215860349177092e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.843807854129409e-05,
+        "psnr_aligned": -4.085737884906848e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.843807854129409e-05,
+        "psnr_aligned": 4.085737884906848e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 5.213918711888255e-06,
+        "psnr_aligned": -4.045527816742833e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -5.213918711888255e-06,
+        "psnr_aligned": 4.045527816742833e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.281629067761969e-05,
+        "psnr_aligned": -4.00084012426305e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.281629067761969e-05,
+        "psnr_aligned": 4.00084012426305e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.5.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.728556359623326e-05,
+        "psnr_aligned": -3.9562842630402884e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.728556359623326e-05,
+        "psnr_aligned": 3.9562842630402884e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.3.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.1199146797480353e-05,
+        "psnr_aligned": -3.926150156985386e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.1199146797480353e-05,
+        "psnr_aligned": 3.926150156985386e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.5.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.4204972589814133e-05,
+        "psnr_aligned": -3.8002226801836514e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.4204972589814133e-05,
+        "psnr_aligned": 3.8002226801836514e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.1.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.6174350605524523e-05,
+        "psnr_aligned": -3.604970629567106e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.6174350605524523e-05,
+        "psnr_aligned": 3.604970629567106e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.1542852234924794e-05,
+        "psnr_aligned": -3.409631472095498e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.1542852234924794e-05,
+        "psnr_aligned": 3.409631472095498e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.1.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.2802191551818396e-05,
+        "psnr_aligned": -3.264319457230158e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.2802191551818396e-05,
+        "psnr_aligned": 3.264319457230158e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.3.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -6.730972938839841e-05,
+        "psnr_aligned": -3.216779964532179e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 6.730972938839841e-05,
+        "psnr_aligned": 3.216779964532179e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.4.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.0782357207972382e-05,
+        "psnr_aligned": -3.0196632906154264e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.0782357207972382e-05,
+        "psnr_aligned": 3.0196632906154264e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.2.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.947902796928247e-05,
+        "psnr_aligned": -2.448402437948971e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.947902796928247e-05,
+        "psnr_aligned": 2.448402437948971e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.3.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.601508842621115e-05,
+        "psnr_aligned": -2.191982082422328e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.601508842621115e-05,
+        "psnr_aligned": 2.191982082422328e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.0383938331415266e-05,
+        "psnr_aligned": -2.0180974388495088e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.0383938331415266e-05,
+        "psnr_aligned": 2.0180974388495088e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -6.751486012035457e-06,
+        "psnr_aligned": -1.9619952581706457e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 6.751486012035457e-06,
+        "psnr_aligned": 1.9619952581706457e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -8.055283274188696e-06,
+        "psnr_aligned": -1.817203326481831e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 8.055283274188696e-06,
+        "psnr_aligned": 1.817203326481831e-05
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.1.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.1351919631106284e-05,
+        "psnr_aligned": -1.781705122994026e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.1351919631106284e-05,
+        "psnr_aligned": 1.781705122994026e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.158513209200464e-05,
+        "psnr_aligned": -1.7358050172333606e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.158513209200464e-05,
+        "psnr_aligned": 1.7358050172333606e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.0517793782582885e-05,
+        "psnr_aligned": -1.4253526046559273e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.0517793782582885e-05,
+        "psnr_aligned": 1.4253526046559273e-05
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.7540297651285073e-06,
+        "psnr_aligned": -1.4081444533076137e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.7540297651285073e-06,
+        "psnr_aligned": 1.4081444533076137e-05
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.3692402716667402e-06,
+        "psnr_aligned": -1.3377533207403758e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.3692402716667402e-06,
+        "psnr_aligned": 1.3377533207403758e-05
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.618334422445969e-06,
+        "psnr_aligned": -1.2910403711430263e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.618334422445969e-06,
+        "psnr_aligned": 1.2910403711430263e-05
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 1.7556252487338497e-06,
+        "psnr_aligned": -1.275316321880382e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -1.7556252487338497e-06,
+        "psnr_aligned": 1.275316321880382e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -5.664352912049253e-06,
+        "psnr_aligned": -1.229391187962392e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 5.664352912049253e-06,
+        "psnr_aligned": 1.229391187962392e-05
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.2.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.965213471066818e-05,
+        "psnr_aligned": -1.200161477754591e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.965213471066818e-05,
+        "psnr_aligned": 1.200161477754591e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.4.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.325027708138805e-06,
+        "psnr_aligned": -1.1727394166882732e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.325027708138805e-06,
+        "psnr_aligned": 1.1727394166882732e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.3.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -7.855296644265763e-07,
+        "psnr_aligned": -1.0870359346881742e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 7.855296644265763e-07,
+        "psnr_aligned": 1.0870359346881742e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 6.145091901998967e-07,
+        "psnr_aligned": -1.0352072422392666e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -6.145091901998967e-07,
+        "psnr_aligned": 1.0352072422392666e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.3.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.899668297753124e-06,
+        "psnr_aligned": -9.886717975859938e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.899668297753124e-06,
+        "psnr_aligned": 9.886717975859938e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.0720700061028765e-05,
+        "psnr_aligned": -9.781669405128923e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.0720700061028765e-05,
+        "psnr_aligned": 9.781669405128923e-06
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.0500721948101273e-06,
+        "psnr_aligned": -9.417831961400225e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.0500721948101273e-06,
+        "psnr_aligned": 9.417831961400225e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.1.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -6.846349378974992e-06,
+        "psnr_aligned": -8.328023099579696e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 6.846349378974992e-06,
+        "psnr_aligned": 8.328023099579696e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.3.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -5.329427821720856e-06,
+        "psnr_aligned": -7.496893658753834e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 5.329427821720856e-06,
+        "psnr_aligned": 7.496893658753834e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.1.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 9.320592653239146e-08,
+        "psnr_aligned": -7.267011824296787e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -9.320592653239146e-08,
+        "psnr_aligned": 7.267011824296787e-06
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 8.344901971213403e-06,
+        "psnr_aligned": -6.8681338234455325e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -8.344901971213403e-06,
+        "psnr_aligned": 6.8681338234455325e-06
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.5622582907326432e-06,
+        "psnr_aligned": -6.18132668250837e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.5622582907326432e-06,
+        "psnr_aligned": 6.18132668250837e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -8.953890784368923e-07,
+        "psnr_aligned": -4.139758715382413e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 8.953890784368923e-07,
+        "psnr_aligned": 4.139758715382413e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 8.837257041705016e-07,
+        "psnr_aligned": -4.071455919074651e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -8.837257041705016e-07,
+        "psnr_aligned": 4.071455919074651e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.5.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.9042690812275396e-06,
+        "psnr_aligned": -3.792109339428862e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.9042690812275396e-06,
+        "psnr_aligned": 3.792109339428862e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.2.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 5.86422897868033e-05,
+        "psnr_aligned": -3.672100319818128e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -5.86422897868033e-05,
+        "psnr_aligned": 3.672100319818128e-06
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.2.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 6.317809493339155e-07,
+        "psnr_aligned": -3.489450079996459e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -6.317809493339155e-07,
+        "psnr_aligned": 3.489450079996459e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.2972990361959091e-06,
+        "psnr_aligned": -3.1392994515044848e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.2972990361959091e-06,
+        "psnr_aligned": 3.1392994515044848e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.7747622891306492e-06,
+        "psnr_aligned": -3.136009354420821e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.7747622891306492e-06,
+        "psnr_aligned": 3.136009354420821e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.9351235966146305e-06,
+        "psnr_aligned": -2.4990254132717382e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.9351235966146305e-06,
+        "psnr_aligned": 2.4990254132717382e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.8126934833162522e-06,
+        "psnr_aligned": -2.1652071211519797e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.8126934833162522e-06,
+        "psnr_aligned": 2.1652071211519797e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -8.874874737330174e-07,
+        "psnr_aligned": -2.1583212941322927e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 8.874874737330174e-07,
+        "psnr_aligned": 2.1583212941322927e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.1333659105948755e-07,
+        "psnr_aligned": -1.975775035134575e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.1333659105948755e-07,
+        "psnr_aligned": 1.975775035134575e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.4.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -8.576484447075927e-07,
+        "psnr_aligned": -1.8274409114837908e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 8.576484447075927e-07,
+        "psnr_aligned": 1.8274409114837908e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.3.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.180782416871807e-07,
+        "psnr_aligned": -1.6749533386928306e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.180782416871807e-07,
+        "psnr_aligned": 1.6749533386928306e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.3.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.7390182992803602e-06,
+        "psnr_aligned": -5.855158633494284e-07
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.7390182992803602e-06,
+        "psnr_aligned": 5.855158633494284e-07
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -4.031692519390617e-06,
+        "psnr_aligned": -2.650797910064284e-07
+      },
+      "predicted_improvement": {
+        "charbonnier": 4.031692519390617e-06,
+        "psnr_aligned": 2.650797910064284e-07
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.2.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 1.2512754210547428e-05,
+        "psnr_aligned": -2.57309693552088e-08
+      },
+      "predicted_improvement": {
+        "charbonnier": -1.2512754210547428e-05,
+        "psnr_aligned": 2.57309693552088e-08
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.1.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.7690303500426126e-06,
+        "psnr_aligned": -2.297622359037632e-08
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.7690303500426126e-06,
+        "psnr_aligned": 2.297622359037632e-08
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.first_convolution",
+      "category": "image_io_conv",
+      "values": 1620,
+      "method": "optimal_mse",
+      "reference_group_size": 2,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 0.0,
+        "psnr_aligned": 0.0
+      },
+      "predicted_improvement": {
+        "charbonnier": -0.0,
+        "psnr_aligned": -0.0
+      },
+      "scale_bytes_delta": 0
+    },
+    {
+      "name": "upsample.conv",
+      "category": "image_io_conv",
+      "values": 6480,
+      "method": "optimal_mse",
+      "reference_group_size": 2,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 0.0,
+        "psnr_aligned": 0.0
+      },
+      "predicted_improvement": {
+        "charbonnier": -0.0,
+        "psnr_aligned": -0.0
+      },
+      "scale_bytes_delta": 0
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -3.408872117915962e-08,
+        "psnr_aligned": 2.470391109454795e-07
+      },
+      "predicted_improvement": {
+        "charbonnier": 3.408872117915962e-08,
+        "psnr_aligned": -2.470391109454795e-07
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.2275739749156855e-06,
+        "psnr_aligned": 5.652519234899955e-07
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.2275739749156855e-06,
+        "psnr_aligned": -5.652519234899955e-07
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -7.847167751151574e-07,
+        "psnr_aligned": 6.028297150351136e-07
+      },
+      "predicted_improvement": {
+        "charbonnier": 7.847167751151574e-07,
+        "psnr_aligned": -6.028297150351136e-07
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.5.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 1.060651847240024e-06,
+        "psnr_aligned": 6.377631791565364e-07
+      },
+      "predicted_improvement": {
+        "charbonnier": -1.060651847240024e-06,
+        "psnr_aligned": -6.377631791565364e-07
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.2.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 3.4318811685807304e-06,
+        "psnr_aligned": 6.481563445959182e-07
+      },
+      "predicted_improvement": {
+        "charbonnier": -3.4318811685807304e-06,
+        "psnr_aligned": -6.481563445959182e-07
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.5.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 1.98951468632913e-06,
+        "psnr_aligned": 1.6178499180341532e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -1.98951468632913e-06,
+        "psnr_aligned": -1.6178499180341532e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 4.155344115019943e-06,
+        "psnr_aligned": 2.696207502594916e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -4.155344115019943e-06,
+        "psnr_aligned": -2.696207502594916e-06
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.4.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 9.776810117045898e-08,
+        "psnr_aligned": 3.3659985660960956e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -9.776810117045898e-08,
+        "psnr_aligned": -3.3659985660960956e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.3.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.999182586587267e-06,
+        "psnr_aligned": 4.21213144363719e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.999182586587267e-06,
+        "psnr_aligned": -4.21213144363719e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 4.659703023435213e-06,
+        "psnr_aligned": 5.466785296448506e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -4.659703023435213e-06,
+        "psnr_aligned": -5.466785296448506e-06
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 1.3402872411916178e-06,
+        "psnr_aligned": 5.709076262405688e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -1.3402872411916178e-06,
+        "psnr_aligned": -5.709076262405688e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 3.77636411030835e-09,
+        "psnr_aligned": 5.783919391433301e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -3.77636411030835e-09,
+        "psnr_aligned": -5.783919391433301e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 3.409438204471371e-05,
+        "psnr_aligned": 6.227067842701217e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -3.409438204471371e-05,
+        "psnr_aligned": -6.227067842701217e-06
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.5.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 6.185421881355069e-07,
+        "psnr_aligned": 6.349153068185842e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -6.185421881355069e-07,
+        "psnr_aligned": -6.349153068185842e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -5.103574665099586e-07,
+        "psnr_aligned": 6.646976714819175e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 5.103574665099586e-07,
+        "psnr_aligned": -6.646976714819175e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.4.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 3.0214386939064752e-06,
+        "psnr_aligned": 7.212948048618273e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -3.0214386939064752e-06,
+        "psnr_aligned": -7.212948048618273e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 1.2325699145776525e-06,
+        "psnr_aligned": 7.73325521663537e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -1.2325699145776525e-06,
+        "psnr_aligned": -7.73325521663537e-06
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.1.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 3.0560425727799156e-06,
+        "psnr_aligned": 7.869686527328668e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -3.0560425727799156e-06,
+        "psnr_aligned": -7.869686527328668e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.2.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 1.2069917971757604e-06,
+        "psnr_aligned": 8.244657948353051e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -1.2069917971757604e-06,
+        "psnr_aligned": -8.244657948353051e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.7696676195555483e-05,
+        "psnr_aligned": 8.693077688803896e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.7696676195555483e-05,
+        "psnr_aligned": -8.693077688803896e-06
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 1.820438868094243e-06,
+        "psnr_aligned": 9.062546041604946e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": -1.820438868094243e-06,
+        "psnr_aligned": -9.062546041604946e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.5373939987739504e-06,
+        "psnr_aligned": 9.109694133258017e-06
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.5373939987739504e-06,
+        "psnr_aligned": -9.109694133258017e-06
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 3.6921241459708654e-06,
+        "psnr_aligned": 1.0230822425683073e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -3.6921241459708654e-06,
+        "psnr_aligned": -1.0230822425683073e-05
+      },
+      "scale_bytes_delta": 2968
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.1.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -1.1656562264761305e-05,
+        "psnr_aligned": 1.5646109204681125e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 1.1656562264761305e-05,
+        "psnr_aligned": -1.5646109204681125e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.5.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 1.6842898730828892e-05,
+        "psnr_aligned": 1.633775582376984e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -1.6842898730828892e-05,
+        "psnr_aligned": -1.633775582376984e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.1.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -5.003249270885135e-06,
+        "psnr_aligned": 1.724735875541228e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 5.003249270885135e-06,
+        "psnr_aligned": -1.724735875541228e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.4.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 4.8185863761318615e-06,
+        "psnr_aligned": 1.7945918671102845e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -4.8185863761318615e-06,
+        "psnr_aligned": -1.7945918671102845e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 8.695728865859564e-06,
+        "psnr_aligned": 1.9140176618748228e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -8.695728865859564e-06,
+        "psnr_aligned": -1.9140176618748228e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.5.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 1.7173558262584265e-05,
+        "psnr_aligned": 2.0604093151632696e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -1.7173558262584265e-05,
+        "psnr_aligned": -2.0604093151632696e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.2.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 7.378232282917452e-06,
+        "psnr_aligned": 2.0817372273995716e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -7.378232282917452e-06,
+        "psnr_aligned": -2.0817372273995716e-05
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.2.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 3.492015048323083e-05,
+        "psnr_aligned": 2.1129775632289238e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -3.492015048323083e-05,
+        "psnr_aligned": -2.1129775632289238e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.4.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 6.858036783796706e-06,
+        "psnr_aligned": 2.1133517179805494e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -6.858036783796706e-06,
+        "psnr_aligned": -2.1133517179805494e-05
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -8.922299684854806e-06,
+        "psnr_aligned": 2.331837777092005e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 8.922299684854806e-06,
+        "psnr_aligned": -2.331837777092005e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.3.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 1.7749789435583807e-05,
+        "psnr_aligned": 2.627762557949609e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -1.7749789435583807e-05,
+        "psnr_aligned": -2.627762557949609e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.1.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 9.957431039708808e-06,
+        "psnr_aligned": 2.8275872580252326e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -9.957431039708808e-06,
+        "psnr_aligned": -2.8275872580252326e-05
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 7.451834528637846e-05,
+        "psnr_aligned": 2.976737846438482e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -7.451834528637846e-05,
+        "psnr_aligned": -2.976737846438482e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.0.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -7.160923041737988e-05,
+        "psnr_aligned": 3.0738417081010994e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 7.160923041737988e-05,
+        "psnr_aligned": -3.0738417081010994e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.2.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 5.37626362984156e-06,
+        "psnr_aligned": 3.6815303701587254e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -5.37626362984156e-06,
+        "psnr_aligned": -3.6815303701587254e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.1.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.266693422825483e-05,
+        "psnr_aligned": 3.8083738672867185e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.266693422825483e-05,
+        "psnr_aligned": -3.8083738672867185e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.4.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.946002155113092e-06,
+        "psnr_aligned": 3.8852669604239054e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.946002155113092e-06,
+        "psnr_aligned": -3.8852669604239054e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 6.290130477282219e-05,
+        "psnr_aligned": 4.076455115864519e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -6.290130477282219e-05,
+        "psnr_aligned": -4.076455115864519e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 3.1749448226037202e-06,
+        "psnr_aligned": 4.095371059520403e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -3.1749448226037202e-06,
+        "psnr_aligned": -4.095371059520403e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 1.3308640973264119e-05,
+        "psnr_aligned": 4.5201035391073674e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -1.3308640973264119e-05,
+        "psnr_aligned": -4.5201035391073674e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.3.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.2624299162998796e-06,
+        "psnr_aligned": 4.61114212839675e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.2624299162998796e-06,
+        "psnr_aligned": -4.61114212839675e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.2380273946964735e-05,
+        "psnr_aligned": 4.918937997899775e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.2380273946964735e-05,
+        "psnr_aligned": -4.918937997899775e-05
+      },
+      "scale_bytes_delta": 988
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 7.237650515889982e-05,
+        "psnr_aligned": 5.6909773775259964e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -7.237650515889982e-05,
+        "psnr_aligned": -5.6909773775259964e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.4.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 4.144192985222617e-06,
+        "psnr_aligned": 5.91889056522632e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -4.144192985222617e-06,
+        "psnr_aligned": -5.91889056522632e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -6.2409171732724644e-06,
+        "psnr_aligned": 7.715391620877199e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": 6.2409171732724644e-06,
+        "psnr_aligned": -7.715391620877199e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.3.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 4.32644221746159e-05,
+        "psnr_aligned": 8.049328221204632e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -4.32644221746159e-05,
+        "psnr_aligned": -8.049328221204632e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.811172737438028e-05,
+        "psnr_aligned": 8.46891636001601e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.811172737438028e-05,
+        "psnr_aligned": -8.46891636001601e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.1.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 0.00012969852332389564,
+        "psnr_aligned": 8.663993503432721e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -0.00012969852332389564,
+        "psnr_aligned": -8.663993503432721e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.4.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 4.396142117002455e-05,
+        "psnr_aligned": 8.675060416862834e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -4.396142117002455e-05,
+        "psnr_aligned": -8.675060416862834e-05
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.7632188107418187e-05,
+        "psnr_aligned": 8.707130245966255e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.7632188107418187e-05,
+        "psnr_aligned": -8.707130245966255e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 4.2674739688663976e-05,
+        "psnr_aligned": 8.867626661412942e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -4.2674739688663976e-05,
+        "psnr_aligned": -8.867626661412942e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.3.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 5.036067204855499e-05,
+        "psnr_aligned": 9.166479230771074e-05
+      },
+      "predicted_improvement": {
+        "charbonnier": -5.036067204855499e-05,
+        "psnr_aligned": -9.166479230771074e-05
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": -2.54911215051834e-05,
+        "psnr_aligned": 0.00010264131333315163
+      },
+      "predicted_improvement": {
+        "charbonnier": 2.54911215051834e-05,
+        "psnr_aligned": -0.00010264131333315163
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.1.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 8.1349721767765e-05,
+        "psnr_aligned": 0.00010577766533970134
+      },
+      "predicted_improvement": {
+        "charbonnier": -8.1349721767765e-05,
+        "psnr_aligned": -0.00010577766533970134
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 7.94512998254504e-05,
+        "psnr_aligned": 0.0001058947082128725
+      },
+      "predicted_improvement": {
+        "charbonnier": -7.94512998254504e-05,
+        "psnr_aligned": -0.0001058947082128725
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.4.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 9.713330678096099e-05,
+        "psnr_aligned": 0.00010693178774090484
+      },
+      "predicted_improvement": {
+        "charbonnier": -9.713330678096099e-05,
+        "psnr_aligned": -0.00010693178774090484
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.3.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.7342062708157755e-05,
+        "psnr_aligned": 0.00010866765933315037
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.7342062708157755e-05,
+        "psnr_aligned": -0.00010866765933315037
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.4.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 8.625413238405599e-05,
+        "psnr_aligned": 0.00010886853215197334
+      },
+      "predicted_improvement": {
+        "charbonnier": -8.625413238405599e-05,
+        "psnr_aligned": -0.00010886853215197334
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.3.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 4.046830031256832e-05,
+        "psnr_aligned": 0.00010906550187428365
+      },
+      "predicted_improvement": {
+        "charbonnier": -4.046830031256832e-05,
+        "psnr_aligned": -0.00010906550187428365
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.5.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 6.245260738069192e-05,
+        "psnr_aligned": 0.00011345591974531999
+      },
+      "predicted_improvement": {
+        "charbonnier": -6.245260738069192e-05,
+        "psnr_aligned": -0.00011345591974531999
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.5.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 2.1277552775700315e-05,
+        "psnr_aligned": 0.00012379696863717982
+      },
+      "predicted_improvement": {
+        "charbonnier": -2.1277552775700315e-05,
+        "psnr_aligned": -0.00012379696863717982
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 3.0674365916638635e-05,
+        "psnr_aligned": 0.0001423633348167641
+      },
+      "predicted_improvement": {
+        "charbonnier": -3.0674365916638635e-05,
+        "psnr_aligned": -0.0001423633348167641
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.3.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 0.00011964290570176672,
+        "psnr_aligned": 0.00015641277809663734
+      },
+      "predicted_improvement": {
+        "charbonnier": -0.00011964290570176672,
+        "psnr_aligned": -0.00015641277809663734
+      },
+      "scale_bytes_delta": 3480
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.1.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 0.00021973140246700495,
+        "psnr_aligned": 0.0001876073906714737
+      },
+      "predicted_improvement": {
+        "charbonnier": -0.00021973140246700495,
+        "psnr_aligned": -0.0001876073906714737
+      },
+      "scale_bytes_delta": 6960
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "reference_group_size": 60,
+      "candidate_group_size": 2,
+      "predicted_candidate_minus_current_loss": {
+        "charbonnier": 0.0001747585622524639,
+        "psnr_aligned": 0.00025883106491164654
+      },
+      "predicted_improvement": {
+        "charbonnier": -0.0001747585622524639,
+        "psnr_aligned": -0.00025883106491164654
+      },
+      "scale_bytes_delta": 6960
+    }
+  ],
+  "empirical_comparison": {
+    "path": "experiments/browser_swin2sr/surface_group_sensitivity_20260731/g2-current-group2-screen-8.json",
+    "sha256": "d8318ca81da559931f36d8e5b3effc75cb366a84561a2162735d65d64ee91e03",
+    "matched_surfaces": 204,
+    "correlation": {
+      "charbonnier": -0.6167382280311113,
+      "psnr_aligned": -0.5892771150504457
+    }
+  },
+  "elapsed_seconds": 8.715820291,
+  "peak_process_rss_bytes": 1318092800
+}

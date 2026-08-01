@@ -1,0 +1,103 @@
+{
+  "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "bundle_manifest_sha256": "e35334e5c567d7c6c9212eb2008507e73f6e0a3b17c041abbefb3bd82e59720d",
+  "bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "completed": 2,
+  "failed": 0,
+  "format": "backdropkit-swin2sr-full-surface-summary-v1",
+  "q4_reference": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+  "q4_reference_sha256": "d54b7ced6bdfb77ea278a50bccde0b41dbf402cac3dc04aa629b66ea75476e0d",
+  "q4_reference_state_sha256": "b75c09757a7159f32ad279919a77fb185c3389676674cf226a467eaf2f7928f1",
+  "ranking": [
+    {
+      "artifact": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/full_surface_from_recovery_20260730/fp32/artifact",
+      "artifact_binary_sha256": "4a8d9118a0db74e980e6de03f76b5e6dab7a177566b0bceedb5adff891f260f0",
+      "artifact_bytes": 378705,
+      "artifact_manifest_sha256": "c1cd8af23e9ee693480c82ead3e207f4ace0e1224787c35b634a8ad776bcd565",
+      "artifact_smaller_than_q4": true,
+      "hard_state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/full_surface_from_recovery_20260730/fp32/swin2sr-full-surface-hard.pt",
+      "hard_state_sha256": "bb65d56827d450e69d0947a5268f1c0b671ca5099d1680e53a4fb181a03ea949",
+      "lane": "fp32",
+      "paired_q4": {
+        "mean_deltas": {
+          "edge_psnr_vs_ground_truth": -9.881463040968118,
+          "psnr_vs_ground_truth": -21.78053223145222,
+          "psnr_vs_teacher": -33.71175714521546
+        },
+        "samples": 3040,
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "mean_psnr_delta": -22.356199846948627,
+            "samples": 2040
+          },
+          "rico_screen2words_heldout": {
+            "mean_psnr_delta": -20.606170295839696,
+            "samples": 1000
+          }
+        },
+        "worst_source_psnr_delta": -22.356199846948627
+      },
+      "portable_onnx": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/full_surface_from_recovery_20260730/fp32/portable/model.onnx",
+      "portable_onnx_bytes": 4807898,
+      "portable_onnx_sha256": "c169b2c45ead05e3640dbc170aa407c6022d11277d832544a0054a519182a5d0",
+      "portable_onnx_smaller_than_q4": true,
+      "rank": 1
+    },
+    {
+      "artifact": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/full_surface_from_recovery_20260730/recovered_core/artifact",
+      "artifact_binary_sha256": "6173fcf4e9ab5027a84cd7476c419cebf47dd76d1211ac670070962ecd454419",
+      "artifact_bytes": 378705,
+      "artifact_manifest_sha256": "c1cd8af23e9ee693480c82ead3e207f4ace0e1224787c35b634a8ad776bcd565",
+      "artifact_smaller_than_q4": true,
+      "hard_state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/full_surface_from_recovery_20260730/recovered_core/swin2sr-full-surface-hard.pt",
+      "hard_state_sha256": "8ba1211d3e7694dd946795fb210ede311c0a39e5cef0137346b45edd44b0ed81",
+      "lane": "recovered_core",
+      "paired_q4": {
+        "mean_deltas": {
+          "edge_psnr_vs_ground_truth": -9.960874524358065,
+          "psnr_vs_ground_truth": -22.369040657261927,
+          "psnr_vs_teacher": -34.30903916747733
+        },
+        "samples": 3040,
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "mean_psnr_delta": -22.984475404859822,
+            "samples": 2040
+          },
+          "rico_screen2words_heldout": {
+            "mean_psnr_delta": -21.113553772162252,
+            "samples": 1000
+          }
+        },
+        "worst_source_psnr_delta": -22.984475404859822
+      },
+      "portable_onnx": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/full_surface_from_recovery_20260730/recovered_core/portable/model.onnx",
+      "portable_onnx_bytes": 4807898,
+      "portable_onnx_sha256": "0d0151450c5514c0c8c36a01642d1dade33d5748c2862120fe02bb347131d541",
+      "portable_onnx_smaller_than_q4": true,
+      "rank": 2
+    }
+  ],
+  "recovered_minus_fp32": {
+    "mean_deltas": {
+      "edge_psnr_vs_ground_truth": -0.07941148338995835,
+      "psnr_vs_ground_truth": -0.5885084258096748,
+      "psnr_vs_teacher": -0.5972820222618834
+    },
+    "samples": 3040,
+    "sources": {
+      "flores200_balanced_synthetic_ui": {
+        "mean_psnr_delta": -0.6282755579112159,
+        "samples": 2040
+      },
+      "rico_screen2words_heldout": {
+        "mean_psnr_delta": -0.5073834763225346,
+        "samples": 1000
+      }
+    },
+    "worst_source_psnr_delta": -0.6282755579112159
+  },
+  "selection_source": "development",
+  "study_manifest": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/full_surface_from_recovery_20260730/study-manifest.json",
+  "study_manifest_sha256": "c31e744cc856bd4bdf7255a3c2ff8b6ff4afc49027c53d1b5102ed158243a54f"
+}

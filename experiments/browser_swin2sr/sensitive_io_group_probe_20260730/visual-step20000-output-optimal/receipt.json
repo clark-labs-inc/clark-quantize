@@ -1,0 +1,63 @@
+{
+  "format": "backdropkit-swin2sr-sensitive-io-visual-v2",
+  "diagnostic_only": true,
+  "selection_source": "development",
+  "checkpoint": "experiments/browser_swin2sr/sensitive_hardshadow_20260730/checkpoint-surface-20000.pt",
+  "checkpoint_sha256": "54789cbdf282548f80b3b4b30c3236ca777004e0e27c699171732360641e4588",
+  "render_source_sha256": "4d5f8367e50d82384506684928212753c0512be58114e9a3a5ba6f0c7d4ec3eb",
+  "surface_step": 20000,
+  "device": "mps",
+  "target": "upsample.conv",
+  "method": "optimal_mse",
+  "group_sizes": [
+    9,
+    3,
+    2
+  ],
+  "comparisons": [
+    {
+      "source": "/Users/stan/Documents/git/clark-desktop/promos/source-ui-composer-current.png",
+      "source_sha256": "27bb60639781d97b623ce94c5e6944fc0243fbde5efb0bcbf3b60e1cfe967c34",
+      "render": "experiments/browser_swin2sr/sensitive_io_group_probe_20260730/visual-step20000-output-optimal/00-source-ui-composer-current.png",
+      "render_sha256": "2e12c7cddd7b2b80168fe2c9754891574ea2dc0ed3d691683e1b989a66f42508",
+      "psnr_by_group_size": {
+        "9": 21.942483525068283,
+        "3": 26.048442874355054,
+        "2": 26.34607394956597
+      }
+    },
+    {
+      "source": "/Users/stan/Documents/git/clark-desktop/promos/source-ui-chat-current.png",
+      "source_sha256": "f3f8ea752eeab6a1c5e8e9a36d7a22c9cb91cd83203f91ae7014f085fa3419c0",
+      "render": "experiments/browser_swin2sr/sensitive_io_group_probe_20260730/visual-step20000-output-optimal/01-source-ui-chat-current.png",
+      "render_sha256": "773be33b4613a99b233c67949e2004897a94333ed89a7820fc6aba88b62c131e",
+      "psnr_by_group_size": {
+        "9": 23.27468637098976,
+        "3": 31.168487099944823,
+        "2": 31.97234353472851
+      }
+    },
+    {
+      "source": "/Users/stan/Documents/git/clark-desktop/promos/source-ui-research-current.png",
+      "source_sha256": "c012b92f05bd0d20fbda5e4fb16931f3a1800dbc854cdb98f26e35edf80c05d8",
+      "render": "experiments/browser_swin2sr/sensitive_io_group_probe_20260730/visual-step20000-output-optimal/02-source-ui-research-current.png",
+      "render_sha256": "7248b034a9828f9a378a6839c7e428538396eb0509613af085d9dd92fbecd537",
+      "psnr_by_group_size": {
+        "9": 23.456237475114662,
+        "3": 31.04485261278537,
+        "2": 31.687483572286293
+      }
+    },
+    {
+      "source": "/Users/stan/Documents/git/clark-desktop/promos/clark-code-ad-parallel-research-vertical-poster.png",
+      "source_sha256": "73e7bd7af4f848200d4d9585c4b8a32fb905d8e5e493ef44c1d144c572e5d649",
+      "render": "experiments/browser_swin2sr/sensitive_io_group_probe_20260730/visual-step20000-output-optimal/03-clark-code-ad-parallel-research-vertical-poster.png",
+      "render_sha256": "22fdb023d1eef811ccd1768248779e4962ed1aadc8b37ff375cd807b0e1a9e1a",
+      "psnr_by_group_size": {
+        "9": 22.39082003178172,
+        "3": 26.702447905373177,
+        "2": 27.070197864680164
+      }
+    }
+  ]
+}

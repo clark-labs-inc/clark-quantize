@@ -1,0 +1,70 @@
+{
+  "format": "clark-realtime-ui-video-x2-example-evaluation-v1",
+  "selection": "fixed video fractions; detail crop chosen only by reference edge density",
+  "frames": [
+    {
+      "example": "product-demo-1-before-after.png",
+      "source": "clark-code-ad-direct-vs-claude-20s-16x9.mp4",
+      "timestamp_seconds": 4.402200000000001,
+      "reference_size": [
+        1280,
+        720
+      ],
+      "detail_crop": [
+        84,
+        240,
+        444,
+        460
+      ],
+      "bicubic_psnr_db": 30.1560115814209,
+      "model_psnr_db": 30.932720184326172,
+      "bicubic_edge_psnr_db": 27.85646629333496,
+      "model_edge_psnr_db": 28.66628646850586
+    },
+    {
+      "example": "product-demo-2-before-after.png",
+      "source": "clark-code-demo.mp4",
+      "timestamp_seconds": 13.93983408,
+      "reference_size": [
+        1280,
+        720
+      ],
+      "detail_crop": [
+        132,
+        0,
+        492,
+        220
+      ],
+      "bicubic_psnr_db": 33.195716857910156,
+      "model_psnr_db": 34.348419189453125,
+      "bicubic_edge_psnr_db": 31.850730895996094,
+      "model_edge_psnr_db": 32.78166961669922
+    },
+    {
+      "example": "product-demo-3-before-after.png",
+      "source": "clark-code-ad-direct-vs-claude-20s-16x9.mp4",
+      "timestamp_seconds": 15.807900000000002,
+      "reference_size": [
+        1280,
+        720
+      ],
+      "detail_crop": [
+        468,
+        276,
+        828,
+        496
+      ],
+      "bicubic_psnr_db": 33.5679931640625,
+      "model_psnr_db": 35.42755889892578,
+      "bicubic_edge_psnr_db": 31.71966552734375,
+      "model_edge_psnr_db": 33.55112838745117
+    }
+  ],
+  "mean": {
+    "bicubic_psnr_db": 32.30657386779785,
+    "model_psnr_db": 33.569566090901695,
+    "model_gain_db": 1.262992223103841,
+    "bicubic_edge_psnr_db": 30.47562090555827,
+    "model_edge_psnr_db": 31.666361490885418
+  }
+}

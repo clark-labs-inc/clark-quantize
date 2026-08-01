@@ -1,0 +1,40 @@
+{
+  "format": "backdropkit-swin2sr-fixed-int7-scale-training-study-v1",
+  "sealed_at": "2026-08-01",
+  "hypothesis": "The failed int7 STE arms optimized 129600 continuous masters even though the browser stores only fixed codes and per-output scales. Freezing every signed-int7 code and training only the 240 deployed FP16 scales should produce lower-variance recovery while preserving model size and kernel behavior.",
+  "parent": {
+    "checkpoint": "rstb_fp16_seed20260801/run/checkpoint-island-4000.pt",
+    "checkpoint_sha256": "4927fc3a5d6cd81c651b0bc50cee05fe25bd4bac1196bbe050e63b0aa94bcc6f"
+  },
+  "primary_arm": {
+    "name": "mask7-fixed-codes-scales-only",
+    "lloyd_mask": 7,
+    "meaning": "Lloyd codes and scales on RSTB fusion stages 0, 1, and 2; max-range on stage 3",
+    "trainable_values": 240,
+    "frozen_values": "all int7 codes, all ternary weights, all FP16 weight islands, biases, and non-scale parameters",
+    "steps": 2000,
+    "batch_size": 16,
+    "learning_rate": 0.0002,
+    "anchor_weight": 0.01,
+    "seed": 20260807,
+    "validate_every": 250,
+    "checkpoint_every": 250
+  },
+  "early_gate": {
+    "step_250": "At least one live metric must improve and neither ground-truth nor teacher PSNR may fall more than 0.002 dB from the exact step-zero baseline.",
+    "step_500": "Both live ground-truth and teacher PSNR must be nonnegative versus step zero; otherwise stop the arm.",
+    "fallback": "If mask 7 fails, run the identical scale-only arm from max-range mask 0. If both fail, reduce the learning rate to 0.00005 before changing any other variable."
+  },
+  "development_gate": {
+    "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+    "samples": 3040,
+    "requirements": [
+      "positive aggregate ground-truth, edge, and teacher PSNR versus max-range int7",
+      "paired-bootstrap ground-truth lower bound above zero",
+      "no negative source mean",
+      "no source or split regression larger than 0.001 dB",
+      "no material degradation concentration in a language or script family"
+    ]
+  },
+  "runtime_constraint": "The result must retain four packed signed-int7 tensors with one FP16 scale per output channel, exactly the existing artifact layout and byte count."
+}

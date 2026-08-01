@@ -1,18 +1,8 @@
-"""Benchmark a ternary KD checkpoint — GSM8K (generate+EM) and MMLU (logprob).
+"""Run a preregistered, fail-closed GSM8K/MMLU Gate B evaluation.
 
-Evaluates the DEPLOYED artifact: the bf16 absmean-dequant of the trained masters
-(exactly what packs to Q2_0), reconstructed on CPU then moved to GPU (~8.5 GB for
-4B). A GPU preflight aborts if free memory is insufficient, so this never OOMs a
-training run sharing the card — it lives in the free slack and caps itself.
-
-  # ternary checkpoint:
-  python scripts/eval_ternary_ckpt.py --model Qwen/Qwen3.5-4B \
-      --ckpt /workspace/agentworld_runs/<run>/ckpt_1500.pt \
-      --tasks gsm8k,mmlu --limit 200 --out /workspace/eval_ckpt_1500.json
-
-  # base teacher, same samples (retention baseline; run when GPU frees up):
-  python scripts/eval_ternary_ckpt.py --model Qwen/Qwen3.5-4B --baseline \
-      --tasks gsm8k,mmlu --limit 200 --out /workspace/eval_base.json
+The model, immutable revision, evaluation arm, and sealed sample manifest are
+required. A QAT checkpoint must replace every base-model tensor exactly; this
+script never leaves missing weights at the base model and reports a score.
 """
 from __future__ import annotations
 
@@ -22,213 +12,426 @@ import os
 import re
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 
 import torch
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from clark_quantize.ternary_kd import fused_absmean_dequant
+REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO))
+sys.path.insert(0, str(REPO / "experiments" / "large_scale_ternary"))
 
-GSM8K_SHOTS = [
-    ("Natalia sold clips to 48 friends in April, and then she sold half as many clips in May. "
-     "How many clips did she sell altogether in April and May?",
-     "In April she sold 48. In May she sold 48/2 = 24. Altogether 48+24 = 72.\n#### 72"),
-    ("Weng earns $12 an hour for babysitting. Yesterday, she just did 50 minutes of babysitting. "
-     "How much did she earn?",
-     "Per minute she earns 12/60 = $0.2. For 50 minutes she earned 0.2*50 = $10.\n#### 10"),
-    ("Betty is saving money for a new wallet which costs $100. Betty has only half of the money she needs. "
-     "Her parents decided to give her $15 for that purpose, and her grandparents twice as much as her parents. "
-     "How much more money does Betty need?",
-     "Betty has 100/2 = $50. Grandparents give 2*15 = $30. Now she has 50+15+30 = $95. "
-     "She needs 100-95 = $5 more.\n#### 5"),
-    ("James writes a 3-page letter to 2 different friends twice a week. How many pages does he write a year?",
-     "Each time he writes 3*2 = 6 pages. Twice a week is 6*2 = 12 pages. In a year 12*52 = 624 pages.\n#### 624"),
-]
+from clark_quantize.ternary_kd import fused_absmean_dequant
+from gate_b_protocol import (
+    GSM8K_SHOTS,
+    checkpoint_assignment_plan,
+    digest_json,
+    environment_provenance,
+    prompt_contract_sha256,
+    select_and_verify_rows,
+    select_and_verify_support_rows,
+    sha256_file,
+    validate_arm,
+    verify_manifest,
+    wilson_interval,
+)
+from gate_b_model_arms import apply_ptq_ternary_dense
 
 
 def preflight_gpu(min_free_gb: float, device: str) -> None:
     if device == "cpu":
         return
+    if not device.startswith("cuda"):
+        raise SystemExit("Gate B currently supports cpu or cuda devices")
     free, total = torch.cuda.mem_get_info()
     free_gb, total_gb = free / 2**30, total / 2**30
     print(f"GPU free {free_gb:.1f} / {total_gb:.1f} GB")
     if free_gb < min_free_gb:
         raise SystemExit(
             f"ABORT: only {free_gb:.1f} GB free, need >= {min_free_gb:.1f}. "
-            "A training run is likely using the card. Re-run when it frees up, "
-            "or on a second GPU. (Not touching the training PID.)")
-    # hard-cap this process so it cannot eat into the training allocation
-    frac = min((free_gb - 0.75) / total_gb, 0.99)
-    torch.cuda.set_per_process_memory_fraction(frac)
-    print(f"capped eval process to {frac*total_gb:.1f} GB")
+            "A training run is likely using the card; not touching its PID."
+        )
+    fraction = min((free_gb - 0.75) / total_gb, 0.99)
+    torch.cuda.set_per_process_memory_fraction(fraction)
+    print(f"capped eval process to {fraction * total_gb:.1f} GB")
 
 
-def load_deployed_model(base: str, ckpt_path: Path | None, device: str, dtype=torch.bfloat16):
-    """Plain bf16 model with ternary Linears replaced by their absmean-dequant.
-
-    baseline (ckpt_path=None) returns the untouched base model.
-    """
+def load_deployed_model(
+    base: str,
+    revision: str,
+    checkpoint: Path | None,
+    device: str,
+    *,
+    arm: str,
+    dtype=torch.bfloat16,
+):
+    """Construct the exact dense form of a QAT checkpoint or the BF16 control."""
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     def load_plain():
+        common = {
+            "revision": revision,
+            "torch_dtype": dtype,
+            "trust_remote_code": True,
+            "low_cpu_mem_usage": True,
+        }
         try:
-            return AutoModelForCausalLM.from_pretrained(
-                base, torch_dtype=dtype, trust_remote_code=True, low_cpu_mem_usage=True)
+            return AutoModelForCausalLM.from_pretrained(base, **common)
         except ValueError:
             from transformers import AutoModelForImageTextToText
-            return AutoModelForImageTextToText.from_pretrained(
-                base, torch_dtype=dtype, trust_remote_code=True, low_cpu_mem_usage=True)
 
-    tok = AutoTokenizer.from_pretrained(base, trust_remote_code=True)
-    model = load_plain()  # CPU
-    if ckpt_path is not None:
-        print(f"loading checkpoint {ckpt_path} (CPU) ...")
-        sd = torch.load(ckpt_path, map_location="cpu")
-        state = sd.get("model", sd)
-        state = {k[len("_orig_mod."):] if k.startswith("_orig_mod.") else k: v for k, v in state.items()}
+            return AutoModelForImageTextToText.from_pretrained(base, **common)
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        base, revision=revision, trust_remote_code=True
+    )
+    model = load_plain()
+    arm_metadata = {"method": "exact_bf16_parent"}
+    if arm == "ptq_ternary":
+        arm_metadata = apply_ptq_ternary_dense(model, dtype=dtype)
+    if checkpoint is not None:
+        print(f"loading checkpoint {checkpoint} (CPU) ...")
+        payload = torch.load(checkpoint, map_location="cpu")
+        raw_state = payload.get("model", payload)
+        state = {
+            key[len("_orig_mod.") :] if key.startswith("_orig_mod.") else key: value
+            for key, value in raw_state.items()
+        }
         own = model.state_dict()
-        assign, n_deq, n_direct = {}, 0, 0
-        for k, v in state.items():
-            if k.endswith("weight_master"):
-                target = k[: -len("weight_master")] + "weight"
-                if target in own:
-                    assign[target] = fused_absmean_dequant(v.float(), out_dtype=dtype).reshape(own[target].shape)
-                    n_deq += 1
-            elif k in own and own[k].shape == v.shape:
-                assign[k] = v.to(dtype)
-                n_direct += 1
-        step = sd.get("step", "?")
-        res = model.load_state_dict(assign, strict=False)
-        print(f"checkpoint step {step}: dequantized {n_deq} ternary tensors, "
-              f"copied {n_direct} frozen tensors, applied {len(assign)}; "
-              f"{len(res.missing_keys)} left at base (norms/tied head).")
-        del sd, state, assign
-    # text-only eval: drop the vision tower + MTP head so they don't occupy the
-    # tight GPU slack (they carry no text-eval signal; ~1-1.5 GB saved on a VL 4B)
+        plan = checkpoint_assignment_plan(state, own)
+        assignment, dequantized = {}, 0
+        for target, source in plan.items():
+            value = state[source]
+            if source.endswith("weight_master"):
+                assignment[target] = fused_absmean_dequant(
+                    value.float(), out_dtype=own[target].dtype
+                ).reshape(own[target].shape)
+                dequantized += 1
+            else:
+                assignment[target] = value.to(dtype=own[target].dtype)
+        model.load_state_dict(assignment, strict=True)
+        print(
+            f"checkpoint step {payload.get('step', '?')}: dequantized "
+            f"{dequantized} ternary tensors and applied all "
+            f"{len(assignment)} model tensors"
+        )
+        arm_metadata = {
+            "method": "qat_ternary_checkpoint_dense_dequant_v1",
+            "dequantized_tensors": dequantized,
+            "checkpoint_step": payload.get("step", None),
+        }
+        del payload, raw_state, state, assignment, plan
+
     core = getattr(model, "model", model)
-    for attr in ("visual", "vision_model", "vision_tower"):
-        if getattr(core, attr, None) is not None:
-            setattr(core, attr, None); print(f"dropped {attr} for text eval")
+    for attribute in ("visual", "vision_model", "vision_tower"):
+        if getattr(core, attribute, None) is not None:
+            setattr(core, attribute, None)
+            print(f"dropped {attribute} for text-only eval")
     if getattr(model, "mtp", None) is not None:
-        model.mtp = None; print("dropped mtp head for text eval")
+        model.mtp = None
+        print("dropped mtp head for text-only eval")
     model.config.use_cache = True
     model.eval().to(device)
-    if device != "cpu":
-        print(f"model on GPU: {torch.cuda.memory_allocated()/2**30:.1f} GB")
-    return model, tok
+    return model, tokenizer, arm_metadata
+
+
+def summarize_task(task: str, shots: int, records: list[dict]) -> dict:
+    correct = sum(record["correct"] for record in records)
+    latencies = sorted(record["latency_ms"] for record in records)
+    return {
+        "task": task,
+        "n": len(records),
+        "shots": shots,
+        "accuracy": correct / len(records),
+        "accuracy_wilson_95_ci": wilson_interval(correct, len(records)),
+        "latency_ms": {
+            "mean": sum(latencies) / len(latencies),
+            "p50": latencies[len(latencies) // 2],
+            "p95": latencies[
+                min(len(latencies) - 1, int(len(latencies) * 0.95))
+            ],
+        },
+        "samples": records,
+    }
 
 
 @torch.no_grad()
-def eval_gsm8k(model, tok, device, limit, shots, max_new):
-    from datasets import load_dataset
-    ds = load_dataset("openai/gsm8k", "main", split="test")
-    if limit:
-        ds = ds.select(range(min(limit, len(ds))))
-    preamble = "".join(f"Question: {q}\nAnswer: {a}\n\n" for q, a in GSM8K_SHOTS[:shots])
-    correct = 0
-    t0 = time.time()
-    for i, row in enumerate(ds):
+def eval_gsm8k(model, tokenizer, device, selected, shots, max_new):
+    preamble = "".join(
+        f"Question: {question}\nAnswer: {answer}\n\n"
+        for question, answer in GSM8K_SHOTS[:shots]
+    )
+    records, started = [], time.time()
+    for index, (row, sample) in enumerate(selected):
         gold = row["answer"].split("####")[-1].strip().replace(",", "")
         prompt = preamble + f"Question: {row['question']}\nAnswer:"
-        ids = tok(prompt, return_tensors="pt").to(device)
-        out = model.generate(**ids, max_new_tokens=max_new, do_sample=False,
-                             pad_token_id=tok.eos_token_id)
-        text = tok.decode(out[0, ids.input_ids.shape[1]:], skip_special_tokens=True)
-        text = text.split("Question:")[0]
-        nums = re.findall(r"-?\$?\d[\d,]*\.?\d*", text)
-        pred = nums[-1].replace(",", "").replace("$", "").rstrip(".") if nums else None
+        inputs = tokenizer(prompt, return_tensors="pt").to(device)
+        item_started = time.perf_counter()
+        output = model.generate(
+            **inputs,
+            max_new_tokens=max_new,
+            do_sample=False,
+            pad_token_id=tokenizer.eos_token_id,
+        )
+        latency_ms = (time.perf_counter() - item_started) * 1_000
+        text = tokenizer.decode(
+            output[0, inputs.input_ids.shape[1] :], skip_special_tokens=True
+        ).split("Question:")[0]
+        numbers = re.findall(r"-?\$?\d[\d,]*\.?\d*", text)
+        prediction = (
+            numbers[-1].replace(",", "").replace("$", "").rstrip(".")
+            if numbers
+            else None
+        )
         try:
-            ok = pred is not None and abs(float(pred) - float(gold)) < 1e-4
+            correct = (
+                prediction is not None
+                and abs(float(prediction) - float(gold)) < 1e-4
+            )
         except ValueError:
-            ok = pred == gold
-        correct += ok
-        if (i + 1) % 25 == 0:
-            print(f"  gsm8k {i+1}/{len(ds)}  acc={correct/(i+1):.3f}  "
-                  f"({(i+1)/(time.time()-t0):.2f} q/s)", flush=True)
-    return {"task": "gsm8k", "n": len(ds), "shots": shots, "accuracy": correct / len(ds)}
+            correct = prediction == gold
+        records.append(
+            {
+                "sample_id": sample["sample_id"],
+                "correct": bool(correct),
+                "prediction": prediction,
+                "gold": gold,
+                "output": text,
+                "latency_ms": latency_ms,
+                "input_tokens": int(inputs.input_ids.shape[1]),
+                "output_tokens": int(
+                    output.shape[1] - inputs.input_ids.shape[1]
+                ),
+            }
+        )
+        if (index + 1) % 25 == 0:
+            running = sum(record["correct"] for record in records)
+            print(
+                f"  gsm8k {index + 1}/{len(selected)} "
+                f"acc={running / (index + 1):.3f} "
+                f"({(index + 1) / (time.time() - started):.2f} q/s)",
+                flush=True,
+            )
+    return summarize_task("gsm8k", shots, records)
 
 
 @torch.no_grad()
-def eval_mmlu(model, tok, device, limit, shots, dataset):
-    from datasets import load_dataset
-    test = load_dataset(dataset, "all", split="test")
-    dev = load_dataset(dataset, "all", split="dev")
-    by_subject: dict[str, list] = {}
-    for r in dev:
-        by_subject.setdefault(r["subject"], []).append(r)
-    if limit and limit < len(test):
-        step = max(1, len(test) // limit)  # even stride across subjects, not first-N
-        test = test.select(list(range(0, len(test), step))[:limit])
+def eval_mmlu(model, tokenizer, device, selected, support, shots):
     letters = ["A", "B", "C", "D"]
-    letter_ids = [tok(" " + L, add_special_tokens=False).input_ids[-1] for L in letters]
+    letter_ids = [
+        tokenizer(" " + letter, add_special_tokens=False).input_ids[-1]
+        for letter in letters
+    ]
 
-    def fmt(r, with_answer):
-        q = r["question"].strip()
-        opts = "\n".join(f"{letters[j]}. {c}" for j, c in enumerate(r["choices"]))
-        s = f"{q}\n{opts}\nAnswer:"
-        return s + (f" {letters[r['answer']]}\n\n" if with_answer else "")
+    def format_row(row, with_answer):
+        options = "\n".join(
+            f"{letters[index]}. {choice}"
+            for index, choice in enumerate(row["choices"])
+        )
+        text = f"{row['question'].strip()}\n{options}\nAnswer:"
+        return (
+            text + f" {letters[row['answer']]}\n\n" if with_answer else text
+        )
 
-    correct, t0 = 0, time.time()
-    for i, row in enumerate(test):
-        subj = row["subject"]
-        ex = by_subject.get(subj, [])[:shots]
-        head = f"The following are multiple choice questions (with answers) about {subj.replace('_',' ')}.\n\n"
-        prompt = head + "".join(fmt(e, True) for e in ex) + fmt(row, False)
-        ids = tok(prompt, return_tensors="pt").to(device)
-        logits = model(**ids).logits[0, -1]
-        pred = int(torch.tensor([logits[t] for t in letter_ids]).argmax())
-        correct += pred == row["answer"]
-        if (i + 1) % 50 == 0:
-            print(f"  mmlu {i+1}/{len(test)}  acc={correct/(i+1):.3f}  "
-                  f"({(i+1)/(time.time()-t0):.1f} q/s)", flush=True)
-    return {"task": "mmlu", "n": len(test), "shots": shots, "dataset": dataset,
-            "accuracy": correct / len(test)}
+    records, started = [], time.time()
+    for index, (row, sample) in enumerate(selected):
+        subject = row["subject"]
+        examples = support[subject][:shots]
+        heading = (
+            "The following are multiple choice questions (with answers) about "
+            f"{subject.replace('_', ' ')}.\n\n"
+        )
+        prompt = (
+            heading
+            + "".join(format_row(example, True) for example in examples)
+            + format_row(row, False)
+        )
+        inputs = tokenizer(prompt, return_tensors="pt").to(device)
+        item_started = time.perf_counter()
+        logits = model(**inputs).logits[0, -1]
+        choices = torch.stack([logits[token_id] for token_id in letter_ids])
+        latency_ms = (time.perf_counter() - item_started) * 1_000
+        prediction = int(choices.argmax())
+        records.append(
+            {
+                "sample_id": sample["sample_id"],
+                "correct": prediction == row["answer"],
+                "prediction": letters[prediction],
+                "gold": letters[row["answer"]],
+                "choice_logits": [
+                    float(value) for value in choices.float().cpu()
+                ],
+                "latency_ms": latency_ms,
+                "input_tokens": int(inputs.input_ids.shape[1]),
+            }
+        )
+        if (index + 1) % 50 == 0:
+            running = sum(record["correct"] for record in records)
+            print(
+                f"  mmlu {index + 1}/{len(selected)} "
+                f"acc={running / (index + 1):.3f} "
+                f"({(index + 1) / (time.time() - started):.1f} q/s)",
+                flush=True,
+            )
+    return summarize_task("mmlu", shots, records)
+
+
+def load_manifest_task(task_spec):
+    from datasets import load_dataset
+
+    dataset = load_dataset(
+        task_spec["dataset"],
+        task_spec["config"],
+        split=task_spec["split"],
+        revision=task_spec["revision"],
+    )
+    if dataset._fingerprint != task_spec["fingerprint"]:
+        raise ValueError(
+            f"{task_spec['task']} fingerprint drift: "
+            f"{dataset._fingerprint} != {task_spec['fingerprint']}"
+        )
+    selected = select_and_verify_rows(dataset, task_spec)
+    support = None
+    if "support" in task_spec:
+        spec = task_spec["support"]
+        support_dataset = load_dataset(
+            spec["dataset"],
+            spec["config"],
+            split=spec["split"],
+            revision=spec["revision"],
+        )
+        if support_dataset._fingerprint != spec["fingerprint"]:
+            raise ValueError("support dataset fingerprint drift")
+        support = select_and_verify_support_rows(support_dataset, spec)
+    return selected, support
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default="Qwen/Qwen3.5-4B")
-    ap.add_argument("--ckpt", type=Path, default=None)
-    ap.add_argument("--baseline", action="store_true", help="eval base model (ignore --ckpt)")
-    ap.add_argument("--tasks", default="gsm8k,mmlu")
-    ap.add_argument("--limit", type=int, default=200)
-    ap.add_argument("--gsm8k-shots", type=int, default=4)
-    ap.add_argument("--mmlu-shots", type=int, default=5)
-    ap.add_argument("--mmlu-dataset", default="cais/mmlu")
-    ap.add_argument("--max-new-tokens", type=int, default=256)
-    ap.add_argument("--min-free-gb", type=float, default=10.5)
-    ap.add_argument("--out", type=Path, default=None)
-    ap.add_argument("--device", default="cuda")
-    args = ap.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model", required=True)
+    parser.add_argument("--model-revision", required=True)
+    parser.add_argument(
+        "--arm",
+        required=True,
+        choices=["bf16", "qat_ternary", "ptq_ternary", "int4"],
+    )
+    parser.add_argument("--ckpt", type=Path)
+    parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--max-new-tokens", type=int, default=256)
+    parser.add_argument("--min-free-gb", type=float, default=10.5)
+    parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--device", default="cuda")
+    args = parser.parse_args()
+
+    validate_arm(args.arm, args.ckpt)
+    if args.arm == "int4":
+        raise SystemExit(
+            "int4 is preregistered but its loader is not implemented; "
+            "refusing to score a mislabeled arm"
+        )
+    manifest = json.loads(args.manifest.read_text())
+    verify_manifest(manifest)
+    if manifest.get("prompt_contract_sha256") != prompt_contract_sha256():
+        raise SystemExit("prompt contract does not match the sealed manifest")
 
     torch.backends.cuda.matmul.allow_tf32 = True
     torch.set_float32_matmul_precision("high")
     preflight_gpu(args.min_free_gb, args.device)
+    started = datetime.now(timezone.utc)
+    if args.device != "cpu":
+        torch.cuda.reset_peak_memory_stats()
+    model, tokenizer, arm_metadata = load_deployed_model(
+        args.model,
+        args.model_revision,
+        args.ckpt,
+        args.device,
+        arm=args.arm,
+    )
 
-    ckpt = None if args.baseline else args.ckpt
-    if not args.baseline and ckpt is None:
-        raise SystemExit("pass --ckpt <path> or --baseline")
-    model, tok = load_deployed_model(args.model, ckpt, args.device)
-
-    report = {"model": args.model, "ckpt": str(ckpt), "baseline": args.baseline, "results": []}
-    for task in args.tasks.split(","):
-        task = task.strip()
+    report = {
+        "schema_version": 1,
+        "arm": args.arm,
+        "arm_transform": arm_metadata,
+        "model": {
+            "id": args.model,
+            "revision": args.model_revision,
+            "config_sha256": digest_json(model.config.to_dict()),
+            "tokenizer_vocab_sha256": digest_json(tokenizer.get_vocab()),
+        },
+        "checkpoint": (
+            {"path": str(args.ckpt), "sha256": sha256_file(args.ckpt)}
+            if args.ckpt
+            else None
+        ),
+        "manifest": {
+            "path": str(args.manifest),
+            "file_sha256": sha256_file(args.manifest),
+            "content_sha256": manifest["content_sha256"],
+        },
+        "environment": environment_provenance(REPO),
+        "started_at": started.isoformat(),
+        "results": [],
+    }
+    for task_spec in manifest["tasks"]:
+        task = task_spec["task"]
         print(f"\n=== {task} ===", flush=True)
+        selected, support = load_manifest_task(task_spec)
         if task == "gsm8k":
-            r = eval_gsm8k(model, tok, args.device, args.limit, args.gsm8k_shots, args.max_new_tokens)
+            result = eval_gsm8k(
+                model,
+                tokenizer,
+                args.device,
+                selected,
+                task_spec["shots"],
+                args.max_new_tokens,
+            )
         elif task == "mmlu":
-            r = eval_mmlu(model, tok, args.device, args.limit, args.mmlu_shots, args.mmlu_dataset)
+            result = eval_mmlu(
+                model,
+                tokenizer,
+                args.device,
+                selected,
+                support,
+                task_spec["shots"],
+            )
         else:
-            print(f"unknown task {task}, skipping"); continue
-        print(f"  -> {task} accuracy = {r['accuracy']:.4f}  (n={r['n']})")
-        report["results"].append(r)
+            raise SystemExit(f"unknown manifest task {task!r}")
+        print(
+            f"  -> {task} accuracy = {result['accuracy']:.4f} "
+            f"(n={result['n']})"
+        )
+        report["results"].append(result)
 
-    print("\n" + json.dumps(report["results"], indent=2))
-    if args.out:
-        args.out.write_text(json.dumps(report, indent=2))
-        print(f"wrote {args.out}")
+    finished = datetime.now(timezone.utc)
+    report["finished_at"] = finished.isoformat()
+    report["elapsed_seconds"] = (finished - started).total_seconds()
+    report["resource_measurements"] = {
+        "peak_accelerator_memory_bytes": (
+            int(torch.cuda.max_memory_allocated())
+            if args.device != "cpu"
+            else None
+        ),
+        "energy_joules": None,
+        "energy_status": "requires external power meter or NVML sampler",
+    }
+    report["report_content_sha256"] = digest_json(report)
+    print(
+        "\n"
+        + json.dumps(
+            [
+                {key: value for key, value in result.items() if key != "samples"}
+                for result in report["results"]
+            ],
+            indent=2,
+        )
+    )
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    temporary = args.out.with_suffix(args.out.suffix + ".tmp")
+    temporary.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n")
+    os.replace(temporary, args.out)
+    print(f"wrote {args.out}")
 
 
 if __name__ == "__main__":

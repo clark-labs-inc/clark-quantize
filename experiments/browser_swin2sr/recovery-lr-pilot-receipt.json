@@ -1,0 +1,62 @@
+{
+  "format": "backdropkit-swin2sr-recovery-lr-pilot-v1",
+  "status": "calibration_only_not_promotion_evidence",
+  "seed": 20260729,
+  "base_checkpoint": "factorial_24_stage1_v2_20260729/stage2/optimal_mse__none__bonsai_qat8_muon/checkpoint-2000.pt",
+  "base_checkpoint_sha256": "1f604e87e00cf6ec06a5298b76f6db9213eb9fe5b5df4beea3aa77f9090cc2a8",
+  "configuration": {
+    "steps": 20,
+    "batch_size": 1,
+    "group_size": 60,
+    "scalar_decomposition": false,
+    "island_policy": "frozen",
+    "loss_recipe": "teacher_heavy",
+    "localized_stage_steps": 5,
+    "sampler": "backdropkit-product-source-language-v2",
+    "heldout_samples": 100,
+    "heldout_source_samples": {
+      "flores200_balanced_synthetic_ui": 63,
+      "rico_screen2words_heldout": 37
+    }
+  },
+  "arms": {
+    "learning_rate_0.000005": {
+      "hard_state_sha256": "9af81c66495a5edf12594603d78e4be08a15da6e8456be92ad736985a41811bb",
+      "paired_vs_base": {
+        "psnr_vs_ground_truth": -0.23166651226614982,
+        "edge_psnr_vs_ground_truth": -0.22461698892502752,
+        "psnr_vs_teacher": -0.10858140270635616,
+        "source_psnr": {
+          "flores200_balanced_synthetic_ui": -0.31339016343634724,
+          "rico_screen2words_heldout": -0.0925154305439218
+        }
+      }
+    },
+    "learning_rate_0.000001": {
+      "hard_state_sha256": "6cb01a9c6601ed54c46387dd0f5fde6e4983f4586a593dc61e9e4771a0b1a694",
+      "paired_vs_base": {
+        "psnr_vs_ground_truth": -0.06572072537983914,
+        "edge_psnr_vs_ground_truth": -0.06730495964043005,
+        "psnr_vs_teacher": 0.19668752078583715,
+        "source_psnr": {
+          "flores200_balanced_synthetic_ui": -0.1008255880818081,
+          "rico_screen2words_heldout": -0.005947580779189302
+        }
+      },
+      "paired_vs_q4": {
+        "psnr_vs_ground_truth": 0.1301883790144199,
+        "edge_psnr_vs_ground_truth": 0.10564993314291556,
+        "psnr_vs_teacher": -2.79583503881338,
+        "source_psnr": {
+          "flores200_balanced_synthetic_ui": 0.38067246889663986,
+          "rico_screen2words_heldout": -0.2963115578120627
+        }
+      }
+    }
+  },
+  "decision": {
+    "winner": "learning_rate_0.000001",
+    "use_for_recovery_factorial": true,
+    "reason": "Lower held-out loss, nearly unchanged RICO quality, and positive teacher-fidelity movement on the matched calibration slice."
+  }
+}

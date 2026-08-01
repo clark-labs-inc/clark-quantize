@@ -1,0 +1,174 @@
+{
+  "format": "backdropkit-swin2sr-int7-layer-scale-grid-v1",
+  "max_state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_per_output/materialized/dense-hard.pt",
+  "max_state_sha256": "308b7fc0de513a4983563d519219c100ff8f13bb0a5143d5cd3e1d4204d2a612",
+  "lloyd_state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_int7_mse_scale_seed20260804/materialized/dense-hard.pt",
+  "lloyd_state_sha256": "fa3fdb744bd594db63350979c77873932e0cf526acf9c4c34b8414c6976ae89d",
+  "stage_weights": [
+    "swin2sr.encoder.stages.0.conv.weight",
+    "swin2sr.encoder.stages.1.conv.weight",
+    "swin2sr.encoder.stages.2.conv.weight",
+    "swin2sr.encoder.stages.3.conv.weight"
+  ],
+  "masks": [
+    {
+      "mask": 0,
+      "lloyd_layers": [],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-00/dense-hard.pt",
+      "state_sha256": "308b7fc0de513a4983563d519219c100ff8f13bb0a5143d5cd3e1d4204d2a612"
+    },
+    {
+      "mask": 1,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.0.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-01/dense-hard.pt",
+      "state_sha256": "540db4fc5eb1fced579e5189446b3f6f2ad9ea35ada54e8647d79a49172a4a16"
+    },
+    {
+      "mask": 2,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.1.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-02/dense-hard.pt",
+      "state_sha256": "b3f7aa198b6337e06a82741644683fc6a93e7a5c6b06e1b4e40c05918d64b1fb"
+    },
+    {
+      "mask": 3,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.0.conv.weight",
+        "swin2sr.encoder.stages.1.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-03/dense-hard.pt",
+      "state_sha256": "06a916155b22a5f2de18f882dc63f1612a6d5555cdbfb80a73ab8fa0d051d601"
+    },
+    {
+      "mask": 4,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.2.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-04/dense-hard.pt",
+      "state_sha256": "19a4f64c1b368e6dedc1eb23e84b59395cd5c533731fe2762928a0015f88fc04"
+    },
+    {
+      "mask": 5,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.0.conv.weight",
+        "swin2sr.encoder.stages.2.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-05/dense-hard.pt",
+      "state_sha256": "d020e2230690601223433017dc6cd4bc76a2a8e69306c68b166e00abe2f892cc"
+    },
+    {
+      "mask": 6,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.1.conv.weight",
+        "swin2sr.encoder.stages.2.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-06/dense-hard.pt",
+      "state_sha256": "95589149e15df4f24fb5a26511e62e647ec7546018f9eef35a6cda017b1b88ed"
+    },
+    {
+      "mask": 7,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.0.conv.weight",
+        "swin2sr.encoder.stages.1.conv.weight",
+        "swin2sr.encoder.stages.2.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-07/dense-hard.pt",
+      "state_sha256": "af8eb18a07e59cf2f3cc8bc784014db4dcb42d4e4ecd75a55d8b2945f708c154"
+    },
+    {
+      "mask": 8,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.3.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-08/dense-hard.pt",
+      "state_sha256": "4f72520773be501853241a1ae8ad636367f045c7b1b0b8b34af98a01f68c887b"
+    },
+    {
+      "mask": 9,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.0.conv.weight",
+        "swin2sr.encoder.stages.3.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-09/dense-hard.pt",
+      "state_sha256": "8367e0dc705fdfaa9f2b3d1008a39a6d9ad1738ba9b6fbacc00170788a793adb"
+    },
+    {
+      "mask": 10,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.1.conv.weight",
+        "swin2sr.encoder.stages.3.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-10/dense-hard.pt",
+      "state_sha256": "acc4f3034b3112045d832e0fbb189b273d7e1a4490d7ddace3c713795904bbd4"
+    },
+    {
+      "mask": 11,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.0.conv.weight",
+        "swin2sr.encoder.stages.1.conv.weight",
+        "swin2sr.encoder.stages.3.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-11/dense-hard.pt",
+      "state_sha256": "285bf07f4cd8c97818bd00514f4c9302602c980fb981700e7c6830ff5c998db9"
+    },
+    {
+      "mask": 12,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.2.conv.weight",
+        "swin2sr.encoder.stages.3.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-12/dense-hard.pt",
+      "state_sha256": "9e72eb2bb5c478883181d1bcf3ca0e974bf0aee596b936e2288b1a050f7ffb7c"
+    },
+    {
+      "mask": 13,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.0.conv.weight",
+        "swin2sr.encoder.stages.2.conv.weight",
+        "swin2sr.encoder.stages.3.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-13/dense-hard.pt",
+      "state_sha256": "5d42ff68be20b885cd770855ec7139e54723d185c4266ac926f2bdedace73f8d"
+    },
+    {
+      "mask": 14,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.1.conv.weight",
+        "swin2sr.encoder.stages.2.conv.weight",
+        "swin2sr.encoder.stages.3.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-14/dense-hard.pt",
+      "state_sha256": "fa144f7c68706803f923ece77695495ec1a76f4d4e8e2b5e51b577e7e9bad33e"
+    },
+    {
+      "mask": 15,
+      "lloyd_layers": [
+        "swin2sr.encoder.stages.0.conv.weight",
+        "swin2sr.encoder.stages.1.conv.weight",
+        "swin2sr.encoder.stages.2.conv.weight",
+        "swin2sr.encoder.stages.3.conv.weight"
+      ],
+      "state": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/mask-15/dense-hard.pt",
+      "state_sha256": "fa3fdb744bd594db63350979c77873932e0cf526acf9c4c34b8414c6976ae89d"
+    }
+  ],
+  "diagnostic_bundle": {
+    "format": "backdropkit-swin2sr-eval-v1",
+    "crop_size": 128,
+    "low_size": 64,
+    "seed": 20260801,
+    "samples": 404,
+    "source_manifests": [
+      {
+        "path": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/manifest.jsonl",
+        "sha256": "e35334e5c567d7c6c9212eb2008507e73f6e0a3b17c041abbefb3bd82e59720d"
+      }
+    ],
+    "manifest": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/diagnostic-manifest.jsonl",
+    "manifest_sha256": "110bfaab5f49fed2ba88ecf27aee25d21096cc9c8fe02d45eece4c75be3e45fb",
+    "bundle": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int7_layer_scale_grid/diagnostic-bundle.json"
+  }
+}

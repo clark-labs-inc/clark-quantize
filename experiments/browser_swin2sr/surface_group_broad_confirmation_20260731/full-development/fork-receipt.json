@@ -1,0 +1,52 @@
+{
+  "format": "backdropkit-swin2sr-surface-group-map-fork-v1",
+  "created_at": "2026-07-31T11:22:32.566745+00:00",
+  "parent_checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+  "parent_checkpoint_sha256": "ad5e76db8c378c16da689a4cf37d96eb6e204f7b9de543199efc103c0d371469",
+  "fork_checkpoint": "experiments/browser_swin2sr/surface_group_broad_confirmation_20260731/full-development/fork-step24000.pt",
+  "fork_checkpoint_sha256": "acd85ea53f7ba2bba56076a952566b68a151dc7ab6d39f3a61f27a6fe4ff748b",
+  "surface_step": 24000,
+  "previous_surface_group_sizes": {
+    "swin2sr.first_convolution": 2,
+    "upsample.conv": 2
+  },
+  "added_surface_group_sizes": {
+    "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.0": 3,
+    "swin2sr.encoder.stages.0.layers.1.output.dense": 6,
+    "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.0": 6,
+    "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.2.layers.2.attention.self.value": 6,
+    "swin2sr.encoder.stages.2.layers.3.attention.self.value": 6,
+    "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.3.layers.2.attention.output.dense": 3,
+    "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.3.layers.3.attention.output.dense": 3,
+    "swin2sr.encoder.stages.3.layers.4.intermediate.dense": 6,
+    "swin2sr.encoder.stages.3.layers.5.attention.output.dense": 6
+  },
+  "surface_group_sizes": {
+    "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.0": 3,
+    "swin2sr.encoder.stages.0.layers.1.output.dense": 6,
+    "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.0": 6,
+    "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.2.layers.2.attention.self.value": 6,
+    "swin2sr.encoder.stages.2.layers.3.attention.self.value": 6,
+    "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.3.layers.2.attention.output.dense": 3,
+    "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.3.layers.3.attention.output.dense": 3,
+    "swin2sr.encoder.stages.3.layers.4.intermediate.dense": 6,
+    "swin2sr.encoder.stages.3.layers.5.attention.output.dense": 6,
+    "swin2sr.first_convolution": 2,
+    "upsample.conv": 2
+  },
+  "training_state_sha256": {
+    "model": "b5a930f7c4b663f3ced672cee85bc0e7564ecfa2faf62c9d7bf94dba9c3320cc",
+    "optimizer_state": "2231203d3141c19e26121c027c6e3b73f8a416dd580c5b91878e59690ba5cc2e",
+    "run_state": "50be9e8ec23d335b9380b21520110100660e9b1e3395943872c05de5687a3bcd"
+  }
+}

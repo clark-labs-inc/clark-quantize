@@ -1,0 +1,40 @@
+{
+  "format": "backdropkit-swin2sr-affine-ternary-screen-study-v2",
+  "status": "sealed_weight_only",
+  "supersedes_failed_preflight": "experiments/browser_swin2sr/affine_ternary_screen_20260731/study-manifest.json",
+  "supersedes_failed_preflight_sha256": "6826063391634b28c0468533f15352d94047f9d0a5ab62fe5693c8378bea178d",
+  "preflight_correction": "include the repository root on PYTHONPATH so clark_air resolves",
+  "hypothesis": "FP16 affine shift plus scale with byte-identical ternary codes reduces aggregate weight squared error by at least 10 percent",
+  "parent_checkpoint": "experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+  "parent_checkpoint_sha256": "0b155f9ada8b747544ba1abb83596e160927fdc91a4c33bf36879ff3f77ce00f",
+  "source_sha256": {
+    "experiments/browser_swin2sr/affine_ternary.py": "ff153417010e934554d8baa29bb05cd747d2095d1362ab250ba93041c68e7acf",
+    "experiments/browser_swin2sr/analyze_affine_ternary_screen.py": "ae5d1adde9be0991a08a682fe9b21c37f9a73343ce23b46b79f5a6b04762d762",
+    "experiments/browser_swin2sr/test_affine_ternary.py": "20876e2536837d4f7cf11d0421f573884d58ef88303b83b2a7d74e140f8480bc"
+  },
+  "upstream": {
+    "paper": "TWLA: Achieving Ternary Weights and Low-Bit Activations for LLMs via Post-Training Quantization",
+    "arxiv": "2606.13054v1",
+    "url": "https://arxiv.org/abs/2606.13054v1"
+  },
+  "current_codes_frozen": true,
+  "stored_shift_dtype": "float16",
+  "stored_scale_dtype": "float16",
+  "aggregate_error_reduction_gate": 0.1,
+  "maximum_category_worsening_fraction": 0.01,
+  "artifact_byte_ceiling": 2838021,
+  "training_data_access_authorized": false,
+  "development_data_access_authorized": false,
+  "final_heldout_access_authorized": false,
+  "model_promotion_authorized": false,
+  "command": [
+    "/usr/bin/env",
+    "PYTHONPATH=experiments/browser_swin2sr:.",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/analyze_affine_ternary_screen.py",
+    "experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+    "--out",
+    "experiments/browser_swin2sr/affine_ternary_screen_20260731/weight-screen.json"
+  ],
+  "output": "experiments/browser_swin2sr/affine_ternary_screen_20260731/weight-screen.json"
+}

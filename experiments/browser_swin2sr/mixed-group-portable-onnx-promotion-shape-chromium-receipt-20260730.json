@@ -1,0 +1,135 @@
+{
+  "format": "backdropkit-swin2sr-runtime-receipts-v1",
+  "candidate_role": "infrastructure-only",
+  "promotion_evidence": false,
+  "reason": "The source is an unpromoted hard-shadow smoke checkpoint. The receipt proves the runtime harness and limits at the promotion input shape, not model quality.",
+  "source_checkpoint": "/tmp/backdropkit-swin-hard-shadow-smoke-v3-20260730/checkpoint-final.pt",
+  "source_hard_state": "/tmp/backdropkit-swin-hard-shadow-smoke-v3-20260730/swin2sr-full-surface-hard.pt",
+  "model_sha256": "beca7f9fcd28154f3dfb39f2fcb0d58c3d171bc7542e85baa6670d191423493e",
+  "model_bytes": 4840032,
+  "model_format": "clark-portable-onnx-ternary-v2",
+  "fixture": {
+    "path": "/tmp/backdropkit-swin-mixed-groups-v2.fixture128.json",
+    "bytes": 4722641,
+    "sha256": "80ca1bf0de44fa418dfdcee9ea2ab13eeb15817dc57ed87917c2f372ba5baa8c",
+    "input_shape": [
+      1,
+      3,
+      128,
+      128
+    ],
+    "output_shape": [
+      1,
+      3,
+      256,
+      256
+    ]
+  },
+  "harnessFiles": {
+    "full_onnx_smoke_browser.html": "d2939e8ae632701bcfbaa47e1cc3608840886e5d40cdcdac0b47d5f951947a5f",
+    "runtime_surface.mjs": "34042f57cfd9e88d72dcf05ea768c2ae05fbb8799236dfaccaa716d12b227d40"
+  },
+  "receipts": [
+    {
+      "backend": "webgpu",
+      "browser": "chromium",
+      "surface": "chromium-webgpu",
+      "modelBytes": 4840032,
+      "modelSha256": "beca7f9fcd28154f3dfb39f2fcb0d58c3d171bc7542e85baa6670d191423493e",
+      "harnessFiles": {
+        "full_onnx_smoke_browser.html": "d2939e8ae632701bcfbaa47e1cc3608840886e5d40cdcdac0b47d5f951947a5f",
+        "runtime_surface.mjs": "34042f57cfd9e88d72dcf05ea768c2ae05fbb8799236dfaccaa716d12b227d40"
+      },
+      "inputShape": [
+        1,
+        3,
+        128,
+        128
+      ],
+      "outputShape": [
+        1,
+        3,
+        256,
+        256
+      ],
+      "sessionMs": 3340.7999999523163,
+      "inferenceMs": [
+        177.0,
+        131.59999990463257,
+        109.30000007152557
+      ],
+      "warmInferenceMs": 131.59999990463257,
+      "errors": {
+        "maximum": 0.00024402141571044922,
+        "mean": 0.000040705813034946914
+      },
+      "heapBytes": {
+        "beforeSession": 16393608,
+        "afterSession": 19001141,
+        "afterInference": 21796177
+      },
+      "passed": true
+    },
+    {
+      "backend": "wasm",
+      "browser": "chromium",
+      "surface": "chromium-wasm",
+      "modelBytes": 4840032,
+      "modelSha256": "beca7f9fcd28154f3dfb39f2fcb0d58c3d171bc7542e85baa6670d191423493e",
+      "harnessFiles": {
+        "full_onnx_smoke_browser.html": "d2939e8ae632701bcfbaa47e1cc3608840886e5d40cdcdac0b47d5f951947a5f",
+        "runtime_surface.mjs": "34042f57cfd9e88d72dcf05ea768c2ae05fbb8799236dfaccaa716d12b227d40"
+      },
+      "inputShape": [
+        1,
+        3,
+        128,
+        128
+      ],
+      "outputShape": [
+        1,
+        3,
+        256,
+        256
+      ],
+      "sessionMs": 3627.7000000476837,
+      "inferenceMs": [
+        1544.2000000476837,
+        1523.0,
+        1512.3999999761581
+      ],
+      "warmInferenceMs": 1523.0,
+      "errors": {
+        "maximum": 0.00024402141571044922,
+        "mean": 0.000040705419830070845
+      },
+      "heapBytes": {
+        "beforeSession": 21796177,
+        "afterSession": 21990685,
+        "afterInference": 14504783
+      },
+      "passed": true
+    }
+  ],
+  "console": {
+    "backend_failures": [],
+    "warnings": [
+      "ONNX Runtime assigned some shape-related nodes to CPU instead of the preferred execution provider.",
+      "ONNX Runtime noted that verbose output on a non-minimal build can show the exact node assignments."
+    ],
+    "interpretation": "Expected ONNX Runtime execution-provider partitioning warning; both requested backends completed and passed the numerical and preregistered latency gates."
+  },
+  "policy": {
+    "path": "experiments/browser_swin2sr/promotion_policy_glyphsafe_v5.json",
+    "passed_surfaces": [
+      "chromium-webgpu",
+      "chromium-wasm"
+    ],
+    "remaining_surfaces": [
+      "firefox-wasm",
+      "safari-wasm",
+      "ios-safari-wasm",
+      "android-chrome-wasm"
+    ]
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "base_quantization": {
+    "group_size": 60,
+    "method": "absmean",
+    "rotation": "hadamard"
+  },
+  "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "config": {
+    "base_onnx": "/Users/stan/.cache/huggingface/hub/models--Xenova--swin2SR-lightweight-x2-64/snapshots/54ccc3f9ed678912a9c47dc14f6c478855380a2b/onnx/model.onnx",
+    "batch_size": 8,
+    "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+    "checkpoint_every": 500,
+    "concurrency": 2,
+    "crop_size": 128,
+    "data": [
+      "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+      "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2"
+    ],
+    "data_receipt": [
+      "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/validation-receipt.json"
+    ],
+    "device": "mps",
+    "eval_device": "mps",
+    "learning_rate": 1e-06,
+    "loss_recipe": "balanced",
+    "only": null,
+    "out": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/full_surface_from_recovery_20260730",
+    "q4_reference": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+    "recovered_checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/checkpoint-final.pt",
+    "schedule_steps": 3000,
+    "seed": 20260729,
+    "steps": 4000,
+    "validate_every": 250,
+    "validation_data": "/Users/stan/Documents/git/clark-desktop/promos"
+  },
+  "created_at_unix": 1785428704.508404,
+  "format": "backdropkit-swin2sr-full-surface-comparison-v1",
+  "lanes": [
+    "fp32",
+    "recovered_core"
+  ],
+  "q4_reference": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+  "q4_reference_sha256": "d54b7ced6bdfb77ea278a50bccde0b41dbf402cac3dc04aa629b66ea75476e0d",
+  "ranking_policy": [
+    "worst_source_psnr_delta",
+    "overall_psnr_delta",
+    "edge_psnr_delta",
+    "teacher_psnr_delta"
+  ],
+  "recovered_checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/checkpoint-final.pt",
+  "recovered_checkpoint_sha256": "a1d9b2d778c3269e22df6f4c61d96bf9c02e94280810299f013392cbf18fe3a1",
+  "selection_source": "development",
+  "source_files": {
+    "artifact_state.py": "6b09fb1062628c3db11a612ad6cd96d01e894bb379df5fe65c4b63f413a2faf0",
+    "build_portable_onnx_artifact.py": "ead94a463d48c0273c9ad2616fbd145ecec5e177586a7aae1082c680d4abfecc",
+    "data_pipeline.py": "8dd9a33ef886c97fe70a33db01612112a545ba8b7e3243de2ea9e040cd8c7671",
+    "evaluate_stratified.py": "b1f7a88ee08e8d405378187c083c87dfcad104e246562586395d36d76a42b05e",
+    "export_browser_artifact.py": "abb8e9a2aa2125bc8878c0b85ed68b2986d54866592958329146252dd92347cf",
+    "full_surface_artifacts.py": "90cb2430338b338cf1068d63b89dc1fd5eb41882d41b56f4d661b1d3144ee8d0",
+    "full_surface_provenance.py": "f33ff9fa21aa258cec16c98171907a8d031f5092977d4168444b1e86fb2328ca",
+    "optimizer_controls.py": "18a16c6d5220ad0f965452f1baadea1ae2c96a155e6d00718fc554d71502b01b",
+    "qat_objective.py": "22fa683897a8dc938a873e7fae9d6836c5cba30243223513c2b1b828587fe95c",
+    "quantizer_controls.py": "1480eee113c789ff1cde5d484a5416c9f5bfb5f03dad1144165333397c86a843",
+    "recovery_controls.py": "99cbb941ff5a95c4adbe770d698fb03c00d37cb38accee77037aa2bf4153b397",
+    "recovery_data.py": "caa88a8f9151d2648e8af24d3da712f418e24bebb5d0fedd724b35cb14d29005",
+    "recovery_run_state.py": "e89c2e4c228dd1a79f39e0f55b2578564fcc63aa666f2c83dd058e21e0da9c7c",
+    "rewrite_onnx_ternary.py": "fc1b85fad325b28caf9bce0372fdf9206ef7401d7c3334da4133db58eb5bc78b",
+    "rotation_control.py": "29e360be76d94a54266d4e0afdf2db15303e9d69f4452db24dea450f250481b2",
+    "run_full_surface_comparison.py": "22991274afcf7108279729cc892ae70518e9f72b410e0f4d798e187af964efdb",
+    "run_recovery_factorial.py": "a20466a82dea01df6ee952f82c087536e6915b7b4c483fd3d503420f6b88f07f",
+    "run_state.py": "2bb0e607c6bce5514fab3751037eca7d7707b39b4eb8b92fc7755ccce488067f",
+    "surface_artifact_state.py": "d5513426a0a3bef02d6ede631513c1840e88a2cd676e9e987eb6ac8a4c9df213",
+    "surface_model_state.py": "85e0313865a6bcf806910da740e2eea6b2d7c14245918f78a20ae7db691fd4a1",
+    "surface_quantization.py": "f49cb7fe51e2f384f1da0623beffb58671ec1a57b070854cfc643d17999bc7c6",
+    "surface_run_state.py": "231a35af6a6de43d5dfb7e6f1c7c2a853ec0a4a63f0aefa01183c74a3634f53e",
+    "surface_schedule.py": "ee7dc3bd0dc4bb12f660a0c155b870c20cb34f7c3282cff5021875a166c02c9b",
+    "train_swin2sr_full_surface.py": "01d8d5df70fd061b437922b7722d75dfe0639d2d4f865184e93fec16d1d8c6b4",
+    "training_data_contract.py": "6c52ae4fd0a16ff6749701704cfc33f54943ab22180a8e2e7991fde4a9ed5c3b",
+    "verify_browser_artifact.py": "9db99e50e5c9752ff30ab06c15a5c8a8d21bbf1004a08afcec3fabe76d61361c"
+  },
+  "training_data": [
+    {
+      "images": 104500,
+      "manifest": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/manifest.jsonl",
+      "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+      "source": null,
+      "source_revision": null,
+      "summary": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/summary.json",
+      "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705"
+    },
+    {
+      "images": 102000,
+      "manifest": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/manifest.jsonl",
+      "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2",
+      "source": "Muennighoff/flores200",
+      "source_revision": "9660f10339cfc46a369a4d95fccb301a739c3fa8",
+      "summary": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/summary.json",
+      "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42"
+    }
+  ],
+  "training_data_receipts": [
+    {
+      "heldout_hash_overlap": 0,
+      "images": 102000,
+      "languages": 204,
+      "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/validation-receipt.json",
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2",
+      "sha256": "9d92dc99cf3066d9530826ad1de0458471041f6bfc23350fdc8d5b4a7cc22e5f",
+      "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42"
+    }
+  ]
+}

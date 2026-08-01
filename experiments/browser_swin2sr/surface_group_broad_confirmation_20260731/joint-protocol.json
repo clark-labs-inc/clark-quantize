@@ -1,0 +1,65 @@
+{
+  "format": "backdropkit-swin2sr-expanded-surface-group-joint-protocol-v1",
+  "status": "preregistered_before_joint_results",
+  "diagnostic_only": true,
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "decision": "experiments/browser_swin2sr/surface_group_broad_confirmation_20260731/decision.json",
+  "decision_sha256": "8fce227ba150c7434e0911b0f71a3162537b0dc5a19da8934d22b1168ffc4bf1",
+  "study_manifest": "experiments/browser_swin2sr/surface_group_broad_confirmation_20260731/study-manifest.json",
+  "study_manifest_sha256": "047c9c5fe94d6f3f6b85c0650e745a360bf00bbba59d8fa8ea724b015ff9c7dd",
+  "evaluation_source": "experiments/browser_swin2sr/evaluate_expanded_surface_group_map.py",
+  "evaluation_source_sha256": "2f22d88093415087b697e007de8bffd2b638415c401b5998d5b4fb7fee14ecea",
+  "existing_surface_group_sizes": {
+    "swin2sr.encoder.stages.3.layers.2.attention.output.dense": 3,
+    "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0": 2
+  },
+  "added_surface_group_sizes": {
+    "swin2sr.encoder.stages.3.layers.5.attention.output.dense": 6,
+    "swin2sr.encoder.stages.2.layers.2.attention.self.value": 6,
+    "swin2sr.encoder.stages.2.layers.3.attention.self.value": 6,
+    "swin2sr.encoder.stages.3.layers.4.intermediate.dense": 6,
+    "swin2sr.encoder.stages.3.layers.3.attention.output.dense": 3,
+    "swin2sr.encoder.stages.0.layers.1.output.dense": 6,
+    "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.0": 3,
+    "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.0": 6,
+    "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.2": 6
+  },
+  "selected_surface_group_sizes": {
+    "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.0": 3,
+    "swin2sr.encoder.stages.0.layers.1.output.dense": 6,
+    "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.0": 6,
+    "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.2.layers.2.attention.self.value": 6,
+    "swin2sr.encoder.stages.2.layers.3.attention.self.value": 6,
+    "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.3.layers.2.attention.output.dense": 3,
+    "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.2": 6,
+    "swin2sr.encoder.stages.3.layers.3.attention.output.dense": 3,
+    "swin2sr.encoder.stages.3.layers.4.intermediate.dense": 6,
+    "swin2sr.encoder.stages.3.layers.5.attention.output.dense": 6
+  },
+  "selected_scale_bytes_delta": 17810,
+  "scale_byte_budget": 65536,
+  "sample_count": 256,
+  "sample_source": "balanced development samples excluding every screen, individual confirmation, and prior joint-evaluation sample",
+  "bootstrap": {
+    "method": "paired_nonparametric_mean",
+    "resamples": 10000,
+    "seed": 20260731,
+    "confidence": 0.95
+  },
+  "overall_and_incremental_gate": {
+    "ground_truth_lower_95_db": "> 0",
+    "edge_mean_delta_db": ">= -0.02",
+    "teacher_mean_delta_db": ">= -0.1",
+    "scale_byte_budget": "<= 65536"
+  },
+  "passing_result": "expanded map is eligible for matched recovery study",
+  "failing_result": "retain the previously confirmed three-surface map"
+}

@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "status": "frozen_before_evaluation",
+  "model": {
+    "id": null,
+    "revision": null,
+    "provider": "local_huggingface",
+    "requires_user_confirmation": true
+  },
+  "checkpoint": {
+    "step": 19000,
+    "expected_sha256": "47c1e132d1ba92975e25d1211f883b496f009b2ca50b38dd0009853e352a5822",
+    "missing_checkpoint_policy": "abort",
+    "unmatched_tensor_policy": "abort",
+    "shape_mismatch_policy": "abort"
+  },
+  "arms": [
+    {
+      "id": "bf16",
+      "purpose": "exact_parent_quality_ceiling",
+      "weight_dtype": "bfloat16"
+    },
+    {
+      "id": "qat_ternary",
+      "purpose": "trained_1.58_bit_treatment",
+      "codebook": [-1, 0, 1],
+      "deployed_dense_reference": "fused_absmean_dequant"
+    },
+    {
+      "id": "ptq_ternary",
+      "purpose": "matched_rate_post_training_control",
+      "codebook": [-1, 0, 1],
+      "loader_status": "must_be_implemented_before_run"
+    },
+    {
+      "id": "int4",
+      "purpose": "hardware_relevant_quality_efficiency_control",
+      "loader_status": "must_be_implemented_before_run"
+    }
+  ],
+  "evaluation_order": [
+    "checkpoint_integrity",
+    "dense_deployment_equivalence",
+    "heldout_perplexity_and_teacher_kl",
+    "capability_tasks",
+    "packed_runtime_equivalence",
+    "memory_latency_and_energy"
+  ],
+  "capability_manifest": {
+    "generator": "experiments/large_scale_ternary/prepare_gate_b_manifest.py",
+    "tasks": {
+      "gsm8k": {
+        "samples": 1000,
+        "sampling": "seeded_random",
+        "shots": 4
+      },
+      "mmlu": {
+        "samples": 1000,
+        "sampling": "equal_subject_stratified",
+        "shots_per_subject": 5
+      }
+    },
+    "seed": 20260729,
+    "exact_dataset_revisions_required": true,
+    "row_hashes_required": true,
+    "prompt_contract_hash_required": true
+  },
+  "likelihood_manifest": {
+    "dataset": "HuggingFaceFW/fineweb-2",
+    "revision": "66d1a3b989bad0c42b88179a7fb60c47ce87af74",
+    "source_release": "v2.1.0",
+    "test_language_script_configs": 1318,
+    "sampling": "one_seeded_reservoir_document_per_available_test_config",
+    "documents": 1318,
+    "max_tokens_per_document": 512,
+    "minimum_tokens_per_document": 32,
+    "primary_aggregation": "micro_token_mean",
+    "required_slices": [
+      "macro_equal_language_mean",
+      "per_language_script",
+      "worst_language_decile"
+    ],
+    "teacher_kl": "exact_full_vocabulary_parent_distribution"
+  },
+  "primary_acceptance_gates": {
+    "qat_vs_bf16_perplexity_ratio_max": 1.1,
+    "qat_teacher_kl_nats_max": 0.5,
+    "qat_vs_ptq_accuracy_delta": {
+      "minimum": 0.0,
+      "paired_bootstrap_95ci_lower_bound_minimum": 0.0
+    },
+    "catastrophic_capability_slice": {
+      "definition": "absolute_accuracy_drop_vs_bf16_greater_than",
+      "threshold": 0.05,
+      "allowed_slices": 0
+    },
+    "packed_vs_dense_max_logit_absolute_error": 0.001,
+    "packed_vs_dense_mean_logit_absolute_error": 0.0001
+  },
+  "secondary_metrics": [
+    "accuracy_wilson_95ci",
+    "paired_accuracy_bootstrap_95ci",
+    "peak_memory_bytes",
+    "prompt_tokens_per_second",
+    "decode_tokens_per_second",
+    "energy_joules_per_output_token",
+    "packed_bytes",
+    "effective_bits_per_parameter"
+  ],
+  "required_execution_platforms": [
+    "apple_silicon",
+    "x86_cpu"
+  ],
+  "anti_cherry_pick_rules": [
+    "all arms use one sealed manifest",
+    "all arms use one prompt contract",
+    "all arms use one tokenizer revision",
+    "failed and interrupted arms remain in the ledger",
+    "no capability run before likelihood and integrity gates pass",
+    "no judge model is a primary metric"
+  ]
+}

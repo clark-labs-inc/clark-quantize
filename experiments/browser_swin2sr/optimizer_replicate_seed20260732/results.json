@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "stage": "optimizer-replicate",
+  "completed_unix": 1785452971.107742,
+  "failed": 0,
+  "results": [
+    {
+      "optimizer": "mirror_sgd",
+      "learning_rate_multiplier": 4.0,
+      "name": "mirror_sgd__lr_x4",
+      "learning_rate": 8e-05,
+      "return_code": 0,
+      "elapsed_seconds": 1284.9856760501862,
+      "queue_seconds": 2.1457672119140625e-06,
+      "validation": {
+        "event": "validation",
+        "step": 1000,
+        "examples_seen": 2000,
+        "loss": 0.002943915780633688,
+        "seconds": 1273.519164,
+        "attention_amount": 1.0,
+        "mlp_amount": 1.0,
+        "prox_rho": 0.0,
+        "teacher": 0.0018832202767953277,
+        "ground_truth": 0.0029805286321789026,
+        "edge": 0.004103939048945904,
+        "feature": 0.006964465603232384,
+        "redistribution": 1.408204570907401e-05,
+        "psnr_vs_ground_truth": 42.911070234685596,
+        "psnr_vs_teacher": 47.762060645793966
+      }
+    },
+    {
+      "optimizer": "bonsai_qat8_muon",
+      "learning_rate_multiplier": 4.0,
+      "name": "bonsai_qat8_muon__lr_x4",
+      "learning_rate": 8e-05,
+      "return_code": 0,
+      "elapsed_seconds": 1378.1573519706726,
+      "queue_seconds": 1284.9782781600952,
+      "validation": {
+        "event": "validation",
+        "step": 1000,
+        "examples_seen": 2000,
+        "loss": 0.002750447951257229,
+        "seconds": 1366.66806225,
+        "attention_amount": 1.0,
+        "mlp_amount": 1.0,
+        "prox_rho": 0.0,
+        "teacher": 0.0018011648207902908,
+        "ground_truth": 0.0029047818388789892,
+        "edge": 0.003978844732046127,
+        "feature": 0.005820188205689192,
+        "redistribution": 5.317632530932315e-05,
+        "psnr_vs_ground_truth": 43.341693465423006,
+        "psnr_vs_teacher": 48.7454671138878
+      }
+    },
+    {
+      "optimizer": "factored_adafactor",
+      "learning_rate_multiplier": 4.0,
+      "name": "factored_adafactor__lr_x4",
+      "learning_rate": 8e-05,
+      "return_code": 0,
+      "elapsed_seconds": 1481.015086889267,
+      "queue_seconds": 2663.1362743377686,
+      "validation": {
+        "event": "validation",
+        "step": 1000,
+        "examples_seen": 2000,
+        "loss": 0.0028063247445970774,
+        "seconds": 1467.733628125,
+        "attention_amount": 1.0,
+        "mlp_amount": 1.0,
+        "prox_rho": 0.0,
+        "teacher": 0.0019448264501988888,
+        "ground_truth": 0.0030313737224787474,
+        "edge": 0.004193232394754887,
+        "feature": 0.0050140926614403725,
+        "redistribution": 1.1083478057116736e-05,
+        "psnr_vs_ground_truth": 42.75044153647265,
+        "psnr_vs_teacher": 47.31691868536592
+      }
+    },
+    {
+      "optimizer": "adamw",
+      "learning_rate_multiplier": 4.0,
+      "name": "adamw__lr_x4",
+      "learning_rate": 8e-05,
+      "return_code": 0,
+      "elapsed_seconds": 2480.9202420711517,
+      "queue_seconds": 4144.15259885788,
+      "validation": {
+        "event": "validation",
+        "step": 1000,
+        "examples_seen": 2000,
+        "loss": 0.002551770769059658,
+        "seconds": 2465.646593292,
+        "attention_amount": 1.0,
+        "mlp_amount": 1.0,
+        "prox_rho": 0.0,
+        "teacher": 0.001686363946646452,
+        "ground_truth": 0.0028123643714934587,
+        "edge": 0.003663016716018319,
+        "feature": 0.005123434588313103,
+        "redistribution": 1.3665342521562707e-05,
+        "psnr_vs_ground_truth": 43.6426425798461,
+        "psnr_vs_teacher": 49.59785171726405
+      }
+    }
+  ]
+}

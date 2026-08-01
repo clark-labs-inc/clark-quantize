@@ -1,0 +1,60 @@
+{
+  "format": "backdropkit-realtime-1080p-to-4k-receipt-v2",
+  "measured_at": "2026-08-01",
+  "device": "Apple M5",
+  "browser": "Chrome 150 WebGPU",
+  "input": { "width": 1920, "height": 1080, "nominal_fps": 60 },
+  "output": { "width": 3840, "height": 2160 },
+  "model": {
+    "profile": "rgb-ui-video-x2",
+    "channels": 12,
+    "blocks": 3,
+    "parameters": 8496,
+    "fp16_bytes": 16992,
+    "sha256": "c6b4f22d8c38270225b809e97d233eb68d7a48eef17595ac17a60b4540c72dce",
+    "gmac_per_frame": 4.4043264,
+    "resident_feature_bytes": 24883200
+  },
+  "kernel": {
+    "name": "RGB pixel-unshuffle plus three two-convolution workgroup-fused residual blocks",
+    "tile": [8, 8],
+    "precision": "fp16",
+    "measured_frames": 120,
+    "warmup_frames": 15,
+    "median_ms": 8.9,
+    "p95_ms": 10.6,
+    "maximum_ms": 12.3,
+    "frames_per_second_from_median": 112.36
+  },
+  "trained_end_to_end_with_h264": {
+    "measured_frames": 120,
+    "warmup_frames": 15,
+    "median_ms": 9.4,
+    "p95_ms": 11.0,
+    "maximum_ms": 11.5,
+    "encoded_chunks": 120,
+    "encoder_error": null,
+    "maximum_encode_queue": 2,
+    "remaining_encode_queue": 0,
+    "median_encode_latency_ms": 16.7,
+    "p95_encode_latency_ms": 28.1
+  },
+  "browser_cadence_observation": {
+    "note": "Compute and encoder latency have 60 fps headroom, but this interactive browser run skipped callbacks; it is not a claim of sustained 60 displayed fps on every browser.",
+    "kernel_only_presented_frames": 178,
+    "kernel_only_busy_callbacks": 44,
+    "encoded_presented_frames": 184,
+    "encoded_busy_callbacks": 49
+  },
+  "training": {
+    "steps": 5000,
+    "batch_size": 16,
+    "training_images": 206232,
+    "held_out_images": 268,
+    "baseline_product_weighted_ground_truth_psnr_db": 28.788123630892997,
+    "final_product_weighted_ground_truth_psnr_db": 29.243351974323687,
+    "ground_truth_gain_db": 0.4552283434306903,
+    "final_product_weighted_teacher_psnr_db": 32.163547360195835
+  },
+  "promotion_status": "Default local neural path for eligible BackdropKit video on shader-f16 WebGPU; high-quality browser scaling remains the automatic fallback elsewhere."
+}

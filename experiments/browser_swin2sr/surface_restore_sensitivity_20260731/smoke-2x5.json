@@ -1,0 +1,135 @@
+{
+  "format": "backdropkit-swin2sr-surface-restore-sensitivity-v1",
+  "diagnostic_only": true,
+  "selection_source": "development_screen",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+  "checkpoint_sha256": "ad5e76db8c378c16da689a4cf37d96eb6e204f7b9de543199efc103c0d371469",
+  "surface_step": 24000,
+  "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "bundle_manifest_sha256": "e35334e5c567d7c6c9212eb2008507e73f6e0a3b17c041abbefb3bd82e59720d",
+  "device": "cpu",
+  "torch_threads": 1,
+  "samples": [
+    {
+      "sha256": "27428cfb08bf4f27add4deb9c6f5c29a96d75df867dbcc2d08816cbac1f92f63",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ace_Arab"
+    },
+    {
+      "sha256": "00e51d2bc9151b55dfc7ab8f92e6e633a4ef20eb36826e2c5c20821c2409d19c",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    }
+  ],
+  "sample_count": 2,
+  "surface_count": 5,
+  "hard": {
+    "psnr_vs_ground_truth": 30.878398720914035,
+    "edge_psnr_vs_ground_truth": 34.205799723302945,
+    "psnr_vs_teacher": 36.327892518371215
+  },
+  "continuous_master": {
+    "psnr_vs_ground_truth": 20.865648146206347,
+    "edge_psnr_vs_ground_truth": 25.072028994720654,
+    "psnr_vs_teacher": 21.24928877985434
+  },
+  "continuous_minus_hard": {
+    "psnr_vs_ground_truth": -10.012750574707688,
+    "edge_psnr_vs_ground_truth": -9.133770728582292,
+    "psnr_vs_teacher": -15.078603738516875
+  },
+  "surfaces": [
+    {
+      "name": "swin2sr.encoder.stages.3.layers.4.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "method": "absmean",
+      "group_size": 60,
+      "metrics": {
+        "psnr_vs_ground_truth": 31.010625820114985,
+        "edge_psnr_vs_ground_truth": 34.35198527252231,
+        "psnr_vs_teacher": 36.21690269359007
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.13222709920095,
+        "edge_psnr_vs_ground_truth": 0.14618554921936777,
+        "psnr_vs_teacher": -0.11098982478114294
+      }
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.conv",
+      "category": "residual_body_conv",
+      "values": 32400,
+      "method": "optimal_mse",
+      "group_size": 9,
+      "metrics": {
+        "psnr_vs_ground_truth": 30.806160308777798,
+        "edge_psnr_vs_ground_truth": 34.20656217903997,
+        "psnr_vs_teacher": 35.53281449703263
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.07223841213623672,
+        "edge_psnr_vs_ground_truth": 0.0007624557370249363,
+        "psnr_vs_teacher": -0.7950780213385826
+      }
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.patch_embed.projection",
+      "category": "residual_body_conv",
+      "values": 3600,
+      "method": "optimal_mse",
+      "group_size": 60,
+      "metrics": {
+        "psnr_vs_ground_truth": 30.75597149242872,
+        "edge_psnr_vs_ground_truth": 34.09697928311421,
+        "psnr_vs_teacher": 36.00682790214664
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.12242722848531429,
+        "edge_psnr_vs_ground_truth": -0.10882044018873671,
+        "psnr_vs_teacher": -0.32106461622457516
+      }
+    },
+    {
+      "name": "upsample.conv",
+      "category": "image_io_conv",
+      "values": 6480,
+      "method": "optimal_mse",
+      "group_size": 2,
+      "metrics": {
+        "psnr_vs_ground_truth": 30.63682490095228,
+        "edge_psnr_vs_ground_truth": 33.9008590345324,
+        "psnr_vs_teacher": 35.1769111820884
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.2415738199617543,
+        "edge_psnr_vs_ground_truth": -0.30494068877054303,
+        "psnr_vs_teacher": -1.1509813362828112
+      }
+    },
+    {
+      "name": "swin2sr.conv_after_body",
+      "category": "residual_body_conv",
+      "values": 32400,
+      "method": "optimal_mse",
+      "group_size": 9,
+      "metrics": {
+        "psnr_vs_ground_truth": 30.292137248158532,
+        "edge_psnr_vs_ground_truth": 33.87203850140283,
+        "psnr_vs_teacher": 34.38931477480011
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.5862614727555027,
+        "edge_psnr_vs_ground_truth": -0.3337612219001187,
+        "psnr_vs_teacher": -1.938577743571102
+      }
+    }
+  ],
+  "elapsed_seconds": 1.4533157500000007,
+  "peak_process_rss_bytes": 526729216
+}

@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "artifact": "prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/browser_export_v2/browser_artifact",
+  "reference_state": "prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260733/browser_export_v2/browser_materialized/dense-hard.pt",
+  "model": "caidas/swin2SR-lightweight-x2-64",
+  "model_revision": "07e8e61492ce6daf4f34c651622960faf110c17f",
+  "mode": "ternary",
+  "group_size": 60,
+  "input_transform": {
+    "kind": "none"
+  },
+  "artifact_binary_sha256": "aaee28988ab651cb5be67ce940e69d77d6a07ad9ea659edab2431140dab27bd1",
+  "artifact_manifest_sha256": "5424487a6c7a5c7f81f677d94d081cdb0e8a614d39d5ec428d9a086f5b4e087c",
+  "reference_state_sha256": "3f7d9c3725b11e02fae90c814222f2a941199428bddd5216e781a9458ef5ddd2",
+  "input_shape": [
+    1,
+    3,
+    64,
+    64
+  ],
+  "output_shape": [
+    1,
+    3,
+    128,
+    128
+  ],
+  "max_absolute_error": 0.0007576346397399902,
+  "mean_absolute_error": 0.00010802242468344048,
+  "psnr_vs_reference": 77.2471527386739,
+  "finite": true,
+  "tolerances": {
+    "max_absolute_error": 0.00392156862745098,
+    "mean_absolute_error": 0.001,
+    "minimum_psnr": 60.0
+  },
+  "passed": true
+}

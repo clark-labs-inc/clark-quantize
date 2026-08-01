@@ -1,0 +1,20 @@
+{
+  "date": "2026-07-31",
+  "device": "Apple M5",
+  "browser": "Chrome 150.0.0.0",
+  "rows": 36864,
+  "shape": "60x60",
+  "group_size": 60,
+  "dispatches_per_sample": 16,
+  "measured_samples": 8,
+  "base3_transport_bytes": 720,
+  "resident_2bit_bytes": 960,
+  "resident_expansion_fraction": 1.3333333333333333,
+  "max_absolute_error": 1.1920928955078125e-7,
+  "naive_base3_median_ms": 1.2999999970197678,
+  "tiled_2bit_median_ms": 0.22500000149011612,
+  "tiled_dense_f32_median_ms": 0.19999999552965164,
+  "speedup_over_naive_base3": 5.777777726267591,
+  "speedup_over_dense_f32": 0.8888888631337957,
+  "conclusion": "load-time 2-bit transcode removes base-3 division cost but does not beat a tiled dense FP32 kernel on this GPU"
+}

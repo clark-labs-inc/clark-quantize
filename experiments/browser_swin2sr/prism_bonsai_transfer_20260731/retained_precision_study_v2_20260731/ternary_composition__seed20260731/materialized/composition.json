@@ -1,0 +1,61 @@
+{
+  "format": "backdropkit-swin2sr-disjoint-ternary-composition-v1",
+  "interpretation": "Deterministic union of independently trained, disjoint hard-ternary image-I/O and RSTB-fusion tensors; no retained FP16 weights and no additional parameter or scale storage.",
+  "seed": 20260731,
+  "protocol": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/disjoint-ternary-composition-protocol.json",
+  "protocol_sha256": "e717b3c6bf343e152b9f1e032bde13860c4cbd6b532d2e674c82971a63026628",
+  "parent_checkpoint_sha256": "0b155f9ada8b747544ba1abb83596e160927fdc91a4c33bf36879ff3f77ce00f",
+  "parent_state": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/composition_parent_cpu/dense-hard.pt",
+    "file_sha256": "e8de7e5abd67022462064dfc5c9c841b511bc6bcc8c5ee4051acde1d62863e6b",
+    "tensor_sha256": "4e35b6a69045722b515d7c5a2bca1bcfc135b555f404871c121068ec9bc2a565"
+  },
+  "sources": {
+    "image_io_fp16": {
+      "receipt": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260731/materialized/materialization.json",
+      "receipt_sha256": "64eca69e010b64503fdf2447a4db0957739f44f1219e828a174a06e30ed26355",
+      "state_sha256": "6a9e57164c2e2f08c5b182d032e4a119ba3546a3ad2a93728bdc0ab7bd0f28f6"
+    },
+    "rstb_fusion_fp16": {
+      "receipt": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/materialized/materialization.json",
+      "receipt_sha256": "de10153a2d6c747aa9f94023feaa5dee244e9e9356349595f45f490a45feca17",
+      "state_sha256": "d143d9de3f7ea583df3ca97c13695b96988298652088336d9c50debe7c8e186a"
+    }
+  },
+  "changes": {
+    "image_changed_keys": [
+      "swin2sr.first_convolution.weight",
+      "upsample.conv.weight"
+    ],
+    "rstb_changed_keys": [
+      "swin2sr.encoder.stages.0.conv.weight",
+      "swin2sr.encoder.stages.1.conv.weight",
+      "swin2sr.encoder.stages.2.conv.weight",
+      "swin2sr.encoder.stages.3.conv.weight"
+    ],
+    "composed_keys": [
+      "swin2sr.encoder.stages.0.conv.weight",
+      "swin2sr.encoder.stages.1.conv.weight",
+      "swin2sr.encoder.stages.2.conv.weight",
+      "swin2sr.encoder.stages.3.conv.weight",
+      "swin2sr.first_convolution.weight",
+      "upsample.conv.weight"
+    ],
+    "changed_from_parent": [
+      "swin2sr.encoder.stages.0.conv.weight",
+      "swin2sr.encoder.stages.1.conv.weight",
+      "swin2sr.encoder.stages.2.conv.weight",
+      "swin2sr.encoder.stages.3.conv.weight",
+      "swin2sr.first_convolution.weight",
+      "upsample.conv.weight"
+    ]
+  },
+  "storage_delta_bytes": 0,
+  "dense_state": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/ternary_composition__seed20260731/materialized/dense-hard.pt",
+    "file_sha256": "4aba8a395a42f0496aebf4f37fe9a1068d28b26f68cb3be09a18133e66654952",
+    "tensor_sha256": "210fb02bbe18fb948b94900fce7d29c6a81056f434ab899ccf52eef0cde37087",
+    "tensors": 484,
+    "values": 1005348
+  }
+}

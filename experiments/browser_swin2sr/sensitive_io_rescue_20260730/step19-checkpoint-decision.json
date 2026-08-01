@@ -1,0 +1,108 @@
+{
+  "format": "backdropkit-swin2sr-sensitive-io-checkpoint-decision-v1",
+  "diagnostic_only": true,
+  "selection_source": "development",
+  "surface_step": 19000,
+  "margin_db": 0.1,
+  "validation_identity": {
+    "device": "mps",
+    "crop_size": 128,
+    "validation_files": [
+      [
+        "/Users/stan/Documents/git/clark-desktop/promos/source-ui-composer-current.png",
+        "27bb60639781d97b623ce94c5e6944fc0243fbde5efb0bcbf3b60e1cfe967c34"
+      ],
+      [
+        "/Users/stan/Documents/git/clark-desktop/promos/source-ui-chat-current.png",
+        "f3f8ea752eeab6a1c5e8e9a36d7a22c9cb91cd83203f91ae7014f085fa3419c0"
+      ],
+      [
+        "/Users/stan/Documents/git/clark-desktop/promos/source-ui-research-current.png",
+        "c012b92f05bd0d20fbda5e4fb16931f3a1800dbc854cdb98f26e35edf80c05d8"
+      ],
+      [
+        "/Users/stan/Documents/git/clark-desktop/promos/clark-code-ad-parallel-research-vertical-poster.png",
+        "73e7bd7af4f848200d4d9585c4b8a32fb905d8e5e493ef44c1d144c572e5d649"
+      ]
+    ]
+  },
+  "shared_fork_parent_sha256": "4f4abd928f11dfd1d110487232e6cbc5ddda9e11e8ae7a99a58dd1b2b766c45a",
+  "control": {
+    "receipt": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/hard-started-validation-step-19000-mps.json",
+    "receipt_sha256": "40e2ba0229d66fe9209f276bd2b73bebaf9d29dfd7a1f6f812ad400a8851c841",
+    "checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/run/checkpoint-surface-19000.pt",
+    "checkpoint_sha256": "eca1f2e9dec3937dc206964392b2c287a9ea4957463df059abe2cc55d28cae9f",
+    "surface_group_sizes": {
+      "swin2sr.first_convolution": 9
+    },
+    "fork_provenance": {
+      "parent_checkpoint_sha256": "4f4abd928f11dfd1d110487232e6cbc5ddda9e11e8ae7a99a58dd1b2b766c45a",
+      "fork_checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/fork-step14000.pt",
+      "fork_checkpoint_sha256": "767955e2bfd41182a268bc42472c907e0c4920e382c3bfb2a25c9c66740ce298",
+      "fork_receipt": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/fork-receipt.json",
+      "fork_receipt_sha256": "35921c18e17e3bd31b3767dfd5a26d4f413cfc2471348f5dcbb07f55ddd6c19a",
+      "training_state_sha256": {
+        "model": "caa631112b1ded4556fb20bbce0175d323c0d156d5848dfe36846afdefcacef7",
+        "optimizer_state": "78375e9aa91daafba0666f6862a7b2b08a2b037dd1ff6b3dc44f2459a0c9977a",
+        "run_state": "70724ac25c0052292b349e9f43adfde30cb674225d3416ed4d4a4502e767e0f0"
+      },
+      "recovered_from_sealed_study_manifest": true
+    },
+    "blended_ground_truth_db": 33.43937681654449,
+    "hard_ground_truth_db": 33.43937681654449,
+    "hard_teacher_db": 34.313088207781234
+  },
+  "arms": [
+    {
+      "receipt": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr025/hard-started-validation-step-19000-mps.json",
+      "receipt_sha256": "fbe736ad0459002fe7d4442d3bf51dfae7a91536dfd8f98c1b318e7d9b481143",
+      "checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr025/run/checkpoint-surface-19000.pt",
+      "checkpoint_sha256": "c5906da5b3f982f567796adf36824e5e6f8252ec9f1a46d71b543e26333c25ac",
+      "convolution_learning_rate_multiplier": 0.25,
+      "blended_ground_truth_db": 36.73137539542057,
+      "hard_ground_truth_db": 36.73137539542057,
+      "hard_teacher_db": 38.66028455699394,
+      "beats_control_hard_ground_truth": true,
+      "beats_control_hard_teacher": true,
+      "blended_within_margin": true,
+      "within_margin_of_best_hard_ground_truth": false,
+      "checkpoint_eligible": false
+    },
+    {
+      "receipt": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr1/hard-started-validation-step-19000-mps.json",
+      "receipt_sha256": "0f94fcc097ca0201d4dfda158cdaf662d5a882dcc4a43368d6ea8e04ae3924b0",
+      "checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr1/run/checkpoint-surface-19000.pt",
+      "checkpoint_sha256": "9f89ae594fa6d101beddee2ad4fe71a4aed8842e80b262d1edb4b9af18ed80fb",
+      "convolution_learning_rate_multiplier": 1.0,
+      "blended_ground_truth_db": 38.528870312242894,
+      "hard_ground_truth_db": 38.528870312242894,
+      "hard_teacher_db": 41.30102546795134,
+      "beats_control_hard_ground_truth": true,
+      "beats_control_hard_teacher": true,
+      "blended_within_margin": true,
+      "within_margin_of_best_hard_ground_truth": false,
+      "checkpoint_eligible": false
+    },
+    {
+      "receipt": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr4/hard-started-validation-step-19000-mps.json",
+      "receipt_sha256": "6e2b68eb3d001e6a881b58e55655ec84d5f888ae65f3c291ca6c506c5e00a6ca",
+      "checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr4/run/checkpoint-surface-19000.pt",
+      "checkpoint_sha256": "07ebb2fcc6e2fc12cefcca323f94e00f559876c6991adcf3314487a6ad04365f",
+      "convolution_learning_rate_multiplier": 4.0,
+      "blended_ground_truth_db": 39.13587795646403,
+      "hard_ground_truth_db": 39.13587795646403,
+      "hard_teacher_db": 42.41909868421682,
+      "beats_control_hard_ground_truth": true,
+      "beats_control_hard_teacher": true,
+      "blended_within_margin": true,
+      "within_margin_of_best_hard_ground_truth": true,
+      "checkpoint_eligible": true
+    }
+  ],
+  "checkpoint_shortlist": [
+    4.0
+  ],
+  "provisional_smallest_lr": 4.0,
+  "final_selection_authorized": false,
+  "required_next_gate": "Evaluate the best two checkpoint-eligible arms on the 3,040-sample development bundle and enforce paired per-source deltas."
+}

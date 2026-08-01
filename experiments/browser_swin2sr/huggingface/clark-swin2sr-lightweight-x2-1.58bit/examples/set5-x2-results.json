@@ -1,0 +1,80 @@
+{
+  "benchmark": "Set5 bicubic x2",
+  "metric": "RGB PSNR over the full image",
+  "model": "Clark Swin2SR lightweight x2 Ternary Bonsai",
+  "samples": [
+    {
+      "image": "baby",
+      "bicubic_rgb_psnr_db": 35.616256446175036,
+      "ternary_rgb_psnr_db": 37.21720088592351,
+      "gain_db": 1.6009444397484742,
+      "input_size": [
+        256,
+        256
+      ],
+      "output_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "image": "bird",
+      "bicubic_rgb_psnr_db": 34.87196825825453,
+      "ternary_rgb_psnr_db": 39.338190268144835,
+      "gain_db": 4.466222009890302,
+      "input_size": [
+        144,
+        144
+      ],
+      "output_size": [
+        288,
+        288
+      ]
+    },
+    {
+      "image": "butterfly",
+      "bicubic_rgb_psnr_db": 26.116475338299637,
+      "ternary_rgb_psnr_db": 32.93670985298001,
+      "gain_db": 6.820234514680372,
+      "input_size": [
+        128,
+        128
+      ],
+      "output_size": [
+        256,
+        256
+      ]
+    },
+    {
+      "image": "head",
+      "bicubic_rgb_psnr_db": 31.50905648688135,
+      "ternary_rgb_psnr_db": 32.21269088362287,
+      "gain_db": 0.7036343967415206,
+      "input_size": [
+        140,
+        140
+      ],
+      "output_size": [
+        280,
+        280
+      ]
+    },
+    {
+      "image": "woman",
+      "bicubic_rgb_psnr_db": 30.820043350384925,
+      "ternary_rgb_psnr_db": 34.806666259441656,
+      "gain_db": 3.986622909056731,
+      "input_size": [
+        114,
+        172
+      ],
+      "output_size": [
+        228,
+        344
+      ]
+    }
+  ],
+  "mean_bicubic_rgb_psnr_db": 31.786759975999097,
+  "mean_ternary_rgb_psnr_db": 35.30229163002258,
+  "mean_gain_db": 3.51553165402348
+}

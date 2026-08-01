@@ -1,0 +1,120 @@
+{
+  "format": "backdropkit-swin2sr-scale-allocation-interaction-study-v1",
+  "status": "sealed_before_combined_interaction_results",
+  "selection_source": "training_only",
+  "model_promotion_authorized": false,
+  "development_access_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false,
+  "allocation_study_manifest": "experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/study_v1/study-manifest.json",
+  "allocation_study_manifest_sha256": "57a4946e08ac490c98e41ceadd74623a994bc5ca6571dfddf7c171d27593a554",
+  "allocation_report": "experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/study_v1/calibration/fragility-report.json",
+  "allocation_report_sha256": "672d2f37574165b0692480cdd0febd5df6e581a9e04afbce6d4823cb5ae11175",
+  "allocation_manifest": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/study_v1/calibration/calibration-manifest.json",
+  "allocation_manifest_sha256": "7bb4d540bef0204f36c788bf44ed754003ba0cd185b85e4dcf0a4b6fa49936b1",
+  "parent_checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+  "parent_checkpoint_sha256": "0b155f9ada8b747544ba1abb83596e160927fdc91a4c33bf36879ff3f77ce00f",
+  "training_data": [
+    {
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+      "summary": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/summary.json",
+      "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705",
+      "manifest": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/manifest.jsonl",
+      "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+      "images": 104500,
+      "source": null,
+      "source_revision": null
+    },
+    {
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2",
+      "summary": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/summary.json",
+      "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42",
+      "manifest": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/manifest.jsonl",
+      "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+      "images": 102000,
+      "source": "Muennighoff/flores200",
+      "source_revision": "9660f10339cfc46a369a4d95fccb301a739c3fa8"
+    }
+  ],
+  "allocation_samples": 64,
+  "confirmation_samples": 64,
+  "confirmation_seed": 20260732,
+  "confirmation_disjoint_from_allocation": true,
+  "batch_size": 8,
+  "crop_size": 128,
+  "uniform_controls": [
+    "q2",
+    "q4",
+    "fp16"
+  ],
+  "candidates": {
+    "mixfrag_10012": {
+      "budget_bytes": 10012,
+      "uniform_control": "uniform_q2"
+    },
+    "mixfrag_20024": {
+      "budget_bytes": 20024,
+      "uniform_control": "uniform_q4"
+    }
+  },
+  "candidate_storage_preflight": {
+    "mixfrag_10012": {
+      "payload_bytes": 9882,
+      "calibration_storage_bytes": 10012,
+      "physical_aligned_span_bytes": 10012,
+      "surface_count": 204,
+      "choice_counts": {
+        "q1": 174,
+        "q2": 25,
+        "q4": 4,
+        "q8": 1
+      },
+      "surface_receipts_sha256": "c7a12a9cbb5bc0e34d4c8ba0bfd83e7f6209a7bb034973c184fc18f0530233bc"
+    },
+    "mixfrag_20024": {
+      "payload_bytes": 19815,
+      "calibration_storage_bytes": 20024,
+      "physical_aligned_span_bytes": 20024,
+      "surface_count": 204,
+      "choice_counts": {
+        "fp16": 5,
+        "q1": 68,
+        "q2": 106,
+        "q4": 24,
+        "q8": 1
+      },
+      "surface_receipts_sha256": "53df57e3abdc8b80b41875cc7ffc481726364ecb70be5936f4f5563489a8775d"
+    }
+  },
+  "minimum_relative_gain": 0.1,
+  "advancement_rule": "Select the smallest exact-byte candidate with at least 10% lower combined output fragility than its matched uniform control on both the allocation shard and a disjoint training-only confirmation shard.",
+  "interaction_diagnostic": "Measured combined fragility divided by summed isolated fragility; measured combined output overrides the additive prediction.",
+  "storage_erratum": {
+    "affected_field": "expected_uniform_storage_bytes.q8",
+    "sealed_preflight_estimate_bytes": 65228,
+    "observed_calibration_bytes": 65232,
+    "difference_bytes": 4,
+    "browser_physical_aligned_span_bytes": 65548,
+    "disposition": "The observed per-surface receipts override the four-byte preflight estimate. q8 is a diagnostic control, not an advancing allocation."
+  },
+  "sealed_source_root": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/interaction_v1/sealed_sources",
+  "source_sha256": {
+    "experiments/browser_swin2sr/evaluate_scale_allocation_interactions.py": "70b09cd1f9b31c390e315a11b01d9e23cc1ae75fe05f2a69b4e98bd905342b86",
+    "experiments/browser_swin2sr/scale_allocation_interactions.py": "845045c20e8abfe5b1f2a7897e1bb5e11e6ebd690c69a8471429eaac81a91efc",
+    "experiments/browser_swin2sr/seal_scale_allocation_interaction_study.py": "aae963ec642ceb0bf69f15c9dda05a5add184224731cc5d8999b564a9347b9b1",
+    "experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/INTERACTION_PROTOCOL.md": "c185c51aae73f617416051186f9d1baf7ea3752562ef2088ce19ca8b14dec355"
+  },
+  "evaluation_command": [
+    "/usr/bin/env",
+    "PYTHONPATH=experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/interaction_v1/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/study_v1/sealed_overlay/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/interaction_v1/sealed_sources/experiments/browser_swin2sr/evaluate_scale_allocation_interactions.py",
+    "--protocol",
+    "experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/interaction_v1/protocol.json",
+    "--out",
+    "experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/interaction_v1/result.json",
+    "--device",
+    "mps"
+  ],
+  "result": "experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/interaction_v1/result.json"
+}

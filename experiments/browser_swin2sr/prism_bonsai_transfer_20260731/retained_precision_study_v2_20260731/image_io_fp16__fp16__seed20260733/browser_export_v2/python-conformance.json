@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "artifact": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__fp16__seed20260733/browser_export_v2/browser_artifact",
+  "reference_state": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__fp16__seed20260733/browser_export_v2/browser_materialized/dense-hard.pt",
+  "model": "caidas/swin2SR-lightweight-x2-64",
+  "model_revision": "07e8e61492ce6daf4f34c651622960faf110c17f",
+  "mode": "ternary",
+  "group_size": 60,
+  "input_transform": {
+    "kind": "none"
+  },
+  "artifact_binary_sha256": "a144cef76dfbff35e600a0a1c45f621d19b9f55e08988392518670d365ba9cf5",
+  "artifact_manifest_sha256": "c11d9e54f66203303e91200ee8a78b12b1443115a5316297261ca189f2206047",
+  "reference_state_sha256": "09cced7f7540bccd0f2d0dd3dae4387e18ddc25bf469fec605471f5889c81aa3",
+  "input_shape": [
+    1,
+    3,
+    64,
+    64
+  ],
+  "output_shape": [
+    1,
+    3,
+    128,
+    128
+  ],
+  "max_absolute_error": 0.000632062554359436,
+  "mean_absolute_error": 9.46436048252508e-05,
+  "psnr_vs_reference": 78.34538570227718,
+  "finite": true,
+  "tolerances": {
+    "max_absolute_error": 0.00392156862745098,
+    "mean_absolute_error": 0.001,
+    "minimum_psnr": 60.0
+  },
+  "passed": true
+}

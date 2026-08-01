@@ -1,0 +1,41 @@
+{
+  "date": "2026-07-29",
+  "purpose": "cross-browser standard-ONNX fallback for a rotated ternary candidate",
+  "promotion_status": "infrastructure-only; source arm has not completed held-out promotion",
+  "source_arm": "absmean__hadamard__bonsai_qat8_muon stage 1",
+  "artifact": {
+    "scope": "core",
+    "ternary_tensors": 144,
+    "ternary_values": 691200,
+    "packed_code_bytes": 138240,
+    "scale_bytes": 23040,
+    "weight_bits_per_value_including_scales": 1.8666666666666667,
+    "input_transform": {
+      "kind": "block_hadamard",
+      "block_size": 4,
+      "matmul_inputs": 144
+    },
+    "model_bytes": 5783318,
+    "model_sha256": "4ba8098a755712f45163dab35b5ba264fdeea21ee19d94137d2ab7f964ea41d3",
+    "checkpoint_sha256": "dd68117622fa176acd84fcdc033e414c8111079476ca4fce705bf7c469cc38fc",
+    "base_onnx_sha256": "c2abbfe0cc8e685b5e11964970f8ebe3d24072e904fd5545a30ac31ec1e110db",
+    "fixture_sha256": "8d8b7ee38db439ca44a2d8e496c2b5ea39bb271a0b57b0a034b6017fab895553"
+  },
+  "chromium_webgpu": {
+    "session_ms": 3063.600000023842,
+    "inference_ms": [204.69999992847443, 29.899999976158142, 31.5],
+    "maximum_absolute_error": 0.000209808349609375,
+    "mean_absolute_error": 0.000015686260364115395
+  },
+  "chromium_wasm": {
+    "session_ms": 3742.100000023842,
+    "inference_ms": [381.60000002384186, 376.10000002384186, 371.5],
+    "maximum_absolute_error": 0.00020968914031982422,
+    "mean_absolute_error": 0.000015687060113123152
+  },
+  "limitations": [
+    "The core-only portable ONNX remains larger than the shipped q4 payload.",
+    "The final full-surface artifact and quality winner have not been produced.",
+    "Safari, Firefox, iOS, and Android receipts remain required by the promotion policy."
+  ]
+}

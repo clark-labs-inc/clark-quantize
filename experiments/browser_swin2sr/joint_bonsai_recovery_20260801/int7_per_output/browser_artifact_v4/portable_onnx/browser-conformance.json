@@ -1,0 +1,52 @@
+{
+  "format": "backdropkit-swin2sr-portable-onnx-browser-conformance-v1",
+  "tested_at": "2026-08-01T15:48:23Z",
+  "browser": "chromium",
+  "fixture_sha256": "178691661a064367073afbde022c03d8605daf3e5d655820fbbc5d7f67cfbcf7",
+  "hard_state_sha256": "308b7fc0de513a4983563d519219c100ff8f13bb0a5143d5cd3e1d4204d2a612",
+  "compressed_model": {
+    "compression": "gzip",
+    "bytes": 808002,
+    "sha256": "a5e32c6b853f32e6c2fd39615ff27f7780e076fdac504dc3f2be1e822e3e085c"
+  },
+  "expanded_model": {
+    "bytes": 5326998,
+    "sha256": "4b1e0e6835c0f2d4fb56e921fa612014c95b630b25bbc48d9c198f77471a23a3"
+  },
+  "input_shape": [1, 3, 64, 64],
+  "output_shape": [1, 3, 128, 128],
+  "decompression_ms": 5.5,
+  "receipts": [
+    {
+      "backend": "webgpu",
+      "surface": "chromium-webgpu",
+      "session_ms": 3144.2,
+      "inference_ms": [97.2, 30.4, 28.3],
+      "warm_inference_ms": 30.4,
+      "maximum_error": 0.00014257431030273438,
+      "mean_error": 0.000022182205005568296,
+      "passed": true
+    },
+    {
+      "backend": "wasm",
+      "surface": "chromium-wasm",
+      "session_ms": 3256.8,
+      "inference_ms": [390.6, 367.0, 377.3],
+      "warm_inference_ms": 377.3,
+      "maximum_error": 0.00014281272888183594,
+      "mean_error": 0.000022179275523133885,
+      "passed": true
+    }
+  ],
+  "harness_files": {
+    "full_onnx_smoke_browser.html": "5dd2b6956b20ac2eb52062042fe5072ea81021e475ac6ab97b28029e68e4073a",
+    "runtime_surface.mjs": "b7ad36ac79e7c4ba4ebda964c879e4a061144c4c8eecfccad7dfb877c4b9516c"
+  },
+  "console": {
+    "unexpected_errors": 0,
+    "expected_notices": [
+      "ONNX Runtime assigns shape-only operations to CPU even when WebGPU is preferred."
+    ]
+  },
+  "passed": true
+}

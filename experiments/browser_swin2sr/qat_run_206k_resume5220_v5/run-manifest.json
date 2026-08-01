@@ -1,0 +1,134 @@
+{
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "Pillow": "10.4.0",
+      "numpy": "2.0.2",
+      "torch": "2.8.0",
+      "transformers": "4.57.6"
+    },
+    "platform": "macOS-26.4.1-arm64-arm-64bit",
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "torch_mps_available": true
+  },
+  "launch_command": "python3 experiments/browser_swin2sr/train_swin2sr_qat.py --data /Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1 --data /Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-v1 --validation-data /Users/stan/Documents/git/clark-desktop/promos --out /Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/qat_run_206k_resume5220_v5 --steps 26000 --batch-size 8 --crop-size 128 --learning-rate 2e-6 --validate-every 250 --checkpoint-every 500 --device mps --resume /Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/qat_run_206k_resume4000_v4/checkpoint-interrupted-5220.pt",
+  "model": {
+    "id": "caidas/swin2SR-lightweight-x2-64",
+    "revision": "07e8e61492ce6daf4f34c651622960faf110c17f"
+  },
+  "resume": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/qat_run_206k_resume4000_v4/checkpoint-interrupted-5220.pt",
+    "sha256": "24a1d9050cc464ed6cfa47a15d347704b165ddd384299832a967832112ca6b54"
+  },
+  "schema_version": 1,
+  "source": {
+    "file_sha256": {
+      "clark_air/quant/binary.py": "695c3f92c815e242b2b6b8a8af44415a115f18a71cf60de36ffa517cff5dcec4",
+      "clark_air/quant/optimal_ternary.py": "1b3138db657bfbf7fac26f5570fa9257379cee2eabea30787ccabcb2f0957cce",
+      "clark_air/quant/packing.py": "a36c332020f1b8744bfcc37311db2b4d2604bc195061c86c39bf3c7d5dce06a1",
+      "experiments/browser_swin2sr/qat_objective.py": "22fa683897a8dc938a873e7fae9d6836c5cba30243223513c2b1b828587fe95c",
+      "experiments/browser_swin2sr/run_state.py": "7a7bda912729e57446ce9c740d65fba46b0f41e6da1523dd1f4499920e959848",
+      "experiments/browser_swin2sr/train_swin2sr_qat.py": "ddd85a0182a26a2e61734bf34f7f8a526606402a1b8a71fe0a85af55ff3c600c"
+    },
+    "git_commit": "56924e7faa75473fdd4ded17096997f799acac62",
+    "git_status": "M clark_air/quant/packing.py\n?? experiments/browser_swin2sr/\n?? experiments/large_scale_ternary/"
+  },
+  "training_data": [
+    {
+      "manifest": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/manifest.jsonl",
+      "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+      "summary": {
+        "counts": {
+          "aria_ui": 3000,
+          "pd12m": 2000,
+          "rico": 15500,
+          "websight": 84000
+        },
+        "images": 104500,
+        "minimum_side": 256,
+        "sources": {
+          "aria_ui": {
+            "file": "desktop/screenshots_fix_batch2.zip",
+            "license": "Apache-2.0",
+            "limit": 3000,
+            "repo": "Aria-UI/Aria-UI_Data",
+            "revision": "459c849ec0d5fd1822439f431941ebc46967533e"
+          },
+          "pd12m": {
+            "file": "metadata/pd12m.000.parquet",
+            "license": "CDLA-Permissive-2.0; source images public domain or CC0",
+            "limit": 2000,
+            "repo": "Spawning/PD12M",
+            "revision": "867988b01138799b89d3ffdd5b4f7e1455951f32"
+          },
+          "rico": {
+            "file_prefix": "data/train-",
+            "license": "CC-BY-4.0",
+            "limit": 15500,
+            "repo": "bevaya/RICO-Screen2Words",
+            "revision": "fcd10c2cda2538ed71b1028984675fa29854283b",
+            "shards": 8
+          },
+          "websight": {
+            "file_prefix": "data/train-",
+            "license": "CC-BY-4.0",
+            "limit": 84000,
+            "repo": "HuggingFaceM4/WebSight",
+            "revision": "b11f8172f89c992b56ac702319e02c428cca4a4e",
+            "shards": 9,
+            "version": "v0.1; synthetic HTML/CSS without third-party images"
+          }
+        }
+      }
+    },
+    {
+      "manifest": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-v1/manifest.jsonl",
+      "manifest_sha256": "a4143757057d0356980b4c50d7f339239634cb28fc27367a8290c3adf10895e1",
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-v1",
+      "summary": {
+        "images": 102000,
+        "images_per_language": 500,
+        "languages": 204,
+        "license": "CC-BY-SA-4.0",
+        "resolutions": [
+          [
+            320,
+            240
+          ],
+          [
+            384,
+            384
+          ],
+          [
+            512,
+            320
+          ],
+          [
+            640,
+            480
+          ],
+          [
+            768,
+            432
+          ],
+          [
+            800,
+            600
+          ],
+          [
+            1024,
+            576
+          ],
+          [
+            1080,
+            1080
+          ]
+        ],
+        "seed": 20260729,
+        "source": "Muennighoff/flores200",
+        "source_revision": "9660f10339cfc46a369a4d95fccb301a739c3fa8"
+      }
+    }
+  ]
+}

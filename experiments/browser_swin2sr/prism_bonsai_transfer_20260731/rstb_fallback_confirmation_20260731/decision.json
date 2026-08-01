@@ -1,0 +1,184 @@
+{
+  "format": "backdropkit-swin2sr-rstb-fallback-confirmation-decision-v1",
+  "protocol": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/protocol.json",
+  "protocol_sha256": "261a8da37a3588dfaa2250620d844ef58c0ae67da20e77980d45ba332442ba09",
+  "minimum_fp16_effect_retention": 0.9,
+  "arms": {
+    "int7_per_output": {
+      "passed": true,
+      "seeds": {
+        "20260732": {
+          "passed": true,
+          "fp16": {
+            "passed": true,
+            "checks": {
+              "ground_truth_lower_95_positive": true,
+              "edge_mean_nonnegative": true,
+              "teacher_mean_nonnegative": true
+            },
+            "means": {
+              "psnr_vs_ground_truth": 0.4992359014985063,
+              "edge_psnr_vs_ground_truth": 0.48746172489222084,
+              "psnr_vs_teacher": 1.2604166714364542
+            }
+          },
+          "candidate": {
+            "passed": true,
+            "checks": {
+              "ground_truth_lower_95_positive": true,
+              "edge_mean_nonnegative": true,
+              "teacher_mean_nonnegative": true,
+              "psnr_vs_ground_truth_retains_at_least_90pct": true,
+              "edge_psnr_vs_ground_truth_retains_at_least_90pct": true,
+              "psnr_vs_teacher_retains_at_least_90pct": true
+            },
+            "means": {
+              "psnr_vs_ground_truth": 0.4909545812739639,
+              "edge_psnr_vs_ground_truth": 0.47671850784156233,
+              "psnr_vs_teacher": 1.264352199749082
+            },
+            "fp16_retention_ratios": {
+              "psnr_vs_ground_truth": 0.9834120098340581,
+              "edge_psnr_vs_ground_truth": 0.9779609013342866,
+              "psnr_vs_teacher": 1.0031224026163845
+            }
+          },
+          "comparison_sha256": "388ae119bd40e5273c1472e526f045b60583827ed68f57ff232f31ea8d7f9f26",
+          "materialization_sha256": "00d9147223f791835ca5e25b3f4d88e13aeea3f2d6a1eea12cc43d39e49ecb92",
+          "dense_state_sha256": "ad9d0851e3b94f457aa1fb558199d3615d72c522e555513c8465718e8f43b7cb"
+        },
+        "20260733": {
+          "passed": true,
+          "fp16": {
+            "passed": true,
+            "checks": {
+              "ground_truth_lower_95_positive": true,
+              "edge_mean_nonnegative": true,
+              "teacher_mean_nonnegative": true
+            },
+            "means": {
+              "psnr_vs_ground_truth": 0.5004776063668069,
+              "edge_psnr_vs_ground_truth": 0.487892683500038,
+              "psnr_vs_teacher": 1.2693416372638342
+            }
+          },
+          "candidate": {
+            "passed": true,
+            "checks": {
+              "ground_truth_lower_95_positive": true,
+              "edge_mean_nonnegative": true,
+              "teacher_mean_nonnegative": true,
+              "psnr_vs_ground_truth_retains_at_least_90pct": true,
+              "edge_psnr_vs_ground_truth_retains_at_least_90pct": true,
+              "psnr_vs_teacher_retains_at_least_90pct": true
+            },
+            "means": {
+              "psnr_vs_ground_truth": 0.49687486300465017,
+              "edge_psnr_vs_ground_truth": 0.48150451955863494,
+              "psnr_vs_teacher": 1.2769762226108095
+            },
+            "fp16_retention_ratios": {
+              "psnr_vs_ground_truth": 0.9928013894801194,
+              "edge_psnr_vs_ground_truth": 0.9869066207437756,
+              "psnr_vs_teacher": 1.0060146024701688
+            }
+          },
+          "comparison_sha256": "5cb5dd58784f90097003046593273639dc7fea06ec9c5378270ddf92eefac2af",
+          "materialization_sha256": "0bd161d357b341abf31cbe3f8f40fa079c83e424dfcf4a32fe111536b952f51b",
+          "dense_state_sha256": "98824d8189f62b45b23a46729badaa2ae210b01bb6d8a514b7720cb844a91440"
+        }
+      }
+    },
+    "int6_per_kernel": {
+      "passed": true,
+      "seeds": {
+        "20260732": {
+          "passed": true,
+          "fp16": {
+            "passed": true,
+            "checks": {
+              "ground_truth_lower_95_positive": true,
+              "edge_mean_nonnegative": true,
+              "teacher_mean_nonnegative": true
+            },
+            "means": {
+              "psnr_vs_ground_truth": 0.4992359014985063,
+              "edge_psnr_vs_ground_truth": 0.48746172489222084,
+              "psnr_vs_teacher": 1.2604166714364542
+            }
+          },
+          "candidate": {
+            "passed": true,
+            "checks": {
+              "ground_truth_lower_95_positive": true,
+              "edge_mean_nonnegative": true,
+              "teacher_mean_nonnegative": true,
+              "psnr_vs_ground_truth_retains_at_least_90pct": true,
+              "edge_psnr_vs_ground_truth_retains_at_least_90pct": true,
+              "psnr_vs_teacher_retains_at_least_90pct": true
+            },
+            "means": {
+              "psnr_vs_ground_truth": 0.4975900139363163,
+              "edge_psnr_vs_ground_truth": 0.48574368298880655,
+              "psnr_vs_teacher": 1.2545183854636628
+            },
+            "fp16_retention_ratios": {
+              "psnr_vs_ground_truth": 0.9967031866954086,
+              "edge_psnr_vs_ground_truth": 0.9964755347636901,
+              "psnr_vs_teacher": 0.9953203681715275
+            }
+          },
+          "comparison_sha256": "c093ebf2305040a8c3650a3e42993e3f2d1d5d5fe35bfbef7b22f637e037794a",
+          "materialization_sha256": "9093e031952977d72577cfdce78f31ce06fc6be47e7b9d84d34335004d8bf985",
+          "dense_state_sha256": "a36084ba02f1382011fbfad37d516fc034f0ef134b34745ce73ae88277fbd1b3"
+        },
+        "20260733": {
+          "passed": true,
+          "fp16": {
+            "passed": true,
+            "checks": {
+              "ground_truth_lower_95_positive": true,
+              "edge_mean_nonnegative": true,
+              "teacher_mean_nonnegative": true
+            },
+            "means": {
+              "psnr_vs_ground_truth": 0.5004776063668069,
+              "edge_psnr_vs_ground_truth": 0.487892683500038,
+              "psnr_vs_teacher": 1.2693416372638342
+            }
+          },
+          "candidate": {
+            "passed": true,
+            "checks": {
+              "ground_truth_lower_95_positive": true,
+              "edge_mean_nonnegative": true,
+              "teacher_mean_nonnegative": true,
+              "psnr_vs_ground_truth_retains_at_least_90pct": true,
+              "edge_psnr_vs_ground_truth_retains_at_least_90pct": true,
+              "psnr_vs_teacher_retains_at_least_90pct": true
+            },
+            "means": {
+              "psnr_vs_ground_truth": 0.4987295473147445,
+              "edge_psnr_vs_ground_truth": 0.4865099423715225,
+              "psnr_vs_teacher": 1.2649349683351174
+            },
+            "fp16_retention_ratios": {
+              "psnr_vs_ground_truth": 0.9965072182454828,
+              "edge_psnr_vs_ground_truth": 0.9971658908295242,
+              "psnr_vs_teacher": 0.9965283822736519
+            }
+          },
+          "comparison_sha256": "463907d0fecd3a2256b4a141355caf29cd68ec4a04601588eab362fd19179991",
+          "materialization_sha256": "29c2ddd60a2c92066775a889a2647e2bb9690df25102e3d692c73f31321619aa",
+          "dense_state_sha256": "edfcdc8579d7cb360a9fd433d75128ffcd6e22a4e14180bec3678b5bc95690ca"
+        }
+      }
+    }
+  },
+  "selected_rstb_precision": "int7_per_output",
+  "selected_incremental_data_bytes": 59160,
+  "authorized_effect": "use_as_development_supported_precision_island_in_a_separately_preregistered_joint_training_study",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false
+}

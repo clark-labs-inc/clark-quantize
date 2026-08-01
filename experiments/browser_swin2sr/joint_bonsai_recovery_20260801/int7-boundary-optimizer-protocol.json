@@ -1,0 +1,46 @@
+{
+  "format": "backdropkit-swin2sr-int7-boundary-optimizer-race-v1",
+  "status": "sealed_before_arm_outputs",
+  "created_at": "2026-08-01",
+  "selection_source": "development_only",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "reason": "Plain int7 STE with AdamW at 1e-6 reduced matched live PSNR by 0.021003 dB at step 500. Most continuous updates do not have equal leverage on the deployed integer codebook, so the next matched arms precondition gradients by distance to the nearest half-integer code-transition boundary.",
+  "parent_checkpoint": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_fp16_seed20260801/run/checkpoint-island-4000.pt",
+  "parent_checkpoint_sha256": "4927fc3a5d6cd81c651b0bc50cee05fe25bd4bac1196bbe050e63b0aa94bcc6f",
+  "common": {
+    "precision": "int7",
+    "bit_width": 7,
+    "granularity": "per_output",
+    "scale_dtype": "float16",
+    "seed": 20260803,
+    "steps": 4000,
+    "physical_batch": 8,
+    "optimizer": "adamw",
+    "weight_decay": 0.0001,
+    "gradient_clip_norm": 1.0,
+    "boundary_temperature": 0.1,
+    "validate_every": 500,
+    "checkpoint_every": 500,
+    "training_images": 206500,
+    "languages": 204
+  },
+  "ordered_arms": [
+    {
+      "name": "rstb_int7_boundary_b4_lr025_seed20260803",
+      "learning_rate": 2.5e-7,
+      "boundary_boost": 4.0,
+      "maximum_boundary_effective_learning_rate": 1.25e-6,
+      "status": "authorized_first"
+    },
+    {
+      "name": "rstb_int7_boundary_b2_lr05_seed20260803",
+      "learning_rate": 5e-7,
+      "boundary_boost": 2.0,
+      "maximum_boundary_effective_learning_rate": 1.5e-6,
+      "status": "conditional_if_first_fails_step500"
+    }
+  ],
+  "early_gate": "At step 500 require finite raw and preconditioned gradients plus deployed int7 live PSNR above the exact 41.948387096 dB start. Stop a failing arm immediately. Run the second arm only if the first fails.",
+  "selection_gate": "A live-set winner must still beat 34.307506302 dB on the complete locked development bundle and preserve every source, split, script, and language aggregate before artifact testing."
+}

@@ -1,0 +1,2303 @@
+{
+  "format": "backdropkit-swin2sr-surface-group-decision-v1",
+  "diagnostic_only": true,
+  "selection_source": "development_confirmation",
+  "model_promotion_authorized": false,
+  "recovery_training_authorized": false,
+  "final_heldout_locked": true,
+  "study_manifest": "experiments/browser_swin2sr/surface_group_confirmation_20260731/study-manifest.json",
+  "study_manifest_sha256": "b43abda5c05fcdbc617cde940eebe5bb1556f4c04f6533baf975d96afc75adb5",
+  "decision_source_sha256": "d06153a948983eef055e83e402b85ce22a7f7ce434df6e42b112042b37a55b64",
+  "reports": [
+    {
+      "path": "experiments/browser_swin2sr/surface_group_confirmation_20260731/group2-confirmation-64.json",
+      "sha256": "1534e447a194e5c2d7c36cfcffa43c2829ca365be2211592c281552f5633a9fb",
+      "group_size": 2
+    },
+    {
+      "path": "experiments/browser_swin2sr/surface_group_confirmation_20260731/group3-confirmation-64.json",
+      "sha256": "0ef410c7aad864d5d515f5307d9e4397ad3d77f356154304be3074ccd6791c14",
+      "group_size": 3
+    },
+    {
+      "path": "experiments/browser_swin2sr/surface_group_confirmation_20260731/group6-confirmation-64.json",
+      "sha256": "a9fadcd55c7edd1c080a5bf5541e501e2b3ad100d2176825b5a1960b42d43f28",
+      "group_size": 6
+    }
+  ],
+  "candidate_count": 17,
+  "passing_surface_count": 3,
+  "scale_byte_budget": 65536,
+  "selected_scale_bytes_delta": 4256,
+  "selected_surface_group_sizes": {
+    "swin2sr.encoder.stages.3.layers.2.attention.output.dense": 3,
+    "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0": 2,
+    "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0": 2
+  },
+  "selected": [
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.output.dense",
+      "group_size": 3,
+      "passed": true,
+      "failures": [],
+      "scale_bytes_delta": 2280,
+      "ground_truth_db_per_added_kib": 0.008841308687525178,
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": 0.01968572637456778,
+          "median": 0.004096075218459561,
+          "lower_95": 0.009021019338816202,
+          "upper_95": 0.03149479839439256,
+          "wins": 36,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 0.029331492426224515,
+          "median": 0.011342581409870434,
+          "lower_95": 0.018403074570210752,
+          "upper_95": 0.04173452272003528,
+          "wins": 47,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.005564797193158999,
+          "median": -0.017111935094579422,
+          "lower_95": -0.02050084476795854,
+          "upper_95": 0.010418921289906196,
+          "wins": 25,
+          "ties": 0,
+          "samples": 64
+        }
+      }
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "group_size": 2,
+      "passed": true,
+      "failures": [],
+      "scale_bytes_delta": 988,
+      "ground_truth_db_per_added_kib": 0.00620667829366706,
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": 0.005988474759905327,
+          "median": 0.002914246544793997,
+          "lower_95": 0.002405050024190379,
+          "upper_95": 0.009733177631428665,
+          "wins": 39,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 0.006911854292608655,
+          "median": 0.0038121817922416312,
+          "lower_95": 0.0035165577068904997,
+          "upper_95": 0.010511781051544034,
+          "wins": 44,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -9.645843259176168e-05,
+          "median": -0.0044869287465445495,
+          "lower_95": -0.0069401390702392655,
+          "upper_95": 0.007161333121934194,
+          "wins": 25,
+          "ties": 0,
+          "samples": 64
+        }
+      }
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0",
+      "group_size": 2,
+      "passed": true,
+      "failures": [],
+      "scale_bytes_delta": 988,
+      "ground_truth_db_per_added_kib": 0.0038956935712359734,
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": 0.003758735594122209,
+          "median": 0.0010438613897321147,
+          "lower_95": 0.0010686659942475696,
+          "upper_95": 0.00662317406480822,
+          "wins": 38,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 0.0038328389454583833,
+          "median": 0.0016583705729065201,
+          "lower_95": 0.0014466387358211597,
+          "upper_95": 0.006323247932891988,
+          "wins": 42,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": 0.0017426653700497452,
+          "median": 0.00024052213685621382,
+          "lower_95": -0.003528073774129145,
+          "upper_95": 0.007274626246380504,
+          "wins": 32,
+          "ties": 0,
+          "samples": 64
+        }
+      }
+    }
+  ],
+  "audit": [
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.value",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 3480,
+          "ground_truth_db_per_added_kib": -0.004778366619040424,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.01623898030689519,
+              "median": -0.015705138886531245,
+              "lower_95": -0.04711134948282115,
+              "upper_95": 0.015844974788621777,
+              "wins": 26,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.0035867904153275565,
+              "median": -0.008480065719810526,
+              "lower_95": -0.02779305931542286,
+              "upper_95": 0.03730409763055455,
+              "wins": 31,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.05805711967519411,
+              "median": -0.055556734363023,
+              "lower_95": -0.09595527627470457,
+              "upper_95": -0.02051239934128835,
+              "wins": 23,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "teacher_mean_below_minus_0.1_db"
+          ],
+          "scale_bytes_delta": 2280,
+          "ground_truth_db_per_added_kib": -0.0228264241407078,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.05082446000079471,
+              "median": -0.03980367916082983,
+              "lower_95": -0.09758574635112174,
+              "upper_95": -0.007256701258973636,
+              "wins": 18,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.018226356090674745,
+              "median": -0.01743466236833413,
+              "lower_95": -0.025251483234618354,
+              "upper_95": 0.07203906621007491,
+              "wins": 25,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.15453462828448689,
+              "median": -0.16839500796617202,
+              "lower_95": -0.21086794356632818,
+              "upper_95": -0.10156412009535971,
+              "wins": 14,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 1080,
+          "ground_truth_db_per_added_kib": -0.005408687853049746,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.005704475470013404,
+              "median": -0.011164889226762398,
+              "lower_95": -0.028229168491448645,
+              "upper_95": 0.017414840909201566,
+              "wins": 26,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.0156707717604348,
+              "median": -0.0010828670430242937,
+              "lower_95": -0.006511085783411338,
+              "upper_95": 0.03999155695098345,
+              "wins": 31,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.030487866208580572,
+              "median": -0.054614749899688064,
+              "lower_95": -0.06319722313236424,
+              "upper_95": 0.003071655241766393,
+              "wins": 22,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.output.dense",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 3480,
+          "ground_truth_db_per_added_kib": -0.020030016033355743,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.0680707576133574,
+              "median": -0.05152104790929002,
+              "lower_95": -0.09811000946785477,
+              "upper_95": -0.037323524603681484,
+              "wins": 19,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.08232805132746446,
+              "median": -0.05293322848285342,
+              "lower_95": -0.11169658879644101,
+              "upper_95": -0.054062351332020045,
+              "wins": 13,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.09890144425937192,
+              "median": -0.0716570279834059,
+              "lower_95": -0.14944259387035536,
+              "upper_95": -0.05237873935272993,
+              "wins": 19,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 2280,
+          "ground_truth_db_per_added_kib": -0.02137201042644497,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.047586116965131375,
+              "median": -0.04731324838259532,
+              "lower_95": -0.0670810881944645,
+              "upper_95": -0.027116875970456797,
+              "wins": 14,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.045604947817058816,
+              "median": -0.038933041763053566,
+              "lower_95": -0.06215411870351604,
+              "upper_95": -0.027946807680777713,
+              "wins": 14,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.07777695862040535,
+              "median": -0.06736325941557553,
+              "lower_95": -0.11864246814093417,
+              "upper_95": -0.03826501867716797,
+              "wins": 18,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 1080,
+          "ground_truth_db_per_added_kib": -0.0606082532576408,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.06392276710766803,
+              "median": -0.0396109047400337,
+              "lower_95": -0.08747309488454079,
+              "upper_95": -0.040617392350619036,
+              "wins": 17,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.06865709500294831,
+              "median": -0.04256863104355091,
+              "lower_95": -0.09030721432363475,
+              "upper_95": -0.047534616173845114,
+              "wins": 13,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.09893580513717926,
+              "median": -0.09523549128942577,
+              "lower_95": -0.13564748567351376,
+              "upper_95": -0.06229137086751788,
+              "wins": 13,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.self.value",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 3480,
+          "ground_truth_db_per_added_kib": -0.01699714240501608,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.057763726142046834,
+              "median": -0.029605721601001278,
+              "lower_95": -0.09171080544765056,
+              "upper_95": -0.027863705339543233,
+              "wins": 18,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.04980259136539439,
+              "median": -0.018968654988301026,
+              "lower_95": -0.08419371603025208,
+              "upper_95": -0.02068142560042955,
+              "wins": 15,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.06881759801075432,
+              "median": -0.04099035579777954,
+              "lower_95": -0.10700594036795037,
+              "upper_95": -0.03401187358536458,
+              "wins": 20,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 2280,
+          "ground_truth_db_per_added_kib": -0.02591567358188315,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.0577028669596617,
+              "median": -0.020279604026594455,
+              "lower_95": -0.08801221767157193,
+              "upper_95": -0.03079163230667586,
+              "wins": 16,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.058362858747575186,
+              "median": -0.020340308677676333,
+              "lower_95": -0.08724075032283446,
+              "upper_95": -0.03280705419691643,
+              "wins": 14,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.06673030702042876,
+              "median": -0.03528511572780246,
+              "lower_95": -0.1009511887036035,
+              "upper_95": -0.03518649116963673,
+              "wins": 20,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 1080,
+          "ground_truth_db_per_added_kib": -0.04052249468585103,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.04273856861398351,
+              "median": -0.014666139368030073,
+              "lower_95": -0.06276991653597733,
+              "upper_95": -0.0248979926678194,
+              "wins": 15,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.03840518348544547,
+              "median": -0.014063743282338947,
+              "lower_95": -0.05691057837032415,
+              "upper_95": -0.021737604805325817,
+              "wins": 13,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.04880774671063759,
+              "median": -0.03689798511508968,
+              "lower_95": -0.07265615785723825,
+              "upper_95": -0.0264965243310682,
+              "wins": 17,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.self.key",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 3480,
+          "ground_truth_db_per_added_kib": -0.0037490748210806703,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.01274099646226634,
+              "median": -0.005777721714791184,
+              "lower_95": -0.029825626828884223,
+              "upper_95": 0.0022997842518376168,
+              "wins": 30,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.01064762352085974,
+              "median": -0.006018640420588639,
+              "lower_95": -0.024741800721164105,
+              "upper_95": 0.002130067051359503,
+              "wins": 29,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.006724001325756679,
+              "median": 0.004502771685032769,
+              "lower_95": -0.03300819274502144,
+              "upper_95": 0.01537799313921414,
+              "wins": 34,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 2280,
+          "ground_truth_db_per_added_kib": -0.006820807632760636,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.015186954494818605,
+              "median": -0.005387612274024178,
+              "lower_95": -0.028002928624137183,
+              "upper_95": -0.003730012283606902,
+              "wins": 28,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.015358832385079124,
+              "median": -0.004527871812307183,
+              "lower_95": -0.02610329756459474,
+              "upper_95": -0.005794334888510308,
+              "wins": 27,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.008859569047878102,
+              "median": -0.0001998882103251276,
+              "lower_95": -0.033077810395884574,
+              "upper_95": 0.013007729048922926,
+              "wins": 32,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 1080,
+          "ground_truth_db_per_added_kib": -0.0017157003257714286,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.0018095276873370536,
+              "median": -0.003447137680238299,
+              "lower_95": -0.0073486986420945016,
+              "upper_95": 0.003768150351404367,
+              "wins": 30,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.0036297515799181834,
+              "median": -0.004089991538588578,
+              "lower_95": -0.008531502132039901,
+              "upper_95": 0.0012975992181128828,
+              "wins": 29,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": 0.00038273171372738,
+              "median": 0.0048533305104392355,
+              "lower_95": -0.010343636895810785,
+              "upper_95": 0.011053333529570346,
+              "wins": 35,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.self.key",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 3480,
+          "ground_truth_db_per_added_kib": -0.0005950824511324459,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.0020223505175204215,
+              "median": 0.0008421000998595218,
+              "lower_95": -0.014743344707674093,
+              "upper_95": 0.01072586260392264,
+              "wins": 32,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.0033247396749032654,
+              "median": -0.0018415581027220185,
+              "lower_95": -0.015064681083852331,
+              "upper_95": 0.008711792485307257,
+              "wins": 30,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.0019526227676525676,
+              "median": 0.0024687037176818194,
+              "lower_95": -0.016116151419958584,
+              "upper_95": 0.011958645736028724,
+              "wins": 34,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 2280,
+          "ground_truth_db_per_added_kib": -0.0011881098557369903,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.0026454008506643922,
+              "median": -0.001427749471268669,
+              "lower_95": -0.012558760770000782,
+              "upper_95": 0.007872987817166133,
+              "wins": 29,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.00021840255414939946,
+              "median": -0.0017897948425620314,
+              "lower_95": -0.010104648289132507,
+              "upper_95": 0.01018935387511698,
+              "wins": 30,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": 0.0012972899301063046,
+              "median": 0.005108055326846994,
+              "lower_95": -0.014049369739025583,
+              "upper_95": 0.016707200226896094,
+              "wins": 34,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 1080,
+          "ground_truth_db_per_added_kib": -0.007020298953962683,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.007404221553007517,
+              "median": 0.0007526660504222349,
+              "lower_95": -0.016494369861074318,
+              "upper_95": 0.0010199873545790323,
+              "wins": 32,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.007603663236376623,
+              "median": -0.00048678680989411305,
+              "lower_95": -0.01605885036693075,
+              "upper_95": 0.00031261915682846627,
+              "wins": 31,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.00712527284341774,
+              "median": -0.0026157667143813512,
+              "lower_95": -0.023819958379770075,
+              "upper_95": 0.007413995032170672,
+              "wins": 31,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.2.attention.self.value",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 3480,
+          "ground_truth_db_per_added_kib": -0.0023934184453931603,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.008133882998015818,
+              "median": -0.0012662467144259892,
+              "lower_95": -0.03553405360153744,
+              "upper_95": 0.019911235573076395,
+              "wins": 31,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.01098457291834265,
+              "median": -0.007909694181449822,
+              "lower_95": -0.03502141783401362,
+              "upper_95": 0.014087603458428286,
+              "wins": 27,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": 0.0397017648220937,
+              "median": 0.018075052200114072,
+              "lower_95": -2.267398296745132e-05,
+              "upper_95": 0.08056270711476753,
+              "wins": 35,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 2280,
+          "ground_truth_db_per_added_kib": -0.010967531650210062,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.02441989468992084,
+              "median": -0.016690612459587584,
+              "lower_95": -0.04878969257508994,
+              "upper_95": 0.00012281548314295844,
+              "wins": 24,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.03135069549964781,
+              "median": -0.022151614932287345,
+              "lower_95": -0.054657859055889955,
+              "upper_95": -0.0085999015337256,
+              "wins": 22,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.029136858873162974,
+              "median": -0.023172148404761117,
+              "lower_95": -0.06328853962301649,
+              "upper_95": 0.005247495430086987,
+              "wins": 28,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 1080,
+          "ground_truth_db_per_added_kib": -0.028693109476892194,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.030262263901409736,
+              "median": -0.031636216878005996,
+              "lower_95": -0.05348015386001655,
+              "upper_95": -0.0076850208524812,
+              "wins": 21,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.027784326067866794,
+              "median": -0.027132302027805366,
+              "lower_95": -0.04848823910105334,
+              "upper_95": -0.008052326779237819,
+              "wins": 21,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.06191297346776464,
+              "median": -0.06326851516038445,
+              "lower_95": -0.09898174834771276,
+              "upper_95": -0.0255463354755913,
+              "wins": 19,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.output.dense",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 3480,
+          "ground_truth_db_per_added_kib": 0.004409471591384481,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.014985313611345696,
+              "median": 0.0030099492725934596,
+              "lower_95": -0.0009860511363778606,
+              "upper_95": 0.0315715951368288,
+              "wins": 36,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.033160794278437655,
+              "median": 0.016343353877402933,
+              "lower_95": 0.0186978063312018,
+              "upper_95": 0.04961413278886725,
+              "wins": 51,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.01907466051147516,
+              "median": -0.022861939767395256,
+              "lower_95": -0.04100169263321322,
+              "upper_95": 0.00405368921668773,
+              "wins": 24,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": true,
+          "failures": [],
+          "scale_bytes_delta": 2280,
+          "ground_truth_db_per_added_kib": 0.008841308687525178,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.01968572637456778,
+              "median": 0.004096075218459561,
+              "lower_95": 0.009021019338816202,
+              "upper_95": 0.03149479839439256,
+              "wins": 36,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.029331492426224515,
+              "median": 0.011342581409870434,
+              "lower_95": 0.018403074570210752,
+              "upper_95": 0.04173452272003528,
+              "wins": 47,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.005564797193158999,
+              "median": -0.017111935094579422,
+              "lower_95": -0.02050084476795854,
+              "upper_95": 0.010418921289906196,
+              "wins": 25,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 1080,
+          "ground_truth_db_per_added_kib": 0.008108563856460036,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.008552000942360194,
+              "median": -0.0034551752629905508,
+              "lower_95": -0.0029429439801354055,
+              "upper_95": 0.02232837297353492,
+              "wins": 26,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.0019979066762655373,
+              "median": -0.0036069237395341958,
+              "lower_95": -0.009409468249264334,
+              "upper_95": 0.005396478989260087,
+              "wins": 23,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": 0.010638045484861913,
+              "median": -0.004077977809753719,
+              "lower_95": -0.005939720475503708,
+              "upper_95": 0.029191242169664178,
+              "wins": 30,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": {
+        "group_size": 3,
+        "passed": true,
+        "failures": [],
+        "scale_bytes_delta": 2280,
+        "ground_truth_db_per_added_kib": 0.008841308687525178,
+        "paired_evidence": {
+          "psnr_vs_ground_truth": {
+            "mean": 0.01968572637456778,
+            "median": 0.004096075218459561,
+            "lower_95": 0.009021019338816202,
+            "upper_95": 0.03149479839439256,
+            "wins": 36,
+            "ties": 0,
+            "samples": 64
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": 0.029331492426224515,
+            "median": 0.011342581409870434,
+            "lower_95": 0.018403074570210752,
+            "upper_95": 0.04173452272003528,
+            "wins": 47,
+            "ties": 0,
+            "samples": 64
+          },
+          "psnr_vs_teacher": {
+            "mean": -0.005564797193158999,
+            "median": -0.017111935094579422,
+            "lower_95": -0.02050084476795854,
+            "upper_95": 0.010418921289906196,
+            "wins": 25,
+            "ties": 0,
+            "samples": 64
+          }
+        }
+      }
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.self.value",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "teacher_mean_below_minus_0.1_db"
+          ],
+          "scale_bytes_delta": 3480,
+          "ground_truth_db_per_added_kib": -0.008223032211114237,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.02794546102995854,
+              "median": -0.02110475997991834,
+              "lower_95": -0.06123383391527142,
+              "upper_95": 0.004057186042992309,
+              "wins": 28,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.0031196673511848516,
+              "median": -0.004988733910122889,
+              "lower_95": -0.03196028899673498,
+              "upper_95": 0.026735964854015384,
+              "wins": 31,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.11001838229071159,
+              "median": -0.11136761407810347,
+              "lower_95": -0.15902439238969956,
+              "upper_95": -0.06077969647592996,
+              "wins": 16,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "teacher_mean_below_minus_0.1_db"
+          ],
+          "scale_bytes_delta": 2280,
+          "ground_truth_db_per_added_kib": -0.014051513217112656,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.0312865723974774,
+              "median": -0.019271455426665085,
+              "lower_95": -0.06361100759982329,
+              "upper_95": -0.001218154945373624,
+              "wins": 23,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.00417906367675136,
+              "median": 0.0015197505807904577,
+              "lower_95": -0.026244369889137982,
+              "upper_95": 0.035819588698423485,
+              "wins": 33,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.13153070629354463,
+              "median": -0.12906549878317364,
+              "lower_95": -0.18132854126604733,
+              "upper_95": -0.08142871995971177,
+              "wins": 13,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 1080,
+          "ground_truth_db_per_added_kib": -0.0037010830848987343,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.0039034860661041337,
+              "median": -0.000999086864567289,
+              "lower_95": -0.025556554374909713,
+              "upper_95": 0.016214450854459026,
+              "wins": 31,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.0017287145265285075,
+              "median": 0.003356127640103068,
+              "lower_95": -0.021941558244075888,
+              "upper_95": 0.017200206272698974,
+              "wins": 34,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.04829401279565004,
+              "median": -0.049668425875463385,
+              "lower_95": -0.08014803092179766,
+              "upper_95": -0.015385543279825163,
+              "wins": 18,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.intermediate.dense",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 6960,
+          "ground_truth_db_per_added_kib": -0.0068955858358084815,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.046868434977760776,
+              "median": -0.012103552816972396,
+              "lower_95": -0.09083331746473422,
+              "upper_95": -0.008570940118136463,
+              "wins": 24,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.023405754947875224,
+              "median": 0.017560642561786466,
+              "lower_95": -0.012235351577266743,
+              "upper_95": 0.06560128774063305,
+              "wins": 40,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.08643738614228447,
+              "median": -0.06252979001648384,
+              "lower_95": -0.14315045017447053,
+              "upper_95": -0.03232746526999886,
+              "wins": 22,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 4560,
+          "ground_truth_db_per_added_kib": -0.009260738677378418,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.04123922692270077,
+              "median": -0.023575631595027957,
+              "lower_95": -0.06962764391822625,
+              "upper_95": -0.014653622445237515,
+              "wins": 18,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.02262238024511326,
+              "median": -0.008456599808074117,
+              "lower_95": -0.04937171748121559,
+              "upper_95": 0.0014102201511682134,
+              "wins": 27,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.04569568360554854,
+              "median": -0.05300864816613782,
+              "lower_95": -0.07952639881007613,
+              "upper_95": -0.011190371176585424,
+              "wins": 20,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 2160,
+          "ground_truth_db_per_added_kib": -0.018556291995775697,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.03914217842858936,
+              "median": -0.027861934997350346,
+              "lower_95": -0.06258415574179288,
+              "upper_95": -0.017617474313704754,
+              "wins": 13,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.03665083973613242,
+              "median": -0.02004735008893377,
+              "lower_95": -0.06031182159431171,
+              "upper_95": -0.01652441683378535,
+              "wins": 15,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.06746898603265794,
+              "median": -0.07636219210206363,
+              "lower_95": -0.09318103699838874,
+              "upper_95": -0.0403102524778484,
+              "wins": 14,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": true,
+          "failures": [],
+          "scale_bytes_delta": 988,
+          "ground_truth_db_per_added_kib": 0.00620667829366706,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.005988474759905327,
+              "median": 0.002914246544793997,
+              "lower_95": 0.002405050024190379,
+              "upper_95": 0.009733177631428665,
+              "wins": 39,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.006911854292608655,
+              "median": 0.0038121817922416312,
+              "lower_95": 0.0035165577068904997,
+              "upper_95": 0.010511781051544034,
+              "wins": 44,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -9.645843259176168e-05,
+              "median": -0.0044869287465445495,
+              "lower_95": -0.0069401390702392655,
+              "upper_95": 0.007161333121934194,
+              "wins": 25,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": true,
+          "failures": [],
+          "scale_bytes_delta": 648,
+          "ground_truth_db_per_added_kib": 0.005276546519512483,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.003339064594378993,
+              "median": 0.0007690936123196934,
+              "lower_95": 0.0009982860042718658,
+              "upper_95": 0.00575782137333625,
+              "wins": 39,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.004038060952239575,
+              "median": 0.0021846302051926614,
+              "lower_95": 0.0018583499932591327,
+              "upper_95": 0.00626778053908703,
+              "wins": 46,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": 0.0005629766237638112,
+              "median": -0.00017161670492882308,
+              "lower_95": -0.003988559398584954,
+              "upper_95": 0.005359884658458833,
+              "wins": 32,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": true,
+          "failures": [],
+          "scale_bytes_delta": 306,
+          "ground_truth_db_per_added_kib": 0.005853798671891501,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.0017492796812488276,
+              "median": 0.0007580178651664937,
+              "lower_95": 0.00029918110874786605,
+              "upper_95": 0.003294135636983507,
+              "wins": 40,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.002231888432091156,
+              "median": 0.000960732512270468,
+              "lower_95": 0.000894027734003193,
+              "upper_95": 0.0036546229146882884,
+              "wins": 43,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": 0.000892774422171283,
+              "median": -0.0003879356602602968,
+              "lower_95": -0.002141883911884178,
+              "upper_95": 0.004121417199190959,
+              "wins": 30,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": {
+        "group_size": 2,
+        "passed": true,
+        "failures": [],
+        "scale_bytes_delta": 988,
+        "ground_truth_db_per_added_kib": 0.00620667829366706,
+        "paired_evidence": {
+          "psnr_vs_ground_truth": {
+            "mean": 0.005988474759905327,
+            "median": 0.002914246544793997,
+            "lower_95": 0.002405050024190379,
+            "upper_95": 0.009733177631428665,
+            "wins": 39,
+            "ties": 0,
+            "samples": 64
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": 0.006911854292608655,
+            "median": 0.0038121817922416312,
+            "lower_95": 0.0035165577068904997,
+            "upper_95": 0.010511781051544034,
+            "wins": 44,
+            "ties": 0,
+            "samples": 64
+          },
+          "psnr_vs_teacher": {
+            "mean": -9.645843259176168e-05,
+            "median": -0.0044869287465445495,
+            "lower_95": -0.0069401390702392655,
+            "upper_95": 0.007161333121934194,
+            "wins": 25,
+            "ties": 0,
+            "samples": 64
+          }
+        }
+      }
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.self.key",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 3480,
+          "ground_truth_db_per_added_kib": 2.84086754529307e-05,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 9.654510798456917e-05,
+              "median": -0.0020747346340872497,
+              "lower_95": -0.008593754285851454,
+              "upper_95": 0.009795732471963742,
+              "wins": 29,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.0010704745526541326,
+              "median": -0.002372443935380275,
+              "lower_95": -0.006845989082539518,
+              "upper_95": 0.010276134573688148,
+              "wins": 27,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.007963673162953933,
+              "median": 0.00397569068902115,
+              "lower_95": -0.022846206586820034,
+              "upper_95": 0.006125641302006919,
+              "wins": 35,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 2280,
+          "ground_truth_db_per_added_kib": -0.003135432789303606,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.00698123706993381,
+              "median": -0.010110748373882927,
+              "lower_95": -0.015270375589307255,
+              "upper_95": 0.001144105206323791,
+              "wins": 24,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.0058968489629295795,
+              "median": -0.010301472142627333,
+              "lower_95": -0.013362439324742001,
+              "upper_95": 0.0016281538948523502,
+              "wins": 24,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.015123523529124883,
+              "median": -0.008586563004783443,
+              "lower_95": -0.028439928234202036,
+              "upper_95": -0.0028489118601830944,
+              "wins": 27,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 1080,
+          "ground_truth_db_per_added_kib": -0.0005105945489226563,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.0005385176883168641,
+              "median": -0.0004138338964629895,
+              "lower_95": -0.009080270333015342,
+              "upper_95": 0.008043209126830007,
+              "wins": 31,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.0012178413268392196,
+              "median": 0.0007908751926333224,
+              "lower_95": -0.006086464455128236,
+              "upper_95": 0.00888614121201959,
+              "wins": 32,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.008015159426756402,
+              "median": -0.00607465568055332,
+              "lower_95": -0.02124944026656536,
+              "upper_95": 0.0049335013379400066,
+              "wins": 29,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.key",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 3480,
+          "ground_truth_db_per_added_kib": 0.002995547175155973,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.010180179853069127,
+              "median": 0.007233592509518161,
+              "lower_95": -0.0005271156212094531,
+              "upper_95": 0.021439237254726316,
+              "wins": 36,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.011747893456519665,
+              "median": 0.008435108703313432,
+              "lower_95": 0.0018296696302301534,
+              "upper_95": 0.022311421632580188,
+              "wins": 42,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": 0.006104165827536645,
+              "median": -0.0010932912132162187,
+              "lower_95": -0.006688476289424529,
+              "upper_95": 0.019358078605034926,
+              "wins": 31,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 2280,
+          "ground_truth_db_per_added_kib": 0.0033799489794031808,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.007525667649452394,
+              "median": 0.007459709725972985,
+              "lower_95": -0.0006003627761428597,
+              "upper_95": 0.015574545362629028,
+              "wins": 37,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.011319666712970522,
+              "median": 0.00941728320414903,
+              "lower_95": 0.003651210455846715,
+              "upper_95": 0.019185037382022405,
+              "wins": 40,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.0024724290393096093,
+              "median": -0.005237371714041927,
+              "lower_95": -0.014541221655852598,
+              "upper_95": 0.010025264287301801,
+              "wins": 29,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 1080,
+          "ground_truth_db_per_added_kib": -0.0031540914947523514,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.0033265808733716207,
+              "median": -0.0019059822974085705,
+              "lower_95": -0.011608518044948741,
+              "upper_95": 0.0050017617063098825,
+              "wins": 30,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.0005831160473629415,
+              "median": -0.0007102558846199258,
+              "lower_95": -0.006713423246357116,
+              "upper_95": 0.008081714624298894,
+              "wins": 32,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.011276161957299469,
+              "median": -0.005772576594047507,
+              "lower_95": -0.0350565060645769,
+              "upper_95": 0.006945886239676585,
+              "wins": 29,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.value",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 3480,
+          "ground_truth_db_per_added_kib": 0.0001645511730501099,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.0005592168771624828,
+              "median": 0.0025176811319820303,
+              "lower_95": -0.01641556782001151,
+              "upper_95": 0.018658849569103086,
+              "wins": 33,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.009512685364689188,
+              "median": 0.006586473408596305,
+              "lower_95": -0.004635904107112333,
+              "upper_95": 0.024550191901633368,
+              "wins": 39,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.05183576862914291,
+              "median": -0.04323205199586333,
+              "lower_95": -0.07907195740783729,
+              "upper_95": -0.02341499976321023,
+              "wins": 23,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 2280,
+          "ground_truth_db_per_added_kib": -0.0010790577611560156,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.002402589546323941,
+              "median": -0.003472738267912945,
+              "lower_95": -0.016848897135113835,
+              "upper_95": 0.012905826090763295,
+              "wins": 26,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.007167270069326881,
+              "median": 0.004343339676626812,
+              "lower_95": -0.006518160023062885,
+              "upper_95": 0.020449332158553525,
+              "wins": 37,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.0719386087777048,
+              "median": -0.07216111426163607,
+              "lower_95": -0.09606155424937282,
+              "upper_95": -0.047791091875992925,
+              "wins": 13,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 1080,
+          "ground_truth_db_per_added_kib": 0.012245315094219538,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.01291498076343467,
+              "median": 0.0003587756303335965,
+              "lower_95": -0.000893811448805147,
+              "upper_95": 0.027315147253330247,
+              "wins": 33,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.02554193285212797,
+              "median": 0.012530304965894246,
+              "lower_95": 0.012117489920817173,
+              "upper_95": 0.038602622077182284,
+              "wins": 43,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.015582324937092995,
+              "median": -0.011782110137449564,
+              "lower_95": -0.03940869156745083,
+              "upper_95": 0.009570605844946498,
+              "wins": 28,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.attention.self.value",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 3480,
+          "ground_truth_db_per_added_kib": -0.003677016038485619,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.012496109193290972,
+              "median": -0.008512468464164868,
+              "lower_95": -0.02709487099918738,
+              "upper_95": 0.00040513466492110876,
+              "wins": 25,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.000734665814337232,
+              "median": 0.0005624953042069336,
+              "lower_95": -0.009105613086780033,
+              "upper_95": 0.01023442267812995,
+              "wins": 32,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.04461421582626074,
+              "median": -0.048145566113770855,
+              "lower_95": -0.06706925161102918,
+              "upper_95": -0.02145981833327237,
+              "wins": 20,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 2280,
+          "ground_truth_db_per_added_kib": -0.013482747269792502,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.030020179467897368,
+              "median": -0.025755476710298097,
+              "lower_95": -0.04358766861693506,
+              "upper_95": -0.01583194380538216,
+              "wins": 14,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.030117302010396585,
+              "median": -0.02245543702554542,
+              "lower_95": -0.04160375513897601,
+              "upper_95": -0.018250610178018257,
+              "wins": 15,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.06838048401154168,
+              "median": -0.07160918070154665,
+              "lower_95": -0.09038577911068608,
+              "upper_95": -0.045946351660596935,
+              "wins": 13,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 1080,
+          "ground_truth_db_per_added_kib": -0.01109285164543576,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.011699491969795528,
+              "median": -0.012145122885703685,
+              "lower_95": -0.02296315850011843,
+              "upper_95": -4.58914697883017e-05,
+              "wins": 19,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.01794946531142294,
+              "median": -0.015925019520020456,
+              "lower_95": -0.029420653907872386,
+              "upper_95": -0.00589923803972468,
+              "wins": 16,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.020436361666727965,
+              "median": -0.0260379205709782,
+              "lower_95": -0.03484591027451245,
+              "upper_95": -0.005689811032179016,
+              "wins": 19,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.2.intermediate.dense",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 6960,
+          "ground_truth_db_per_added_kib": -0.0022607712629549278,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.015366179677896774,
+              "median": -0.00957832511567247,
+              "lower_95": -0.03537419357436443,
+              "upper_95": 0.007648643606332108,
+              "wins": 26,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.015288103320386826,
+              "median": -0.014901782298561983,
+              "lower_95": -0.03474980146556456,
+              "upper_95": 0.006954864734456876,
+              "wins": 25,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.025342580442543172,
+              "median": -0.02422704589057645,
+              "lower_95": -0.05922575382582204,
+              "upper_95": 0.005778277797312231,
+              "wins": 26,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 4560,
+          "ground_truth_db_per_added_kib": -0.0038178726876846917,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.017001464312345893,
+              "median": -0.029393538765511096,
+              "lower_95": -0.03623496617495289,
+              "upper_95": 0.005562956690993649,
+              "wins": 23,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.025922705134374946,
+              "median": -0.030651883502606836,
+              "lower_95": -0.04374451891233199,
+              "upper_95": -0.005061127721585933,
+              "wins": 17,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.023062776821033804,
+              "median": -0.025844260204682,
+              "lower_95": -0.05394720497972396,
+              "upper_95": 0.005160125586220666,
+              "wins": 24,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive",
+            "edge_mean_below_minus_0.02_db"
+          ],
+          "scale_bytes_delta": 2160,
+          "ground_truth_db_per_added_kib": -0.01149649437353596,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": -0.024250417819177417,
+              "median": -0.015141041672624311,
+              "lower_95": -0.037312993001752934,
+              "upper_95": -0.009849653831258775,
+              "wins": 20,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": -0.025065661553618168,
+              "median": -0.019717993712001558,
+              "lower_95": -0.037372869517318996,
+              "upper_95": -0.011625884131072227,
+              "wins": 17,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.030764171842098453,
+              "median": -0.03575884230053994,
+              "lower_95": -0.05199523661598886,
+              "upper_95": -0.00975165921905425,
+              "wins": 22,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.intermediate.dense",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 6960,
+          "ground_truth_db_per_added_kib": 0.0017816650210065504,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.012109754439653897,
+              "median": 0.009361847155556546,
+              "lower_95": -0.0008477308079781543,
+              "upper_95": 0.026595914332749486,
+              "wins": 41,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.009900492641379766,
+              "median": 0.006614760653846474,
+              "lower_95": -0.001959467153654388,
+              "upper_95": 0.023725353297846183,
+              "wins": 39,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": 0.029679319051355624,
+              "median": 0.04465915748510696,
+              "lower_95": 0.006615077480570277,
+              "upper_95": 0.05082717307599473,
+              "wins": 44,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 4560,
+          "ground_truth_db_per_added_kib": 0.002575887918944618,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.011470750889050252,
+              "median": 0.004082036555411506,
+              "lower_95": -0.00030147517375598247,
+              "upper_95": 0.024741185689001823,
+              "wins": 36,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.002407552158915638,
+              "median": -0.005630301982311181,
+              "lower_95": -0.0072835992722209,
+              "upper_95": 0.013215945713424219,
+              "wins": 27,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": 0.03957017499483034,
+              "median": 0.044796064305828054,
+              "lower_95": 0.01544952194420359,
+              "upper_95": 0.06322710464632798,
+              "wins": 42,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 2160,
+          "ground_truth_db_per_added_kib": 0.004368888753444472,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.009215624714296933,
+              "median": 0.002591167766178515,
+              "lower_95": -0.0013224486137778876,
+              "upper_95": 0.020081010896349494,
+              "wins": 34,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.014196907043900364,
+              "median": 0.007842766835942427,
+              "lower_95": 0.0035656254374951805,
+              "upper_95": 0.025382008490799968,
+              "wins": 42,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": 0.01591681825066993,
+              "median": 0.02359794100128454,
+              "lower_95": -0.0016913775981994904,
+              "upper_95": 0.03253670485176128,
+              "wins": 38,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": null
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0",
+      "groups": [
+        {
+          "group_size": 2,
+          "passed": true,
+          "failures": [],
+          "scale_bytes_delta": 988,
+          "ground_truth_db_per_added_kib": 0.0038956935712359734,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.003758735594122209,
+              "median": 0.0010438613897321147,
+              "lower_95": 0.0010686659942475696,
+              "upper_95": 0.00662317406480822,
+              "wins": 38,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.0038328389454583833,
+              "median": 0.0016583705729065201,
+              "lower_95": 0.0014466387358211597,
+              "upper_95": 0.006323247932891988,
+              "wins": 42,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": 0.0017426653700497452,
+              "median": 0.00024052213685621382,
+              "lower_95": -0.003528073774129145,
+              "upper_95": 0.007274626246380504,
+              "wins": 32,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 3,
+          "passed": true,
+          "failures": [],
+          "scale_bytes_delta": 648,
+          "ground_truth_db_per_added_kib": 0.0021546978106291212,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.0013635197082887407,
+              "median": 0.0015430559360360974,
+              "lower_95": 0.00012271818553162146,
+              "upper_95": 0.0026339068324561675,
+              "wins": 39,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.001498469220778731,
+              "median": 0.0015536350978280211,
+              "lower_95": 0.00042335132712773005,
+              "upper_95": 0.0026044557010614,
+              "wins": 41,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.0014449422262501344,
+              "median": -0.0023010717665155056,
+              "lower_95": -0.004219514325576891,
+              "upper_95": 0.0014006628624937919,
+              "wins": 25,
+              "ties": 0,
+              "samples": 64
+            }
+          }
+        },
+        {
+          "group_size": 6,
+          "passed": false,
+          "failures": [
+            "ground_truth_lower_95_not_positive"
+          ],
+          "scale_bytes_delta": 306,
+          "ground_truth_db_per_added_kib": 0.001359166400048771,
+          "paired_evidence": {
+            "psnr_vs_ground_truth": {
+              "mean": 0.00040615714688957416,
+              "median": 0.0001626666242433572,
+              "lower_95": -0.00045731536642672763,
+              "upper_95": 0.0013162696745180433,
+              "wins": 34,
+              "ties": 0,
+              "samples": 64
+            },
+            "edge_psnr_vs_ground_truth": {
+              "mean": 0.000694398249297068,
+              "median": 0.0005664604224069336,
+              "lower_95": -7.671244371230539e-05,
+              "upper_95": 0.0014975835359725394,
+              "wins": 34,
+              "ties": 0,
+              "samples": 64
+            },
+            "psnr_vs_teacher": {
+              "mean": -0.0015347019214669855,
+              "median": -0.0010740417918810863,
+              "lower_95": -0.0034710063676880983,
+              "upper_95": 0.00042229247468018394,
+              "wins": 26,
+              "ties": 1,
+              "samples": 64
+            }
+          }
+        }
+      ],
+      "best_passing_group": {
+        "group_size": 2,
+        "passed": true,
+        "failures": [],
+        "scale_bytes_delta": 988,
+        "ground_truth_db_per_added_kib": 0.0038956935712359734,
+        "paired_evidence": {
+          "psnr_vs_ground_truth": {
+            "mean": 0.003758735594122209,
+            "median": 0.0010438613897321147,
+            "lower_95": 0.0010686659942475696,
+            "upper_95": 0.00662317406480822,
+            "wins": 38,
+            "ties": 0,
+            "samples": 64
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": 0.0038328389454583833,
+            "median": 0.0016583705729065201,
+            "lower_95": 0.0014466387358211597,
+            "upper_95": 0.006323247932891988,
+            "wins": 42,
+            "ties": 0,
+            "samples": 64
+          },
+          "psnr_vs_teacher": {
+            "mean": 0.0017426653700497452,
+            "median": 0.00024052213685621382,
+            "lower_95": -0.003528073774129145,
+            "upper_95": 0.007274626246380504,
+            "wins": 32,
+            "ties": 0,
+            "samples": 64
+          }
+        }
+      }
+    }
+  ],
+  "joint_candidate_required": true,
+  "decision": "evaluate_selected_map_jointly"
+}

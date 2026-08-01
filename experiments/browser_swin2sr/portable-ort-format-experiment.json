@@ -1,0 +1,28 @@
+{
+  "date": "2026-07-30",
+  "purpose": "test whether offline ONNX Runtime optimization reduces BackdropKit model size and browser startup",
+  "source_model": {
+    "format": "onnx",
+    "bytes": 4807898,
+    "nodes": 22125,
+    "initializers": 2119,
+    "initializer_data_bytes": 359006
+  },
+  "converter": {
+    "onnxruntime": "1.19.2",
+    "fixed_command": "python -m onnxruntime.tools.convert_onnx_models_to_ort model.onnx --optimization_style Fixed --save_optimized_onnx_model",
+    "runtime_command": "python -m onnxruntime.tools.convert_onnx_models_to_ort model.onnx --optimization_style Runtime --save_optimized_onnx_model"
+  },
+  "fixed": {
+    "optimized_onnx_bytes": 7771619,
+    "optimized_onnx_nodes": 7424,
+    "ort_bytes": 11132248
+  },
+  "runtime": {
+    "optimized_onnx_bytes": 7891674,
+    "optimized_onnx_nodes": 7941,
+    "ort_bytes": 11245864
+  },
+  "conclusion": "reject for the shipped artifact; offline constant folding expands the packed ternary decode into dense weights, making both ORT variants larger than the shipped q4 model",
+  "selected_path": "retain the 4.81 MB portable packed ONNX graph and hide its one-time optimization cost behind low-priority browser prewarming"
+}

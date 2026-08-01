@@ -1,0 +1,37 @@
+{
+  "format": "backdropkit-swin2sr-int7-scale-blend-race-v1",
+  "status": "sealed_before_blend_outputs",
+  "created_at": "2026-08-01",
+  "selection_source": "development_only",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "observed_endpoints": {
+    "max_range_int7_psnr_db": 34.307506301938034,
+    "full_lloyd_int7_psnr_db": 34.30878957219939,
+    "full_lloyd_gain_db": 0.0012832702613610604,
+    "full_lloyd_bootstrap_95ci_db": [
+      0.0009418396767869688,
+      0.0016249709730950825
+    ],
+    "full_lloyd_rejected_reason": "Positive overall effect but negative means in some source, split, script, and language groups versus the current int7 candidate."
+  },
+  "common": {
+    "parent_checkpoint": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_fp16_seed20260801/run/checkpoint-island-4000.pt",
+    "parent_checkpoint_sha256": "4927fc3a5d6cd81c651b0bc50cee05fe25bd4bac1196bbe050e63b0aa94bcc6f",
+    "precision": "int7",
+    "bit_width": 7,
+    "granularity": "per_output",
+    "scale_dtype": "float16",
+    "scale_method": "mse_iterative",
+    "lloyd_iterations": 4,
+    "samples": 3040,
+    "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json"
+  },
+  "arms": [
+    {"name": "mse_blend_025", "scale_blend": 0.25},
+    {"name": "mse_blend_050", "scale_blend": 0.5},
+    {"name": "mse_blend_075", "scale_blend": 0.75}
+  ],
+  "selection_rule": "Select the largest positive overall ground-truth gain whose source, split, script, and language mean deltas are all nonnegative for ground-truth, edge, and teacher metrics. If no blend passes, retain max-range int7 unchanged.",
+  "artifact_rule": "Every selected dense state must remain exactly recoverable as signed int7 codes plus one FP16 scale per output before browser artifact work."
+}

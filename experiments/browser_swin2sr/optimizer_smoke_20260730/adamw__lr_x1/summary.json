@@ -1,0 +1,34 @@
+{
+  "model": "caidas/swin2SR-lightweight-x2-64",
+  "model_revision": "07e8e61492ce6daf4f34c651622960faf110c17f",
+  "device": "cpu",
+  "mode": "ternary",
+  "quantizer": "absmean",
+  "rotation": "hadamard",
+  "rotation_block": 4,
+  "optimizer": "adamw",
+  "prox_rho": 0.05,
+  "muon_every": 16,
+  "muon_steps": 2,
+  "reset_optimizer": false,
+  "steps": 2,
+  "schedule_steps": 2,
+  "batch_size": 1,
+  "examples_seen": 2,
+  "training_images": 206500,
+  "training_roots": [
+    "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+    "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2"
+  ],
+  "validation_root": "/Users/stan/Documents/git/clark-desktop/promos",
+  "quantized_modules": 144,
+  "baseline": {
+    "psnr_vs_ground_truth": 49.688662215558765,
+    "psnr_vs_teacher": 99.0
+  },
+  "final": {
+    "psnr_vs_ground_truth": 35.142515712195454,
+    "psnr_vs_teacher": 36.87639830613634
+  },
+  "elapsed_seconds": 2.204048125
+}

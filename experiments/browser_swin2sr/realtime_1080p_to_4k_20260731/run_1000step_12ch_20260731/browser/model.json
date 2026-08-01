@@ -1,0 +1,37 @@
+{
+  "format": "backdropkit-realtime-luma-student-f16-v1",
+  "channels": 12,
+  "blocks": 3,
+  "residual_scale": 1.0,
+  "parameters": 8016,
+  "bytes": 16032,
+  "tensors": {
+    "input_projection": {
+      "offset": 0,
+      "bytes": 96,
+      "elements": 48
+    },
+    "block_0": {
+      "offset": 96,
+      "bytes": 5184,
+      "elements": 2592
+    },
+    "block_1": {
+      "offset": 5280,
+      "bytes": 5184,
+      "elements": 2592
+    },
+    "block_2": {
+      "offset": 10464,
+      "bytes": 5184,
+      "elements": 2592
+    },
+    "output_projection": {
+      "offset": 15648,
+      "bytes": 384,
+      "elements": 192
+    }
+  },
+  "sha256": "9865d62d03c220d172916d6c71d484271d4df65c2451c5773992874445e09b25",
+  "source_checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/realtime_1080p_to_4k_20260731/run_1000step_12ch_20260731/checkpoint-final.pt"
+}

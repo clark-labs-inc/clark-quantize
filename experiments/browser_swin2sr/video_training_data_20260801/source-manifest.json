@@ -1,0 +1,83 @@
+{
+  "format": "backdropkit-video-super-resolution-source-manifest-v1",
+  "sealed_at": "2026-08-01",
+  "intended_output": "commercially deployable BackdropKit image and video super-resolution weights",
+  "policy": {
+    "require_pinned_revision": true,
+    "require_item_level_provenance": true,
+    "require_attribution_ledger": true,
+    "forbid_noncommercial_sources_in_training": true,
+    "forbid_unknown_or_layered_source_rights_in_training": true,
+    "low_resolution_pairs": "generated locally from decoded high-resolution frames with a sealed degradation recipe",
+    "validation": "source-disjoint and generator-disjoint"
+  },
+  "approved_for_training": [
+    {
+      "repo_id": "markov-ai/computer-use-large",
+      "revision": "b50aeccec6d24a56ed4f8fbb9f5b2a16846b46a9",
+      "license": "cc-by-4.0",
+      "scale": "48,478 screen-recording videos; approximately 12,300 hours; 856 GB",
+      "domains": ["AutoCAD", "Blender", "Excel", "Photoshop", "Salesforce", "VS Code"],
+      "role": "primary product-UI temporal training source",
+      "sampling": "balanced by application, motion, text density, resolution, and clip duration",
+      "source_url": "https://huggingface.co/datasets/markov-ai/computer-use-large"
+    },
+    {
+      "repo_id": "humyn-labs/ScreenRecording-Datasets",
+      "revision": "a8f6fee05b397ba1ed979751813c26e3d10148e1",
+      "license": "cc-by-4.0",
+      "scale": "82 consumer-app screen recordings; 5.46 GB",
+      "domains": ["ecommerce", "food delivery", "hotel booking", "flight booking", "quick commerce"],
+      "role": "held-out consumer product-journey and mobile-UI source",
+      "sampling": "reserve complete workflows for validation before sampling any training clips",
+      "source_url": "https://huggingface.co/datasets/humyn-labs/ScreenRecording-Datasets"
+    },
+    {
+      "repo_id": "clark-labs/backdropkit-synthetic-ui-motion",
+      "revision": "to-be-created-from-this-protocol",
+      "license": "apache-2.0-or-cc-by-4.0-assets-only",
+      "scale": "target 100,000 deterministic clips",
+      "domains": ["web", "desktop", "mobile", "terminal", "charts", "forms", "commerce", "developer tools"],
+      "role": "rights-clean synthetic product-demo source",
+      "sampling": "equalized across 204 languages, text sizes, UI density, animation type, and cursor behavior",
+      "source_url": "local deterministic renderer"
+    }
+  ],
+  "quarantined_research_only": [
+    {
+      "repo_id": "pubacc/AniMINT",
+      "revision": "79a7b03e814bcd134a23b0175d43f572c96825ea",
+      "license": "cc-by-nc-nd-4.0",
+      "reason": "noncommercial and no-derivatives terms are incompatible with production training",
+      "source_url": "https://huggingface.co/datasets/pubacc/AniMINT"
+    },
+    {
+      "repo_id": "HelioAI/Open-Seedance-2.0-Videos",
+      "revision": "5e6aeec3a63fb988f88c63df0c784799d14202ee",
+      "license": "cc-by-nc-4.0",
+      "reason": "noncommercial; do not use to train production weights",
+      "source_url": "https://huggingface.co/datasets/HelioAI/Open-Seedance-2.0-Videos"
+    },
+    {
+      "repo_id": "ductai199x/synth-vid-detect",
+      "revision": "11744db58055f4bea8a8588bd5678dfc5342907c",
+      "license": "cc-by-nc-sa-4.0",
+      "reason": "noncommercial and share-alike; do not use to train production weights",
+      "source_url": "https://huggingface.co/datasets/ductai199x/synth-vid-detect"
+    },
+    {
+      "repo_id": "nkp37/OpenVid-1M",
+      "revision": "d8a63bd22989c80b5734ec2bb989f4e1b61a5807",
+      "license": "cc-by-4.0-dataset-card-with-layered-source-licenses",
+      "scale": "1.45 million rows; OpenVidHD contains 433,000 1080p videos",
+      "reason": "dataset card requires compliance with multiple underlying source licenses, including an unknown license; item-level rights filtering is required before promotion",
+      "source_url": "https://huggingface.co/datasets/nkp37/OpenVid-1M"
+    }
+  ],
+  "rejected": [
+    {
+      "repo_id": "Kratos-AI/E-commerce_Platform_Screen_Recording_Dataset",
+      "reason": "cached public card exists but the live Hugging Face API returned repository-not-found on 2026-08-01; no reproducible revision can be pinned"
+    }
+  ]
+}

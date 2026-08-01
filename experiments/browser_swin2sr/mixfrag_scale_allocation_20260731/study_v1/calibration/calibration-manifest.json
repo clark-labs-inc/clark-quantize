@@ -1,0 +1,441 @@
+{
+  "format": "backdropkit-swin2sr-output-fragility-calibration-v1",
+  "parent": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+  "parent_sha256": "0b155f9ada8b747544ba1abb83596e160927fdc91a4c33bf36879ff3f77ce00f",
+  "parent_step": 28000,
+  "training_data": [
+    {
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+      "summary": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/summary.json",
+      "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705",
+      "manifest": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/manifest.jsonl",
+      "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+      "images": 104500,
+      "source": null,
+      "source_revision": null
+    },
+    {
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2",
+      "summary": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/summary.json",
+      "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42",
+      "manifest": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/manifest.jsonl",
+      "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+      "images": 102000,
+      "source": "Muennighoff/flores200",
+      "source_revision": "9660f10339cfc46a369a4d95fccb301a739c3fa8"
+    }
+  ],
+  "calibration_samples": 64,
+  "source_quotas": {
+    "aria_ui": 10,
+    "flores200_balanced_synthetic_ui": 13,
+    "pd12m": 6,
+    "rico": 22,
+    "websight": 13
+  },
+  "seed": 20260731,
+  "batch_size": 8,
+  "crop_size": 128,
+  "bit_widths": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "budget_bytes": [
+    10012,
+    20024,
+    75356
+  ],
+  "device": "mps",
+  "fragility": "normalized_output_mse + 0.25 * normalized_edge_mse",
+  "records": [
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/0e96a0d1e9d378032ae6.jpg",
+      "sha256": "0e96a0d1e9d378032ae6eeac4c4cb5e96497b415c2f7ff3cd613449789c567b5"
+    },
+    {
+      "source": "aria_ui",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/aria_ui/86728c4a7b6d563218cb.png",
+      "sha256": "86728c4a7b6d563218cb7a4dad481efcadc1c6a52ef3eae07b316cf81d34d032"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/421769cf9931869c834b.jpg",
+      "sha256": "421769cf9931869c834b162f28b440a149c3ada5b3414655eecce7c71b8451e1"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/ee6914b0a09ccf6fcac2.jpg",
+      "sha256": "ee6914b0a09ccf6fcac28a6cdcb7f505cb8935e5596717b98095f8814b9c3e81"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/8c75beff3ffc3565790c.png",
+      "sha256": "8c75beff3ffc3565790c3b7ce9d98843c43cb57592a0162c982f245fe2c8decf"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "asm_Beng",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/asm_Beng/0000-496d1d89598205bd.png",
+      "sha256": "496d1d89598205bdcb97cf23443ba27c85f32d0973a72047924387a3dfa8f76a"
+    },
+    {
+      "source": "pd12m",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/pd12m/58b2d402b214af46b19b.png",
+      "sha256": "58b2d402b214af46b19b1bc6df8af70fe898b89c3cbfefe10802c216d818bd6e"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/ae419963b5462305559a.jpg",
+      "sha256": "ae419963b5462305559a471854702bf2e4b7b842d3a2e2cd418b03b179433e3b"
+    },
+    {
+      "source": "pd12m",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/pd12m/fdfe1b9723288b347cf0.jpg",
+      "sha256": "fdfe1b9723288b347cf0ab9291e54a2d5f17b35ba3016253ba4a5474f739e192"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/028b02a9bcaf39a3678f.jpg",
+      "sha256": "028b02a9bcaf39a3678f03775b0ac8096a2e783f4fd2982427737257402e733a"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "vie_Latn",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/vie_Latn/0000-b50e9eb62e6cb982.png",
+      "sha256": "b50e9eb62e6cb982cd410651c34c5651624759eb3876461a97665e7c428b661d"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "bug_Latn",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/bug_Latn/0000-c849b937ce4ca78b.png",
+      "sha256": "c849b937ce4ca78bc5e63609b68d1a4a4fdbd0288aa834e1b38e2b3e7901a66e"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/68fb496d2ec47fd9dd39.jpg",
+      "sha256": "68fb496d2ec47fd9dd397c4b537ed97064ef163d8a04aa045b1a904e15ea1010"
+    },
+    {
+      "source": "aria_ui",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/aria_ui/2277382d2ae9dd6dd0d2.png",
+      "sha256": "2277382d2ae9dd6dd0d2d8152abc36ac9d3eb1976c3d1654f769e35c7d690cea"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "mkd_Cyrl",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/mkd_Cyrl/0000-81474f51adf17ca1.png",
+      "sha256": "81474f51adf17ca17c096aa244e812d6ab20fdb751e469d61ee1e11e168b98ae"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/6b8a3081e711661bd3b0.png",
+      "sha256": "6b8a3081e711661bd3b0c8be1fb08afcc7e25cfb17029f63a072a83aa6808af6"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "quy_Latn",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/quy_Latn/0000-07b9af9325d1a79d.png",
+      "sha256": "07b9af9325d1a79d1317f945bafe1178b1cee1586c6759ff05acc6efdfb44b0e"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/38bdc429bc260b2507fc.jpg",
+      "sha256": "38bdc429bc260b2507fcc71f9b3228fddaa80d3ac031dc85df6bbd84f7cf89bb"
+    },
+    {
+      "source": "aria_ui",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/aria_ui/884b3683e2fe61025e2c.png",
+      "sha256": "884b3683e2fe61025e2caf70238f3b19c6da3c7b5a32f977efa581aee7d109c9"
+    },
+    {
+      "source": "aria_ui",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/aria_ui/b5a435018e98a5b852f8.png",
+      "sha256": "b5a435018e98a5b852f89a6a52a87edffff7818c6648127b95e47079b298379b"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/ab3e942ea8ee6a868196.png",
+      "sha256": "ab3e942ea8ee6a86819672c2fc261547d7707194e9ec5985f40e444bec178296"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/aa86b3371fa1dd28b1d2.jpg",
+      "sha256": "aa86b3371fa1dd28b1d20f8d8af67be652c7a0d1f880bbdbd22a81c97ec8fd38"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/80f760a46d76645a5cd1.jpg",
+      "sha256": "80f760a46d76645a5cd1f7df91802715d313a60f5348ccc531d933aa520a8ce8"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/35a5c6e2c51ed030dc90.jpg",
+      "sha256": "35a5c6e2c51ed030dc9055aec9072b9375826b81d754020bc6454555135f8e95"
+    },
+    {
+      "source": "pd12m",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/pd12m/ae7a8e3735cfb13130f3.jpg",
+      "sha256": "ae7a8e3735cfb13130f33f7c60ed3860f4265b0438cb78d580f9f44cf047c7e2"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/de46d65cbc3fa33b1c7d.jpg",
+      "sha256": "de46d65cbc3fa33b1c7dbf331a792e66891ff65fdfd4f7a72cabbd549059ee60"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/45349945d8250a15459c.png",
+      "sha256": "45349945d8250a15459cae469b2ee9a19efaade53e5cc0003e3c77e8fbb366f2"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "tsn_Latn",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/tsn_Latn/0000-896064226cc0464d.png",
+      "sha256": "896064226cc0464d3a89ed1f6c2bbdbfb7427dc2ded1ed4af9917c8a35416e63"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/db12fcafdfb8d7bbeb9b.jpg",
+      "sha256": "db12fcafdfb8d7bbeb9b2aed35c7bd994fb102a9703e527cb590cf52a0a25a59"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/29306806e18316ff9dad.png",
+      "sha256": "29306806e18316ff9dad27cf1922b7a24b8f043ac3c4ff3d2c4b19e08dbb2a0f"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "yor_Latn",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/yor_Latn/0000-41f3c6db95e6f17a.png",
+      "sha256": "41f3c6db95e6f17a1164cf65c2efb89790b8ceddc9a3601e7405ecc50b181af8"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/225647c81de4432fb907.jpg",
+      "sha256": "225647c81de4432fb9075cfb2002309e3bde36fe6a065c1f174ce1e2aedeebe5"
+    },
+    {
+      "source": "aria_ui",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/aria_ui/d372df8499bcb493ee62.png",
+      "sha256": "d372df8499bcb493ee62ca6bfcdbc13e8ff868539b9b6ff8949372fa28c341a7"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/87e0c54a294b2506cd77.jpg",
+      "sha256": "87e0c54a294b2506cd77ea8a98824e4fd0fbcd94d4702a910683a4a2e8a3a75b"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/197792fe926d5327cb26.png",
+      "sha256": "197792fe926d5327cb2678a1ba8374a4563072e4dfd1aec2b0401661ba582d95"
+    },
+    {
+      "source": "pd12m",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/pd12m/9173ed65f8b88d955515.jpg",
+      "sha256": "9173ed65f8b88d9555158176315526c6eb17baa161cf8b4fc1cb35b42d205a55"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/3ab66f545cd3748365b5.png",
+      "sha256": "3ab66f545cd3748365b5114b1a7f578c6e8b65cbaf4421b269d368a39854cffd"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/6cddd32c51d28cc1dca5.png",
+      "sha256": "6cddd32c51d28cc1dca5697ff5aa3c3c0a678b46401b4939649b840703be5495"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/8fa9e802f95e56ba62ea.png",
+      "sha256": "8fa9e802f95e56ba62ea175a8fe47ced5b37a975d302197fd5b6dcf1871191cb"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/b3a53a5c12a2229466b3.png",
+      "sha256": "b3a53a5c12a2229466b3a87fddf740574062217243b0e26e18ed73b3c330c8c2"
+    },
+    {
+      "source": "pd12m",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/pd12m/28ed6eb06957dce3a79e.jpg",
+      "sha256": "28ed6eb06957dce3a79eec99676e5c0324e4151d5117273c8bba2110488f2ef4"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "kon_Latn",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/kon_Latn/0000-ca66002cf895aa0f.png",
+      "sha256": "ca66002cf895aa0fe2990b563e4737706891ea1799728a102b62050ebd040204"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "sun_Latn",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/sun_Latn/0000-cf5a297f867f9a96.png",
+      "sha256": "cf5a297f867f9a96edb5362dc42c5510068774d95050d5ee41e67e4c262da271"
+    },
+    {
+      "source": "aria_ui",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/aria_ui/45134e8b727c8a04d9c8.png",
+      "sha256": "45134e8b727c8a04d9c85309bbbb1b86a31ac0cc1a832d7c169850d682dde4e7"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "gaz_Latn",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/gaz_Latn/0000-c019504d83c83f30.png",
+      "sha256": "c019504d83c83f30ced72732aa8837fc4eef2a018ea80423dcd2981e529ece92"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/e0411755ed45cadb9de0.jpg",
+      "sha256": "e0411755ed45cadb9de0f0e0ccfb3ce40fdcfb0e7617d500962a0aca9837a623"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/528804ceba55102f65f9.png",
+      "sha256": "528804ceba55102f65f90e9782cc6e4f03ebed10ea9a8d1eb56cce3feebbd049"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/788e565cf62d4ccfd52b.jpg",
+      "sha256": "788e565cf62d4ccfd52b29cf356d05ff3bbc930d2a7037f4bd282d951bc3431c"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/96ac16fbdfbc975bda45.jpg",
+      "sha256": "96ac16fbdfbc975bda4559757a51af4e7b667c3407131eac098b9dfd3fd68613"
+    },
+    {
+      "source": "pd12m",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/pd12m/4b682087970ee54e7961.jpg",
+      "sha256": "4b682087970ee54e7961b3388b93982e76a9879bca0dc07694df939652ffe1b6"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/c6b25c47c87c565428d4.jpg",
+      "sha256": "c6b25c47c87c565428d476cb8789d9ea6e51ab290e4b8bdf0d5b8121fb5ff1a9"
+    },
+    {
+      "source": "aria_ui",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/aria_ui/7389e238b1b50cc9c64a.png",
+      "sha256": "7389e238b1b50cc9c64acab7caf4253061d3f8aa1f75db8a9df9ef720b8a469d"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/5d8c2283fde3da09f970.png",
+      "sha256": "5d8c2283fde3da09f97083dd95a446efa3295bce0abb6b5bdf14a74d4f394b62"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/7316a6d4dc3cc08e2b32.jpg",
+      "sha256": "7316a6d4dc3cc08e2b323abb912205e3ff16076c9f8ed9f1aeeade58fb611078"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "fao_Latn",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/fao_Latn/0000-d64b9e89fcf31fc4.png",
+      "sha256": "d64b9e89fcf31fc4668ed992104b5f8e74921f5795256e9189821deee344af26"
+    },
+    {
+      "source": "aria_ui",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/aria_ui/570491f4eebc56631988.png",
+      "sha256": "570491f4eebc56631988ddb391d4ab0021b3974bdf2be4fc6f0ffa9ba650b7d6"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/db2b8c004a22afd50477.jpg",
+      "sha256": "db2b8c004a22afd504770c9f121998769b874cf0c99e8943064e470b3b880e64"
+    },
+    {
+      "source": "aria_ui",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/aria_ui/1f950e0c62081f845928.png",
+      "sha256": "1f950e0c62081f8459288955db65051c49676cf951a926f1f4619ea7091e2a5d"
+    },
+    {
+      "source": "websight",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/websight/2e1d13c7c03bf2fd2e13.png",
+      "sha256": "2e1d13c7c03bf2fd2e13def1d07708a6eefdff2b846ac788e50f04ceacf387b4"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/d481c1a88d4fc40c761b.jpg",
+      "sha256": "d481c1a88d4fc40c761b503dfe0a8388a302f906a65f11007c7661e94c1cf968"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "rus_Cyrl",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/rus_Cyrl/0000-c6ae382a54562d7f.png",
+      "sha256": "c6ae382a54562d7f38afad65e1b2732fd38c8becd62d97fd427d85ac38dcde24"
+    },
+    {
+      "source": "rico",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/rico/159b7e45beb7207aeccb.jpg",
+      "sha256": "159b7e45beb7207aeccb55184940d5e9961c771e96550df26f5b248793309219"
+    },
+    {
+      "source": "flores200_balanced_synthetic_ui",
+      "language": "awa_Deva",
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/awa_Deva/0000-ff323fa603264fb7.png",
+      "sha256": "ff323fa603264fb78e3d93bd53f6f9a857b42b8f6085f61cde012db90620f7b6"
+    },
+    {
+      "source": "aria_ui",
+      "language": null,
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/aria_ui/d61e743b09f863ec69c9.png",
+      "sha256": "d61e743b09f863ec69c99d8c2715e86909ae0305296b3b894a6e8cf057d1232a"
+    }
+  ],
+  "selection_source": "training_calibration_only",
+  "development_accessed": false,
+  "final_heldout_accessed": false
+}

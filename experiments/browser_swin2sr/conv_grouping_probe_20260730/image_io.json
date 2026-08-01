@@ -1,0 +1,263 @@
+{
+  "format": "backdropkit-swin2sr-conv-grouping-probe-v1",
+  "base_checkpoint": "recovery_stage1_from_factorial24_20260729/stage3/g60__scalar__frozen__balanced/checkpoint-final.pt",
+  "base_checkpoint_sha256": "a1d9b2d778c3269e22df6f4c61d96bf9c02e94280810299f013392cbf18fe3a1",
+  "validation_data": "/Users/stan/Documents/git/clark-desktop/promos",
+  "categories": "image_io_conv",
+  "default_group_size": 60,
+  "results": [
+    {
+      "grouping": "fp32",
+      "method": null,
+      "metrics": {
+        "psnr_vs_ground_truth": 44.82076233791541,
+        "psnr_vs_teacher": 51.52954026418479
+      },
+      "ledger": [],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": 0.0,
+        "psnr_vs_teacher": 0.0
+      }
+    },
+    {
+      "grouping": "flat",
+      "method": "absmean",
+      "metrics": {
+        "psnr_vs_ground_truth": 13.857031823776179,
+        "psnr_vs_teacher": 13.89059571131622
+      },
+      "ledger": [
+        {
+          "name": "swin2sr.first_convolution",
+          "category": "image_io_conv",
+          "shape": [
+            60,
+            3,
+            3,
+            3
+          ],
+          "values": 1620,
+          "group_size": 60,
+          "scale_count": 27
+        },
+        {
+          "name": "upsample.conv",
+          "category": "image_io_conv",
+          "shape": [
+            12,
+            60,
+            3,
+            3
+          ],
+          "values": 6480,
+          "group_size": 60,
+          "scale_count": 108
+        }
+      ],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": -30.963730514139232,
+        "psnr_vs_teacher": -37.638944552868566
+      }
+    },
+    {
+      "grouping": "output_channel",
+      "method": "absmean",
+      "metrics": {
+        "psnr_vs_ground_truth": 13.96606219516465,
+        "psnr_vs_teacher": 14.000211336259502
+      },
+      "ledger": [
+        {
+          "name": "swin2sr.first_convolution",
+          "category": "image_io_conv",
+          "shape": [
+            60,
+            3,
+            3,
+            3
+          ],
+          "values": 1620,
+          "group_size": 27,
+          "scale_count": 60
+        },
+        {
+          "name": "upsample.conv",
+          "category": "image_io_conv",
+          "shape": [
+            12,
+            60,
+            3,
+            3
+          ],
+          "values": 6480,
+          "group_size": 540,
+          "scale_count": 12
+        }
+      ],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": -30.85470014275076,
+        "psnr_vs_teacher": -37.529328927925285
+      }
+    },
+    {
+      "grouping": "kernel",
+      "method": "absmean",
+      "metrics": {
+        "psnr_vs_ground_truth": 14.77071641102979,
+        "psnr_vs_teacher": 14.811245463892128
+      },
+      "ledger": [
+        {
+          "name": "swin2sr.first_convolution",
+          "category": "image_io_conv",
+          "shape": [
+            60,
+            3,
+            3,
+            3
+          ],
+          "values": 1620,
+          "group_size": 9,
+          "scale_count": 180
+        },
+        {
+          "name": "upsample.conv",
+          "category": "image_io_conv",
+          "shape": [
+            12,
+            60,
+            3,
+            3
+          ],
+          "values": 6480,
+          "group_size": 9,
+          "scale_count": 720
+        }
+      ],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": -30.050045926885623,
+        "psnr_vs_teacher": -36.71829480029266
+      }
+    },
+    {
+      "grouping": "flat",
+      "method": "optimal_mse",
+      "metrics": {
+        "psnr_vs_ground_truth": 17.774401645707268,
+        "psnr_vs_teacher": 17.837378951992896
+      },
+      "ledger": [
+        {
+          "name": "swin2sr.first_convolution",
+          "category": "image_io_conv",
+          "shape": [
+            60,
+            3,
+            3,
+            3
+          ],
+          "values": 1620,
+          "group_size": 60,
+          "scale_count": 27
+        },
+        {
+          "name": "upsample.conv",
+          "category": "image_io_conv",
+          "shape": [
+            12,
+            60,
+            3,
+            3
+          ],
+          "values": 6480,
+          "group_size": 60,
+          "scale_count": 108
+        }
+      ],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": -27.046360692208143,
+        "psnr_vs_teacher": -33.69216131219189
+      }
+    },
+    {
+      "grouping": "output_channel",
+      "method": "optimal_mse",
+      "metrics": {
+        "psnr_vs_ground_truth": 16.78201098395891,
+        "psnr_vs_teacher": 16.837103303305206
+      },
+      "ledger": [
+        {
+          "name": "swin2sr.first_convolution",
+          "category": "image_io_conv",
+          "shape": [
+            60,
+            3,
+            3,
+            3
+          ],
+          "values": 1620,
+          "group_size": 27,
+          "scale_count": 60
+        },
+        {
+          "name": "upsample.conv",
+          "category": "image_io_conv",
+          "shape": [
+            12,
+            60,
+            3,
+            3
+          ],
+          "values": 6480,
+          "group_size": 540,
+          "scale_count": 12
+        }
+      ],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": -28.038751353956503,
+        "psnr_vs_teacher": -34.69243696087958
+      }
+    },
+    {
+      "grouping": "kernel",
+      "method": "optimal_mse",
+      "metrics": {
+        "psnr_vs_ground_truth": 17.239362449643505,
+        "psnr_vs_teacher": 17.302808561651204
+      },
+      "ledger": [
+        {
+          "name": "swin2sr.first_convolution",
+          "category": "image_io_conv",
+          "shape": [
+            60,
+            3,
+            3,
+            3
+          ],
+          "values": 1620,
+          "group_size": 9,
+          "scale_count": 180
+        },
+        {
+          "name": "upsample.conv",
+          "category": "image_io_conv",
+          "shape": [
+            12,
+            60,
+            3,
+            3
+          ],
+          "values": 6480,
+          "group_size": 9,
+          "scale_count": 720
+        }
+      ],
+      "delta_vs_fp32": {
+        "psnr_vs_ground_truth": -27.581399888271907,
+        "psnr_vs_teacher": -34.226731702533584
+      }
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "format": "backdropkit-swin2sr-rstb-fallback-confirmation-protocol-v1",
+  "created_at_utc": "2026-08-01T00:49:37Z",
+  "status": "sealed_after_int5_failure_before_fallback_materialization",
+  "timing_receipt": {
+    "int5_two_seed_decision_available": true,
+    "fallback_materializations_started": false,
+    "interpretation": "Int5/kernel missed the seed-33 teacher-retention gate. The two next-smallest discovery-passing representations were frozen before either was applied to a confirmation seed."
+  },
+  "hypothesis": "At least one next-smallest discovery-passing RSTB representation will preserve at least 90% of every seed's own FP16 effect on both independent confirmation seeds.",
+  "arms": {
+    "int7_per_output": {"bits": 7, "granularity": "per_output"},
+    "int6_per_kernel": {"bits": 6, "granularity": "per_kernel"}
+  },
+  "storage": {
+    "ternary_rstb_data_bytes": 54720,
+    "int7_per_output": {
+      "data_bytes": 113880,
+      "incremental_data_bytes": 59160
+    },
+    "int6_per_kernel": {
+      "data_bytes": 126000,
+      "incremental_data_bytes": 71280
+    },
+    "fp16_incremental_data_bytes": 204480
+  },
+  "selection_rule": {
+    "required_confirmation_seeds": [20260732, 20260733],
+    "minimum_fp16_effect_retention": 0.9,
+    "retention_metrics": [
+      "psnr_vs_ground_truth",
+      "edge_psnr_vs_ground_truth",
+      "psnr_vs_teacher"
+    ],
+    "each_seed_ground_truth_lower_95_strictly_positive": true,
+    "each_seed_edge_and_teacher_means_nonnegative": true,
+    "all_confirmation_seeds_must_pass": true,
+    "choose_smallest_passing_representation": true,
+    "fallback_if_none_pass": "fp16"
+  },
+  "source_files": {
+    "materializer": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/materialize_rstb_fallback_confirmation.py",
+      "sha256": "69a67a69783d2c13d25a5146177e049311d98acce482c055d9e8488e87a5931e"
+    },
+    "materializer_tests": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/test_materialize_rstb_fallback_confirmation.py",
+      "sha256": "4051cc8c73c9bad6a32ac186537b5aca97c966cd363e3eb9652e837aebba85e0"
+    },
+    "decision": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/decide_rstb_fallback_confirmation.py",
+      "sha256": "eaf7d0a43261ffab1a342677d7dc0eff35cb97c11b2f997705851b2e85001ab4"
+    },
+    "decision_tests": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/test_decide_rstb_fallback_confirmation.py",
+      "sha256": "463820aa26c7e583f0692061e89861475989d162c2f8c02f9dac40d722cf5e1c"
+    },
+    "selected_quantizer": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/materialize_rstb_precision_boundary.py",
+      "sha256": "94e3d3e33764bbaed3286643c9c29b84ec2b733ba570839600bb4ec3298c642b"
+    },
+    "comparison_gate": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/decide_rstb_mixed_precision.py",
+      "sha256": "8d099f45b84bfd529c9b6755bbb92d75d33c085ea7051103789e1eeee2070dbe"
+    },
+    "fp16_gate": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_int5_confirmation_20260731/decide_rstb_int5_confirmation.py",
+      "sha256": "26d2b57886ab0b932e41659229ac34805ff48490cc783da69bb5a3268467b9f4"
+    },
+    "int5_decision": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_int5_confirmation_20260731/decision.json",
+      "sha256": "60bfc212b08cfd2f2e7a942b5322355db6c6a8dfdc5bc2609507295112d2dc52"
+    },
+    "boundary_decision": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/decision.json",
+      "sha256": "253238705ab064415c099d6eca06df0ddd65880165ab328a1b5b571a5fceba13"
+    },
+    "comparison": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/sealed_overlay/experiments/browser_swin2sr/compare_evaluations.py",
+      "sha256": "b764a1fe01ccb0340efe5171b1688fb93634ac2abd5a0003be9ca7037d54c9c5"
+    },
+    "evaluation": {
+      "path": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/evaluate_stratified.py",
+      "sha256": "b1f7a88ee08e8d405378187c083c87dfcad104e246562586395d36d76a42b05e"
+    },
+    "development_bundle": {
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+      "sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9"
+    }
+  },
+  "seeds": {
+    "20260732": {
+      "ternary_materialization": {
+        "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260732/materialized/materialization.json",
+        "sha256": "883c6e36d21dcc592cf7a9ce3c24c32c908384f85c16b39555c3ef27bdcc9880"
+      },
+      "fp16_materialization": {
+        "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260732/materialized/materialization.json",
+        "sha256": "20d186ae53487aa984cb5e8e08830b52e4415e3a13537b0b151a6639f45a11ba"
+      },
+      "ternary_development_report": {
+        "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260732/development/metrics.json",
+        "sha256": "ea65da5f731b792a2ac63c69d2b71502a396402148378d73fe2da9469980f89b"
+      },
+      "fp16_development_report": {
+        "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260732/development/metrics.json",
+        "sha256": "e1cdfcaa5c141122678bd1e1a91e67a3057a0bd04f9a95decee6c456abdf02fc"
+      },
+      "fp16_vs_ternary": {
+        "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__seed20260732__fp16-vs-ternary.json",
+        "sha256": "7172b4579575a7eca4411be0a3c4ca9e76d98f9e0d178be619f66e7c601b17ac"
+      },
+      "future_arms": {
+        "int7_per_output": {
+          "materialization": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/int7_per_output__seed20260732/materialized/materialization.json",
+          "development_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/int7_per_output__seed20260732/development/metrics.json",
+          "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/int7_per_output__seed20260732/vs-ternary.json"
+        },
+        "int6_per_kernel": {
+          "materialization": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/int6_per_kernel__seed20260732/materialized/materialization.json",
+          "development_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/int6_per_kernel__seed20260732/development/metrics.json",
+          "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/int6_per_kernel__seed20260732/vs-ternary.json"
+        }
+      }
+    },
+    "20260733": {
+      "ternary_materialization": {
+        "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260733/materialized/materialization.json",
+        "sha256": "bb932c3e7f1b7a15a7dd58d06f4de2aa43d231d1e76a1f9d18328825cb1c686b"
+      },
+      "fp16_materialization": {
+        "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260733/materialized/materialization.json",
+        "sha256": "39603117635250525235fe91da63c6056416c7b1ed37e3b9cf81df630de3b841"
+      },
+      "ternary_development_report": {
+        "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260733/development/metrics.json",
+        "sha256": "57b259448354d8104c45a9a4e731c29ed7f8536810867a565d77f3db84e3edb4"
+      },
+      "fp16_development_report": {
+        "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260733/development/metrics.json",
+        "sha256": "0a9278cb364718d2e51b1c5b26fd761ff56e4801d3f2b06fb4242380bdb49475"
+      },
+      "fp16_vs_ternary": {
+        "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__seed20260733__fp16-vs-ternary.json",
+        "sha256": "281cfc81093191ccc84a009ad738690d1d83f3f97b322313bc54bcbcdd0132ee"
+      },
+      "future_arms": {
+        "int7_per_output": {
+          "materialization": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/int7_per_output__seed20260733/materialized/materialization.json",
+          "development_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/int7_per_output__seed20260733/development/metrics.json",
+          "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/int7_per_output__seed20260733/vs-ternary.json"
+        },
+        "int6_per_kernel": {
+          "materialization": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/int6_per_kernel__seed20260733/materialized/materialization.json",
+          "development_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/int6_per_kernel__seed20260733/development/metrics.json",
+          "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_fallback_confirmation_20260731/int6_per_kernel__seed20260733/vs-ternary.json"
+        }
+      }
+    }
+  },
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false
+}

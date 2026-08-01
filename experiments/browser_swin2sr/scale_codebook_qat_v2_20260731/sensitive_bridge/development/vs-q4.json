@@ -1,0 +1,64 @@
+{
+  "reference": {
+    "path": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+    "state": "Xenova/swin2SR-lightweight-x2-64@54ccc3f9ed678912a9c47dc14f6c478855380a2b:q4:cpu",
+    "state_sha256": "b75c09757a7159f32ad279919a77fb185c3389676674cf226a467eaf2f7928f1"
+  },
+  "candidate": {
+    "path": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/development/metrics.json",
+    "state": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/materialized/dense-hard.pt",
+    "state_sha256": "793af9b7631af443e9ef31ba4b3886deb05e5cdff249420b07f9aadfae4f868a"
+  },
+  "metrics": {
+    "psnr_vs_ground_truth": {
+      "samples": 3040,
+      "candidate_minus_reference_mean": -2.012225791084178,
+      "candidate_minus_reference_median": -1.5083118817471046,
+      "paired_bootstrap_95ci": [
+        -2.081649982443612,
+        -1.9433115188928851
+      ],
+      "candidate_win_fraction": 0.07927631578947368
+    },
+    "edge_psnr_vs_ground_truth": {
+      "samples": 3040,
+      "candidate_minus_reference_mean": -1.7392367232197599,
+      "candidate_minus_reference_median": -1.2821360995428606,
+      "paired_bootstrap_95ci": [
+        -1.8021058151806573,
+        -1.6780764349670796
+      ],
+      "candidate_win_fraction": 0.08223684210526316
+    },
+    "psnr_vs_teacher": {
+      "samples": 3040,
+      "candidate_minus_reference_mean": -8.927313624835152,
+      "candidate_minus_reference_median": -8.700145826806622,
+      "paired_bootstrap_95ci": [
+        -9.023298884068002,
+        -8.832533646754158
+      ],
+      "candidate_win_fraction": 0.0
+    },
+    "psnr_gain_over_bicubic": {
+      "samples": 3040,
+      "candidate_minus_reference_mean": -2.012225791084178,
+      "candidate_minus_reference_median": -1.5083118817471046,
+      "paired_bootstrap_95ci": [
+        -2.0824317707548516,
+        -1.9427270121006084
+      ],
+      "candidate_win_fraction": 0.07927631578947368
+    },
+    "student_seconds": {
+      "samples": 3040,
+      "candidate_minus_reference_mean": -0.19419104013947466,
+      "candidate_minus_reference_median": -0.13138460449997053,
+      "paired_bootstrap_95ci": [
+        -0.1996942813034139,
+        -0.18881664725729522
+      ],
+      "candidate_win_fraction": 1.0
+    }
+  }
+}

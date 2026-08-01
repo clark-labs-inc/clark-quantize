@@ -1,0 +1,47 @@
+{
+  "format": "backdropkit-swin2sr-rstb-precision-boundary-protocol-v1",
+  "status": "sealed_before_compressed_evaluation",
+  "created_at": "2026-08-01",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false,
+  "hypothesis": "The previously selected int5-per-kernel RSTB representation will preserve at least 90 percent of the new jointly trained FP16 gain over the matched ternary control while keeping every undeclared tensor identical.",
+  "sources": {
+    "ternary_materialization": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_ternary_seed20260801/materialized/materialization.json",
+    "ternary_materialization_sha256": "3047626c2f89ce604967345e128b8328db8fb72e394db2d148dfc7f2885952ab",
+    "fp16_materialization": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_fp16_seed20260801/materialized/materialization.json",
+    "fp16_materialization_sha256": "7e05a783f856a6438d19cb2f629646a93ed7d8ed59201f0fe4603455196a3230",
+    "different_tensors": [
+      "swin2sr.encoder.stages.0.conv.weight",
+      "swin2sr.encoder.stages.1.conv.weight",
+      "swin2sr.encoder.stages.2.conv.weight",
+      "swin2sr.encoder.stages.3.conv.weight"
+    ],
+    "undeclared_different_tensors": 0
+  },
+  "implementation": {
+    "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/materialize_rstb_precision_boundary.py",
+    "sha256": "94e3d3e33764bbaed3286643c9c29b84ec2b733ba570839600bb4ec3298c642b"
+  },
+  "prior_decision": {
+    "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/decision.json",
+    "sha256": "253238705ab064415c099d6eca06df0ddd65880165ab328a1b5b571a5fceba13",
+    "selected_precision": "int5_per_kernel",
+    "ground_truth_retention_ratio": 0.9651470250492761,
+    "edge_retention_ratio": 0.9762326896213713,
+    "teacher_retention_ratio": 0.9052390066048718
+  },
+  "storage": {
+    "ternary_rstb_data_bytes": 54720,
+    "int5_per_kernel_rstb_data_bytes": 109800,
+    "projected_incremental_data_bytes": 55080
+  },
+  "arms": {
+    "int5_per_kernel": {
+      "bits": 5,
+      "granularity": "per_kernel",
+      "status": "preregistered",
+      "promotion_gate": "Retain at least 90 percent of the FP16-over-ternary aggregate ground-truth, edge, and teacher gains; keep all three gains positive; and pass source, split, script, and language regression checks."
+    }
+  }
+}

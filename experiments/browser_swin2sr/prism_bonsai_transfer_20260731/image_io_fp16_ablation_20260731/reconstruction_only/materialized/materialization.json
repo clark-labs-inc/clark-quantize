@@ -1,0 +1,39 @@
+{
+  "format": "backdropkit-swin2sr-image-io-fp16-ablation-v1",
+  "interpretation": "The same-seed hard-ternary image-I/O arm with exactly one declared convolution replaced by its paired trained FP16 value.",
+  "seed": 20260731,
+  "parent_checkpoint_sha256": "0b155f9ada8b747544ba1abb83596e160927fdc91a4c33bf36879ff3f77ce00f",
+  "sources": {
+    "ternary": {
+      "materialization": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260731/materialized/materialization.json",
+      "sha256": "64eca69e010b64503fdf2447a4db0957739f44f1219e828a174a06e30ed26355",
+      "state_sha256": "6a9e57164c2e2f08c5b182d032e4a119ba3546a3ad2a93728bdc0ab7bd0f28f6"
+    },
+    "fp16": {
+      "materialization": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__fp16__seed20260731/materialized/materialization.json",
+      "sha256": "134cb4203a3e64d5ddb2e9491b0b07e080bc5302d0c70bfa66c10f28c8902b56",
+      "state_sha256": "c372457bd7f763a016f3d2bdeae9e2276728a634687c521b9710e077cfabec31"
+    }
+  },
+  "intervention": {
+    "choice": "reconstruction",
+    "retained_fp16_tensor": "upsample.conv.weight",
+    "retained_fp16_values": 6480,
+    "changed_from_ternary": [
+      "upsample.conv.weight"
+    ]
+  },
+  "storage": {
+    "ternary_code_bytes": 1296,
+    "ternary_scale_bytes": 6480,
+    "retained_fp16_bytes": 12960,
+    "projected_data_byte_delta": 5184
+  },
+  "dense_state": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/reconstruction_only/materialized/dense-hard.pt",
+    "file_sha256": "ab8809c3df826fa4c624b97a294010776b598fcec6093f8944ed312007c6f5e7",
+    "tensor_sha256": "c7e8b164afcaf938b9b11e35d295284258ec7f17962720e610d681312ca6ec91",
+    "tensors": 484,
+    "values": 1005348
+  }
+}

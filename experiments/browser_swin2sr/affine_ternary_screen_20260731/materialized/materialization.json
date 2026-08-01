@@ -1,0 +1,1916 @@
+{
+  "format": "backdropkit-swin2sr-affine-ternary-screen-materialization-v1",
+  "checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+  "checkpoint_sha256": "0b155f9ada8b747544ba1abb83596e160927fdc91a4c33bf36879ff3f77ce00f",
+  "surface_step": 28000,
+  "intervention": "Fixed existing ternary codes; added FP16-roundtripped affine shifts only to group-60 core and position-bias linear surfaces.",
+  "data_access": {
+    "training": false,
+    "development": false,
+    "final_heldout": false
+  },
+  "selected_surfaces": 189,
+  "selected_values": 783856,
+  "selected_groups": 13104,
+  "incremental_shift_bytes": 26208,
+  "ternary_codes_sha256": "071988c4cbe8896b672626b69c4d99086f444b23ccb6eae434a9acfd627ce873",
+  "changed": [
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.17939938604831696,
+      "mean_abs_delta_from_hard": 0.034858331084251404
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.0.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.15627963840961456,
+      "mean_abs_delta_from_hard": 0.01783299259841442
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.0.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09688746929168701,
+      "mean_abs_delta_from_hard": 0.018484486266970634
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.0.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10655784606933594,
+      "mean_abs_delta_from_hard": 0.017289943993091583
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.0.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10237786173820496,
+      "mean_abs_delta_from_hard": 0.01644830033183098
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.0.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08634167909622192,
+      "mean_abs_delta_from_hard": 0.015055702067911625
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.0.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09936672449111938,
+      "mean_abs_delta_from_hard": 0.015689261257648468
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.0.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09753294289112091,
+      "mean_abs_delta_from_hard": 0.01745486631989479
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.1.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.18503008782863617,
+      "mean_abs_delta_from_hard": 0.04484546184539795
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.1.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.21671462059020996,
+      "mean_abs_delta_from_hard": 0.047577548772096634
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.1.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11676239967346191,
+      "mean_abs_delta_from_hard": 0.020391635596752167
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.1.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10635107755661011,
+      "mean_abs_delta_from_hard": 0.019037660211324692
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.1.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08619967103004456,
+      "mean_abs_delta_from_hard": 0.01708877645432949
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.1.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10036595165729523,
+      "mean_abs_delta_from_hard": 0.017222080379724503
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.1.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0904884934425354,
+      "mean_abs_delta_from_hard": 0.018075020983815193
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.1.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.13477349281311035,
+      "mean_abs_delta_from_hard": 0.018964186310768127
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.2.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.17692995071411133,
+      "mean_abs_delta_from_hard": 0.03547724336385727
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.2.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.19081002473831177,
+      "mean_abs_delta_from_hard": 0.0448610782623291
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.2.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10010893642902374,
+      "mean_abs_delta_from_hard": 0.01959022879600525
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.2.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0889909416437149,
+      "mean_abs_delta_from_hard": 0.019778063520789146
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.2.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09038256108760834,
+      "mean_abs_delta_from_hard": 0.018533796072006226
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.2.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09552644193172455,
+      "mean_abs_delta_from_hard": 0.017358116805553436
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.2.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.13070103526115417,
+      "mean_abs_delta_from_hard": 0.019586965441703796
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.2.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.1367923617362976,
+      "mean_abs_delta_from_hard": 0.019243044778704643
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.3.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.08624673634767532,
+      "mean_abs_delta_from_hard": 0.03286045044660568
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.3.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.14032772183418274,
+      "mean_abs_delta_from_hard": 0.025572597980499268
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.3.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10554072260856628,
+      "mean_abs_delta_from_hard": 0.019463015720248222
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.3.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10619902610778809,
+      "mean_abs_delta_from_hard": 0.019071824848651886
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.3.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10186633467674255,
+      "mean_abs_delta_from_hard": 0.01971380040049553
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.3.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.1265963912010193,
+      "mean_abs_delta_from_hard": 0.01783760078251362
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.3.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.12357467412948608,
+      "mean_abs_delta_from_hard": 0.020005790516734123
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.3.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.19789087772369385,
+      "mean_abs_delta_from_hard": 0.019370540976524353
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.4.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.17315152287483215,
+      "mean_abs_delta_from_hard": 0.042760830372571945
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.4.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.3709700107574463,
+      "mean_abs_delta_from_hard": 0.05086366459727287
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.4.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09181009232997894,
+      "mean_abs_delta_from_hard": 0.02054848149418831
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.4.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09463103115558624,
+      "mean_abs_delta_from_hard": 0.01923307217657566
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.4.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08821624517440796,
+      "mean_abs_delta_from_hard": 0.01768948696553707
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.4.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.12048530578613281,
+      "mean_abs_delta_from_hard": 0.017918085679411888
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.4.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11078238487243652,
+      "mean_abs_delta_from_hard": 0.021422894671559334
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.4.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.22189700603485107,
+      "mean_abs_delta_from_hard": 0.01854672096669674
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.24509841203689575,
+      "mean_abs_delta_from_hard": 0.04594053700566292
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.5.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.3577343225479126,
+      "mean_abs_delta_from_hard": 0.05067921802401543
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.5.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11007800698280334,
+      "mean_abs_delta_from_hard": 0.01875065080821514
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.5.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0959211140871048,
+      "mean_abs_delta_from_hard": 0.018951542675495148
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.5.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10013079643249512,
+      "mean_abs_delta_from_hard": 0.018810980021953583
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.5.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.12050265073776245,
+      "mean_abs_delta_from_hard": 0.01747414469718933
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.5.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09499281644821167,
+      "mean_abs_delta_from_hard": 0.020349716767668724
+    },
+    {
+      "surface": "swin2sr.encoder.stages.0.layers.5.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.2213333249092102,
+      "mean_abs_delta_from_hard": 0.018460124731063843
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.16928574442863464,
+      "mean_abs_delta_from_hard": 0.035491693764925
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.0.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.13502874970436096,
+      "mean_abs_delta_from_hard": 0.01881380006670952
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.0.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09574052691459656,
+      "mean_abs_delta_from_hard": 0.018549719825387
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.0.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10767848789691925,
+      "mean_abs_delta_from_hard": 0.020154664292931557
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.0.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0974687784910202,
+      "mean_abs_delta_from_hard": 0.01821949891746044
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.0.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11722929775714874,
+      "mean_abs_delta_from_hard": 0.017891928553581238
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.0.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.15184944868087769,
+      "mean_abs_delta_from_hard": 0.02002136781811714
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.09503713250160217,
+      "mean_abs_delta_from_hard": 0.033093735575675964
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.1.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09717860817909241,
+      "mean_abs_delta_from_hard": 0.019022513180971146
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.1.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09724372625350952,
+      "mean_abs_delta_from_hard": 0.01943918876349926
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.1.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10275597870349884,
+      "mean_abs_delta_from_hard": 0.018940506502985954
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.1.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08963823318481445,
+      "mean_abs_delta_from_hard": 0.01891374960541725
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.1.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09934419393539429,
+      "mean_abs_delta_from_hard": 0.017940357327461243
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.1.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.16323423385620117,
+      "mean_abs_delta_from_hard": 0.019216319546103477
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.2.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.09308654069900513,
+      "mean_abs_delta_from_hard": 0.042359475046396255
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.2.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.1889817863702774,
+      "mean_abs_delta_from_hard": 0.038422711193561554
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.2.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0915462076663971,
+      "mean_abs_delta_from_hard": 0.01813974604010582
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.2.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09932589530944824,
+      "mean_abs_delta_from_hard": 0.019255565479397774
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.2.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10799545049667358,
+      "mean_abs_delta_from_hard": 0.018524201586842537
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.2.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10968104004859924,
+      "mean_abs_delta_from_hard": 0.017511367797851562
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.2.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10278171300888062,
+      "mean_abs_delta_from_hard": 0.017461121082305908
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.2.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.131355881690979,
+      "mean_abs_delta_from_hard": 0.019828613847494125
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.1500353217124939,
+      "mean_abs_delta_from_hard": 0.04712735861539841
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.3.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.24273532629013062,
+      "mean_abs_delta_from_hard": 0.04329158365726471
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.3.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08651137351989746,
+      "mean_abs_delta_from_hard": 0.018732214346528053
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.3.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09439027309417725,
+      "mean_abs_delta_from_hard": 0.01850203610956669
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.3.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.1027694046497345,
+      "mean_abs_delta_from_hard": 0.01890505477786064
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.3.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09380041062831879,
+      "mean_abs_delta_from_hard": 0.018656620755791664
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.3.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0954393744468689,
+      "mean_abs_delta_from_hard": 0.0172619316726923
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.3.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10764563083648682,
+      "mean_abs_delta_from_hard": 0.01950204372406006
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.4.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.10796275734901428,
+      "mean_abs_delta_from_hard": 0.043041594326496124
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.4.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.2550615668296814,
+      "mean_abs_delta_from_hard": 0.03326992690563202
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.4.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08695244789123535,
+      "mean_abs_delta_from_hard": 0.018747499212622643
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.4.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08742070198059082,
+      "mean_abs_delta_from_hard": 0.01809157058596611
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.4.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0913209319114685,
+      "mean_abs_delta_from_hard": 0.018182149156928062
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.4.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10052865743637085,
+      "mean_abs_delta_from_hard": 0.018449243158102036
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.4.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09026148915290833,
+      "mean_abs_delta_from_hard": 0.01637813076376915
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.4.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.1144678145647049,
+      "mean_abs_delta_from_hard": 0.0190912876278162
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.5.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.13671886920928955,
+      "mean_abs_delta_from_hard": 0.03981534391641617
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.5.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.18224933743476868,
+      "mean_abs_delta_from_hard": 0.03698078170418739
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.5.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0870354175567627,
+      "mean_abs_delta_from_hard": 0.01828567497432232
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.5.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10069343447685242,
+      "mean_abs_delta_from_hard": 0.017999213188886642
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.5.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09925666451454163,
+      "mean_abs_delta_from_hard": 0.018460553139448166
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.5.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08666768670082092,
+      "mean_abs_delta_from_hard": 0.01828024722635746
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.5.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.07849334180355072,
+      "mean_abs_delta_from_hard": 0.01529156044125557
+    },
+    {
+      "surface": "swin2sr.encoder.stages.1.layers.5.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10672825574874878,
+      "mean_abs_delta_from_hard": 0.019175253808498383
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.10794469714164734,
+      "mean_abs_delta_from_hard": 0.03950890153646469
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.0.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.11524227261543274,
+      "mean_abs_delta_from_hard": 0.031528573483228683
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.0.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09145522117614746,
+      "mean_abs_delta_from_hard": 0.02064955048263073
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.0.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09342768788337708,
+      "mean_abs_delta_from_hard": 0.01868138648569584
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.0.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09380258619785309,
+      "mean_abs_delta_from_hard": 0.01792227476835251
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.0.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0857684314250946,
+      "mean_abs_delta_from_hard": 0.01717645861208439
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.0.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.1053309440612793,
+      "mean_abs_delta_from_hard": 0.015217561274766922
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.0.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.118133544921875,
+      "mean_abs_delta_from_hard": 0.01980677992105484
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.1.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.09764707833528519,
+      "mean_abs_delta_from_hard": 0.041498832404613495
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.1.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.28340375423431396,
+      "mean_abs_delta_from_hard": 0.04241505265235901
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.1.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09385234117507935,
+      "mean_abs_delta_from_hard": 0.019539544358849525
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.1.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08907169103622437,
+      "mean_abs_delta_from_hard": 0.018772726878523827
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.1.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08874434232711792,
+      "mean_abs_delta_from_hard": 0.01766626536846161
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.1.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08061878383159637,
+      "mean_abs_delta_from_hard": 0.01831022836267948
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.1.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11607138812541962,
+      "mean_abs_delta_from_hard": 0.01442263275384903
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.1.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.15690268576145172,
+      "mean_abs_delta_from_hard": 0.019870325922966003
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.2.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.09185785055160522,
+      "mean_abs_delta_from_hard": 0.039758697152137756
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.2.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.34083491563796997,
+      "mean_abs_delta_from_hard": 0.05004778504371643
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.2.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08159449696540833,
+      "mean_abs_delta_from_hard": 0.018912363797426224
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.2.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09051337838172913,
+      "mean_abs_delta_from_hard": 0.019067250192165375
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.2.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0813639760017395,
+      "mean_abs_delta_from_hard": 0.017677024006843567
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.2.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0753093957901001,
+      "mean_abs_delta_from_hard": 0.01749136671423912
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.2.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10594631731510162,
+      "mean_abs_delta_from_hard": 0.01404457539319992
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.2.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11212188005447388,
+      "mean_abs_delta_from_hard": 0.019795125350356102
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.3.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.09371237456798553,
+      "mean_abs_delta_from_hard": 0.039634086191654205
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.3.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.10884445905685425,
+      "mean_abs_delta_from_hard": 0.03400731459259987
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.3.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11408087611198425,
+      "mean_abs_delta_from_hard": 0.018871234729886055
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.3.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09616780281066895,
+      "mean_abs_delta_from_hard": 0.01904015801846981
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.3.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.07964146137237549,
+      "mean_abs_delta_from_hard": 0.016824819147586823
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.3.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.07061335444450378,
+      "mean_abs_delta_from_hard": 0.017162835225462914
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.3.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0990317165851593,
+      "mean_abs_delta_from_hard": 0.014283362776041031
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.3.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.15054553747177124,
+      "mean_abs_delta_from_hard": 0.02063347026705742
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.4.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.10745536535978317,
+      "mean_abs_delta_from_hard": 0.0359366238117218
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.4.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.09612774848937988,
+      "mean_abs_delta_from_hard": 0.030695142224431038
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.4.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10848554968833923,
+      "mean_abs_delta_from_hard": 0.019920362159609795
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.4.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09406155347824097,
+      "mean_abs_delta_from_hard": 0.0191181730479002
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.4.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08482582867145538,
+      "mean_abs_delta_from_hard": 0.017260119318962097
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.4.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09596510231494904,
+      "mean_abs_delta_from_hard": 0.017805548384785652
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.4.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10482947528362274,
+      "mean_abs_delta_from_hard": 0.012849651277065277
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.4.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11530856788158417,
+      "mean_abs_delta_from_hard": 0.01972062885761261
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.5.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.14891201257705688,
+      "mean_abs_delta_from_hard": 0.036412470042705536
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.5.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.1430506706237793,
+      "mean_abs_delta_from_hard": 0.03338966146111488
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.5.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.1345013976097107,
+      "mean_abs_delta_from_hard": 0.018898773938417435
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.5.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.14637809991836548,
+      "mean_abs_delta_from_hard": 0.01912866346538067
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.5.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09048667550086975,
+      "mean_abs_delta_from_hard": 0.017668329179286957
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.5.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0835910439491272,
+      "mean_abs_delta_from_hard": 0.017083242535591125
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.5.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.1105697751045227,
+      "mean_abs_delta_from_hard": 0.013201743364334106
+    },
+    {
+      "surface": "swin2sr.encoder.stages.2.layers.5.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.12210692465305328,
+      "mean_abs_delta_from_hard": 0.01920642890036106
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.26143425703048706,
+      "mean_abs_delta_from_hard": 0.034641820937395096
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.0.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.20852364599704742,
+      "mean_abs_delta_from_hard": 0.04301108792424202
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.0.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11250752210617065,
+      "mean_abs_delta_from_hard": 0.02046961337327957
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.0.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10391724109649658,
+      "mean_abs_delta_from_hard": 0.020440829917788506
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.0.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08054238557815552,
+      "mean_abs_delta_from_hard": 0.016483113169670105
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.0.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.14338651299476624,
+      "mean_abs_delta_from_hard": 0.01591894030570984
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.0.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.1327211558818817,
+      "mean_abs_delta_from_hard": 0.011640253476798534
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.0.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.19354382157325745,
+      "mean_abs_delta_from_hard": 0.02163313515484333
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.22151316702365875,
+      "mean_abs_delta_from_hard": 0.040732242166996
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.1.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.24257197976112366,
+      "mean_abs_delta_from_hard": 0.05179951712489128
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.1.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10167515277862549,
+      "mean_abs_delta_from_hard": 0.02000376768410206
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.1.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09344829618930817,
+      "mean_abs_delta_from_hard": 0.019459204748272896
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.1.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08358699083328247,
+      "mean_abs_delta_from_hard": 0.016774294897913933
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.1.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11573207378387451,
+      "mean_abs_delta_from_hard": 0.01644163392484188
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.1.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11242364346981049,
+      "mean_abs_delta_from_hard": 0.01123811025172472
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.1.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.12546783685684204,
+      "mean_abs_delta_from_hard": 0.021474044770002365
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.18100784718990326,
+      "mean_abs_delta_from_hard": 0.04304175451397896
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.2.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.1993170976638794,
+      "mean_abs_delta_from_hard": 0.04003503918647766
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.2.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.09463545680046082,
+      "mean_abs_delta_from_hard": 0.019808011129498482
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.2.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.13598084449768066,
+      "mean_abs_delta_from_hard": 0.019463328644633293
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.2.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.06885984539985657,
+      "mean_abs_delta_from_hard": 0.01638852432370186
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.2.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.1390995979309082,
+      "mean_abs_delta_from_hard": 0.011136390268802643
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.2.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.1722748577594757,
+      "mean_abs_delta_from_hard": 0.021122824400663376
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.3.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.1496914029121399,
+      "mean_abs_delta_from_hard": 0.037984151393175125
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.3.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.1628139615058899,
+      "mean_abs_delta_from_hard": 0.032295990735292435
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.3.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10763192176818848,
+      "mean_abs_delta_from_hard": 0.018830765038728714
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.3.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11238598823547363,
+      "mean_abs_delta_from_hard": 0.019759133458137512
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.3.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0716707706451416,
+      "mean_abs_delta_from_hard": 0.016409046947956085
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.3.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.07586482167243958,
+      "mean_abs_delta_from_hard": 0.015701891854405403
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.3.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08201435208320618,
+      "mean_abs_delta_from_hard": 0.010556629858911037
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.3.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.14426898956298828,
+      "mean_abs_delta_from_hard": 0.02045517787337303
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.4.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.21670275926589966,
+      "mean_abs_delta_from_hard": 0.03895983472466469
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.4.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.156071737408638,
+      "mean_abs_delta_from_hard": 0.027929117903113365
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.4.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11047914624214172,
+      "mean_abs_delta_from_hard": 0.019781839102506638
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.4.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.11834809184074402,
+      "mean_abs_delta_from_hard": 0.018558913841843605
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.4.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.06786137819290161,
+      "mean_abs_delta_from_hard": 0.014968100003898144
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.4.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.06327961385250092,
+      "mean_abs_delta_from_hard": 0.014666151255369186
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.4.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.06530317664146423,
+      "mean_abs_delta_from_hard": 0.01009313203394413
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.4.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.13373588025569916,
+      "mean_abs_delta_from_hard": 0.018364131450653076
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.5.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "groups": 18,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.14564460515975952,
+      "mean_abs_delta_from_hard": 0.040565125644207
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.5.attention.self.continuous_position_bias_mlp.2",
+      "category": "position_bias_linear",
+      "values": 3072,
+      "groups": 52,
+      "group_size": 60,
+      "rotation": "none",
+      "max_abs_delta_from_hard": 0.11246921867132187,
+      "mean_abs_delta_from_hard": 0.031460028141736984
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.5.attention.self.query",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.0933457612991333,
+      "mean_abs_delta_from_hard": 0.019737161695957184
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.5.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.08137229084968567,
+      "mean_abs_delta_from_hard": 0.018075648695230484
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.5.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.07684844732284546,
+      "mean_abs_delta_from_hard": 0.014471568167209625
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.5.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "groups": 60,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.06655712425708771,
+      "mean_abs_delta_from_hard": 0.014216270297765732
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.5.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.06054217368364334,
+      "mean_abs_delta_from_hard": 0.010231761261820793
+    },
+    {
+      "surface": "swin2sr.encoder.stages.3.layers.5.output.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "groups": 120,
+      "group_size": 60,
+      "rotation": "hadamard",
+      "max_abs_delta_from_hard": 0.10490474104881287,
+      "mean_abs_delta_from_hard": 0.018894538283348083
+    }
+  ],
+  "state": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/affine_ternary_screen_20260731/materialized/affine-group60-linears.pt",
+    "file_sha256": "8f4662d69f26d08c9f8bf25f74930e4c197e05a79cafe5c4f29ae1a0c2e95b7e",
+    "tensor_sha256": "ac4a60eb8933a38a7fb6aa16e54d1282755d9abd070c1b73d6738410a421093b",
+    "tensors": 484,
+    "values": 1005348
+  }
+}

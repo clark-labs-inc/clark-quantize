@@ -1,0 +1,2709 @@
+{
+  "format": "prism-bonsai-image-packed-weight-inventory-v1",
+  "checkpoint": "/Users/stan/.cache/clark-quantize/prism-bonsai-image-bf047aa/state_dict.pt",
+  "checkpoint_sha256": "a3a7df8a90374fea24afce3b36f00b4c728d0254717143d61f912a7b3070e7ac",
+  "checkpoint_file_bytes": 1540457482,
+  "safe_load": {
+    "mmap": true,
+    "weights_only": true
+  },
+  "tensor_count": 569,
+  "tensor_storage_bytes": 1540248032,
+  "dtype_bytes": {
+    "bfloat16": 390085632,
+    "float32": 230031360,
+    "int32": 5600,
+    "uint8": 920125440
+  },
+  "quantized_linears": 100,
+  "quantized_logical_parameters": 3680501760,
+  "retained_logical_parameters": 195042816,
+  "logical_parameters": 3875544576,
+  "retained_parameter_fraction": 0.05032655725542092,
+  "packed_codes": {
+    "histogram": [
+      1177251744,
+      1325136885,
+      1178113131,
+      0
+    ],
+    "fractions": [
+      0.31986175276275375,
+      0.36004245383107764,
+      0.3200957934061686,
+      0.0
+    ],
+    "shannon_entropy_bits_per_weight": 1.5826759079041404,
+    "unused_code_3": true
+  },
+  "scale_and_zero_storage": {
+    "group_size": 128,
+    "scale_elements": 28753920,
+    "scale_bytes": 115015680,
+    "zero_bytes": 115015680,
+    "metadata_bytes": 5600,
+    "scales_are_bf16_exact": true,
+    "scales_are_fp16_exact": true,
+    "zeros_are_negative_scales": true
+  },
+  "storage": {
+    "packed_weight_bytes": 920125440,
+    "actual_low_bit_bytes": 1150162400,
+    "retained_high_precision_bytes": 390085632,
+    "actual_tensor_bits_per_logical_parameter": 3.1794200826139587,
+    "actual_file_bits_per_logical_parameter": 3.1798524347562553,
+    "int2_derived_zero_bf16_scale_tensor_bytes": 1367724512,
+    "int2_derived_zero_bf16_scale_bits_per_logical_parameter": 2.823292541584742,
+    "conceptual_entropy_bf16_scale_tensor_bytes": 1176775632,
+    "conceptual_entropy_bf16_scale_bits_per_logical_parameter": 2.429130891110725
+  },
+  "retained_high_precision": {
+    "attention_norms": {
+      "bytes": 15360,
+      "logical_parameters": 7680,
+      "tensor_count": 60
+    },
+    "context_embedder": {
+      "bytes": 47185920,
+      "logical_parameters": 23592960,
+      "tensor_count": 1
+    },
+    "double_stream_modulation_img": {
+      "bytes": 113246208,
+      "logical_parameters": 56623104,
+      "tensor_count": 1
+    },
+    "double_stream_modulation_txt": {
+      "bytes": 113246208,
+      "logical_parameters": 56623104,
+      "tensor_count": 1
+    },
+    "norm_out": {
+      "bytes": 37748736,
+      "logical_parameters": 18874368,
+      "tensor_count": 1
+    },
+    "proj_out": {
+      "bytes": 786432,
+      "logical_parameters": 393216,
+      "tensor_count": 1
+    },
+    "single_stream_modulation": {
+      "bytes": 56623104,
+      "logical_parameters": 28311552,
+      "tensor_count": 1
+    },
+    "time_guidance_embed": {
+      "bytes": 20447232,
+      "logical_parameters": 10223616,
+      "tensor_count": 2
+    },
+    "x_embedder": {
+      "bytes": 786432,
+      "logical_parameters": 393216,
+      "tensor_count": 1
+    }
+  },
+  "per_linear": [
+    {
+      "prefix": "single_transformer_blocks.0.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.000885009765625,
+      "scale_max": 0.1884765625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        12563555,
+        12628958,
+        12556223,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.0.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.002349853515625,
+      "scale_max": 0.07568359375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        27739951,
+        29445165,
+        27749540,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.1.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.0028839111328125,
+      "scale_max": 0.08447265625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        12547513,
+        12656410,
+        12544813,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.1.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.0036468505859375,
+      "scale_max": 0.05615234375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        28163791,
+        28634759,
+        28136106,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.10.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.007659912109375,
+      "scale_max": 0.05615234375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        12098957,
+        13549523,
+        12100256,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.10.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.0031280517578125,
+      "scale_max": 0.08203125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        27027768,
+        30826950,
+        27079938,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.11.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.007659912109375,
+      "scale_max": 0.05224609375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        11781392,
+        14184858,
+        11782486,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.11.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.00145721435546875,
+      "scale_max": 0.06298828125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        26535768,
+        31739054,
+        26659834,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.12.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.00555419921875,
+      "scale_max": 0.06884765625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        11489456,
+        14764657,
+        11494623,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.12.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 3.9577484130859375e-05,
+      "scale_max": 0.0732421875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        26299102,
+        32228764,
+        26406790,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.13.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.006103515625,
+      "scale_max": 0.0576171875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        11213930,
+        15320307,
+        11214499,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.13.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.000720977783203125,
+      "scale_max": 0.076171875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        25661575,
+        33536809,
+        25736272,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.14.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.006195068359375,
+      "scale_max": 0.07275390625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        10989860,
+        15773983,
+        10984893,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.14.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.0020599365234375,
+      "scale_max": 0.072265625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        24968599,
+        34908710,
+        25057347,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.15.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.005401611328125,
+      "scale_max": 0.06396484375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        10729789,
+        16282531,
+        10736416,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.15.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.0011138916015625,
+      "scale_max": 0.08447265625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        24361862,
+        36073725,
+        24499069,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.16.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.0054931640625,
+      "scale_max": 0.1044921875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        10357237,
+        17035811,
+        10355688,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.16.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.0015106201171875,
+      "scale_max": 0.08447265625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        23710018,
+        37358687,
+        23865951,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.17.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.004425048828125,
+      "scale_max": 0.078125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        10192708,
+        17360305,
+        10195723,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.17.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.0003299713134765625,
+      "scale_max": 0.0751953125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        23735182,
+        37353464,
+        23846010,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.18.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.006256103515625,
+      "scale_max": 0.267578125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        9978268,
+        17792792,
+        9977676,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.18.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.00201416015625,
+      "scale_max": 0.0673828125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        23703614,
+        37462999,
+        23768043,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.19.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.004547119140625,
+      "scale_max": 0.12353515625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        11462947,
+        14814762,
+        11471027,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.19.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 4.076957702636719e-05,
+      "scale_max": 0.06884765625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        25100525,
+        34744879,
+        25089252,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.2.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.00274658203125,
+      "scale_max": 0.08837890625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        12483161,
+        12782505,
+        12483070,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.2.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.0021209716796875,
+      "scale_max": 0.06884765625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        28107695,
+        28736020,
+        28090941,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.3.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.00148773193359375,
+      "scale_max": 0.06494140625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        12444311,
+        12857278,
+        12447147,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.3.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.00018978118896484375,
+      "scale_max": 0.07861328125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        28045022,
+        28853374,
+        28036260,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.4.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.00141143798828125,
+      "scale_max": 0.09716796875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        12344601,
+        13060667,
+        12343468,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.4.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.00115966796875,
+      "scale_max": 0.07275390625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        27979533,
+        28887428,
+        28067695,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.5.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.00179290771484375,
+      "scale_max": 0.251953125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        12334799,
+        13080430,
+        12333507,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.5.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.0002460479736328125,
+      "scale_max": 0.0771484375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        27977901,
+        28835296,
+        28121459,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.6.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.0030517578125,
+      "scale_max": 0.0478515625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        12290574,
+        13170693,
+        12287469,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.6.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.004638671875,
+      "scale_max": 0.049560546875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        27696418,
+        29598635,
+        27639603,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.7.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.004302978515625,
+      "scale_max": 0.076171875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        12231991,
+        13286493,
+        12230252,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.7.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.00250244140625,
+      "scale_max": 0.06591796875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        27418731,
+        30098308,
+        27417617,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.8.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.005340576171875,
+      "scale_max": 0.053466796875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        12199286,
+        13349501,
+        12199949,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.8.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.0034027099609375,
+      "scale_max": 0.0654296875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        27291577,
+        30314473,
+        27328606,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.9.attn.to_out",
+      "original_shape": [
+        3072,
+        12288
+      ],
+      "logical_parameters": 37748736,
+      "packed_shape": [
+        3072,
+        3072
+      ],
+      "packed_bytes": 9437184,
+      "scale_elements": 294912,
+      "scale_dtype": "float32",
+      "scale_min": 0.00732421875,
+      "scale_max": 0.08251953125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        12161583,
+        13432757,
+        12154396,
+        0
+      ]
+    },
+    {
+      "prefix": "single_transformer_blocks.9.attn.to_qkv_mlp_proj",
+      "original_shape": [
+        27648,
+        3072
+      ],
+      "logical_parameters": 84934656,
+      "packed_shape": [
+        768,
+        27648
+      ],
+      "packed_bytes": 21233664,
+      "scale_elements": 663552,
+      "scale_dtype": "float32",
+      "scale_min": 0.002685546875,
+      "scale_max": 0.07421875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        27083690,
+        30738165,
+        27112801,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.0.attn.add_k_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.004180908203125,
+      "scale_max": 0.064453125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3243634,
+        2944904,
+        3248646,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.0.attn.add_q_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.00836181640625,
+      "scale_max": 0.0546875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3252872,
+        2928775,
+        3255537,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.0.attn.add_v_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.006500244140625,
+      "scale_max": 0.03076171875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3264990,
+        2911214,
+        3260980,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.0.attn.to_add_out",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0108642578125,
+      "scale_max": 0.08984375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3318342,
+        2803026,
+        3315816,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.0.attn.to_k",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0035552978515625,
+      "scale_max": 0.087890625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3089259,
+        3255156,
+        3092769,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.0.attn.to_out.0",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.007354736328125,
+      "scale_max": 0.09423828125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3277369,
+        2880443,
+        3279372,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.0.attn.to_q",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0016326904296875,
+      "scale_max": 0.0703125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3202198,
+        3028525,
+        3206461,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.0.attn.to_v",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.005157470703125,
+      "scale_max": 0.031005859375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3286303,
+        2865249,
+        3285632,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.0.ff.linear_in",
+      "original_shape": [
+        18432,
+        3072
+      ],
+      "logical_parameters": 56623104,
+      "packed_shape": [
+        768,
+        18432
+      ],
+      "packed_bytes": 14155776,
+      "scale_elements": 442368,
+      "scale_dtype": "float32",
+      "scale_min": 0.0029144287109375,
+      "scale_max": 0.06884765625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        19089566,
+        18586160,
+        18947378,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.0.ff.linear_out",
+      "original_shape": [
+        3072,
+        9216
+      ],
+      "logical_parameters": 28311552,
+      "packed_shape": [
+        2304,
+        3072
+      ],
+      "packed_bytes": 7077888,
+      "scale_elements": 221184,
+      "scale_dtype": "float32",
+      "scale_min": 0.00634765625,
+      "scale_max": 0.052490234375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        9290141,
+        9731995,
+        9289416,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.0.ff_context.linear_in",
+      "original_shape": [
+        18432,
+        3072
+      ],
+      "logical_parameters": 56623104,
+      "packed_shape": [
+        768,
+        18432
+      ],
+      "packed_bytes": 14155776,
+      "scale_elements": 442368,
+      "scale_dtype": "float32",
+      "scale_min": 0.006072998046875,
+      "scale_max": 0.053955078125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        19363236,
+        18025111,
+        19234757,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.0.ff_context.linear_out",
+      "original_shape": [
+        3072,
+        9216
+      ],
+      "logical_parameters": 28311552,
+      "packed_shape": [
+        2304,
+        3072
+      ],
+      "packed_bytes": 7077888,
+      "scale_elements": 221184,
+      "scale_dtype": "float32",
+      "scale_min": 0.0098876953125,
+      "scale_max": 0.046142578125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        9685016,
+        8943359,
+        9683177,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.1.attn.add_k_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.00738525390625,
+      "scale_max": 0.03759765625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3237097,
+        2961186,
+        3238901,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.1.attn.add_q_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.00946044921875,
+      "scale_max": 0.04345703125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3237065,
+        2967662,
+        3232457,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.1.attn.add_v_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0076904296875,
+      "scale_max": 0.0303955078125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3275246,
+        2883926,
+        3278012,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.1.attn.to_add_out",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0140380859375,
+      "scale_max": 0.061767578125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3315631,
+        2807146,
+        3314407,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.1.attn.to_k",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0059814453125,
+      "scale_max": 0.05322265625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3183099,
+        3069421,
+        3184664,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.1.attn.to_out.0",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0068359375,
+      "scale_max": 0.056884765625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3214206,
+        3007055,
+        3215923,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.1.attn.to_q",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0079345703125,
+      "scale_max": 0.08447265625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3184503,
+        3073659,
+        3179022,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.1.attn.to_v",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.00885009765625,
+      "scale_max": 0.036376953125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3230481,
+        2973023,
+        3233680,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.1.ff.linear_in",
+      "original_shape": [
+        18432,
+        3072
+      ],
+      "logical_parameters": 56623104,
+      "packed_shape": [
+        768,
+        18432
+      ],
+      "packed_bytes": 14155776,
+      "scale_elements": 442368,
+      "scale_dtype": "float32",
+      "scale_min": 0.00567626953125,
+      "scale_max": 0.060791015625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        18709975,
+        19220934,
+        18692195,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.1.ff.linear_out",
+      "original_shape": [
+        3072,
+        9216
+      ],
+      "logical_parameters": 28311552,
+      "packed_shape": [
+        2304,
+        3072
+      ],
+      "packed_bytes": 7077888,
+      "scale_elements": 221184,
+      "scale_dtype": "float32",
+      "scale_min": 0.0076904296875,
+      "scale_max": 0.042236328125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        9296576,
+        9720154,
+        9294822,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.1.ff_context.linear_in",
+      "original_shape": [
+        18432,
+        3072
+      ],
+      "logical_parameters": 56623104,
+      "packed_shape": [
+        768,
+        18432
+      ],
+      "packed_bytes": 14155776,
+      "scale_elements": 442368,
+      "scale_dtype": "float32",
+      "scale_min": 0.00732421875,
+      "scale_max": 0.04638671875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        19269025,
+        18097562,
+        19256517,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.1.ff_context.linear_out",
+      "original_shape": [
+        3072,
+        9216
+      ],
+      "logical_parameters": 28311552,
+      "packed_shape": [
+        2304,
+        3072
+      ],
+      "packed_bytes": 7077888,
+      "scale_elements": 221184,
+      "scale_dtype": "float32",
+      "scale_min": 0.00872802734375,
+      "scale_max": 0.057373046875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        9645496,
+        9019235,
+        9646821,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.2.attn.add_k_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.006561279296875,
+      "scale_max": 0.040771484375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3233990,
+        2968934,
+        3234260,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.2.attn.add_q_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0084228515625,
+      "scale_max": 0.040283203125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3234242,
+        2967688,
+        3235254,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.2.attn.add_v_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0120849609375,
+      "scale_max": 0.031494140625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3267504,
+        2902102,
+        3267578,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.2.attn.to_add_out",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.01153564453125,
+      "scale_max": 0.06494140625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3291344,
+        2854332,
+        3291508,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.2.attn.to_k",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0052490234375,
+      "scale_max": 0.06591796875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3155179,
+        3129108,
+        3152897,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.2.attn.to_out.0",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0045166015625,
+      "scale_max": 0.039794921875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3180184,
+        3075779,
+        3181221,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.2.attn.to_q",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.00634765625,
+      "scale_max": 0.050537109375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3180967,
+        3073160,
+        3183057,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.2.attn.to_v",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.01153564453125,
+      "scale_max": 0.03564453125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3182740,
+        3075971,
+        3178473,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.2.ff.linear_in",
+      "original_shape": [
+        18432,
+        3072
+      ],
+      "logical_parameters": 56623104,
+      "packed_shape": [
+        768,
+        18432
+      ],
+      "packed_bytes": 14155776,
+      "scale_elements": 442368,
+      "scale_dtype": "float32",
+      "scale_min": 0.006103515625,
+      "scale_max": 0.059814453125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        18659469,
+        19263757,
+        18699878,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.2.ff.linear_out",
+      "original_shape": [
+        3072,
+        9216
+      ],
+      "logical_parameters": 28311552,
+      "packed_shape": [
+        2304,
+        3072
+      ],
+      "packed_bytes": 7077888,
+      "scale_elements": 221184,
+      "scale_dtype": "float32",
+      "scale_min": 0.0059814453125,
+      "scale_max": 0.037109375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        9244776,
+        9815186,
+        9251590,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.2.ff_context.linear_in",
+      "original_shape": [
+        18432,
+        3072
+      ],
+      "logical_parameters": 56623104,
+      "packed_shape": [
+        768,
+        18432
+      ],
+      "packed_bytes": 14155776,
+      "scale_elements": 442368,
+      "scale_dtype": "float32",
+      "scale_min": 0.006439208984375,
+      "scale_max": 0.04345703125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        19179282,
+        18228640,
+        19215182,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.2.ff_context.linear_out",
+      "original_shape": [
+        3072,
+        9216
+      ],
+      "logical_parameters": 28311552,
+      "packed_shape": [
+        2304,
+        3072
+      ],
+      "packed_bytes": 7077888,
+      "scale_elements": 221184,
+      "scale_dtype": "float32",
+      "scale_min": 0.007171630859375,
+      "scale_max": 0.04443359375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        9610898,
+        9095837,
+        9604817,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.3.attn.add_k_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.00811767578125,
+      "scale_max": 0.051513671875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3228280,
+        2978157,
+        3230747,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.3.attn.add_q_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0098876953125,
+      "scale_max": 0.042236328125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3231492,
+        2973446,
+        3232246,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.3.attn.add_v_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.01507568359375,
+      "scale_max": 0.0361328125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3283990,
+        2868726,
+        3284468,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.3.attn.to_add_out",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0106201171875,
+      "scale_max": 0.0693359375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3292422,
+        2851176,
+        3293586,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.3.attn.to_k",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.006011962890625,
+      "scale_max": 0.062255859375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3153795,
+        3128857,
+        3154532,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.3.attn.to_out.0",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.003326416015625,
+      "scale_max": 0.0615234375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3183202,
+        3067135,
+        3186847,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.3.attn.to_q",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.00836181640625,
+      "scale_max": 0.04541015625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3192979,
+        3050974,
+        3193231,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.3.attn.to_v",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0113525390625,
+      "scale_max": 0.03515625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3180448,
+        3078087,
+        3178649,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.3.ff.linear_in",
+      "original_shape": [
+        18432,
+        3072
+      ],
+      "logical_parameters": 56623104,
+      "packed_shape": [
+        768,
+        18432
+      ],
+      "packed_bytes": 14155776,
+      "scale_elements": 442368,
+      "scale_dtype": "float32",
+      "scale_min": 0.005950927734375,
+      "scale_max": 0.048583984375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        18895010,
+        18790025,
+        18938069,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.3.ff.linear_out",
+      "original_shape": [
+        3072,
+        9216
+      ],
+      "logical_parameters": 28311552,
+      "packed_shape": [
+        2304,
+        3072
+      ],
+      "packed_bytes": 7077888,
+      "scale_elements": 221184,
+      "scale_dtype": "float32",
+      "scale_min": 0.0052490234375,
+      "scale_max": 0.0439453125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        9258670,
+        9795106,
+        9257776,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.3.ff_context.linear_in",
+      "original_shape": [
+        18432,
+        3072
+      ],
+      "logical_parameters": 56623104,
+      "packed_shape": [
+        768,
+        18432
+      ],
+      "packed_bytes": 14155776,
+      "scale_elements": 442368,
+      "scale_dtype": "float32",
+      "scale_min": 0.005462646484375,
+      "scale_max": 0.044921875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        19349710,
+        17984396,
+        19288998,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.3.ff_context.linear_out",
+      "original_shape": [
+        3072,
+        9216
+      ],
+      "logical_parameters": 28311552,
+      "packed_shape": [
+        2304,
+        3072
+      ],
+      "packed_bytes": 7077888,
+      "scale_elements": 221184,
+      "scale_dtype": "float32",
+      "scale_min": 0.00311279296875,
+      "scale_max": 0.038330078125,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        9619538,
+        9075391,
+        9616623,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.4.attn.add_k_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.00579833984375,
+      "scale_max": 0.041748046875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3224390,
+        2997267,
+        3215527,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.4.attn.add_q_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.007568359375,
+      "scale_max": 0.037841796875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3228331,
+        2981245,
+        3227608,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.4.attn.add_v_proj",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0126953125,
+      "scale_max": 0.037841796875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3283151,
+        2869450,
+        3284583,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.4.attn.to_add_out",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0130615234375,
+      "scale_max": 0.083984375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3300550,
+        2832795,
+        3303839,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.4.attn.to_k",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.007354736328125,
+      "scale_max": 0.062255859375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3148483,
+        3144314,
+        3144387,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.4.attn.to_out.0",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.00145721435546875,
+      "scale_max": 0.052978515625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3194449,
+        3044894,
+        3197841,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.4.attn.to_q",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.008056640625,
+      "scale_max": 0.0712890625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3171170,
+        3096842,
+        3169172,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.4.attn.to_v",
+      "original_shape": [
+        3072,
+        3072
+      ],
+      "logical_parameters": 9437184,
+      "packed_shape": [
+        768,
+        3072
+      ],
+      "packed_bytes": 2359296,
+      "scale_elements": 73728,
+      "scale_dtype": "float32",
+      "scale_min": 0.0115966796875,
+      "scale_max": 0.046630859375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        3217932,
+        3004809,
+        3214443,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.4.ff.linear_in",
+      "original_shape": [
+        18432,
+        3072
+      ],
+      "logical_parameters": 56623104,
+      "packed_shape": [
+        768,
+        18432
+      ],
+      "packed_bytes": 14155776,
+      "scale_elements": 442368,
+      "scale_dtype": "float32",
+      "scale_min": 0.00537109375,
+      "scale_max": 0.058349609375,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        19231752,
+        18160680,
+        19230672,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.4.ff.linear_out",
+      "original_shape": [
+        3072,
+        9216
+      ],
+      "logical_parameters": 28311552,
+      "packed_shape": [
+        2304,
+        3072
+      ],
+      "packed_bytes": 7077888,
+      "scale_elements": 221184,
+      "scale_dtype": "float32",
+      "scale_min": 0.002593994140625,
+      "scale_max": 0.049072265625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        9270114,
+        9768330,
+        9273108,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.4.ff_context.linear_in",
+      "original_shape": [
+        18432,
+        3072
+      ],
+      "logical_parameters": 56623104,
+      "packed_shape": [
+        768,
+        18432
+      ],
+      "packed_bytes": 14155776,
+      "scale_elements": 442368,
+      "scale_dtype": "float32",
+      "scale_min": 0.007598876953125,
+      "scale_max": 0.0419921875,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        19379671,
+        17861010,
+        19382423,
+        0
+      ]
+    },
+    {
+      "prefix": "transformer_blocks.4.ff_context.linear_out",
+      "original_shape": [
+        3072,
+        9216
+      ],
+      "logical_parameters": 28311552,
+      "packed_shape": [
+        2304,
+        3072
+      ],
+      "packed_bytes": 7077888,
+      "scale_elements": 221184,
+      "scale_dtype": "float32",
+      "scale_min": 0.004638671875,
+      "scale_max": 0.08447265625,
+      "scale_bf16_exact": true,
+      "scale_fp16_exact": true,
+      "zeros_equal_negative_scales": true,
+      "code_histogram": [
+        9646074,
+        9017514,
+        9647964,
+        0
+      ]
+    }
+  ]
+}

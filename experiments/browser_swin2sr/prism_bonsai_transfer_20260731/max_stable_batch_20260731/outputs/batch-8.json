@@ -1,0 +1,128 @@
+{
+  "format": "backdropkit-swin2sr-batch-capacity-probe-v1",
+  "status": "accepted",
+  "acceptance": {
+    "all_losses_and_gradients_finite": true,
+    "required_headroom_fraction": 0.25,
+    "observed_driver_fraction_of_recommended": 0.10195247111971642
+  },
+  "config": {
+    "parent": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+    "island": "image_io_fp16",
+    "precision": "fp16",
+    "batch_size": 8,
+    "crop_size": 128,
+    "seed": 20260734,
+    "warmup_steps": 2,
+    "measure_steps": 5,
+    "learning_rate": 4e-06,
+    "memory_fraction": 0.8,
+    "device": "mps"
+  },
+  "throughput": {
+    "preparation_seconds": 0.10546004199999892,
+    "preparation_images_per_second": 75.85811505745542,
+    "median_step_seconds": 0.41934887499999896,
+    "p95_step_seconds": 0.420493875,
+    "compute_images_per_second": 19.07719437663931,
+    "projected_serial_end_to_end_images_per_second": 15.243643430700383
+  },
+  "memory": {
+    "peak": {
+      "current_allocated_bytes": 5250411264,
+      "driver_allocated_bytes": 5674958848,
+      "recommended_max_bytes": 55662788608
+    },
+    "stages": {
+      "model_loaded": {
+        "current_allocated_bytes": 18503680,
+        "driver_allocated_bytes": 46989312,
+        "recommended_max_bytes": 55662788608
+      },
+      "batch_prepared": {
+        "current_allocated_bytes": 20469760,
+        "driver_allocated_bytes": 76349440,
+        "recommended_max_bytes": 55662788608
+      }
+    }
+  },
+  "losses": [
+    0.021782655268907547,
+    0.021748216822743416,
+    0.021709904074668884,
+    0.02167477458715439,
+    0.0216430202126503
+  ],
+  "gradient_receipts": [
+    {
+      "parameters": 8100,
+      "l2": 0.25324591453712897,
+      "max_abs": 0.04155252128839493,
+      "finite": true
+    },
+    {
+      "parameters": 8100,
+      "l2": 0.2478109442943457,
+      "max_abs": 0.040979865938425064,
+      "finite": true
+    },
+    {
+      "parameters": 8100,
+      "l2": 0.2414382913306429,
+      "max_abs": 0.0402696393430233,
+      "finite": true
+    },
+    {
+      "parameters": 8100,
+      "l2": 0.2365693199438859,
+      "max_abs": 0.039743635803461075,
+      "finite": true
+    },
+    {
+      "parameters": 8100,
+      "l2": 0.23251273679198778,
+      "max_abs": 0.03940020874142647,
+      "finite": true
+    }
+  ],
+  "sampler": {
+    "format": "backdropkit-product-source-language-v3",
+    "epoch_images": 206500,
+    "source_weights": {
+      "aria_ui": 0.15,
+      "flores200_balanced_synthetic_ui": 0.2,
+      "pd12m": 0.1,
+      "rico": 0.35,
+      "websight": 0.2
+    },
+    "source_quotas": {
+      "aria_ui": 30975,
+      "flores200_balanced_synthetic_ui": 41300,
+      "pd12m": 20650,
+      "rico": 72275,
+      "websight": 41300
+    },
+    "languages_per_source": {
+      "aria_ui": 0,
+      "flores200_balanced_synthetic_ui": 204,
+      "pd12m": 0,
+      "rico": 0,
+      "websight": 0
+    },
+    "corpus_identity": {
+      "format": "backdropkit-swin2sr-recovery-corpus-v1",
+      "datasets": [
+        {
+          "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705",
+          "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+          "images": 104500
+        },
+        {
+          "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42",
+          "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+          "images": 102000
+        }
+      ]
+    }
+  }
+}

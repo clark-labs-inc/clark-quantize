@@ -1,0 +1,72 @@
+{
+  "format": "backdropkit-swin2sr-packed-runtime-conformance-v1",
+  "created_at": "2026-07-31",
+  "promotion_authorized": false,
+  "final_heldout_accessed": false,
+  "candidate": {
+    "study_manifest_sha256": "2af5c1cb5dad70949a6409092da3b02dc12000e238bdd150878b95ece32db5f5",
+    "reference_state_sha256": "3f7d9c3725b11e02fae90c814222f2a941199428bddd5216e781a9458ef5ddd2",
+    "runtime_state_tensor_sha256": "839190220e78790a5a25d79957ee812b5689f299a2767ad71eef9757434b61b1",
+    "artifact_manifest_sha256": "5424487a6c7a5c7f81f677d94d081cdb0e8a614d39d5ec428d9a086f5b4e087c",
+    "artifact_binary_sha256": "aaee28988ab651cb5be67ce940e69d77d6a07ad9ea659edab2431140dab27bd1",
+    "fixture_sha256": "8c6b40583402a3666d2ce7468a98603203777a9769bd47fc7dea4a62a6dd783d",
+    "artifact_bytes": 440503,
+    "binary_bytes": 326480,
+    "parameter_values": 1005348,
+    "quantized_values": 977604,
+    "quantized_fraction_of_parameters": 0.9724035856240824,
+    "packed_code_bits_per_quantized_weight": 1.600942713000356,
+    "packed_trunk_bits_per_quantized_weight": 2.2176014009762643,
+    "whole_model_data_bits_per_parameter": 2.5979461838089897
+  },
+  "fixture": {
+    "input_shape": [1, 3, 64, 64],
+    "output_shape": [1, 3, 128, 128]
+  },
+  "python_packed_reference": {
+    "receipt_sha256": "5084c091813ba320638f94c1ae66ca3e8885ba13a3e8c32ddac1c364a16a1bd6",
+    "maximum_absolute_error": 0.0007576346397399902,
+    "mean_absolute_error": 0.00010802242468344048,
+    "psnr_vs_reference": 77.2471527386739,
+    "passed": true
+  },
+  "native_rust_scalar": {
+    "elapsed_seconds": 1.659011833,
+    "maximum_absolute_error": 0.0007581114768981934,
+    "mean_absolute_error": 0.00010801897648586116
+  },
+  "in_app_browser_wasm_simd": {
+    "backend": "wasm-simd-packed-artifact",
+    "load_ms": 6.700000047683716,
+    "inference_ms": 2629.1999999284744,
+    "maximum_absolute_error": 0.000757858157157898,
+    "mean_absolute_error": 0.00010801766014386278,
+    "status": "complete"
+  },
+  "in_app_browser_wasm_scalar": {
+    "backend": "wasm-scalar-packed-artifact",
+    "load_ms": 9.800000071525574,
+    "inference_ms": 3185.100000023842,
+    "maximum_absolute_error": 0.0007582604885101318,
+    "mean_absolute_error": 0.0001080190492454373,
+    "status": "complete"
+  },
+  "gates": {
+    "packed_python_parity": true,
+    "native_rust_scalar_parity": true,
+    "in_app_browser_wasm_simd_execution": true,
+    "in_app_browser_wasm_scalar_execution": true,
+    "safari_execution": false,
+    "firefox_execution": false,
+    "mobile_execution": false,
+    "webgpu_execution": false,
+    "product_integration": false,
+    "robustness": false,
+    "final_heldout": false
+  },
+  "notes": [
+    "Browser timings are single-run fixture timings and are not throughput benchmarks.",
+    "The scalar path is the generic no-SIMD CPU fallback; separate browser-family receipts remain required.",
+    "No promotion or product-default claim is authorized by this conformance receipt."
+  ]
+}

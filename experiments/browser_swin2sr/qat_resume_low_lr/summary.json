@@ -1,0 +1,17 @@
+{
+  "model": "caidas/swin2SR-lightweight-x2-64",
+  "device": "mps",
+  "mode": "ternary",
+  "steps": 4000,
+  "training_images": 31,
+  "quantized_modules": 144,
+  "baseline": {
+    "psnr_vs_ground_truth": 42.332001933781086,
+    "psnr_vs_teacher": 46.73418742617015
+  },
+  "final": {
+    "psnr_vs_ground_truth": 44.51298313006228,
+    "psnr_vs_teacher": 51.32181785401528
+  },
+  "elapsed_seconds": 658.897404708
+}

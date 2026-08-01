@@ -1,0 +1,54 @@
+{
+  "date": "2026-07-30",
+  "format": "backdropkit-swin2sr-full-surface-runtime-smoke-v1",
+  "promotion_status": "infrastructure-only; generated from an untrained hard full-surface smoke state",
+  "quantization": {
+    "method": "absmean",
+    "group_size": 60,
+    "rotation": "hadamard",
+    "packed_tensors": 204,
+    "ternary_values": 977604,
+    "tensor_local_hadamard_transforms": 144
+  },
+  "artifact": {
+    "model_bin_bytes": 283796,
+    "model_json_bytes": 94909,
+    "total_bytes": 378705,
+    "model_bin_sha256": "149ec2cae0c21f2631b24707ac09e3a3d01a8354ffddb16909aad5288708ee64",
+    "model_json_sha256": "c1cd8af23e9ee693480c82ead3e207f4ace0e1224787c35b634a8ad776bcd565",
+    "whole_model_data_bits_per_parameter": 2.258290661542073
+  },
+  "python_artifact_conformance": {
+    "maximum_absolute_error": 0.00010561943054199219,
+    "mean_absolute_error": 0.00002460417090333067,
+    "psnr_vs_hard_state": 90.29657672029148,
+    "passed": true
+  },
+  "native_arm64_scalar": {
+    "input_shape": [1, 3, 64, 64],
+    "output_shape": [1, 3, 128, 128],
+    "elapsed_seconds": 2.209421375,
+    "maximum_absolute_error": 0.0001055598258972168,
+    "mean_absolute_error": 0.000024603777698454603,
+    "passed": true
+  },
+  "chromium_wasm_scalar": {
+    "wasm_bytes": 143316,
+    "wasm_sha256": "b4913c8184f9d1a177f4a0d6f33607b3eafb461b8c15157ffbddd426e0403d5b",
+    "artifact_load_ms": 98.39999997615814,
+    "inference_ms": 4994.600000023842,
+    "maximum_absolute_error": 0.0001055598258972168,
+    "mean_absolute_error": 0.00002460394201383072,
+    "passed": true
+  },
+  "fixed_exporter_failures": [
+    "group-padding trits were incorrectly packed as model values",
+    "absmean hard weights were incorrectly requantized a second time",
+    "Hadamard input shaping was global rather than tensor-local"
+  ],
+  "remaining_runtime_work": [
+    "run the eventual held-out quality winner through the same artifact gates",
+    "route the complete graph through compact WebGPU kernels",
+    "measure Firefox, Safari, iOS Safari, and Android Chrome WASM surfaces"
+  ]
+}

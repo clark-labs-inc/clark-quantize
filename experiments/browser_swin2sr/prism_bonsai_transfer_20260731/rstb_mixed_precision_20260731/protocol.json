@@ -1,0 +1,195 @@
+{
+  "format": "backdropkit-swin2sr-rstb-mixed-precision-protocol-v1",
+  "created_at_utc": "2026-07-31T21:21:23Z",
+  "status": "sealed_before_rstb_fp16_discovery_result",
+  "timing_receipt": {
+    "rstb_fp16_training_started": true,
+    "rstb_fp16_full3040_result_available": false,
+    "low_bit_materializations_started": false,
+    "interpretation": "The low-bit formats, storage accounting, three-arm order, and selection rule were frozen after an early training signal but before the RSTB FP16 development result or any low-bit materialization existed."
+  },
+  "hypothesis": "The four RSTB fusion convolutions are more precision-sensitive than the transformer matrices, but do not require FP16. Symmetric signed int4 or int8 weights with exact FP16 scales can preserve at least 90% of every FP16-over-ternary quality gain at a small storage increment.",
+  "browser_q4_structure_receipt": {
+    "model": "Xenova/swin2SR-lightweight-x2-64",
+    "revision": "54ccc3f9ed678912a9c47dc14f6c478855380a2b",
+    "path": "/Users/stan/.cache/backdropkit-transformers/Xenova/swin2SR-lightweight-x2-64/54ccc3f9ed678912a9c47dc14f6c478855380a2b/onnx/model_q4.onnx",
+    "sha256": "b75c09757a7159f32ad279919a77fb185c3389676674cf226a467eaf2f7928f1",
+    "bytes": 5675089,
+    "matmul_nbits_nodes": 144,
+    "matmul_nbits_bits": 4,
+    "matmul_nbits_block_size": 32,
+    "conv_nodes": 12,
+    "conv_weight_dtype": "float32",
+    "all_conv_weight_values": 188100,
+    "all_conv_weight_bytes": 752400,
+    "rstb_fusion_conv_weight_values": 129600,
+    "rstb_fusion_conv_weight_bytes": 518400,
+    "interpretation": "The shipped q4 ONNX quantizes transformer MatMul weights but leaves every convolution, including all four RSTB fusion convolutions, in float32."
+  },
+  "source_files": {
+    "materializer": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/materialize_rstb_mixed_precision.py",
+      "sha256": "b8c8d011bc450b6434e06676667f242fe050f67bc8ba7298afcd0b94d28b4dbf"
+    },
+    "materializer_tests": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/test_materialize_rstb_mixed_precision.py",
+      "sha256": "717c165401764a79db9edaa0f2e50d472f65725ed8ab371a6335c599682a7a5d"
+    },
+    "decision": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/decide_rstb_mixed_precision.py",
+      "sha256": "8d099f45b84bfd529c9b6755bbb92d75d33c085ea7051103789e1eeee2070dbe"
+    },
+    "decision_tests": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/test_decide_rstb_mixed_precision.py",
+      "sha256": "65398c2f16d3a3dc776dcbcab60a8e65968d1fe5cf449d9127a26092eaf361b4"
+    },
+    "comparison": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/sealed_overlay/experiments/browser_swin2sr/compare_evaluations.py",
+      "sha256": "b764a1fe01ccb0340efe5171b1688fb93634ac2abd5a0003be9ca7037d54c9c5"
+    },
+    "evaluation": {
+      "path": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/evaluate_stratified.py",
+      "sha256": "b1f7a88ee08e8d405378187c083c87dfcad104e246562586395d36d76a42b05e"
+    },
+    "bundle": {
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+      "sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9"
+    },
+    "ternary_materialization": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/materialized/materialization.json",
+      "sha256": "de10153a2d6c747aa9f94023feaa5dee244e9e9356349595f45f490a45feca17"
+    },
+    "browser_q4_onnx": {
+      "path": "/Users/stan/.cache/backdropkit-transformers/Xenova/swin2SR-lightweight-x2-64/54ccc3f9ed678912a9c47dc14f6c478855380a2b/onnx/model_q4.onnx",
+      "sha256": "b75c09757a7159f32ad279919a77fb185c3389676674cf226a467eaf2f7928f1"
+    }
+  },
+  "sources": {
+    "ternary_materialization": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/materialized/materialization.json",
+    "fp16_materialization": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260731/materialized/materialization.json",
+    "ternary_development_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/development/metrics.json",
+    "fp16_development_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260731/development/metrics.json",
+    "fp16_vs_ternary_comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__seed20260731__fp16-vs-ternary.json"
+  },
+  "storage": {
+    "weight_values": 129600,
+    "ternary_code_bytes": 25920,
+    "ternary_scale_bytes": 28800,
+    "ternary_rstb_data_bytes": 54720,
+    "fp16_data_bytes": 259200,
+    "fp16_incremental_data_bytes": 204480
+  },
+  "arms": {
+    "int4_per_output": {
+      "bits": 4,
+      "signed_code_range": [-7, 7],
+      "scale_granularity": "one FP16 scale per output channel",
+      "scales": 240,
+      "code_bytes": 64800,
+      "scale_bytes": 480,
+      "data_bytes": 65280,
+      "incremental_data_bytes": 10560
+    },
+    "int4_per_kernel": {
+      "bits": 4,
+      "signed_code_range": [-7, 7],
+      "scale_granularity": "one FP16 scale per 3x3 input-output kernel",
+      "scales": 14400,
+      "code_bytes": 64800,
+      "scale_bytes": 28800,
+      "data_bytes": 93600,
+      "incremental_data_bytes": 38880
+    },
+    "int8_per_output": {
+      "bits": 8,
+      "signed_code_range": [-127, 127],
+      "scale_granularity": "one FP16 scale per output channel",
+      "scales": 240,
+      "code_bytes": 129600,
+      "scale_bytes": 480,
+      "data_bytes": 130080,
+      "incremental_data_bytes": 75360
+    }
+  },
+  "projected_incremental_data_bytes": {
+    "int4_per_output": 10560,
+    "int4_per_kernel": 38880,
+    "int8_per_output": 75360,
+    "fp16": 204480
+  },
+  "materialization_command_template": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/materialize_rstb_mixed_precision.py",
+    "--protocol",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/protocol.json",
+    "--ternary-materialization",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/materialized/materialization.json",
+    "--fp16-materialization",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260731/materialized/materialization.json",
+    "--arm",
+    "{arm}",
+    "--out",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/{arm}/materialized"
+  ],
+  "evaluation_command_template": [
+    "/usr/bin/env",
+    "PYTHONPATH=experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/sealed_overlay/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/evaluate_stratified.py",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/{arm}/materialized/dense-hard.pt",
+    "--bundle",
+    "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+    "--out",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/{arm}/development",
+    "--device",
+    "mps"
+  ],
+  "comparisons": {
+    "fp16_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__fp16__seed20260731/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__seed20260731__fp16-vs-ternary.json"
+    },
+    "int4_per_output_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/int4_per_output/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/int4_per_output-vs-ternary.json"
+    },
+    "int4_per_kernel_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/int4_per_kernel/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/int4_per_kernel-vs-ternary.json"
+    },
+    "int8_per_output_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/int8_per_output/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/int8_per_output-vs-ternary.json"
+    }
+  },
+  "comparison_contract": {
+    "script": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/sealed_overlay/experiments/browser_swin2sr/compare_evaluations.py",
+    "bootstrap_samples": 10000,
+    "seed": 20260731,
+    "samples": 3040
+  },
+  "selection_rule": {
+    "minimum_fp16_effect_retention": 0.9,
+    "ground_truth_paired_bootstrap_95ci_lower": "> 0.0 dB",
+    "edge_mean": ">= 0.0 dB",
+    "teacher_mean": ">= 0.0 dB",
+    "tie_break": "smallest incremental data bytes",
+    "fallback": "retain the four RSTB fusion convolutions in FP16"
+  },
+  "decision_command": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/decide_rstb_mixed_precision.py",
+    "--protocol",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/protocol.json",
+    "--out",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_mixed_precision_20260731/decision.json"
+  ],
+  "development_only": true,
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false
+}

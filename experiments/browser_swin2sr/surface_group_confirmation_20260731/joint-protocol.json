@@ -1,0 +1,37 @@
+{
+  "format": "backdropkit-swin2sr-surface-group-joint-protocol-v1",
+  "status": "preregistered_before_confirmation_results",
+  "diagnostic_only": true,
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "study_manifest": "experiments/browser_swin2sr/surface_group_confirmation_20260731/study-manifest.json",
+  "study_manifest_sha256": "b43abda5c05fcdbc617cde940eebe5bb1556f4c04f6533baf975d96afc75adb5",
+  "decision_source": "experiments/browser_swin2sr/decide_surface_group_confirmation.py",
+  "decision_source_sha256": "d06153a948983eef055e83e402b85ce22a7f7ce434df6e42b112042b37a55b64",
+  "joint_evaluation_source": "experiments/browser_swin2sr/evaluate_surface_group_map.py",
+  "joint_evaluation_source_sha256": "0ea89b4769361325b324477fd44f19f5d6c4d6c586539e6bb60f0d6d4d4ecac6",
+  "individual_decision": {
+    "required_reports": [2, 3, 6],
+    "ground_truth_lower_95_db": "> 0",
+    "edge_mean_delta_db": ">= -0.02",
+    "teacher_mean_delta_db": ">= -0.1",
+    "per_surface_group_choice": "highest_ground_truth_mean_db_per_added_kib",
+    "scale_byte_budget": 65536
+  },
+  "joint_evaluation": {
+    "samples": 256,
+    "sample_source": "balanced development records disjoint from every individual confirmation sample",
+    "bootstrap": {
+      "method": "paired_nonparametric_mean",
+      "resamples": 10000,
+      "seed": 20260731,
+      "confidence": 0.95
+    },
+    "ground_truth_lower_95_db": "> 0",
+    "edge_mean_delta_db": ">= -0.02",
+    "teacher_mean_delta_db": ">= -0.1",
+    "scale_byte_budget": 65536,
+    "passing_result": "eligible_only_for_a_matched_recovery_study",
+    "failing_result": "reject_surface_group_map"
+  }
+}

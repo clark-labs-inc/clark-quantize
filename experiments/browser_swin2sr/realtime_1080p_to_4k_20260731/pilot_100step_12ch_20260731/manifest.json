@@ -1,0 +1,31 @@
+{
+  "format": "backdropkit-realtime-student-training-v1",
+  "teacher": {
+    "model": "caidas/swin2SR-lightweight-x2-64",
+    "revision": "07e8e61492ce6daf4f34c651622960faf110c17f"
+  },
+  "student": {
+    "channels": 12,
+    "blocks": 3,
+    "parameters": 8016
+  },
+  "training": {
+    "steps": 100,
+    "batch_size": 8,
+    "crop_size": 128,
+    "learning_rate": 0.0002,
+    "loss_weights": {
+      "ground_truth": 0.55,
+      "teacher": 0.25,
+      "edge": 0.2
+    },
+    "seed": 20260731,
+    "device": "mps"
+  },
+  "data_roots": [
+    "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+    "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-v1"
+  ],
+  "training_images": 206492,
+  "validation_images": 8
+}

@@ -1,0 +1,37 @@
+{
+  "format": "backdropkit-swin2sr-rstb-bias-training-study-v1",
+  "sealed_at": "2026-08-01",
+  "hypothesis": "The four sensitive RSTB fusion weights are already at their selected int7 code and scale boundary. Their 240 existing output biases can correct systematic channel error without changing any weight code, scale, kernel, tensor shape, or ONNX operator.",
+  "parent": {
+    "state": "int7_per_output/materialized/dense-hard.pt",
+    "state_sha256": "308b7fc0de513a4983563d519219c100ff8f13bb0a5143d5cd3e1d4204d2a612"
+  },
+  "primary_arm": {
+    "name": "four-rstb-existing-biases-only",
+    "trainable_values": 240,
+    "steps": 2000,
+    "batch_size": 16,
+    "learning_rate": 0.00005,
+    "anchor_weight": 0.01,
+    "maximum_bias_delta": 0.05,
+    "seed": 20260808,
+    "validate_every": 250,
+    "checkpoint_every": 250
+  },
+  "frozen": "all weights, int7 codes, int7 scales, ternary codes and scales, image-I/O islands, normalization parameters, attention biases, and every non-RSTB-fusion bias",
+  "early_gate": {
+    "step_250": "At least one live metric improves and neither ground-truth nor teacher PSNR degrades more than 0.002 dB.",
+    "step_500": "Both live ground-truth and teacher PSNR must be nonnegative versus step zero."
+  },
+  "development_gate": {
+    "samples": 3040,
+    "requirements": [
+      "positive aggregate ground-truth, edge, and teacher PSNR versus G3",
+      "paired-bootstrap ground-truth lower bound above zero",
+      "no negative source mean",
+      "no source or split regression larger than 0.001 dB",
+      "no material degradation concentration in a language or script family"
+    ]
+  },
+  "runtime_constraint": "The result must preserve the exact G3 graph and mixed-weight layout. Bias storage may use the already-present raw tensor slots; portable ONNX remains the release surface unless FP16 packed-runtime parity also passes."
+}

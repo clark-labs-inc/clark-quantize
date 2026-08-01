@@ -1,0 +1,55 @@
+{
+  "format": "backdropkit-swin2sr-rstb-precision-boundary-protocol-v1",
+  "status": "sealed_after_int5_rejection_before_int7_evaluation",
+  "created_at": "2026-08-01",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false,
+  "hypothesis": "Int7-per-output will preserve at least 90 percent of the jointly trained FP16 gain in ground-truth, edge, and teacher metrics, while adding only 4,080 bytes over the rejected int5-per-kernel arm.",
+  "rejected_predecessor": {
+    "protocol": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/compression-protocol.json",
+    "protocol_sha256": "089a1a8a772c6b74cd0e794ee9d81fae127f553568bab3e0ed68b20c4e1a887b",
+    "arm": "int5_per_kernel",
+    "materialization_sha256": "a3dba4e975d8b57c72daa8765f40f394363d24e57aab85171f90313887f25e78",
+    "development_metrics_sha256": "1b1b730fd1c78c1690a32b9c33e9f9ef7e5d7b2aa95e72d5bb50535e6efb2a9c",
+    "comparison_sha256": "6c17d32f1b4dff63167d091a0d6a1f5cbbbd93cfe11163e6ba24f7887128a58b",
+    "ground_truth_retention": 0.914510520684627,
+    "edge_retention": 0.9669229687468534,
+    "teacher_retention": 0.758372550337866,
+    "rejection_reason": "Teacher-effect retention is below the predeclared 90 percent gate."
+  },
+  "sources": {
+    "ternary_materialization": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_ternary_seed20260801/materialized/materialization.json",
+    "ternary_materialization_sha256": "3047626c2f89ce604967345e128b8328db8fb72e394db2d148dfc7f2885952ab",
+    "ternary_development_metrics_sha256": "7b1d4d17530cb2806ab59627a116ca8aa5b248d5ca7740d9e2e248232f4c30ce",
+    "fp16_materialization": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_fp16_seed20260801/materialized/materialization.json",
+    "fp16_materialization_sha256": "7e05a783f856a6438d19cb2f629646a93ed7d8ed59201f0fe4603455196a3230",
+    "fp16_development_metrics_sha256": "a957f0eea74941e58de386feb994d70fd848d60a86698903799d23ce11e6232e",
+    "different_tensors": [
+      "swin2sr.encoder.stages.0.conv.weight",
+      "swin2sr.encoder.stages.1.conv.weight",
+      "swin2sr.encoder.stages.2.conv.weight",
+      "swin2sr.encoder.stages.3.conv.weight"
+    ],
+    "undeclared_different_tensors": 0
+  },
+  "implementation": {
+    "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/materialize_rstb_precision_boundary.py",
+    "sha256": "94e3d3e33764bbaed3286643c9c29b84ec2b733ba570839600bb4ec3298c642b"
+  },
+  "storage": {
+    "ternary_rstb_data_bytes": 54720,
+    "int5_per_kernel_rstb_data_bytes": 109800,
+    "int7_per_output_rstb_data_bytes": 113880,
+    "projected_incremental_data_bytes": 59160,
+    "incremental_bytes_over_int5_per_kernel": 4080
+  },
+  "arms": {
+    "int7_per_output": {
+      "bits": 7,
+      "granularity": "per_output",
+      "status": "preregistered_fallback",
+      "promotion_gate": "Retain at least 90 percent of the FP16-over-ternary aggregate ground-truth, edge, and teacher gains; keep all three gains positive; and pass source, split, script, and language regression checks."
+    }
+  }
+}

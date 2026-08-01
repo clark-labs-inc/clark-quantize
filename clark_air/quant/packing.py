@@ -5,6 +5,39 @@ from __future__ import annotations
 import numpy as np
 
 POW3_40 = np.array([3**i for i in range(40)], dtype=np.uint64)
+POW3_20 = np.array([3**i for i in range(20)], dtype=np.uint32)
+
+
+def pack_trits_20(codes: np.ndarray) -> tuple[np.ndarray, tuple[int, ...], int]:
+    """Pack {-1,0,+1} trits into browser-friendly uint32 words.
+
+    Twenty base-3 digits fit in one uint32 because ``3**20 < 2**32``. This
+    keeps the same 1.6 bits/trit payload density as the uint64 pack40 format
+    while avoiding uint64 arithmetic, which is not portable in WebGPU WGSL.
+    """
+
+    flat = np.asarray(codes, dtype=np.int8).reshape(-1)
+    if not np.isin(flat, [-1, 0, 1]).all():
+        raise ValueError("trit codes must be in {-1, 0, +1}")
+    trits = (flat.astype(np.int16) + 1).astype(np.uint32)
+    pad = (-trits.size) % 20
+    if pad:
+        trits = np.concatenate([trits, np.ones(pad, dtype=np.uint32)])
+    packed = (trits.reshape(-1, 20) * POW3_20.reshape(1, 20)).sum(axis=1, dtype=np.uint32)
+    return packed, tuple(codes.shape), pad
+
+
+def unpack_trits_20(packed: np.ndarray, shape: tuple[int, ...], pad: int) -> np.ndarray:
+    """Unpack uint32 chunks produced by :func:`pack_trits_20`."""
+
+    values = np.asarray(packed, dtype=np.uint32).copy()
+    out = np.empty(values.size * 20, dtype=np.int8)
+    for i in range(20):
+        out[i::20] = (values % 3).astype(np.int8)
+        values //= 3
+    if pad:
+        out = out[:-pad]
+    return (out.reshape(shape) - 1).astype(np.int8)
 
 
 def pack_trits_40(codes: np.ndarray) -> tuple[np.ndarray, tuple[int, ...], int]:

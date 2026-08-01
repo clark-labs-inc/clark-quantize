@@ -1,0 +1,34 @@
+{
+  "format": "backdropkit-realtime-temporal-ui-student-v1",
+  "parent": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/realtime_1080p_to_4k_20260731/run_rgb_5000step_12ch_20260801/checkpoint-final.pt",
+  "parent_sha256": "3cbb8a3358bbeaa239c517f1171dbb7706c2d453c961d17a4e6166aefde8c692",
+  "student": {
+    "channels": 14,
+    "blocks": 3,
+    "parameters": 11424,
+    "color_mode": "rgb"
+  },
+  "training": {
+    "steps": 1000,
+    "batch_size_pairs": 8,
+    "crop_size": 128,
+    "learning_rate": 0.0001,
+    "loss_weights": {
+      "ground_truth": 0.45000000000000007,
+      "teacher": 0.2,
+      "edge": 0.15,
+      "temporal": 0.2
+    },
+    "motion": "same-source translated adjacent UI crops",
+    "seed": 20260809
+  },
+  "training_images": 206232,
+  "validation_pairs": 268,
+  "baseline": {
+    "psnr_vs_ground_truth": 30.606481737165307,
+    "edge_psnr_vs_ground_truth": 28.76788172437184,
+    "psnr_vs_teacher": 33.742428445104345,
+    "temporal_delta_psnr": 27.88498832574531,
+    "static_delta_mae": 0.00335814134852436
+  }
+}

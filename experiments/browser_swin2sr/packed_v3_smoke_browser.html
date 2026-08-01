@@ -1,0 +1,197 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>BackdropKit packed v3 Swin2SR smoke</title>
+<pre id="result">running</pre>
+<script type="module">
+  import { parsePackedArtifactBundle } from "./runtime/packedBundle.js";
+  import {
+    loadPackedSwinRuntime,
+    selectPackedSwinRunner,
+  } from "./runtime/packedRuntime.js";
+  import {
+    detectRuntimeSurface,
+    runtimeSurface,
+  } from "./runtime_surface.mjs";
+
+  const result = document.querySelector("#result");
+  const parameters = new URLSearchParams(location.search);
+  const requestedBackend = parameters.get("backend") ?? "wasm";
+  const expectedBrowser = parameters.get("browser");
+  const fixtureUrl = parameters.get("fixture");
+  const forceScalar = parameters.get("scalar") === "1";
+  const ortUrl = parameters.get("ort")
+    ?? "/Documents/git/clark/saas-products/backdrop/node_modules/onnxruntime-web/dist/ort.webgpu.min.mjs";
+  const wasmRoot = parameters.get("wasm")
+    ?? "/Documents/git/clark/saas-products/backdrop/node_modules/onnxruntime-web/dist/";
+  const browserName = detectRuntimeSurface(navigator);
+
+  function errors(actual, expected) {
+    let maximum = 0;
+    let total = 0;
+    for (let index = 0; index < expected.length; index += 1) {
+      const error = Math.abs(actual[index] - expected[index]);
+      maximum = Math.max(maximum, error);
+      total += error;
+    }
+    return { maximum, mean: total / expected.length };
+  }
+
+  function heapBytes() {
+    return Number.isFinite(performance.memory?.usedJSHeapSize)
+      ? performance.memory.usedJSHeapSize
+      : null;
+  }
+
+  async function sha256Bytes(bytes) {
+    const digest = await crypto.subtle.digest("SHA-256", bytes);
+    return [...new Uint8Array(digest)]
+      .map((value) => value.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  async function sha256Url(url) {
+    return sha256Bytes(await fetch(url).then((response) => response.arrayBuffer()));
+  }
+
+  async function gunzip(bytes) {
+    const stream = new Blob([bytes]).stream().pipeThrough(
+      new DecompressionStream("gzip"),
+    );
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+
+  async function harnessFiles() {
+    const files = {
+      "packed_v3_smoke_browser.html": location.pathname,
+      "runtime_surface.mjs": new URL("./runtime_surface.mjs", location.href),
+      "runtime/packedBundle.js": new URL("./runtime/packedBundle.js", location.href),
+      "runtime/packedRuntime.js": new URL("./runtime/packedRuntime.js", location.href),
+      "runtime/pkg/clark_air_browser_runtime.js": new URL(
+        "./runtime/pkg/clark_air_browser_runtime.js",
+        location.href,
+      ),
+      "runtime/pkg/clark_air_browser_runtime_bg.wasm": new URL(
+        "./runtime/pkg/clark_air_browser_runtime_bg.wasm",
+        location.href,
+      ),
+      "runtime/pkg-simd/clark_air_browser_runtime.js": new URL(
+        "./runtime/pkg-simd/clark_air_browser_runtime.js",
+        location.href,
+      ),
+      "runtime/pkg-simd/clark_air_browser_runtime_bg.wasm": new URL(
+        "./runtime/pkg-simd/clark_air_browser_runtime_bg.wasm",
+        location.href,
+      ),
+    };
+    return Object.fromEntries(await Promise.all(
+      Object.entries(files).map(async ([name, url]) => [name, await sha256Url(url)]),
+    ));
+  }
+
+  try {
+    if (!fixtureUrl) throw new Error("fixture query parameter is required");
+    if (!["webgpu", "wasm"].includes(requestedBackend)) {
+      throw new Error(`unsupported requested backend: ${requestedBackend}`);
+    }
+    if (expectedBrowser && expectedBrowser !== browserName) {
+      throw new Error(`expected ${expectedBrowser}, detected ${browserName}`);
+    }
+    const fixtureBytes = await fetch(fixtureUrl)
+      .then((response) => response.arrayBuffer());
+    const fixtureSha256 = await sha256Bytes(fixtureBytes);
+    const fixture = JSON.parse(new TextDecoder().decode(fixtureBytes));
+    const modelUrl = parameters.get("model") ?? fixture.model.replace("/Users/stan", "");
+    const compressed = await fetch(modelUrl).then((response) => response.arrayBuffer());
+    const modelSha256 = await sha256Bytes(compressed);
+    if (
+      modelSha256 !== fixture.model_sha256
+      || compressed.byteLength !== fixture.model_bytes
+      || fixture.model_compression !== "gzip"
+    ) {
+      throw new Error("packed runtime package identity mismatch");
+    }
+    const decompressionStarted = performance.now();
+    const expanded = await gunzip(compressed);
+    const decompressionMs = performance.now() - decompressionStarted;
+    if (
+      await sha256Bytes(expanded) !== fixture.expanded_model_sha256
+      || expanded.byteLength !== fixture.expanded_model_bytes
+    ) {
+      throw new Error("expanded packed runtime identity mismatch");
+    }
+    const bundle = parsePackedArtifactBundle(expanded);
+    const heapBeforeSession = heapBytes();
+    const sessionStarted = performance.now();
+    const runtime = await loadPackedSwinRuntime({ allowSimd: !forceScalar });
+    let ort = null;
+    if (requestedBackend === "webgpu") {
+      ort = await import(ortUrl);
+      ort.env.wasm.wasmPaths = wasmRoot;
+      ort.env.wasm.numThreads = 1;
+    }
+    const runner = await selectPackedSwinRunner({
+      artifact: { ...bundle, ...runtime },
+      ort,
+      tryWebGpu: requestedBackend === "webgpu",
+    });
+    const actualBackend = runner.backend === "webgpu-external-data"
+      ? "webgpu"
+      : "wasm";
+    if (actualBackend !== requestedBackend) {
+      throw new Error(`${requestedBackend} initialization fell back to ${actualBackend}`);
+    }
+    const sessionMs = performance.now() - sessionStarted;
+    const heapAfterSession = heapBytes();
+    const input = new Float32Array(fixture.input);
+    const timings = [];
+    let output;
+    for (let iteration = 0; iteration < 3; iteration += 1) {
+      const started = performance.now();
+      output = await runner.run(
+        input,
+        fixture.input_shape[2],
+        fixture.input_shape[3],
+      );
+      timings.push(performance.now() - started);
+    }
+    const measuredErrors = errors(output, fixture.expected);
+    const receipt = {
+      backend: requestedBackend,
+      browser: browserName,
+      decompressionMs,
+      errors: measuredErrors,
+      expandedModelBytes: expanded.byteLength,
+      expandedModelSha256: fixture.expanded_model_sha256,
+      fixtureHardStateSha256: fixture.hard_state_sha256,
+      fixtureSha256,
+      harnessFiles: await harnessFiles(),
+      heapBytes: {
+        afterInference: heapBytes(),
+        afterSession: heapAfterSession,
+        beforeSession: heapBeforeSession,
+      },
+      inferenceMs: timings,
+      inputShape: fixture.input_shape,
+      modelBytes: compressed.byteLength,
+      modelCompression: fixture.model_compression,
+      modelSha256,
+      outputShape: fixture.output_shape,
+      passed: measuredErrors.maximum <= 0.001 && measuredErrors.mean <= 0.0001,
+      sessionMs,
+      surface: runtimeSurface(navigator, requestedBackend),
+      warmInferenceMs: Math.max(...timings.slice(1)),
+    };
+    await runner.release?.();
+    result.textContent = JSON.stringify({
+      browser: browserName,
+      fixture_hard_state_sha256: fixture.hard_state_sha256,
+      fixture_sha256: fixtureSha256,
+      model_sha256: modelSha256,
+      receipts: [receipt],
+    }, null, 2);
+    result.dataset.status = "complete";
+  } catch (error) {
+    result.textContent = String(error?.stack ?? error);
+    result.dataset.status = "failed";
+  }
+</script>

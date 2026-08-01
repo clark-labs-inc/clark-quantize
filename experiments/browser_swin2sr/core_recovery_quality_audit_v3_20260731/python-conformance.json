@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "artifact": "core_recovery_quality_audit_v3_20260731/browser_artifact",
+  "reference_state": "core_recovery_quality_audit_v3_20260731/browser_materialized/dense-hard.pt",
+  "model": "caidas/swin2SR-lightweight-x2-64",
+  "model_revision": "07e8e61492ce6daf4f34c651622960faf110c17f",
+  "mode": "ternary",
+  "group_size": 60,
+  "input_transform": {
+    "kind": "none"
+  },
+  "artifact_binary_sha256": "025d635b83465d7db39436a90bb6a488e973b412fdcc2c6341e4de3d040806e5",
+  "artifact_manifest_sha256": "7567da209cc6d194947978b41d128191990cfb0dd004c8014f76218e0cc38eaf",
+  "reference_state_sha256": "8efcf8872f059a3ff183f0605a5586f8d377feba3c9fd31f188aa905de46327f",
+  "input_shape": [
+    1,
+    3,
+    64,
+    64
+  ],
+  "output_shape": [
+    1,
+    3,
+    128,
+    128
+  ],
+  "max_absolute_error": 0.045816898345947266,
+  "mean_absolute_error": 0.0017982501303777099,
+  "psnr_vs_reference": 51.12214440872411,
+  "finite": true,
+  "tolerances": {
+    "max_absolute_error": 0.00392156862745098,
+    "mean_absolute_error": 0.001,
+    "minimum_psnr": 60.0
+  },
+  "passed": false
+}

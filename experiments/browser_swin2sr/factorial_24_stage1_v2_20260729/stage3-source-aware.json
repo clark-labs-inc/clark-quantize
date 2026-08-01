@@ -1,0 +1,79 @@
+{
+  "format": "backdropkit-swin2sr-source-aware-ranking-v1",
+  "stage": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage3",
+  "completed": 3,
+  "ranking": [
+    {
+      "rank": 1,
+      "name": "absmean__hadamard__bonsai_qat8_muon",
+      "result": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage3/absmean__hadamard__bonsai_qat8_muon/result.json",
+      "paired_q4": {
+        "samples": 800,
+        "mean_deltas": {
+          "psnr_vs_ground_truth": 0.3161503437051967,
+          "edge_psnr_vs_ground_truth": 0.2743642013129014,
+          "psnr_vs_teacher": -1.5516165028905025
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 512,
+            "mean_psnr_delta": 0.5100038721999225
+          },
+          "rico_screen2words_heldout": {
+            "samples": 288,
+            "mean_psnr_delta": -0.02847815139653804
+          }
+        },
+        "worst_source_psnr_delta": -0.02847815139653804
+      }
+    },
+    {
+      "rank": 2,
+      "name": "absmean__hadamard__bonsai_qat8",
+      "result": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage3/absmean__hadamard__bonsai_qat8/result.json",
+      "paired_q4": {
+        "samples": 800,
+        "mean_deltas": {
+          "psnr_vs_ground_truth": 0.26145311082710726,
+          "edge_psnr_vs_ground_truth": 0.2322795710936543,
+          "psnr_vs_teacher": -1.548258335447516
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 512,
+            "mean_psnr_delta": 0.44623987540968424
+          },
+          "rico_screen2words_heldout": {
+            "samples": 288,
+            "mean_psnr_delta": -0.06705669287525123
+          }
+        },
+        "worst_source_psnr_delta": -0.06705669287525123
+      }
+    },
+    {
+      "rank": 3,
+      "name": "optimal_mse__none__bonsai_qat8_muon",
+      "result": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage3/optimal_mse__none__bonsai_qat8_muon/result.json",
+      "paired_q4": {
+        "samples": 800,
+        "mean_deltas": {
+          "psnr_vs_ground_truth": 0.2205090820930734,
+          "edge_psnr_vs_ground_truth": 0.1926317644649746,
+          "psnr_vs_teacher": -2.0829509750516166
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 512,
+            "mean_psnr_delta": 0.4276519209675337
+          },
+          "rico_screen2words_heldout": {
+            "samples": 288,
+            "mean_psnr_delta": -0.14774485368374446
+          }
+        },
+        "worst_source_psnr_delta": -0.14774485368374446
+      }
+    }
+  ]
+}

@@ -1,0 +1,1424 @@
+{
+  "format": "backdropkit-swin2sr-surface-group-sensitivity-v1",
+  "diagnostic_only": true,
+  "selection_source": "development_screen",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+  "checkpoint_sha256": "ad5e76db8c378c16da689a4cf37d96eb6e204f7b9de543199efc103c0d371469",
+  "surface_step": 24000,
+  "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "bundle_manifest_sha256": "e35334e5c567d7c6c9212eb2008507e73f6e0a3b17c041abbefb3bd82e59720d",
+  "device": "cpu",
+  "torch_threads": 1,
+  "bootstrap": {
+    "method": "paired_nonparametric_mean",
+    "resamples": 5000,
+    "seed": 20260731,
+    "confidence": 0.95
+  },
+  "sample_count": 64,
+  "samples": [
+    {
+      "sha256": "27428cfb08bf4f27add4deb9c6f5c29a96d75df867dbcc2d08816cbac1f92f63",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ace_Arab"
+    },
+    {
+      "sha256": "0c6e64812e39537b6c42c0f3c672915778b930c48b1056ac139beff21b6516c0",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ace_Latn"
+    },
+    {
+      "sha256": "0bfad166ec9da6eec0b623d7d4010bccca731122894a89d02bfb48cc0b147b62",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "acm_Arab"
+    },
+    {
+      "sha256": "0f84bb5c89b0531c63d8a2c6dc5c741b56f6fbce907f91b0663f1d73e2aa20a8",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "acq_Arab"
+    },
+    {
+      "sha256": "0a16f63001a2125311ff0077d804b6467d6f395d3883ba81c153056b05d2563e",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "aeb_Arab"
+    },
+    {
+      "sha256": "2408731dda03d693e83d219731e12f83542ceaf2f956b835e29c09e58cd992d7",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "afr_Latn"
+    },
+    {
+      "sha256": "042b2475ad1eff27959699ef728d2e91d107eddfbb4b34558f4e1f141564b4a9",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ajp_Arab"
+    },
+    {
+      "sha256": "1479fbb3c4e35a6fb9e48b7a5827dfee5f0237d5c76a1db86af96f7d84512076",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "aka_Latn"
+    },
+    {
+      "sha256": "066389475f6a1695a7c998c4c7f0a49c2bd6b154bdb5b3c5259bf72f7606b7b4",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "als_Latn"
+    },
+    {
+      "sha256": "016b1b3c81ae1c3d4e0f2fd84bdd71eabd1f3711fd021de89ee6dbfbf9e1123f",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "amh_Ethi"
+    },
+    {
+      "sha256": "3958dca90a05e01faf8771cd732d14faf74b825979472af80afc80d9e9412a25",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "apc_Arab"
+    },
+    {
+      "sha256": "144de82b12ad16ecd1d18764e46a2e062eb4074be1ac35708cb1b59c9653cf8e",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "arb_Arab"
+    },
+    {
+      "sha256": "0fc7722cfb7e28badfa4662fee3ed41f5c725ca068c0333880c583ef3ed7a2de",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "arb_Latn"
+    },
+    {
+      "sha256": "15a181b9eba2a294c9d76177242b508bba8b55feaefe65e078740549f2f3203e",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ars_Arab"
+    },
+    {
+      "sha256": "22bff3a4521b6949e7a1fdf8528d2f3de7c00e3a3d71f4801fa4e7a0e81325a7",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ary_Arab"
+    },
+    {
+      "sha256": "450b71e85cdcf58d6fe628f63f242bd934619ee3684a746d82a6dca1d3da25a9",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "arz_Arab"
+    },
+    {
+      "sha256": "291078fdb9eba21d9f85a3e2e3c341ef126990d6147eebe4c48075e48f6a0055",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "asm_Beng"
+    },
+    {
+      "sha256": "21b7e4a4e89cadbe9862c751982041bc68f3e7275bc46b49038f88c111170513",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ast_Latn"
+    },
+    {
+      "sha256": "20569ae9fe017c459ca574943035e8e3a8e038ca07da9f17db7396be4d862c2c",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "awa_Deva"
+    },
+    {
+      "sha256": "24205613a9f1dd935906d71a94dc3c3fdcf183bb21b550facfd7239f5861e55f",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ayr_Latn"
+    },
+    {
+      "sha256": "08c0a9afd5d5dbfcc76f77bb1109ac1b8e096de160e669ef62905205abdc2103",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "azb_Arab"
+    },
+    {
+      "sha256": "33c53f050ff43ee1ff4b1b04ee7161bed56ea928a78edd8749af500d22ba9f54",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "azj_Latn"
+    },
+    {
+      "sha256": "096044b2b9739d4764289a4223a4e15470e08abf23b6c723bfcf2b4a0aa4e65d",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "bak_Cyrl"
+    },
+    {
+      "sha256": "13b58c17861850aa9bdc78aa1b314be44149930017f3002c6a28fab677727772",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "bam_Latn"
+    },
+    {
+      "sha256": "0245b86860460db70fe610f2931dc7f466d114f4a84476f463b7ca46068f080d",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ban_Latn"
+    },
+    {
+      "sha256": "210699b1696fb7f1a71bd2c4e3aa874c73ef6775013a1edf92e9a2d3574b3f70",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "bel_Cyrl"
+    },
+    {
+      "sha256": "032aa8707e5943d1f37e3eb4e4027121519566faa7b832597608794489df5e7d",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "bem_Latn"
+    },
+    {
+      "sha256": "13872aa150629178f05e9bf8b4ec213777890b54ec2cc6f7b9de7db7f5ba63bf",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "ben_Beng"
+    },
+    {
+      "sha256": "521f40232527f7a9b7800e519d61466081ace2ecac3472bf086790aba80cfe63",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "bho_Deva"
+    },
+    {
+      "sha256": "04e59b26f2f26420964fe69abe0d29a0cb0abcf16455db0da72e4e45ddfc2e39",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "bjn_Arab"
+    },
+    {
+      "sha256": "02c4a463b32b882c19f4a6934d8bb95cf2d4438d365cf220276eb51afbe6caa6",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "bjn_Latn"
+    },
+    {
+      "sha256": "018c28f90fc8eef0a08666970bc844d47c7eee8ad124095f61b93fedace24706",
+      "source": "flores200_balanced_synthetic_ui",
+      "script": null,
+      "language": "bod_Tibt"
+    },
+    {
+      "sha256": "00e51d2bc9151b55dfc7ab8f92e6e633a4ef20eb36826e2c5c20821c2409d19c",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "004aad666419cecd23d43b9c84011c33665148aa0977d7515fb7f1917c62acbb",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "02755eec2393f01f0c2bcbe14609dd33712dc674e29c3538d5d691fd9d4adf50",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "004bce118d7e41974d3462a50d0fda91368fd40340bfbaa2c9242793c17641ff",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "02b6fd945869bee72082c6a63dd343e00d1bbd6385d5cde7ffefecddd4c6ebb7",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "00b7ff61bdc04c9c28591eaae7c3e0b3048188328ca37e82cf2150ca97be9032",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "031e17a14c04d5739e7c14fff8943c1b4e86e74d36b8576c50d087851abd7c82",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "01986666f29a2cb9d0022a1623d392b1efa7ef7fe92a46aab285fdfdf3f6645c",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "04754b9b453672055e3d2b089b795c306543008ada7cc8e1f51e42e581f01b2b",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "01b0b7d96d952a1d50e8c0efe5d51441ee8b639f1778783920c1d08aa0cec4e1",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "05aeb57d28cdc3ddba1685965b424797b4205682d6db71517cf9075a5a81e0ec",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "01caf5491c79a5269b25ee768bc6ecb7cf3184f44b5d5e57a419f8d5cc39de8e",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "06694c3a3f6d05228be7ced3b906e5ac3f24a31756c606ed3f63e106075c78f5",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "023a751fc4b9f2faa0a499ff3f985e4da927e543ae2c9470ad6feec6801d2f87",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "066edc2b6c7d413875d8d304fd30a0f8c814b86a35995f322c10f93ff439b887",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "0313a868d156b6588f5639832165dbcfdb43a961d871e324f40524287ae8d70e",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "076ecdfa8eeed7cbfc7253fd572fff58ceae1bb73ce6ba2a97d598c2e14b5324",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "03b78e0f1617fac71ab64e18010051f9ced22b8e8e5e3efbf20ee059de69f59c",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "082d4eb958c25fcd7c81f8435e3580e80904b662ed061090ea9825a177a8f72c",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "04b7a64be984001476c3584953b565341561afa73e5f86b61c9a7c8b10523927",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "08353fcf8b15f2a5371190e35714806b287f10b6e408f72305d06691aeacc2aa",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "04d7bc90ab659d8ba7d746fc219d055460eb5e027c51f27fd516c77fbf0620a6",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "0998663cbb133d8677f9c14b3ba0f7fc07ae7d8751c7c7b6e3a102add9614222",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "052fa0533160f464f4001ecf33594fbab3edd5315286beb09b3bc1ec259803b4",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "09a8b05ef22908e0434c467baf8b09541d02485db562592dd402497edbc959b3",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "06110fd10ca3730e299174a97924dc95fb401f90f35fa0ec7f152306505331be",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "0a32ce89fff3a6b218aee09550f588109b82de025277f410573475f4775b36f2",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "06a9db8b10f2a27d7625e2248daeeb7df0d32779f342f0715b6805a84b3ce710",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "0a3f2096ded4d2b93c9ed3ae63dee9878ae30c7595ac34350c659b8ddbebe5e0",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "086bfca2e5cd43ff537cba87b6110e68824fe897842cff778a9bc38d8034958b",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "0a5b6b749eab7123bb9b2709c799eb8f6245ae6f2a99cf324f146b7af443d8ba",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    },
+    {
+      "sha256": "098b35adb6b266964668db240c524b4170ee8bd2b6bf922b4ca2e549859a25fc",
+      "source": "rico_screen2words_heldout",
+      "script": null,
+      "language": null
+    }
+  ],
+  "target_group_size": 6,
+  "candidate_method": "current",
+  "surface_count": 17,
+  "total_quantized_values": 977604,
+  "hard": {
+    "psnr_vs_ground_truth": 32.43638431531486,
+    "edge_psnr_vs_ground_truth": 36.15507979236175,
+    "psnr_vs_teacher": 37.87887843800884
+  },
+  "surfaces": [
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.449299296078294,
+        "edge_psnr_vs_ground_truth": 36.180621725213875,
+        "psnr_vs_teacher": 37.86329611307175
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.012914980763433448,
+        "edge_psnr_vs_ground_truth": 0.02554193285212847,
+        "psnr_vs_teacher": -0.015582324937092551
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": 0.01291498076343467,
+          "median": 0.0003587756303335965,
+          "lower_95": -0.000893811448805147,
+          "upper_95": 0.027315147253330247,
+          "wins": 33,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 0.02554193285212797,
+          "median": 0.012530304965894246,
+          "lower_95": 0.012117489920817173,
+          "upper_95": 0.038602622077182284,
+          "wins": 43,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.015582324937092995,
+          "median": -0.011782110137449564,
+          "lower_95": -0.03940869156745083,
+          "upper_95": 0.009570605844946498,
+          "wins": 28,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 6,
+        "scale_count": 600,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 9600,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.00883793437833724,
+        "scale_bytes_delta": 1080
+      },
+      "ground_truth_db_per_added_kib": 0.012245315094218381
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.0.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.445599940029155,
+        "edge_psnr_vs_ground_truth": 36.16927669940565,
+        "psnr_vs_teacher": 37.89479525625951
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.009215624714293824,
+        "edge_psnr_vs_ground_truth": 0.014196907043903195,
+        "psnr_vs_teacher": 0.01591681825067326
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": 0.009215624714296933,
+          "median": 0.002591167766178515,
+          "lower_95": -0.0013224486137778876,
+          "upper_95": 0.020081010896349494,
+          "wins": 34,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 0.014196907043900364,
+          "median": 0.007842766835942427,
+          "lower_95": 0.0035656254374951805,
+          "upper_95": 0.025382008490799968,
+          "wins": 42,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": 0.01591681825066993,
+          "median": 0.02359794100128454,
+          "lower_95": -0.0016913775981994904,
+          "upper_95": 0.03253670485176128,
+          "wins": 38,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 7200,
+        "group_size": 6,
+        "scale_count": 1200,
+        "ideal_code_bits": 11411.730005192323,
+        "scale_bits": 19200,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.01767586875667448,
+        "scale_bytes_delta": 2160
+      },
+      "ground_truth_db_per_added_kib": 0.004368888753442998
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.2.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.44493631625722,
+        "edge_psnr_vs_ground_truth": 36.15308188568548,
+        "psnr_vs_teacher": 37.8895164834937
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.008552000942358973,
+        "edge_psnr_vs_ground_truth": -0.0019979066762658704,
+        "psnr_vs_teacher": 0.01063804548486047
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": 0.008552000942360194,
+          "median": -0.0034551752629905508,
+          "lower_95": -0.0029429439801354055,
+          "upper_95": 0.02232837297353492,
+          "wins": 26,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": -0.0019979066762655373,
+          "median": -0.0036069237395341958,
+          "lower_95": -0.009409468249264334,
+          "upper_95": 0.005396478989260087,
+          "wins": 23,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": 0.010638045484861913,
+          "median": -0.004077977809753719,
+          "lower_95": -0.005939720475503708,
+          "upper_95": 0.029191242169664178,
+          "wins": 30,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 6,
+        "scale_count": 600,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 9600,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.00883793437833724,
+        "scale_bytes_delta": 1080
+      },
+      "ground_truth_db_per_added_kib": 0.008108563856458877
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.0.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.43813359499612,
+        "edge_psnr_vs_ground_truth": 36.15731168079384,
+        "psnr_vs_teacher": 37.87977121243101
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.001749279681256155,
+        "edge_psnr_vs_ground_truth": 0.0022318884320924326,
+        "psnr_vs_teacher": 0.0008927744221693956
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": 0.0017492796812488276,
+          "median": 0.0007580178651664937,
+          "lower_95": 0.00029918110874786605,
+          "upper_95": 0.003294135636983507,
+          "wins": 40,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 0.002231888432091156,
+          "median": 0.000960732512270468,
+          "lower_95": 0.000894027734003193,
+          "upper_95": 0.0036546229146882884,
+          "wins": 43,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": 0.000892774422171283,
+          "median": -0.0003879356602602968,
+          "lower_95": -0.002141883911884178,
+          "upper_95": 0.004121417199190959,
+          "wins": 30,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 1024,
+        "group_size": 6,
+        "scale_count": 171,
+        "ideal_code_bits": 1623.0016007384638,
+        "scale_bits": 2736,
+        "layer_bits_per_weight": 4.256837500721156,
+        "whole_model_bit_delta_vs_reference": 0.0025040814071955516,
+        "scale_bytes_delta": 306
+      },
+      "ground_truth_db_per_added_kib": 0.005853798671916022
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.1.attention.self.continuous_position_bias_mlp.0",
+      "category": "position_bias_linear",
+      "values": 1024,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.43679047246175,
+        "edge_psnr_vs_ground_truth": 36.15577419061104,
+        "psnr_vs_teacher": 37.87734373608737
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": 0.00040615714689096194,
+        "edge_psnr_vs_ground_truth": 0.0006943982492941814,
+        "psnr_vs_teacher": -0.0015347019214715374
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": 0.00040615714688957416,
+          "median": 0.0001626666242433572,
+          "lower_95": -0.00045731536642672763,
+          "upper_95": 0.0013162696745180433,
+          "wins": 34,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 0.000694398249297068,
+          "median": 0.0005664604224069336,
+          "lower_95": -7.671244371230539e-05,
+          "upper_95": 0.0014975835359725394,
+          "wins": 34,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.0015347019214669855,
+          "median": -0.0010740417918810863,
+          "lower_95": -0.0034710063676880983,
+          "upper_95": 0.00042229247468018394,
+          "wins": 26,
+          "ties": 1,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 1024,
+        "group_size": 6,
+        "scale_count": 171,
+        "ideal_code_bits": 1623.0016007384638,
+        "scale_bits": 2736,
+        "layer_bits_per_weight": 4.256837500721156,
+        "whole_model_bit_delta_vs_reference": 0.0025040814071955516,
+        "scale_bytes_delta": 306
+      },
+      "ground_truth_db_per_added_kib": 0.001359166400053415
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.4.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.43584579762654,
+        "edge_psnr_vs_ground_truth": 36.15629763368859,
+        "psnr_vs_teacher": 37.87086327858208
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.0005385176883194731,
+        "edge_psnr_vs_ground_truth": 0.001217841326841551,
+        "psnr_vs_teacher": -0.008015159426761898
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": -0.0005385176883168641,
+          "median": -0.0004138338964629895,
+          "lower_95": -0.009080270333015342,
+          "upper_95": 0.008043209126830007,
+          "wins": 31,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 0.0012178413268392196,
+          "median": 0.0007908751926333224,
+          "lower_95": -0.006086464455128236,
+          "upper_95": 0.00888614121201959,
+          "wins": 32,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.008015159426756402,
+          "median": -0.00607465568055332,
+          "lower_95": -0.02124944026656536,
+          "upper_95": 0.0049335013379400066,
+          "wins": 29,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 6,
+        "scale_count": 600,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 9600,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.00883793437833724,
+        "scale_bytes_delta": 1080
+      },
+      "ground_truth_db_per_added_kib": -0.00051059454892513
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.5.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.434574787627525,
+        "edge_psnr_vs_ground_truth": 36.151450040781825,
+        "psnr_vs_teacher": 37.87926116972257
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.0018095276873353328,
+        "edge_psnr_vs_ground_truth": -0.003629751579921958,
+        "psnr_vs_teacher": 0.00038273171372793513
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": -0.0018095276873370536,
+          "median": -0.003447137680238299,
+          "lower_95": -0.0073486986420945016,
+          "upper_95": 0.003768150351404367,
+          "wins": 30,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": -0.0036297515799181834,
+          "median": -0.004089991538588578,
+          "lower_95": -0.008531502132039901,
+          "upper_95": 0.0012975992181128828,
+          "wins": 29,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": 0.00038273171372738,
+          "median": 0.0048533305104392355,
+          "lower_95": -0.010343636895810785,
+          "upper_95": 0.011053333529570346,
+          "wins": 35,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 6,
+        "scale_count": 600,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 9600,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.00883793437833724,
+        "scale_bytes_delta": 1080
+      },
+      "ground_truth_db_per_added_kib": -0.001715700325769797
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.43305773444149,
+        "edge_psnr_vs_ground_truth": 36.15566290840911,
+        "psnr_vs_teacher": 37.86760227605154
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.003326580873370233,
+        "edge_psnr_vs_ground_truth": 0.0005831160473661612,
+        "psnr_vs_teacher": -0.011276161957297859
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": -0.0033265808733716207,
+          "median": -0.0019059822974085705,
+          "lower_95": -0.011608518044948741,
+          "upper_95": 0.0050017617063098825,
+          "wins": 30,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 0.0005831160473629415,
+          "median": -0.0007102558846199258,
+          "lower_95": -0.006713423246357116,
+          "upper_95": 0.008081714624298894,
+          "wins": 32,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.011276161957299469,
+          "median": -0.005772576594047507,
+          "lower_95": -0.0350565060645769,
+          "upper_95": 0.006945886239676585,
+          "wins": 29,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 6,
+        "scale_count": 600,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 9600,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.00883793437833724,
+        "scale_bytes_delta": 1080
+      },
+      "ground_truth_db_per_added_kib": -0.0031540914947510356
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.5.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.43248082924876,
+        "edge_psnr_vs_ground_truth": 36.15335107783522,
+        "psnr_vs_teacher": 37.83058442521319
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.00390348606610047,
+        "edge_psnr_vs_ground_truth": -0.001728714526528563,
+        "psnr_vs_teacher": -0.04829401279565104
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": -0.0039034860661041337,
+          "median": -0.000999086864567289,
+          "lower_95": -0.025556554374909713,
+          "upper_95": 0.016214450854459026,
+          "wins": 31,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": -0.0017287145265285075,
+          "median": 0.003356127640103068,
+          "lower_95": -0.021941558244075888,
+          "upper_95": 0.017200206272698974,
+          "wins": 34,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.04829401279565004,
+          "median": -0.049668425875463385,
+          "lower_95": -0.08014803092179766,
+          "upper_95": -0.015385543279825163,
+          "wins": 18,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 6,
+        "scale_count": 600,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 9600,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.00883793437833724,
+        "scale_bytes_delta": 1080
+      },
+      "ground_truth_db_per_added_kib": -0.0037010830848952605
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.4.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.43067983984485,
+        "edge_psnr_vs_ground_truth": 36.17075056412219,
+        "psnr_vs_teacher": 37.84839057180026
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.005704475470011516,
+        "edge_psnr_vs_ground_truth": 0.015670771760440516,
+        "psnr_vs_teacher": -0.030487866208581238
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": -0.005704475470013404,
+          "median": -0.011164889226762398,
+          "lower_95": -0.028229168491448645,
+          "upper_95": 0.017414840909201566,
+          "wins": 26,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 0.0156707717604348,
+          "median": -0.0010828670430242937,
+          "lower_95": -0.006511085783411338,
+          "upper_95": 0.03999155695098345,
+          "wins": 31,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.030487866208580572,
+          "median": -0.054614749899688064,
+          "lower_95": -0.06319722313236424,
+          "upper_95": 0.003071655241766393,
+          "wins": 22,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 6,
+        "scale_count": 600,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 9600,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.00883793437833724,
+        "scale_bytes_delta": 1080
+      },
+      "ground_truth_db_per_added_kib": -0.005408687853047957
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.2.attention.self.key",
+      "category": "core_linear",
+      "values": 3600,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.42898009376185,
+        "edge_psnr_vs_ground_truth": 36.147476129125366,
+        "psnr_vs_teacher": 37.87175316516542
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.007404221553009904,
+        "edge_psnr_vs_ground_truth": -0.007603663236380953,
+        "psnr_vs_teacher": -0.007125272843417463
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": -0.007404221553007517,
+          "median": 0.0007526660504222349,
+          "lower_95": -0.016494369861074318,
+          "upper_95": 0.0010199873545790323,
+          "wins": 32,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": -0.007603663236376623,
+          "median": -0.00048678680989411305,
+          "lower_95": -0.01605885036693075,
+          "upper_95": 0.00031261915682846627,
+          "wins": 31,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.00712527284341774,
+          "median": -0.0026157667143813512,
+          "lower_95": -0.023819958379770075,
+          "upper_95": 0.007413995032170672,
+          "wins": 31,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 6,
+        "scale_count": 600,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 9600,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.00883793437833724,
+        "scale_bytes_delta": 1080
+      },
+      "ground_truth_db_per_added_kib": -0.0070202989539649464
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.42468482334506,
+        "edge_psnr_vs_ground_truth": 36.13713032705033,
+        "psnr_vs_teacher": 37.858442076342115
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.011699491969800135,
+        "edge_psnr_vs_ground_truth": -0.01794946531141761,
+        "psnr_vs_teacher": -0.020436361666725134
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": -0.011699491969795528,
+          "median": -0.012145122885703685,
+          "lower_95": -0.02296315850011843,
+          "upper_95": -4.58914697883017e-05,
+          "wins": 19,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": -0.01794946531142294,
+          "median": -0.015925019520020456,
+          "lower_95": -0.029420653907872386,
+          "upper_95": -0.00589923803972468,
+          "wins": 16,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.020436361666727965,
+          "median": -0.0260379205709782,
+          "lower_95": -0.03484591027451245,
+          "upper_95": -0.005689811032179016,
+          "wins": 19,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 6,
+        "scale_count": 600,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 9600,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.00883793437833724,
+        "scale_bytes_delta": 1080
+      },
+      "ground_truth_db_per_added_kib": -0.01109285164544013
+    },
+    {
+      "name": "swin2sr.encoder.stages.2.layers.2.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.412133897495686,
+        "edge_psnr_vs_ground_truth": 36.130014130808135,
+        "psnr_vs_teacher": 37.848114266166746
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.02425041781917514,
+        "edge_psnr_vs_ground_truth": -0.025065661553611562,
+        "psnr_vs_teacher": -0.0307641718420939
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": -0.024250417819177417,
+          "median": -0.015141041672624311,
+          "lower_95": -0.037312993001752934,
+          "upper_95": -0.009849653831258775,
+          "wins": 20,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": -0.025065661553618168,
+          "median": -0.019717993712001558,
+          "lower_95": -0.037372869517318996,
+          "upper_95": -0.011625884131072227,
+          "wins": 17,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.030764171842098453,
+          "median": -0.03575884230053994,
+          "lower_95": -0.05199523661598886,
+          "upper_95": -0.00975165921905425,
+          "wins": 22,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 7200,
+        "group_size": 6,
+        "scale_count": 1200,
+        "ideal_code_bits": 11411.730005192323,
+        "scale_bits": 19200,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.01767586875667448,
+        "scale_bytes_delta": 2160
+      },
+      "ground_truth_db_per_added_kib": -0.011496494373534881
+    },
+    {
+      "name": "swin2sr.encoder.stages.1.layers.2.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.40612205141345,
+        "edge_psnr_vs_ground_truth": 36.12729546629388,
+        "psnr_vs_teacher": 37.81696546454108
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.030262263901413178,
+        "edge_psnr_vs_ground_truth": -0.027784326067866516,
+        "psnr_vs_teacher": -0.06191297346776281
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": -0.030262263901409736,
+          "median": -0.031636216878005996,
+          "lower_95": -0.05348015386001655,
+          "upper_95": -0.0076850208524812,
+          "wins": 21,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": -0.027784326067866794,
+          "median": -0.027132302027805366,
+          "lower_95": -0.04848823910105334,
+          "upper_95": -0.008052326779237819,
+          "wins": 21,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.06191297346776464,
+          "median": -0.06326851516038445,
+          "lower_95": -0.09898174834771276,
+          "upper_95": -0.0255463354755913,
+          "wins": 19,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 6,
+        "scale_count": 600,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 9600,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.00883793437833724,
+        "scale_bytes_delta": 1080
+      },
+      "ground_truth_db_per_added_kib": -0.02869310947689546
+    },
+    {
+      "name": "swin2sr.encoder.stages.3.layers.0.intermediate.dense",
+      "category": "core_linear",
+      "values": 7200,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.39724213688628,
+        "edge_psnr_vs_ground_truth": 36.118428952625614,
+        "psnr_vs_teacher": 37.81140945197618
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.03914217842858392,
+        "edge_psnr_vs_ground_truth": -0.03665083973613292,
+        "psnr_vs_teacher": -0.06746898603265805
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": -0.03914217842858936,
+          "median": -0.027861934997350346,
+          "lower_95": -0.06258415574179288,
+          "upper_95": -0.017617474313704754,
+          "wins": 13,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": -0.03665083973613242,
+          "median": -0.02004735008893377,
+          "lower_95": -0.06031182159431171,
+          "upper_95": -0.01652441683378535,
+          "wins": 15,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.06746898603265794,
+          "median": -0.07636219210206363,
+          "lower_95": -0.09318103699838874,
+          "upper_95": -0.0403102524778484,
+          "wins": 14,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 7200,
+        "group_size": 6,
+        "scale_count": 1200,
+        "ideal_code_bits": 11411.730005192323,
+        "scale_bits": 19200,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.01767586875667448,
+        "scale_bytes_delta": 2160
+      },
+      "ground_truth_db_per_added_kib": -0.018556291995773116
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.self.value",
+      "category": "core_linear",
+      "values": 3600,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.39364574670088,
+        "edge_psnr_vs_ground_truth": 36.11667460887631,
+        "psnr_vs_teacher": 37.830070691298204
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.042738568613984285,
+        "edge_psnr_vs_ground_truth": -0.03840518348543753,
+        "psnr_vs_teacher": -0.04880774671063648
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": -0.04273856861398351,
+          "median": -0.014666139368030073,
+          "lower_95": -0.06276991653597733,
+          "upper_95": -0.0248979926678194,
+          "wins": 15,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": -0.03840518348544547,
+          "median": -0.014063743282338947,
+          "lower_95": -0.05691057837032415,
+          "upper_95": -0.021737604805325817,
+          "wins": 13,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.04880774671063759,
+          "median": -0.03689798511508968,
+          "lower_95": -0.07265615785723825,
+          "upper_95": -0.0264965243310682,
+          "wins": 17,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 6,
+        "scale_count": 600,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 9600,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.00883793437833724,
+        "scale_bytes_delta": 1080
+      },
+      "ground_truth_db_per_added_kib": -0.04052249468585176
+    },
+    {
+      "name": "swin2sr.encoder.stages.0.layers.0.attention.output.dense",
+      "category": "core_linear",
+      "values": 3600,
+      "reference_method": "absmean",
+      "reference_group_size": 60,
+      "candidate_method": "absmean",
+      "candidate_group_size": 6,
+      "metrics": {
+        "psnr_vs_ground_truth": 32.37246154820719,
+        "edge_psnr_vs_ground_truth": 36.0864226973588,
+        "psnr_vs_teacher": 37.77994263287166
+      },
+      "delta_vs_hard": {
+        "psnr_vs_ground_truth": -0.06392276710766964,
+        "edge_psnr_vs_ground_truth": -0.0686570950029477,
+        "psnr_vs_teacher": -0.09893580513718092
+      },
+      "paired_evidence": {
+        "psnr_vs_ground_truth": {
+          "mean": -0.06392276710766803,
+          "median": -0.0396109047400337,
+          "lower_95": -0.08747309488454079,
+          "upper_95": -0.040617392350619036,
+          "wins": 17,
+          "ties": 0,
+          "samples": 64
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": -0.06865709500294831,
+          "median": -0.04256863104355091,
+          "lower_95": -0.09030721432363475,
+          "upper_95": -0.047534616173845114,
+          "wins": 13,
+          "ties": 0,
+          "samples": 64
+        },
+        "psnr_vs_teacher": {
+          "mean": -0.09893580513717926,
+          "median": -0.09523549128942577,
+          "lower_95": -0.13564748567351376,
+          "upper_95": -0.06229137086751788,
+          "wins": 13,
+          "ties": 0,
+          "samples": 64
+        }
+      },
+      "storage": {
+        "values": 3600,
+        "group_size": 6,
+        "scale_count": 600,
+        "ideal_code_bits": 5705.8650025961615,
+        "scale_bits": 9600,
+        "layer_bits_per_weight": 4.251629167387822,
+        "whole_model_bit_delta_vs_reference": 0.00883793437833724,
+        "scale_bytes_delta": 1080
+      },
+      "ground_truth_db_per_added_kib": -0.060608253257642325
+    }
+  ],
+  "elapsed_seconds": 300.07732925,
+  "peak_process_rss_bytes": 634552320
+}

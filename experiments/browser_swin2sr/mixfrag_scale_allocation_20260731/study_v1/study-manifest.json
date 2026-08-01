@@ -1,0 +1,107 @@
+{
+  "format": "backdropkit-swin2sr-output-fragility-study-v1",
+  "status": "sealed_before_calibration_results",
+  "model_promotion_authorized": false,
+  "development_access_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false,
+  "upstream_method": {
+    "name": "MixFrag",
+    "paper": "https://arxiv.org/abs/2607.28589v1",
+    "submitted": "2026-07-30",
+    "transfer": "isolated output fragility plus exact MCKP allocation only",
+    "caution": "one-day-old v1 preprint; Swin2SR metric and backend are independent"
+  },
+  "base_study": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/study-manifest.json",
+  "base_study_sha256": "6032d9a78873b0ef4fc75e3dc255c3c58ad8dbcdd4a2d1c0ddfd2af3944e48e5",
+  "base_sealed_sources": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+  "parent_checkpoint": "experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+  "parent_checkpoint_sha256": "0b155f9ada8b747544ba1abb83596e160927fdc91a4c33bf36879ff3f77ce00f",
+  "training_data": [
+    {
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+      "summary": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/summary.json",
+      "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705",
+      "manifest": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1/manifest.jsonl",
+      "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+      "images": 104500,
+      "source": null,
+      "source_revision": null
+    },
+    {
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2",
+      "summary": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/summary.json",
+      "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42",
+      "manifest": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2/manifest.jsonl",
+      "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+      "images": 102000,
+      "source": "Muennighoff/flores200",
+      "source_revision": "9660f10339cfc46a369a4d95fccb301a739c3fa8"
+    }
+  ],
+  "calibration_samples": 64,
+  "seed": 20260731,
+  "batch_size": 8,
+  "bit_widths": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "scale_storage_budgets": [
+    10012,
+    20024,
+    75356
+  ],
+  "expected_uniform_storage_bytes": {
+    "q1": 5716,
+    "q2": 11400,
+    "q4": 25668,
+    "q8": 65228,
+    "fp16": 75356
+  },
+  "fragility": "normalized_output_mse + 0.25 * normalized_edge_mse",
+  "calibration_command": [
+    "/usr/bin/env",
+    "PYTHONPATH=experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/study_v1/sealed_overlay/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/study_v1/sealed_overlay/experiments/browser_swin2sr/calibrate_scale_fragility.py",
+    "--parent",
+    "experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+    "--out",
+    "experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/study_v1/calibration",
+    "--samples",
+    "64",
+    "--seed",
+    "20260731",
+    "--batch-size",
+    "8",
+    "--bit-width",
+    "1",
+    "--bit-width",
+    "2",
+    "--bit-width",
+    "4",
+    "--bit-width",
+    "8",
+    "--budget-bytes",
+    "10012",
+    "--budget-bytes",
+    "20024",
+    "--budget-bytes",
+    "75356",
+    "--device",
+    "mps",
+    "--data",
+    "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+    "--data",
+    "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2"
+  ],
+  "calibration_output": "experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/study_v1/calibration",
+  "overlay_source_sha256": {
+    "experiments/browser_swin2sr/calibrate_scale_fragility.py": "d8479d186998c30dc2cd633b4c8ab4b0f0560dc47f3d1ddcaf4e999c32e86ce7",
+    "experiments/browser_swin2sr/mixfrag_scale_allocation.py": "90a31c90615fed945785d2b4164416197ca340363c2cda0093ec9fbf6ce8d28f",
+    "experiments/browser_swin2sr/seal_output_fragility_study.py": "f43187e78c02e229d8e7f7eaab7c930773748877f5b700a2f0cc4080d6b55275",
+    "experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/PROTOCOL.md": "b0c16929f258cab5dd411c37554def82e0546c7f27920cb5b6b1cfe2142c2d06"
+  }
+}

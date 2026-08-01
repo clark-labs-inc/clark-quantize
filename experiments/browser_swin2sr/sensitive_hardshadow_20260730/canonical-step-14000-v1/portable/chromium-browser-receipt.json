@@ -1,0 +1,103 @@
+{
+  "browser": "chromium",
+  "expanded_model_sha256": "75573021b740b9a7a44573f9ec1e80f09d0bf12ef34644fcbf301b756065b684",
+  "model_compression": "gzip",
+  "model_sha256": "b79fc668849d67df2eb0fee25897b88afb35eba9a9929b193bc1f95b0bc959dc",
+  "harnessFiles": {
+    "full_onnx_smoke_browser.html": "598496a941325d0925589d73dfae03932f8afd43469dd0d282af0e2400800923",
+    "runtime_surface.mjs": "b7ad36ac79e7c4ba4ebda964c879e4a061144c4c8eecfccad7dfb877c4b9516c"
+  },
+  "navigatorGpu": true,
+  "expandedModelBytes": 4840032,
+  "modelBytes": 677510,
+  "receipts": [
+    {
+      "backend": "webgpu",
+      "heapBytes": {
+        "afterInference": 23689660,
+        "afterSession": 20827712,
+        "beforeSession": 18360769
+      },
+      "sessionMs": 4944.899999976158,
+      "inferenceMs": [
+        154,
+        59.10000002384186,
+        37.5
+      ],
+      "errors": {
+        "maximum": 0.00030468404293060303,
+        "mean": 0.000057597926267286916
+      },
+      "inputShape": [
+        1,
+        3,
+        64,
+        64
+      ],
+      "outputShape": [
+        1,
+        3,
+        128,
+        128
+      ],
+      "passed": true,
+      "browser": "chromium",
+      "decompressionMs": 6.200000047683716,
+      "expandedModelBytes": 4840032,
+      "expandedModelSha256": "75573021b740b9a7a44573f9ec1e80f09d0bf12ef34644fcbf301b756065b684",
+      "modelBytes": 677510,
+      "modelCompression": "gzip",
+      "modelSha256": "b79fc668849d67df2eb0fee25897b88afb35eba9a9929b193bc1f95b0bc959dc",
+      "harnessFiles": {
+        "full_onnx_smoke_browser.html": "598496a941325d0925589d73dfae03932f8afd43469dd0d282af0e2400800923",
+        "runtime_surface.mjs": "b7ad36ac79e7c4ba4ebda964c879e4a061144c4c8eecfccad7dfb877c4b9516c"
+      },
+      "surface": "chromium-webgpu",
+      "warmInferenceMs": 59.10000002384186
+    },
+    {
+      "backend": "wasm",
+      "heapBytes": {
+        "afterInference": 24592624,
+        "afterSession": 23879360,
+        "beforeSession": 23689660
+      },
+      "sessionMs": 5656.799999952316,
+      "inferenceMs": [
+        501.39999997615814,
+        490.10000002384186,
+        505.39999997615814
+      ],
+      "errors": {
+        "maximum": 0.0003046691417694092,
+        "mean": 0.00005759938145880975
+      },
+      "inputShape": [
+        1,
+        3,
+        64,
+        64
+      ],
+      "outputShape": [
+        1,
+        3,
+        128,
+        128
+      ],
+      "passed": true,
+      "browser": "chromium",
+      "decompressionMs": 6.200000047683716,
+      "expandedModelBytes": 4840032,
+      "expandedModelSha256": "75573021b740b9a7a44573f9ec1e80f09d0bf12ef34644fcbf301b756065b684",
+      "modelBytes": 677510,
+      "modelCompression": "gzip",
+      "modelSha256": "b79fc668849d67df2eb0fee25897b88afb35eba9a9929b193bc1f95b0bc959dc",
+      "harnessFiles": {
+        "full_onnx_smoke_browser.html": "598496a941325d0925589d73dfae03932f8afd43469dd0d282af0e2400800923",
+        "runtime_surface.mjs": "b7ad36ac79e7c4ba4ebda964c879e4a061144c4c8eecfccad7dfb877c4b9516c"
+      },
+      "surface": "chromium-wasm",
+      "warmInferenceMs": 505.39999997615814
+    }
+  ]
+}

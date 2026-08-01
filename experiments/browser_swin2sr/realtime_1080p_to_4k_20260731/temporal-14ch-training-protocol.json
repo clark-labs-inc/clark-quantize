@@ -1,0 +1,40 @@
+{
+  "format": "backdropkit-realtime-temporal-ui-training-protocol-v1",
+  "sealed_at": "2026-08-01",
+  "hypothesis": "The selected 12-channel RGB realtime student improves spatial edges but regresses temporal-delta PSNR. A 14-channel student initialized to reproduce it exactly, trained on deterministic adjacent UI motion with an explicit temporal loss, can recover temporal consistency while the measured fused 14-channel kernel remains within the M5 60 FPS compute budget.",
+  "parent": {
+    "checkpoint": "run_rgb_5000step_12ch_20260801/checkpoint-final.pt",
+    "sha256": "3cbb8a3358bbeaa239c517f1171dbb7706c2d453c961d17a4e6166aefde8c692",
+    "channels": 12,
+    "parameters": 8496
+  },
+  "candidate": {
+    "channels": 14,
+    "blocks": 3,
+    "parameters": 11424,
+    "fp16_payload_bytes": 22848,
+    "initialization": "exact 12-channel function plus isolated trainable two-channel side branch",
+    "steps": 1000,
+    "batch_size_pairs": 8,
+    "learning_rate": 0.0001,
+    "seed": 20260809,
+    "loss_weights": {
+      "ground_truth": 0.45,
+      "teacher": 0.20,
+      "edge": 0.15,
+      "temporal_and_static": 0.20
+    }
+  },
+  "data": {
+    "images": 206232,
+    "languages": 204,
+    "pair_generation": "same-source translated adjacent UI crops with shared scale and deterministic quantization",
+    "validation_pairs": 268,
+    "source_disjoint": true
+  },
+  "early_gate": {
+    "step_250": "Ground-truth, edge, and teacher PSNR may not regress more than 0.02 dB; temporal-delta PSNR must gain more than 0.02 dB; static-delta MAE must decrease.",
+    "step_500": "All three spatial metrics must be nonnegative versus the exact parent-equivalent start and both temporal metrics must improve."
+  },
+  "runtime_gate": "After quality gates pass, benchmark the exact learned weights at full 1920x1080 to 3840x2160 in the fused browser shader; require p95 below 16.67 ms before replacing the 12-channel live profile."
+}

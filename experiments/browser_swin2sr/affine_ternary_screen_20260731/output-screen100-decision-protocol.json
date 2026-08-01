@@ -1,0 +1,22 @@
+{
+  "format": "backdropkit-swin2sr-affine-ternary-screen-decision-protocol-v1",
+  "status": "sealed_pending_comparison",
+  "study_manifest": "experiments/browser_swin2sr/affine_ternary_screen_20260731/output-screen100-manifest.json",
+  "study_manifest_sha256": "468ebfebecf95d52bca88428c644f271bb0d07ab22c86a322588d58cc74529a3",
+  "source_sha256": {
+    "experiments/browser_swin2sr/decide_affine_ternary_screen.py": "c452bb766a97ab6ca54471257a090dcb6874f71d091a41c9d545fe8f5cf77abc",
+    "experiments/browser_swin2sr/test_decide_affine_ternary_screen.py": "cbfdfcc09404836b1c3b590845efd4492f1bb4a30eb62975107f9091e617beb4"
+  },
+  "comparison": "experiments/browser_swin2sr/affine_ternary_screen_20260731/output-screen100-vs-hard.json",
+  "command": [
+    "/usr/bin/env",
+    "PYTHONPATH=experiments/browser_swin2sr:.",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/decide_affine_ternary_screen.py",
+    "--study-manifest",
+    "experiments/browser_swin2sr/affine_ternary_screen_20260731/output-screen100-manifest.json",
+    "--out",
+    "experiments/browser_swin2sr/affine_ternary_screen_20260731/output-screen100-decision.json"
+  ],
+  "output": "experiments/browser_swin2sr/affine_ternary_screen_20260731/output-screen100-decision.json"
+}

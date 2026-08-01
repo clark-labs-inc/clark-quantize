@@ -1,0 +1,169 @@
+{
+  "format": "backdropkit-swin2sr-sensitive-io-development-decision-v1",
+  "selection_source": "development",
+  "checkpoint_decision": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/step19-checkpoint-decision.json",
+  "checkpoint_decision_sha256": "1214047c1c13a6323bbc9898853fef7254c5f4159ca3469ae6c2a551f7c28ab6",
+  "gate_manifest": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/development-gate-manifest-v3.json",
+  "gate_manifest_sha256": "14690b96467e5b7c5eb3062bee0947c9648c0e91b63038e0714e4beea13614dd",
+  "control_report": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/restart-g9-lr025/full-development/metrics.json",
+  "control_report_sha256": "377a74c169165f8f646ab82ce2b9f608bf531257fc580bc07c2f1757f1b7debd",
+  "q4_reference": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+  "q4_reference_sha256": "d54b7ced6bdfb77ea278a50bccde0b41dbf402cac3dc04aa629b66ea75476e0d",
+  "bootstrap_samples": 10000,
+  "seed": 20260730,
+  "source_margin_db": 0.1,
+  "mean_margin_db": 0.1,
+  "best_development_ground_truth_db": 33.25956898522976,
+  "best_development_multiplier": 4.0,
+  "candidates": [
+    {
+      "report": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr4/full-development/metrics.json",
+      "report_sha256": "60082730c817ff8884440e7361892eb4502c6f044bd710e4f9ce03a010983c4c",
+      "checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr4/run/checkpoint-surface-19000.pt",
+      "checkpoint_sha256": "07ebb2fcc6e2fc12cefcca323f94e00f559876c6991adcf3314487a6ad04365f",
+      "convolution_learning_rate_multiplier": 4.0,
+      "versus_control": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": 3.082619882439507,
+            "median": 2.590015093800476,
+            "paired_bootstrap_95ci": [
+              3.0035831650876417,
+              3.1620657265761336
+            ],
+            "candidate_win_fraction": 0.999671052631579
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": 2.003269955752365,
+            "median": 1.615504436212099,
+            "paired_bootstrap_95ci": [
+              1.9460791240984356,
+              2.058723633342239
+            ],
+            "candidate_win_fraction": 1.0
+          },
+          "psnr_vs_teacher": {
+            "mean": 5.874589891543864,
+            "median": 5.751188171308744,
+            "paired_bootstrap_95ci": [
+              5.802597279028192,
+              5.947910921307649
+            ],
+            "candidate_win_fraction": 1.0
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": 2.776546085436007
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": 3.7070104283266483
+          }
+        },
+        "worst_source_psnr_delta": 2.776546085436007
+      },
+      "versus_q4": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": -1.664077067658215,
+            "median": -1.3709447011492042,
+            "paired_bootstrap_95ci": [
+              -1.7188519430045428,
+              -1.6092746827432347
+            ],
+            "candidate_win_fraction": 0.08519736842105263
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": -1.3889417695258741,
+            "median": -1.1129145901893267,
+            "paired_bootstrap_95ci": [
+              -1.4374781286712326,
+              -1.3405790036153216
+            ],
+            "candidate_win_fraction": 0.10493421052631578
+          },
+          "psnr_vs_teacher": {
+            "mean": -7.829259474347105,
+            "median": -7.724461534394745,
+            "paired_bootstrap_95ci": [
+              -7.908241336022102,
+              -7.7490987326359715
+            ],
+            "candidate_win_fraction": 0.0003289473684210526
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": -1.4719534343845646
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": -2.056009279536462
+          }
+        },
+        "worst_source_psnr_delta": -2.056009279536462
+      },
+      "development_ground_truth_db": 33.25956898522976,
+      "versus_best_development_arm": {
+        "samples": 3040,
+        "metrics": {
+          "psnr_vs_ground_truth": {
+            "mean": 0.0,
+            "median": 0.0,
+            "paired_bootstrap_95ci": [
+              0.0,
+              0.0
+            ],
+            "candidate_win_fraction": 0.0
+          },
+          "edge_psnr_vs_ground_truth": {
+            "mean": 0.0,
+            "median": 0.0,
+            "paired_bootstrap_95ci": [
+              0.0,
+              0.0
+            ],
+            "candidate_win_fraction": 0.0
+          },
+          "psnr_vs_teacher": {
+            "mean": 0.0,
+            "median": 0.0,
+            "paired_bootstrap_95ci": [
+              0.0,
+              0.0
+            ],
+            "candidate_win_fraction": 0.0
+          }
+        },
+        "sources": {
+          "flores200_balanced_synthetic_ui": {
+            "samples": 2040,
+            "mean_psnr_delta": 0.0
+          },
+          "rico_screen2words_heldout": {
+            "samples": 1000,
+            "mean_psnr_delta": 0.0
+          }
+        },
+        "worst_source_psnr_delta": 0.0
+      },
+      "gates": {
+        "overall_within_best_margin": true,
+        "every_source_within_best_margin": true
+      },
+      "eligible": true
+    }
+  ],
+  "selected_convolution_learning_rate_multiplier": 4.0,
+  "selected_checkpoint": "experiments/browser_swin2sr/sensitive_io_rescue_20260730/io-g2-lr4/run/checkpoint-surface-19000.pt",
+  "selected_checkpoint_sha256": "07ebb2fcc6e2fc12cefcca323f94e00f559876c6991adcf3314487a6ad04365f",
+  "sensitive_recipe_selected": true,
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "required_next_gate": "Run the preregistered QAT8-versus-AdamW full-surface transfer study through all-hard development evaluation."
+}

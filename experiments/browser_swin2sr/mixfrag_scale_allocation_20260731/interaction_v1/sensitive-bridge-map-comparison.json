@@ -1,0 +1,28 @@
+{
+  "format": "backdropkit-swin2sr-scale-map-comparison-v1",
+  "reference": {
+    "name": "category-sensitive bridge",
+    "materialization": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sensitive_bridge/materialized/materialization.json",
+    "materialization_sha256": "e572a1b452b1aaa2b6c769f29ba2db120c8e6f920820fd8d558c06b57fa6034f",
+    "canonical_map_sha256": "3985a1b6fc794572770c9759362b07fdeace3ddd247f0fb95a8527b409ab90ba",
+    "choice_counts": {"q1": 144, "q2": 58, "q4": 2}
+  },
+  "candidate": {
+    "name": "mixfrag_10012",
+    "allocation_report": "experiments/browser_swin2sr/mixfrag_scale_allocation_20260731/study_v1/calibration/fragility-report.json",
+    "allocation_report_sha256": "672d2f37574165b0692480cdd0febd5df6e581a9e04afbce6d4823cb5ae11175",
+    "canonical_map_sha256": "c2eedd79473818dd04858b1094a39d32123ccd2f28cb260cb8b9727c4d0def7c",
+    "choice_counts": {"q1": 174, "q2": 25, "q4": 4, "q8": 1}
+  },
+  "surface_count": 204,
+  "different_surfaces": 73,
+  "same_mapping": false,
+  "transition_counts": {
+    "q1_to_q2": 19,
+    "q1_to_q4": 1,
+    "q2_to_q1": 50,
+    "q2_to_q4": 2,
+    "q4_to_q8": 1
+  },
+  "interpretation": "The equal-byte MixFrag allocation is not a rediscovery of the category-sensitive bridge. It reallocates precision on 73 of 204 surfaces."
+}

@@ -1,0 +1,44 @@
+{
+  "format": "backdropkit-swin2sr-retained-precision-confirmation-decision-protocol-v1",
+  "status": "sealed_before_discovery_results",
+  "study_manifest": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/study-manifest.json",
+  "study_manifest_sha256": "7e164fdc5e5f69ea806e24cf0fe9c919849a9189ede853d861e7bcd4e6c453b8",
+  "discovery_protocol": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/discovery-decision-protocol.json",
+  "discovery_protocol_sha256": "3356b25679b39517c1f1afd7c71e66353071480b226e94fdab9a8828523276ed",
+  "source_sha256": {
+    "experiments/browser_swin2sr/decide_retained_precision_confirmation.py": "e5e52ec0f91c4b021ff20e0982982d5eac53ac0a26307e9d592bdbb03de19fcf",
+    "experiments/browser_swin2sr/test_decide_retained_precision_confirmation.py": "408ae34e5a21cd19709cea5b8ccbe751f7008a7d564d79f67406b5dbc82e4d27"
+  },
+  "final_rule": {
+    "required_seeds": [
+      20260731,
+      20260732,
+      20260733
+    ],
+    "every_seed_ground_truth_paired_bootstrap_lower_95_strictly_greater_than": 0.0,
+    "every_seed_edge_candidate_minus_reference_mean_minimum": 0.0,
+    "every_seed_teacher_candidate_minus_reference_mean_minimum": 0.0,
+    "ranking": [
+      "three_seed_mean_ground_truth_delta",
+      "three_seed_mean_teacher_delta",
+      "three_seed_mean_edge_delta",
+      "island_name"
+    ]
+  },
+  "authorized_effect": "select_development_supported_precision_location_for_separate_compression_and_runtime_study",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "command": [
+    "/usr/bin/env",
+    "PYTHONPATH=experiments/browser_swin2sr:.",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/decide_retained_precision_confirmation.py",
+    "--study-manifest",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/study-manifest.json",
+    "--discovery-decision",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/discovery-decision.json",
+    "--out",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/confirmation-decision.json"
+  ],
+  "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/confirmation-decision.json"
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "artifact": "experiments/browser_swin2sr/qat_best_3000/browser",
+  "tensor": "swin2sr.encoder.stages.0.layers.0.attention.self.query.weight",
+  "shape": [
+    60,
+    60
+  ],
+  "batch_size": 3,
+  "group_size": 60,
+  "max_absolute_error": 2.384185791015625e-07,
+  "mean_absolute_error": 3.62491441308066e-08,
+  "native_checksum": -530.465691704303,
+  "numpy_checksum": -530.4658203125,
+  "tolerances": {
+    "max_absolute_error": 1e-06,
+    "mean_absolute_error": 1e-07
+  },
+  "passed": true
+}

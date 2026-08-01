@@ -1,0 +1,25 @@
+{
+  "format": "backdropkit-swin2sr-pixel-objective-fork-v1",
+  "created_at": "2026-07-31T09:13:24.012656+00:00",
+  "parent_checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+  "parent_checkpoint_sha256": "ad5e76db8c378c16da689a4cf37d96eb6e204f7b9de543199efc103c0d371469",
+  "fork_checkpoint": "experiments/browser_swin2sr/pixel_objective_probe_20260731/psnr_aligned/fork-step24000.pt",
+  "fork_checkpoint_sha256": "c3cf4cff5313af26b0354372ad3603c42ad2704ccf6d4e4f8c1a920fd18d6ce2",
+  "surface_step": 24000,
+  "immutable_state_sha256": {
+    "model": "b5a930f7c4b663f3ced672cee85bc0e7564ecfa2faf62c9d7bf94dba9c3320cc",
+    "optimizer": "0549a1bd179525ae09d2a0cd24c45683be33d5f530acb351b7a31fc67ef673ee",
+    "run_state": "50be9e8ec23d335b9380b21520110100660e9b1e3395943872c05de5687a3bcd",
+    "quantization": "3a279844048611820111c2efab6ffedee8245121292ec1b607584d3e1575864d"
+  },
+  "previous": {
+    "pixel_objective": "charbonnier",
+    "ground_truth_mse_floor": 0.00032,
+    "teacher_mse_floor": 2e-05
+  },
+  "selected": {
+    "pixel_objective": "psnr_aligned",
+    "ground_truth_mse_floor": 0.00032,
+    "teacher_mse_floor": 2e-05
+  }
+}

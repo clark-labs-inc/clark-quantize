@@ -1,0 +1,24 @@
+{
+  "model": "caidas/swin2SR-lightweight-x2-64",
+  "device": "mps",
+  "mode": "ternary",
+  "steps": 10,
+  "batch_size": 8,
+  "examples_seen": 80,
+  "training_images": 199989,
+  "training_roots": [
+    "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+    "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-v1"
+  ],
+  "validation_root": "/Users/stan/Documents/git/clark-desktop/promos",
+  "quantized_modules": 144,
+  "baseline": {
+    "psnr_vs_ground_truth": 49.60180538649166,
+    "psnr_vs_teacher": 99.0
+  },
+  "final": {
+    "psnr_vs_ground_truth": 37.092212320299915,
+    "psnr_vs_teacher": 39.25668086534385
+  },
+  "elapsed_seconds": 6.921386375
+}

@@ -1,0 +1,31 @@
+{
+  "format": "backdropkit-swin2sr-output-fragility-preflight-v1",
+  "study_manifest_sha256": "57a4946e08ac490c98e41ceadd74623a994bc5ca6571dfddf7c171d27593a554",
+  "training_results_existed_before_preflight": false,
+  "unit_tests": {
+    "passed": 6,
+    "failed": 0
+  },
+  "sealed_cpu_inspection": {
+    "calibration_manifest_sha256": "3aa732ada3859a50485565a49384a29dd5def9a046931a1dc460ecea348deef1",
+    "surfaces": 204,
+    "records": 64,
+    "source_quotas": {
+      "aria_ui": 10,
+      "flores200_balanced_synthetic_ui": 13,
+      "pd12m": 6,
+      "rico": 22,
+      "websight": 13
+    },
+    "uniform_storage_bytes": {
+      "q1": 5716,
+      "q2": 11400,
+      "q4": 25668,
+      "q8": 65228,
+      "fp16": 75356
+    },
+    "budgets": [10012, 20024, 75356]
+  },
+  "development_accessed": false,
+  "final_heldout_accessed": false
+}

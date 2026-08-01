@@ -1,0 +1,90 @@
+{
+  "format": "backdropkit-swin2sr-joint-bonsai-recovery-v1",
+  "status": "sealed_before_training_results",
+  "created_at": "2026-08-01",
+  "selection_source": "development_only",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false,
+  "hypothesis": "Jointly recovering the four RSTB fusion convolutions from the exact released image-I/O-FP16 parent will improve the complete development score, and the gain can then be retained at the previously selected int5-per-kernel boundary.",
+  "parent_checkpoint": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__fp16__seed20260733/run/checkpoint-island-4000.pt",
+  "parent_checkpoint_sha256": "cb5455bba3154a46eb9f744a6b5aee03497c0807413e632fd7eea070a21a1c87",
+  "parent_development_psnr_db": 34.0981554,
+  "parent_native_package_bytes": 330933,
+  "parent_ternary_parameter_percent": 96.4347,
+  "loader_parity": {
+    "tensors_compared": 484,
+    "different_tensors": 0,
+    "max_abs": 0.0
+  },
+  "development_bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "development_bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "promotion_policy": "experiments/browser_swin2sr/promotion_policy_glyphsafe_v9.json",
+  "promotion_policy_sha256": "289854f2bf18097d2f5f8d0f78384c404ffc33ca4656ea70c60339403910a933",
+  "training_data": [
+    {
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-hf-100k-v1",
+      "images": 104500,
+      "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705",
+      "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173"
+    },
+    {
+      "root": "/Users/stan/.cache/clark-quantize/swin2sr-flores200-text-102k-glyphsafe-v2",
+      "images": 102000,
+      "languages": 204,
+      "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42",
+      "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9"
+    }
+  ],
+  "validation_data": "/Users/stan/Documents/git/clark-desktop/promos",
+  "source_files": {
+    "experiments/browser_swin2sr/retained_precision_islands.py": "824da5bd47cacdc667ec6e95a44f8bd304e9ec9efd3f7865dceec7224b743abc",
+    "experiments/browser_swin2sr/evaluate_hard_started_checkpoints.py": "548e73c75f08cf3851a20259618464a3da3df916dd7307e8695a4a2298338a01",
+    "experiments/browser_swin2sr/retained_precision_state.py": "3dbf8f4f1cece05d13092552e0a115e6df6fef3fc5f644724c70f8cdaa1bd562",
+    "experiments/browser_swin2sr/train_retained_fp16_island.py": "affb2c9c8e9e6dd9701cd772335d5f47483a40b5ad4f41297fcd1e9734229c07",
+    "experiments/browser_swin2sr/materialize_retained_precision_checkpoint.py": "46112a59bfb3949e984381be8700b170344c10a4ca3129beac51c934dd37c89d",
+    "experiments/browser_swin2sr/surface_artifact_state.py": "4abe9acbbb2b329e5740f8d4541b0964883e751f91a9532beb2b34e5eb3d6cb1",
+    "experiments/browser_swin2sr/data_pipeline.py": "8dd9a33ef886c97fe70a33db01612112a545ba8b7e3243de2ea9e040cd8c7671",
+    "experiments/browser_swin2sr/recovery_data.py": "caa88a8f9151d2648e8af24d3da712f418e24bebb5d0fedd724b35cb14d29005",
+    "experiments/browser_swin2sr/train_scale_codebook_recovery.py": "1b77d41e5cd9537214555894591a24fb8e7947d27077ff149a4c5639a2e530f3",
+    "experiments/browser_swin2sr/train_swin2sr_qat.py": "e4cecf1ad74c80c5fc281985f6472b4bafa5b9a396c8baf1881ccef839e59ac9"
+  },
+  "arms": {
+    "rstb_fp16_seed20260801": {
+      "status": "preregistered",
+      "island": "rstb_fusion_fp16",
+      "precision": "fp16",
+      "seed": 20260801,
+      "steps": 4000,
+      "batch_size": 8,
+      "learning_rate": 0.000004,
+      "optimizer": "adamw",
+      "weight_decay": 0.0001,
+      "gradient_clip_norm": 1.0,
+      "validate_every": 500,
+      "checkpoint_every": 500,
+      "device": "mps",
+      "trainable_values": 129600,
+      "run_directory": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_fp16_seed20260801/run"
+    },
+    "rstb_ternary_seed20260801": {
+      "status": "conditional_on_healthy_fp16_step500",
+      "island": "rstb_fusion_fp16",
+      "precision": "ternary",
+      "seed": 20260801,
+      "matched_to": "rstb_fp16_seed20260801"
+    }
+  },
+  "compression_boundary": {
+    "first_candidate": "int5_per_kernel",
+    "prior_incremental_bytes_over_ternary": 55080,
+    "prior_retention_ratios": {
+      "psnr_vs_ground_truth": 0.9651470250492761,
+      "edge_psnr_vs_ground_truth": 0.9762326896213713,
+      "psnr_vs_teacher": 0.9052390066048718
+    },
+    "prior_decision": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/rstb_precision_boundary_20260731/decision.json",
+    "prior_gate": "smallest tested representation preserving at least 90 percent of every measured FP16 effect"
+  },
+  "promotion_gate": "Beat the released parent on the full locked development bundle without harmful edge, text, or language/script regression; then pass materialization, browser parity, storage, latency, and final-heldout gates."
+}

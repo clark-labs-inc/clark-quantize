@@ -1,0 +1,62 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>BackdropKit packed Swin2SR WASM conformance</title>
+<pre id="result">running</pre>
+<script type="module">
+  import initWasm, { swin2sr_x2 } from "./pkg/clark_air_browser_runtime.js";
+
+  const result = document.querySelector("#result");
+  const parameters = new URLSearchParams(location.search);
+  const artifactRoot = parameters.get("artifact")
+    ?? "/.cache/clark-quantize/swin2sr-native-core-smoke-v1";
+  const fixtureUrl = parameters.get("fixture")
+    ?? "/.cache/clark-quantize/swin2sr-portable-onnx-core-smoke-v1.fixture.json";
+
+  function errors(actual, expected) {
+    let maximum = 0;
+    let total = 0;
+    for (let index = 0; index < expected.length; index += 1) {
+      const error = Math.abs(actual[index] - expected[index]);
+      maximum = Math.max(maximum, error);
+      total += error;
+    }
+    return { maximum, mean: total / expected.length };
+  }
+
+  try {
+    const loadStarted = performance.now();
+    await initWasm();
+    const [manifest, blob, fixture] = await Promise.all([
+      fetch(`${artifactRoot}/model.json`).then((response) => response.arrayBuffer()),
+      fetch(`${artifactRoot}/model.bin`).then((response) => response.arrayBuffer()),
+      fetch(fixtureUrl).then((response) => response.json()),
+    ]);
+    const loadMs = performance.now() - loadStarted;
+    const started = performance.now();
+    const output = swin2sr_x2(
+      new Uint8Array(manifest),
+      new Uint8Array(blob),
+      new Float32Array(fixture.input),
+      fixture.input_shape[2],
+      fixture.input_shape[3],
+    );
+    const inferenceMs = performance.now() - started;
+    const receipt = {
+      backend: "wasm-scalar-packed-artifact",
+      artifactBytes: manifest.byteLength + blob.byteLength,
+      loadMs,
+      inferenceMs,
+      errors: errors(output, fixture.expected),
+      outputShape: fixture.output_shape,
+    };
+    window.__backdropkitRuntimeReceipt = receipt;
+    result.textContent = JSON.stringify(receipt, null, 2);
+    result.dataset.status = "complete";
+  } catch (error) {
+    window.__backdropkitRuntimeReceipt = {
+      error: String(error?.stack ?? error),
+    };
+    result.textContent = String(error?.stack ?? error);
+    result.dataset.status = "failed";
+  }
+</script>

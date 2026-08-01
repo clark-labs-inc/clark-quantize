@@ -1,0 +1,160 @@
+{
+  "format": "backdropkit-swin2sr-image-io-fp16-ablation-protocol-v1",
+  "created_at_utc": "2026-07-31T20:44:46Z",
+  "reverified_and_resealed_at_utc": "2026-07-31T20:56:16Z",
+  "timing_receipt": {
+    "joint_image_io_result_available": true,
+    "single_tensor_evaluations_started": false,
+    "interpretation": "The ablations follow a positive aggregate result, but both single-tensor interventions and their selection rule were frozen before either ablation was evaluated."
+  },
+  "hypothesis": "Most of the joint 8,100-weight image-I/O FP16 gain may reside in one of its two convolutions, allowing the storage increment to fall below 6,480 bytes without materially losing any quality axis.",
+  "source_files": {
+    "materializer": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/materialize_image_io_ablation.py",
+      "sha256": "e5b2900641a027af13ef9a12a15340e96126ccfb128b567378211ccb37bbd764"
+    },
+    "materializer_tests": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/test_materialize_image_io_ablation.py",
+      "sha256": "8548e10e288a5f747c3fbb76f0373fe63a9d308ecaff15477df1ae463ee3d452"
+    },
+    "decision": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/decide_image_io_ablation.py",
+      "sha256": "828625ea3b8fc205d3714dd6b4972fcc4caac6b0b74be71b1d0500060cd49e50"
+    },
+    "decision_tests": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/test_decide_image_io_ablation.py",
+      "sha256": "5f5d7f4fdab4fe3b84fa30d5c7fd07cf74ee568d26d58dac89675442a00ee916"
+    },
+    "comparison": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/sealed_overlay/experiments/browser_swin2sr/compare_evaluations.py",
+      "sha256": "b764a1fe01ccb0340efe5171b1688fb93634ac2abd5a0003be9ca7037d54c9c5"
+    },
+    "evaluation": {
+      "path": "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/evaluate_stratified.py",
+      "sha256": "b1f7a88ee08e8d405378187c083c87dfcad104e246562586395d36d76a42b05e"
+    },
+    "bundle": {
+      "path": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+      "sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9"
+    },
+    "ternary_materialization": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260731/materialized/materialization.json",
+      "sha256": "64eca69e010b64503fdf2447a4db0957739f44f1219e828a174a06e30ed26355"
+    },
+    "joint_fp16_materialization": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__fp16__seed20260731/materialized/materialization.json",
+      "sha256": "134cb4203a3e64d5ddb2e9491b0b07e080bc5302d0c70bfa66c10f28c8902b56"
+    },
+    "ternary_development_report": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260731/development/metrics.json",
+      "sha256": "efb0504682aed61a12323b62c3449bf6219aee479cc048695a2a37aa6e4dd43e"
+    },
+    "joint_fp16_development_report": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__fp16__seed20260731/development/metrics.json",
+      "sha256": "a5c5d81aef86060dad7513fd5bf0facad6e796f192070ebcbf34658915c0e02c"
+    },
+    "joint_fp16_vs_ternary_comparison": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__seed20260731__fp16-vs-ternary.json",
+      "sha256": "7cb852b0834f8273cce4d89c719b488e9e39aa0672a0864a76890b101ee1434d"
+    },
+    "input_only_materialization": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/input_only/materialized/materialization.json",
+      "sha256": "462c1ecc6996080fe8e1428e51c06e98497e37fea8dcd02fac96ce6784badb3a"
+    },
+    "reconstruction_only_materialization": {
+      "path": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/reconstruction_only/materialized/materialization.json",
+      "sha256": "17245827c840a2c3df9d3205f0d6808a4e998040a24598d7ef06d25c32338c85"
+    }
+  },
+  "arms": {
+    "input_only": {
+      "retained_fp16_tensor": "swin2sr.first_convolution.weight",
+      "retained_fp16_values": 1620,
+      "projected_data_byte_delta": 1296,
+      "state": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/input_only/materialized/dense-hard.pt",
+      "development_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/input_only/development/metrics.json"
+    },
+    "reconstruction_only": {
+      "retained_fp16_tensor": "upsample.conv.weight",
+      "retained_fp16_values": 6480,
+      "projected_data_byte_delta": 5184,
+      "state": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/reconstruction_only/materialized/dense-hard.pt",
+      "development_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/reconstruction_only/development/metrics.json"
+    }
+  },
+  "evaluation_commands": {
+    "input_only": [
+      "/usr/bin/env",
+      "PYTHONPATH=experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/sealed_overlay/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+      "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+      "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/evaluate_stratified.py",
+      "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/input_only/materialized/dense-hard.pt",
+      "--bundle",
+      "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+      "--out",
+      "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/input_only/development",
+      "--device",
+      "mps"
+    ],
+    "reconstruction_only": [
+      "/usr/bin/env",
+      "PYTHONPATH=experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/sealed_overlay/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr:experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources",
+      "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+      "experiments/browser_swin2sr/scale_codebook_qat_v2_20260731/sealed_sources/experiments/browser_swin2sr/evaluate_stratified.py",
+      "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/reconstruction_only/materialized/dense-hard.pt",
+      "--bundle",
+      "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+      "--out",
+      "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/reconstruction_only/development",
+      "--device",
+      "mps"
+    ]
+  },
+  "comparisons": {
+    "joint_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__fp16__seed20260731/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__seed20260731__fp16-vs-ternary.json"
+    },
+    "input_only_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/input_only/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/input_only-vs-ternary.json"
+    },
+    "reconstruction_only_vs_ternary": {
+      "reference_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/image_io_fp16__ternary__seed20260731/development/metrics.json",
+      "candidate_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/reconstruction_only/development/metrics.json",
+      "output": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/reconstruction-only-vs-ternary.json"
+    }
+  },
+  "comparison_contract": {
+    "bootstrap_samples": 10000,
+    "seed": 20260729,
+    "samples": 3040
+  },
+  "selection_rule": {
+    "minimum_joint_effect_retention": 0.9,
+    "ground_truth_paired_bootstrap_95ci_lower": "> 0.0 dB",
+    "edge_mean": ">= 0.0 dB",
+    "teacher_mean": ">= 0.0 dB",
+    "tie_break": "smallest projected data-byte delta",
+    "fallback": "retain both image-I/O convolutions in FP16"
+  },
+  "projected_data_byte_delta": {
+    "input_only": 1296,
+    "reconstruction_only": 5184,
+    "joint": 6480
+  },
+  "decision_command": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/decide_image_io_ablation.py",
+    "--protocol",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/protocol.json",
+    "--out",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/decision.json"
+  ],
+  "development_only": true,
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false
+}

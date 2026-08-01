@@ -1,0 +1,64 @@
+{
+  "reference": {
+    "path": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_ternary_seed20260801/development/metrics.json",
+    "state": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/rstb_ternary_seed20260801/materialized/dense-hard.pt",
+    "state_sha256": "bf920d5f3b29e5b45bdf718e2742f5691c61e8816676340e977fd60f843eda18"
+  },
+  "candidate": {
+    "path": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int5_per_kernel/development/metrics.json",
+    "state": "experiments/browser_swin2sr/joint_bonsai_recovery_20260801/int5_per_kernel/materialized/dense-hard.pt",
+    "state_sha256": "d3997756d8d22211f747f7d102a6faee71f10095dd826f7fa975ef6820ca2713"
+  },
+  "metrics": {
+    "psnr_vs_ground_truth": {
+      "samples": 3040,
+      "candidate_minus_reference_mean": 0.14429472488239853,
+      "candidate_minus_reference_median": 0.10358140362328783,
+      "paired_bootstrap_95ci": [
+        0.139253323651696,
+        0.14937569482973004
+      ],
+      "candidate_win_fraction": 0.9358552631578947
+    },
+    "edge_psnr_vs_ground_truth": {
+      "samples": 3040,
+      "candidate_minus_reference_mean": 0.12586381403264713,
+      "candidate_minus_reference_median": 0.0894516246718986,
+      "paired_bootstrap_95ci": [
+        0.1213790695179454,
+        0.1305137958001443
+      ],
+      "candidate_win_fraction": 0.9457236842105263
+    },
+    "psnr_vs_teacher": {
+      "samples": 3040,
+      "candidate_minus_reference_mean": 0.3461454510327752,
+      "candidate_minus_reference_median": 0.3275618469904984,
+      "paired_bootstrap_95ci": [
+        0.3398071021990582,
+        0.35260633218994875
+      ],
+      "candidate_win_fraction": 0.9851973684210527
+    },
+    "psnr_gain_over_bicubic": {
+      "samples": 3040,
+      "candidate_minus_reference_mean": 0.14429472488239853,
+      "candidate_minus_reference_median": 0.10358140362328783,
+      "paired_bootstrap_95ci": [
+        0.13919609628591115,
+        0.14953586802332605
+      ],
+      "candidate_win_fraction": 0.9358552631578947
+    },
+    "student_seconds": {
+      "samples": 3040,
+      "candidate_minus_reference_mean": 0.00024063436184211778,
+      "candidate_minus_reference_median": 7.294999884166486e-07,
+      "paired_bootstrap_95ci": [
+        -0.00016470196004084915,
+        0.000651249965098746
+      ],
+      "candidate_win_fraction": 0.49605263157894736
+    }
+  }
+}

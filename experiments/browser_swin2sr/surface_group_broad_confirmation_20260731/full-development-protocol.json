@@ -1,0 +1,39 @@
+{
+  "format": "backdropkit-swin2sr-expanded-surface-group-full-development-v1",
+  "status": "preregistered_before_full_development_results",
+  "selection_source": "development",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "checkpoint": "experiments/browser_swin2sr/output_conv_rescue_20260730/output-g2/run/checkpoint-final.pt",
+  "checkpoint_sha256": "ad5e76db8c378c16da689a4cf37d96eb6e204f7b9de543199efc103c0d371469",
+  "surface_map": "experiments/browser_swin2sr/surface_group_broad_confirmation_20260731/expanded-surface-map.json",
+  "surface_map_sha256": "5dcbaa9da2de7d776f5f4968563505c9bf2a97124df1a287be7c27eea6a51ce9",
+  "surface_decision": "experiments/browser_swin2sr/surface_group_broad_confirmation_20260731/decision.json",
+  "surface_decision_sha256": "8fce227ba150c7434e0911b0f71a3162537b0dc5a19da8934d22b1168ffc4bf1",
+  "disjoint_joint_report": "experiments/browser_swin2sr/surface_group_broad_confirmation_20260731/joint-disjoint-256.json",
+  "disjoint_joint_report_sha256": "7d373433d6394ec5a024138bd1867333d7640ed5596190e729125dd8c143c927",
+  "bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "q4_reference": "/Users/stan/.cache/clark-quantize/swin2sr-q4-full/metrics.json",
+  "q4_reference_sha256": "d54b7ced6bdfb77ea278a50bccde0b41dbf402cac3dc04aa629b66ea75476e0d",
+  "sources": {
+    "experiments/browser_swin2sr/fork_surface_group_map_checkpoint.py": "b7b6f8cb40860369b99617aedeed1b3af751cc921b3d016b3fe6743bfb473b9d",
+    "experiments/browser_swin2sr/materialize_surface_states.py": "a97d23fbee85a212261f08647faa451abe698038a96d8f02235afadf088a844a",
+    "experiments/browser_swin2sr/evaluate_stratified.py": "b1f7a88ee08e8d405378187c083c87dfcad104e246562586395d36d76a42b05e"
+  },
+  "sample_count": 3040,
+  "crop_size": 128,
+  "device": "cpu",
+  "decision_rule": {
+    "bootstrap_seed": 20260731,
+    "bootstrap_samples": 10000,
+    "ground_truth_lower_95_min_db": 0.0,
+    "edge_mean_min_db": -0.1,
+    "teacher_mean_min_db": -0.1,
+    "every_source_ground_truth_mean_min_db": -0.1,
+    "scale_byte_budget": 65536
+  },
+  "passing_result": "expanded map replaces the three-surface map in the queued matched recovery study",
+  "failing_result": "retain the previously confirmed three-surface recovery map",
+  "note": "This is full development evidence only; it cannot authorize q4 promotion or final-heldout access."
+}

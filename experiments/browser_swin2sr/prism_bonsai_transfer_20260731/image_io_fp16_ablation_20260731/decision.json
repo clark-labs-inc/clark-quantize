@@ -1,0 +1,61 @@
+{
+  "format": "backdropkit-swin2sr-image-io-fp16-ablation-decision-v1",
+  "protocol": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/protocol.json",
+  "protocol_sha256": "f5288764387e22ca30bb93c3551042a1d446b39af78daf1fb35a21c3548205e1",
+  "joint_comparison_sha256": "7cb852b0834f8273cce4d89c719b488e9e39aa0672a0864a76890b101ee1434d",
+  "minimum_joint_effect_retention": 0.9,
+  "candidates": {
+    "input_only": {
+      "passed": false,
+      "checks": {
+        "ground_truth_lower_95_positive": false,
+        "edge_mean_nonnegative": false,
+        "teacher_mean_nonnegative": false,
+        "psnr_vs_ground_truth_retains_at_least_90pct": false,
+        "edge_psnr_vs_ground_truth_retains_at_least_90pct": false,
+        "psnr_vs_teacher_retains_at_least_90pct": false
+      },
+      "means": {
+        "psnr_vs_ground_truth": -0.04797858159685386,
+        "edge_psnr_vs_ground_truth": -0.04547669768644329,
+        "psnr_vs_teacher": -0.12058200372839913
+      },
+      "joint_retention_ratios": {
+        "psnr_vs_ground_truth": -0.4924925379503843,
+        "edge_psnr_vs_ground_truth": -0.5155228958810496,
+        "psnr_vs_teacher": -0.4205144295081729
+      },
+      "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/input_only-vs-ternary.json",
+      "comparison_sha256": "88de2ac0c7820bc352d2c118a4b94cbe0ef611aff88ef73d74045603013eebbb"
+    },
+    "reconstruction_only": {
+      "passed": false,
+      "checks": {
+        "ground_truth_lower_95_positive": true,
+        "edge_mean_nonnegative": true,
+        "teacher_mean_nonnegative": true,
+        "psnr_vs_ground_truth_retains_at_least_90pct": false,
+        "edge_psnr_vs_ground_truth_retains_at_least_90pct": false,
+        "psnr_vs_teacher_retains_at_least_90pct": false
+      },
+      "means": {
+        "psnr_vs_ground_truth": 0.0531408936529789,
+        "edge_psnr_vs_ground_truth": 0.04022065386722913,
+        "psnr_vs_teacher": 0.11895680974043427
+      },
+      "joint_retention_ratios": {
+        "psnr_vs_ground_truth": 0.5454828532451492,
+        "edge_psnr_vs_ground_truth": 0.45594049283935484,
+        "psnr_vs_teacher": 0.4148467718017336
+      },
+      "comparison": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/image_io_fp16_ablation_20260731/reconstruction-only-vs-ternary.json",
+      "comparison_sha256": "1c4f63463077c5b9cc28ac476a79301addef37a886664eb8f72dcc8ce84af084"
+    }
+  },
+  "selected_fp16_subset": "joint",
+  "selected_projected_data_byte_delta": 6480,
+  "interpretation": "neither single convolution preserved the preregistered joint gains",
+  "model_promotion_authorized": false,
+  "final_heldout_locked": true,
+  "final_heldout_access_authorized": false
+}

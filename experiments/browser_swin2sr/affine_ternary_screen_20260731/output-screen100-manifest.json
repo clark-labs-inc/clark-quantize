@@ -1,0 +1,87 @@
+{
+  "format": "backdropkit-swin2sr-affine-ternary-output-screen-v1",
+  "status": "sealed_pending_execution",
+  "selection_source": "weight-screen fixed-code group-60 linear subset chosen before output access",
+  "weight_screen": "experiments/browser_swin2sr/affine_ternary_screen_20260731/weight-screen.json",
+  "weight_screen_sha256": "d69decf81b43f06adadbb34185396e854ae700e38db843c6f6c3a2030fa63f89",
+  "parent_checkpoint": "experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+  "parent_checkpoint_sha256": "0b155f9ada8b747544ba1abb83596e160927fdc91a4c33bf36879ff3f77ce00f",
+  "intervention": {
+    "categories": [
+      "core_linear",
+      "position_bias_linear"
+    ],
+    "group_size": 60,
+    "ternary_codes_frozen": true,
+    "shift_dtype": "float16",
+    "scale_dtype": "float16",
+    "selected_surfaces": 189,
+    "selected_values": 783856,
+    "selected_groups": 13104,
+    "incremental_shift_bytes": 26208
+  },
+  "source_sha256": {
+    "experiments/browser_swin2sr/affine_ternary.py": "ff153417010e934554d8baa29bb05cd747d2095d1362ab250ba93041c68e7acf",
+    "experiments/browser_swin2sr/materialize_affine_ternary_screen.py": "187abd7067b6aac9ccf3b384024823d5957e60b1b55cd2e154290b87dc8eb193",
+    "experiments/browser_swin2sr/test_materialize_affine_ternary_screen.py": "3c691b1a07e712a35781e00fe885a53fb30d71b42b8000cb430c9792702df312",
+    "experiments/browser_swin2sr/evaluate_stratified.py": "b1f7a88ee08e8d405378187c083c87dfcad104e246562586395d36d76a42b05e",
+    "experiments/browser_swin2sr/compare_evaluations.py": "b764a1fe01ccb0340efe5171b1688fb93634ac2abd5a0003be9ca7037d54c9c5"
+  },
+  "development_bundle": "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+  "development_bundle_sha256": "d59cf2ff46966a41336ee558e8ed552fea0acc8e3eff023089ad202d279a00f9",
+  "development_samples": 100,
+  "development_sample_policy": "first 100 sealed bundle records",
+  "development_sample_sequence_sha256": "484f503bb02149c017ed80eb90b1b18b87f828dca25328d66b914cc7cb680d04",
+  "control_report": "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/fp16_island_probe/hard_ternary_screen100/metrics.json",
+  "control_report_sha256": "e39af4278f57688c94b843b11a79fc756ba5e6a67126499fef7a8278f3f16861",
+  "control_matches_first_100": true,
+  "pass_gate": {
+    "ground_truth_delta_lower95_minimum": 0.0,
+    "edge_delta_mean_minimum": 0.0,
+    "teacher_delta_mean_minimum": 0.0
+  },
+  "materialization_command": [
+    "/usr/bin/env",
+    "PYTHONPATH=experiments/browser_swin2sr:.",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/materialize_affine_ternary_screen.py",
+    "experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+    "--out",
+    "experiments/browser_swin2sr/affine_ternary_screen_20260731/materialized"
+  ],
+  "materialization": "experiments/browser_swin2sr/affine_ternary_screen_20260731/materialized/materialization.json",
+  "evaluation_command": [
+    "/usr/bin/env",
+    "PYTHONPATH=experiments/browser_swin2sr:.",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/evaluate_stratified.py",
+    "experiments/browser_swin2sr/affine_ternary_screen_20260731/materialized/affine-group60-linears.pt",
+    "--bundle",
+    "/Users/stan/.cache/clark-quantize/swin2sr-heldout-bundle-v1/bundle.json",
+    "--max-samples",
+    "100",
+    "--out",
+    "experiments/browser_swin2sr/affine_ternary_screen_20260731/output-screen100",
+    "--device",
+    "mps"
+  ],
+  "development_report": "experiments/browser_swin2sr/affine_ternary_screen_20260731/output-screen100/metrics.json",
+  "comparison_command": [
+    "/usr/bin/env",
+    "PYTHONPATH=experiments/browser_swin2sr:.",
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "experiments/browser_swin2sr/compare_evaluations.py",
+    "experiments/browser_swin2sr/prism_bonsai_transfer_20260731/fp16_island_probe/hard_ternary_screen100/metrics.json",
+    "experiments/browser_swin2sr/affine_ternary_screen_20260731/output-screen100/metrics.json",
+    "--out",
+    "experiments/browser_swin2sr/affine_ternary_screen_20260731/output-screen100-vs-hard.json",
+    "--bootstrap-samples",
+    "10000",
+    "--seed",
+    "20260731"
+  ],
+  "comparison": "experiments/browser_swin2sr/affine_ternary_screen_20260731/output-screen100-vs-hard.json",
+  "training_authorized": false,
+  "final_heldout_access_authorized": false,
+  "model_promotion_authorized": false
+}

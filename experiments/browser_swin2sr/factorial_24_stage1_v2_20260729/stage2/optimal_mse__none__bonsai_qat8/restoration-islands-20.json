@@ -1,0 +1,1812 @@
+{
+  "format": "backdropkit-swin2sr-restoration-islands-v1",
+  "checkpoint": "experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage2/optimal_mse__none__bonsai_qat8/checkpoint-2000.pt",
+  "checkpoint_step": 2000,
+  "sensitivity": "experiments/browser_swin2sr/factorial_24_stage1_v2_20260729/stage2/optimal_mse__none__bonsai_qat8/layer-sensitivity-40.json",
+  "samples": 20,
+  "groups": {
+    "hard_ternary": {
+      "restored_modules": [],
+      "restored_weight_values": 0,
+      "overall": {
+        "samples": 20,
+        "psnr_vs_ground_truth": {
+          "mean": 33.51436361507761,
+          "median": 33.433925005126824,
+          "p10": 27.076514210928558,
+          "p90": 41.46286541419544
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 37.10959947478709,
+          "median": 36.674152653412385,
+          "p10": 30.53719977339155,
+          "p90": 45.179282317283544
+        },
+        "psnr_vs_teacher": {
+          "mean": 41.78581852703019,
+          "median": 40.23641473552427,
+          "p10": 36.653485419607534,
+          "p90": 48.31514341899437
+        },
+        "bicubic_psnr_vs_ground_truth": {
+          "mean": 26.251573161623224,
+          "median": 24.617661496222382,
+          "p10": 22.08425856388731,
+          "p90": 33.681440057025
+        },
+        "teacher_psnr_vs_ground_truth": {
+          "mean": 34.58296479825411,
+          "median": 34.99902613862268,
+          "p10": 26.925150944189028,
+          "p90": 42.24439341623645
+        },
+        "teacher_seconds": {
+          "mean": 0.0,
+          "median": 0.0,
+          "p10": 0.0,
+          "p90": 0.0
+        },
+        "student_seconds": {
+          "mean": 0.10930331464999998,
+          "median": 0.10647616700000029,
+          "p10": 0.08953013340000018,
+          "p90": 0.12671810030000058
+        },
+        "psnr_gain_over_bicubic": {
+          "mean": 7.2627904534543815,
+          "p10": 2.9078520450949696
+        }
+      },
+      "paired_hard_ternary": {
+        "psnr_vs_ground_truth": 0.0,
+        "edge_psnr_vs_ground_truth": 0.0,
+        "psnr_vs_teacher": 0.0,
+        "by_source_psnr": {
+          "flores200_balanced_synthetic_ui": 0.0,
+          "rico_screen2words_heldout": 0.0
+        }
+      },
+      "paired_q4": {
+        "psnr_vs_ground_truth": -0.23856514187710687,
+        "edge_psnr_vs_ground_truth": -0.20638529596099567,
+        "psnr_vs_teacher": -3.5549994191995395,
+        "by_source_psnr": {
+          "flores200_balanced_synthetic_ui": 0.12944341369789356,
+          "rico_screen2words_heldout": -0.6065736974521073
+        }
+      },
+      "samples": [
+        {
+          "sha256": "5519b8033949c72bfdb3fce62e34202c6c6bbe4c2c348d570d8b63839eafb2c8",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "eus_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 27.48809594885776,
+          "edge_psnr_vs_ground_truth": 31.372722162934096,
+          "psnr_vs_teacher": 37.57348116710862,
+          "bicubic_psnr_vs_ground_truth": 22.95370710421585,
+          "teacher_psnr_vs_ground_truth": 28.23567735814377,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.15276437500000029
+        },
+        {
+          "sha256": "cd58f6369602a12431ed4177cbe9a1b477f8083f7a464310a06fe81d51e209a8",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ita_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 41.43647814232082,
+          "edge_psnr_vs_ground_truth": 45.130992870127415,
+          "psnr_vs_teacher": 49.63716803067604,
+          "bicubic_psnr_vs_ground_truth": 31.525606485982955,
+          "teacher_psnr_vs_ground_truth": 41.96661468684753,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09654033399999928
+        },
+        {
+          "sha256": "a7b031fdebbd3faa3f35964861a196f3bc8895efac91c769376ed9d302754b7a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ajp_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 37.68527992758588,
+          "edge_psnr_vs_ground_truth": 40.95607214393211,
+          "psnr_vs_teacher": 44.19677244725426,
+          "bicubic_psnr_vs_ground_truth": 26.370617568088104,
+          "teacher_psnr_vs_ground_truth": 39.39906937705017,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09845441600000004
+        },
+        {
+          "sha256": "ff9b04d317f4299587a1cc12b32b63dcf2837be38301f7336d2b5e213c23161b",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "som_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 43.3714472766042,
+          "edge_psnr_vs_ground_truth": 47.24089141703915,
+          "psnr_vs_teacher": 49.64830601281499,
+          "bicubic_psnr_vs_ground_truth": 34.061314960550376,
+          "teacher_psnr_vs_ground_truth": 46.465959241783054,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.1459887499999999
+        },
+        {
+          "sha256": "c655c95a46fd5ca8399c804e10924f57ff97558f2210b36d452d6fcac90c5b7a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "aeb_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 34.880127330411014,
+          "edge_psnr_vs_ground_truth": 38.31805444678393,
+          "psnr_vs_teacher": 40.552017714746846,
+          "bicubic_psnr_vs_ground_truth": 24.611570545156333,
+          "teacher_psnr_vs_ground_truth": 35.90920016861293,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.0883039590000001
+        },
+        {
+          "sha256": "7d6b7227830d447198eb8549a617d76605ec3d6d11c06783b9992f1005b58e21",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "apc_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 29.73771119405911,
+          "edge_psnr_vs_ground_truth": 32.78455405079616,
+          "psnr_vs_teacher": 40.74836955734326,
+          "bicubic_psnr_vs_ground_truth": 25.8948110573917,
+          "teacher_psnr_vs_ground_truth": 29.894024238537284,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.08638904200000042
+        },
+        {
+          "sha256": "3c0168e97f1c4f6da3c3ffec4e41f16853c882743d7f8e9f06ce546d0955d49c",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "kaz_Cyrl",
+          "script": "Cyrl",
+          "psnr_vs_ground_truth": 33.144510027534636,
+          "edge_psnr_vs_ground_truth": 35.911284149124945,
+          "psnr_vs_teacher": 47.22851829709619,
+          "bicubic_psnr_vs_ground_truth": 30.177232744595095,
+          "teacher_psnr_vs_ground_truth": 33.21880341937077,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.08966637500000019
+        },
+        {
+          "sha256": "d2f529783a003f5d386babe0a053ebf1205f59e9cda67d2b796ccddf61fece9f",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "por_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 26.456948785224178,
+          "edge_psnr_vs_ground_truth": 30.167981032064006,
+          "psnr_vs_teacher": 42.09241334786413,
+          "bicubic_psnr_vs_ground_truth": 24.623752447288435,
+          "teacher_psnr_vs_ground_truth": 26.468531063775238,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.12457691700000062
+        },
+        {
+          "sha256": "382469067694997f14c152e86a2c99ac84bad50f103c927f30ad9f08c66f57d4",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "oci_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 27.40191289047135,
+          "edge_psnr_vs_ground_truth": 31.275430095516114,
+          "psnr_vs_teacher": 38.87858366452847,
+          "bicubic_psnr_vs_ground_truth": 24.16897436338095,
+          "teacher_psnr_vs_ground_truth": 26.975886486457227,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09743545899999972
+        },
+        {
+          "sha256": "e8f6289d345268be994c54ce604e951555061e38b65c0a6d169a25c624e3b89a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ajp_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 29.6785239671205,
+          "edge_psnr_vs_ground_truth": 33.35921267017059,
+          "psnr_vs_teacher": 39.86190496370445,
+          "bicubic_psnr_vs_ground_truth": 23.921123002224867,
+          "teacher_psnr_vs_ground_truth": 30.5344512469013,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.12344770799999871
+        },
+        {
+          "sha256": "71abc15f3aa6581f82a1e7e41b7b82b79f15808ecbfb9a1844a53e9e39709afa",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 41.700350861067015,
+          "edge_psnr_vs_ground_truth": 45.61388734168868,
+          "psnr_vs_teacher": 48.16825179547418,
+          "bicubic_psnr_vs_ground_truth": 33.66410117988113,
+          "teacher_psnr_vs_ground_truth": 42.154206780716514,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.1229955829999998
+        },
+        {
+          "sha256": "3b0f1043125abdfde56a7d2fb7612345bae0886c5f02f91b74886e3bee342b58",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 40.705942362509504,
+          "edge_psnr_vs_ground_truth": 44.31150063083524,
+          "psnr_vs_teacher": 44.08633215257831,
+          "bicubic_psnr_vs_ground_truth": 26.652516748945757,
+          "teacher_psnr_vs_ground_truth": 43.05607313591587,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.1200095000000001
+        },
+        {
+          "sha256": "3c6f8928f96f2d7eee75bb06ceb18c439a381280a873882503e6f34a9e553580",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 36.21051485581366,
+          "edge_psnr_vs_ground_truth": 40.27503700454213,
+          "psnr_vs_teacher": 48.16121661323293,
+          "bicubic_psnr_vs_ground_truth": 33.83748995131984,
+          "teacher_psnr_vs_ground_truth": 36.524698012525995,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10503933400000065
+        },
+        {
+          "sha256": "380a495ae9f63f19948b393ae23028795589dc6ad8e321ac5cc914ab5ef12bc6",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 30.777719405390258,
+          "edge_psnr_vs_ground_truth": 34.588237023631606,
+          "psnr_vs_teacher": 35.28209205994203,
+          "bicubic_psnr_vs_ground_truth": 23.816525118581858,
+          "teacher_psnr_vs_ground_truth": 33.91061561630882,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09914716699999992
+        },
+        {
+          "sha256": "78615ecb5c1bc06b217563ecdc642620131cd91651042636a79a06da58b7c8df",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 27.1453548137846,
+          "edge_psnr_vs_ground_truth": 30.5782240779835,
+          "psnr_vs_teacher": 38.73199078042533,
+          "bicubic_psnr_vs_ground_truth": 24.135399947614097,
+          "teacher_psnr_vs_ground_truth": 27.433104981000568,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.0982163749999998
+        },
+        {
+          "sha256": "d8335235791e5d6a3f590b17ca786d3e7fca7f875a2f95f2c4a275cdb38353e6",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 25.24071097642901,
+          "edge_psnr_vs_ground_truth": 29.062830919761176,
+          "psnr_vs_teacher": 36.00751063568852,
+          "bicubic_psnr_vs_ground_truth": 21.63244120561898,
+          "teacher_psnr_vs_ground_truth": 25.188352121372937,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09470470800000008
+        },
+        {
+          "sha256": "5cdd337aad9a5162fd570a62bbab807bfc873dbc6019f8064e0fdd640e82e9a0",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 35.36763893892032,
+          "edge_psnr_vs_ground_truth": 39.04825361966419,
+          "psnr_vs_teacher": 39.146730892144475,
+          "bicubic_psnr_vs_ground_truth": 24.99529667837253,
+          "teacher_psnr_vs_ground_truth": 36.65722741443003,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.114733042000001
+        },
+        {
+          "sha256": "fe4b5c8f5888457b5689f653e6d9bfd8d44358388255c0b0d5fb2f9d791d009c",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 32.16037445205416,
+          "edge_psnr_vs_ground_truth": 35.417635416936676,
+          "psnr_vs_teacher": 36.72526039559854,
+          "bicubic_psnr_vs_ground_truth": 21.950785542597448,
+          "teacher_psnr_vs_ground_truth": 34.34294390841171,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10791299999999993
+        },
+        {
+          "sha256": "4cc8ded863f87ba1c94b305cc44b75ef418e9d050bd40f7589883e0741c94414",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 33.723339982719004,
+          "edge_psnr_vs_ground_truth": 37.437021157699824,
+          "psnr_vs_teacher": 39.06863825608057,
+          "bicubic_psnr_vs_ground_truth": 22.099088899586185,
+          "teacher_psnr_vs_ground_truth": 35.65510836883366,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10989329100000056
+        },
+        {
+          "sha256": "665de2d2770c3afbc9599a218e4d7737bf0031f0a380bc462ce6fdca7b335f38",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 35.97429016267519,
+          "edge_psnr_vs_ground_truth": 39.3421672645102,
+          "psnr_vs_teacher": 39.920811756301696,
+          "bicubic_psnr_vs_ground_truth": 23.939107681072066,
+          "teacher_psnr_vs_ground_truth": 37.66874833808683,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10984695799999855
+        }
+      ]
+    },
+    "top1_local_error": {
+      "restored_modules": [
+        "swin2sr.encoder.stages.3.layers.5.attention.self.value"
+      ],
+      "restored_weight_values": 3600,
+      "overall": {
+        "samples": 20,
+        "psnr_vs_ground_truth": {
+          "mean": 33.54642327465991,
+          "median": 33.43139903753767,
+          "p10": 27.075672396601757,
+          "p90": 41.603945349744144
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 37.13952993758679,
+          "median": 36.67729264767755,
+          "p10": 30.536409987473565,
+          "p90": 45.28831686363853
+        },
+        "psnr_vs_teacher": {
+          "mean": 41.78480815741537,
+          "median": 40.08285966163329,
+          "p10": 36.56576194374568,
+          "p90": 48.49771019581729
+        },
+        "bicubic_psnr_vs_ground_truth": {
+          "mean": 26.251573161623224,
+          "median": 24.617661496222382,
+          "p10": 22.08425856388731,
+          "p90": 33.681440057025
+        },
+        "teacher_psnr_vs_ground_truth": {
+          "mean": 34.58296479825411,
+          "median": 34.99902613862268,
+          "p10": 26.925150944189028,
+          "p90": 42.24439341623645
+        },
+        "teacher_seconds": {
+          "mean": 0.0,
+          "median": 0.0,
+          "p10": 0.0,
+          "p90": 0.0
+        },
+        "student_seconds": {
+          "mean": 0.1060326355,
+          "median": 0.10561343750000063,
+          "p10": 0.09471521670000112,
+          "p90": 0.11957709189999939
+        },
+        "psnr_gain_over_bicubic": {
+          "mean": 7.294850113036688,
+          "p10": 2.908178729863773
+        }
+      },
+      "paired_hard_ternary": {
+        "psnr_vs_ground_truth": 0.03205965958230657,
+        "edge_psnr_vs_ground_truth": 0.029930462799705813,
+        "psnr_vs_teacher": -0.0010103696148213714,
+        "by_source_psnr": {
+          "flores200_balanced_synthetic_ui": 0.03309711781214908,
+          "rico_screen2words_heldout": 0.03102220135246405
+        }
+      },
+      "paired_q4": {
+        "psnr_vs_ground_truth": -0.2065054822948003,
+        "edge_psnr_vs_ground_truth": -0.17645483316128985,
+        "psnr_vs_teacher": -3.55600978881436,
+        "by_source_psnr": {
+          "flores200_balanced_synthetic_ui": 0.16254053151004264,
+          "rico_screen2words_heldout": -0.5755514960996433
+        }
+      },
+      "samples": [
+        {
+          "sha256": "5519b8033949c72bfdb3fce62e34202c6c6bbe4c2c348d570d8b63839eafb2c8",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "eus_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 27.526654753928703,
+          "edge_psnr_vs_ground_truth": 31.40807071460454,
+          "psnr_vs_teacher": 37.54689789644611,
+          "bicubic_psnr_vs_ground_truth": 22.95370710421585,
+          "teacher_psnr_vs_ground_truth": 28.23567735814377,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10631416699999985
+        },
+        {
+          "sha256": "cd58f6369602a12431ed4177cbe9a1b477f8083f7a464310a06fe81d51e209a8",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ita_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 41.5781692875633,
+          "edge_psnr_vs_ground_truth": 45.23673383405074,
+          "psnr_vs_teacher": 49.44571431894143,
+          "bicubic_psnr_vs_ground_truth": 31.525606485982955,
+          "teacher_psnr_vs_ground_truth": 41.96661468684753,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.0969344999999997
+        },
+        {
+          "sha256": "a7b031fdebbd3faa3f35964861a196f3bc8895efac91c769376ed9d302754b7a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ajp_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 37.69278224308798,
+          "edge_psnr_vs_ground_truth": 40.9629739456627,
+          "psnr_vs_teacher": 44.20678389107184,
+          "bicubic_psnr_vs_ground_truth": 26.370617568088104,
+          "teacher_psnr_vs_ground_truth": 39.39906937705017,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09757795900000055
+        },
+        {
+          "sha256": "ff9b04d317f4299587a1cc12b32b63dcf2837be38301f7336d2b5e213c23161b",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "som_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 43.454184502144344,
+          "edge_psnr_vs_ground_truth": 47.31327118052696,
+          "psnr_vs_teacher": 49.88880216188622,
+          "bicubic_psnr_vs_ground_truth": 34.061314960550376,
+          "teacher_psnr_vs_ground_truth": 46.465959241783054,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.12125491599999982
+        },
+        {
+          "sha256": "c655c95a46fd5ca8399c804e10924f57ff97558f2210b36d452d6fcac90c5b7a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "aeb_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 34.932689705535424,
+          "edge_psnr_vs_ground_truth": 38.35078196967301,
+          "psnr_vs_teacher": 40.23805705036871,
+          "bicubic_psnr_vs_ground_truth": 24.611570545156333,
+          "teacher_psnr_vs_ground_truth": 35.90920016861293,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09890254200000026
+        },
+        {
+          "sha256": "7d6b7227830d447198eb8549a617d76605ec3d6d11c06783b9992f1005b58e21",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "apc_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 29.707369186828814,
+          "edge_psnr_vs_ground_truth": 32.75454282608183,
+          "psnr_vs_teacher": 40.76705580400212,
+          "bicubic_psnr_vs_ground_truth": 25.8948110573917,
+          "teacher_psnr_vs_ground_truth": 29.894024238537284,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09653908299999969
+        },
+        {
+          "sha256": "3c0168e97f1c4f6da3c3ffec4e41f16853c882743d7f8e9f06ce546d0955d49c",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "kaz_Cyrl",
+          "script": "Cyrl",
+          "psnr_vs_ground_truth": 33.144496209042856,
+          "edge_psnr_vs_ground_truth": 35.91026076410192,
+          "psnr_vs_teacher": 47.16191574246933,
+          "bicubic_psnr_vs_ground_truth": 30.177232744595095,
+          "teacher_psnr_vs_ground_truth": 33.21880341937077,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09121700000000033
+        },
+        {
+          "sha256": "d2f529783a003f5d386babe0a053ebf1205f59e9cda67d2b796ccddf61fece9f",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "por_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 26.455771866787366,
+          "edge_psnr_vs_ground_truth": 30.167661525222925,
+          "psnr_vs_teacher": 42.09023608638439,
+          "bicubic_psnr_vs_ground_truth": 24.623752447288435,
+          "teacher_psnr_vs_ground_truth": 26.468531063775238,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10630749999999978
+        },
+        {
+          "sha256": "382469067694997f14c152e86a2c99ac84bad50f103c927f30ad9f08c66f57d4",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "oci_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 27.39460613295002,
+          "edge_psnr_vs_ground_truth": 31.273020892944764,
+          "psnr_vs_teacher": 38.856555720339415,
+          "bicubic_psnr_vs_ground_truth": 24.16897436338095,
+          "teacher_psnr_vs_ground_truth": 26.975886486457227,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.0930915419999998
+        },
+        {
+          "sha256": "e8f6289d345268be994c54ce604e951555061e38b65c0a6d169a25c624e3b89a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ajp_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 29.72528278044214,
+          "edge_psnr_vs_ground_truth": 33.40825121240333,
+          "psnr_vs_teacher": 39.92766227289787,
+          "bicubic_psnr_vs_ground_truth": 23.921123002224867,
+          "teacher_psnr_vs_ground_truth": 30.5344512469013,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.1184460000000005
+        },
+        {
+          "sha256": "71abc15f3aa6581f82a1e7e41b7b82b79f15808ecbfb9a1844a53e9e39709afa",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 41.83592990937177,
+          "edge_psnr_vs_ground_truth": 45.752564129928636,
+          "psnr_vs_teacher": 48.39237640435905,
+          "bicubic_psnr_vs_ground_truth": 33.66410117988113,
+          "teacher_psnr_vs_ground_truth": 42.154206780716514,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.14015179199999928
+        },
+        {
+          "sha256": "3b0f1043125abdfde56a7d2fb7612345bae0886c5f02f91b74886e3bee342b58",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 40.950637486743354,
+          "edge_psnr_vs_ground_truth": 44.53223428266795,
+          "psnr_vs_teacher": 44.3661386875167,
+          "bicubic_psnr_vs_ground_truth": 26.652516748945757,
+          "teacher_psnr_vs_ground_truth": 43.05607313591587,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11939066699999934
+        },
+        {
+          "sha256": "3c6f8928f96f2d7eee75bb06ceb18c439a381280a873882503e6f34a9e553580",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 36.21390606992772,
+          "edge_psnr_vs_ground_truth": 40.28008699108235,
+          "psnr_vs_teacher": 48.17306686539423,
+          "bicubic_psnr_vs_ground_truth": 33.83748995131984,
+          "teacher_psnr_vs_ground_truth": 36.524698012525995,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.1093165840000001
+        },
+        {
+          "sha256": "380a495ae9f63f19948b393ae23028795589dc6ad8e321ac5cc914ab5ef12bc6",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 30.770778645387864,
+          "edge_psnr_vs_ground_truth": 34.587097096155325,
+          "psnr_vs_teacher": 35.23884866400498,
+          "bicubic_psnr_vs_ground_truth": 23.816525118581858,
+          "teacher_psnr_vs_ground_truth": 33.91061561630882,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10681137500000126
+        },
+        {
+          "sha256": "78615ecb5c1bc06b217563ecdc642620131cd91651042636a79a06da58b7c8df",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 27.1445502332478,
+          "edge_psnr_vs_ground_truth": 30.57738203883475,
+          "psnr_vs_teacher": 38.72845064926921,
+          "bicubic_psnr_vs_ground_truth": 24.135399947614097,
+          "teacher_psnr_vs_ground_truth": 27.433104981000568,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09489562500000126
+        },
+        {
+          "sha256": "d8335235791e5d6a3f590b17ca786d3e7fca7f875a2f95f2c4a275cdb38353e6",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 25.233661632302713,
+          "edge_psnr_vs_ground_truth": 29.055004691244303,
+          "psnr_vs_teacher": 36.05825670056115,
+          "bicubic_psnr_vs_ground_truth": 21.63244120561898,
+          "teacher_psnr_vs_ground_truth": 25.188352121372937,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09758899999999926
+        },
+        {
+          "sha256": "5cdd337aad9a5162fd570a62bbab807bfc873dbc6019f8064e0fdd640e82e9a0",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 35.33773303921216,
+          "edge_psnr_vs_ground_truth": 39.02642854727782,
+          "psnr_vs_teacher": 39.06862754614021,
+          "bicubic_psnr_vs_ground_truth": 24.99529667837253,
+          "teacher_psnr_vs_ground_truth": 36.65722741443003,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.0959758329999989
+        },
+        {
+          "sha256": "fe4b5c8f5888457b5689f653e6d9bfd8d44358388255c0b0d5fb2f9d791d009c",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 32.13301161109781,
+          "edge_psnr_vs_ground_truth": 35.39992058282215,
+          "psnr_vs_teacher": 36.622151415210624,
+          "bicubic_psnr_vs_ground_truth": 21.950785542597448,
+          "teacher_psnr_vs_ground_truth": 34.34294390841171,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10491937500000148
+        },
+        {
+          "sha256": "4cc8ded863f87ba1c94b305cc44b75ef418e9d050bd40f7589883e0741c94414",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 33.71830186603249,
+          "edge_psnr_vs_ground_truth": 37.44432453125318,
+          "psnr_vs_teacher": 39.032624051789,
+          "bicubic_psnr_vs_ground_truth": 22.099088899586185,
+          "teacher_psnr_vs_ground_truth": 35.65510836883366,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11202295799999895
+        },
+        {
+          "sha256": "665de2d2770c3afbc9599a218e4d7737bf0031f0a380bc462ce6fdca7b335f38",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 35.97794833156369,
+          "edge_psnr_vs_ground_truth": 39.34998699519669,
+          "psnr_vs_teacher": 39.885941219254796,
+          "bicubic_psnr_vs_ground_truth": 23.939107681072066,
+          "teacher_psnr_vs_ground_truth": 37.66874833808683,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11299429199999977
+        }
+      ]
+    },
+    "stage3_values": {
+      "restored_modules": [
+        "swin2sr.encoder.stages.3.layers.5.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.0.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.1.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.2.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.4.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.3.attention.self.value"
+      ],
+      "restored_weight_values": 21600,
+      "overall": {
+        "samples": 20,
+        "psnr_vs_ground_truth": {
+          "mean": 33.57630996947303,
+          "median": 33.448037559829004,
+          "p10": 27.08538707595936,
+          "p90": 42.188363569645745
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 37.173655551993775,
+          "median": 36.71112262125408,
+          "p10": 30.545654172008454,
+          "p90": 45.77451949453831
+        },
+        "psnr_vs_teacher": {
+          "mean": 41.31922086961761,
+          "median": 39.61582860038203,
+          "p10": 36.197523400571995,
+          "p90": 47.65615620297696
+        },
+        "bicubic_psnr_vs_ground_truth": {
+          "mean": 26.251573161623224,
+          "median": 24.617661496222382,
+          "p10": 22.08425856388731,
+          "p90": 33.681440057025
+        },
+        "teacher_psnr_vs_ground_truth": {
+          "mean": 34.58296479825411,
+          "median": 34.99902613862268,
+          "p10": 26.925150944189028,
+          "p90": 42.24439341623645
+        },
+        "teacher_seconds": {
+          "mean": 0.0,
+          "median": 0.0,
+          "p10": 0.0,
+          "p90": 0.0
+        },
+        "student_seconds": {
+          "mean": 0.10633103750000013,
+          "median": 0.10601893700000042,
+          "p10": 0.09683662920000033,
+          "p90": 0.11792905829999896
+        },
+        "psnr_gain_over_bicubic": {
+          "mean": 7.324736807849794,
+          "p10": 2.898357392177432
+        }
+      },
+      "paired_hard_ternary": {
+        "psnr_vs_ground_truth": 0.06194635439541383,
+        "edge_psnr_vs_ground_truth": 0.06405607720668591,
+        "psnr_vs_teacher": -0.4665976574125835,
+        "by_source_psnr": {
+          "flores200_balanced_synthetic_ui": 0.09997218512471093,
+          "rico_screen2words_heldout": 0.023920523666116723
+        }
+      },
+      "paired_q4": {
+        "psnr_vs_ground_truth": -0.17661878748169305,
+        "edge_psnr_vs_ground_truth": -0.14232921875430976,
+        "psnr_vs_teacher": -4.021597076612123,
+        "by_source_psnr": {
+          "flores200_balanced_synthetic_ui": 0.22941559882260448,
+          "rico_screen2words_heldout": -0.5826531737859906
+        }
+      },
+      "samples": [
+        {
+          "sha256": "5519b8033949c72bfdb3fce62e34202c6c6bbe4c2c348d570d8b63839eafb2c8",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "eus_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 27.59629405070617,
+          "edge_psnr_vs_ground_truth": 31.45763772292906,
+          "psnr_vs_teacher": 37.17317715899823,
+          "bicubic_psnr_vs_ground_truth": 22.95370710421585,
+          "teacher_psnr_vs_ground_truth": 28.23567735814377,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10737066600000045
+        },
+        {
+          "sha256": "cd58f6369602a12431ed4177cbe9a1b477f8083f7a464310a06fe81d51e209a8",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ita_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 42.17635461294072,
+          "edge_psnr_vs_ground_truth": 45.72343311198034,
+          "psnr_vs_teacher": 47.82868668903685,
+          "bicubic_psnr_vs_ground_truth": 31.525606485982955,
+          "teacher_psnr_vs_ground_truth": 41.96661468684753,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.0971555000000004
+        },
+        {
+          "sha256": "a7b031fdebbd3faa3f35964861a196f3bc8895efac91c769376ed9d302754b7a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ajp_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 37.5219966618418,
+          "edge_psnr_vs_ground_truth": 40.8225813296817,
+          "psnr_vs_teacher": 43.56886460385027,
+          "bicubic_psnr_vs_ground_truth": 26.370617568088104,
+          "teacher_psnr_vs_ground_truth": 39.39906937705017,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.0994677080000006
+        },
+        {
+          "sha256": "ff9b04d317f4299587a1cc12b32b63dcf2837be38301f7336d2b5e213c23161b",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "som_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 43.49233876388847,
+          "edge_psnr_vs_ground_truth": 47.387184579994326,
+          "psnr_vs_teacher": 49.28556758905059,
+          "bicubic_psnr_vs_ground_truth": 34.061314960550376,
+          "teacher_psnr_vs_ground_truth": 46.465959241783054,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11244395900000015
+        },
+        {
+          "sha256": "c655c95a46fd5ca8399c804e10924f57ff97558f2210b36d452d6fcac90c5b7a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "aeb_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 34.85343623717852,
+          "edge_psnr_vs_ground_truth": 38.26078711752428,
+          "psnr_vs_teacher": 39.33111868684599,
+          "bicubic_psnr_vs_ground_truth": 24.611570545156333,
+          "teacher_psnr_vs_ground_truth": 35.90920016861293,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09820554199999965
+        },
+        {
+          "sha256": "7d6b7227830d447198eb8549a617d76605ec3d6d11c06783b9992f1005b58e21",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "apc_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 29.82089140781625,
+          "edge_psnr_vs_ground_truth": 32.857394093126885,
+          "psnr_vs_teacher": 40.40697169807865,
+          "bicubic_psnr_vs_ground_truth": 25.8948110573917,
+          "teacher_psnr_vs_ground_truth": 29.894024238537284,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10278133300000025
+        },
+        {
+          "sha256": "3c0168e97f1c4f6da3c3ffec4e41f16853c882743d7f8e9f06ce546d0955d49c",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "kaz_Cyrl",
+          "script": "Cyrl",
+          "psnr_vs_ground_truth": 33.14005545107617,
+          "edge_psnr_vs_ground_truth": 35.90246119085276,
+          "psnr_vs_teacher": 46.633872909717326,
+          "bicubic_psnr_vs_ground_truth": 30.177232744595095,
+          "teacher_psnr_vs_ground_truth": 33.21880341937077,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.1046672080000004
+        },
+        {
+          "sha256": "d2f529783a003f5d386babe0a053ebf1205f59e9cda67d2b796ccddf61fece9f",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "por_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 26.439976525778714,
+          "edge_psnr_vs_ground_truth": 30.16655762082662,
+          "psnr_vs_teacher": 41.33634941874356,
+          "bicubic_psnr_vs_ground_truth": 24.623752447288435,
+          "teacher_psnr_vs_ground_truth": 26.468531063775238,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10235774999999947
+        },
+        {
+          "sha256": "382469067694997f14c152e86a2c99ac84bad50f103c927f30ad9f08c66f57d4",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "oci_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 27.450096263214533,
+          "edge_psnr_vs_ground_truth": 31.344973654392213,
+          "psnr_vs_teacher": 38.41061980779039,
+          "bicubic_psnr_vs_ground_truth": 24.16897436338095,
+          "teacher_psnr_vs_ground_truth": 26.975886486457227,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.08899291700000056
+        },
+        {
+          "sha256": "e8f6289d345268be994c54ce604e951555061e38b65c0a6d169a25c624e3b89a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ajp_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 29.789317366995217,
+          "edge_psnr_vs_ground_truth": 33.46398198985204,
+          "psnr_vs_teacher": 39.90053851391808,
+          "bicubic_psnr_vs_ground_truth": 23.921123002224867,
+          "teacher_psnr_vs_ground_truth": 30.5344512469013,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11293870799999972
+        },
+        {
+          "sha256": "71abc15f3aa6581f82a1e7e41b7b82b79f15808ecbfb9a1844a53e9e39709afa",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 42.29644417999096,
+          "edge_psnr_vs_ground_truth": 46.23429693756002,
+          "psnr_vs_teacher": 47.61056924917337,
+          "bicubic_psnr_vs_ground_truth": 33.66410117988113,
+          "teacher_psnr_vs_ground_truth": 42.154206780716514,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11355045800000063
+        },
+        {
+          "sha256": "3b0f1043125abdfde56a7d2fb7612345bae0886c5f02f91b74886e3bee342b58",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 40.84208630611998,
+          "edge_psnr_vs_ground_truth": 44.411628363730856,
+          "psnr_vs_teacher": 43.99428237001956,
+          "bicubic_psnr_vs_ground_truth": 26.652516748945757,
+          "teacher_psnr_vs_ground_truth": 43.05607313591587,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.115696625
+        },
+        {
+          "sha256": "3c6f8928f96f2d7eee75bb06ceb18c439a381280a873882503e6f34a9e553580",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 36.155659514764466,
+          "edge_psnr_vs_ground_truth": 40.22115454812561,
+          "psnr_vs_teacher": 47.6369861489703,
+          "bicubic_psnr_vs_ground_truth": 33.83748995131984,
+          "teacher_psnr_vs_ground_truth": 36.524698012525995,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11981845799999924
+        },
+        {
+          "sha256": "380a495ae9f63f19948b393ae23028795589dc6ad8e321ac5cc914ab5ef12bc6",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 30.991454618500597,
+          "edge_psnr_vs_ground_truth": 34.78800897735875,
+          "psnr_vs_teacher": 35.529057015978054,
+          "bicubic_psnr_vs_ground_truth": 23.816525118581858,
+          "teacher_psnr_vs_ground_truth": 33.91061561630882,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11771912499999893
+        },
+        {
+          "sha256": "78615ecb5c1bc06b217563ecdc642620131cd91651042636a79a06da58b7c8df",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 27.157099359312767,
+          "edge_psnr_vs_ground_truth": 30.58777601102866,
+          "psnr_vs_teacher": 38.88528493262154,
+          "bicubic_psnr_vs_ground_truth": 24.135399947614097,
+          "teacher_psnr_vs_ground_truth": 27.433104981000568,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.0977422910000012
+        },
+        {
+          "sha256": "d8335235791e5d6a3f590b17ca786d3e7fca7f875a2f95f2c4a275cdb38353e6",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 25.289802695429472,
+          "edge_psnr_vs_ground_truth": 29.107303580592266,
+          "psnr_vs_teacher": 36.14494044836087,
+          "bicubic_psnr_vs_ground_truth": 21.63244120561898,
+          "teacher_psnr_vs_ground_truth": 25.188352121372937,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.0939667919999998
+        },
+        {
+          "sha256": "5cdd337aad9a5162fd570a62bbab807bfc873dbc6019f8064e0fdd640e82e9a0",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 35.11355990759881,
+          "edge_psnr_vs_ground_truth": 38.8115572473809,
+          "psnr_vs_teacher": 38.776553437975004,
+          "bicubic_psnr_vs_ground_truth": 24.99529667837253,
+          "teacher_psnr_vs_ground_truth": 36.65722741443003,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10119524999999996
+        },
+        {
+          "sha256": "fe4b5c8f5888457b5689f653e6d9bfd8d44358388255c0b0d5fb2f9d791d009c",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 32.050432010201355,
+          "edge_psnr_vs_ground_truth": 35.34939648311976,
+          "psnr_vs_teacher": 36.20336595081768,
+          "bicubic_psnr_vs_ground_truth": 21.950785542597448,
+          "teacher_psnr_vs_ground_truth": 34.34294390841171,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10788833400000009
+        },
+        {
+          "sha256": "4cc8ded863f87ba1c94b305cc44b75ef418e9d050bd40f7589883e0741c94414",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 33.756019668581835,
+          "edge_psnr_vs_ground_truth": 37.51978405165539,
+          "psnr_vs_teacher": 38.85372700610206,
+          "bicubic_psnr_vs_ground_truth": 22.099088899586185,
+          "teacher_psnr_vs_ground_truth": 35.65510836883366,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.12019845900000092
+        },
+        {
+          "sha256": "665de2d2770c3afbc9599a218e4d7737bf0031f0a380bc462ce6fdca7b335f38",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 35.59288378752365,
+          "edge_psnr_vs_ground_truth": 39.05521242816303,
+          "psnr_vs_teacher": 38.87388375630377,
+          "bicubic_psnr_vs_ground_truth": 23.939107681072066,
+          "teacher_psnr_vs_ground_truth": 37.66874833808683,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.1124636670000001
+        }
+      ]
+    },
+    "stage3_qkv": {
+      "restored_modules": [
+        "swin2sr.encoder.stages.3.layers.5.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.1.attention.self.key",
+        "swin2sr.encoder.stages.3.layers.1.attention.self.query",
+        "swin2sr.encoder.stages.3.layers.0.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.5.attention.self.query",
+        "swin2sr.encoder.stages.3.layers.0.attention.self.key",
+        "swin2sr.encoder.stages.3.layers.0.attention.self.query",
+        "swin2sr.encoder.stages.3.layers.1.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.2.attention.self.query",
+        "swin2sr.encoder.stages.3.layers.2.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.4.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.3.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.3.attention.self.query",
+        "swin2sr.encoder.stages.3.layers.4.attention.self.query",
+        "swin2sr.encoder.stages.3.layers.2.attention.self.key",
+        "swin2sr.encoder.stages.3.layers.3.attention.self.key",
+        "swin2sr.encoder.stages.3.layers.4.attention.self.key",
+        "swin2sr.encoder.stages.3.layers.5.attention.self.key"
+      ],
+      "restored_weight_values": 64800,
+      "overall": {
+        "samples": 20,
+        "psnr_vs_ground_truth": {
+          "mean": 33.68161298291237,
+          "median": 33.594138251689834,
+          "p10": 27.06960744031874,
+          "p90": 42.620140644953324
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 37.28421818623666,
+          "median": 36.86607392427091,
+          "p10": 30.534512040820786,
+          "p90": 46.21025347018831
+        },
+        "psnr_vs_teacher": {
+          "mean": 41.22026070957025,
+          "median": 39.395604073990796,
+          "p10": 36.03735188330129,
+          "p90": 47.38407823191196
+        },
+        "bicubic_psnr_vs_ground_truth": {
+          "mean": 26.251573161623224,
+          "median": 24.617661496222382,
+          "p10": 22.08425856388731,
+          "p90": 33.681440057025
+        },
+        "teacher_psnr_vs_ground_truth": {
+          "mean": 34.58296479825411,
+          "median": 34.99902613862268,
+          "p10": 26.925150944189028,
+          "p90": 42.24439341623645
+        },
+        "teacher_seconds": {
+          "mean": 0.0,
+          "median": 0.0,
+          "p10": 0.0,
+          "p90": 0.0
+        },
+        "student_seconds": {
+          "mean": 0.10510744385000001,
+          "median": 0.10237197949999999,
+          "p10": 0.09683946690000038,
+          "p90": 0.11493866729999934
+        },
+        "psnr_gain_over_bicubic": {
+          "mean": 7.430039821289144,
+          "p10": 2.8711338881789845
+        }
+      },
+      "paired_hard_ternary": {
+        "psnr_vs_ground_truth": 0.16724936783476246,
+        "edge_psnr_vs_ground_truth": 0.1746187114495692,
+        "psnr_vs_teacher": -0.5655578174599423,
+        "by_source_psnr": {
+          "flores200_balanced_synthetic_ui": 0.2095528181047257,
+          "rico_screen2words_heldout": 0.1249459175647992
+        }
+      },
+      "paired_q4": {
+        "psnr_vs_ground_truth": -0.07131577404234442,
+        "edge_psnr_vs_ground_truth": -0.031766584511426464,
+        "psnr_vs_teacher": -4.12055723665948,
+        "by_source_psnr": {
+          "flores200_balanced_synthetic_ui": 0.3389962318026193,
+          "rico_screen2words_heldout": -0.4816277798873081
+        }
+      },
+      "samples": [
+        {
+          "sha256": "5519b8033949c72bfdb3fce62e34202c6c6bbe4c2c348d570d8b63839eafb2c8",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "eus_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 27.589919340305443,
+          "edge_psnr_vs_ground_truth": 31.467554089406207,
+          "psnr_vs_teacher": 36.017949226667916,
+          "bicubic_psnr_vs_ground_truth": 22.95370710421585,
+          "teacher_psnr_vs_ground_truth": 28.23567735814377,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.0915299169999999
+        },
+        {
+          "sha256": "cd58f6369602a12431ed4177cbe9a1b477f8083f7a464310a06fe81d51e209a8",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ita_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 42.6812207884858,
+          "edge_psnr_vs_ground_truth": 46.170023995595244,
+          "psnr_vs_teacher": 48.97166629064608,
+          "bicubic_psnr_vs_ground_truth": 31.525606485982955,
+          "teacher_psnr_vs_ground_truth": 41.96661468684753,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09931129200000033
+        },
+        {
+          "sha256": "a7b031fdebbd3faa3f35964861a196f3bc8895efac91c769376ed9d302754b7a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ajp_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 37.646530652318965,
+          "edge_psnr_vs_ground_truth": 40.97694903538775,
+          "psnr_vs_teacher": 43.52455579631568,
+          "bicubic_psnr_vs_ground_truth": 26.370617568088104,
+          "teacher_psnr_vs_ground_truth": 39.39906937705017,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09892795799999998
+        },
+        {
+          "sha256": "ff9b04d317f4299587a1cc12b32b63dcf2837be38301f7336d2b5e213c23161b",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "som_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 43.97381036261397,
+          "edge_psnr_vs_ground_truth": 47.91899354685719,
+          "psnr_vs_teacher": 49.842166188050456,
+          "bicubic_psnr_vs_ground_truth": 34.061314960550376,
+          "teacher_psnr_vs_ground_truth": 46.465959241783054,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10901462499999948
+        },
+        {
+          "sha256": "c655c95a46fd5ca8399c804e10924f57ff97558f2210b36d452d6fcac90c5b7a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "aeb_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 34.803793456834406,
+          "edge_psnr_vs_ground_truth": 38.199646645099506,
+          "psnr_vs_teacher": 38.625974889103375,
+          "bicubic_psnr_vs_ground_truth": 24.611570545156333,
+          "teacher_psnr_vs_ground_truth": 35.90920016861293,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09772270800000005
+        },
+        {
+          "sha256": "7d6b7227830d447198eb8549a617d76605ec3d6d11c06783b9992f1005b58e21",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "apc_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 29.85200128078103,
+          "edge_psnr_vs_ground_truth": 32.87989878854942,
+          "psnr_vs_teacher": 40.30650188449382,
+          "bicubic_psnr_vs_ground_truth": 25.8948110573917,
+          "teacher_psnr_vs_ground_truth": 29.894024238537284,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11087433400000002
+        },
+        {
+          "sha256": "3c0168e97f1c4f6da3c3ffec4e41f16853c882743d7f8e9f06ce546d0955d49c",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "kaz_Cyrl",
+          "script": "Cyrl",
+          "psnr_vs_ground_truth": 33.11522042777766,
+          "edge_psnr_vs_ground_truth": 35.88628037752556,
+          "psnr_vs_teacher": 46.81532215356586,
+          "bicubic_psnr_vs_ground_truth": 30.177232744595095,
+          "teacher_psnr_vs_ground_truth": 33.21880341937077,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10156304200000044
+        },
+        {
+          "sha256": "d2f529783a003f5d386babe0a053ebf1205f59e9cda67d2b796ccddf61fece9f",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "por_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 26.46648185449862,
+          "edge_psnr_vs_ground_truth": 30.217158423052727,
+          "psnr_vs_teacher": 40.85080439539568,
+          "bicubic_psnr_vs_ground_truth": 24.623752447288435,
+          "teacher_psnr_vs_ground_truth": 26.468531063775238,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11319049999999997
+        },
+        {
+          "sha256": "382469067694997f14c152e86a2c99ac84bad50f103c927f30ad9f08c66f57d4",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "oci_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 27.279108539389437,
+          "edge_psnr_vs_ground_truth": 31.214032125781458,
+          "psnr_vs_teacher": 37.61986793139154,
+          "bicubic_psnr_vs_ground_truth": 24.16897436338095,
+          "teacher_psnr_vs_ground_truth": 26.975886486457227,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09708129200000037
+        },
+        {
+          "sha256": "e8f6289d345268be994c54ce604e951555061e38b65c0a6d169a25c624e3b89a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ajp_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 29.968476968231382,
+          "edge_psnr_vs_ground_truth": 33.62647040376763,
+          "psnr_vs_teacher": 39.682802860650945,
+          "bicubic_psnr_vs_ground_truth": 23.921123002224867,
+          "teacher_psnr_vs_ground_truth": 30.5344512469013,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.12134083299999965
+        },
+        {
+          "sha256": "71abc15f3aa6581f82a1e7e41b7b82b79f15808ecbfb9a1844a53e9e39709afa",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 42.6133539623386,
+          "edge_psnr_vs_ground_truth": 46.572318741525926,
+          "psnr_vs_teacher": 47.00114143910751,
+          "bicubic_psnr_vs_ground_truth": 33.66410117988113,
+          "teacher_psnr_vs_ground_truth": 42.154206780716514,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10098741700000069
+        },
+        {
+          "sha256": "3b0f1043125abdfde56a7d2fb7612345bae0886c5f02f91b74886e3bee342b58",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 40.90114485510246,
+          "edge_psnr_vs_ground_truth": 44.43855200699059,
+          "psnr_vs_teacher": 44.17354927294373,
+          "bicubic_psnr_vs_ground_truth": 26.652516748945757,
+          "teacher_psnr_vs_ground_truth": 43.05607313591587,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10318091699999954
+        },
+        {
+          "sha256": "3c6f8928f96f2d7eee75bb06ceb18c439a381280a873882503e6f34a9e553580",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 36.10693968446662,
+          "edge_psnr_vs_ground_truth": 40.16923360206804,
+          "psnr_vs_teacher": 47.20767955871927,
+          "bicubic_psnr_vs_ground_truth": 33.83748995131984,
+          "teacher_psnr_vs_ground_truth": 36.524698012525995,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11916379200000016
+        },
+        {
+          "sha256": "380a495ae9f63f19948b393ae23028795589dc6ad8e321ac5cc914ab5ef12bc6",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 31.395382353538125,
+          "edge_psnr_vs_ground_truth": 35.19172716006623,
+          "psnr_vs_teacher": 36.099411808194944,
+          "bicubic_psnr_vs_ground_truth": 23.816525118581858,
+          "teacher_psnr_vs_ground_truth": 33.91061561630882,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11446920899999924
+        },
+        {
+          "sha256": "78615ecb5c1bc06b217563ecdc642620131cd91651042636a79a06da58b7c8df",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 27.136621394298754,
+          "edge_psnr_vs_ground_truth": 30.569773553906128,
+          "psnr_vs_teacher": 38.840680334626526,
+          "bicubic_psnr_vs_ground_truth": 24.135399947614097,
+          "teacher_psnr_vs_ground_truth": 27.433104981000568,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10059537499999927
+        },
+        {
+          "sha256": "d8335235791e5d6a3f590b17ca786d3e7fca7f875a2f95f2c4a275cdb38353e6",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 25.34037203795674,
+          "edge_psnr_vs_ground_truth": 29.16242773533133,
+          "psnr_vs_teacher": 36.01086597217284,
+          "bicubic_psnr_vs_ground_truth": 21.63244120561898,
+          "teacher_psnr_vs_ground_truth": 25.188352121372937,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09909487500000047
+        },
+        {
+          "sha256": "5cdd337aad9a5162fd570a62bbab807bfc873dbc6019f8064e0fdd640e82e9a0",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 35.0561549726596,
+          "edge_psnr_vs_ground_truth": 38.73516444282867,
+          "psnr_vs_teacher": 38.996604064708265,
+          "bicubic_psnr_vs_ground_truth": 24.99529667837253,
+          "teacher_psnr_vs_ground_truth": 36.65722741443003,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09466304100000045
+        },
+        {
+          "sha256": "fe4b5c8f5888457b5689f653e6d9bfd8d44358388255c0b0d5fb2f9d791d009c",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 32.095937535493185,
+          "edge_psnr_vs_ground_truth": 35.4313570207582,
+          "psnr_vs_teacher": 36.03950773403833,
+          "bicubic_psnr_vs_ground_truth": 21.950785542597448,
+          "teacher_psnr_vs_ground_truth": 34.34294390841171,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11246949999999956
+        },
+        {
+          "sha256": "4cc8ded863f87ba1c94b305cc44b75ef418e9d050bd40f7589883e0741c94414",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 34.07305607560201,
+          "edge_psnr_vs_ground_truth": 37.84586747101625,
+          "psnr_vs_teacher": 39.10840528733064,
+          "bicubic_psnr_vs_ground_truth": 22.099088899586185,
+          "teacher_psnr_vs_ground_truth": 35.65510836883366,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10936429099999856
+        },
+        {
+          "sha256": "665de2d2770c3afbc9599a218e4d7737bf0031f0a380bc462ce6fdca7b335f38",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 35.536733115554625,
+          "edge_psnr_vs_ground_truth": 39.01093455921909,
+          "psnr_vs_teacher": 38.66975710328157,
+          "bicubic_psnr_vs_ground_truth": 23.939107681072066,
+          "teacher_psnr_vs_ground_truth": 37.66874833808683,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10760395900000219
+        }
+      ]
+    },
+    "top5pct_local_error": {
+      "restored_modules": [
+        "swin2sr.encoder.stages.3.layers.5.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.1.attention.self.key",
+        "swin2sr.encoder.stages.3.layers.1.attention.self.query",
+        "swin2sr.encoder.stages.3.layers.0.attention.self.value",
+        "swin2sr.encoder.stages.2.layers.1.attention.self.value",
+        "swin2sr.encoder.stages.3.layers.5.attention.self.query",
+        "swin2sr.encoder.stages.3.layers.0.attention.self.key",
+        "swin2sr.encoder.stages.3.layers.0.attention.self.query",
+        "swin2sr.encoder.stages.3.layers.1.attention.self.value"
+      ],
+      "restored_weight_values": 32400,
+      "overall": {
+        "samples": 20,
+        "psnr_vs_ground_truth": {
+          "mean": 33.57191323568701,
+          "median": 33.413082454911056,
+          "p10": 27.092081417457322,
+          "p90": 41.417918445766745
+        },
+        "edge_psnr_vs_ground_truth": {
+          "mean": 37.18328522978665,
+          "median": 36.677671689818546,
+          "p10": 30.55159262676968,
+          "p90": 45.15030815441603
+        },
+        "psnr_vs_teacher": {
+          "mean": 41.72888202780432,
+          "median": 40.09400966543298,
+          "p10": 36.21692314992938,
+          "p90": 48.4279053014521
+        },
+        "bicubic_psnr_vs_ground_truth": {
+          "mean": 26.251573161623224,
+          "median": 24.617661496222382,
+          "p10": 22.08425856388731,
+          "p90": 33.681440057025
+        },
+        "teacher_psnr_vs_ground_truth": {
+          "mean": 34.58296479825411,
+          "median": 34.99902613862268,
+          "p10": 26.925150944189028,
+          "p90": 42.24439341623645
+        },
+        "teacher_seconds": {
+          "mean": 0.0,
+          "median": 0.0,
+          "p10": 0.0,
+          "p90": 0.0
+        },
+        "student_seconds": {
+          "mean": 0.10516881045000019,
+          "median": 0.09875627100000006,
+          "p10": 0.09030081640000036,
+          "p90": 0.12057877089999977
+        },
+        "psnr_gain_over_bicubic": {
+          "mean": 7.320340074063793,
+          "p10": 2.876647856450731
+        }
+      },
+      "paired_hard_ternary": {
+        "psnr_vs_ground_truth": 0.057549620609411004,
+        "edge_psnr_vs_ground_truth": 0.07368575499955163,
+        "psnr_vs_teacher": -0.05693649922587909,
+        "by_source_psnr": {
+          "flores200_balanced_synthetic_ui": 0.09882962377414906,
+          "rico_screen2words_heldout": 0.016269617444672944
+        }
+      },
+      "paired_q4": {
+        "psnr_vs_ground_truth": -0.18101552126769588,
+        "edge_psnr_vs_ground_truth": -0.13269954096144404,
+        "psnr_vs_teacher": -3.611935918425418,
+        "by_source_psnr": {
+          "flores200_balanced_synthetic_ui": 0.2282730374720426,
+          "rico_screen2words_heldout": -0.5903040800074344
+        }
+      },
+      "samples": [
+        {
+          "sha256": "5519b8033949c72bfdb3fce62e34202c6c6bbe4c2c348d570d8b63839eafb2c8",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "eus_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 27.622541910486614,
+          "edge_psnr_vs_ground_truth": 31.48408310853041,
+          "psnr_vs_teacher": 37.22217028557098,
+          "bicubic_psnr_vs_ground_truth": 22.95370710421585,
+          "teacher_psnr_vs_ground_truth": 28.23567735814377,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.08535641600000066
+        },
+        {
+          "sha256": "cd58f6369602a12431ed4177cbe9a1b477f8083f7a464310a06fe81d51e209a8",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ita_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 41.36911668534669,
+          "edge_psnr_vs_ground_truth": 45.082145814465434,
+          "psnr_vs_teacher": 48.852256327003175,
+          "bicubic_psnr_vs_ground_truth": 31.525606485982955,
+          "teacher_psnr_vs_ground_truth": 41.96661468684753,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.08761529199999973
+        },
+        {
+          "sha256": "a7b031fdebbd3faa3f35964861a196f3bc8895efac91c769376ed9d302754b7a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ajp_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 37.8087450305295,
+          "edge_psnr_vs_ground_truth": 41.07328949765428,
+          "psnr_vs_teacher": 44.00353020416116,
+          "bicubic_psnr_vs_ground_truth": 26.370617568088104,
+          "teacher_psnr_vs_ground_truth": 39.39906937705017,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09361887500000066
+        },
+        {
+          "sha256": "ff9b04d317f4299587a1cc12b32b63dcf2837be38301f7336d2b5e213c23161b",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "som_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 44.178383372339084,
+          "edge_psnr_vs_ground_truth": 48.127690272413226,
+          "psnr_vs_teacher": 50.88014372377308,
+          "bicubic_psnr_vs_ground_truth": 34.061314960550376,
+          "teacher_psnr_vs_ground_truth": 46.465959241783054,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.0941736250000007
+        },
+        {
+          "sha256": "c655c95a46fd5ca8399c804e10924f57ff97558f2210b36d452d6fcac90c5b7a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "aeb_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 34.8738074053375,
+          "edge_psnr_vs_ground_truth": 38.30808143775177,
+          "psnr_vs_teacher": 40.15590258033795,
+          "bicubic_psnr_vs_ground_truth": 24.611570545156333,
+          "teacher_psnr_vs_ground_truth": 35.90920016861293,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09447783300000001
+        },
+        {
+          "sha256": "7d6b7227830d447198eb8549a617d76605ec3d6d11c06783b9992f1005b58e21",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "apc_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 29.741677230703942,
+          "edge_psnr_vs_ground_truth": 32.79589003538422,
+          "psnr_vs_teacher": 40.68724644088611,
+          "bicubic_psnr_vs_ground_truth": 25.8948110573917,
+          "teacher_psnr_vs_ground_truth": 29.894024238537284,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09565545899999961
+        },
+        {
+          "sha256": "3c0168e97f1c4f6da3c3ffec4e41f16853c882743d7f8e9f06ce546d0955d49c",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "kaz_Cyrl",
+          "script": "Cyrl",
+          "psnr_vs_ground_truth": 33.11333576354479,
+          "edge_psnr_vs_ground_truth": 35.8808382923481,
+          "psnr_vs_teacher": 47.19562421103917,
+          "bicubic_psnr_vs_ground_truth": 30.177232744595095,
+          "teacher_psnr_vs_ground_truth": 33.21880341937077,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.11316037500000142
+        },
+        {
+          "sha256": "d2f529783a003f5d386babe0a053ebf1205f59e9cda67d2b796ccddf61fece9f",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "por_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 26.389248936401376,
+          "edge_psnr_vs_ground_truth": 30.137059705236332,
+          "psnr_vs_teacher": 41.582528794599725,
+          "bicubic_psnr_vs_ground_truth": 24.623752447288435,
+          "teacher_psnr_vs_ground_truth": 26.468531063775238,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.100199292000001
+        },
+        {
+          "sha256": "382469067694997f14c152e86a2c99ac84bad50f103c927f30ad9f08c66f57d4",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "oci_Latn",
+          "script": "Latn",
+          "psnr_vs_ground_truth": 27.342122800719476,
+          "edge_psnr_vs_ground_truth": 31.250762400997175,
+          "psnr_vs_teacher": 39.01608300520773,
+          "bicubic_psnr_vs_ground_truth": 24.16897436338095,
+          "teacher_psnr_vs_ground_truth": 26.975886486457227,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.1180861249999996
+        },
+        {
+          "sha256": "e8f6289d345268be994c54ce604e951555061e38b65c0a6d169a25c624e3b89a",
+          "source": "flores200_balanced_synthetic_ui",
+          "split": "devtest",
+          "language": "ajp_Arab",
+          "script": "Arab",
+          "psnr_vs_ground_truth": 29.830352592521972,
+          "edge_psnr_vs_ground_truth": 33.51108897521731,
+          "psnr_vs_teacher": 40.032116750528004,
+          "bicubic_psnr_vs_ground_truth": 23.921123002224867,
+          "teacher_psnr_vs_ground_truth": 30.5344512469013,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.17090358299999941
+        },
+        {
+          "sha256": "71abc15f3aa6581f82a1e7e41b7b82b79f15808ecbfb9a1844a53e9e39709afa",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 41.85713428954726,
+          "edge_psnr_vs_ground_truth": 45.763769213971386,
+          "psnr_vs_teacher": 48.38075518750198,
+          "bicubic_psnr_vs_ground_truth": 33.66410117988113,
+          "teacher_psnr_vs_ground_truth": 42.154206780716514,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09659020800000029
+        },
+        {
+          "sha256": "3b0f1043125abdfde56a7d2fb7612345bae0886c5f02f91b74886e3bee342b58",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 40.838492273575824,
+          "edge_psnr_vs_ground_truth": 44.42943754130421,
+          "psnr_vs_teacher": 44.08375654866818,
+          "bicubic_psnr_vs_ground_truth": 26.652516748945757,
+          "teacher_psnr_vs_ground_truth": 43.05607313591587,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09604016699999995
+        },
+        {
+          "sha256": "3c6f8928f96f2d7eee75bb06ceb18c439a381280a873882503e6f34a9e553580",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 36.1790413452799,
+          "edge_psnr_vs_ground_truth": 40.23916572595695,
+          "psnr_vs_teacher": 47.68384402806154,
+          "bicubic_psnr_vs_ground_truth": 33.83748995131984,
+          "teacher_psnr_vs_ground_truth": 36.524698012525995,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10315866699999887
+        },
+        {
+          "sha256": "380a495ae9f63f19948b393ae23028795589dc6ad8e321ac5cc914ab5ef12bc6",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 30.9831307528019,
+          "edge_psnr_vs_ground_truth": 34.78917090206158,
+          "psnr_vs_teacher": 35.54985230832072,
+          "bicubic_psnr_vs_ground_truth": 23.816525118581858,
+          "teacher_psnr_vs_ground_truth": 33.91061561630882,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10660691700000058
+        },
+        {
+          "sha256": "78615ecb5c1bc06b217563ecdc642620131cd91651042636a79a06da58b7c8df",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 27.17017391535243,
+          "edge_psnr_vs_ground_truth": 30.597651840273386,
+          "psnr_vs_teacher": 38.97137584872695,
+          "bicubic_psnr_vs_ground_truth": 24.135399947614097,
+          "teacher_psnr_vs_ground_truth": 27.433104981000568,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09731324999999913
+        },
+        {
+          "sha256": "d8335235791e5d6a3f590b17ca786d3e7fca7f875a2f95f2c4a275cdb38353e6",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 25.16780380676611,
+          "edge_psnr_vs_ground_truth": 29.006108601898962,
+          "psnr_vs_teacher": 35.89391145905705,
+          "bicubic_psnr_vs_ground_truth": 21.63244120561898,
+          "teacher_psnr_vs_ground_truth": 25.188352121372937,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.14301258400000094
+        },
+        {
+          "sha256": "5cdd337aad9a5162fd570a62bbab807bfc873dbc6019f8064e0fdd640e82e9a0",
+          "source": "rico_screen2words_heldout",
+          "split": "val",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 35.388175040392724,
+          "edge_psnr_vs_ground_truth": 39.090161900599604,
+          "psnr_vs_teacher": 39.590843460414725,
+          "bicubic_psnr_vs_ground_truth": 24.99529667837253,
+          "teacher_psnr_vs_ground_truth": 36.65722741443003,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.09059920800000043
+        },
+        {
+          "sha256": "fe4b5c8f5888457b5689f653e6d9bfd8d44358388255c0b0d5fb2f9d791d009c",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 32.02104237300358,
+          "edge_psnr_vs_ground_truth": 35.33746173668105,
+          "psnr_vs_teacher": 36.25281333780408,
+          "bicubic_psnr_vs_ground_truth": 21.950785542597448,
+          "teacher_psnr_vs_ground_truth": 34.34294390841171,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10103249999999875
+        },
+        {
+          "sha256": "4cc8ded863f87ba1c94b305cc44b75ef418e9d050bd40f7589883e0741c94414",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 33.71282914627732,
+          "edge_psnr_vs_ground_truth": 37.47450508728899,
+          "psnr_vs_teacher": 38.92791068294752,
+          "bicubic_psnr_vs_ground_truth": 22.099088899586185,
+          "teacher_psnr_vs_ground_truth": 35.65510836883366,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.1073535000000021
+        },
+        {
+          "sha256": "665de2d2770c3afbc9599a218e4d7737bf0031f0a380bc462ce6fdca7b335f38",
+          "source": "rico_screen2words_heldout",
+          "split": "test",
+          "language": null,
+          "script": null,
+          "psnr_vs_ground_truth": 35.8511100428124,
+          "edge_psnr_vs_ground_truth": 39.287342505698405,
+          "psnr_vs_teacher": 39.6149753714764,
+          "bicubic_psnr_vs_ground_truth": 23.939107681072066,
+          "teacher_psnr_vs_ground_truth": 37.66874833808683,
+          "teacher_seconds": 0.0,
+          "student_seconds": 0.10842233300000004
+        }
+      ]
+    }
+  }
+}

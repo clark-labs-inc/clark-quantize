@@ -1,0 +1,80 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>BackdropKit packed ONNX bridge test</title>
+<pre id="result">running</pre>
+<script type="module">
+  import * as ort from "/Documents/git/clark/saas-products/backdrop/node_modules/onnxruntime-web/dist/ort.webgpu.min.mjs";
+
+  const result = document.querySelector("#result");
+  const fixtureUrl = "/.cache/clark-quantize/swin2sr-packed-onnx-bridge-v1.json";
+  const modelUrl = "/.cache/clark-quantize/swin2sr-packed-onnx-bridge-v1.onnx";
+  const wasmRoot = "/Documents/git/clark/saas-products/backdrop/node_modules/onnxruntime-web/dist/";
+  ort.env.wasm.wasmPaths = wasmRoot;
+  ort.env.wasm.numThreads = 1;
+
+  function maximumError(actual, expected) {
+    let maximum = 0;
+    for (let index = 0; index < expected.length; index += 1) {
+      maximum = Math.max(maximum, Math.abs(actual[index] - expected[index]));
+    }
+    return maximum;
+  }
+
+  async function run(executionProvider, fixture, modelBytes) {
+    const sessionStarted = performance.now();
+    const session = await ort.InferenceSession.create(modelBytes, {
+      executionProviders: [executionProvider],
+      graphOptimizationLevel: "all",
+    });
+    const sessionMs = performance.now() - sessionStarted;
+    const input = new ort.Tensor(
+      "float32",
+      new Float32Array(fixture.input),
+      fixture.input_shape,
+    );
+    const coldStarted = performance.now();
+    const outputs = await session.run({ input });
+    const coldInferenceMs = performance.now() - coldStarted;
+    const timings = [];
+    for (let iteration = 0; iteration < 10; iteration += 1) {
+      const started = performance.now();
+      await session.run({ input });
+      timings.push(performance.now() - started);
+    }
+    timings.sort((left, right) => left - right);
+    return {
+      backend: executionProvider,
+      sessionMs,
+      coldInferenceMs,
+      medianWarmInferenceMs: timings[Math.floor(timings.length / 2)],
+      p90WarmInferenceMs: timings[Math.floor(timings.length * 0.9)],
+      maxAbsoluteError: maximumError(outputs.output.data, fixture.expected),
+      outputShape: outputs.output.dims,
+    };
+  }
+
+  try {
+    const [fixture, modelBytes] = await Promise.all([
+      fetch(fixtureUrl).then((response) => response.json()),
+      fetch(modelUrl).then((response) => response.arrayBuffer()),
+    ]);
+    const receipts = [];
+    let webgpuError = null;
+    try {
+      receipts.push(await run("webgpu", fixture, modelBytes));
+    } catch (error) {
+      webgpuError = String(error?.message ?? error);
+    }
+    receipts.push(await run("wasm", fixture, modelBytes));
+    result.textContent = JSON.stringify({
+      navigatorGpu: Boolean(navigator.gpu),
+      modelBytes: modelBytes.byteLength,
+      webgpuError,
+      receipts,
+    }, null, 2);
+    result.dataset.status = "complete";
+  } catch (error) {
+    result.textContent = String(error?.stack ?? error);
+    result.dataset.status = "failed";
+  }
+</script>

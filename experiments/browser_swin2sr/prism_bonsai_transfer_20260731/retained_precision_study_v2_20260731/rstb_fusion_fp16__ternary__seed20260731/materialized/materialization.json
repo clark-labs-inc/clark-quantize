@@ -1,0 +1,105 @@
+{
+  "format": "backdropkit-swin2sr-retained-precision-materialization-v1",
+  "interpretation": "All non-island quantized surfaces are hard ternary. The declared island is emitted at its trained precision; FP16 island values are exact IEEE FP16 roundtrips represented in a dense state.",
+  "checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/run/checkpoint-island-4000.pt",
+  "checkpoint_sha256": "ddd99a89ef006641afa04fb909fe53c579a1b528cf8dc3b4291d0389db7864bb",
+  "parent_checkpoint": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/surface_group_recovery_20260731/refined/run/checkpoint-final.pt",
+  "parent_checkpoint_sha256": "0b155f9ada8b747544ba1abb83596e160927fdc91a4c33bf36879ff3f77ce00f",
+  "parent_step": 28000,
+  "island_step": 4000,
+  "source_device": "cpu",
+  "retained_precision_training": {
+    "format": "backdropkit-swin2sr-retained-precision-training-v1",
+    "island": "rstb_fusion_fp16",
+    "precision": "ternary",
+    "seed": 20260731,
+    "steps": 4000,
+    "learning_rate": 4e-06,
+    "optimizer": "adamw",
+    "weight_decay": 0.0001,
+    "gradient_clip_norm": 1.0,
+    "batch_size": 8,
+    "crop_size": 128,
+    "loss_recipe": "balanced",
+    "pixel_objective": "psnr_aligned",
+    "initialization": "hard_ternary_control",
+    "trainable_scope": "declared_island_weights_only",
+    "sampler": {
+      "format": "backdropkit-product-source-language-v3",
+      "epoch_images": 206500,
+      "source_weights": {
+        "aria_ui": 0.15,
+        "flores200_balanced_synthetic_ui": 0.2,
+        "pd12m": 0.1,
+        "rico": 0.35,
+        "websight": 0.2
+      },
+      "source_quotas": {
+        "aria_ui": 30975,
+        "flores200_balanced_synthetic_ui": 41300,
+        "pd12m": 20650,
+        "rico": 72275,
+        "websight": 41300
+      },
+      "languages_per_source": {
+        "aria_ui": 0,
+        "flores200_balanced_synthetic_ui": 204,
+        "pd12m": 0,
+        "rico": 0,
+        "websight": 0
+      },
+      "corpus_identity": {
+        "format": "backdropkit-swin2sr-recovery-corpus-v1",
+        "datasets": [
+          {
+            "summary_sha256": "bdeb69795fe44d882b7ebc4fcb70b07348907ac652a2edf11604b8e2da076705",
+            "manifest_sha256": "e33eb05e8a18246f5c48521da006a7e2d2de54e95e166a8e2adb8cab53602173",
+            "images": 104500
+          },
+          {
+            "summary_sha256": "add7f00c3a37e3cb1fc17352e086e4a8a5a0991ffefa91075a1c68576e304a42",
+            "manifest_sha256": "9b953e8e1add69082772e6e7482889afa7207e3b500dc58fa7eec8829932d4e9",
+            "images": 102000
+          }
+        ]
+      }
+    }
+  },
+  "initialization": {
+    "precision": "ternary",
+    "initialized": [
+      {
+        "name": "swin2sr.encoder.stages.0.conv",
+        "values": 32400,
+        "initial_hard_ternary_max_abs": 7.450580596923828e-09,
+        "initial_hard_ternary_tolerance": 4.76837158203125e-07
+      },
+      {
+        "name": "swin2sr.encoder.stages.1.conv",
+        "values": 32400,
+        "initial_hard_ternary_max_abs": 7.450580596923828e-09,
+        "initial_hard_ternary_tolerance": 4.76837158203125e-07
+      },
+      {
+        "name": "swin2sr.encoder.stages.2.conv",
+        "values": 32400,
+        "initial_hard_ternary_max_abs": 7.450580596923828e-09,
+        "initial_hard_ternary_tolerance": 4.76837158203125e-07
+      },
+      {
+        "name": "swin2sr.encoder.stages.3.conv",
+        "values": 32400,
+        "initial_hard_ternary_max_abs": 7.450580596923828e-09,
+        "initial_hard_ternary_tolerance": 4.76837158203125e-07
+      }
+    ],
+    "trainable_values": 129600
+  },
+  "dense_state": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/browser_swin2sr/prism_bonsai_transfer_20260731/retained_precision_study_v2_20260731/rstb_fusion_fp16__ternary__seed20260731/materialized/dense-hard.pt",
+    "file_sha256": "ab5c3487c7c2dc8dc5d3397a513d7fd85efd63c0d6afdbf0d7de5e0dab1e8268",
+    "tensor_sha256": "d143d9de3f7ea583df3ca97c13695b96988298652088336d9c50debe7c8e186a",
+    "tensors": 484,
+    "values": 1005348
+  }
+}
