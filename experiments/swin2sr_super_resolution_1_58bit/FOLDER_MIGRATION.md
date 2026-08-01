@@ -51,10 +51,12 @@ Raw datasets, generated media, model payloads, checkpoints, and build caches
 are excluded from Git and represented by committed manifests, hashes, ledgers,
 and public artifact revisions.
 
-Raw provider responses, hidden reasoning trajectories, credentials, and Codex
-session databases are also excluded. Durable structured proposals and reviews
-are copied into this dossier; excluded private sources are identified by
-run/session ID and content hash where appropriate.
+Complete Clark Scientist provider responses and trajectories may be committed
+inside their run folder when the repository is private, the run is in program
+scope, and a credential scan passes. Credentials, caches, unrelated machine-
+private data, and Codex session databases remain excluded. Codex sessions are
+not Clark Scientist artifacts; only their bounded research reports belong in
+this dossier.
 
 ## Intended post-writer layout
 

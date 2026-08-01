@@ -2134,3 +2134,23 @@ BackdropKit quantization research artifacts. The `clark-scientist` repository
 owns the reusable engine, not this program's scientific outputs. Machine-
 private provider trajectories, credentials, caches, and Codex session stores
 remain outside Git by policy and are represented only by provenance receipts.
+
+## 2026-08-01 — Complete Clark Scientist run retained in private Git
+
+**Correction.** The preceding consolidation entry described the raw Clark
+Scientist trajectory as hash-only. The repository is private, and the user
+explicitly classified full model-run traces as required research artifacts.
+After a zero-match credential scan covering common OpenRouter, Hugging Face,
+GitHub, AWS, and private-key formats, the complete BackdropKit Scientist run was
+copied byte-for-byte under its `raw/` folder. The proposal, responses, worker
+configuration, event stream, trajectory, and empty append lock match the
+source hashes recorded in the version-2 run receipt.
+
+**Verified provenance.** This specific run used a local Clark Scientist worker
+and local artifact residency, but model inference was
+`deepseek/deepseek-v4-flash-0731` through the OpenRouter API. It must not be
+described as locally executed model inference.
+
+**Boundary.** Codex session databases and Codex internal reasoning are not
+Clark Scientist model artifacts and are not copied. Their bounded terminal
+research reports remain in `research_agent_reviews/` with source session IDs.

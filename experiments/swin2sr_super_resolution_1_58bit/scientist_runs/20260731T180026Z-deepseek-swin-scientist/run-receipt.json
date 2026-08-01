@@ -1,38 +1,51 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "run_id": "20260731T180026Z-deepseek-swin-scientist",
   "program": "backdropkit-swin2sr",
   "scientist_model": "deepseek/deepseek-v4-flash-0731",
   "reasoning_effort": "xhigh",
   "structured_output_mode": "json_object",
   "execution_residency": "local_only",
+  "inference_transport": "OpenRouter API; local_only describes the Clark Scientist worker and artifact residency, not local model inference",
   "source_repository": "https://github.com/clark-labs-inc/clark-scientist.git",
   "source_run_root": "/Users/stan/Documents/git/clark-scientist/runs/20260731T180026Z-deepseek-swin-scientist",
   "tracked_artifacts": {
     "proposal.json": {
       "sha256": "11c2ea03c1b697873ee65102fb3c176e26c92ed0b60239c347e900064a509ba5",
       "bytes": 9277
-    }
-  },
-  "private_source_artifacts": {
-    "responses.jsonl": {
+    },
+    "raw/proposal.json": {
+      "sha256": "11c2ea03c1b697873ee65102fb3c176e26c92ed0b60239c347e900064a509ba5",
+      "bytes": 9277
+    },
+    "raw/responses.jsonl": {
       "sha256": "920f4352d4d62b8027045f9085f48e02e14c2875322ec9c93af7963a5e2a9076",
       "bytes": 141780
     },
-    "worker.json": {
+    "raw/worker.json": {
       "sha256": "16b46f9d26f0e17bde51e044a7a8e8e9db008f937b561d49d9f4a183ee5642e2",
       "bytes": 640
     },
-    "trajectories/deepseek-swin-scientist-001.jsonl": {
+    "raw/trajectories/deepseek-swin-scientist-001.jsonl": {
       "sha256": "544530f28f2944fdd6d87b39c42898e36f82ae15a24b92286f25b89792d5e4c1",
       "bytes": 14513216
     },
-    "trajectories/research/backdropkit-tiny-models/events.jsonl": {
+    "raw/trajectories/research/backdropkit-tiny-models/events.jsonl": {
       "sha256": "eaf09fe8226e4bd5c2a1feb81392afaf3d41e3fd22b43ae23ed4ce28a9828314",
       "bytes": 127268
+    },
+    "raw/trajectories/research/backdropkit-tiny-models/append.lock": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
     }
   },
-  "exclusion_policy": "Raw provider responses, hidden reasoning trajectories, worker environment configuration, credentials, and private session internals are not committed. Their hashes are retained for local provenance verification.",
+  "credential_scan": {
+    "status": "passed",
+    "scanned": "2026-08-01",
+    "matches": 0,
+    "classes": ["OpenRouter and generic API keys", "Hugging Face tokens", "GitHub tokens", "AWS access keys", "private-key blocks"]
+  },
+  "exclusion_policy": "The complete Clark Scientist run is committed under raw/. Codex session databases, Codex internal reasoning, credentials, caches, and unrelated machine-private data are not part of this run and remain excluded.",
   "distilled_receipt": "../../../browser_swin2sr/prism_bonsai_transfer_20260731/SCIENTIST_DEEPSEEK_0731.md",
   "study_journal": "../../../browser_swin2sr/prism_bonsai_transfer_20260731/SCIENTIFIC_JOURNAL.md"
 }

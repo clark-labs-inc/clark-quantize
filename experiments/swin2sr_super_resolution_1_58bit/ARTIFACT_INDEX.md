@@ -17,6 +17,9 @@ hash, and manifest are part of the evidence.
 - exact DeepSeek 07/31 structured proposal and provenance receipt:
   `scientist_runs/20260731T180026Z-deepseek-swin-scientist/proposal.json`,
   `scientist_runs/20260731T180026Z-deepseek-swin-scientist/run-receipt.json`
+- complete DeepSeek 07/31 Clark Scientist run, including provider responses,
+  reasoning details, worker configuration, research events, and trajectory:
+  `scientist_runs/20260731T180026Z-deepseek-swin-scientist/raw/`
 - bounded research-agent review registry and content ledger:
   `research_agent_reviews/README.md`, `research_agent_reviews/manifest.json`
 - Prism/Bonsai precision review:
@@ -29,9 +32,9 @@ hash, and manifest are part of the evidence.
   `../browser_swin2sr/prism_bonsai_transfer_20260731/SCIENTIST_DEEPSEEK_0731.md`,
   `../browser_swin2sr/prism_bonsai_transfer_20260731/SCIENTIFIC_JOURNAL.md`
 
-Private hidden-reasoning trajectories, credentials, caches, and complete Codex
-session databases are intentionally excluded. The run receipt records hashes
-and source identities for locally retained private inputs.
+Credentials, caches, unrelated machine-private data, and complete Codex session
+databases are intentionally excluded. Codex sessions are not Clark Scientist
+model artifacts; their captured research reports are indexed above.
 
 ## Current selected still-image release: G3
 
