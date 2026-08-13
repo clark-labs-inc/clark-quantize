@@ -1,0 +1,13 @@
+name: Research smoke
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    uses: clark-labs-inc/.github/.github/workflows/python-research.yml@1c98dea58c3bc4f4b3a6650f758795c530175001
