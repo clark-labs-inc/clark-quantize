@@ -16,6 +16,16 @@ The script installs CPU-only PyTorch in an isolated Python 3.13 environment,
 pins and builds llama.cpp, creates persistent model/run/cache directories, and
 writes `/workspace/quant-state/cpu_environment.json`.
 
+Fetch the revision-pinned 4B development parent and 27B research parent with:
+
+```bash
+bash scripts/cpu/fetch_qwen_parents.sh
+```
+
+The fetch is resumable, refuses concurrent writers, verifies that every shard
+referenced by each safetensors index exists, and writes the compact receipt
+`/workspace/quant-state/qwen_parent_models.json`.
+
 Primary paths:
 
 | Path | Purpose |
