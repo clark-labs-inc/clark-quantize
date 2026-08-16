@@ -1,6 +1,6 @@
 # LLM 1.58-bit Ternary Research Journal
 
-Status date: 2026-07-30
+Status date: 2026-08-16
 
 ## Scope and record policy
 
@@ -11,9 +11,10 @@ or the frozen large-model protocol under `experiments/large_scale_ternary/`.
 Those linked artifacts remain authoritative for commands, metrics, and
 checkpoint provenance.
 
-The large-model program is inactive. BackdropKit's Swin2SR work is the sole
-active optimization target; LLM results are retained only as scientific
-reference.
+The historical records below retain their original evidence boundaries. As of
+2026-08-16, the LLM lane is active again with a CPU-first objective. The active
+plan is [the CPU runtime research program](cpu_runtime/RESEARCH_PROGRAM.md);
+past GPU experiments are inputs to it, not CPU performance evidence.
 
 ## Verified findings
 
@@ -187,3 +188,26 @@ No LLM model is being loaded, evaluated, or trained under the BackdropKit
 program. The Qwen and large-scale ternary material remains archived as
 scientific reference for optimizer, schedule, packing, and evaluation design.
 Its unresolved gates and evidence boundaries above are unchanged.
+
+## 2026-08-16 — CPU-first reorientation
+
+The user explicitly reoriented the Qwen ternary program around pure CPU
+deployment. The runtime contract now precedes another large training run.
+
+The exact Qwen3.8-27B text graph requires more than ternary GEMM: 48 Gated
+DeltaNet blocks need depthwise causal-convolution and FP32 recurrent-state
+kernels, while 16 full-attention blocks need GQA, partial multimodal RoPE,
+q/k normalization, a query-derived output gate, and a bounded KV cache. The
+untied embedding and LM head are also material 1.27B-parameter surfaces each
+and cannot remain hidden BF16 exceptions in a compact CPU artifact.
+
+The active plan separates a 1.6-bit canonical radix-5 artifact from an
+ISA-specific compute image, begins with a scalar oracle and ARM64 decode
+kernels on the available M5 Max 64 GB host, proves the complete 4B graph, then
+makes GPU QAT emulate the exact CPU numerics before scaling to 27B. No new 27B
+bulk training spend is promoted before the 4B packed runtime gate.
+
+Evidence and contracts:
+
+- [CPU-first research program](cpu_runtime/RESEARCH_PROGRAM.md)
+- [CPU kernel contracts](cpu_runtime/KERNEL_CONTRACTS.md)

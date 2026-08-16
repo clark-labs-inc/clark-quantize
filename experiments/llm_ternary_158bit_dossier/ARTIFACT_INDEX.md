@@ -1,9 +1,16 @@
 # LLM 1.58-bit Ternary Artifact Index
 
-Status date: 2026-07-30
+Status date: 2026-08-16
 
 This is a link-only index. Existing experiment files remain in their original
 locations so historical commands, imports, and archived paths continue to work.
+
+## Active CPU-first program
+
+| Artifact | Role | Evidence boundary |
+| --- | --- | --- |
+| [CPU-first research program](cpu_runtime/RESEARCH_PROGRAM.md) | Active runtime, training, hardware, and promotion sequence | Design and work order; performance targets are not measured claims |
+| [CPU kernel contracts](cpu_runtime/KERNEL_CONTRACTS.md) | Qwen graph operator and numerical contract | Design v0; optimized kernels are not implemented yet |
 
 ## Primary run records
 
@@ -21,7 +28,7 @@ locations so historical commands, imports, and archived paths continue to work.
 | Artifact | Role | Caution |
 | --- | --- | --- |
 | [optimizer audit](../large_scale_ternary/OPTIMIZER_AUDIT.md) | Separates verified mechanisms, historical results, executable candidates, and hypotheses | The large-model lane is archived |
-| [archived large-model research program](../large_scale_ternary/RESEARCH_PROGRAM.md) | Completion standard, current evidence, gates, and protocol status | Explicitly inactive while BackdropKit Swin2SR is active |
+| [archived large-model research program](../large_scale_ternary/RESEARCH_PROGRAM.md) | Historical completion standard, evidence, gates, and protocol status | Superseded as an active plan by the CPU-first program above |
 | [Qwen ternary recipe](../../TERNARY_QWEN35_RECIPE.md) | Signature-steered KD hypothesis and trainer design | Some signature targets are hypotheses, not success criteria |
 | [A100 runbook](../../A100_RUNBOOK.md) | Reproduction and execution guidance | Revalidate environment and artifact paths before use |
 | [Prism-level compression analysis](../../PRISM_LEVEL_COMPRESSION.md) | Separates packing efficiency from quality recovery | Contains historical live-run interpretations |

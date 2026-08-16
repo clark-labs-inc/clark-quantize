@@ -1,12 +1,13 @@
 # LLM 1.58-bit Ternary Research Dossier
 
-Status: archived scientific reference
-Last reviewed: 2026-07-30
+Status: active CPU-first research program
+Last reviewed: 2026-08-16
 
 This folder is the self-contained navigation and interpretation surface for
-Clark's LLM ternary-quantization experiments. The large-model program is not an
-active training lane. BackdropKit's tiny in-browser models, beginning with
-Swin2SR, are the current optimization target.
+Clark's LLM ternary-quantization experiments. The historical GPU training
+records remain evidence, while the active lane is now a CPU-native ternary
+runtime and kernel-aware training program. GPU training is retained as a means
+to produce CPU-deployable weights, not as the deployment target.
 
 ## Folder contents
 
@@ -18,6 +19,10 @@ Swin2SR, are the current optimization target.
   scientific synthesis.
 - [Folder migration record](FOLDER_MIGRATION.md) — files consolidated here,
   historical paths intentionally preserved, and the safe relocation gate.
+- [CPU-first research program](cpu_runtime/RESEARCH_PROGRAM.md) — active
+  execution order, artifact/runtime architecture, hardware lanes, and gates.
+- [CPU kernel contracts](cpu_runtime/KERNEL_CONTRACTS.md) — exact operator and
+  numerical contracts for the Qwen hybrid graph.
 
 ## Provenance policy
 
@@ -33,8 +38,8 @@ archive. Reopen the live source before reporting current status.
 
 ## Research boundary
 
-The transferable mechanisms retained for BackdropKit research are continuous
-master weights, hard low-bit forwards with straight-through gradients,
-sensitive-surface scheduling, bounded optimizer state, behavior-level gates,
-and separation of packing efficiency from model quality. No LLM checkpoint or
-LLM-specific objective is part of the active Swin2SR program.
+The active goal is text-first CPU inference for ternary Qwen-family models.
+The first development target is Qwen3.5-4B; Qwen3.8-27B is promoted only after
+the 4B packed graph runs end to end and freezes the deployment numerics that QAT
+must reproduce. Historical BackdropKit and GPU-QAT work remains separate and is
+not silently reclassified as CPU-runtime evidence.

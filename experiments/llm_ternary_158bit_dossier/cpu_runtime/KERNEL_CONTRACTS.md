@@ -1,0 +1,149 @@
+# Qwen CPU Kernel Contracts
+
+Status: design contract v0
+Date: 2026-08-16
+
+These are operator contracts, not implementation promises. Each optimized
+kernel must retain a scalar reference and must be testable independently of the
+full model.
+
+The optimized primitives live in a small C-ABI library and are integrated as a
+GGML weight type and operator path in a pinned llama.cpp revision. Upstream
+Qwen3.5 CPU operators are correctness and performance controls; they are
+replaced only where profiling shows a material end-to-end gain.
+
+## Common numeric contract
+
+- Weight codes are exactly `{-1, 0, +1}`.
+- Matmul weights use groups of 128 consecutive input features.
+- Each group has one stored little-endian FP16 scale.
+- The A16 reference accumulates group partials in FP32.
+- The A8 path defines activation scale, rounding, clipping, zero handling, and
+  integer accumulation before QAT uses it. No backend-specific implicit
+  rounding is accepted.
+- Tail groups are zero-padded and cannot change the logical tensor shape.
+- Optimized kernels must consume the same codes and scales as the scalar oracle.
+
+## Kernel inventory and order
+
+| ID | Kernel | Decode | Prefill | First optimized ISA | Priority |
+| --- | --- | --- | --- | --- | ---: |
+| K0 | canonical pack/transcode/verify | load | load | portable scalar | 0 |
+| K1 | RMSNorm + A8 quantize + residual staging | every block | every block | ARM64 DOTPROD | 0 |
+| K2 | group-128 ternary GEMV | dominant | fallback | ARM64 DOTPROD | 0 |
+| K3 | group-128 ternary GEMM | small batches | dominant | ARM64 DOTPROD | 1 |
+| K4 | fused gate/up projection + SwiGLU | every block | every block | ARM64 | 1 |
+| K5 | depthwise causal-conv4 update | 48 layers | 48 layers | ARM64 | 0 |
+| K6 | recurrent Gated DeltaNet update | 48 layers | tail | ARM64 | 0 |
+| K7 | chunked Gated DeltaNet | no | 48 layers | portable tiled | 1 |
+| K8 | GQA attention + partial RoPE + q/k norm + q gate | 16 layers | 16 layers | ARM64 | 1 |
+| K9 | KV quantize/dequantize and paged storage | 16 layers | 16 layers | ARM64 | 1 |
+| K10 | embedding lookup and LM-head logits/top-k | once/token | once/token | ARM64 | 1 |
+| K11 | GGML integration, mmap, thread pool, NUMA scheduling | whole graph | whole graph | portable | 0 |
+
+## K0: canonical pack and compute-image transcode
+
+Input is canonical radix-5 codes, FP16 scales, tensor metadata, and checksums.
+Output is an aligned, mmap-safe compute image containing the same logical codes
+and scales. Candidate physical layouts are:
+
+1. five-trit bytes plus register LUTs;
+2. aligned 2-bit signed codes;
+3. separate positive and negative bitplanes.
+
+The transcode receipt includes source and output hashes, selected ISA, tile
+shape, padding count, and an exact decoded-code comparison. Runtime selection
+is by measured matrix families, not one global winner assumed in advance.
+
+## K1-K3: normalization and ternary linear algebra
+
+K1 emits both the normalized floating activation and, where enabled, an int8
+activation plus its scale. This prevents every projection in a block from
+re-reading and requantizing the same input.
+
+K2 specializes single-token matrix-vector work. It should fuse group-scale
+application into FP32 accumulation and avoid materializing unpacked weights.
+The benchmark matrix families are the exact Qwen shapes:
+
+- `5120 -> 17408` and `17408 -> 5120` for the MLP;
+- `5120 -> 10240`, `5120 -> 6144`, and `6144 -> 5120` for DeltaNet;
+- `5120 -> 12288`, `5120 -> 1024`, `6144 -> 5120` for full attention;
+- `5120 -> 248320` for the LM head.
+
+K3 specializes prompt batches and amortizes decode/unpack work across activation
+rows. Its tile search is separate from K2. At minimum test prompt blocks of 8,
+32, 128, and 512 tokens.
+
+## K4: fused SwiGLU
+
+The gate and up weights are physically adjacent or interleaved so one scheduled
+operation produces both projections. Apply SiLU to the gate, multiply by the up
+activation, and write only the final 17,408-wide intermediate. Do not duplicate
+activation quantization or store two avoidable full-width temporary buffers.
+
+## K5-K7: Gated DeltaNet
+
+K5 maintains a three-sample history for the width-4 depthwise convolution over
+10,240 channels, applies the trained convolution weights, and applies SiLU.
+The single-token path updates state in place.
+
+K6 consumes normalized q/k, value, sigmoid beta, and FP32 decay `g`. Per value
+head it updates an FP32 `128 x 128` recurrent matrix and emits one 128-wide
+value. The implementation must not allocate a new 3 MiB state per layer per
+token. Q and K heads are logically repeated from 16 to 48 heads, but the kernel
+should index or broadcast them rather than materializing the repeats.
+
+K7 is a distinct chunked-prefill algorithm. It uses bounded tiles and returns
+the same final recurrent state as the scalar token-by-token oracle. Numerical
+comparison includes both every output token and the final FP32 state.
+
+The post-recurrence fused operation is FP32 RMS normalization over each
+128-wide value head, multiplication by learned norm weights, SiLU gating from
+`z`, conversion to the activation dtype, and the `6144 -> 5120` output
+projection.
+
+## K8-K9: full attention
+
+The query projection emits 24 query heads and 24 output-gate heads. K8 performs
+head-dimension RMSNorm for Q and K, applies partial multimodal RoPE, executes
+causal GQA with 24 query heads and 4 KV heads, applies the sigmoid output gate,
+and feeds the output projection.
+
+K9 stores KV per full-attention layer. The first correctness format is BF16;
+the product format target is int8 with explicit per-head or per-block scales.
+At batch one, total BF16 KV growth is 64 KiB/token and int8 target growth is
+about 32 KiB/token before scale metadata. Cache quantization is evaluated for
+quality separately from ternary weight error.
+
+## K10: lexical tensors
+
+Embedding and LM head are untied and each contains about 1.27B parameters.
+The first graph may use Q6/Q8 embedding rows and an int4/Q6 head. A ternary head
+is promoted only if QAT recovers the lexical quality loss. The LM-head kernel
+must fuse or stream top-k selection so it does not materialize avoidable copies
+of the 248,320-way logit vector.
+
+## K11: execution system
+
+- reuse pinned llama.cpp graph, tokenizer, sampling, cache, and server surfaces;
+- keep the Clark GGML patch narrow enough to rebase and test independently;
+- mmap the compute image and report cold versus warm page faults;
+- pin worker threads and separate physical-core from SMT results;
+- shard weights according to NUMA ownership on multi-socket systems;
+- use bounded reusable arenas for activations and attention scratch;
+- expose prompt ingestion, token streaming, cancellation, and signal-safe state;
+- emit per-operator time, bytes read, and selected kernel implementation.
+
+## Required tests for every optimized kernel
+
+1. scalar-versus-optimized randomized property tests;
+2. real tensor-shape tests with tail groups and adversarial scale values;
+3. exact code/scale identity after transcode;
+4. deterministic output under repeated runs and thread counts;
+5. finite-value and NaN propagation policy tests;
+6. microbenchmarks with compiler, ISA, clocks, threads, and bandwidth receipt;
+7. full-layer comparison before full-graph promotion.
+
+Speed without graph-level quality parity is a failed kernel. Correctness without
+measured end-to-end impact remains a reference implementation, not a promoted
+optimization.
