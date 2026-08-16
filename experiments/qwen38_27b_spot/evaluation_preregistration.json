@@ -1,0 +1,32 @@
+{
+  "schema": "clark_qwen38_evaluation_preregistration_v1",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "behavioral_quality": {
+    "held_out_texts": [
+      "A reliable compression experiment reports both the storage rate and the quality of the reconstructed model.",
+      "If a machine processes 18 batches per minute for 7 minutes, it processes 126 batches in total.",
+      "The Pacific Ocean is larger than the Atlantic Ocean, while both cover substantial portions of Earth.",
+      "When evidence contradicts a hypothesis, the correct scientific response is to revise or reject the hypothesis."
+    ],
+    "generation_prompts": [
+      "In one sentence, explain why a lower reconstruction error does not guarantee better language-model quality.",
+      "A researcher should stop a quantization run early when",
+      "Calculate 37 multiplied by 24 and explain the arithmetic briefly."
+    ],
+    "maximum_new_tokens": 24,
+    "maximum_perplexity_ratio": 1.5,
+    "maximum_mean_teacher_kl": 1.0,
+    "require_finite_metrics": true,
+    "require_nonempty_deterministic_generations": true,
+    "scope": "four fixed likelihood texts and three fixed generation prompts; diagnostic only"
+  },
+  "radix5_performance": {
+    "real_qwen_trits": 10000000,
+    "sample_rows_per_source": 512,
+    "maximum_delta_bits_per_trit_from_log2_3": 0.016,
+    "minimum_encode_trits_per_second": 50000000,
+    "minimum_decode_trits_per_second": 50000000,
+    "require_exact_roundtrip": true,
+    "scope": "measured sample throughput and exact full-ledger storage projection"
+  }
+}

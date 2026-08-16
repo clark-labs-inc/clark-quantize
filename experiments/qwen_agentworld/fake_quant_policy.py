@@ -8,6 +8,7 @@ to the binary/ternary policy before building the true packed runtime.
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any, Iterable
@@ -102,17 +103,23 @@ def choice_group_size(choice: dict[str, Any], default_group_size: int) -> int:
 def resolve_parameter_name(tensor_name: str, params: dict[str, torch.nn.Parameter]) -> str | None:
     """Map safetensors policy names to loaded Transformers parameter names."""
 
-    if tensor_name in params:
-        return tensor_name
-    rewrites = []
-    if tensor_name.startswith("model.language_model."):
-        rewrites.append("model." + tensor_name[len("model.language_model.") :])
-    if tensor_name.startswith("model."):
-        rewrites.append("model.language_model." + tensor_name[len("model.") :])
-    for candidate in rewrites:
-        if candidate in params:
-            return candidate
-    return None
+    candidates = [tensor_name]
+    # Explicit checkpointing wraps each transformer block as
+    # ``layers.N.layer``. Norm parameters are selected after wrapping, so a
+    # training patch can legitimately carry the wrapper segment even though
+    # the deployed base model is unwrapped.
+    unwrapped = re.sub(r"(\.layers\.\d+)\.layer\.", r"\1.", tensor_name, count=1)
+    if unwrapped != tensor_name:
+        candidates.append(unwrapped)
+    for candidate in tuple(candidates):
+        if candidate.startswith("model.language_model."):
+            candidates.append("model." + candidate[len("model.language_model.") :])
+        elif candidate.startswith("model."):
+            candidates.append("model.language_model." + candidate[len("model.") :])
+    matches = list(dict.fromkeys(candidate for candidate in candidates if candidate in params))
+    if len(matches) > 1:
+        raise ValueError(f"ambiguous parameter mapping for {tensor_name!r}: {matches}")
+    return matches[0] if matches else None
 
 
 def _relative_rmse(before: torch.Tensor, after: torch.Tensor) -> float:

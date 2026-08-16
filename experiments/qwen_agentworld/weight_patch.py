@@ -20,12 +20,14 @@ def apply_weight_patch(
     *,
     out_path: str | Path | None = None,
     exclude_regex: str | None = None,
+    include_regex: str | None = None,
 ) -> dict[str, Any]:
     """Copy tensors from a safetensors patch into matching model parameters."""
 
     patch_path = Path(patch_path)
     params = dict(model.named_parameters())
     exclude_re = re.compile(exclude_regex) if exclude_regex else None
+    include_re = re.compile(include_regex) if include_regex else None
     applied = []
     missing = []
     skipped = []
@@ -37,6 +39,11 @@ def apply_weight_patch(
             parameter_name = resolve_parameter_name(tensor_name, params)
             if parameter_name is None:
                 missing.append({"tensor": tensor_name, "reason": "parameter not found"})
+                continue
+            if include_re is not None and not (
+                include_re.search(tensor_name) or include_re.search(parameter_name)
+            ):
+                skipped.append({"tensor": tensor_name, "parameter": parameter_name, "reason": "include_regex"})
                 continue
             if exclude_re is not None and exclude_re.search(parameter_name):
                 skipped.append({"tensor": tensor_name, "parameter": parameter_name, "reason": "exclude_regex"})

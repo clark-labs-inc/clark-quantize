@@ -1,0 +1,16 @@
+[Unit]
+Description=Run conditional Qwen3.8-27B QAT continuation and final research audit
+After=quant-qwen38-pipeline.service
+Requires=quant-qwen38-pipeline.service
+ConditionPathExists=/workspace/models/Qwen3.8-27B/model.safetensors.index.json
+
+[Service]
+Type=oneshot
+ExecStart=/workspace/clark-quantize/scripts/spot/run_qwen38_post_pipeline.sh
+TimeoutStartSec=infinity
+TimeoutStopSec=180
+KillMode=mixed
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

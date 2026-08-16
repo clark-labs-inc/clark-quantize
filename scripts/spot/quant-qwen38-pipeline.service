@@ -1,0 +1,16 @@
+[Unit]
+Description=Resume the receipt-gated Qwen3.8-27B quantization pipeline after reboot
+After=network-online.target quant-spot-watchdog.service
+Wants=network-online.target
+ConditionPathExists=/workspace/models/Qwen3.8-27B/model.safetensors.index.json
+
+[Service]
+Type=oneshot
+ExecStart=/workspace/clark-quantize/scripts/spot/run_qwen38_pipeline.sh
+TimeoutStartSec=infinity
+TimeoutStopSec=180
+KillMode=mixed
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

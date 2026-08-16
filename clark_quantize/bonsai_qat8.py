@@ -144,6 +144,18 @@ class BonsaiQAT8(torch.optim.Optimizer):
                 default=0,
             )
         super().load_state_dict(state)
+        # torch.optim.Optimizer casts floating and non-floating state tensors
+        # through the parameter dtype during load. Restore Bonsai's explicit
+        # low-state representation so an int8 first moment does not silently
+        # become an FP32 buffer after resume.
+        for item in self.state.values():
+            if not isinstance(item, dict):
+                continue
+            if torch.is_tensor(item.get("m_q")):
+                item["m_q"] = item["m_q"].to(dtype=torch.int8)
+            for key in ("m_scale", "v_row", "v_col"):
+                if torch.is_tensor(item.get(key)):
+                    item[key] = item[key].to(dtype=torch.float32)
         self.global_step = int(saved_global_step)
 
     @torch.no_grad()

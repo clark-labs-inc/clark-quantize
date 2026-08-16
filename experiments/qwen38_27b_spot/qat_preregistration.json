@@ -1,0 +1,127 @@
+{
+  "schema": "clark_qwen38_one_layer_qat_preregistration_v1",
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0"
+  },
+  "representation": {
+    "code_support": [-1, 0, 1],
+    "group_size": 128,
+    "initializer": "optimal_mse",
+    "scale_dtype": "float16",
+    "honesty_boundary": "The complete model retains FP16 scales and unmapped tensors; log2(3) describes only the ternary code payload."
+  },
+  "entry_gate": {
+    "required_receipts": [
+      "/workspace/quant-state/qwen38-base3-full.json",
+      "/workspace/quant-state/qwen38-base3-quality.json",
+      "/workspace/quant-state/qwen38-layer-sensitivity.json"
+    ],
+    "requirements": [
+      "full pack promotion passed",
+      "quality metrics and deterministic generations are finite",
+      "layer sensitivity promotion passed",
+      "selected layer has positive teacher-KL recovery",
+      "artifact-to-runtime mapping remains exact"
+    ]
+  },
+  "sensitivity_candidates": [
+    {
+      "layer": 0,
+      "kind": "early_linear_attention",
+      "mapped_tensors": 6,
+      "mapped_parameters": 382730240,
+      "bf16_restore_bytes": 765460480
+    },
+    {
+      "layer": 3,
+      "kind": "first_full_attention",
+      "mapped_tensors": 7,
+      "mapped_parameters": 372244480,
+      "bf16_restore_bytes": 744488960
+    },
+    {
+      "layer": 31,
+      "kind": "middle_full_attention",
+      "mapped_tensors": 7,
+      "mapped_parameters": 372244480,
+      "bf16_restore_bytes": 744488960
+    },
+    {
+      "layer": 63,
+      "kind": "final_full_attention",
+      "mapped_tensors": 7,
+      "mapped_parameters": 372244480,
+      "bf16_restore_bytes": 744488960
+    }
+  ],
+  "selection_rule": "Maximum held-out teacher-KL recovery per GiB restored, then maximum absolute teacher-KL recovery.",
+  "first_rung": {
+    "scope": "selected layer only; every other mapped matrix remains hard ternary",
+    "method": "hard-forward master-weight STE QAT with BonsaiQAT8 low-state optimization",
+    "teacher": "cached exact BF16-parent top-k logits on fixed local calibration sequences",
+    "calibration_sequences": 8,
+    "calibration_texts": [
+      "Summarize the difference between lossless storage encoding and lossy model quantization in two sentences.",
+      "Compute 48 times 17, then verify the result using a second arithmetic decomposition.",
+      "Write a Python function that returns the first repeated item in a list, or None when every item is unique.",
+      "Explain why a validation set must not be reused as the optimization set during model compression.",
+      "En español, describe brevemente por qué una medición reproducible necesita condiciones explícitas.",
+      "Given a tool named weather with a city argument, describe the JSON arguments for requesting Seattle weather.",
+      "A process completes 3/8 of a task in 15 minutes at a constant rate. Determine the total completion time.",
+      "State one reason a low training loss can coexist with poor generated text and one test that would reveal it."
+    ],
+    "maximum_sequence_tokens": 128,
+    "teacher_top_k": 64,
+    "learning_rate": 1e-06,
+    "teacher_kl_weight": 1.0,
+    "causal_ce_weight": 0.1,
+    "gradient_clip_norm": 1.0,
+    "bonsai_use_muon": false,
+    "optimizer_steps": 10,
+    "checkpoint_steps": [10],
+    "maximum_complete_checkpoints": 2
+  },
+  "primary_metric": "held-out mean teacher KL after hard ternary projection",
+  "protected_metrics": [
+    "held-out mean NLL and perplexity",
+    "all metrics finite",
+    "gradient norm",
+    "master-to-hard relative error",
+    "ternary zero fraction and code churn",
+    "peak allocated and reserved VRAM",
+    "exact checkpoint tensor and optimizer-state mapping",
+    "checkpoint retention count"
+  ],
+  "promotion_to_100_steps": {
+    "minimum_relative_teacher_kl_improvement": 0.05,
+    "maximum_relative_nll_regression": 0.01,
+    "require_nonempty_deterministic_generations": true,
+    "require_no_nonfinite_or_oom": true,
+    "require_exact_resume_smoke": true
+  },
+  "second_rung": {
+    "entry_receipt": "/workspace/quant-state/qwen38-one-layer-qat.json",
+    "resume_checkpoint_step": 10,
+    "optimizer_steps_total": 100,
+    "evaluation_steps": [20, 30, 40, 50, 60, 70, 80, 90, 100],
+    "checkpoint_policy": "retain authenticated step 10 and one terminal checkpoint only",
+    "maximum_complete_checkpoints": 2,
+    "stop_after_consecutive_heldout_kl_regressions": 2
+  },
+  "promotion_after_100_steps": {
+    "minimum_relative_teacher_kl_improvement_from_step_zero": 0.05,
+    "maximum_relative_nll_regression_from_step_zero": 0.01,
+    "require_exact_resume_smoke": true,
+    "require_100_completed_steps": true,
+    "require_nonempty_deterministic_generations": true
+  },
+  "stop_conditions": [
+    "first NaN or infinity",
+    "CUDA OOM",
+    "gradient norm exceeds 10 after clipping",
+    "held-out teacher KL worsens for two consecutive evaluations",
+    "checkpoint cannot be atomically written and reloaded",
+    "more than two complete checkpoints exist"
+  ]
+}

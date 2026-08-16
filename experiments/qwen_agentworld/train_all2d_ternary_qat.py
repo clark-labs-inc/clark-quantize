@@ -131,6 +131,8 @@ def should_skip_quant_module(module_name: str, args: argparse.Namespace) -> bool
         return True
     if args.skip_quant_head and is_head_module(module_name):
         return True
+    if args.skip_quant_regex and re.search(args.skip_quant_regex, module_name):
+        return True
     return False
 
 
@@ -1278,16 +1280,22 @@ def replace_all_2d_modules(
     model: torch.nn.Module,
     args: argparse.Namespace,
 ) -> tuple[dict[str, QuantModule], dict[str, QuantModule]]:
-    modules = [
-        (name, module)
+    # Keep names, not source module objects. Holding the full list of modules
+    # alive while cloning BF16 masters transiently retains nearly two complete
+    # models and OOMs dense 27B replacement on an 80 GB card.
+    module_names = [
+        name
         for name, module in model.named_modules()
         if isinstance(module, (torch.nn.Linear, torch.nn.Embedding)) and tuple(module.weight.shape)
     ]
     all_quant: dict[str, QuantModule] = {}
     train_quant: dict[str, QuantModule] = {}
-    for name, module in modules:
+    for index, name in enumerate(module_names):
         if should_skip_quant_module(name, args):
             continue
+        module = model.get_submodule(name)
+        if not isinstance(module, (torch.nn.Linear, torch.nn.Embedding)):
+            raise RuntimeError(f"module changed during quantized replacement: {name} -> {type(module)}")
         train = should_train_module(name, args)
         if isinstance(module, torch.nn.Linear):
             replacement: QuantModule = (
@@ -1320,6 +1328,9 @@ def replace_all_2d_modules(
         all_quant[name] = replacement
         if train:
             train_quant[name] = replacement
+        del module, replacement
+        if torch.cuda.is_available() and (index + 1) % 16 == 0:
+            torch.cuda.empty_cache()
     return all_quant, train_quant
 
 
@@ -1572,6 +1583,10 @@ def main() -> None:
     parser.add_argument("--train-head", action="store_true")
     parser.add_argument("--skip-quant-embed", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument("--skip-quant-head", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument(
+        "--skip-quant-regex",
+        help="exclude matching Linear/Embedding module names from quantization and training",
+    )
     parser.add_argument("--train-regex")
     parser.add_argument("--train-norms", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--max-train-tokens", type=int, default=3500)
@@ -1639,6 +1654,7 @@ def main() -> None:
 
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is required")
+    torch.cuda.reset_peak_memory_stats()
     args.master_dtype_name = args.master_dtype
     args.master_dtype = parse_torch_dtype(args.master_dtype)
     args.train_all_layers = args.train_layers.strip().lower() == "all"
@@ -2227,6 +2243,7 @@ def main() -> None:
         "train_head": args.train_head,
         "skip_quant_embed": args.skip_quant_embed,
         "skip_quant_head": args.skip_quant_head,
+        "skip_quant_regex": args.skip_quant_regex,
         "train_regex": args.train_regex,
         "train_norms": args.train_norms,
         "optimizer": args.optimizer,
@@ -2244,6 +2261,8 @@ def main() -> None:
         "explicit_layer_checkpointing": args.explicit_layer_checkpointing,
         "explicit_checkpointed_layers": explicit_checkpointed_layers,
         "post_accumulate_step": args.post_accumulate_step,
+        "peak_accelerator_memory_allocated_bytes": int(torch.cuda.max_memory_allocated()),
+        "peak_accelerator_memory_reserved_bytes": int(torch.cuda.max_memory_reserved()),
         "steps": args.steps,
         "lr": args.lr,
         "max_train_tokens": args.max_train_tokens,
