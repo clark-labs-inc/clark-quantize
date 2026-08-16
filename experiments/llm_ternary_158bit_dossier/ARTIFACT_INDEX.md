@@ -11,6 +11,7 @@ locations so historical commands, imports, and archived paths continue to work.
 | --- | --- | --- |
 | [CPU-first research program](cpu_runtime/RESEARCH_PROGRAM.md) | Active runtime, training, hardware, and promotion sequence | Design and work order; performance targets are not measured claims |
 | [CPU kernel contracts](cpu_runtime/KERNEL_CONTRACTS.md) | Qwen graph operator and numerical contract | Design v0; optimized kernels are not implemented yet |
+| [Hetzner CCX33 bring-up and controls](cpu_runtime/HETZNER_CCX33_RUN_20260816.md) | Reproducible CPU environment, 4B llama.cpp control, and 27B pack launch | Full 27B arithmetic pack remains running until its final receipt promotes |
 
 ## Primary run records
 

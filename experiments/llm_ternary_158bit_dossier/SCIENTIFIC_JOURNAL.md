@@ -211,3 +211,19 @@ Evidence and contracts:
 
 - [CPU-first research program](cpu_runtime/RESEARCH_PROGRAM.md)
 - [CPU kernel contracts](cpu_runtime/KERNEL_CONTRACTS.md)
+
+## 2026-08-16 — first x86 CPU node and stock ternary control
+
+The Hetzner CCX33 bring-up proved the Qwen3.5 hybrid graph on a four-core Milan
+CPU and established stock llama.cpp BF16 and TQ1_0 controls. TQ1_0 reduced the
+4B GGUF from 8.67 GB to 1.31 GB and improved measured decode from 4.02 to 17.84
+tokens/second, but produced gibberish on the deterministic first canary. It is
+therefore a runtime/performance control, not a quality candidate.
+
+The CPU-enabled Qwen3.8 preflight retained the historical 2.178900571 effective
+bits/parameter ledger. The one-million-trit ideal arithmetic reference promoted
+at 1.584964 payload bits/trit with exact round-trip evidence. A bounded four-
+worker full pack was launched and remains unpromoted until its independent final
+decode and receipt complete.
+
+Evidence: [Hetzner CCX33 bring-up and controls](cpu_runtime/HETZNER_CCX33_RUN_20260816.md)
