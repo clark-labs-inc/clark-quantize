@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Streamed Qwen3.8-27B ternary preflight for one supported high-memory GPU.
+"""Streamed Qwen3.8-27B ternary preflight for a bounded CPU or GPU device.
 
 This intentionally does not instantiate the full model or allocate an FP32
 master. It inventories the immutable checkpoint, produces honest theoretical
@@ -96,6 +96,7 @@ def main() -> None:
     parser.add_argument("--group", type=int, default=128)
     parser.add_argument("--sample-rows", type=int, default=128)
     parser.add_argument("--samples-per-kind", type=int, default=3)
+    parser.add_argument("--device", default="cuda")
     args = parser.parse_args()
 
     started = time.time()
@@ -131,18 +132,26 @@ def main() -> None:
     theoretical_bits = quant_params * entropy_bits + scale_count * 16 + retained_params * 16
     aligned_bits = quant_params * 2 + scale_count * 16 + retained_params * 16
 
-    if not torch.cuda.is_available():
-        raise RuntimeError("CUDA is required for the representative quantizer probes")
-    torch.cuda.reset_peak_memory_stats()
+    device = torch.device(args.device)
+    if device.type == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError("CUDA was requested but is unavailable")
+    if device.type == "cuda":
+        torch.cuda.reset_peak_memory_stats(device)
+    device_name = torch.cuda.get_device_name(device) if device.type == "cuda" else str(device)
+
+    def synchronize() -> None:
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+
     probes = []
     for label, name, shard, shape in pick_samples(candidates, args.samples_per_kind):
-        source = sampled_tensor(args.model_dir, shard, name, args.sample_rows).to("cuda", dtype=torch.float32)
+        source = sampled_tensor(args.model_dir, shard, name, args.sample_rows).to(device, dtype=torch.float32)
         row = {"category": label, "name": name, "shape": shape, "sample_shape": list(source.shape)}
         for method in ("absmean", "optimal"):
-            torch.cuda.synchronize()
+            synchronize()
             before = time.perf_counter()
             _, stats = ternarize(source, group=args.group, method=method)
-            torch.cuda.synchronize()
+            synchronize()
             row[method] = {**stats, "seconds": time.perf_counter() - before}
         probes.append(row)
         del source
@@ -168,10 +177,18 @@ def main() -> None:
             "aligned2_payload_bytes": math.ceil(aligned_bits / 8),
         },
         "probes": probes,
+        "compute": {
+            "device": device_name,
+            "peak_allocated_bytes": (
+                torch.cuda.max_memory_allocated(device) if device.type == "cuda" else 0
+            ),
+        },
         "cuda": {
-            "device": torch.cuda.get_device_name(0),
-            "capability": list(torch.cuda.get_device_capability(0)),
-            "peak_allocated_bytes": torch.cuda.max_memory_allocated(),
+            "device": device_name if device.type == "cuda" else None,
+            "capability": list(torch.cuda.get_device_capability(device)) if device.type == "cuda" else None,
+            "peak_allocated_bytes": (
+                torch.cuda.max_memory_allocated(device) if device.type == "cuda" else 0
+            ),
         },
         "elapsed_seconds": time.time() - started,
     }

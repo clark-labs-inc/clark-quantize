@@ -42,7 +42,13 @@ def atomic_json(path: Path, value: dict) -> None:
     atomic_bytes(path, (json.dumps(value, indent=2, sort_keys=True) + "\n").encode())
 
 
-def load_codes(model_dir: Path, preflight: dict, sample_rows: int, max_trits: int):
+def load_codes(
+    model_dir: Path,
+    preflight: dict,
+    sample_rows: int,
+    max_trits: int,
+    device: torch.device,
+):
     codes = []
     sources = []
     remaining = max_trits
@@ -56,7 +62,7 @@ def load_codes(model_dir: Path, preflight: dict, sample_rows: int, max_trits: in
         with safe_open(model_dir / weight_map[name], framework="pt", device="cpu") as handle:
             view = handle.get_slice(name)
             source = view[: min(sample_rows, view.get_shape()[0]), :].contiguous()
-        weight = source.to("cuda", dtype=torch.float32)
+        weight = source.to(device, dtype=torch.float32)
         dequantized, stats = ternarize(weight, group=128, method="optimal")
         tensor_codes = torch.sign(dequantized).to(torch.int8).cpu().numpy().reshape(-1)
         take = min(remaining, tensor_codes.size)
@@ -96,6 +102,7 @@ def main() -> None:
     parser.add_argument("--receipt", type=Path, default=Path("/workspace/quant-state/qwen38-base3-reference.json"))
     parser.add_argument("--sample-rows", type=int, default=128)
     parser.add_argument("--max-trits", type=int, default=1_000_000)
+    parser.add_argument("--device", default="cuda")
     args = parser.parse_args()
 
     hypothesis = (
@@ -103,8 +110,19 @@ def main() -> None:
         "within 0.001 payload bits/trit of log2(3)."
     )
     preflight = json.loads(args.preflight.read_text())
-    torch.cuda.reset_peak_memory_stats()
-    codes, sources = load_codes(args.model_dir, preflight, args.sample_rows, args.max_trits)
+    device = torch.device(args.device)
+    if device.type == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError("CUDA was requested but is unavailable")
+    if device.type == "cuda":
+        torch.cuda.reset_peak_memory_stats(device)
+    device_name = torch.cuda.get_device_name(device) if device.type == "cuda" else str(device)
+    codes, sources = load_codes(
+        args.model_dir,
+        preflight,
+        args.sample_rows,
+        args.max_trits,
+        device,
+    )
     histogram = Counter(map(int, codes))
     raw_sha = hashlib.sha256(codes.tobytes()).hexdigest()
 
@@ -166,8 +184,10 @@ def main() -> None:
             "complete_model_effective_bits_per_parameter": preflight["parameter_ledger"]["effective_bits_per_total_parameter_base3"],
         },
         "resources": {
-            "device": torch.cuda.get_device_name(0),
-            "peak_gpu_allocated_bytes": torch.cuda.max_memory_allocated(),
+            "device": device_name,
+            "peak_gpu_allocated_bytes": (
+                torch.cuda.max_memory_allocated(device) if device.type == "cuda" else 0
+            ),
         },
         "promotion": {
             "exact_roundtrip_required": True,

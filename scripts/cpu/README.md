@@ -41,3 +41,18 @@ Primary paths:
 The default thread count is four because the first Hetzner CCX33 reference
 node exposes four physical Milan cores and eight SMT threads. Benchmarks must
 report physical-core and SMT runs separately.
+
+After the parents are fetched, the bounded 27B CPU packing lane is:
+
+```bash
+python experiments/qwen38_27b_spot/download_model.py --workers 4
+python experiments/qwen38_27b_spot/preflight_quantization.py --device cpu
+python experiments/qwen38_27b_spot/base3_packing_research.py --device cpu
+python experiments/qwen38_27b_spot/full_base3_pack.py \
+  --device cpu --workers 4 --max-in-flight 4 --row-batch 64
+```
+
+`download_model.py` is idempotent here: it verifies the already-fetched pinned
+shards and creates the legacy download receipt required by the original spot
+pipeline. The full pack is chunked and resumable; CPU execution does not weaken
+its code, scale, source-identity, or independent-decode gates.
