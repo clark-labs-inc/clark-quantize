@@ -3,13 +3,27 @@ set -euo pipefail
 
 repo=${REPO:-/workspace/clark-quantize-cpu-qat}
 bundle=${BUNDLE:?BUNDLE must name the frozen paired-throughput source bundle}
-expected_commit=${EXPECTED_COMMIT:?EXPECTED_COMMIT must pin the deployed source}
+bundle_branch=${BUNDLE_BRANCH:-refs/heads/codex/qwen38-base3-research}
+expected_commit=${EXPECTED_COMMIT:-}
 python_bin=${PYTHON_BIN:-/workspace/venvs/quant-cpu/bin/python}
 parent_unit=${PARENT_UNIT:-quant-qwen38-27b-layer0-mlp-activation-qat-watch-v1.service}
 parent_state=${PARENT_STATE:-/workspace/quant-state/qwen38-27b-layer0-mlp-activation-qat-watch-v1}
 state=${STATE_DIR:-/workspace/quant-state/qwen38-27b-layer0-mlp-activation-qat-paired-watch-v1}
 runtime=experiments/llm_ternary_158bit_dossier/cpu_runtime
 throughput=/workspace/quant-state/qwen38-27b-layer0-mlp-activation-qat-paired-throughput-v1
+
+if [[ -z "$expected_commit" ]]; then
+  mapfile -t bundle_commits < <(
+    git bundle list-heads "$bundle" "$bundle_branch" |
+      awk -v branch="$bundle_branch" '$2 == branch {print $1}'
+  )
+  if (( ${#bundle_commits[@]} != 1 )) ||
+    [[ ! "${bundle_commits[0]}" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "frozen Qwen3.8-27B bundle does not contain exactly one pinned branch head" >&2
+    exit 64
+  fi
+  expected_commit=${bundle_commits[0]}
+fi
 
 while systemctl is-active --quiet "$parent_unit"; do
   sleep 30
@@ -25,7 +39,7 @@ if [[ -n "$(git status --porcelain)" ]]; then
   echo "refusing dirty Qwen3.8-27B paired-throughput repository" >&2
   exit 73
 fi
-git fetch "$bundle" refs/heads/codex/qwen38-base3-research
+git fetch "$bundle" "$bundle_branch"
 git merge --ff-only FETCH_HEAD
 if [[ "$(git rev-parse HEAD)" != "$expected_commit" ]]; then
   echo "unexpected deployed Qwen3.8-27B paired-throughput commit" >&2
