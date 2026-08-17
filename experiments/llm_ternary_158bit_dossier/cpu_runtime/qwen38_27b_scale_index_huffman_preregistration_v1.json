@@ -1,0 +1,92 @@
+{
+  "schema": "qwen38_27b_scale_index_huffman_preregistration_v1",
+  "receipt_schema": "qwen38_27b_scale_index_huffman_receipt_v1",
+  "status": "frozen_before_authoritative_27b_analysis",
+  "frozen_at_utc": "2026-08-17T18:22:17Z",
+  "objective": "Determine whether lossless per-tensor canonical Huffman coding of every Qwen3.8-27B row-normalized 4-bit scale index moves the honest complete bundle materially closer to the base-3 limit without changing any decoded weight or scale",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "rank_ge_2_tensors": 666,
+    "group_128_scale_indices": 217521520,
+    "output_rows": 5241584,
+    "complete_parameter_denominator": 27781427952,
+    "canonical_weight_codec": "203-bit integers per 128 ternary weights",
+    "scale_values": "unchanged FP16 row anchors and unchanged 16-entry FP16 ratio codebooks"
+  },
+  "parent": {
+    "receipt": "/workspace/quant-state/qwen38-27b-full-row-normalized-scale-codebook4-v1.json",
+    "manifest": "/workspace/quant-runs/qwen38-full-row-normalized-scale-codebook4-v1/manifest.json",
+    "required_schema": "qwen38_27b_full_row_normalized_scale_codebook4_receipt_v1",
+    "must_be_complete_and_pass_all_reconstruction_and_storage_gates": true,
+    "receipt_and_manifest_sha256_must_match": true
+  },
+  "candidate": {
+    "coding_scope": "one independent canonical Huffman stream per tensor",
+    "alphabet": "the exact 16 row-normalized ratio-codebook indices",
+    "tree": "deterministic frequency-optimal binary Huffman tree with symbol-order tie breaking",
+    "codes": "canonical MSB-first codes represented by 16 code lengths and a 16-bit active-symbol mask",
+    "single_symbol_case": "zero payload bits with the sole symbol identified by the mask",
+    "fixed_header_bytes_per_tensor": 40,
+    "random_access": "tensor-level; load-time transcode expands the lossless stream to existing 4-bit nibbles",
+    "quality_effect": "none by construction because decoded index bytes are identical"
+  },
+  "measurement": {
+    "authenticate_every_packed_index_file": true,
+    "recompute_every_unpacked_index_sha256": true,
+    "count_every_symbol_frequency": true,
+    "derive_exact_payload_bits_from_frequencies_and_frozen_code_lengths": true,
+    "count_every_header_and_per_tensor_64_byte_section_alignment": true,
+    "reuse_all_other_bytes_from_the_authenticated_parent_storage_ledger": true
+  },
+  "gate": {
+    "required_tensors": 666,
+    "required_scale_indices": 217521520,
+    "maximum_complete_bundle_bpw": 1.615,
+    "minimum_index_bytes_reduction_fraction_before_alignment": 0.25,
+    "require_complete_bundle_smaller_than_fixed_width_parent": true
+  },
+  "frozen_inputs": {
+    "analyzer": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/analyze_qwen38_27b_scale_index_huffman_v1.py",
+      "sha256": "6ffca11657e45442e3025680b80b98b63b55750fddb817e56f3493eeb4f837e3"
+    },
+    "codec": {
+      "path": "clark_quantize/qwen38_scale_index_codec.py",
+      "sha256": "000a3f440388167d2ecccf975d35c19bcc77d2cb1d1b40d33421883a68a5183d"
+    },
+    "row_scale_storage": {
+      "path": "clark_quantize/qwen38_row_scale_storage.py",
+      "sha256": "73f8969e6a34d9f4c43d7dc89418d0d12c8057bd955f6f018ab9376be62bffb0"
+    },
+    "storage_budget": {
+      "path": "clark_quantize/qwen38_storage_budget.py",
+      "sha256": "eed77a1e32009f0c6be607c168bd840482712a535949737877c6584f0ce2f706"
+    },
+    "full_row_scale_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_full_row_normalized_scale_codebook4_preregistration_v1.json",
+      "sha256": "fff11d9a13ed07eb8e0e84208596245c1a4c2be948f53ac2ec1085496eb2ac54"
+    },
+    "full_row_scale_runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_full_row_normalized_scale_codebook4_v1.py",
+      "sha256": "69c836f153436fa390dfd2e149a0f24f01c577b5e5ee4c9979f80820e36d3b63"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 4,
+    "swap_must_remain_zero": true,
+    "new_persistent_artifact_bytes": 0,
+    "run_after_existing_Qwen3.8_27B_transaction": true
+  },
+  "promotion_rules": [
+    "a pass proves an exact lossless storage projection over every fitted Qwen3.8-27B scale index, not an exported artifact",
+    "a pass authorizes a versioned container export plus exact native transcode benchmark",
+    "actual encoded bytes must reconcile with this projection before any representation claim",
+    "decoded indices anchors codebooks ternary codes and retained tensors must remain byte-identical",
+    "CUTE MATH code MMLU-type WikiText and paired CPU throughput remain mandatory after export",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "this projection alone cannot establish a scientific breakthrough",
+    "Qwen 4B compute is forbidden in this research lane"
+  ]
+}
