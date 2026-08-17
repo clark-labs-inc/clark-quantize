@@ -13,6 +13,7 @@ state_dir=${STATE_DIR:-/workspace/quant-state/qwen38-27b-layer0-mlp-direct-cq3-v
 baseline_state=${BASELINE_STATE:-/workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1}
 runtime_dir="$repo/experiments/llm_ternary_158bit_dossier/cpu_runtime"
 prereg="$runtime_dir/qwen38_27b_layer0_mlp_direct_cq3_preregistration_v1.json"
+amendment="$runtime_dir/qwen38_27b_infrastructure_retry_amendment_v1.json"
 cq3_patch="$runtime_dir/llama_cpp_4df29be_cq3.patch"
 selective_patch="$runtime_dir/llama_cpp_4df29be_selective_copy_v1.patch"
 scope_verifier="$runtime_dir/verify_gguf_selective_conversion.py"
@@ -63,12 +64,16 @@ if systemctl list-units --type=service --state=running --no-legend \
   echo "a frozen Qwen 4B service is active; refusing to share the node" >&2
   exit 2
 fi
-if pgrep -af 'llama-(server|cli|bench|perplexity)' | grep -v -F "$0" > "$run_dir/conflicting-processes.log"; then
+llama_conflicts=$(ps -eo pid=,comm=,args= | awk \
+  '$2 ~ /^llama-(server|cli|bench|perplexi)/ {print}')
+if [[ -n "$llama_conflicts" ]]; then
+  printf '%s\n' "$llama_conflicts" > "$run_dir/conflicting-processes.log"
   echo "a llama.cpp model process is active; refusing concurrent conversion" >&2
   exit 2
 fi
 
 require_sha256 "$prereg" dfba2e0b7aed4b5654a1c3f5c561a363b6e9496b86920973c2820b162f89740c
+require_sha256 "$amendment" 8adcdd2178e1d681465d8983913d71d3a47078933f83ce812dca751bb9687959
 require_sha256 "$cq3_patch" b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1
 require_sha256 "$selective_patch" 19a40bf56d1ed3d1af6ea12d941891a75252b8b6541229c21db8102b2dd2e7c1
 require_sha256 "$scope_verifier" 3a2a864ad8d93b28154c04bddf2410a2f22c6887c373abea08c84c78cd526cce
@@ -106,7 +111,7 @@ LD_LIBRARY_PATH="$llama_build/bin" "$llama_build/bin/test-cq3" \
 git -C "$repo" rev-parse HEAD > "$state_dir/source.commit"
 git -C "$llama_source" rev-parse HEAD > "$state_dir/llama.commit"
 git -C "$llama_source" diff --binary > "$state_dir/llama-source.diff"
-sha256sum "$prereg" "$cq3_patch" "$selective_patch" "$scope_verifier" \
+sha256sum "$prereg" "$amendment" "$cq3_patch" "$selective_patch" "$scope_verifier" \
   "$llama_build/bin/llama-quantize" "$llama_build/bin/llama-cli" \
   "$llama_build/bin/llama-server" "$llama_build/bin/llama-perplexity" \
   "$llama_build/bin/llama-bench" "$llama_build/bin/test-cq3" \

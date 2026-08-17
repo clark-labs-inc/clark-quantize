@@ -12,6 +12,7 @@ candidate_quality=${CANDIDATE_QUALITY:-/workspace/quant-state/qwen38-27b-layer0-
 out_dir=${OUT_DIR:-/workspace/quant-state/qwen38-27b-layer0-mlp-cq3-paired-throughput-v1}
 runtime_dir="$repo/experiments/llm_ternary_158bit_dossier/cpu_runtime"
 prereg="$runtime_dir/qwen38_27b_layer0_mlp_cq3_paired_throughput_preregistration_v1.json"
+amendment="$runtime_dir/qwen38_27b_infrastructure_retry_amendment_v1.json"
 expected_baseline_sha=31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34
 
 require_sha256() {
@@ -46,17 +47,23 @@ for marker in \
     exit 3
   fi
 done
-if pgrep -af 'llama-(server|cli|bench|perplexity)' >/dev/null; then
+llama_conflicts=$(ps -eo pid=,comm=,args= | awk \
+  '$2 ~ /^llama-(server|cli|bench|perplexi)/ {print}')
+if [[ -n "$llama_conflicts" ]]; then
   echo "another llama.cpp workload is active" >&2
-  pgrep -af 'llama-(server|cli|bench|perplexity)' >&2 || true
+  printf '%s\n' "$llama_conflicts" >&2
   exit 2
 fi
-if pgrep -af 'train_mlp|qwen.*qat|activation.*cache' >/dev/null; then
+training_conflicts=$(ps -eo pid=,comm=,args= | awk \
+  '$2 ~ /^(python|python3|torchrun)$/ && $0 ~ /(train_mlp|qwen.*qat|activation.*cache)/ {print}')
+if [[ -n "$training_conflicts" ]]; then
   echo "a QAT or activation-cache workload is active" >&2
+  printf '%s\n' "$training_conflicts" >&2
   exit 2
 fi
 
 require_sha256 "$prereg" 917b109201eecec4bbabd06bae99ad449ecb127f4a4f1221f850c7d04d0d1a58
+require_sha256 "$amendment" 8adcdd2178e1d681465d8983913d71d3a47078933f83ce812dca751bb9687959
 require_sha256 "$baseline" "$expected_baseline_sha"
 (cd / && sha256sum -c "$conversion_state/artifacts.sha256")
 (cd / && sha256sum -c "$baseline_quality/artifacts.sha256")
@@ -100,7 +107,7 @@ bench_sha=${pinned[1]}
 git rev-parse HEAD > "$out_dir/source.commit"
 lscpu --json > "$out_dir/lscpu.json"
 free -b > "$out_dir/memory-before.txt"
-sha256sum "$prereg" "$baseline" "$candidate" "$llama_bench" \
+sha256sum "$prereg" "$amendment" "$baseline" "$candidate" "$llama_bench" \
   "$conversion_state/conversion-receipt.json" "$baseline_quality/summary.json" \
   "$candidate_quality/summary.json" > "$out_dir/inputs.sha256"
 

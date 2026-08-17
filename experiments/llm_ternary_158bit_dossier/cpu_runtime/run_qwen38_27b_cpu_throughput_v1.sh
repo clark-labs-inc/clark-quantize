@@ -10,6 +10,7 @@ quality_dir=${QUALITY_DIR:-/workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1}
 out_dir=${OUT_DIR:-/workspace/quant-state/qwen38-27b-cpu-throughput-v1}
 runtime_dir="$repo/experiments/llm_ternary_158bit_dossier/cpu_runtime"
 prereg="$runtime_dir/qwen38_27b_cpu_throughput_preregistration_v1.json"
+amendment="$runtime_dir/qwen38_27b_infrastructure_retry_amendment_v1.json"
 model_sha=31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34
 
 require_sha256() {
@@ -37,18 +38,23 @@ if [[ ! -s "$quality_dir/QUALITY_COMPLETE" ]]; then
   echo "27B quality admission marker is absent" >&2
   exit 2
 fi
-if pgrep -af 'llama-(server|cli|bench|perplexity)' >/dev/null; then
+llama_conflicts=$(ps -eo pid=,comm=,args= | awk \
+  '$2 ~ /^llama-(server|cli|bench|perplexi)/ {print}')
+if [[ -n "$llama_conflicts" ]]; then
   echo "another llama.cpp workload is active" >&2
-  pgrep -af 'llama-(server|cli|bench|perplexity)' >&2 || true
+  printf '%s\n' "$llama_conflicts" >&2
   exit 2
 fi
-if pgrep -af 'train_mlp|qwen.*qat|activation.*cache' >/dev/null; then
+training_conflicts=$(ps -eo pid=,comm=,args= | awk \
+  '$2 ~ /^(python|python3|torchrun)$/ && $0 ~ /(train_mlp|qwen.*qat|activation.*cache)/ {print}')
+if [[ -n "$training_conflicts" ]]; then
   echo "a QAT or cache workload is active" >&2
-  pgrep -af 'train_mlp|qwen.*qat|activation.*cache' >&2 || true
+  printf '%s\n' "$training_conflicts" >&2
   exit 2
 fi
 
 require_sha256 "$prereg" 37d9321b0679cc7df5f7de7d5cbda82ef46b2152005472a756a4e9dcdf25aa11
+require_sha256 "$amendment" 8adcdd2178e1d681465d8983913d71d3a47078933f83ce812dca751bb9687959
 require_sha256 "$model" "$model_sha"
 require_sha256 "$llama_bench" 01f85116456ffd6dbe4723801c86c2b75ed1b920a60416aef4f21d376114f7a9
 sha256sum -c "$quality_dir/artifacts.sha256"
@@ -74,7 +80,7 @@ if [[ "$(cat "$out_dir/llama.commit")" != 4df29be4f4c3673f428170fda944a5b19f743b
 fi
 lscpu --json > "$out_dir/lscpu.json"
 free -b > "$out_dir/memory-before.txt"
-sha256sum "$prereg" "$model" "$llama_bench" "$quality_dir/summary.json" \
+sha256sum "$prereg" "$amendment" "$model" "$llama_bench" "$quality_dir/summary.json" \
   > "$out_dir/inputs.sha256"
 
 run_lane() {

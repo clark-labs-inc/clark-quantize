@@ -13,6 +13,7 @@ wiki_corpus=${WIKI_CORPUS:-/workspace/quant-runs/cq3-4b-ptq-scope-20260817/wikit
 port=${PORT:-8095}
 runtime_dir="$repo/experiments/llm_ternary_158bit_dossier/cpu_runtime"
 prereg="$runtime_dir/qwen38_27b_layer0_mlp_direct_cq3_quality_preregistration_v1.json"
+amendment="$runtime_dir/qwen38_27b_infrastructure_retry_amendment_v1.json"
 cute_manifest="$runtime_dir/cute_quick_v1.json"
 math_code_manifest="$runtime_dir/math_code_canary_v1.json"
 mmlu_manifest="$runtime_dir/qwen35_4b_cpu_layer30_mmlu_v1.json"
@@ -62,6 +63,7 @@ if systemctl list-units --type=service --state=running --no-legend \
 fi
 
 require_sha256 "$prereg" 0549ff2ea7ff20a63e5d37403b7556f93ebe1d45f890da8c6bf9ea100f31b899
+require_sha256 "$amendment" 8adcdd2178e1d681465d8983913d71d3a47078933f83ce812dca751bb9687959
 require_sha256 "$cute_manifest" 19dd73eedf737d11f7c94d039822de62314abf31e3fb739a9a875fe65c5bbd16
 require_sha256 "$math_code_manifest" 1ec0b41ce3ca3597d65013ac0c8a48c208c4e03b05f0109be61319252c09dab0
 require_sha256 "$mmlu_manifest" e3e38ccb1bf35c56b600f1cf39bbd0ea38072f2b4bdd5fc36146c143fb658dba
@@ -109,7 +111,7 @@ PY
 )
 
 git rev-parse HEAD > "$state_dir/source.commit"
-sha256sum "$prereg" "$cute_manifest" "$math_code_manifest" "$mmlu_manifest" \
+sha256sum "$prereg" "$amendment" "$cute_manifest" "$math_code_manifest" "$mmlu_manifest" \
   "$wiki_corpus" "$runtime_dir/eval_llama_cpp_cute_quick.py" \
   "$runtime_dir/eval_llama_cpp_math_code_canary.py" \
   "$runtime_dir/eval_llama_cpp_mmlu.py" \

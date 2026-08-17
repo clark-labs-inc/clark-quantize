@@ -1,0 +1,69 @@
+{
+  "schema": "qwen38_27b_infrastructure_retry_amendment_v1",
+  "status": "frozen_before_retry",
+  "frozen_at_utc": "2026-08-17T12:39:00Z",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_work_frozen": true,
+    "changes_model_weights_or_benchmark_thresholds": false,
+    "purpose": "repair two pre-measurement launcher defects and rerun the unchanged preregistered 27B gates"
+  },
+  "observed_failures": [
+    {
+      "unit": "quant-qwen38-27b-postbaseline-chain-v1.service",
+      "failed_at_utc": "2026-08-17T12:29:21Z",
+      "exit_status": 2,
+      "last_message": "a QAT or cache workload is active",
+      "cause": "the pgrep expression searched complete bash command lines, so sleeping Qwen3.8 watcher text containing qwen before the repository suffix cpu-qat was misclassified as an active Python QAT process",
+      "measurement_started": false,
+      "throughput_receipt_written": false,
+      "candidate_conversion_started": false,
+      "quality_receipt_written": false,
+      "classification": "infrastructure-invalid; neither a zero nor a completed result"
+    },
+    {
+      "unit": "quant-qwen38-27b-cq3-x86-pair-watch-v1.service",
+      "failed_at_utc": "2026-08-17T12:29:54Z",
+      "exit_status": 128,
+      "last_message": "fatal: not a git repository (or any of the parent directories): .git",
+      "cause": "the x86 runner resolved cpu_runtime/../../../.. to /workspace instead of resolving cpu_runtime/../../.. to the research repository",
+      "build_started": false,
+      "correctness_test_started": false,
+      "benchmark_started": false,
+      "receipt_written": false,
+      "classification": "infrastructure-invalid; neither a kernel rejection nor a completed result"
+    }
+  ],
+  "allowed_repairs": {
+    "process_admission": "inspect executable comm fields and only classify llama executables or Python and torchrun training executables; never match dormant bash watcher text",
+    "x86_repository_root": "change only the relative ascent from ../../../.. to ../../..",
+    "record_this_amendment_in_every_retried_input_ledger": true
+  },
+  "unchanged_frozen_protocols": [
+    "qwen38_27b_cpu_throughput_preregistration_v1.json",
+    "qwen38_27b_layer0_mlp_direct_cq3_preregistration_v1.json",
+    "qwen38_27b_layer0_mlp_direct_cq3_quality_preregistration_v1.json",
+    "qwen38_27b_layer0_mlp_cq3_paired_throughput_preregistration_v1.json",
+    "qwen38_27b_cq3_x86_pair_preregistration_v1.json"
+  ],
+  "unchanged_promotion_thresholds": {
+    "candidate_quality": "all original CUTE MATH code MMLU and WikiText gates remain unchanged",
+    "paired_throughput": "all original paired timing and promotion gates remain unchanged",
+    "x86_pair_microkernel_minimum_speedup": 1.03
+  },
+  "retry_order": [
+    "wait_for_the_already_active_402_tensor_scale_fit_to_finish",
+    "run_the_Qwen3.8_27B_Q4_throughput_control",
+    "build_the_three_tensor_direct_CQ3_candidate",
+    "run_candidate_CUTE_MATH_code_MMLU_and_WikiText_quality",
+    "only_if_quality_promotes_run_paired_candidate_throughput",
+    "run_the_independent_x86_exact_shape_microkernel_gate",
+    "only_then_allow_complete_scale_extension_and_container_export"
+  ],
+  "validity": {
+    "infrastructure_invalid_retry_does_not_consume_a_scientific_repetition": true,
+    "all_existing_partial_or_failure_logs_are_retained": true,
+    "a_threshold_miss_after_valid_measurement_is_a_terminal_negative_result": true,
+    "no_breakthrough_claim_from_any_single_gate": true
+  }
+}

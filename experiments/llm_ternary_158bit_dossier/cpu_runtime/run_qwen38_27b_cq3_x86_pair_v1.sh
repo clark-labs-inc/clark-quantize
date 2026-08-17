@@ -2,8 +2,9 @@
 set -euo pipefail
 
 runtime_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-repo_root=$(cd "$runtime_dir/../../../.." && pwd)
+repo_root=$(cd "$runtime_dir/../../.." && pwd)
 prereg="$runtime_dir/qwen38_27b_cq3_x86_pair_preregistration_v1.json"
+amendment="$runtime_dir/qwen38_27b_infrastructure_retry_amendment_v1.json"
 base_patch="$runtime_dir/llama_cpp_4df29be_cq3.patch"
 candidate_patch="$runtime_dir/llama_cpp_4df29be_cq3_x86_pair_v1.patch"
 benchmark_source="$runtime_dir/qwen38_27b_cq3_x86_pair_bench_v1.inc"
@@ -55,11 +56,12 @@ check_sha256() {
 }
 
 check_sha256 b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1 "$base_patch"
+check_sha256 8adcdd2178e1d681465d8983913d71d3a47078933f83ce812dca751bb9687959 "$amendment"
 check_sha256 684568733cd3cc3464fa55ba0def22ed05e33684352c1f8ee5215c95afc832ad "$candidate_patch"
 check_sha256 18ad5425d182c8aec18d895e2ba649604ff3e6028c78d3dbc7c81369dabd354a "$benchmark_source"
 
 mkdir -p "$state_dir" "$build_dir"
-sha256sum "$prereg" "$base_patch" "$candidate_patch" "$benchmark_source" > "$state_dir/inputs.sha256"
+sha256sum "$prereg" "$amendment" "$base_patch" "$candidate_patch" "$benchmark_source" > "$state_dir/inputs.sha256"
 git -C "$repo_root" rev-parse HEAD > "$state_dir/repository.commit"
 lscpu -J > "$state_dir/lscpu.json"
 cmake --version > "$state_dir/cmake.version"
