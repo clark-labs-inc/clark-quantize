@@ -1,0 +1,97 @@
+{
+  "schema": "qwen38_27b_geometric_ternary_ablation_preregistration_v1",
+  "receipt_schema": "qwen38_27b_geometric_ternary_ablation_receipt_v1",
+  "status": "frozen_before_authoritative_real_weight_run",
+  "frozen_at_utc": "2026-08-17T18:43:00Z",
+  "hypothesis": "A CPU-cheap block-128 randomized Hadamard rotation and row-shared affine ternary center can reduce FP16-exported Qwen3.8-27B group-128 ternary squared error by at least 0.5% without adding more than 0.005 empirical code-plus-center bits per sampled weight",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "sampling": "four frozen nonoverlapping 64-row spans at the beginning, quarter, half, and end of each layer-0 MLP matrix",
+    "sampled_rows_per_tensor": 256,
+    "sampled_parameters": 7077888,
+    "tensors": [
+      {
+        "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+        "shape": [17408, 5120],
+        "shard": "model-00001-of-00018.safetensors",
+        "row_spans": [[0, 64], [4352, 4416], [8704, 8768], [17344, 17408]]
+      },
+      {
+        "name": "model.language_model.layers.0.mlp.up_proj.weight",
+        "shape": [17408, 5120],
+        "shard": "model-00001-of-00018.safetensors",
+        "row_spans": [[0, 64], [4352, 4416], [8704, 8768], [17344, 17408]]
+      },
+      {
+        "name": "model.language_model.layers.0.mlp.down_proj.weight",
+        "shape": [5120, 17408],
+        "shard": "model-00001-of-00018.safetensors",
+        "row_spans": [[0, 64], [1280, 1344], [2560, 2624], [5056, 5120]]
+      }
+    ]
+  },
+  "candidate_family": {
+    "group_size": 128,
+    "baseline": "closed-form groupwise symmetric optimal-MSE ternary codes with FP16 scales",
+    "variants": ["row-affine", "block-RHT symmetric", "block-RHT row-affine"],
+    "affine_geometry": "one shared center per output row plus one nonnegative scale per group, fit by monotone exact coordinate updates",
+    "affine_cpu_identity": "sum_g scale_rg times dot(code_rg, x_g) plus center_r times sum(x)",
+    "rht_geometry": "right multiplication by deterministic block-diagonal D H / sqrt(128), with the same transform applied to activation row vectors",
+    "rht_seed": 158027,
+    "rht_sign_storage": "zero persistent bytes because signs are deterministically regenerated from the frozen seed",
+    "export_precision": "FP16 centers and FP16 group scales for this geometric isolation screen",
+    "candidate_selection": "lowest aggregate FP16-exported squared weight error among the three nonbaseline variants"
+  },
+  "measurement": {
+    "authenticate_model_download_and_tensor_index": true,
+    "verify_every_frozen_tensor_name_shape_and_shard": true,
+    "measure_FP16_exported_reconstruction_not_only_FP32_fit": true,
+    "measure_aggregate_and_per_span_squared_error_and_relative_RMSE": true,
+    "measure_ternary_histograms_and_zero_order_empirical_entropy": true,
+    "count_FP16_row_center_bytes": true,
+    "verify_dense_transform_and_affine_CPU_kernel_algebra_on_frozen_random_probes": true,
+    "retain_coordinate_objective_histories": true
+  },
+  "gate": {
+    "required_spans": 12,
+    "minimum_aggregate_squared_error_reduction": 0.005,
+    "maximum_candidate_rate_increase_bits_per_weight": 0.005
+  },
+  "frozen_inputs": {
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_geometric_ternary_ablation_v1.py",
+      "sha256": "d0b13d0f999be1114d5dd00ee8b99973c92714f07fe71d78aed002976163b8b5"
+    },
+    "affine_fitter": {
+      "path": "clark_quantize/qwen38_affine_ternary.py",
+      "sha256": "aa57235b74fc2d2b1b8e80423699d607797a6bf0ffd2d8bb9bf08e50f468d5dd"
+    },
+    "geometric_transform": {
+      "path": "clark_quantize/qwen38_geometric_transform.py",
+      "sha256": "643034598dddc894604eaa42030c8c78151156e0ddbd9d616580a081e2ac4a96"
+    },
+    "symmetric_quantizer": {
+      "path": "clark_quantize/ternary.py",
+      "sha256": "c431723ac92eaf0ff315808bf18f17710060aad526cc677185c756b0ade33750"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 4,
+    "swap_must_remain_zero": true,
+    "persistent_output_bytes": "less than 2 MiB",
+    "run_only_after_current_authoritative_Qwen3.8_27B_transaction": true
+  },
+  "promotion_rules": [
+    "a failed gate is a valid negative geometric result and does not authorize tuning the frozen seed or spans",
+    "a pass advances only to full-layer activation-weighted calibration and does not prove model capability",
+    "CUTE MMLU-type MATH and WikiText gates remain mandatory before representation promotion",
+    "paired correct CPU throughput including activation-transform cost remains mandatory",
+    "a storage claim must count centers scales entropy metadata retained tensors alignment and auxiliary files",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "no scientific-breakthrough claim follows from this sampled reconstruction screen alone"
+  ]
+}
