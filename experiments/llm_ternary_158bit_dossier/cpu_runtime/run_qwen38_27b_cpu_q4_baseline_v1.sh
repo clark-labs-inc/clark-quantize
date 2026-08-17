@@ -100,11 +100,17 @@ sha256sum "$prereg" "$cute_manifest" "$math_code_manifest" "$mmlu_manifest" \
   "$wiki_corpus" "$model" "$llama_build/bin/llama-server" \
   "$llama_build/bin/llama-perplexity" > "$state_dir/inputs.sha256"
 
-if [[ ! -s "$state_dir/load-smoke.log" ]]; then
+if [[ ! -e "$state_dir/LOAD_SMOKE_COMPLETE" ]]; then
+  if [[ -s "$state_dir/load-smoke.log" ]]; then
+    echo "unmarked load-smoke log requires inspection before retry" >&2
+    exit 2
+  fi
   /usr/bin/time -v "$llama_build/bin/llama-cli" \
     -m "$model" -t 4 -tb 4 -c 2048 -b 512 -ub 512 \
-    --no-warmup -p 'Reply with only OK.' -n 2 --temp 0 \
+    --no-warmup --single-turn --simple-io \
+    -p 'Reply with only OK.' -n 2 --temp 0 \
     > "$state_dir/load-smoke.log" 2>&1
+  printf 'complete\n' > "$state_dir/LOAD_SMOKE_COMPLETE"
 fi
 
 CPU_EVAL_RUN_DIR="$run_dir" \
