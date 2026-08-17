@@ -1,0 +1,26 @@
+[Unit]
+Description=Benchmark Qwen3.8-27B recurrent DeltaNet AVX2 after the existing queue
+After=network-online.target quant-qwen38-27b-aligned2-full-cache-watch-v1.service
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-5711a93.bundle
+Environment=EXPECTED_COMMIT=5711a931cedf17421324fb06958bd53c09a193db
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/bin/bash /workspace/tmp/watch-qwen38-27b-recurrent-delta-avx2-v1-5711a93.sh
+CPUAffinity=4
+CPUQuota=100%
+MemoryMax=512M
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target
