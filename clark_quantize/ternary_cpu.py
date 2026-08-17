@@ -238,6 +238,19 @@ def _load_library() -> ctypes.CDLL | None:
             library.cq3_recurrent_gated_delta_f32_avx2_trusted.restype = (
                 ctypes.c_int
             )
+        if hasattr(library, "cq3_rmsnorm_silu_gate_f32_scalar"):
+            rmsnorm_gate_args = (
+                f32p, f32p, f32p, ctypes.c_uint32, ctypes.c_uint32,
+                ctypes.c_float, f32p,
+            )
+            library.cq3_rmsnorm_silu_gate_f32_scalar.argtypes = (
+                rmsnorm_gate_args
+            )
+            library.cq3_rmsnorm_silu_gate_f32_scalar.restype = ctypes.c_int
+            library.cq3_rmsnorm_silu_gate_f32_avx2.argtypes = (
+                rmsnorm_gate_args
+            )
+            library.cq3_rmsnorm_silu_gate_f32_avx2.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_scalar.argtypes = gemv_args
         library.cq3_gemv_q8_group128_radix5_scalar.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_avx2.argtypes = gemv_args
@@ -1338,6 +1351,55 @@ def recurrent_gated_delta_f32(
         output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
     )
     _check(status, "Qwen3.8 recurrent Gated DeltaNet")
+    return output
+
+
+def rmsnorm_silu_gate_f32(
+    input_values: np.ndarray,
+    norm_weights: np.ndarray,
+    gate: np.ndarray,
+    *,
+    epsilon: float = 1e-6,
+    implementation: str = "scalar",
+) -> np.ndarray:
+    """Apply Qwen3.8 per-value-head RMSNorm followed by a SiLU gate."""
+    if _LIBRARY is None or not hasattr(
+        _LIBRARY, "cq3_rmsnorm_silu_gate_f32_scalar"
+    ):
+        raise RuntimeError("native Qwen3.8 RMSNorm gate kernel is absent")
+    values = _array(input_values, np.float32, ndim=2)
+    weights = _array(norm_weights, np.float32, ndim=1)
+    gates = _array(gate, np.float32, ndim=2)
+    if (
+        values.shape != gates.shape
+        or values.shape[0] == 0
+        or values.shape[1] == 0
+        or weights.shape != (values.shape[1],)
+        or not np.isfinite(epsilon)
+        or epsilon <= 0.0
+    ):
+        raise ValueError("RMSNorm SiLU gate tensor shapes do not compose")
+    functions = {
+        "scalar": _LIBRARY.cq3_rmsnorm_silu_gate_f32_scalar,
+        "avx2": _LIBRARY.cq3_rmsnorm_silu_gate_f32_avx2,
+    }
+    try:
+        function = functions[implementation]
+    except KeyError as error:
+        raise ValueError(
+            f"unknown RMSNorm SiLU gate implementation {implementation}"
+        ) from error
+    output = np.empty_like(values)
+    status = function(
+        values.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        weights.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        gates.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        values.shape[0],
+        values.shape[1],
+        float(epsilon),
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+    )
+    _check(status, "Qwen3.8 RMSNorm SiLU gate")
     return output
 
 

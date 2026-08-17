@@ -170,7 +170,13 @@ comparison includes both every output token and the final FP32 state.
 The post-recurrence fused operation is FP32 RMS normalization over each
 128-wide value head, multiplication by learned norm weights, SiLU gating from
 `z`, conversion to the activation dtype, and the `6144 -> 5120` output
-projection.
+projection. Dependency-free scalar and AVX2 implementations now cover the
+exact `48 x 128` RMSNorm-plus-SiLU-gate shape. The AVX2 implementation keeps
+the scalar 128-value variance accumulation order and scalar `expf` gate so its
+FP32 result is bit-exact with the scalar oracle; a faster approximate vector
+exponential is not authorized without a separately frozen error and
+full-layer parity gate. Fusion into activation quantization and the output
+projection remains open.
 
 ## K8-K9: full attention
 

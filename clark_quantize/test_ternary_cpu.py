@@ -338,6 +338,32 @@ class TernaryCpuNativeTests(unittest.TestCase):
                 query, key, value, log_decay, beta, initial.copy()
             )
 
+    def test_qwen38_rmsnorm_silu_gate_matches_fp32_oracle(self) -> None:
+        generator = np.random.default_rng(20260817)
+        for heads, dimension in ((3, 7), (48, 128)):
+            values = generator.normal(size=(heads, dimension)).astype(np.float32)
+            weights = generator.normal(size=dimension).astype(np.float32)
+            gate = generator.normal(size=(heads, dimension)).astype(np.float32)
+            variance = np.mean(values * values, axis=1, keepdims=True)
+            normalized = values * np.float32(1.0) / np.sqrt(
+                variance + np.float32(1e-6)
+            )
+            silu_gate = gate / (np.float32(1.0) + np.exp(-gate))
+            expected = normalized * weights * silu_gate
+            scalar = ternary_cpu.rmsnorm_silu_gate_f32(
+                values, weights, gate, implementation="scalar"
+            )
+            np.testing.assert_allclose(scalar, expected, rtol=2e-6, atol=2e-6)
+            if ternary_cpu.cpu_features()["avx2"]:
+                avx2 = ternary_cpu.rmsnorm_silu_gate_f32(
+                    values, weights, gate, implementation="avx2"
+                )
+                np.testing.assert_array_equal(avx2, scalar)
+
+        gate[0, 0] = np.inf
+        with self.assertRaisesRegex(ValueError, "non-finite"):
+            ternary_cpu.rmsnorm_silu_gate_f32(values, weights, gate)
+
     def test_scalar_matches_groupwise_integer_oracle(self) -> None:
         codes, scales, quantized, activation_scales, sums, packed = self.fixture()
         actual = ternary_cpu.gemv_q8_group128_2bit(
