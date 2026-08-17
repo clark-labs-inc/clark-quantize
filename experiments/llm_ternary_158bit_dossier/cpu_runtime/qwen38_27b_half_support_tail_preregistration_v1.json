@@ -1,0 +1,113 @@
+{
+  "schema": "qwen38_27b_half_support_tail_preregistration_v1",
+  "receipt_schema": "qwen38_27b_half_support_tail_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T22:30:00Z",
+  "hypothesis": "The exact fixed-half-support mask representation can encode Qwen3.8-27B vision FC2 rows with 33 full 128-wide groups plus one 80-wide tail at exactly 1.5 raw bits per weight, round-trip exactly, and execute the 1152-by-4304 GEMV on one x86 core at no less than half the logical throughput of a padded aligned-two-bit AVX2 control",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_compute_forbidden": true,
+    "affected_checkpoint_tensors": 27,
+    "affected_parameters": 133871616,
+    "claim_boundary": "synthetic-code codec and base GEMV on the real vision FC2 shape only; not a learned-hash tail fusion, real-weight quality, capability, token-throughput, semi-lossless, or breakthrough result"
+  },
+  "case": {
+    "name": "qwen_vision_fc2",
+    "rows": 1152,
+    "columns": 4304,
+    "full_groups": 33,
+    "tail_width": 80,
+    "tail_nonzero_count": 40,
+    "groups": 34,
+    "padded_control_columns": 4352
+  },
+  "representation": {
+    "group_layout": "width support bits followed by width-over-two support-ordered sign bits and canonical zero terminal padding",
+    "full_group_bytes": 24,
+    "tail_group_bytes": 15,
+    "row_bytes": 807,
+    "raw_code_bits_per_weight": 1.5,
+    "full_group_compatibility": "byte-identical to the separately frozen mask64 layout",
+    "padded_control": "aligned two-bit 4352-wide matrix with 48 zero weight and activation coordinates; scale group count remains 34"
+  },
+  "measurement": {
+    "seed": 1584304,
+    "codes": "deterministic synthetic exact-half-support codes in every full and tail group",
+    "activation": "deterministic signed INT8 with 34 per-group FP32 scales and zero-padded control tail",
+    "weight_scales": "per-row FP16 anchors plus packed 4-bit per-group FP16-ratio indices",
+    "warmups": 3,
+    "repetitions": 11,
+    "scalar_rows": 64,
+    "statistic": "median monotonic wall-clock nanoseconds",
+    "threading": "one process pinned to one physical CPU; kernels are single-threaded",
+    "compiler": "system C compiler with C11 O3 Wall Wextra Werror shared PIC and mtune=native"
+  },
+  "gate": {
+    "maximum_raw_code_bits_per_weight": 1.5,
+    "minimum_pack_mweights_per_second": 20.0,
+    "minimum_unpack_mweights_per_second": 20.0,
+    "maximum_absolute_error": 0.0005,
+    "minimum_throughput_fraction_of_padded_aligned2": 0.5,
+    "minimum_avx2_speedup_vs_scalar": 1.25
+  },
+  "resources": {
+    "required_isa": [
+      "AVX2",
+      "FMA",
+      "F16C",
+      "BMI2"
+    ],
+    "cpu_quota_percent": 100,
+    "memory_max_mib": 512,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 10,
+    "persistent_output_bytes": "less than 1 MiB",
+    "run_after_fused_mask64_gate_and_before_complete_ledger": true
+  },
+  "promotion_rules": [
+    "the codec must round-trip the entire synthetic 1152-by-4304 matrix exactly",
+    "the first 128-wide group must remain byte-compatible with mask64",
+    "the padded control must use identical logical codes scales and activation with zeros only beyond coordinate 4304",
+    "every frozen correctness codec and performance threshold must pass",
+    "a pass closes the tail representation and base-kernel feasibility gap only",
+    "learned-hash correction fusion for the tail remains a separate requirement",
+    "a failed gate is a valid terminal result requiring a separately versioned optimization",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "this benchmark cannot establish semi-lossless compression or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "mask64_native_c": {
+      "path": "clark_quantize/qwen38_fixed_support_mask64_cpu.c",
+      "sha256": "af12f49bfb975541ff5030ec50ffe6abb7df96a203dbdd9a014e170bfce85644"
+    },
+    "tail_native_c": {
+      "path": "clark_quantize/qwen38_half_support_tail_cpu.c",
+      "sha256": "8dd75aba04178d9dc617b9fd3acc8f68f8f0dbd0883cb243d5c04c6f0c685257"
+    },
+    "mask64_binding": {
+      "path": "clark_quantize/qwen38_fixed_support_mask64_cpu.py",
+      "sha256": "d8dd4ea2d223dcf81184166d676f7e248c10809d7fb5b8a6f62163b62bdff908"
+    },
+    "tail_binding": {
+      "path": "clark_quantize/qwen38_half_support_tail_cpu.py",
+      "sha256": "cb745b97ab56a9a7008f4faefdeb6ceba698d55b810b074947b3e41d7f6eff3b"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_qwen38_half_support_tail_cpu.py",
+      "sha256": "1a03de9f012f2ef4b5e904130b038d44989ed6e9aa208e70e39338e4e5d11b20"
+    },
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_half_support_tail_v1.py",
+      "sha256": "6772aa66c8598592859afbfc11953f1c8e8d94cbbe8ab451f28821b9f5ad7670"
+    },
+    "build_script": {
+      "path": "scripts/cpu/build_qwen38_half_support_tail_cpu.sh",
+      "sha256": "f4eef99f916ff53274cf83fff2292dcc879bd90de4579acb3337ee1424ae65ad"
+    },
+    "aligned2_control": {
+      "path": "clark_quantize/ternary_cpu.c",
+      "sha256": "00acb5674e1ae2de188d7d7dfefcf5cf33776ca634c597469dc5e3b168248488"
+    }
+  }
+}
