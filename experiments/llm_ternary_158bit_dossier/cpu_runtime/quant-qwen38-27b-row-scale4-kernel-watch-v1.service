@@ -1,0 +1,22 @@
+[Unit]
+Description=Benchmark Qwen3.8-27B row-scale4 AVX2 kernel after full static pass
+After=network-online.target quant-qwen38-27b-full-row-normalized-scale-codebook4-watch-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-8a29fa5.bundle
+Environment=EXPECTED_COMMIT=8a29fa51f896f6fa6b2d1d7258c82e96be1b66ee
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/tmp/watch-qwen38-27b-row-scale4-kernel-v1-8a29fa5.sh
+CPUQuota=100%
+MemoryMax=8G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target
