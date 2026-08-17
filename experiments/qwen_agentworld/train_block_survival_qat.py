@@ -129,7 +129,9 @@ class QuantLinear(torch.nn.Module):
 
     def quantized(self) -> torch.Tensor:
         if self.mode == "ternary" and self.artifact_exact_ternary:
-            return hard_ternary_ste(self.master, group_size=self.group_size, row_batch=128)
+            return hard_ternary_ste(
+                self.master, group_size=self.group_size, row_batch=128
+            ).to(torch.bfloat16).float()
         return ste_quantized_weight(self.master, mode=self.mode, group_size=self.group_size)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:

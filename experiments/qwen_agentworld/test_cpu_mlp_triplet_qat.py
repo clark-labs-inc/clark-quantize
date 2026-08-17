@@ -23,9 +23,13 @@ def test_artifact_exact_hard_weights_match_training_forward_quantizer() -> None:
 
     exported = model.hard_weights()
     for name in ("gate", "up", "down"):
-        expected = hard_ternary_weight(
+        expected_float = hard_ternary_weight(
             getattr(model, name), group_size=2, row_batch=128
-        ).to(torch.bfloat16)
+        ).to(torch.bfloat16).float()
+        torch.testing.assert_close(
+            model.quantized(getattr(model, name)), expected_float, rtol=0, atol=0
+        )
+        expected = expected_float.to(torch.bfloat16)
         torch.testing.assert_close(exported[name], expected, rtol=0, atol=0)
 
 
@@ -44,9 +48,13 @@ def test_survival_qat_artifact_exact_export_matches_training_quantizer() -> None
 
     exported = model.hard_weights()
     for name in ("gate", "up", "down"):
-        expected = hard_ternary_weight(
+        expected_float = hard_ternary_weight(
             getattr(model, name), group_size=2, row_batch=128
-        ).to(torch.bfloat16)
+        ).to(torch.bfloat16).float()
+        torch.testing.assert_close(
+            model.quantized(getattr(model, name)), expected_float, rtol=0, atol=0
+        )
+        expected = expected_float.to(torch.bfloat16)
         torch.testing.assert_close(exported[name], expected, rtol=0, atol=0)
 
 

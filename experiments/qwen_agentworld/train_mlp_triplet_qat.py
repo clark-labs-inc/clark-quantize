@@ -111,7 +111,12 @@ class QuantMLPTriplet(torch.nn.Module):
 
     def quantized(self, master: torch.Tensor) -> torch.Tensor:
         if self.mode == "ternary" and self.artifact_exact_ternary:
-            return hard_ternary_ste(master, group_size=self.group_size, row_batch=128)
+            # The current GGUF bridge materializes a BF16 patch before CQ3
+            # packing. Round in the hard forward as well so CPU phase-1 trains
+            # against the values the packer actually sees.
+            return hard_ternary_ste(
+                master, group_size=self.group_size, row_batch=128
+            ).to(torch.bfloat16).float()
         return ste_quantized_weight(master, mode=self.mode, group_size=self.group_size)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
