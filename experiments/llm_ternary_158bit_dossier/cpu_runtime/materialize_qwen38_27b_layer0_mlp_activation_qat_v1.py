@@ -68,6 +68,21 @@ def atomic_json(value: dict, path: Path) -> None:
     os.replace(temporary, path)
 
 
+def atomic_bytes(value: bytes, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(value)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    except BaseException:
+        temporary.unlink(missing_ok=True)
+        raise
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -90,25 +105,48 @@ def main() -> None:
         "--out", type=Path,
         default=Path("/workspace/quant-state/qwen38-27b-layer0-mlp-activation-qat-materialization-v1.json"),
     )
+    parser.add_argument(
+        "--in-place",
+        action="store_true",
+        help="Atomically rename the authenticated direct template, back up its three target payloads, and mutate only those ranges.",
+    )
+    parser.add_argument(
+        "--backup-root", type=Path,
+        default=Path("/workspace/quant-runs/qwen38-27b-layer0-mlp-activation-qat-v1/direct-template-backup"),
+    )
     args = parser.parse_args()
 
     template_receipt = json.loads(args.template_receipt.read_text())
     training = json.loads(args.training_receipt.read_text())
+    template_sha256 = template_receipt.get("candidate", {}).get("sha256")
+    template_bytes = int(template_receipt.get("candidate", {}).get("bytes", -1))
+    backup_receipt_path = args.backup_root / "receipt.json"
+    resuming_in_place = (
+        args.in_place
+        and not args.template.exists()
+        and args.output.exists()
+        and backup_receipt_path.is_file()
+    )
     if (
         template_receipt.get("valid") is not True
-        or template_receipt.get("candidate", {}).get("sha256") != sha256_file(args.template)
+        or not isinstance(template_sha256, str)
+        or template_bytes <= 0
         or training.get("model_id") != MODEL_ID
         or training.get("model_revision") != MODEL_REVISION
         or training.get("numeric_promotion_pass") is not True
         or training.get("complete") is not True
     ):
         raise ValueError("template or Qwen3.8-27B training receipt is not promoted")
+    if not resuming_in_place:
+        if not args.template.is_file() or sha256_file(args.template) != template_sha256:
+            raise ValueError("structural template SHA-256 differs from its receipt")
 
     try:
         from gguf import GGUFReader
     except ImportError as error:
         raise RuntimeError("set PYTHONPATH to the pinned llama.cpp gguf-py directory") from error
-    reader = GGUFReader(str(args.template), mode="r")
+    structural_path = args.output if resuming_in_place else args.template
+    reader = GGUFReader(str(structural_path), mode="r")
     tensors = {tensor.name: tensor for tensor in reader.tensors}
     if not set(TARGETS) <= set(tensors):
         raise ValueError("structural GGUF template lacks one or more target tensors")
@@ -138,34 +176,105 @@ def main() -> None:
     del reader
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    if args.output.exists():
-        raise FileExistsError(f"refusing to overwrite existing candidate: {args.output}")
-    available = shutil.disk_usage(args.output.parent).free
-    required = args.template.stat().st_size + 2 * 1024**3
-    if available < required:
-        raise RuntimeError(f"materialization requires {required} free bytes, found {available}")
-    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{args.output.name}.", dir=args.output.parent)
-    temporary = Path(temporary_name)
-    try:
-        with args.template.open("rb") as source, os.fdopen(descriptor, "w+b") as destination:
-            shutil.copyfileobj(source, destination, length=64 * 1024 * 1024)
-            for start, stop, payload, _ in replacements:
+    ranges = [(start, stop) for start, stop, _, _ in replacements]
+    backup_receipt: dict[str, Any] | None = None
+    if args.in_place:
+        if resuming_in_place:
+            backup_receipt = json.loads(backup_receipt_path.read_text())
+            if (
+                backup_receipt.get("schema") != "qwen38_27b_direct_template_target_backup_v1"
+                or backup_receipt.get("template_sha256") != template_sha256
+                or backup_receipt.get("template_bytes") != template_bytes
+                or set(backup_receipt.get("targets", {})) != set(TARGETS)
+                or backup_receipt.get("complete") is not True
+            ):
+                raise ValueError("in-place backup receipt is invalid")
+            for name, item in backup_receipt["targets"].items():
+                path = Path(item["path"])
+                if sha256_file(path) != item["sha256"] or path.stat().st_size != item["bytes"]:
+                    raise ValueError(f"in-place backup payload is invalid: {name}")
+        else:
+            if args.output.exists():
+                raise FileExistsError(f"refusing ambiguous in-place output: {args.output}")
+            if backup_receipt_path.exists() or args.backup_root.exists():
+                raise FileExistsError(f"refusing ambiguous in-place backup: {args.backup_root}")
+            args.backup_root.mkdir(parents=True)
+            target_backups = {}
+            with args.template.open("rb") as source:
+                for start, stop, _, name in replacements:
+                    source.seek(start)
+                    raw = source.read(stop - start)
+                    if len(raw) != stop - start:
+                        raise EOFError(f"could not read direct template payload: {name}")
+                    backup_path = args.backup_root / f"{name}.direct.bin"
+                    atomic_bytes(raw, backup_path)
+                    target_backups[name] = {
+                        "path": str(backup_path),
+                        "bytes": len(raw),
+                        "sha256": hashlib.sha256(raw).hexdigest(),
+                    }
+            backup_receipt = {
+                "schema": "qwen38_27b_direct_template_target_backup_v1",
+                "template_path": str(args.template),
+                "template_sha256": template_sha256,
+                "template_bytes": template_bytes,
+                "non_target_file_bytes_sha256": sha256_excluding(args.template, ranges),
+                "targets": target_backups,
+                "complete": True,
+                "restore_contract": "rename candidate back to template path and replace the three target ranges with these authenticated payloads",
+            }
+            atomic_json(backup_receipt, backup_receipt_path)
+            os.replace(args.template, args.output)
+
+        if args.output.stat().st_size != template_bytes:
+            raise ValueError("in-place candidate byte count changed")
+        with args.output.open("r+b") as destination:
+            for start, stop, payload, name in replacements:
+                destination.seek(start)
+                current = destination.read(stop - start)
+                current_sha256 = hashlib.sha256(current).hexdigest()
+                expected_sha256 = sha256_file(payload)
+                backup_sha256 = backup_receipt["targets"][name]["sha256"]
+                if current_sha256 == expected_sha256:
+                    continue
+                if current_sha256 != backup_sha256:
+                    raise ValueError(f"in-place target is neither direct nor trained: {name}")
                 destination.seek(start)
                 with payload.open("rb") as payload_handle:
                     shutil.copyfileobj(payload_handle, destination, length=16 * 1024 * 1024)
                 if destination.tell() != stop:
                     raise ValueError("trained payload write ended at the wrong GGUF offset")
-            destination.flush()
-            os.fsync(destination.fileno())
-        if temporary.stat().st_size != args.template.stat().st_size:
-            raise ValueError("materialized GGUF byte count changed")
-        os.replace(temporary, args.output)
-    except BaseException:
-        temporary.unlink(missing_ok=True)
-        raise
+                destination.flush()
+                os.fsync(destination.fileno())
+        template_non_target = backup_receipt["non_target_file_bytes_sha256"]
+    else:
+        if args.output.exists():
+            raise FileExistsError(f"refusing to overwrite existing candidate: {args.output}")
+        available = shutil.disk_usage(args.output.parent).free
+        required = template_bytes + 2 * 1024**3
+        if available < required:
+            raise RuntimeError(f"materialization requires {required} free bytes, found {available}")
+        descriptor, temporary_name = tempfile.mkstemp(prefix=f".{args.output.name}.", dir=args.output.parent)
+        temporary = Path(temporary_name)
+        try:
+            with args.template.open("rb") as source, os.fdopen(descriptor, "w+b") as destination:
+                shutil.copyfileobj(source, destination, length=64 * 1024 * 1024)
+                for start, stop, payload, _ in replacements:
+                    destination.seek(start)
+                    with payload.open("rb") as payload_handle:
+                        shutil.copyfileobj(payload_handle, destination, length=16 * 1024 * 1024)
+                    if destination.tell() != stop:
+                        raise ValueError("trained payload write ended at the wrong GGUF offset")
+                destination.flush()
+                os.fsync(destination.fileno())
+            if temporary.stat().st_size != template_bytes:
+                raise ValueError("materialized GGUF byte count changed")
+            os.replace(temporary, args.output)
+        except BaseException:
+            temporary.unlink(missing_ok=True)
+            raise
+        template_non_target = sha256_excluding(args.template, ranges)
 
-    ranges = [(start, stop) for start, stop, _, _ in replacements]
-    template_non_target = sha256_excluding(args.template, ranges)
     output_non_target = sha256_excluding(args.output, ranges)
     output_reader = GGUFReader(str(args.output), mode="r")
     output_tensors = {tensor.name: tensor for tensor in output_reader.tensors}
@@ -184,7 +293,7 @@ def main() -> None:
         }
     del output_reader
     checks = {
-        "same_complete_file_bytes": args.output.stat().st_size == args.template.stat().st_size,
+        "same_complete_file_bytes": args.output.stat().st_size == template_bytes,
         "all_non_target_file_bytes_identical": template_non_target == output_non_target,
         "all_target_payloads_match_training": all(item["match"] for item in observed_targets.values()),
         "exact_target_count": len(observed_targets) == 3,
@@ -195,10 +304,12 @@ def main() -> None:
         "model_revision": MODEL_REVISION,
         "template": {
             "path": str(args.template),
-            "bytes": args.template.stat().st_size,
-            "sha256": sha256_file(args.template),
+            "bytes": template_bytes,
+            "sha256": template_sha256,
             "receipt": str(args.template_receipt),
             "receipt_sha256": sha256_file(args.template_receipt),
+            "retained_at_original_path": args.template.exists(),
+            "in_place_target_backup": str(backup_receipt_path) if args.in_place else None,
         },
         "training_receipt": {
             "path": str(args.training_receipt),

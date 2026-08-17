@@ -21,7 +21,7 @@
     "q4_runtime_control": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
     "q4_runtime_control_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
     "structural_template": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0.gguf",
-    "structural_template_rule": "The template must have a valid selective-conversion receipt. Its three target payloads may be replaced, while every non-target byte remains bound to the Q4 control."
+    "structural_template_rule": "The template must have a valid selective-conversion receipt. Its three target payloads may be replaced while every non-target byte remains bound to the Q4 control. On the disk-constrained node, an in-place rename is allowed only after all three original target payloads and the non-target digest are atomically authenticated so the direct candidate remains reconstructible."
   },
   "activation_cache": {
     "method": "run the exact BF16-weight layer-0 linear-attention prefix, then cache post-attention RMS-normalized MLP inputs and exact gate/up-derived down-projection inputs",
