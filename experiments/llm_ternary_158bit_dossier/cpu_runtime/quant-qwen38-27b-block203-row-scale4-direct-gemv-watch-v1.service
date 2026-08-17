@@ -6,10 +6,10 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 WorkingDirectory=/workspace/clark-quantize-cpu-qat
-Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-f10ac9c.bundle
-Environment=EXPECTED_COMMIT=f10ac9cf65a5cb5291d795f7e4c2fd12a9b2b3f7
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-7e17343.bundle
+Environment=EXPECTED_COMMIT=7e1734308d3d920f4ba2a53f38a8df004dd89552
 Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
-ExecStart=/workspace/tmp/watch-qwen38-27b-block203-row-scale4-direct-gemv-v1-f10ac9c.sh
+ExecStart=/workspace/tmp/watch-qwen38-27b-block203-row-scale4-direct-gemv-v1-7e17343.sh
 CPUQuota=100%
 MemoryMax=8G
 MemorySwapMax=0

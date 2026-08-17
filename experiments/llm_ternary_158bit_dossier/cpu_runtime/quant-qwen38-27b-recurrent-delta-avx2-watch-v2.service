@@ -7,8 +7,8 @@ StartLimitIntervalSec=0
 [Service]
 Type=oneshot
 WorkingDirectory=/workspace/clark-quantize-cpu-qat
-Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-d6e5264.bundle
-Environment=EXPECTED_COMMIT=d6e526434207ebe1bf68a9c8c304d74f2e68a6e1
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-7e17343.bundle
+Environment=EXPECTED_COMMIT=7e1734308d3d920f4ba2a53f38a8df004dd89552
 Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
 Environment=STATE_DIR=/workspace/quant-state/qwen38-27b-recurrent-delta-avx2-watch-v2
 Environment=RESULT_RECEIPT=/workspace/quant-state/qwen38-27b-recurrent-delta-avx2-v2.json
@@ -16,7 +16,7 @@ Environment=PREREGISTRATION_FILE=qwen38_27b_recurrent_delta_avx2_preregistration
 Environment=BENCHMARK_FILE=benchmark_qwen38_27b_recurrent_delta_avx2_v2.py
 Environment=RECEIPT_SCHEMA=qwen38_27b_recurrent_delta_avx2_receipt_v2
 Environment=WATCH_RECEIPT_SCHEMA=qwen38_27b_recurrent_delta_avx2_watch_receipt_v2
-ExecStart=/bin/bash /workspace/tmp/watch-qwen38-27b-recurrent-delta-avx2-v2-d6e5264.sh
+ExecStart=/bin/bash /workspace/tmp/watch-qwen38-27b-recurrent-delta-avx2-v2-7e17343.sh
 CPUAffinity=4
 CPUQuota=100%
 MemoryMax=512M
