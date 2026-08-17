@@ -1,0 +1,74 @@
+{
+  "schema": "cpu_quick_variant_comparison_v1",
+  "created_at": "2026-08-17T07:04:51.393672+00:00",
+  "a": {
+    "label": "qat-v3-heldout-selected-l30",
+    "model_sha256": "e3790341b0946801a881419e37beb02bf784653b336668f4366d28f7717de8e2"
+  },
+  "b": {
+    "label": "qat-v2-exact-l30",
+    "model_sha256": "b1fa2c8323880fe386f6ec3923973ca4cb3b00e8d9593fea8eba574f758e052e"
+  },
+  "cute": {
+    "manifest_content_sha256": "cbc71368d5be89d5610d55990f9de248a434c6bfbb11e5c130718fa0fac2714a",
+    "n": 20,
+    "a_correct": 7,
+    "b_correct": 5,
+    "a_only_correct": 2,
+    "b_only_correct": 0,
+    "exact_output_equal": 18,
+    "normalized_prediction_equal": 18,
+    "correctness_equal": 18,
+    "differences": [
+      {
+        "task": "del_char",
+        "id": "del_char:line74",
+        "gold": "bck",
+        "a": {
+          "correct": true,
+          "prediction": "bck",
+          "output": "bck"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "bc",
+          "output": "bc"
+        }
+      },
+      {
+        "task": "sub_char",
+        "id": "sub_char:line887",
+        "gold": "plrchase",
+        "a": {
+          "correct": true,
+          "prediction": "plrchase",
+          "output": "plrchase"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "plcrchase",
+          "output": "plcrchase"
+        }
+      }
+    ]
+  },
+  "math_code": {
+    "manifest_content_sha256": "bb71cad0c51f0acc8167ef5df53ee629fd0660b8cad43e734427c3285ef6c130",
+    "n": 14,
+    "a_correct": 9,
+    "b_correct": 9,
+    "a_only_correct": 0,
+    "b_only_correct": 0,
+    "exact_output_equal": 14,
+    "normalized_prediction_equal": 14,
+    "correctness_equal": 14,
+    "differences": []
+  },
+  "inputs": {
+    "a_math": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v3/eval/math-code-qat-v3-l30.json",
+    "a_cute": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v3/eval/cute-qat-v3-l30.json",
+    "b_math": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v2/eval/math-code-qat-v2-l30.json",
+    "b_cute": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v2/eval/cute-qat-v2-l30.json"
+  },
+  "report_content_sha256": "0c6f3c230c6465801fc1959c8c0ee215a647673411a692772e6d8554d7538494"
+}

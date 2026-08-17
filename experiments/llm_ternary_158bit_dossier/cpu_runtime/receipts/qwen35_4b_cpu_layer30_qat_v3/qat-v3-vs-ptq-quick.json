@@ -1,0 +1,89 @@
+{
+  "schema": "cpu_quick_variant_comparison_v1",
+  "created_at": "2026-08-17T07:04:51.263420+00:00",
+  "a": {
+    "label": "qat-v3-heldout-selected-l30",
+    "model_sha256": "e3790341b0946801a881419e37beb02bf784653b336668f4366d28f7717de8e2"
+  },
+  "b": {
+    "label": "direct-ptq-l30",
+    "model_sha256": "3e1ba3a29a38de8ff67f7b508563a74b3ea84cdabfa385f0a0b3a749d75e7a9b"
+  },
+  "cute": {
+    "manifest_content_sha256": "cbc71368d5be89d5610d55990f9de248a434c6bfbb11e5c130718fa0fac2714a",
+    "n": 20,
+    "a_correct": 7,
+    "b_correct": 6,
+    "a_only_correct": 1,
+    "b_only_correct": 0,
+    "exact_output_equal": 17,
+    "normalized_prediction_equal": 17,
+    "correctness_equal": 19,
+    "differences": [
+      {
+        "task": "del_char",
+        "id": "del_char:line74",
+        "gold": "bck",
+        "a": {
+          "correct": true,
+          "prediction": "bck",
+          "output": "bck"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "bc",
+          "output": "bc"
+        }
+      },
+      {
+        "task": "ins_char",
+        "id": "ins_char:line233",
+        "gold": "indecx",
+        "a": {
+          "correct": false,
+          "prediction": "icnxcex",
+          "output": "icnxcex"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "icncex",
+          "output": "icncex"
+        }
+      },
+      {
+        "task": "ins_char",
+        "id": "ins_char:line509",
+        "gold": "optionts",
+        "a": {
+          "correct": false,
+          "prediction": "optstionst",
+          "output": "optstionst"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "optontions",
+          "output": "optontions"
+        }
+      }
+    ]
+  },
+  "math_code": {
+    "manifest_content_sha256": "bb71cad0c51f0acc8167ef5df53ee629fd0660b8cad43e734427c3285ef6c130",
+    "n": 14,
+    "a_correct": 9,
+    "b_correct": 9,
+    "a_only_correct": 0,
+    "b_only_correct": 0,
+    "exact_output_equal": 14,
+    "normalized_prediction_equal": 14,
+    "correctness_equal": 14,
+    "differences": []
+  },
+  "inputs": {
+    "a_math": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v3/eval/math-code-qat-v3-l30.json",
+    "a_cute": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v3/eval/cute-qat-v3-l30.json",
+    "b_math": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v1/eval/math-code-ptq-l30.json",
+    "b_cute": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v1/eval/cute-ptq-l30.json"
+  },
+  "report_content_sha256": "cc522cf4a7137d7498faef9ddacf89239c48c84c8ccd9a4050ba47469c67ab6e"
+}

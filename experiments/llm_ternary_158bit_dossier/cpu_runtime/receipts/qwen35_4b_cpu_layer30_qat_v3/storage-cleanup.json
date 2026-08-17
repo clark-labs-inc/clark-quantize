@@ -1,0 +1,22 @@
+{
+  "schema": "qwen35_cpu_qat_storage_cleanup_v1",
+  "reason": "keep the non-spot CPU node below the disk-growth limit after verified exports",
+  "deleted_reconstructible_intermediates": [
+    "/workspace/models/Qwen3.5-4B-layer30-CPUQAT-v2",
+    "/workspace/models/Qwen3.5-4B-layer30-CPUQAT-v3",
+    "/workspace/models/controls/Qwen3.5-4B-layer30-CPUQAT-BF16-full.gguf",
+    "/workspace/models/controls/Qwen3.5-4B-layer30-DirectPTQ-BF16-full.gguf",
+    "/workspace/models/controls/Qwen3.5-4B-layer30-CPUQAT-v2-BF16-full.gguf",
+    "/workspace/models/controls/Qwen3.5-4B-layer30-CPUQAT-v3-BF16-full.gguf"
+  ],
+  "disk_before_human": "28G available, 88 percent used",
+  "disk_after_human": "70G available, 68 percent used",
+  "recovery": "reconstructible from the retained BF16 source model, selected patches, source commits, materialization receipts, and export scripts",
+  "retained": [
+    "BF16 baseline GGUF",
+    "direct-PTQ CQ3 control",
+    "v1, v2, and v3 CQ3 candidates",
+    "selected patches and one checkpoint per run",
+    "all compact JSON and SHA-256 receipts"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "clark_hf_weight_patch_materialization_v1",
+  "model_dir": "/workspace/models/Qwen3.5-4B",
+  "model_index_sha256": "cf3f798ee02ba45f9622aa8892a47369ab667d0afbf154ee7c2212de42e6302d",
+  "patch": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v3/layer30-heldout-selected.safetensors",
+  "patch_sha256": "9f1c71d44c3eec637a6eb929ecf197282a51f00c17d7bb2b5485b77f0ada7013",
+  "patch_tensor_count": 3,
+  "output_dir": "/workspace/models/Qwen3.5-4B-layer30-CPUQAT-v3",
+  "hardlinked_files": [
+    ".gitattributes",
+    "LICENSE",
+    "README.md",
+    "chat_template.jinja",
+    "config.json",
+    "merges.txt",
+    "model.safetensors-00002-of-00002.safetensors",
+    "model.safetensors.index.json",
+    "preprocessor_config.json",
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "video_preprocessor_config.json",
+    "vocab.json"
+  ],
+  "rewritten_shards": [
+    {
+      "shard": "model.safetensors-00001-of-00002.safetensors",
+      "patched_tensors": [
+        "model.language_model.layers.30.mlp.down_proj.weight",
+        "model.language_model.layers.30.mlp.gate_proj.weight",
+        "model.language_model.layers.30.mlp.up_proj.weight"
+      ],
+      "size_bytes": 5329398688
+    }
+  ],
+  "source_rewritten_shard_sha256": {
+    "model.safetensors-00001-of-00002.safetensors": "26a93f066e1916adb13453dae5a0c707c0fbc71299ed98779571a907b8e74c61"
+  },
+  "output_rewritten_shard_sha256": {
+    "model.safetensors-00001-of-00002.safetensors": "3a0df3ccf8a630b9be35c92fea516f44f62e66ec933b7978a4e0b649e9f7a060"
+  },
+  "verification": "all patched tensors exact; source rewritten-shard hashes unchanged"
+}

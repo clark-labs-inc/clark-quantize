@@ -1,0 +1,30 @@
+{
+  "schema": "qwen35_cpu_layer30_qat_v3_infrastructure_attempts_v1",
+  "attempts": [
+    {
+      "unit": "quant-qwen35-cpu-layer30-qat-v3.service",
+      "terminal_status": "failed_217_USER",
+      "model_work_started": false,
+      "classification": "infrastructure_invalid",
+      "detail": "systemd rejected nonexistent service account ubuntu"
+    },
+    {
+      "unit": "quant-qwen35-cpu-layer30-qat-v3-r1.service",
+      "terminal_status": "failed_exit_1_after_training",
+      "training_completed": true,
+      "training_source_commit": "089489dab300d341428827aa27b17c3d362a8ec0",
+      "model_score_reported": false,
+      "classification": "wrapper_incomplete",
+      "detail": "reconstruction evaluator imported the older /workspace/clark-quantize checkout from inherited PYTHONPATH"
+    },
+    {
+      "unit": "quant-qwen35-cpu-layer30-qat-v3-r2.service",
+      "terminal_status": "success",
+      "training_rerun": false,
+      "evaluation_source_commit": "916d0526fc52ce77d822ce44563e8a6c5ae08774",
+      "preserved_training_source_commit": "089489dab300d341428827aa27b17c3d362a8ec0",
+      "classification": "valid_resume",
+      "detail": "clean-checkout-pinned evaluator completed and wrote the reconstruction receipt"
+    }
+  ]
+}
