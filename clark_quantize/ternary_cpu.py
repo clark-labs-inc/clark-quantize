@@ -167,6 +167,22 @@ def _load_library() -> ctypes.CDLL | None:
             library.cq3_gemv_q8_group128_block203_row_scale4_avx2_constdiv.restype = (
                 ctypes.c_int
             )
+        if hasattr(
+            library,
+            "cq3_gemv_q8_group128_block203_row_scale4_scalar_chunk16",
+        ):
+            library.cq3_gemv_q8_group128_block203_row_scale4_scalar_chunk16.argtypes = (
+                row_scale_gemv_args
+            )
+            library.cq3_gemv_q8_group128_block203_row_scale4_scalar_chunk16.restype = (
+                ctypes.c_int
+            )
+            library.cq3_gemv_q8_group128_block203_row_scale4_avx2_chunk16.argtypes = (
+                row_scale_gemv_args
+            )
+            library.cq3_gemv_q8_group128_block203_row_scale4_avx2_chunk16.restype = (
+                ctypes.c_int
+            )
         swiglu_gemv_args = (
             u8p, u16p, u8p, u16p, i8p, f32p, i32p,
             ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint32, f32p,
@@ -848,6 +864,20 @@ def gemv_q8_group128_block203_row_scale4(
                 ),
                 "avx2_constdiv": (
                     _LIBRARY.cq3_gemv_q8_group128_block203_row_scale4_avx2_constdiv
+                ),
+            }
+        )
+    if hasattr(
+        _LIBRARY,
+        "cq3_gemv_q8_group128_block203_row_scale4_scalar_chunk16",
+    ):
+        functions.update(
+            {
+                "scalar_chunk16": (
+                    _LIBRARY.cq3_gemv_q8_group128_block203_row_scale4_scalar_chunk16
+                ),
+                "avx2_chunk16": (
+                    _LIBRARY.cq3_gemv_q8_group128_block203_row_scale4_avx2_chunk16
                 ),
             }
         )

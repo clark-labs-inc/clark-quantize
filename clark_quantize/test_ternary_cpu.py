@@ -311,6 +311,17 @@ class TernaryCpuNativeTests(unittest.TestCase):
             implementation="scalar_constdiv",
         )
         np.testing.assert_array_equal(block203_constdiv_scalar, block203_scalar)
+        block203_chunk16_scalar = ternary_cpu.gemv_q8_group128_block203_row_scale4(
+            block203_weights,
+            packed_scale_codes,
+            anchors,
+            codebook,
+            quantized,
+            activation_scales,
+            sums,
+            implementation="scalar_chunk16",
+        )
+        np.testing.assert_array_equal(block203_chunk16_scalar, block203_scalar)
         noncanonical_block203 = block203_weights.copy()
         payload_bits, _ = ternary_cpu.block203_matrix_size(*codes.shape)
         unused_bits = noncanonical_block203.nbytes * 8 - payload_bits
@@ -366,6 +377,19 @@ class TernaryCpuNativeTests(unittest.TestCase):
                 )
             )
             np.testing.assert_array_equal(block203_constdiv_avx2, block203_avx2)
+            block203_chunk16_avx2 = (
+                ternary_cpu.gemv_q8_group128_block203_row_scale4(
+                    block203_weights,
+                    packed_scale_codes,
+                    anchors,
+                    codebook,
+                    quantized,
+                    activation_scales,
+                    sums,
+                    implementation="avx2_chunk16",
+                )
+            )
+            np.testing.assert_array_equal(block203_chunk16_avx2, block203_avx2)
 
     def test_row_scale4_rejects_noncanonical_payloads(self) -> None:
         anchors = np.ones(1, dtype=np.float16)
@@ -379,6 +403,30 @@ class TernaryCpuNativeTests(unittest.TestCase):
         codebook[0] = np.float16(1.0)
         with self.assertRaisesRegex(ValueError, "canonical"):
             ternary_cpu.decode_row_scale4(packed, anchors, codebook, 3)
+
+    def test_block203_row_scale4_rejects_out_of_range_canonical_bits(self) -> None:
+        _, weight_bytes = ternary_cpu.block203_matrix_size(1, 128)
+        weights = np.full(weight_bytes, 0xFF, dtype=np.uint8)
+        weights[-1] = np.uint8(0x07)
+        indices = np.zeros(1, dtype=np.uint8)
+        anchors = np.ones(1, dtype=np.float16)
+        codebook = np.zeros(16, dtype=np.float16)
+        activation = np.zeros(128, dtype=np.int8)
+        scales = np.ones(1, dtype=np.float32)
+        sums = np.zeros(1, dtype=np.int32)
+        for implementation in ("scalar", "scalar_constdiv", "scalar_chunk16"):
+            with self.subTest(implementation=implementation):
+                with self.assertRaisesRegex(ValueError, "code"):
+                    ternary_cpu.gemv_q8_group128_block203_row_scale4(
+                        weights,
+                        indices,
+                        anchors,
+                        codebook,
+                        activation,
+                        scales,
+                        sums,
+                        implementation=implementation,
+                    )
 
     def test_stream_control_reads_every_byte(self) -> None:
         values = np.arange(1_000_003, dtype=np.uint8)

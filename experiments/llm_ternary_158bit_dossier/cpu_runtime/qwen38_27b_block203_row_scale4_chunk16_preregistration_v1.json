@@ -1,0 +1,64 @@
+{
+  "schema": "qwen38_27b_block203_row_scale4_chunk16_preregistration_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T14:34:32Z",
+  "objective": "Measure a 16-trit hierarchical block203 decoder that reduces big-integer work in the direct Qwen3.8-27B row-scale4 GEMV",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "matrix": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "groups_per_row": 40,
+    "group_size": 128,
+    "base3_bits_per_group": 203,
+    "base3_weight_payload_bytes": 17669120
+  },
+  "candidate": {
+    "implementation": "avx2_chunk16",
+    "numeric_contract": "bit-exact ternary decode, Q8 integer dots, and FP32 multiplication of stored FP16 row-scale4 factors",
+    "hierarchy": "eight exact radix-3^16 remainders, each split into 6, 5, and 5 ternary digits",
+    "limb_schedule": [4, 3, 3, 2, 2, 2, 1, 1],
+    "big_integer_limb_updates_per_group": 18,
+    "small_constant_quotient_operations_per_group": 16,
+    "lookup_bytes": 5832,
+    "avx2_maddubs_chunks_per_group": 24,
+    "seed": 20260817
+  },
+  "controls": {
+    "constdiv": "the four-limb constant-divisor direct decoder with 104 big-integer limb updates per group",
+    "generic_direct": "the repeated unsigned-128 divmod direct decoder",
+    "aligned_two_bit": "the aligned two-bit row-scale4 AVX2 kernel with identical factors and arithmetic contract",
+    "freeze_boundary": "no authoritative generic-direct or constdiv timing result had been observed when this gate and its thresholds were frozen"
+  },
+  "static_correctness": {
+    "randomized_shape_cases": 128,
+    "scalar_equivalence": "bit exact against both generic and constdiv decoders",
+    "x86_cross_object": "candidate AVX2 inner symbol and scalar tail helper contain no __udivti3 references or integer divide instructions",
+    "interpretation": "static structure and scalar equivalence motivate an empirical gate but are not a throughput result"
+  },
+  "measurement": {
+    "warmups_each": 1,
+    "rotating_four_way_repetitions": 7,
+    "scalar_correctness_rows": 8,
+    "scalar_repetitions": 3,
+    "threads": 1,
+    "cpu_affinity": "one frozen physical core supplied by the watcher"
+  },
+  "gate": {
+    "maximum_chunk16_avx2_vs_generic_scalar_absolute_error": 0.00005,
+    "minimum_chunk16_speedup_over_constdiv": 1.15,
+    "minimum_chunk16_speedup_over_generic_direct": 1.50,
+    "minimum_chunk16_throughput_fraction_of_aligned_two_bit_control": 0.50,
+    "require_exact_chunk16_scalar_equivalence_to_generic_scalar": true,
+    "require_exact_chunk16_avx2_equivalence_to_constdiv_avx2": true,
+    "all_samples_and_outputs_must_be_finite": true
+  },
+  "promotion_rules": [
+    "run only after the full 666-tensor row-scale reconstruction and storage gate and both earlier direct-kernel watchers are terminal",
+    "a valid threshold miss is retained as a hierarchical-decoder negative",
+    "a pass authorizes container-integration work but proves neither model quality nor token throughput",
+    "CUTE, MATH, code, MMLU-type, WikiText, and paired end-to-end throughput remain mandatory",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "no scientific breakthrough claim can come from this isolated kernel"
+  ]
+}
