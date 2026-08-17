@@ -809,7 +809,10 @@ def gemv_q8_group128_block203_row_scale4(
     activation_sums: np.ndarray,
     *,
     implementation: str = "avx2",
+    threads: int = 1,
     group_size: int = 128,
+    executor: ThreadPoolExecutor | None = None,
+    cpu_ids: list[int] | None = None,
     validated: bool = False,
 ) -> np.ndarray:
     """Direct GEMV from exact 203-bit base-3 blocks and row-scale4 factors."""
@@ -885,21 +888,76 @@ def gemv_q8_group128_block203_row_scale4(
         raise ValueError(
             f"unknown block203 row-scale4 GEMV implementation {implementation!r}"
         )
+    function = functions[implementation]
     output = np.empty(rows, dtype=np.float32)
-    status = functions[implementation](
-        weights.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
-        indices.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
-        anchors_u16.ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
-        codebook_u16.ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
-        activation.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
-        act_scales.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
-        act_sums.ctypes.data_as(ctypes.POINTER(ctypes.c_int32)),
-        rows,
-        columns,
-        group_size,
-        output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
-    )
-    _check(status, f"{implementation} block203 row-scale4 GEMV")
+    thread_count = min(max(int(threads), 1), rows)
+    if cpu_ids is not None and len(cpu_ids) < thread_count:
+        raise ValueError("cpu_ids must supply one CPU for every worker")
+    if thread_count > 1 and groups % 8:
+        raise ValueError(
+            "threaded block203 row sharding requires a byte-aligned row payload"
+        )
+    row_weight_bytes = groups * 203 // 8 if groups % 8 == 0 else 0
+    row_scale_bytes = groups // 2 if groups % 2 == 0 else 0
+
+    def run(row_start: int, row_stop: int, cpu_id: int | None = None) -> None:
+        affinity = (
+            os.sched_getaffinity(0)
+            if cpu_id is not None and hasattr(os, "sched_getaffinity")
+            else None
+        )
+        try:
+            if affinity is not None:
+                os.sched_setaffinity(0, {cpu_id})
+            weight_offset = row_start * row_weight_bytes if row_start else 0
+            scale_offset = row_start * row_scale_bytes if row_start else 0
+            status = function(
+                weights[weight_offset:].ctypes.data_as(
+                    ctypes.POINTER(ctypes.c_uint8)
+                ),
+                indices[scale_offset:].ctypes.data_as(
+                    ctypes.POINTER(ctypes.c_uint8)
+                ),
+                anchors_u16[row_start:].ctypes.data_as(
+                    ctypes.POINTER(ctypes.c_uint16)
+                ),
+                codebook_u16.ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
+                activation.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+                act_scales.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+                act_sums.ctypes.data_as(ctypes.POINTER(ctypes.c_int32)),
+                row_stop - row_start,
+                columns,
+                group_size,
+                output[row_start:].ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+            )
+            _check(status, f"{implementation} block203 row-scale4 GEMV")
+        finally:
+            if affinity is not None:
+                os.sched_setaffinity(0, affinity)
+
+    if thread_count == 1:
+        run(0, rows, cpu_ids[0] if cpu_ids else None)
+    else:
+        boundaries = [
+            rows * index // thread_count for index in range(thread_count + 1)
+        ]
+        owner = executor is None
+        pool = executor or ThreadPoolExecutor(max_workers=thread_count)
+        try:
+            futures = [
+                pool.submit(
+                    run,
+                    boundaries[index],
+                    boundaries[index + 1],
+                    cpu_ids[index] if cpu_ids else None,
+                )
+                for index in range(thread_count)
+            ]
+            for future in futures:
+                future.result()
+        finally:
+            if owner:
+                pool.shutdown()
     return output
 
 

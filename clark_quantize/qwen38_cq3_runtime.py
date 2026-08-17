@@ -1,0 +1,315 @@
+"""Read-only native-compute views over a Qwen3.8-27B CQ3 container.
+
+The canonical container stays the storage source of truth.  This module maps
+its authenticated sections directly into the block203 plus row-scale4 CPU
+kernel without expanding the ternary weights into a larger compute image.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from math import prod
+from pathlib import Path
+from typing import Mapping
+
+import numpy as np
+
+from .base3_block203 import matrix_payload_bits, matrix_payload_bytes
+from .qwen38_cq3_container import CQ3ContainerError, Qwen38CQ3Reader
+from .ternary_cpu import (
+    gemv_q8_group128_block203_row_scale4,
+    quantize_q8,
+)
+
+
+ROW_NORMALIZED_ENCODING = "base3_group128_row_normalized_codebook4"
+ROW_NORMALIZED_SCALE_KIND = (
+    "scale_indices_u4_anchors_f16_and_codebook_f16"
+)
+GROUP_SIZE = 128
+FULL_GROUP_BITS = 203
+
+
+class CQ3RuntimeError(CQ3ContainerError):
+    """The storage container cannot be used by the frozen native runtime."""
+
+
+@dataclass(frozen=True)
+class Qwen38CQ3TernaryTensorView:
+    """Zero-copy arrays for one row-normalized ternary matrix."""
+
+    name: str
+    shape: tuple[int, ...]
+    rows: int
+    columns: int
+    packed_weights: np.ndarray
+    packed_scale_indices: np.ndarray
+    row_anchors: np.ndarray
+    ratio_codebook: np.ndarray
+
+    def gemv_q8(
+        self,
+        activation_q8: np.ndarray,
+        activation_scales: np.ndarray,
+        activation_sums: np.ndarray,
+        *,
+        implementation: str = "scalar",
+        threads: int = 1,
+        cpu_ids: list[int] | None = None,
+    ) -> np.ndarray:
+        """Run the native direct-storage GEMV without expanding the weights."""
+        return gemv_q8_group128_block203_row_scale4(
+            self.packed_weights,
+            self.packed_scale_indices,
+            self.row_anchors,
+            self.ratio_codebook,
+            activation_q8,
+            activation_scales,
+            activation_sums,
+            implementation=implementation,
+            threads=threads,
+            cpu_ids=cpu_ids,
+            group_size=GROUP_SIZE,
+            # The native ABI still validates finite scales, nibble padding,
+            # block padding, and every decoded base-3 integer.  This only
+            # avoids duplicating those scans in NumPy before every token.
+            validated=True,
+        )
+
+    def gemv_f32(
+        self,
+        activation: np.ndarray,
+        *,
+        implementation: str = "scalar",
+        threads: int = 1,
+        cpu_ids: list[int] | None = None,
+    ) -> np.ndarray:
+        """Quantize one activation vector to A8 and run direct-storage GEMV."""
+        values = np.asarray(activation, dtype=np.float32)
+        if values.ndim != 1 or values.size != self.columns:
+            raise ValueError(
+                f"{self.name} requires one activation vector of length "
+                f"{self.columns}"
+            )
+        activation_q8, activation_scales, activation_sums = quantize_q8(
+            values, GROUP_SIZE
+        )
+        return self.gemv_q8(
+            activation_q8,
+            activation_scales,
+            activation_sums,
+            implementation=implementation,
+            threads=threads,
+            cpu_ids=cpu_ids,
+        )
+
+
+@dataclass(frozen=True)
+class Qwen38CQ3ExactTensorView:
+    """Zero-copy raw view of one exactly retained Qwen3.8-27B tensor."""
+
+    name: str
+    shape: tuple[int, ...]
+    source_dtype: str
+    raw: np.ndarray
+
+
+class Qwen38CQ3RuntimeImage:
+    """Fail-closed mmap bridge from the canonical container to CPU kernels."""
+
+    def __init__(self, path: str | Path) -> None:
+        self.path = Path(path)
+        self._reader = Qwen38CQ3Reader(self.path)
+        strategy = self._reader.directory.get("strategy")
+        expected_strategy = {
+            "name": ROW_NORMALIZED_ENCODING,
+            "codec": "block203",
+            "group_size": GROUP_SIZE,
+            "scale_bits": 4,
+            "row_anchor_dtype": "F16",
+            "scale_codebook_entries": 16,
+            "scale_codebook_dtype": "F16",
+        }
+        if strategy != expected_strategy:
+            self._reader.close()
+            raise CQ3RuntimeError(
+                "CQ3 strategy is not the frozen Qwen3.8-27B row-normalized "
+                "block203 runtime strategy"
+            )
+        self._mapping: np.memmap | None = np.memmap(
+            self.path, dtype=np.uint8, mode="r"
+        )
+        self._closed = False
+        self._verified_sections: set[str] = set()
+        self.tensors: dict[str, dict] = {
+            record["name"]: record
+            for record in self._reader.directory["tensors"]
+        }
+        self.auxiliary_files: dict[str, dict] = {
+            record["name"]: record
+            for record in self._reader.directory["auxiliary_files"]
+        }
+
+    def __enter__(self) -> "Qwen38CQ3RuntimeImage":
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        self.close()
+
+    def close(self) -> None:
+        """Close directory I/O; outstanding NumPy views keep their mmap alive."""
+        if not self._closed:
+            self._reader.close()
+            self._mapping = None
+            self._closed = True
+
+    def _require_open(self) -> np.memmap:
+        if self._closed or self._mapping is None:
+            raise RuntimeError("Qwen3.8 CQ3 runtime image is closed")
+        return self._mapping
+
+    def _record(self, name: str) -> dict:
+        self._require_open()
+        try:
+            return self.tensors[name]
+        except KeyError as error:
+            raise KeyError(f"unknown Qwen3.8 CQ3 tensor {name!r}") from error
+
+    def _verify_section(self, section_id: str) -> Mapping[str, object]:
+        if section_id not in self._verified_sections:
+            self._reader.verify_section(section_id)
+            self._verified_sections.add(section_id)
+        return self._reader.sections[section_id]
+
+    def _u8_view(
+        self, section: Mapping[str, object], start: int = 0, size: int | None = None
+    ) -> np.ndarray:
+        mapping = self._require_open()
+        section_bytes = int(section["bytes"])
+        stop = section_bytes if size is None else start + size
+        if start < 0 or stop < start or stop > section_bytes:
+            raise CQ3RuntimeError("runtime section slice exceeds its bounds")
+        offset = int(section["offset"])
+        result = mapping[offset + start : offset + stop]
+        result.flags.writeable = False
+        return result
+
+    def ternary_tensor(self, name: str) -> Qwen38CQ3TernaryTensorView:
+        """Authenticate and map one directly executable ternary matrix."""
+        tensor = self._record(name)
+        if tensor.get("encoding") != ROW_NORMALIZED_ENCODING:
+            raise CQ3RuntimeError(f"{name} is not a row-normalized ternary matrix")
+        shape = tuple(int(value) for value in tensor["shape"])
+        rows = shape[0]
+        columns = prod(shape[1:])
+        if len(shape) < 2 or columns <= 0 or columns % GROUP_SIZE:
+            raise CQ3RuntimeError(f"{name} is not executable by group-128 GEMV")
+        section_ids = tensor["sections"]
+        if len(section_ids) != 2:
+            raise CQ3RuntimeError(f"{name} does not have exactly code and scale sections")
+        code = self._verify_section(section_ids[0])
+        scales = self._verify_section(section_ids[1])
+        if code["kind"] != "ternary_block203" or scales["kind"] != ROW_NORMALIZED_SCALE_KIND:
+            raise CQ3RuntimeError(f"{name} section kinds differ from the runtime ABI")
+
+        code_metadata = code["metadata"]
+        expected_code_metadata = {
+            "rows": rows,
+            "columns": columns,
+            "trits": rows * columns,
+            "payload_bits": matrix_payload_bits(rows, columns),
+            "group_trits": GROUP_SIZE,
+            "full_group_bits": FULL_GROUP_BITS,
+        }
+        if (
+            code_metadata != expected_code_metadata
+            or int(code["bytes"]) != matrix_payload_bytes(rows, columns)
+        ):
+            raise CQ3RuntimeError(f"{name} block203 metadata or byte ledger changed")
+
+        groups = columns // GROUP_SIZE
+        scale_count = rows * groups
+        index_bytes = (scale_count + 1) // 2
+        anchor_bytes = rows * 2
+        codebook_bytes = 16 * 2
+        expected_scale_metadata = {
+            "scale_count": scale_count,
+            "index_bytes": index_bytes,
+            "codebook_bytes": codebook_bytes,
+            "codebook_entries": 16,
+            "index_order": "low_nibble_first",
+            "row_count": rows,
+            "anchor_bytes": anchor_bytes,
+            "factor_order": "indices_then_row_anchors_then_codebook",
+            "decode": "float32(fp16_anchor) * float32(fp16_ratio)",
+        }
+        if (
+            scales["metadata"] != expected_scale_metadata
+            or int(scales["bytes"]) != index_bytes + anchor_bytes + codebook_bytes
+        ):
+            raise CQ3RuntimeError(f"{name} row-scale4 metadata or byte ledger changed")
+
+        weights = self._u8_view(code)
+        indices = self._u8_view(scales, 0, index_bytes)
+        anchors = self._u8_view(scales, index_bytes, anchor_bytes).view("<f2")
+        codebook = self._u8_view(
+            scales, index_bytes + anchor_bytes, codebook_bytes
+        ).view("<f2")
+        for array in (weights, indices, anchors, codebook):
+            array.flags.writeable = False
+        return Qwen38CQ3TernaryTensorView(
+            name=name,
+            shape=shape,
+            rows=rows,
+            columns=columns,
+            packed_weights=weights,
+            packed_scale_indices=indices,
+            row_anchors=anchors,
+            ratio_codebook=codebook,
+        )
+
+    def exact_tensor(self, name: str) -> Qwen38CQ3ExactTensorView:
+        """Authenticate and map one exactly retained tensor as raw bytes."""
+        tensor = self._record(name)
+        encoding = tensor.get("encoding")
+        section_ids = tensor["sections"]
+        if (
+            not isinstance(encoding, str)
+            or not encoding.startswith("retained_exact_")
+            or len(section_ids) != 1
+        ):
+            raise CQ3RuntimeError(f"{name} is not an exactly retained tensor")
+        section = self._verify_section(section_ids[0])
+        source_dtype = tensor.get("source_dtype")
+        bytes_per_value = {"BF16": 2, "F16": 2, "F32": 4}.get(source_dtype)
+        if (
+            section["kind"] != encoding
+            or section["metadata"] != {"dtype": source_dtype}
+            or bytes_per_value is None
+            or int(section["bytes"]) != int(tensor["parameters"]) * bytes_per_value
+        ):
+            raise CQ3RuntimeError(f"{name} exact tensor byte ledger changed")
+        return Qwen38CQ3ExactTensorView(
+            name=name,
+            shape=tuple(int(value) for value in tensor["shape"]),
+            source_dtype=source_dtype,
+            raw=self._u8_view(section),
+        )
+
+    def auxiliary_file(self, name: str) -> np.ndarray:
+        """Authenticate and map one bundled Qwen3.8-27B auxiliary file."""
+        self._require_open()
+        try:
+            record = self.auxiliary_files[name]
+        except KeyError as error:
+            raise KeyError(f"unknown Qwen3.8 CQ3 auxiliary file {name!r}") from error
+        section = self._verify_section(record["section"])
+        if section["kind"] != "auxiliary_file" or section["metadata"] != {"name": name}:
+            raise CQ3RuntimeError(f"auxiliary file {name!r} metadata changed")
+        return self._u8_view(section)
+
+    def verify_all(self) -> dict:
+        """Authenticate every payload section and return the container receipt."""
+        self._require_open()
+        receipt = self._reader.verify_all()
+        self._verified_sections.update(self._reader.sections)
+        return receipt
