@@ -1,0 +1,62 @@
+{
+  "schema": "qwen_calibration_split_validation_v1",
+  "created_at": "2026-08-17T07:25:20.575460+00:00",
+  "valid": true,
+  "manifest": "/workspace/clark-quantize-cpu-qat/experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen35_4b_cpu_layer30_split_v4.json",
+  "manifest_content_sha256": "0fa79c91a45e50d05bed81274de0a6746fbb29cdbfb4f01610f5e59fde23e64e",
+  "source": "/workspace/clark-quantize-cpu-qat/experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen35_4b_cpu_layer30_train_v4.jsonl",
+  "source_sha256": "e2a355b62c9e456aa22f0fa609705cf17eb66948d80a6470b49bc1132db40cb8",
+  "rows": 48,
+  "task_counts": {
+    "knowledge": 8,
+    "math": 8,
+    "code": 8,
+    "instruct": 8,
+    "multilingual": 8,
+    "reasoning": 8
+  },
+  "splits": {
+    "train": {
+      "rows": 24,
+      "task_counts": {
+        "knowledge": 4,
+        "math": 4,
+        "code": 4,
+        "instruct": 4,
+        "multilingual": 4,
+        "reasoning": 4
+      },
+      "ids_sha256": "c9ab73e163f124f459fb28c6746b49cc597c4bc08a56315c105bee3cab521771"
+    },
+    "validation_selection": {
+      "rows": 12,
+      "task_counts": {
+        "knowledge": 2,
+        "math": 2,
+        "code": 2,
+        "instruct": 2,
+        "multilingual": 2,
+        "reasoning": 2
+      },
+      "ids_sha256": "72a6a892b1ba590c61dc171ea3a1b78a854d6084e9a0271e63842f8ef01a8330"
+    },
+    "independent_test": {
+      "rows": 12,
+      "task_counts": {
+        "knowledge": 2,
+        "math": 2,
+        "code": 2,
+        "instruct": 2,
+        "multilingual": 2,
+        "reasoning": 2
+      },
+      "ids_sha256": "d6f88e07e3ee0399ea1c9700adf2590f50cbd0fba2a9bb367573a2d85a97c097"
+    }
+  },
+  "evaluation_manifest_sha256": {
+    "cute_quick_manifest": "19dd73eedf737d11f7c94d039822de62314abf31e3fb739a9a875fe65c5bbd16",
+    "math_code_manifest": "1ec0b41ce3ca3597d65013ac0c8a48c208c4e03b05f0109be61319252c09dab0"
+  },
+  "exact_prompt_overlap_ids": [],
+  "report_content_sha256": "ba018ffd8963bff140e74f5226e70613c28e2439daf75a63d81514447ac95a84"
+}
