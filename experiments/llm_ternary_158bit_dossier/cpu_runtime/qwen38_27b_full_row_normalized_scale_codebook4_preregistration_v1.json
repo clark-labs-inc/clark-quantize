@@ -1,0 +1,60 @@
+{
+  "schema": "qwen38_27b_full_row_normalized_scale_codebook4_preregistration_v1",
+  "status": "frozen_before_authoritative_fit",
+  "frozen_at_utc": "2026-08-17T13:44:00Z",
+  "objective": "If the mapped row-normalized scale gate passes, fit the missing 264 rank-2+ Qwen3.8-27B tensors and measure an honest complete-checkpoint reconstruction and storage ledger",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "inventory_sha256": "8533a0edfba093faf2a865391405408461613b92ef83e8d511436f2ed96bc14d",
+    "rank_ge_2_tensors": 666,
+    "rank_ge_2_parameters": 27780313088,
+    "group_128_scales": 217521520,
+    "output_rows": 5241584
+  },
+  "mapped_parent": {
+    "require_static_gate_pass": true,
+    "require_terminal_watch_receipt_authenticating_parent_manifest": true,
+    "tensors": 402,
+    "parameters": 26869760000,
+    "scales": 209920000,
+    "rows": 4396032
+  },
+  "supplemental_fit": {
+    "selection": "every rank-2-or-higher checkpoint tensor absent from the authenticated 402-tensor parent",
+    "tensors": 264,
+    "parameters": 910553088,
+    "scales": 7601520,
+    "rows": 845552,
+    "source": "pinned safetensors rows quantized with optimal group-128 ternary scales",
+    "row_batch": 128,
+    "algorithm": "one FP16 row geometric-mean anchor plus one per-tensor 16-entry FP16 log-ratio codebook",
+    "final_assignment": "minimum absolute error against frozen FP16 anchor times FP16 ratio",
+    "indices": "two 4-bit indices per byte",
+    "decoder_accumulation": "FP32 multiplication",
+    "iterations": 50
+  },
+  "reconstruction_gate": {
+    "maximum_global_normalized_rmse": 0.02,
+    "maximum_per_tensor_normalized_rmse": 0.05,
+    "maximum_per_tensor_p99_relative_error_nonzero_scales": 0.10
+  },
+  "storage_gate": {
+    "maximum_complete_bundle_bpw": 1.64,
+    "count_all_ternary_code_bytes": true,
+    "count_all_scale_indices": true,
+    "count_all_fp16_row_anchors": true,
+    "count_all_fp16_codebooks": true,
+    "count_retained_rank1_tensors_metadata_alignment_and_auxiliary_files": true
+  },
+  "promotion_rules": [
+    "all 666 rank-2+ tensors and all 217521520 group scales must be covered",
+    "every output and parent reference must be authenticated and restartable",
+    "all reconstruction thresholds and the full-bundle storage threshold must pass",
+    "a pass authorizes representation export and direct decoder work only",
+    "CUTE, MATH, code, MMLU-type, WikiText, and paired CPU throughput remain mandatory after export",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "this gate cannot prove model capability or a scientific breakthrough"
+  ]
+}
