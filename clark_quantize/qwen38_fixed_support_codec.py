@@ -37,6 +37,8 @@ def fixed_support_width_bits(group_size: int, nonzero_per_group: int) -> int:
 
 def rank_support(positions: tuple[int, ...], group_size: int) -> int:
     """Rank an ascending support in standard lexicographic combination order."""
+    if group_size <= 0 or len(positions) > group_size:
+        raise ValueError("invalid support dimensions")
     if any(left >= right for left, right in zip(positions, positions[1:])):
         raise ValueError("support positions must be strictly increasing")
     if positions and (positions[0] < 0 or positions[-1] >= group_size):
@@ -79,9 +81,9 @@ def encode_fixed_support_group(codes: np.ndarray, nonzero_per_group: int) -> int
         raise ValueError("fixed-support group must be a non-empty vector")
     if not np.issubdtype(source.dtype, np.integer):
         raise ValueError("fixed-support group codes must be integers")
-    source_i8 = np.asarray(source, dtype=np.int8)
-    if np.any(source_i8 < -1) or np.any(source_i8 > 1):
+    if np.any(source < -1) or np.any(source > 1):
         raise ValueError("fixed-support group codes must lie in {-1, 0, +1}")
+    source_i8 = np.asarray(source, dtype=np.int8)
     positions_array = np.flatnonzero(source_i8)
     if positions_array.size != nonzero_per_group:
         raise ValueError("fixed-support group has the wrong nonzero count")
@@ -153,6 +155,10 @@ def pack_fixed_support_matrix(
     source = np.asarray(codes)
     if source.ndim != 2 or source.shape[0] == 0 or source.shape[1] == 0:
         raise ValueError("fixed-support codes must be a non-empty matrix")
+    if not np.issubdtype(source.dtype, np.integer):
+        raise ValueError("fixed-support matrix codes must be integers")
+    if np.any(source < -1) or np.any(source > 1):
+        raise ValueError("fixed-support matrix codes must lie in {-1, 0, +1}")
     if source.shape[1] % group_size:
         raise ValueError("fixed-support matrix width must be group aligned")
     source_i8 = np.ascontiguousarray(source, dtype=np.int8)
@@ -179,6 +185,8 @@ def pack_fixed_support_matrix(
 
 
 def unpack_fixed_support_matrix(encoded: FixedSupportPayload) -> np.ndarray:
+    if encoded.group_size <= 0:
+        raise ValueError("fixed-support payload group size is invalid")
     expected_groups = encoded.rows * (encoded.columns // encoded.group_size)
     expected_bits = expected_groups * encoded.group_width_bits
     if (

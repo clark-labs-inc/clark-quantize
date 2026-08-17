@@ -76,6 +76,10 @@ class Qwen38FixedSupportCodecTests(unittest.TestCase):
             pack_fixed_support_matrix(codes, nonzero_per_group=60)
         with self.assertRaisesRegex(ValueError, "non-canonical"):
             decode_fixed_support_group(fixed_support_state_count(128, 60), 128, 60)
+        with self.assertRaisesRegex(ValueError, "lie in"):
+            pack_fixed_support_matrix(
+                np.full((1, 128), 255, dtype=np.uint8), nonzero_per_group=64
+            )
         valid = np.zeros((1, 128), dtype=np.int8)
         valid[0, :64] = 1
         payload = pack_fixed_support_matrix(valid, nonzero_per_group=64)
