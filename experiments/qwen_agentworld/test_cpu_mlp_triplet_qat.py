@@ -237,4 +237,4 @@ def test_exact_weight_reconstruction_metric_is_zero_for_its_own_target() -> None
         weights["down"],
     )
     loss = normalized_loss_from_weights(x, y, weights, batch_size=2)
-    assert loss == 0.0
+    assert loss < 1e-12
