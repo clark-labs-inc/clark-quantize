@@ -16,6 +16,9 @@ locations so historical commands, imports, and archived paths continue to work.
 | [Qwen3.8-27B Q4 quality control](cpu_runtime/receipts/qwen38_27b_cpu_q4_baseline_v1/summary.json) | Frozen CUTE, math/code, MMLU, and WikiText reference | Quick development suite, not leaderboard-comparable or a full model-quality characterization |
 | [Qwen3.8-27B Q4 CPU throughput control](cpu_runtime/receipts/qwen38_27b_cpu_throughput_v1/summary.json) | Repeated 1-, 2-, and 4-thread prefill/decode baseline | Throughput only; load latency, TTFT, energy, and candidate comparisons remain separate gates |
 | [Qwen3.8-27B selective CQ3 conversion](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_v1/conversion-receipt.json) | Exact three-tensor layer-0 MLP conversion and load smoke | Byte scope and loadability only; capability evaluation is still required |
+| [Qwen3.8-27B selective CQ3 MMLU checkpoint](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_quality_v1/mmlu.json.partial) | Restartable identical-prefix capability evidence | Partial 20/64 checkpoint; neither a completed score nor a promotion result |
+| [Qwen3.8-27B persistent-affinity gate](cpu_runtime/qwen38_27b_persistent_affinity_preregistration_v1.json) | Exact full-token comparison of per-call versus once-per-worker CPU pinning | Frozen protocol queued after graph and capability work; no observed speedup yet |
+| [Qwen3.8-27B full-graph profile](cpu_runtime/qwen38_27b_full_graph_profile_preregistration_v1.json) | Exact 557-call projection-time attribution over the 64-layer graph | Frozen diagnostic protocol; it cannot establish a throughput improvement or capability claim |
 
 ## Primary run records
 

@@ -267,3 +267,29 @@ Evidence:
 - [Q4 throughput control](cpu_runtime/receipts/qwen38_27b_cpu_throughput_v1/summary.json)
 - [selective CQ3 conversion receipt](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_v1/conversion-receipt.json)
 - [selective tensor-scope proof](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_v1/gguf-scope.json)
+
+## 2026-08-17 — selective-CQ3 capability checkpoint and CPU profiling contract
+
+The layer-0 MLP direct-CQ3 candidate completed the first three independent
+quick gates: CUTE-Quick-20 `10/20` versus the Q4 control's `9/20`, MATH quick-8
+`5/8` versus `5/8`, and code trace `5/6` versus `5/6`. At the durable MMLU
+checkpoint of 20 examples it is `15/20`, while the frozen Q4 control is `16/20`
+on the identical prefix. Only two predictions differ: one Q4-correct answer
+became incorrect, and one already-incorrect answer changed to a different
+incorrect choice. This is interim evidence only. The full 64-example MMLU and
+WikiText gates remain mandatory, so the candidate is not promoted.
+
+Two Qwen3.8-27B-only CPU diagnostics are frozen behind the existing correctness
+and capability transaction. The persistent-worker-affinity gate requires exact
+top-k and recurrent-state parity, at least `1.05x` median full-token speedup,
+and no losing paired repetition. The subsequent full-graph profile must account
+for exactly 557 aligned projection calls across all 64 layers and the streamed
+LM head while preserving exact output and state. Neither preregistration is a
+performance result; the profile exists to choose the next kernel family from
+measured full-graph time.
+
+Evidence and contracts:
+
+- [selective-CQ3 MMLU checkpoint](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_quality_v1/mmlu.json.partial)
+- [persistent-affinity preregistration](cpu_runtime/qwen38_27b_persistent_affinity_preregistration_v1.json)
+- [full-graph profile preregistration](cpu_runtime/qwen38_27b_full_graph_profile_preregistration_v1.json)
