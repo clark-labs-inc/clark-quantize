@@ -1,6 +1,6 @@
 [Unit]
 Description=Screen learned Clark-Hash routing on disjoint Qwen3.8-27B rows
-After=network-online.target quant-qwen38-27b-layer0-mlp-activation-qat-paired-watch-v1.service
+After=network-online.target quant-qwen38-27b-layer0-mlp-activation-qat-paired-watch-v1.service quant-qwen38-27b-fixed-support-cpu-v1.service
 Wants=network-online.target
 
 [Service]

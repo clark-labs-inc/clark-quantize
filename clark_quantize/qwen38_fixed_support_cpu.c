@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdatomic.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -12,20 +13,37 @@ enum {
 
 #define CQ3_HFS_GROUP 128U
 
-static uint64_t cq3_hfs_gcd_u64(uint64_t left, uint64_t right) {
-    while (right != 0U) {
-        const uint64_t remainder = left % right;
-        left = right;
-        right = remainder;
-    }
-    return left;
-}
+static unsigned __int128 cq3_hfs_binomial_table[CQ3_HFS_GROUP + 1U][65U];
+static atomic_int cq3_hfs_binomial_state = ATOMIC_VAR_INIT(0);
 
-static uint64_t cq3_hfs_gcd_u128_u64(unsigned __int128 left, uint64_t right) {
-    if (right == 0U) {
-        return (uint64_t)left;
+static void cq3_hfs_initialize_binomial_table(void) {
+    int expected = 0;
+    if (atomic_compare_exchange_strong_explicit(
+            &cq3_hfs_binomial_state,
+            &expected,
+            1,
+            memory_order_acq_rel,
+            memory_order_acquire)) {
+        cq3_hfs_binomial_table[0U][0U] = 1U;
+        for (uint32_t n = 1U; n <= CQ3_HFS_GROUP; ++n) {
+            cq3_hfs_binomial_table[n][0U] = 1U;
+            const uint32_t maximum = n < 64U ? n : 64U;
+            for (uint32_t k = 1U; k <= maximum; ++k) {
+                const unsigned __int128 left =
+                    cq3_hfs_binomial_table[n - 1U][k - 1U];
+                const unsigned __int128 right =
+                    k < n ? cq3_hfs_binomial_table[n - 1U][k] : 0U;
+                cq3_hfs_binomial_table[n][k] = left + right;
+            }
+        }
+        atomic_store_explicit(
+            &cq3_hfs_binomial_state, 2, memory_order_release
+        );
+        return;
     }
-    return cq3_hfs_gcd_u64((uint64_t)(left % right), right);
+    while (atomic_load_explicit(
+            &cq3_hfs_binomial_state, memory_order_acquire) != 2) {
+    }
 }
 
 static int cq3_hfs_binomial(
@@ -39,23 +57,8 @@ static int cq3_hfs_binomial(
     if (k > n - k) {
         k = n - k;
     }
-    unsigned __int128 result = 1U;
-    for (uint32_t index = 1U; index <= k; ++index) {
-        uint64_t numerator = (uint64_t)(n - k + index);
-        uint64_t denominator = index;
-        uint64_t divisor = cq3_hfs_gcd_u64(numerator, denominator);
-        numerator /= divisor;
-        denominator /= divisor;
-        divisor = cq3_hfs_gcd_u128_u64(result, denominator);
-        result /= divisor;
-        denominator /= divisor;
-        if (denominator != 1U ||
-            (numerator != 0U && result > (~(unsigned __int128)0) / numerator)) {
-            return CQ3_HFS_ERROR_SHAPE;
-        }
-        result *= numerator;
-    }
-    *output = result;
+    cq3_hfs_initialize_binomial_table();
+    *output = cq3_hfs_binomial_table[n][k];
     return CQ3_HFS_OK;
 }
 
