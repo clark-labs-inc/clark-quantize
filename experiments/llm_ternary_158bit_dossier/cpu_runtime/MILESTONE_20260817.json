@@ -19,6 +19,23 @@
     "independent_decode_seconds": 118.17925847600054,
     "promotion_passed": true
   },
+  "whole_model_storage_projection": {
+    "receipt_path": "receipts/qwen38-27b-storage-budget-v1.json",
+    "receipt_sha256": "1e37e00ff6736e6614d77f7dd1a1f69aecae96503e1659b0d027df9a37caec92",
+    "repository_commit": "63cc0144b755e620a587e0df581e64046b812f20",
+    "total_parameters": 27781427952,
+    "ternary_rank_ge_2_parameters": 27780313088,
+    "retained_exact_rank_1_parameters": 1114864,
+    "candidate": "base3_group128_codebook4",
+    "complete_bundle_bytes": 5641581820,
+    "complete_bundle_bits_per_total_parameter": 1.624562086512579,
+    "maximum_bits_per_parameter_gate": 1.63,
+    "byte_accounting_gate_passed": true,
+    "artifact_exported": false,
+    "scale_codebook_quality_proven": false,
+    "direct_decode_speed_proven": false,
+    "scientific_breakthrough_proven": false
+  },
   "radix5": {
     "receipt_path": "/workspace/quant-state/qwen38-radix5-performance.json",
     "receipt_sha256": "32666a61040f4cbe2cc26ad7b77e4632795aced9cd5c56ee917cc6aee1c7a9df",
@@ -164,7 +181,7 @@
       "K2/K11 ARM CQ3_0 fused gate/up plus SwiGLU GGML graph dispatch"
     ],
     "not_proven": [
-      "whole-model 1.58-bit storage",
+      "an exported whole-model 1.624562-bpw artifact",
       "full-layer or full-graph parity",
       "model quality retention",
       "end-to-end token throughput",
@@ -172,5 +189,5 @@
       "scientific breakthrough"
     ]
   },
-  "next_gate": "Produce a quality-aware 4B ternary training candidate and require the exact artifact to pass CUTE-Quick-20 plus quick MATH-500 (or the frozen MMLU substitute) before deeper training or 27B scaling; then measure full-model CPU token throughput and energy with the promoted fused graph path"
+  "next_gate": "Implement and verify Qwen3.8-27B 203-bit group packing plus per-tensor 4-bit scale-codebook fitting, export the exact projected artifact, and require CUTE plus MMLU-type parity before direct-decode or end-to-end CPU throughput promotion"
 }

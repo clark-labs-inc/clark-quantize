@@ -1,0 +1,408 @@
+{
+  "candidate": {
+    "name": "base3_group128_codebook4",
+    "reason": "retains group-128 ternary granularity while reducing scale storage; scale-codebook quality and direct-decode speed remain unproven"
+  },
+  "claim_boundary": {
+    "artifact_exported": false,
+    "direct_kernel_speed_proven": false,
+    "model_quality_proven": false,
+    "projected_layout_only": true,
+    "scientific_breakthrough_proven": false
+  },
+  "created_at_utc": "2026-08-17T11:36:23Z",
+  "gate": {
+    "maximum_projected_complete_bundle_bpw": 1.63,
+    "observed_projected_complete_bundle_bpw": 1.624562086512579,
+    "passed": true,
+    "scope": "byte-accounting feasibility only"
+  },
+  "inventory": {
+    "retained_rank_1_parameters": 1114864,
+    "retained_rank_1_tensors": 533,
+    "tensor_count": 1199,
+    "ternary_rank_ge_2_parameters": 27780313088,
+    "ternary_rank_ge_2_tensors": 666,
+    "total_parameters": 27781427952
+  },
+  "model_dir": "/workspace/models/Qwen3.8-27B",
+  "model_identity": {
+    "bytes": 55563006776,
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "model_id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "schema": "qwen38_model_download_v1",
+    "shards": 18
+  },
+  "preregistration": {
+    "path": "/workspace/tmp/clark-quantize-qwen38-storage-63cc014/experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_storage_budget_preregistration_v1.json",
+    "sha256": "b085504e7e353082c9d7dc5a704e8c246b4aa3a5fe60a36dc16aae4f3b1aa133"
+  },
+  "repository_commit": "63cc0144b755e620a587e0df581e64046b812f20",
+  "schema": "qwen38_27b_storage_budget_v1",
+  "source": {
+    "auxiliary_bytes": 23108348,
+    "auxiliary_files": [
+      {
+        "bytes": 1570,
+        "name": ".gitattributes",
+        "sha256": "34448b82c17d60fec9b65b1f093c115ddbaadc04beb1b0140b6bfed2e012a930"
+      },
+      {
+        "bytes": 261,
+        "name": "CLARK_DOWNLOAD_RECEIPT.json",
+        "sha256": "379cb8199efbb805578efcf88d006b5395ed19e559d950d36a3b492271ad5492"
+      },
+      {
+        "bytes": 11544,
+        "name": "LICENSE",
+        "sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a"
+      },
+      {
+        "bytes": 65012,
+        "name": "README.md",
+        "sha256": "57e4bdb258ee1a7d2635c5174ebd4e56abe392505cdb5f8bbb356b0dc4293641"
+      },
+      {
+        "bytes": 8952,
+        "name": "chat_template.jinja",
+        "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+      },
+      {
+        "bytes": 4312,
+        "name": "config.json",
+        "sha256": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab"
+      },
+      {
+        "bytes": 238,
+        "name": "crc32.txt",
+        "sha256": "b42dd291f5f98b05807e458f5b47849969a9b3326acbf0c97d28b05826740b83"
+      },
+      {
+        "bytes": 202,
+        "name": "generation_config.json",
+        "sha256": "e70c136c1b78ddc1fb0905bac8e733a4dc448d4f852a5dd75143fffc70be550e"
+      },
+      {
+        "bytes": 3353259,
+        "name": "merges.txt",
+        "sha256": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d"
+      },
+      {
+        "bytes": 112216,
+        "name": "model.safetensors.index.json",
+        "sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df"
+      },
+      {
+        "bytes": 390,
+        "name": "preprocessor_config.json",
+        "sha256": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516"
+      },
+      {
+        "bytes": 12809320,
+        "name": "tokenizer.json",
+        "sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+      },
+      {
+        "bytes": 17928,
+        "name": "tokenizer_config.json",
+        "sha256": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27"
+      },
+      {
+        "bytes": 385,
+        "name": "video_preprocessor_config.json",
+        "sha256": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13"
+      },
+      {
+        "bytes": 6722759,
+        "name": "vocab.json",
+        "sha256": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+      }
+    ],
+    "index_path": "/workspace/models/Qwen3.8-27B/model.safetensors.index.json",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "inventory_sha256": "8533a0edfba093faf2a865391405408461613b92ef83e8d511436f2ed96bc14d"
+  },
+  "strategies": {
+    "aligned2_group128_fp16": {
+      "bytes": {
+        "alignment_padding": 4800,
+        "auxiliary_model_files": 23108348,
+        "complete_bundle": 7405620540,
+        "retained_exact_payload": 2229728,
+        "retained_exact_sections_aligned": 2233664,
+        "scale_payload_and_codebooks": 435043040,
+        "scale_sections_aligned": 435043904,
+        "tensor_table_and_layout_metadata": 156352,
+        "ternary_code_payload": 6945078272,
+        "ternary_code_sections_aligned": 6945078272
+      },
+      "effective_bits_per_total_parameter": 2.132538486587581,
+      "parameters": {
+        "retained_exact": 1114864,
+        "ternary": 27780313088,
+        "total": 27781427952
+      },
+      "scales": {
+        "count": 217521520,
+        "fp16_codebook_bytes": 0,
+        "index_bytes": 435043040
+      },
+      "strategy": {
+        "codec": "aligned2",
+        "group_semantics": "fixed",
+        "group_size": 128,
+        "name": "aligned2_group128_fp16",
+        "scale_bits": 16,
+        "scale_codebook": false
+      },
+      "tensors": {
+        "retained_exact": 533,
+        "ternary": 666,
+        "total": 1199
+      },
+      "ternary_code_payload_bits_per_ternary_parameter": 2.0
+    },
+    "base3_group128_codebook4": {
+      "bytes": {
+        "alignment_padding": 34478,
+        "auxiliary_model_files": 23108348,
+        "complete_bundle": 5641581820,
+        "retained_exact_payload": 2229728,
+        "retained_exact_sections_aligned": 2233664,
+        "scale_payload_and_codebooks": 108782072,
+        "scale_sections_aligned": 108804032,
+        "tensor_table_and_layout_metadata": 156352,
+        "ternary_code_payload": 5507270842,
+        "ternary_code_sections_aligned": 5507279424
+      },
+      "effective_bits_per_total_parameter": 1.624562086512579,
+      "parameters": {
+        "retained_exact": 1114864,
+        "ternary": 27780313088,
+        "total": 27781427952
+      },
+      "scales": {
+        "count": 217521520,
+        "fp16_codebook_bytes": 21312,
+        "index_bytes": 108760760
+      },
+      "strategy": {
+        "codec": "base3",
+        "group_semantics": "fixed",
+        "group_size": 128,
+        "name": "base3_group128_codebook4",
+        "scale_bits": 4,
+        "scale_codebook": true
+      },
+      "tensors": {
+        "retained_exact": 533,
+        "ternary": 666,
+        "total": 1199
+      },
+      "ternary_code_payload_bits_per_ternary_parameter": 1.5859492510554674
+    },
+    "base3_group128_codebook6": {
+      "bytes": {
+        "alignment_padding": 17426,
+        "auxiliary_model_files": 23108348,
+        "complete_bundle": 5696009084,
+        "retained_exact_payload": 2229728,
+        "retained_exact_sections_aligned": 2233664,
+        "scale_payload_and_codebooks": 163226388,
+        "scale_sections_aligned": 163231296,
+        "tensor_table_and_layout_metadata": 156352,
+        "ternary_code_payload": 5507270842,
+        "ternary_code_sections_aligned": 5507279424
+      },
+      "effective_bits_per_total_parameter": 1.640235079015063,
+      "parameters": {
+        "retained_exact": 1114864,
+        "ternary": 27780313088,
+        "total": 27781427952
+      },
+      "scales": {
+        "count": 217521520,
+        "fp16_codebook_bytes": 85248,
+        "index_bytes": 163141140
+      },
+      "strategy": {
+        "codec": "base3",
+        "group_semantics": "fixed",
+        "group_size": 128,
+        "name": "base3_group128_codebook6",
+        "scale_bits": 6,
+        "scale_codebook": true
+      },
+      "tensors": {
+        "retained_exact": 533,
+        "ternary": 666,
+        "total": 1199
+      },
+      "ternary_code_payload_bits_per_ternary_parameter": 1.5859492510554674
+    },
+    "base3_group128_fp16": {
+      "bytes": {
+        "alignment_padding": 13382,
+        "auxiliary_model_files": 23108348,
+        "complete_bundle": 5967821692,
+        "retained_exact_payload": 2229728,
+        "retained_exact_sections_aligned": 2233664,
+        "scale_payload_and_codebooks": 435043040,
+        "scale_sections_aligned": 435043904,
+        "tensor_table_and_layout_metadata": 156352,
+        "ternary_code_payload": 5507270842,
+        "ternary_code_sections_aligned": 5507279424
+      },
+      "effective_bits_per_total_parameter": 1.7185068247207569,
+      "parameters": {
+        "retained_exact": 1114864,
+        "ternary": 27780313088,
+        "total": 27781427952
+      },
+      "scales": {
+        "count": 217521520,
+        "fp16_codebook_bytes": 0,
+        "index_bytes": 435043040
+      },
+      "strategy": {
+        "codec": "base3",
+        "group_semantics": "fixed",
+        "group_size": 128,
+        "name": "base3_group128_fp16",
+        "scale_bits": 16,
+        "scale_codebook": false
+      },
+      "tensors": {
+        "retained_exact": 533,
+        "ternary": 666,
+        "total": 1199
+      },
+      "ternary_code_payload_bits_per_ternary_parameter": 1.5859492510554674
+    },
+    "base3_group512_fp16": {
+      "bytes": {
+        "alignment_padding": 13382,
+        "auxiliary_model_files": 23108348,
+        "complete_bundle": 5642672188,
+        "retained_exact_payload": 2229728,
+        "retained_exact_sections_aligned": 2233664,
+        "scale_payload_and_codebooks": 109893536,
+        "scale_sections_aligned": 109894400,
+        "tensor_table_and_layout_metadata": 156352,
+        "ternary_code_payload": 5507270842,
+        "ternary_code_sections_aligned": 5507279424
+      },
+      "effective_bits_per_total_parameter": 1.6248760712370167,
+      "parameters": {
+        "retained_exact": 1114864,
+        "ternary": 27780313088,
+        "total": 27781427952
+      },
+      "scales": {
+        "count": 54946768,
+        "fp16_codebook_bytes": 0,
+        "index_bytes": 109893536
+      },
+      "strategy": {
+        "codec": "base3",
+        "group_semantics": "fixed",
+        "group_size": 512,
+        "name": "base3_group512_fp16",
+        "scale_bits": 16,
+        "scale_codebook": false
+      },
+      "tensors": {
+        "retained_exact": 533,
+        "ternary": 666,
+        "total": 1199
+      },
+      "ternary_code_payload_bits_per_ternary_parameter": 1.5859492510554674
+    },
+    "base3_row_fp16": {
+      "bytes": {
+        "alignment_padding": 11572,
+        "auxiliary_model_files": 23108348,
+        "complete_bundle": 5540432508,
+        "retained_exact_payload": 2229728,
+        "retained_exact_sections_aligned": 2233664,
+        "scale_payload_and_codebooks": 10483168,
+        "scale_sections_aligned": 10487104,
+        "tensor_table_and_layout_metadata": 156352,
+        "ternary_code_payload": 5504443340,
+        "ternary_code_sections_aligned": 5504447040
+      },
+      "effective_bits_per_total_parameter": 1.5954349121499758,
+      "parameters": {
+        "retained_exact": 1114864,
+        "ternary": 27780313088,
+        "total": 27781427952
+      },
+      "scales": {
+        "count": 5241584,
+        "fp16_codebook_bytes": 0,
+        "index_bytes": 10483168
+      },
+      "strategy": {
+        "codec": "base3",
+        "group_semantics": "one flattened row",
+        "group_size": null,
+        "name": "base3_row_fp16",
+        "scale_bits": 16,
+        "scale_codebook": false
+      },
+      "tensors": {
+        "retained_exact": 533,
+        "ternary": 666,
+        "total": 1199
+      },
+      "ternary_code_payload_bits_per_ternary_parameter": 1.5851350047966746
+    },
+    "radix5_group128_fp16": {
+      "bytes": {
+        "alignment_padding": 5664,
+        "auxiliary_model_files": 23108348,
+        "complete_bundle": 6103503612,
+        "retained_exact_payload": 2229728,
+        "retained_exact_sections_aligned": 2233664,
+        "scale_payload_and_codebooks": 435043040,
+        "scale_sections_aligned": 435043904,
+        "tensor_table_and_layout_metadata": 156352,
+        "ternary_code_payload": 5642960480,
+        "ternary_code_sections_aligned": 5642961344
+      },
+      "effective_bits_per_total_parameter": 1.757578083472302,
+      "parameters": {
+        "retained_exact": 1114864,
+        "ternary": 27780313088,
+        "total": 27781427952
+      },
+      "scales": {
+        "count": 217521520,
+        "fp16_codebook_bytes": 0,
+        "index_bytes": 435043040
+      },
+      "strategy": {
+        "codec": "radix5",
+        "group_semantics": "fixed",
+        "group_size": 128,
+        "name": "radix5_group128_fp16",
+        "scale_bits": 16,
+        "scale_codebook": false
+      },
+      "tensors": {
+        "retained_exact": 533,
+        "ternary": 666,
+        "total": 1199
+      },
+      "ternary_code_payload_bits_per_ternary_parameter": 1.6250243003740765
+    }
+  },
+  "theoretical_lower_bound": {
+    "description": "unattainable lower bound with no scale representation or section alignment",
+    "effective_bits_per_total_parameter": 1.592240326998334,
+    "metadata_and_auxiliary_bits": 186117600,
+    "retained_exact_bits": 17837824,
+    "ternary_entropy_bits": 44030754502.77314
+  }
+}

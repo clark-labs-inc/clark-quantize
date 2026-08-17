@@ -1,7 +1,10 @@
 # Qwen3.8-27B storage layout v1
 
-Status: projected layout awaiting the frozen authoritative inventory run. It is
-not an exported model and has no quality or runtime promotion.
+Status: **the frozen byte-accounting gate passed**. The authoritative projection
+is not an exported model and has no quality or runtime promotion.
+
+Receipt: `receipts/qwen38-27b-storage-budget-v1.json`, SHA-256
+`1e37e00ff6736e6614d77f7dd1a1f69aecae96503e1659b0d027df9a37caec92`.
 
 ## Why the previous 1.585-bit headline was incomplete
 
@@ -32,8 +35,21 @@ in 666 tensors. Only 1,114,864 rank-1 parameters remain exact.
 - every top-level non-shard model file is included byte-for-byte in the complete
   bundle projection.
 
-The frozen accounting gate is at most **1.63 complete-bundle bpw**. The exact
-result is produced from safetensors headers without reading weight payloads.
+The frozen accounting gate was at most **1.63 complete-bundle bpw**. The exact
+result, produced from safetensors headers without reading weight payloads, is
+**5,641,581,820 bytes / 1.6245620865 bpw**. It counts 5,507,270,842 code bytes,
+108,782,072 scale-index/codebook bytes, exact rank-1 payloads, all alignment,
+156,352 bytes of tensor/layout metadata, and 23,108,348 auxiliary-file bytes.
+
+| Layout | Complete bundle bpw | Interpretation |
+|---|---:|---|
+| base3 group-128 + FP16 scales | 1.718507 | same group granularity, full scales |
+| base3 group-128 + 6-bit scale codebooks | 1.640235 | misses the 1.63 target |
+| base3 group-128 + 4-bit scale codebooks | **1.624562** | selected projected candidate |
+| base3 group-512 + FP16 scales | 1.624876 | changes quantization granularity |
+| base3 per-row + FP16 scale | 1.595435 | near-limit but high quality risk |
+| radix-5 group-128 + FP16 scales | 1.757578 | directly byte-decodable control |
+| aligned-2 group-128 + FP16 scales | 2.132538 | CPU compute-image control |
 
 ## Hard lower bound
 
@@ -46,12 +62,11 @@ unattainable lower bound.
 
 ## Promotion sequence
 
-1. reproduce the frozen inventory and byte ledger;
-2. implement exact 203-bit group pack/decode and per-tensor scale-codebook fit;
-3. quantify scale-codebook reconstruction error on every Qwen3.8-27B tensor;
-4. export an authenticated artifact and compare measured bytes to the projection;
-5. run quick CUTE and MMLU-type quality gates; and
-6. benchmark direct decode versus a transient aligned-2 compute image before any
+1. implement exact 203-bit group pack/decode and per-tensor scale-codebook fit;
+2. quantify scale-codebook reconstruction error on every Qwen3.8-27B tensor;
+3. export an authenticated artifact and compare measured bytes to the projection;
+4. run quick CUTE and MMLU-type quality gates; and
+5. benchmark direct decode versus a transient aligned-2 compute image before any
    end-to-end CPU throughput claim.
 
 A budget pass is engineering feasibility only. It is not model-quality or
