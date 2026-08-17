@@ -1,0 +1,87 @@
+{
+  "schema": "qwen38_27b_layer0_mlp_direct_cq3_preregistration_v1",
+  "created_at": "2026-08-17T10:52:47Z",
+  "purpose": "Test the first byte-scope-proven selective CQ3 rung on the runnable Qwen3.8-27B CPU control",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_work_frozen": true,
+    "candidate_kind": "direct selective PTQ from the pinned Q4_K_M runtime control",
+    "claim_boundary": "one Qwen3.8-27B layer-0 MLP triplet only; not QAT, not BF16-exact PTQ, not a whole-model ternary result, and not a breakthrough claim"
+  },
+  "prerequisites": {
+    "quality_marker": "/workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1/QUALITY_COMPLETE",
+    "baseline_summary": "/workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1/summary.json",
+    "baseline_model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "baseline_model_bytes": 18973870432,
+    "baseline_model_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34"
+  },
+  "runtime_source": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "cq3_patch": {
+      "path": "llama_cpp_4df29be_cq3.patch",
+      "sha256": "b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1"
+    },
+    "selective_copy_patch": {
+      "path": "llama_cpp_4df29be_selective_copy_v1.patch",
+      "sha256": "19a40bf56d1ed3d1af6ea12d941891a75252b8b6541229c21db8102b2dd2e7c1"
+    },
+    "build_directory": "/workspace/build/llama.cpp-qwen38-selective-v1",
+    "source_worktree": "/workspace/src/llama.cpp-qwen38-selective-v1",
+    "build_type": "Release",
+    "ggml_native": true,
+    "threads": 4
+  },
+  "tensor_scope": {
+    "target_regex": "^blk\\.0\\.ffn_(down|gate|up)\\.weight$",
+    "target_count": 3,
+    "target_names": [
+      "blk.0.ffn_down.weight",
+      "blk.0.ffn_gate.weight",
+      "blk.0.ffn_up.weight"
+    ],
+    "parameters": 267386880,
+    "baseline_ggml_type": {
+      "name": "Q4_K",
+      "id": 12
+    },
+    "candidate_ggml_type": {
+      "name": "CQ3_0",
+      "id": 43,
+      "block_weights": 256,
+      "block_bytes": 68,
+      "effective_bits_per_weight": 2.125
+    },
+    "required_non_target_identity": "all 848 non-target tensor names, shapes, types, payload sizes, and payload SHA-256 values must be identical to the baseline"
+  },
+  "conversion": {
+    "command_contract": "llama-quantize --allow-requantize --tensor-type ^blk\\.0\\.ffn_(down|gate|up)\\.weight$=CQ3_0 BASELINE PARTIAL COPY 4",
+    "copy_semantics": "COPY preserves each unmatched tensor's current GGML type and raw bytes; only the first matching explicit override may be requantized",
+    "source_precision_boundary": "the three CQ3 tensors are produced from dequantized Q4_K payloads, not from the BF16 parent",
+    "partial_then_atomic_rename": true,
+    "candidate_path": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0.gguf",
+    "expected_candidate_bytes": 18894489952,
+    "expected_saved_bytes": 79380480
+  },
+  "pre_quality_gates": [
+    "the Qwen3.8-27B Q4 baseline quality marker and summary must exist",
+    "test-cq3 must pass in the isolated candidate build",
+    "the conversion log must contain exactly the three preregistered selective COPY overrides",
+    "the candidate byte count must equal 18894489952",
+    "the GGUF scope verifier must prove all non-target payloads byte-identical and all three targets changed from type 12 to type 43",
+    "a single-turn candidate load smoke must complete without swap"
+  ],
+  "quality_order_after_scope_pass": [
+    "CUTE_Quick_20",
+    "MATH_500_quick_8_and_code_trace_6",
+    "MMLU_64_five_shot_exact_option_likelihood",
+    "WikiText_4x512",
+    "paired_CPU_throughput_only_if_quality_receipts_are_valid"
+  ],
+  "promotion_rules": [
+    "No reconstruction loss or successful load can promote the candidate",
+    "Any non-target GGUF payload difference invalidates the candidate",
+    "Infrastructure-invalid work is neither a zero nor a completed score",
+    "The candidate must be compared to the exact pinned Q4 control on the exact frozen manifests",
+    "A one-layer pass authorizes only one separately preregistered deeper Qwen3.8-27B rung"
+  ]
+}

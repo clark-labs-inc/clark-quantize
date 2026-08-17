@@ -282,18 +282,24 @@ and will be revised only from measured rooflines and end-to-end profiles.
 
 ## Immediate work order
 
-1. Write the `.cq3` v1 container and scalar C++ oracle.
-2. Pin and baseline the upstream llama.cpp Qwen CPU graph.
-3. Build a shape-driven ternary GEMV benchmark for the exact Qwen matrices.
-4. Benchmark three compute layouts on M5 Max: radix-5 LUT, aligned 2-bit, and
+1. Complete the frozen Qwen3.8-27B `Q4_K_M` CPU quality suite and only then
+   run its preregistered 1/2/4-core prefill/decode baseline.
+2. Build the isolated selective-COPY llama.cpp bridge and prove that the first
+   layer-0 MLP `CQ3_0` candidate changes exactly three 27B tensors while all
+   848 non-target payloads remain byte-identical.
+3. Run the candidate's frozen CUTE, MATH/code, MMLU, and WikiText suite; a
+   quality-complete result and a promotion pass are separate receipts.
+4. Write the `.cq3` v1 container and scalar C++ oracle.
+5. Build a shape-driven ternary GEMV benchmark for the exact Qwen matrices.
+6. Benchmark three compute layouts on M5 Max: radix-5 LUT, aligned 2-bit, and
    dual bitplanes.
-5. Dispatch the validated ARM64 fused gate/up DOTPROD plus SwiGLU operator from
+7. Dispatch the validated ARM64 fused gate/up DOTPROD plus SwiGLU operator from
    the packed GGML Qwen graph; the row-blocked CQ3 `MUL_MAT` prerequisite is
    complete and reproducible.
-6. Implement ARM64 A16 correctness for graph parity around the promoted A8
+8. Implement ARM64 A16 correctness for graph parity around the promoted A8
    DOTPROD kernel.
-7. Profile and optimize the upstream single-token DeltaNet state update.
-8. Load the 27B packed artifact through the GGML graph.
+9. Profile and optimize the upstream single-token DeltaNet state update.
+10. Load the 27B packed artifact through the GGML graph.
 
 No deeper 27B training spend is justified until the current 27B candidate
 passes the frozen capability and full-graph receipt gates.

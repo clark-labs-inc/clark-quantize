@@ -1,7 +1,7 @@
 # LLM 1.58-bit Ternary Research Dossier
 
 Status: active CPU-first research program
-Last reviewed: 2026-08-16
+Last reviewed: 2026-08-17
 
 This folder is the self-contained navigation and interpretation surface for
 Clark's LLM ternary-quantization experiments. The historical GPU training
@@ -43,3 +43,8 @@ direction on 2026-08-17 froze all Qwen3.5-4B work; those receipts remain
 historical evidence but receive no new implementation, evaluation, export, or
 compute. Historical BackdropKit and GPU-QAT work remains separate and is not
 silently reclassified as CPU-runtime evidence.
+
+The current 27B lane first seals a runnable `Q4_K_M` CPU control on CUTE,
+MATH/code, MMLU, and WikiText. The next preregistered rung selectively changes
+only the layer-0 MLP triplet to `CQ3_0`; its converter must prove all 848
+non-target GGUF payloads byte-identical before any candidate score is accepted.
