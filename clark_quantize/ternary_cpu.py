@@ -413,6 +413,13 @@ def transcode_block203_rows_to_group128_2bit(
     return output
 
 
+def native_block203_transcode_available() -> bool:
+    """Return whether the streaming block203-to-aligned2 ABI is loaded."""
+    return _LIBRARY is not None and hasattr(
+        _LIBRARY, "cq3_transcode_block203_rows_to_group128_2bit"
+    )
+
+
 def pack_aligned2(codes: np.ndarray) -> np.ndarray:
     source = _array(codes, np.int8).reshape(-1)
     if _LIBRARY is None:
