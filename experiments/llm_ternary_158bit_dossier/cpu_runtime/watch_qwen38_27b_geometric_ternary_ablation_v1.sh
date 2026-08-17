@@ -11,8 +11,17 @@ if [[ ! -f "${bundle}" ]]; then
   echo "infrastructure-invalid: frozen geometric source bundle is absent" >&2
   exit 70
 fi
+while systemctl is-active --quiet quant-qwen38-27b-infrastructure-retry-v1.service; do
+  sleep 15
+done
+for _ in $(seq 1 100); do
+  if ! pgrep -f '/workspace/build/.*/llama-(server|cli)' >/dev/null; then
+    break
+  fi
+  sleep 3
+done
 if pgrep -f '/workspace/build/.*/llama-(server|cli)' >/dev/null; then
-  echo "infrastructure-invalid: refusing to compete with a Qwen3.8 llama process" >&2
+  echo "infrastructure-invalid: Qwen3.8 llama process did not drain" >&2
   exit 71
 fi
 if [[ $(awk '/MemAvailable:/ {print $2}' /proc/meminfo) -lt $((8 * 1024 * 1024)) ]]; then
