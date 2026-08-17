@@ -300,10 +300,10 @@ def main(
         "gate": gate,
         "claim_boundary": {
             "isolated_recurrent_update_proven_if_gate_passes": gate["passed"],
-            "full_layer_parity_proven": false,
-            "end_to_end_tokens_per_second_proven": false,
-            "model_quality_proven": false,
-            "scientific_breakthrough_proven": false,
+            "full_layer_parity_proven": False,
+            "end_to_end_tokens_per_second_proven": False,
+            "model_quality_proven": False,
+            "scientific_breakthrough_proven": False,
         },
     }
     atomic_bytes(args.receipt, canonical_json(receipt))

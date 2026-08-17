@@ -281,11 +281,11 @@ def main() -> None:
         },
         "gate": gate,
         "claim_boundary": {
-            "qwen38_exact_shape_direct_block203_microkernel_only": true,
-            "whole_model_container_integrated": false,
-            "model_quality_proven": false,
-            "end_to_end_tokens_per_second_proven": false,
-            "scientific_breakthrough_proven": false
+            "qwen38_exact_shape_direct_block203_microkernel_only": True,
+            "whole_model_container_integrated": False,
+            "model_quality_proven": False,
+            "end_to_end_tokens_per_second_proven": False,
+            "scientific_breakthrough_proven": False
         }
     }
     atomic_bytes(args.receipt, canonical_json(receipt))

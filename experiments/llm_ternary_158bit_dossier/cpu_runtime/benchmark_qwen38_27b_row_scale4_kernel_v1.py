@@ -284,11 +284,11 @@ def main() -> None:
         },
         "gate": gate,
         "claim_boundary": {
-            "qwen38_exact_shape_scale_layout_microkernel_only": true,
-            "base3_direct_decode_proven": false,
-            "model_quality_proven": false,
-            "end_to_end_tokens_per_second_proven": false,
-            "scientific_breakthrough_proven": false
+            "qwen38_exact_shape_scale_layout_microkernel_only": True,
+            "base3_direct_decode_proven": False,
+            "model_quality_proven": False,
+            "end_to_end_tokens_per_second_proven": False,
+            "scientific_breakthrough_proven": False
         }
     }
     if not (
