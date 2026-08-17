@@ -273,7 +273,7 @@ Evidence:
 The layer-0 MLP direct-CQ3 candidate completed the first three independent
 quick gates: CUTE-Quick-20 `10/20` versus the Q4 control's `9/20`, MATH quick-8
 `5/8` versus `5/8`, and code trace `5/6` versus `5/6`. At the durable MMLU
-checkpoint of 20 examples it is `15/20`, while the frozen Q4 control is `16/20`
+checkpoint of 28 examples it is `21/28`, while the frozen Q4 control is `22/28`
 on the identical prefix. Only two predictions differ: one Q4-correct answer
 became incorrect, and one already-incorrect answer changed to a different
 incorrect choice. This is interim evidence only. The full 64-example MMLU and
