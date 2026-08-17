@@ -39,6 +39,15 @@ def _load_library() -> ctypes.CDLL | None:
             library = ctypes.CDLL(str(candidate))
         except OSError:
             continue
+        try:
+            library.cq3_block203_size
+            library.cq3_pack_block203
+            library.cq3_unpack_block203
+        except AttributeError:
+            # A stale library must not make the Python module unimportable.
+            # The exact storage codec is part of this ABI revision, so use the
+            # audited Python fallback until the local library is rebuilt.
+            continue
         u8p = ctypes.POINTER(ctypes.c_uint8)
         i8p = ctypes.POINTER(ctypes.c_int8)
         u16p = ctypes.POINTER(ctypes.c_uint16)
@@ -46,6 +55,20 @@ def _load_library() -> ctypes.CDLL | None:
         f32p = ctypes.POINTER(ctypes.c_float)
         library.cq3_cpu_features.argtypes = ()
         library.cq3_cpu_features.restype = ctypes.c_uint32
+        library.cq3_block203_size.argtypes = (
+            ctypes.c_uint64,
+            ctypes.POINTER(ctypes.c_uint64),
+            ctypes.POINTER(ctypes.c_uint64),
+        )
+        library.cq3_block203_size.restype = ctypes.c_int
+        library.cq3_pack_block203.argtypes = (
+            i8p, ctypes.c_uint64, u8p, ctypes.c_uint64,
+        )
+        library.cq3_pack_block203.restype = ctypes.c_int
+        library.cq3_unpack_block203.argtypes = (
+            u8p, ctypes.c_uint64, ctypes.c_uint64, i8p,
+        )
+        library.cq3_unpack_block203.restype = ctypes.c_int
         library.cq3_pack_aligned2.argtypes = (i8p, ctypes.c_uint64, u8p)
         library.cq3_pack_aligned2.restype = ctypes.c_int
         library.cq3_unpack_aligned2.argtypes = (u8p, ctypes.c_uint64, i8p)
@@ -136,6 +159,64 @@ def _array(value, dtype, *, ndim: int | None = None) -> np.ndarray:
     if ndim is not None and result.ndim != ndim:
         raise ValueError(f"expected a {ndim}-dimensional array")
     return np.ascontiguousarray(result)
+
+
+def block203_size(count: int) -> tuple[int, int]:
+    """Return the exact meaningful bits and byte envelope for a ternary row."""
+    if count < 0:
+        raise ValueError("trit count must be non-negative")
+    if _LIBRARY is None:
+        from .base3_block203 import row_payload_bits, row_payload_bytes
+
+        return row_payload_bits(count), row_payload_bytes(count)
+    bits = ctypes.c_uint64()
+    size = ctypes.c_uint64()
+    status = _LIBRARY.cq3_block203_size(count, ctypes.byref(bits), ctypes.byref(size))
+    _check(status, "block-203 size")
+    return int(bits.value), int(size.value)
+
+
+def pack_block203(codes: np.ndarray) -> np.ndarray:
+    """Pack ternary codes into canonical little-endian 203-bit base-3 blocks."""
+    values = np.asarray(codes).reshape(-1)
+    if values.size and not np.all((values == -1) | (values == 0) | (values == 1)):
+        raise ValueError("ternary codes must be in {-1, 0, +1}")
+    source = np.ascontiguousarray(values, dtype=np.int8)
+    _, output_bytes = block203_size(source.size)
+    if _LIBRARY is None:
+        from .base3_block203 import pack_row
+
+        return np.frombuffer(pack_row(source), dtype=np.uint8).copy()
+    output = np.empty(output_bytes, dtype=np.uint8)
+    status = _LIBRARY.cq3_pack_block203(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+        source.size,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        output.size,
+    )
+    _check(status, "block-203 pack")
+    return output
+
+
+def unpack_block203(packed: np.ndarray, count: int) -> np.ndarray:
+    """Decode an exact canonical 203-bit-block row into {-1, 0, +1}."""
+    source = _array(packed, np.uint8).reshape(-1)
+    _, expected_bytes = block203_size(count)
+    if source.size != expected_bytes:
+        raise ValueError("block-203 dimensions do not match")
+    if _LIBRARY is None:
+        from .base3_block203 import unpack_row
+
+        return unpack_row(source.tobytes(), count)
+    output = np.empty(count, dtype=np.int8)
+    status = _LIBRARY.cq3_unpack_block203(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        source.size,
+        count,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+    )
+    _check(status, "block-203 unpack")
+    return output
 
 
 def pack_aligned2(codes: np.ndarray) -> np.ndarray:

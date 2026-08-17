@@ -5,9 +5,49 @@ import unittest
 import numpy as np
 
 from clark_quantize import ternary_cpu
+from clark_quantize.base3_block203 import pack_row, row_payload_bits, row_payload_bytes
 
 
 class TernaryCpuPackingTests(unittest.TestCase):
+    def test_block203_is_byte_identical_to_canonical_python(self) -> None:
+        generator = np.random.default_rng(20260817)
+        counts = (*range(129), 129, 255, 256, 4097, 5120)
+        for count in counts:
+            cases = (
+                np.full(count, -1, dtype=np.int8),
+                np.zeros(count, dtype=np.int8),
+                np.ones(count, dtype=np.int8),
+                generator.integers(-1, 2, size=count, dtype=np.int8),
+            )
+            for codes in cases:
+                actual = ternary_cpu.pack_block203(codes)
+                self.assertEqual(
+                    ternary_cpu.block203_size(count),
+                    (row_payload_bits(count), row_payload_bytes(count)),
+                )
+                self.assertEqual(actual.tobytes(), pack_row(codes))
+                np.testing.assert_array_equal(
+                    ternary_cpu.unpack_block203(actual, count), codes,
+                )
+
+    def test_block203_rejects_invalid_and_noncanonical_payloads(self) -> None:
+        with self.assertRaisesRegex(ValueError, "ternary|code"):
+            ternary_cpu.pack_block203(np.asarray([-2], dtype=np.int8))
+        with self.assertRaisesRegex(ValueError, "ternary|code"):
+            ternary_cpu.pack_block203(np.asarray([0.5], dtype=np.float32))
+        with self.assertRaisesRegex(ValueError, "ternary|code"):
+            ternary_cpu.pack_block203(np.asarray([255], dtype=np.uint8))
+        noncanonical = np.frombuffer(
+            (3**128).to_bytes(row_payload_bytes(128), "little"),
+            dtype=np.uint8,
+        ).copy()
+        with self.assertRaisesRegex(ValueError, "canonical|code"):
+            ternary_cpu.unpack_block203(noncanonical, 128)
+        padding = ternary_cpu.pack_block203(np.asarray([0], dtype=np.int8))
+        padding[-1] |= np.uint8(0x80)
+        with self.assertRaisesRegex(ValueError, "canonical|code|padding"):
+            ternary_cpu.unpack_block203(padding, 1)
+
     def test_aligned2_roundtrip_including_partial_bytes(self) -> None:
         generator = np.random.default_rng(20260817)
         for count in range(33):

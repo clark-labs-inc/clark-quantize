@@ -28,6 +28,8 @@
 #endif
 
 #define CQ3_MAX_GROUPS_PER_ROW 256U
+#define CQ3_BLOCK203_TRITS_PER_GROUP 128U
+#define CQ3_BLOCK203_BITS_PER_GROUP 203U
 #define CQ3_RADIX5_BYTES_PER_GROUP 26U
 #define CQ3_RADIX5_SEGMENTS_PADDED 28U
 #define CQ3_RADIX5_ACTIVATION_STRIDE (CQ3_RADIX5_SEGMENTS_PADDED * 8U)
@@ -83,6 +85,223 @@ enum {
     CQ3_ERROR_NONFINITE = 4,
     CQ3_ERROR_ISA = 5,
 };
+
+/* Frozen ceil(n * log2(3)) widths for tails of 0..128 trits.  The complete
+ * 128-trit width is exactly 203 bits.  Keeping this table in the ABI avoids
+ * cross-language floating-point rounding in the canonical storage layout. */
+static const uint8_t cq3_block203_tail_bits[129] = {
+    0, 2, 4, 5, 7, 8, 10, 12, 13, 15, 16, 18, 20, 21, 23, 24,
+    26, 27, 29, 31, 32, 34, 35, 37, 39, 40, 42, 43, 45, 46, 48, 50,
+    51, 53, 54, 56, 58, 59, 61, 62, 64, 65, 67, 69, 70, 72, 73, 75,
+    77, 78, 80, 81, 83, 85, 86, 88, 89, 91, 92, 94, 96, 97, 99, 100,
+    102, 104, 105, 107, 108, 110, 111, 113, 115, 116, 118, 119, 121, 123,
+    124, 126, 127, 129, 130, 132, 134, 135, 137, 138, 140, 142, 143, 145,
+    146, 148, 149, 151, 153, 154, 156, 157, 159, 161, 162, 164, 165, 167,
+    169, 170, 172, 173, 175, 176, 178, 180, 181, 183, 184, 186, 188, 189,
+    191, 192, 194, 195, 197, 199, 200, 202, 203,
+};
+
+int cq3_block203_size(
+    uint64_t count,
+    uint64_t *payload_bits,
+    uint64_t *payload_bytes
+) {
+    if (payload_bits == NULL || payload_bytes == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    const uint64_t groups = count / CQ3_BLOCK203_TRITS_PER_GROUP;
+    const uint32_t tail = (uint32_t)(count % CQ3_BLOCK203_TRITS_PER_GROUP);
+    const uint64_t tail_bits = cq3_block203_tail_bits[tail];
+    if (groups > (UINT64_MAX - tail_bits) / CQ3_BLOCK203_BITS_PER_GROUP) {
+        return CQ3_ERROR_SHAPE;
+    }
+    const uint64_t bits = groups * CQ3_BLOCK203_BITS_PER_GROUP + tail_bits;
+    *payload_bits = bits;
+    *payload_bytes = bits / 8U + (bits % 8U != 0U ? 1U : 0U);
+    return CQ3_OK;
+}
+
+static int cq3_block203_mul3_add(uint64_t limbs[4], uint32_t digit) {
+    unsigned __int128 carry = digit;
+    for (uint32_t limb = 0U; limb < 4U; ++limb) {
+        const unsigned __int128 value =
+            (unsigned __int128)limbs[limb] * 3U + carry;
+        limbs[limb] = (uint64_t)value;
+        carry = value >> 64U;
+    }
+    return carry == 0U ? CQ3_OK : CQ3_ERROR_SHAPE;
+}
+
+static uint32_t cq3_block203_divmod3(uint64_t limbs[4]) {
+    uint32_t remainder = 0U;
+    for (uint32_t reverse = 4U; reverse > 0U; --reverse) {
+        const uint32_t limb = reverse - 1U;
+        const unsigned __int128 value =
+            ((unsigned __int128)remainder << 64U) | limbs[limb];
+        limbs[limb] = (uint64_t)(value / 3U);
+        remainder = (uint32_t)(value % 3U);
+    }
+    return remainder;
+}
+
+static int cq3_block203_is_zero(const uint64_t limbs[4]) {
+    return (limbs[0] | limbs[1] | limbs[2] | limbs[3]) == 0U;
+}
+
+static void cq3_block203_write_bits(
+    const uint64_t limbs[4],
+    uint32_t width,
+    uint8_t *packed,
+    uint64_t *payload_cursor
+) {
+    uint32_t source_cursor = 0U;
+    while (source_cursor < width) {
+        const uint32_t source_shift = source_cursor % 64U;
+        const uint32_t destination_shift = (uint32_t)(*payload_cursor % 8U);
+        uint32_t take = width - source_cursor;
+        const uint32_t source_room = 64U - source_shift;
+        const uint32_t destination_room = 8U - destination_shift;
+        if (take > source_room) {
+            take = source_room;
+        }
+        if (take > destination_room) {
+            take = destination_room;
+        }
+        const uint64_t mask = (1U << take) - 1U;
+        const uint8_t value = (uint8_t)(
+            (limbs[source_cursor / 64U] >> source_shift) & mask
+        );
+        packed[*payload_cursor / 8U] |= (uint8_t)(value << destination_shift);
+        source_cursor += take;
+        *payload_cursor += take;
+    }
+}
+
+static void cq3_block203_read_bits(
+    const uint8_t *packed,
+    uint32_t width,
+    uint64_t *payload_cursor,
+    uint64_t limbs[4]
+) {
+    uint32_t destination_cursor = 0U;
+    while (destination_cursor < width) {
+        const uint32_t source_shift = (uint32_t)(*payload_cursor % 8U);
+        const uint32_t destination_shift = destination_cursor % 64U;
+        uint32_t take = width - destination_cursor;
+        const uint32_t source_room = 8U - source_shift;
+        const uint32_t destination_room = 64U - destination_shift;
+        if (take > source_room) {
+            take = source_room;
+        }
+        if (take > destination_room) {
+            take = destination_room;
+        }
+        const uint64_t mask = (1U << take) - 1U;
+        const uint64_t value =
+            ((uint64_t)packed[*payload_cursor / 8U] >> source_shift) & mask;
+        limbs[destination_cursor / 64U] |= value << destination_shift;
+        destination_cursor += take;
+        *payload_cursor += take;
+    }
+}
+
+int cq3_pack_block203(
+    const int8_t *codes,
+    uint64_t count,
+    uint8_t *packed,
+    uint64_t packed_bytes
+) {
+    uint64_t payload_bits = 0U;
+    uint64_t expected_bytes = 0U;
+    int status = cq3_block203_size(count, &payload_bits, &expected_bytes);
+    if (status != CQ3_OK) {
+        return status;
+    }
+    if (packed_bytes != expected_bytes) {
+        return CQ3_ERROR_SHAPE;
+    }
+    if (count != 0U && (codes == NULL || packed == NULL)) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    if (packed_bytes != 0U) {
+        memset(packed, 0, packed_bytes);
+    }
+
+    uint64_t payload_cursor = 0U;
+    for (uint64_t start = 0U; start < count; start += CQ3_BLOCK203_TRITS_PER_GROUP) {
+        const uint32_t group_count = (uint32_t)(
+            count - start < CQ3_BLOCK203_TRITS_PER_GROUP
+                ? count - start
+                : CQ3_BLOCK203_TRITS_PER_GROUP
+        );
+        uint64_t limbs[4] = {0U, 0U, 0U, 0U};
+        for (uint32_t reverse = group_count; reverse > 0U; --reverse) {
+            const int code = (int)codes[start + reverse - 1U];
+            if (code < -1 || code > 1) {
+                return CQ3_ERROR_CODE;
+            }
+            status = cq3_block203_mul3_add(limbs, (uint32_t)(code + 1));
+            if (status != CQ3_OK) {
+                return status;
+            }
+        }
+        cq3_block203_write_bits(
+            limbs,
+            cq3_block203_tail_bits[group_count],
+            packed,
+            &payload_cursor
+        );
+    }
+    return payload_cursor == payload_bits ? CQ3_OK : CQ3_ERROR_SHAPE;
+}
+
+int cq3_unpack_block203(
+    const uint8_t *packed,
+    uint64_t packed_bytes,
+    uint64_t count,
+    int8_t *codes
+) {
+    uint64_t payload_bits = 0U;
+    uint64_t expected_bytes = 0U;
+    int status = cq3_block203_size(count, &payload_bits, &expected_bytes);
+    if (status != CQ3_OK) {
+        return status;
+    }
+    if (packed_bytes != expected_bytes) {
+        return CQ3_ERROR_SHAPE;
+    }
+    if (count != 0U && (packed == NULL || codes == NULL)) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    const uint32_t unused_bits = (uint32_t)(expected_bytes * 8U - payload_bits);
+    if (unused_bits != 0U &&
+            (packed[expected_bytes - 1U] >> (8U - unused_bits)) != 0U) {
+        return CQ3_ERROR_CODE;
+    }
+
+    uint64_t payload_cursor = 0U;
+    for (uint64_t start = 0U; start < count; start += CQ3_BLOCK203_TRITS_PER_GROUP) {
+        const uint32_t group_count = (uint32_t)(
+            count - start < CQ3_BLOCK203_TRITS_PER_GROUP
+                ? count - start
+                : CQ3_BLOCK203_TRITS_PER_GROUP
+        );
+        uint64_t limbs[4] = {0U, 0U, 0U, 0U};
+        cq3_block203_read_bits(
+            packed,
+            cq3_block203_tail_bits[group_count],
+            &payload_cursor,
+            limbs
+        );
+        for (uint32_t index = 0U; index < group_count; ++index) {
+            codes[start + index] = (int8_t)cq3_block203_divmod3(limbs) - 1;
+        }
+        if (!cq3_block203_is_zero(limbs)) {
+            return CQ3_ERROR_CODE;
+        }
+    }
+    return payload_cursor == payload_bits ? CQ3_OK : CQ3_ERROR_SHAPE;
+}
 
 enum {
     CQ3_FEATURE_AVX2 = 1,
