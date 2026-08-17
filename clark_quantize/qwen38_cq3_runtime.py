@@ -19,6 +19,7 @@ from .qwen38_cq3_container import CQ3ContainerError, Qwen38CQ3Reader
 from .ternary_cpu import (
     gemv_q8_group128_block203_row_scale4,
     quantize_q8,
+    swiglu_f32,
 )
 
 
@@ -318,3 +319,77 @@ class Qwen38CQ3RuntimeImage:
         receipt = self._reader.verify_all()
         self._verified_sections.update(self._reader.sections)
         return receipt
+
+
+@dataclass(frozen=True)
+class Qwen38CQ3MLP:
+    """Direct-storage Qwen3.8-27B gate/up/SwiGLU/down inference path."""
+
+    gate: Qwen38CQ3TernaryTensorView
+    up: Qwen38CQ3TernaryTensorView
+    down: Qwen38CQ3TernaryTensorView
+
+    def __post_init__(self) -> None:
+        if (
+            self.gate.columns != self.up.columns
+            or self.gate.rows != self.up.rows
+            or self.down.columns != self.gate.rows
+            or self.down.rows != self.gate.columns
+        ):
+            raise CQ3RuntimeError(
+                "Qwen3.8-27B MLP gate, up, and down dimensions do not compose"
+            )
+
+    @classmethod
+    def from_image(
+        cls, image: Qwen38CQ3RuntimeImage, layer: int
+    ) -> "Qwen38CQ3MLP":
+        if not isinstance(layer, int) or isinstance(layer, bool) or layer < 0:
+            raise ValueError("Qwen3.8-27B layer index must be a non-negative integer")
+        prefix = f"model.language_model.layers.{layer}.mlp"
+        return cls(
+            gate=image.ternary_tensor(f"{prefix}.gate_proj.weight"),
+            up=image.ternary_tensor(f"{prefix}.up_proj.weight"),
+            down=image.ternary_tensor(f"{prefix}.down_proj.weight"),
+        )
+
+    def forward(
+        self,
+        activation: np.ndarray,
+        *,
+        implementation: str = "scalar",
+        threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
+        cpu_ids: list[int] | None = None,
+    ) -> np.ndarray:
+        """Execute one token's MLP with two A8 quantizations and no W expansion."""
+        values = np.asarray(activation, dtype=np.float32)
+        if values.ndim != 1 or values.size != self.gate.columns:
+            raise ValueError(
+                "Qwen3.8-27B MLP activation does not match the hidden dimension"
+            )
+        activation_q8, activation_scales, activation_sums = quantize_q8(
+            values, GROUP_SIZE
+        )
+        arguments = {
+            "implementation": implementation,
+            "threads": threads,
+            "executor": executor,
+            "cpu_ids": cpu_ids,
+        }
+        gate = self.gate.gemv_q8(
+            activation_q8, activation_scales, activation_sums, **arguments
+        )
+        up = self.up.gemv_q8(
+            activation_q8, activation_scales, activation_sums, **arguments
+        )
+        intermediate = swiglu_f32(gate, up)
+        intermediate_q8, intermediate_scales, intermediate_sums = quantize_q8(
+            intermediate, GROUP_SIZE
+        )
+        return self.down.gemv_q8(
+            intermediate_q8,
+            intermediate_scales,
+            intermediate_sums,
+            **arguments,
+        )

@@ -18,10 +18,11 @@ from clark_quantize.qwen38_cq3_container import (
 )
 from clark_quantize.qwen38_cq3_runtime import (
     CQ3RuntimeError,
+    Qwen38CQ3MLP,
     Qwen38CQ3RuntimeImage,
 )
 from clark_quantize.scale_codebook import pack_nibbles
-from clark_quantize.ternary_cpu import native_available, quantize_q8
+from clark_quantize.ternary_cpu import native_available, quantize_q8, swiglu_f32
 
 
 class Qwen38CQ3RuntimeTests(unittest.TestCase):
@@ -138,6 +139,92 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
             )
         return path, codes, indices, anchors
 
+    def mlp_fixture(self, root: Path) -> Path:
+        path = root / "qwen38-mlp.cq3"
+        rows = columns = 128
+        codebook = np.linspace(0.0, 1.0, 16, dtype=np.float16)
+        with Qwen38CQ3Writer(
+            path,
+            model={"id": "Qwen/Qwen3.8-27B", "revision": "mlp-test"},
+            strategy={
+                "name": "base3_group128_row_normalized_codebook4",
+                "codec": "block203",
+                "group_size": 128,
+                "scale_bits": 4,
+                "row_anchor_dtype": "F16",
+                "scale_codebook_entries": 16,
+                "scale_codebook_dtype": "F16",
+            },
+            parameter_count=3 * rows * columns,
+        ) as writer:
+            tensors = []
+            for index, projection in enumerate(("gate_proj", "up_proj", "down_proj")):
+                codes = (
+                    (np.arange(rows * columns, dtype=np.int64) + index) % 3
+                    - 1
+                ).astype(np.int8).reshape(rows, columns)
+                indices = (
+                    (np.arange(rows, dtype=np.uint8) + index) % 16
+                ).astype(np.uint8)
+                anchors = np.linspace(
+                    0.0625 + index * 0.01,
+                    0.5 + index * 0.01,
+                    rows,
+                    dtype=np.float16,
+                )
+                packed_indices = pack_nibbles(indices)
+                prefix = f"tensor.{index:04d}"
+                code = writer.add_section(
+                    prefix + ".codes",
+                    "ternary_block203",
+                    pack_rows(codes),
+                    metadata={
+                        "rows": rows,
+                        "columns": columns,
+                        "trits": rows * columns,
+                        "payload_bits": matrix_payload_bits(rows, columns),
+                        "group_trits": 128,
+                        "full_group_bits": 203,
+                    },
+                )
+                scales = writer.add_section_parts(
+                    prefix + ".scales",
+                    "scale_indices_u4_anchors_f16_and_codebook_f16",
+                    (
+                        packed_indices,
+                        anchors.astype("<f2").tobytes(),
+                        codebook.astype("<f2").tobytes(),
+                    ),
+                    metadata={
+                        "scale_count": rows,
+                        "index_bytes": len(packed_indices),
+                        "codebook_bytes": codebook.nbytes,
+                        "codebook_entries": 16,
+                        "index_order": "low_nibble_first",
+                        "row_count": rows,
+                        "anchor_bytes": anchors.nbytes,
+                        "factor_order": "indices_then_row_anchors_then_codebook",
+                        "decode": "float32(fp16_anchor) * float32(fp16_ratio)",
+                    },
+                )
+                tensors.append(
+                    {
+                        "name": (
+                            "model.language_model.layers.0.mlp."
+                            f"{projection}.weight"
+                        ),
+                        "shape": [rows, columns],
+                        "parameters": rows * columns,
+                        "source_dtype": "BF16",
+                        "encoding": (
+                            "base3_group128_row_normalized_codebook4"
+                        ),
+                        "sections": [code["id"], scales["id"]],
+                    }
+                )
+            writer.finalize(tensors=tensors)
+        return path
+
     def test_zero_copy_views_are_authenticated_and_survive_close(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             path, codes, indices, anchors = self.fixture(Path(temporary))
@@ -239,6 +326,43 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
                     )
                 with self.assertRaisesRegex(KeyError, "unknown Qwen3.8"):
                     image.exact_tensor("missing.weight")
+
+    @unittest.skipUnless(native_available(), "native ternary CPU library is absent")
+    def test_mlp_path_reuses_input_quantization_and_matches_manual_graph(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = self.mlp_fixture(Path(temporary))
+            with Qwen38CQ3RuntimeImage(path) as image:
+                mlp = Qwen38CQ3MLP.from_image(image, 0)
+                activation = np.linspace(-1.5, 2.0, 128, dtype=np.float32)
+                actual = mlp.forward(
+                    activation, implementation="scalar_chunk16"
+                )
+                q8, scales, sums = quantize_q8(activation)
+                gate = mlp.gate.gemv_q8(
+                    q8,
+                    scales,
+                    sums,
+                    implementation="scalar_chunk16",
+                )
+                up = mlp.up.gemv_q8(
+                    q8,
+                    scales,
+                    sums,
+                    implementation="scalar_chunk16",
+                )
+                intermediate = swiglu_f32(gate, up)
+                hidden_q8, hidden_scales, hidden_sums = quantize_q8(intermediate)
+                expected = mlp.down.gemv_q8(
+                    hidden_q8,
+                    hidden_scales,
+                    hidden_sums,
+                    implementation="scalar_chunk16",
+                )
+                np.testing.assert_array_equal(actual, expected)
+                with self.assertRaisesRegex(ValueError, "hidden dimension"):
+                    mlp.forward(np.zeros(127, dtype=np.float32))
+                with self.assertRaisesRegex(ValueError, "layer index"):
+                    Qwen38CQ3MLP.from_image(image, True)
 
 
 if __name__ == "__main__":
