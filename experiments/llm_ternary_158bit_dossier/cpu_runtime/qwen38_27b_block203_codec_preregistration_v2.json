@@ -1,0 +1,70 @@
+{
+  "schema": "clark_qwen38_27b_block203_codec_preregistration_v2",
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "ternary_parameters": 27780313088
+  },
+  "parent": {
+    "receipt": "/workspace/quant-state/qwen38-27b-block203-codec-v1.json",
+    "required_schema": "clark_qwen38_27b_block203_codec_receipt_v1",
+    "required_repo_commit": "55658ddb4058901e7218ba02dfc7c8be76681edd",
+    "required_c_source_sha256": "3994c55101963f61e3f7de6ee9d2e1383561b266c0378c502f76618d44f2f3d2",
+    "required_python_wrapper_sha256": "d26a77750fe654c73f157f80be5d034a24ebd9212754d659ea931dd987a7e23d",
+    "required_benchmark_sha256": "9005c4a6f64964b1e3fe18d79cbc0ff5e9dc374c4bb31524b7ae3eee14e78227",
+    "required_preregistration_sha256": "505707f9c0a59aff2b7852dd9acd7031cfcef542f0f42c7081ddbad1db4a503e"
+  },
+  "sample": {
+    "tensor": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "group_trits": 128,
+    "group_bits": 203,
+    "reference_row_indices": [0, 1, 127, 1024, 17407]
+  },
+  "performance": {
+    "warmups": 2,
+    "repetitions": 7,
+    "threads": 1,
+    "cache_eviction_bytes": 268435456,
+    "timed_scope": "Python public API including validation, allocation, and native C codec",
+    "paired_host_contract": "same hostname, architecture, CPU affinity, tensor-code SHA-256, and benchmark arguments as v1"
+  },
+  "registered_change": {
+    "only_algorithmic_change": "Accumulate and divide exact groups of up to five trits in radix 243 instead of one trit in radix 3 per fixed-limb big-integer step.",
+    "codeword_layout_change": false,
+    "public_api_change": false,
+    "bit_width_change": false,
+    "threading_change": false,
+    "compiler_flag_change": false
+  },
+  "correctness": {
+    "require_full_tensor_exact_roundtrip": true,
+    "require_payload_sha256_equal_to_v1": true,
+    "require_all_pack_payload_hashes_identical": true,
+    "require_all_unpack_output_hashes_identical": true,
+    "require_selected_rows_byte_identical_to_python_reference": true,
+    "require_native_and_python_fallback_focused_tests": true
+  },
+  "promotion": {
+    "minimum_pack_speedup_over_v1": 1.25,
+    "minimum_unpack_speedup_over_v1": 2.0,
+    "maximum_projected_whole_model_pack_seconds": 600.0,
+    "maximum_projected_whole_model_unpack_seconds": 600.0,
+    "maximum_payload_bits_per_ternary_parameter": 1.5859375,
+    "interpretation": "Offline storage-codec optimization only; it is not an inference-throughput or capability gate."
+  },
+  "claim_boundary": {
+    "allows": [
+      "exact native radix-243 acceleration of the frozen 203-bit representation",
+      "paired single-core offline codec speedup on a real Qwen3.8-27B tensor",
+      "updated whole-model offline conversion-time projection"
+    ],
+    "forbids": [
+      "inference speedup",
+      "quality preservation",
+      "deployable whole-model artifact",
+      "scientific breakthrough"
+    ]
+  }
+}
