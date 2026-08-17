@@ -125,11 +125,11 @@ def _load_library() -> ctypes.CDLL | None:
         library.cq3_gemv_q8_group128_2bit_avx2.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_2bit_arm_dotprod.argtypes = gemv_args
         library.cq3_gemv_q8_group128_2bit_arm_dotprod.restype = ctypes.c_int
+        row_scale_gemv_args = (
+            u8p, u8p, u16p, u16p, i8p, f32p, i32p,
+            ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint32, f32p,
+        )
         if hasattr(library, "cq3_gemv_q8_group128_2bit_row_scale4_scalar"):
-            row_scale_gemv_args = (
-                u8p, u8p, u16p, u16p, i8p, f32p, i32p,
-                ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint32, f32p,
-            )
             library.cq3_gemv_q8_group128_2bit_row_scale4_scalar.argtypes = (
                 row_scale_gemv_args
             )
@@ -138,6 +138,19 @@ def _load_library() -> ctypes.CDLL | None:
                 row_scale_gemv_args
             )
             library.cq3_gemv_q8_group128_2bit_row_scale4_avx2.restype = ctypes.c_int
+        if hasattr(library, "cq3_gemv_q8_group128_block203_row_scale4_scalar"):
+            library.cq3_gemv_q8_group128_block203_row_scale4_scalar.argtypes = (
+                row_scale_gemv_args
+            )
+            library.cq3_gemv_q8_group128_block203_row_scale4_scalar.restype = (
+                ctypes.c_int
+            )
+            library.cq3_gemv_q8_group128_block203_row_scale4_avx2.argtypes = (
+                row_scale_gemv_args
+            )
+            library.cq3_gemv_q8_group128_block203_row_scale4_avx2.restype = (
+                ctypes.c_int
+            )
         swiglu_gemv_args = (
             u8p, u16p, u8p, u16p, i8p, f32p, i32p,
             ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint32, f32p,
@@ -751,6 +764,82 @@ def gemv_q8_group128_2bit_row_scale4(
         output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
     )
     _check(status, f"{implementation} row-scale4 GEMV")
+    return output
+
+
+def gemv_q8_group128_block203_row_scale4(
+    packed_weights: np.ndarray,
+    packed_scale_indices: np.ndarray,
+    row_anchors: np.ndarray,
+    ratio_codebook: np.ndarray,
+    activation_q8: np.ndarray,
+    activation_scales: np.ndarray,
+    activation_sums: np.ndarray,
+    *,
+    implementation: str = "avx2",
+    group_size: int = 128,
+    validated: bool = False,
+) -> np.ndarray:
+    """Direct GEMV from exact 203-bit base-3 blocks and row-scale4 factors."""
+    if _LIBRARY is None or not hasattr(
+        _LIBRARY, "cq3_gemv_q8_group128_block203_row_scale4_scalar"
+    ):
+        raise RuntimeError("Clark ternary CPU library lacks block203 row-scale4 GEMV")
+    weights = _array(packed_weights, np.uint8, ndim=1)
+    indices = _array(packed_scale_indices, np.uint8, ndim=1)
+    anchors_u16 = _array(row_anchors, np.float16, ndim=1).view(np.uint16)
+    codebook_u16 = _array(ratio_codebook, np.float16, ndim=1).view(np.uint16)
+    activation = _array(activation_q8, np.int8, ndim=1)
+    act_scales = _array(activation_scales, np.float32, ndim=1)
+    act_sums = _array(activation_sums, np.int32, ndim=1)
+    rows = anchors_u16.size
+    columns = activation.size
+    groups = columns // group_size if group_size else 0
+    count = rows * groups
+    _, expected_weight_bytes = block203_matrix_size(rows, columns)
+    if (
+        rows == 0
+        or columns == 0
+        or group_size != 128
+        or columns % group_size
+        or weights.size != expected_weight_bytes
+        or codebook_u16.shape != (16,)
+        or indices.size != (count + 1) // 2
+        or act_scales.shape != (groups,)
+        or act_sums.shape != (groups,)
+    ):
+        raise ValueError("block203 row-scale4 GEMV dimensions do not match")
+    if not validated and (
+        not np.all(np.isfinite(anchors_u16.view(np.float16)))
+        or not np.all(np.isfinite(codebook_u16.view(np.float16)))
+        or not np.all(np.isfinite(act_scales))
+        or codebook_u16.view(np.float16)[0] != np.float16(0.0)
+        or (count & 1 and int(indices[-1]) & 0xF0)
+    ):
+        raise ValueError("block203 row-scale4 GEMV payload is non-canonical")
+    functions = {
+        "scalar": _LIBRARY.cq3_gemv_q8_group128_block203_row_scale4_scalar,
+        "avx2": _LIBRARY.cq3_gemv_q8_group128_block203_row_scale4_avx2,
+    }
+    if implementation not in functions:
+        raise ValueError(
+            f"unknown block203 row-scale4 GEMV implementation {implementation!r}"
+        )
+    output = np.empty(rows, dtype=np.float32)
+    status = functions[implementation](
+        weights.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        indices.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        anchors_u16.ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
+        codebook_u16.ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
+        activation.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+        act_scales.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        act_sums.ctypes.data_as(ctypes.POINTER(ctypes.c_int32)),
+        rows,
+        columns,
+        group_size,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+    )
+    _check(status, f"{implementation} block203 row-scale4 GEMV")
     return output
 
 

@@ -288,6 +288,35 @@ class TernaryCpuNativeTests(unittest.TestCase):
                 total = np.float32(total + contribution)
             oracle[row] = total
         np.testing.assert_allclose(row_scalar, oracle, rtol=1e-6, atol=1e-6)
+        block203_weights = ternary_cpu.pack_block203_rows(codes)
+        block203_scalar = ternary_cpu.gemv_q8_group128_block203_row_scale4(
+            block203_weights,
+            packed_scale_codes,
+            anchors,
+            codebook,
+            quantized,
+            activation_scales,
+            sums,
+            implementation="scalar",
+        )
+        np.testing.assert_allclose(block203_scalar, row_scalar, rtol=1e-6, atol=1e-6)
+        noncanonical_block203 = block203_weights.copy()
+        payload_bits, _ = ternary_cpu.block203_matrix_size(*codes.shape)
+        unused_bits = noncanonical_block203.nbytes * 8 - payload_bits
+        self.assertGreater(unused_bits, 0)
+        noncanonical_block203[-1] |= np.uint8(1 << (8 - unused_bits))
+        with self.assertRaisesRegex(ValueError, "code"):
+            ternary_cpu.gemv_q8_group128_block203_row_scale4(
+                noncanonical_block203,
+                packed_scale_codes,
+                anchors,
+                codebook,
+                quantized,
+                activation_scales,
+                sums,
+                implementation="scalar",
+                validated=True,
+            )
         if ternary_cpu.cpu_features()["avx2"]:
             row_avx2 = ternary_cpu.gemv_q8_group128_2bit_row_scale4(
                 packed_weights,
@@ -300,6 +329,19 @@ class TernaryCpuNativeTests(unittest.TestCase):
                 implementation="avx2",
             )
             np.testing.assert_allclose(row_avx2, row_scalar, rtol=1e-5, atol=5e-5)
+            block203_avx2 = ternary_cpu.gemv_q8_group128_block203_row_scale4(
+                block203_weights,
+                packed_scale_codes,
+                anchors,
+                codebook,
+                quantized,
+                activation_scales,
+                sums,
+                implementation="avx2",
+            )
+            np.testing.assert_allclose(
+                block203_avx2, block203_scalar, rtol=1e-5, atol=5e-5
+            )
 
     def test_row_scale4_rejects_noncanonical_payloads(self) -> None:
         anchors = np.ones(1, dtype=np.float16)
