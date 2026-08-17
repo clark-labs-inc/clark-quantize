@@ -1,0 +1,170 @@
+{
+  "schema": "qwen38_27b_mask64_gain_hash_fused_preregistration_v1",
+  "receipt_schema": "qwen38_27b_mask64_gain_hash_fused_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T23:08:51Z",
+  "hypothesis": "Conditioned on the real-weight gain route and sign-only fused kernel gates passing, the three-bit gain side channel can be added to one-call direct 1.5-bit mask64 plus INT4 Clark-Hash correction at the exact Qwen3.8-27B MLP shapes while retaining at least 95 percent of sign-only fused AVX2 throughput, agreeing with explicit T x plus A times R_gain x within 5e-4 absolute error, and retaining at most 1.57 complete component bits per weight",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_compute_forbidden": true,
+    "claim_boundary": "synthetic exact-support full-shape fused microkernel only; not a real learned route, complete layer, token-throughput, model-quality, semi-lossless, or breakthrough result"
+  },
+  "parents": {
+    "required_real_weight_gain_route_receipt": "/workspace/quant-state/qwen38-27b-gain-hash-routing-v1.json",
+    "required_real_weight_gain_route_gate": "passed true",
+    "required_sign_only_fused_receipt": "/workspace/quant-state/qwen38-27b-mask64-hash-fused-v1.json",
+    "required_sign_only_fused_gate": "passed true",
+    "skip_rule": "if either parent rejects, emit a terminal valid nonpromotion without compiling or benchmarking"
+  },
+  "formula": {
+    "weight_approximation": "W approximately equals T plus A R_gain",
+    "runtime": "y equals T x plus A times R_gain x",
+    "ternary_runtime": "mask64 support plus support-ordered signs with row-anchor scale4",
+    "gain_route": "one learned bucket sign and three-bit positive gain index per input coordinate",
+    "correction": "ratio-128 signed INT4 A with one FP16 scale per output row",
+    "fusion_boundary": "one public C call with one output buffer; R_gain x scratch is at most 136 FP32 values and no dense residual is materialized"
+  },
+  "gain_route": {
+    "disk_bucket_bits": "ceil(log2(sketch_dim))",
+    "disk_sign_bits": 1,
+    "disk_gain_index_bits": 3,
+    "disk_gain_codebook": "eight FP16 values",
+    "compute_bucket_bits": 16,
+    "compute_sign_bits": 8,
+    "compute_gain_index_bits": 8,
+    "compute_gain_codebook": "eight FP32 values expanded once at load",
+    "record_compute_expansion_bytes": true,
+    "route_sharing_savings_assumed": false
+  },
+  "cases": [
+    {
+      "name": "gate_or_up_projection",
+      "rows": 17408,
+      "columns": 5120,
+      "sketch_dim": 40
+    },
+    {
+      "name": "down_projection",
+      "rows": 5120,
+      "columns": 17408,
+      "sketch_dim": 136
+    }
+  ],
+  "measurement": {
+    "seed": 158227,
+    "ternary_codes": "deterministic synthetic exact-64-support groups",
+    "route": "deterministic synthetic one-sparse signed routing with uniformly sampled three-bit gain indices and eight positive FP16 gain levels",
+    "correction_codes": "deterministic signed INT4 in [-7,7] with FP16 row scales",
+    "activation": "deterministic signed INT8 with per-group FP32 scales",
+    "warmups": 3,
+    "repetitions": 11,
+    "statistic": "median monotonic wall-clock nanoseconds",
+    "threading": "one process pinned to one physical CPU; kernels are single-threaded",
+    "comparison": "one-call gain-routed AVX2 BMI2 kernel versus the sign-only one-call fused AVX2 BMI2 parent implementation using identical mask64 codes route buckets route signs correction and activation",
+    "timing_order": "alternated by case to reduce systematic first-run bias",
+    "correctness_oracle": "independent mask64 scalar base plus NumPy dequantized gain-route sketch and signed-INT4 correction",
+    "compiler": "system C compiler with C11 O3 Wall Wextra Werror shared PIC and mtune=native"
+  },
+  "gate": {
+    "required_cases": 2,
+    "maximum_absolute_error": 0.0005,
+    "minimum_gain_throughput_fraction_of_sign_only": 0.95,
+    "maximum_complete_component_bits_per_weight": 1.57
+  },
+  "resources": {
+    "required_isa": [
+      "AVX2",
+      "FMA",
+      "F16C",
+      "BMI2"
+    ],
+    "cpu_quota_percent": 100,
+    "memory_max_mib": 512,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 10,
+    "persistent_output_bytes": "less than 1 MiB",
+    "run_after_gain_route_and_sign_only_fused_gates": true
+  },
+  "promotion_rules": [
+    "every shape must independently meet correctness storage and gain-overhead thresholds",
+    "the sign and gain candidates must use identical mask64 codes scales bucket routes signs correction codes and activation",
+    "the correction must be checked against an explicit dequantized T x plus A times R_gain x oracle",
+    "disk bit packing and expanded compute-layout bytes must both be reported",
+    "a pass only establishes that the gain side channel is computationally cheap enough to integrate",
+    "real learned coefficients capability and end-to-end token throughput require separate gates",
+    "a failed gate remains a terminal useful result and requires a separately versioned optimization",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "this benchmark cannot establish semi-lossless compression or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "mask64_native_c": {
+      "path": "clark_quantize/qwen38_fixed_support_mask64_cpu.c",
+      "sha256": "af12f49bfb975541ff5030ec50ffe6abb7df96a203dbdd9a014e170bfce85644"
+    },
+    "sign_fused_native_c": {
+      "path": "clark_quantize/qwen38_mask64_hash_fused_cpu.c",
+      "sha256": "7f8be0c3afa1fe490286e1618ef45cedc83bd5b71f246093b107afd4d2d957c8"
+    },
+    "gain_fused_native_c": {
+      "path": "clark_quantize/qwen38_mask64_gain_hash_fused_cpu.c",
+      "sha256": "681839baf29be3b42cf8abe2ac91250b093bf4dae66573dcbf8254950530e28d"
+    },
+    "mask64_binding": {
+      "path": "clark_quantize/qwen38_fixed_support_mask64_cpu.py",
+      "sha256": "d8dd4ea2d223dcf81184166d676f7e248c10809d7fb5b8a6f62163b62bdff908"
+    },
+    "sign_fused_binding": {
+      "path": "clark_quantize/qwen38_mask64_hash_fused_cpu.py",
+      "sha256": "cd8fb102dd10b05f0a959ff241a40bdfa412af5f4c6c406eb4dce50a6532100e"
+    },
+    "gain_fused_binding": {
+      "path": "clark_quantize/qwen38_mask64_gain_hash_fused_cpu.py",
+      "sha256": "838841a2730204b867d86c4b0ab90958e52c05c1fa5704ef19dcbce466480861"
+    },
+    "int4_packer": {
+      "path": "clark_quantize/qwen38_hash_residual_cpu.py",
+      "sha256": "ed2d8b44491d3483ef0ae59e342db69c541b5e87837bf77b1385481aa403f6ca"
+    },
+    "gain_storage_ledger": {
+      "path": "clark_quantize/qwen38_gain_hash_residual.py",
+      "sha256": "b76d2c7baf823ad42548dab59b0e851e05ce1568c8b1901d779d365045818561"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_qwen38_mask64_gain_hash_fused_cpu.py",
+      "sha256": "e5f145f7b4f10334befe42ce4bd453db1d5b6aeb372a5b814af14bb2edc264e3"
+    },
+    "preregistration_tests": {
+      "path": "clark_quantize/test_qwen38_mask64_gain_hash_fused_preregistration.py",
+      "sha256": "fbf455cbedb2fb394e9cac726089bcbb0fb9261143f22168cee2f3b8b0ba95cd"
+    },
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_mask64_gain_hash_fused_v1.py",
+      "sha256": "cc6f2bbed084ff4f1420bc49d5e3498db4523500c64d4afe5e9f047670f02067"
+    },
+    "build_script": {
+      "path": "scripts/cpu/build_qwen38_mask64_gain_hash_fused_cpu.sh",
+      "sha256": "9e5fff4d597627869b29ccfb91b0fb56e4618e0346771ca7d9d17fdf0b99735c"
+    },
+    "watcher": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/watch_qwen38_27b_mask64_gain_hash_fused_v1.sh",
+      "sha256": "f7f146bcab1c54f8a053f6fc9a836f4d5281880090e3f375d6e291c6e10d1f70"
+    },
+    "service": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/quant-qwen38-27b-mask64-gain-hash-fused-v1.service",
+      "sha256": "ed060a240d8217fa872fcae794effe9f780f99b20883f3e4c3369094ad61a98b"
+    },
+    "parent_gain_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_gain_hash_routing_preregistration_v1.json",
+      "sha256": "95d96d849a7307ef4bb054e01244337b9d9460b353cb3c63562dd99b5139bb3a"
+    },
+    "parent_sign_fused_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_mask64_hash_fused_preregistration_v1.json",
+      "sha256": "fb0997fc3c9f613a3492adec97157897782a2fcd74efed9a595b0bc2936a45e4"
+    },
+    "terminal_wait_helper": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/wait_for_qwen38_terminal_receipt.sh",
+      "sha256": "b874a8ed05100d01d8b71449b7c9b4951495728d76173fab9fc02a57ef2ecbb7"
+    }
+  }
+}
