@@ -1,0 +1,1675 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-08-17T08:26:32.971899+00:00",
+  "seed": 20260816,
+  "tasks": [
+    {
+      "task": "mmlu",
+      "dataset": "cais/mmlu",
+      "config": "all",
+      "split": "test",
+      "revision": "c30699e8356da336a370243923dbaf21066bb9fe",
+      "fingerprint": "436299c1c09696bb",
+      "shots": 5,
+      "sampling": {
+        "method": "stratified_equal",
+        "seed": 20260816,
+        "stratum_key": "subject"
+      },
+      "dataset_size": 14042,
+      "samples": [
+        {
+          "sample_id": "mmlu:33",
+          "index": 33,
+          "row_sha256": "e92221969252606fe3bcf6e11c78b235287a3957b4a1b70d5ea237d94d46a3ef",
+          "stratum": "abstract_algebra"
+        },
+        {
+          "sample_id": "mmlu:124",
+          "index": 124,
+          "row_sha256": "8000ec53795c926517412f048eabbbe9ba0c6aed94ec1fb96eb4f4d7d0bbf571",
+          "stratum": "anatomy"
+        },
+        {
+          "sample_id": "mmlu:311",
+          "index": 311,
+          "row_sha256": "d675bd6a14b84477dab72a1520903f5cd8cb9e28b1ebe7c4cfcce63f07a635b9",
+          "stratum": "astronomy"
+        },
+        {
+          "sample_id": "mmlu:436",
+          "index": 436,
+          "row_sha256": "52aea5755f56340550f36140bf6bd446fe99292c5d7e5993e26c24e81f6ee331",
+          "stratum": "business_ethics"
+        },
+        {
+          "sample_id": "mmlu:575",
+          "index": 575,
+          "row_sha256": "8930dcaa491f8a9b477eacb3fab82134217757c17772831634abdc311f86051c",
+          "stratum": "clinical_knowledge"
+        },
+        {
+          "sample_id": "mmlu:883",
+          "index": 883,
+          "row_sha256": "d6dcf2bbe8e930922830dbc1c4292da611388e7472da2084b5480e06cfd8c99d",
+          "stratum": "college_biology"
+        },
+        {
+          "sample_id": "mmlu:981",
+          "index": 981,
+          "row_sha256": "b6a5816f1972620e77fc89db10e37661a4d4082a0a2c676cd2dda4ec24bcf7ba",
+          "stratum": "college_chemistry"
+        },
+        {
+          "sample_id": "mmlu:1032",
+          "index": 1032,
+          "row_sha256": "a3def0a21c53094fdb400fae298df969943e79332d5c2a56f98d4a4f481075e7",
+          "stratum": "college_computer_science"
+        },
+        {
+          "sample_id": "mmlu:1161",
+          "index": 1161,
+          "row_sha256": "426a7d12f79a3a2a181a6f76ca62c9ec31bcabd50b8749cb31dc628874ad33cd",
+          "stratum": "college_mathematics"
+        },
+        {
+          "sample_id": "mmlu:1263",
+          "index": 1263,
+          "row_sha256": "53d839d8ee00019bbec3160bec28ee2e7227c40cdf884d349b94a80a07935968",
+          "stratum": "college_medicine"
+        },
+        {
+          "sample_id": "mmlu:1398",
+          "index": 1398,
+          "row_sha256": "608fad493ba31dfea54304cd2abe8a5a69572ce7b74aea7214d9624fec044307",
+          "stratum": "college_physics"
+        },
+        {
+          "sample_id": "mmlu:1491",
+          "index": 1491,
+          "row_sha256": "c094d4a2bc02e9411d493bed1beb02739f04782df961bc47d28bad44a9cb0aab",
+          "stratum": "computer_security"
+        },
+        {
+          "sample_id": "mmlu:1714",
+          "index": 1714,
+          "row_sha256": "0dcae281f4c4cb85c2afa0ce27710e91f0d3c23f5c3ed9db9c34a2e4782eeb69",
+          "stratum": "conceptual_physics"
+        },
+        {
+          "sample_id": "mmlu:1808",
+          "index": 1808,
+          "row_sha256": "56683c7a49495e6827247facb18c58a0b6f0869da91ef06ea4122d8c0822ca93",
+          "stratum": "econometrics"
+        },
+        {
+          "sample_id": "mmlu:2039",
+          "index": 2039,
+          "row_sha256": "e1d72b0ed213c647760cdb78a812b515e4a5fddbe5a88ddc10261d5b001cf279",
+          "stratum": "electrical_engineering"
+        },
+        {
+          "sample_id": "mmlu:2286",
+          "index": 2286,
+          "row_sha256": "22ffe9cd85fecbdf0c744985bd8baaad7474c37a5fe8830590eaadaeb65ab738",
+          "stratum": "elementary_mathematics"
+        },
+        {
+          "sample_id": "mmlu:2501",
+          "index": 2501,
+          "row_sha256": "56d628a9d587d6ac2442f46b50aeab5233dfa6a0fa8ab80e192c84efdb6bd9dc",
+          "stratum": "formal_logic"
+        },
+        {
+          "sample_id": "mmlu:2580",
+          "index": 2580,
+          "row_sha256": "2cd5041d5d5421e5bc9e097623fea34a652538a3dc9d4ac325644373e3852b5f",
+          "stratum": "global_facts"
+        },
+        {
+          "sample_id": "mmlu:2786",
+          "index": 2786,
+          "row_sha256": "125a51df9c4df988e246d51132469d64751a0c1239fffb7ac294e514bcedd76f",
+          "stratum": "high_school_biology"
+        },
+        {
+          "sample_id": "mmlu:3170",
+          "index": 3170,
+          "row_sha256": "f588c2ca4f1fe5a8802dd0fb385d03029a2b7fb2a1b9c22336e9b2214d5c7a90",
+          "stratum": "high_school_chemistry"
+        },
+        {
+          "sample_id": "mmlu:3241",
+          "index": 3241,
+          "row_sha256": "dc276892613dac9fe94ac3b74b04db7fa5e2db3efba2ef8f905fe41ad8b17025",
+          "stratum": "high_school_computer_science"
+        },
+        {
+          "sample_id": "mmlu:3304",
+          "index": 3304,
+          "row_sha256": "11cf16efd6647bfbebd22c4cf608d92490b9d975ea7819fd57e386889cb353a5",
+          "stratum": "high_school_european_history"
+        },
+        {
+          "sample_id": "mmlu:3546",
+          "index": 3546,
+          "row_sha256": "610465428625a4b304a64d473ef65c3f9e525fdc044fbecee611d4af210a30f3",
+          "stratum": "high_school_geography"
+        },
+        {
+          "sample_id": "mmlu:3835",
+          "index": 3835,
+          "row_sha256": "d4d3af9dc9f88d25d7bf4368c9c922ec895adc324fd0a386c2a49ba96b6c5967",
+          "stratum": "high_school_government_and_politics"
+        },
+        {
+          "sample_id": "mmlu:4009",
+          "index": 4009,
+          "row_sha256": "42354083e1d849b21d9e55cf261861669792418dcd4eb1060d7afe1f166694c4",
+          "stratum": "high_school_macroeconomics"
+        },
+        {
+          "sample_id": "mmlu:4371",
+          "index": 4371,
+          "row_sha256": "de2729e59b031f230389194867864b5eea8e4fd7ca5fbd542dda1cde8e11f713",
+          "stratum": "high_school_mathematics"
+        },
+        {
+          "sample_id": "mmlu:4622",
+          "index": 4622,
+          "row_sha256": "28d906cf6ea081f6b41d4f0a410df535ed75853fd474b1c0b25e4e585392afde",
+          "stratum": "high_school_microeconomics"
+        },
+        {
+          "sample_id": "mmlu:4814",
+          "index": 4814,
+          "row_sha256": "f5552bb1b9770a98ed19d3262c508e5809fe790349d592e191e611c7bbaeac04",
+          "stratum": "high_school_physics"
+        },
+        {
+          "sample_id": "mmlu:5161",
+          "index": 5161,
+          "row_sha256": "82c2f4eb0d23a1bb4b975bbd2b7006e3955cf03fe514aad609aa45977f671aa4",
+          "stratum": "high_school_psychology"
+        },
+        {
+          "sample_id": "mmlu:5553",
+          "index": 5553,
+          "row_sha256": "44fb88edcf6cd9d7d6ce7f74134fdc9b6114d1e5bfae6b046afaafee6c19cf2c",
+          "stratum": "high_school_statistics"
+        },
+        {
+          "sample_id": "mmlu:5834",
+          "index": 5834,
+          "row_sha256": "b2c81eeb056b774d33dd64c71d4c91eca0eab1b4291f2521b76646e7a14bfa9b",
+          "stratum": "high_school_us_history"
+        },
+        {
+          "sample_id": "mmlu:5891",
+          "index": 5891,
+          "row_sha256": "ceadf80454beeec9b90c8196ea36ac48ca10d72f6fccc54a3abcd5a706f47dcd",
+          "stratum": "high_school_world_history"
+        },
+        {
+          "sample_id": "mmlu:6159",
+          "index": 6159,
+          "row_sha256": "8c6e13f4eda7a881ff2bda8e256e6531ba4dd4e7e3b930de5b980a34716683d0",
+          "stratum": "human_aging"
+        },
+        {
+          "sample_id": "mmlu:6338",
+          "index": 6338,
+          "row_sha256": "913ac00d473ffe891ec3e1cae9cdd4ebfb0d9cf1555a77147cfbae1a5480ae60",
+          "stratum": "human_sexuality"
+        },
+        {
+          "sample_id": "mmlu:6458",
+          "index": 6458,
+          "row_sha256": "c4f773b9351576020f083da1aadd0ce7ad14d630a0b01ee3eecf6a10be823d7f",
+          "stratum": "international_law"
+        },
+        {
+          "sample_id": "mmlu:6610",
+          "index": 6610,
+          "row_sha256": "52f315d4d1d6183a7ebd07cd319fc6bc953720cd87b8cf19e92b97898aee0bba",
+          "stratum": "jurisprudence"
+        },
+        {
+          "sample_id": "mmlu:6780",
+          "index": 6780,
+          "row_sha256": "50a9b0524902f0328a195678aa9ed99d0cea1b78c275160306b498574b6b2258",
+          "stratum": "logical_fallacies"
+        },
+        {
+          "sample_id": "mmlu:6857",
+          "index": 6857,
+          "row_sha256": "69014eb8964a11b13644647ddea823006499a5bd4822d439c8bf0a916df3d6ce",
+          "stratum": "machine_learning"
+        },
+        {
+          "sample_id": "mmlu:6977",
+          "index": 6977,
+          "row_sha256": "684e78f919a27fa57f3cb2d5c48f77bf97cdebf4a3a64c09d83da0e19df40a40",
+          "stratum": "management"
+        },
+        {
+          "sample_id": "mmlu:7248",
+          "index": 7248,
+          "row_sha256": "4708f95dd2bc0c4ba98fb2546e12af0c8479d3b3ad95f5499a9a34206f051366",
+          "stratum": "marketing"
+        },
+        {
+          "sample_id": "mmlu:7308",
+          "index": 7308,
+          "row_sha256": "ae2d031202b86ba958cc14489939880ca6a80e68d6fa7f29b206d0223e544d39",
+          "stratum": "medical_genetics"
+        },
+        {
+          "sample_id": "mmlu:7834",
+          "index": 7834,
+          "row_sha256": "ebd01673ba9d35913c5965cb497291a0b9b3e434ed62179a76be358e21e253bb",
+          "stratum": "miscellaneous"
+        },
+        {
+          "sample_id": "mmlu:8445",
+          "index": 8445,
+          "row_sha256": "cecf3e39e411723b1bcb1d8b9d16a0d66579422580100e553039b64ad9cc433d",
+          "stratum": "moral_disputes"
+        },
+        {
+          "sample_id": "mmlu:8685",
+          "index": 8685,
+          "row_sha256": "e0b5b37475799c6327dc3035a4d99d03714a52fa8a78e8902a5f8ca3f4480785",
+          "stratum": "moral_scenarios"
+        },
+        {
+          "sample_id": "mmlu:9438",
+          "index": 9438,
+          "row_sha256": "b94ade06cf8f91fc275dbd9e5fe0917e80e7fd695e09ff492b96b70cdb2bee62",
+          "stratum": "nutrition"
+        },
+        {
+          "sample_id": "mmlu:9809",
+          "index": 9809,
+          "row_sha256": "40acc846d6097e1290c2df45b31e804c1f7e8ff2cc46e6a9c53a986000c63dcb",
+          "stratum": "philosophy"
+        },
+        {
+          "sample_id": "mmlu:10072",
+          "index": 10072,
+          "row_sha256": "532acef5cab351eb9390ff81f40e7995d6a4f55fe5b67631c339c03be324c3ce",
+          "stratum": "prehistory"
+        },
+        {
+          "sample_id": "mmlu:10605",
+          "index": 10605,
+          "row_sha256": "9aa56557cb31e823dbc59a8ff4523255af152c4e451c1fc01f8877aa8010c6f4",
+          "stratum": "professional_accounting"
+        },
+        {
+          "sample_id": "mmlu:11755",
+          "index": 11755,
+          "row_sha256": "016f1435585cb33675f438f545f09ce69cf269c378e6f063143787253b56d28b",
+          "stratum": "professional_law"
+        },
+        {
+          "sample_id": "mmlu:12266",
+          "index": 12266,
+          "row_sha256": "0257d8dd39b0c1ff8f3748a75a87c3b76f1e40925a467928990b9786e4fbbfdf",
+          "stratum": "professional_medicine"
+        },
+        {
+          "sample_id": "mmlu:13031",
+          "index": 13031,
+          "row_sha256": "6885c178c00480147c508ccfdd6bbe04303222b16664cbdabc64cefb9155a456",
+          "stratum": "professional_psychology"
+        },
+        {
+          "sample_id": "mmlu:13100",
+          "index": 13100,
+          "row_sha256": "4d71b75548be7467237722bdb1442e5124601b22a3855b6f930f7c1152d19455",
+          "stratum": "public_relations"
+        },
+        {
+          "sample_id": "mmlu:13311",
+          "index": 13311,
+          "row_sha256": "d818c2b14b2bc3afbf3ccd2dafba622b7f2e011d09219be7494dcec8c5f6ac92",
+          "stratum": "security_studies"
+        },
+        {
+          "sample_id": "mmlu:13522",
+          "index": 13522,
+          "row_sha256": "593d82024d8a2263644f918022ccbc1421838baf699d50e47629fbb6a436c40b",
+          "stratum": "sociology"
+        },
+        {
+          "sample_id": "mmlu:13654",
+          "index": 13654,
+          "row_sha256": "a7f339369b14d298bbdd985e781222c117cda2cb8bd136d05c29a0575f4eae15",
+          "stratum": "us_foreign_policy"
+        },
+        {
+          "sample_id": "mmlu:13828",
+          "index": 13828,
+          "row_sha256": "8c92a9c51940cb981cb2b7ed3b21b5a2aca866ce97aa1d4cf23e00d2321b3d59",
+          "stratum": "virology"
+        },
+        {
+          "sample_id": "mmlu:13916",
+          "index": 13916,
+          "row_sha256": "cdb39e7a9b1734dd25ef64590bdc49624958d06da21fd986c01c3ca1ba97dfab",
+          "stratum": "world_religions"
+        },
+        {
+          "sample_id": "mmlu:90",
+          "index": 90,
+          "row_sha256": "4b07c0b1fcff1995bccb6fd608189c47d868c185606ae1ce4216c2ed4c79b255",
+          "stratum": "abstract_algebra"
+        },
+        {
+          "sample_id": "mmlu:193",
+          "index": 193,
+          "row_sha256": "3617a46536aa5de1aa9b39c2a3b94d4535c44af13d2960b28177d1b14e2fe73c",
+          "stratum": "anatomy"
+        },
+        {
+          "sample_id": "mmlu:354",
+          "index": 354,
+          "row_sha256": "ed69764b40fcebc4ea50dbf47880aa0af4289a26f1fb56ef934c01ef98b3b5b3",
+          "stratum": "astronomy"
+        },
+        {
+          "sample_id": "mmlu:405",
+          "index": 405,
+          "row_sha256": "60a6f0be8621126886859c32519ed40cdd4f0e620b001ee33cbfba94d26d0a80",
+          "stratum": "business_ethics"
+        },
+        {
+          "sample_id": "mmlu:651",
+          "index": 651,
+          "row_sha256": "8f34cab3a0e4ceb4e338f43e9ae7b8cd7746cbb11bae5db94bd4ce1196815af3",
+          "stratum": "clinical_knowledge"
+        },
+        {
+          "sample_id": "mmlu:810",
+          "index": 810,
+          "row_sha256": "da2e0d9c7af2395e3ec394822118b275491fe7dd7125f33cebdf6f2f0a092850",
+          "stratum": "college_biology"
+        },
+        {
+          "sample_id": "mmlu:930",
+          "index": 930,
+          "row_sha256": "11dce95455cddb1e6cf454328cb93988fd093c0cdfe527c051ea9076201286bc",
+          "stratum": "college_chemistry"
+        }
+      ],
+      "support": {
+        "dataset": "cais/mmlu",
+        "config": "all",
+        "split": "dev",
+        "revision": "c30699e8356da336a370243923dbaf21066bb9fe",
+        "fingerprint": "ca7a71e4c243f30b",
+        "stratum_key": "subject",
+        "shots_per_stratum": 5,
+        "by_stratum": {
+          "abstract_algebra": [
+            {
+              "index": 0,
+              "row_sha256": "71fd4766f98b5631823b24cfea9b200fb59aa7a44c0053431050df4afbd0f00c"
+            },
+            {
+              "index": 1,
+              "row_sha256": "c6e3b7a5702f17cb8bcc05964170717764dce5cf62b62bfbb06a3b297cbfc95b"
+            },
+            {
+              "index": 2,
+              "row_sha256": "613b5becfa7c439e5e559f45a6caf963d6dafd7af37ae163fc556b51c70986c9"
+            },
+            {
+              "index": 3,
+              "row_sha256": "f67c2694c99e7068eb5bfed8ab0af369944604e84771dfe5e295df6f09192c07"
+            },
+            {
+              "index": 4,
+              "row_sha256": "5e46326d36f477272780bad0abab5f0d7318922861c35e89f975f7a32fda30bc"
+            }
+          ],
+          "anatomy": [
+            {
+              "index": 5,
+              "row_sha256": "cb1eeb70beab731f311ad554d5cdbcadb2877b1d94ceee80b7e6e984ae8218f0"
+            },
+            {
+              "index": 6,
+              "row_sha256": "709e6ab80c02c17f588dc42c6c64f4c086ab23a97716e7ededd336bd7e003399"
+            },
+            {
+              "index": 7,
+              "row_sha256": "d8e76614c3f2582e0e53a588f5668eb039dfa319d44b8cfc7f6f345ed81b2443"
+            },
+            {
+              "index": 8,
+              "row_sha256": "3e7be145dc7a0b7841793e516974a5ab9b3d699e3650bc4ace72ce90d71a3490"
+            },
+            {
+              "index": 9,
+              "row_sha256": "ff8bd5257592c5c51575ce5e3c550dcf4d23760723a222965636bf46d35a4a37"
+            }
+          ],
+          "astronomy": [
+            {
+              "index": 10,
+              "row_sha256": "080243999573037414fd07e3f2d5f9b1ceae4a42b22ff317f26ae4c6d1d06b8e"
+            },
+            {
+              "index": 11,
+              "row_sha256": "4b0967157a5c0c9bb353be9952daffd2b986cd0d1993c3c20c098b5cc9358c6a"
+            },
+            {
+              "index": 12,
+              "row_sha256": "a94de1676c1ee4da9b1a3b0829e3c43940111842cfe842e3262caa47606aabe7"
+            },
+            {
+              "index": 13,
+              "row_sha256": "76e4e19524d6bcdae851898ec4e1dcd40fc382b82d5df53bc6e6f8ff53bd6d6d"
+            },
+            {
+              "index": 14,
+              "row_sha256": "c33aaf497ba6e4037cc8127ac3fbb773e8f450ce45683ec49a94da8e3d29cb07"
+            }
+          ],
+          "business_ethics": [
+            {
+              "index": 15,
+              "row_sha256": "43a3d74cd5cde611515cf854dd6a5c395fe6df05c9a47ef1db67c14189fc4df9"
+            },
+            {
+              "index": 16,
+              "row_sha256": "02645cc7637fd13301bb100cfa7653fd2600b7ecff6e20e663b2bac7cf6980f6"
+            },
+            {
+              "index": 17,
+              "row_sha256": "1896e40eb337261e84b5b2a10f8abe0c03fb331033c19a669e5e578f78cf9e40"
+            },
+            {
+              "index": 18,
+              "row_sha256": "9e63fcfd6ccba0e42439eaeaf07887b3e6935c7cd1d9b25a1c52b805694bb152"
+            },
+            {
+              "index": 19,
+              "row_sha256": "96981b9ea9d46e459180825fffd1d37cef3da78c67586fef935213e0efe4d8cc"
+            }
+          ],
+          "clinical_knowledge": [
+            {
+              "index": 20,
+              "row_sha256": "351639c0c82c03fa71f7a0c7167ce50dc64da65648a0b31d577631dc84f86bff"
+            },
+            {
+              "index": 21,
+              "row_sha256": "9df0fc63b9e1a6bc03ab8e6bb151ef505c9fa4d15cfc5f92e26bb5f1050ee561"
+            },
+            {
+              "index": 22,
+              "row_sha256": "62f35a83357bd70f480cab9ed5da8e1b15e67ccbf3c25444fbb957b3465bf886"
+            },
+            {
+              "index": 23,
+              "row_sha256": "a06cb8c28b8e341d9d338dd26341135d9605fe4ddd3250d85751f6978cb20c0b"
+            },
+            {
+              "index": 24,
+              "row_sha256": "11affd43fee26fd01bb337e0109028e58b4b33a65af9e2add2f35cff72e302d8"
+            }
+          ],
+          "college_biology": [
+            {
+              "index": 25,
+              "row_sha256": "7c992dc9b71e796a2a045f35e68fbd6e1ed7911fb7dee13928cdf70afc94deb7"
+            },
+            {
+              "index": 26,
+              "row_sha256": "47de905dc43123b8dc2c41da194fa6500df85518ddf7ec892425dfa4e93d95db"
+            },
+            {
+              "index": 27,
+              "row_sha256": "dbc4e1692d2e8957cd8d0150a4f7f5fd99ef5cbc4dd884a7f2ba04421783cdc9"
+            },
+            {
+              "index": 28,
+              "row_sha256": "27409d66166e2fa7096d6e67ec0cf49ce19de844c9f45c303d3137f642794e32"
+            },
+            {
+              "index": 29,
+              "row_sha256": "f6ecab1d0cf9a4279b29abc42e8f3d3adaff622353260302012f1756861b81d2"
+            }
+          ],
+          "college_chemistry": [
+            {
+              "index": 30,
+              "row_sha256": "3d38b49df1ff56af17e7fbf7637c053bba6091d4e0bd4f9b4517ef52d982149c"
+            },
+            {
+              "index": 31,
+              "row_sha256": "ad22d9077f0b93f8603aa91b6fa3e46325260fdb094498f7867cbc2625ebe4da"
+            },
+            {
+              "index": 32,
+              "row_sha256": "ceaec4f37357693c680c076c7d91efd69744c05b464a7b6ffd7b2f4326bf971f"
+            },
+            {
+              "index": 33,
+              "row_sha256": "c4a39f13a30c514db981f5c4cca89f14ea963c09af5c9044127fa06e06ef3cab"
+            },
+            {
+              "index": 34,
+              "row_sha256": "49e19e8a1846cfb7103879942b43f7e50736f991a0cd6fb81c3fca832accce97"
+            }
+          ],
+          "college_computer_science": [
+            {
+              "index": 35,
+              "row_sha256": "a37c2525222e19d4007e8624ce3093aa15ff9487a6f28581526c15e6ee6518cf"
+            },
+            {
+              "index": 36,
+              "row_sha256": "706e58d176aa4e06fe3a3785c518fd0cf6f6518dddf3c87f60499fba4818e999"
+            },
+            {
+              "index": 37,
+              "row_sha256": "234051e5a7a028d78776ba382ab6dd5279345344bab8352173c8c2ceb102db3b"
+            },
+            {
+              "index": 38,
+              "row_sha256": "b751b57b51c84b5bd9d084da31b41129eda67457ae28c0a84654c23a9c3bcbac"
+            },
+            {
+              "index": 39,
+              "row_sha256": "53690966ade788ee50c6ddce003513ac8f610f85834461d2fa25bebd414e0730"
+            }
+          ],
+          "college_mathematics": [
+            {
+              "index": 40,
+              "row_sha256": "5a4da54b43ad3251fef8c1ffdfd88b3d1c3861ae31d742965be773ac29142627"
+            },
+            {
+              "index": 41,
+              "row_sha256": "7497d024023584a9b8553c4093d9c09cdf4e7172690d87410338e36e42bc0719"
+            },
+            {
+              "index": 42,
+              "row_sha256": "de49cf4cbc86c706505813410fd056a431440594556191d6fe5daee420e69a1b"
+            },
+            {
+              "index": 43,
+              "row_sha256": "5f6dbd25d8520a1fbd67f2a1a7044711cdf3e30a2f0c8a4d272cf6cbfe6865b3"
+            },
+            {
+              "index": 44,
+              "row_sha256": "bf98bd321eeaa27942c7f20da9b7ff6bef4faef9deef53eac0a1e2ff85971cbe"
+            }
+          ],
+          "college_medicine": [
+            {
+              "index": 45,
+              "row_sha256": "08557cadd75ca4c0f596f03f7466e4f6f0d60762f902fda316f36adb669353cb"
+            },
+            {
+              "index": 46,
+              "row_sha256": "1d2bcec30c833830eba068c06b2080b86423f035742816f5c0c6df1281f36cc4"
+            },
+            {
+              "index": 47,
+              "row_sha256": "8d9e959d7f3bd7100983d31aac41f166d5898127d1c4ae1e5a67a1842d4c4613"
+            },
+            {
+              "index": 48,
+              "row_sha256": "006936909a907bea6e2d6b9783ccb339df2d76e1d0c7959618350e291fc92f4a"
+            },
+            {
+              "index": 49,
+              "row_sha256": "31297d74bad86deda262edcb1cb96c923d4b454f327c79497429f407641b26fd"
+            }
+          ],
+          "college_physics": [
+            {
+              "index": 50,
+              "row_sha256": "098be2d7fbf9155fdf262ae833850ff3faa786b03da8d90cd04667d47b9adea4"
+            },
+            {
+              "index": 51,
+              "row_sha256": "1dcc2d13f8f9ac3676aee88ae2880c9d323d4086a065a2523dbf5e0070c96356"
+            },
+            {
+              "index": 52,
+              "row_sha256": "443f8472d7d109fdbecaef850f47f6348edbc6a0e5a9fb8eecd340a80c6e8c8c"
+            },
+            {
+              "index": 53,
+              "row_sha256": "098be2d7fbf9155fdf262ae833850ff3faa786b03da8d90cd04667d47b9adea4"
+            },
+            {
+              "index": 54,
+              "row_sha256": "af66101f1d8b19ab9efb94ee3b993ee6c1a4c07c2ff5722b975f17a7cdb5d0d7"
+            }
+          ],
+          "computer_security": [
+            {
+              "index": 55,
+              "row_sha256": "d8aa9d2fcb05a79fa1fe1e45985dd474a5db3e2d8f79ce7312444415077395fe"
+            },
+            {
+              "index": 56,
+              "row_sha256": "586632005b688634e7399e90efbeca71bb2c31e3f18d0ad34b17a7934a2f8123"
+            },
+            {
+              "index": 57,
+              "row_sha256": "952c9fd8b67f38b2ba643c9948890dbc6466467b72f7c5add932dea7691f3377"
+            },
+            {
+              "index": 58,
+              "row_sha256": "b2cac8c40b7216ca6e97979648b427b7c58bcdc74b889bd76ab4ade885a8f9ff"
+            },
+            {
+              "index": 59,
+              "row_sha256": "df713d1cb09abf3142f6ea2e4c67ee7ea71884c1de6c5c078e3ebf1b01bae451"
+            }
+          ],
+          "conceptual_physics": [
+            {
+              "index": 60,
+              "row_sha256": "dcf9fe2a2507e3e1303d3118568eaca4bd76f4fe0079e9ab7adb42125568c41e"
+            },
+            {
+              "index": 61,
+              "row_sha256": "201f592708596aec7942f7fb01f1fea8aef030cd3535899809da398bda4a1c44"
+            },
+            {
+              "index": 62,
+              "row_sha256": "b310abee9c015b3dd19b59885b67f7a447c02991f4372c12e2d4ec9f878a0a9f"
+            },
+            {
+              "index": 63,
+              "row_sha256": "73d4a408de0aee720c33eca1cb2ebbc2ea867275ebafe3486508d14294a44283"
+            },
+            {
+              "index": 64,
+              "row_sha256": "4621c3e736afaf7df96ac48504adc25b983ee7df0b7037a394b63bc806fce714"
+            }
+          ],
+          "econometrics": [
+            {
+              "index": 65,
+              "row_sha256": "8347a101ec8d0d28cecca8010b3b813649ca0cc0901880d8dda175df155ab9a1"
+            },
+            {
+              "index": 66,
+              "row_sha256": "49de84368e6d16b7c2e13aaf0fba8c0eeba89b0b8df2b6b22c60d0a5b5a6c8cb"
+            },
+            {
+              "index": 67,
+              "row_sha256": "44a9625d0b10fcbfc75486a5b23ec53bbcc985f8e2e7a6aa837e961805bb3341"
+            },
+            {
+              "index": 68,
+              "row_sha256": "e71a576739221dc741af7fdfe3ea680415e1446b79df34365fb846d444711467"
+            },
+            {
+              "index": 69,
+              "row_sha256": "98ff213cd4b095cb0a50c464e1380cf8ebd15bc0cb2587a447441fae45f71080"
+            }
+          ],
+          "electrical_engineering": [
+            {
+              "index": 70,
+              "row_sha256": "8040bfda297e22a5e6c418b9d9729285748a6633ff50c2775a166093b6135035"
+            },
+            {
+              "index": 71,
+              "row_sha256": "48aaeca12ae4f84fd3295a1fc3233108dbd9b2f508a127a86b1bf005f4e43768"
+            },
+            {
+              "index": 72,
+              "row_sha256": "c07a3fd41f3808ccd7b358438f5a02ac8cb109c323e00d6f9b6f3ced75c164d0"
+            },
+            {
+              "index": 73,
+              "row_sha256": "4ef602633bd87c975db3fa3ecd9c1ec33066f186fa942d33ee8ad196e3764014"
+            },
+            {
+              "index": 74,
+              "row_sha256": "62a343e0a0fd35f4c1f7f0cc6b7be729aafaf015b82de70b548e1d074ecc753c"
+            }
+          ],
+          "elementary_mathematics": [
+            {
+              "index": 75,
+              "row_sha256": "29f8cfdc7c35949797a33450e9e15d49b082df97fa465289018bb840cca105d9"
+            },
+            {
+              "index": 76,
+              "row_sha256": "093e83d59b56c4c5cdf1ab24b3493250c38328cdf2d1007cb2073f01f37151b3"
+            },
+            {
+              "index": 77,
+              "row_sha256": "40de7d1c124895e74755087b6ad1ba72152e5eca83fb7b4838e3cb15120551e3"
+            },
+            {
+              "index": 78,
+              "row_sha256": "3478c672401148c2c0f4a12478dad8bba1b4187bcc6f25afdd65c71bd4a4dd11"
+            },
+            {
+              "index": 79,
+              "row_sha256": "d6cac1d8e8e6bbe94b5c584b5285af549e91e03f34c3eb6c7f34eeb87460bf48"
+            }
+          ],
+          "formal_logic": [
+            {
+              "index": 80,
+              "row_sha256": "64f0732b82495b70684f47848e0ceee9a5d9d4e9daf04258bf7fab82f8a4d451"
+            },
+            {
+              "index": 81,
+              "row_sha256": "5baa6f1d81a2ce1bd10b16360c8b60243ab3fe16be1f07bbc8b3e83d7e75f2ed"
+            },
+            {
+              "index": 82,
+              "row_sha256": "e2c41220857f2ccda14974c8f4f5520eb8810540de61ca1c69e9185d588bfd9a"
+            },
+            {
+              "index": 83,
+              "row_sha256": "b0e5abb7912ac4df918f9ac945808fd8e2b93f888555eaeb154e3d3a03686d31"
+            },
+            {
+              "index": 84,
+              "row_sha256": "567e2e80e7c3d9d5da6f16b9214e794ebade23ed567ddaba947d1e6b8ff64510"
+            }
+          ],
+          "global_facts": [
+            {
+              "index": 85,
+              "row_sha256": "e52aad54e810746698beb148afab1b311aef135143a34c227a0b38c3e4037c67"
+            },
+            {
+              "index": 86,
+              "row_sha256": "d9221e9903f6248ecc5c60e43c8d97349e7aa4fd3b723d0a8729f853fea369e2"
+            },
+            {
+              "index": 87,
+              "row_sha256": "55c7f4fcf3b6bb1cec921d90c53654e25d51be94f2c2f3705f49261ab73d7cb5"
+            },
+            {
+              "index": 88,
+              "row_sha256": "23a4c35f92423d79c8f90f848d7443f81f8180145485bfca33dba7a23c63bb17"
+            },
+            {
+              "index": 89,
+              "row_sha256": "39bfc51c3c16e4ba9bfbca0beea75035c53b3b1cc8b09ebfabf4cd1dd21b8df1"
+            }
+          ],
+          "high_school_biology": [
+            {
+              "index": 90,
+              "row_sha256": "b1c169c3ec6ab4ba5f7bc91a7efdba386d7bb1711bbbabb3ce039f0897fb19d8"
+            },
+            {
+              "index": 91,
+              "row_sha256": "768da1e2162a6d387d8a23385d0c8b74ca29e9ccb0a61342fb7e345937d5118d"
+            },
+            {
+              "index": 92,
+              "row_sha256": "b38869b1a9161711384976e2657925940567abc27b501b09e577b1c629013709"
+            },
+            {
+              "index": 93,
+              "row_sha256": "09a573b748ea9193077d72f741573984e167669ddd27480c9f75725fad4425e5"
+            },
+            {
+              "index": 94,
+              "row_sha256": "6cdd7b0c0f74d94d1cef638df869d5fab9eacb335781c1e4fa1b5b5e963031ff"
+            }
+          ],
+          "high_school_chemistry": [
+            {
+              "index": 95,
+              "row_sha256": "142f7557e1d290cced4529aaa679ef39b5cbcc4439fa36a707a14fc904927f0c"
+            },
+            {
+              "index": 96,
+              "row_sha256": "9dc506e124c17cb9bacfb9c994c36743131fe5f6439d5ce31fde55281af0f1c5"
+            },
+            {
+              "index": 97,
+              "row_sha256": "9d773f2934338dd3f9a86406ca2f1d46528c2161c631006020564b4dc75b661f"
+            },
+            {
+              "index": 98,
+              "row_sha256": "8644dc6f754952aa7beda8dc46363af02ce401d7faf4cbae178af86e03d14ad4"
+            },
+            {
+              "index": 99,
+              "row_sha256": "c43752a09519605734d780e4fb698d39e55f10076ab97040203da017ab60e675"
+            }
+          ],
+          "high_school_computer_science": [
+            {
+              "index": 100,
+              "row_sha256": "b7ee6db438fee814c6c4fa6ed85c3aa5826e9074cff9034c1b00053561dc8829"
+            },
+            {
+              "index": 101,
+              "row_sha256": "2b55427123840e592da875a6cefbbdba67d548d6fa4af0b0f05ca44dab04571a"
+            },
+            {
+              "index": 102,
+              "row_sha256": "ab385e77b0b5f2c6cadc2d108a1428c3c53e4042743a1477db31d841a52386e4"
+            },
+            {
+              "index": 103,
+              "row_sha256": "8538c82b1fa77ecb147c86abc1b9515b885552f78f0d61ddd95dbb31e1977ae0"
+            },
+            {
+              "index": 104,
+              "row_sha256": "f75154ad181fd150f93e64ad404aeb98d137c1e1608f39d589bf9791a2aace3f"
+            }
+          ],
+          "high_school_european_history": [
+            {
+              "index": 105,
+              "row_sha256": "1faae372583652625212222cea375eca41b36c0db2ee644340f443a72c2b8506"
+            },
+            {
+              "index": 106,
+              "row_sha256": "0c7fcbc505d943f6bd08c9b0f64316328899ab10e8352d7d64ff146e5791ae92"
+            },
+            {
+              "index": 107,
+              "row_sha256": "35047a3f6c135193111ac92aab03f961abf2a61834cdbafa4da1b3986947d118"
+            },
+            {
+              "index": 108,
+              "row_sha256": "a21a9dedd59b5bfa047f07857dfc36c796bb7dac0565332498a63e80a50b595a"
+            },
+            {
+              "index": 109,
+              "row_sha256": "10a8ae7d84c39cff29ca953dbe1ed8a7d1e97d23ee71f4afff61d0e80d9d74ff"
+            }
+          ],
+          "high_school_geography": [
+            {
+              "index": 110,
+              "row_sha256": "4e8fe1e74f39d2e8d85df33e967236d07901e049ff4ae8d59857de01d44a3dd3"
+            },
+            {
+              "index": 111,
+              "row_sha256": "3b9804633d5a3c07f26b048d91807358fe0b4a4a81bc5ac583183ef42fe3a624"
+            },
+            {
+              "index": 112,
+              "row_sha256": "4dae2e453c2356b64027efe19e545dc4af3b50f1a60ae06086f2b6fbbf52abd2"
+            },
+            {
+              "index": 113,
+              "row_sha256": "935fe9fac2c4e0aa11c75474c37994f0f0195b35ec6aac87751041ce4dab9b2c"
+            },
+            {
+              "index": 114,
+              "row_sha256": "54e733ae34f0b1130e1f82605b575956630b0c6e0a4ea6e071796528145db520"
+            }
+          ],
+          "high_school_government_and_politics": [
+            {
+              "index": 115,
+              "row_sha256": "7c1e6c771dfe9a9a67c09b37a02d83ccddda71ea5a9f24c644b2652067251ee3"
+            },
+            {
+              "index": 116,
+              "row_sha256": "e7f2e282a64c87c7aac3aa7e76e12fdd24b99573fd92c57110feeaa0b2c27ea0"
+            },
+            {
+              "index": 117,
+              "row_sha256": "2ab7ee2afde80459bd5eee076531a0eab7c32caaef97f6fa8c466fd6f866f733"
+            },
+            {
+              "index": 118,
+              "row_sha256": "64037cd20f93ab9f5b89f65bc68cfee8af2691e0f33e129368272cb83841f1ce"
+            },
+            {
+              "index": 119,
+              "row_sha256": "ab3bf8844596603c2821fea20197367168e37fb26c40bb58cdf63eec8a3eb141"
+            }
+          ],
+          "high_school_macroeconomics": [
+            {
+              "index": 120,
+              "row_sha256": "cb4cce7913d17d29b4c5e399fe7a9d8fddb67d7ac03baea2dbfcf546945b8c4c"
+            },
+            {
+              "index": 121,
+              "row_sha256": "0468eff2c5a05cce9f844a80a35d3a4067fc216577e36fb4a72f8bbf53c504f1"
+            },
+            {
+              "index": 122,
+              "row_sha256": "aefc2f8b113ffa494c9b3a9bccbb3877ba6c80653081548936e366a22d6affa8"
+            },
+            {
+              "index": 123,
+              "row_sha256": "63847f3c796043370fd627149887447a3ee019eba1737900a8f260676adf3b34"
+            },
+            {
+              "index": 124,
+              "row_sha256": "fbe8ffecbc3b4e807b9e32c9dfed1cc0255a523cc62ab627fd8dab4a2a236c3d"
+            }
+          ],
+          "high_school_mathematics": [
+            {
+              "index": 125,
+              "row_sha256": "7bdd84ca22123f6b13ef8bd6a3f9444f79b4f5d3a30783703677f006306a4722"
+            },
+            {
+              "index": 126,
+              "row_sha256": "97c305b0ccf2b18c4902d3923f58f5e61d3140c3d1d65ca8760b9bb305f9d0ea"
+            },
+            {
+              "index": 127,
+              "row_sha256": "5900a656bda895fb26c54ba86f74e2c05b96bfefaed19e522decac9af5cb4274"
+            },
+            {
+              "index": 128,
+              "row_sha256": "74c72afd7f38bffa90b9409b150c88bc860be14b946bdf67f3527b3aa04bdc98"
+            },
+            {
+              "index": 129,
+              "row_sha256": "3ecad84299d1b9fc37a4e21d4a64f9d0fdce427569861ba73ec45932d94b16df"
+            }
+          ],
+          "high_school_microeconomics": [
+            {
+              "index": 130,
+              "row_sha256": "c6f4320bb1dadd879b0d27a771da27a519e50509b846af98fd172e38d39d0c06"
+            },
+            {
+              "index": 131,
+              "row_sha256": "61ef13fea24687174d1e2f80a23ee9b192bb371023e290aeea040f9f1eff7bb4"
+            },
+            {
+              "index": 132,
+              "row_sha256": "d71cefba2cbcd31737113d3955f43cba3a43b2f1eea226170906b1f7100fe962"
+            },
+            {
+              "index": 133,
+              "row_sha256": "9fe226893cc6eb0d71268c58da52d1a51f1e4790aac24975e21d52af598b30b2"
+            },
+            {
+              "index": 134,
+              "row_sha256": "0be850572a959b8005dba3e5f207a1a7f94734e0c2b826fbbc0d5149c53c6f17"
+            }
+          ],
+          "high_school_physics": [
+            {
+              "index": 135,
+              "row_sha256": "1edcd777add57c7fa6120b936cd9c3e61256a64ebaaad37c68932f6add56337d"
+            },
+            {
+              "index": 136,
+              "row_sha256": "7281be5b4432c87d8bc924b88e3e80082cc4e7b6e758a17ff86709876eaf046b"
+            },
+            {
+              "index": 137,
+              "row_sha256": "d7333762ed1c5a3a9dcbc714f8398652366ed0753a437860cc8e1a67eb483954"
+            },
+            {
+              "index": 138,
+              "row_sha256": "fe436278fb8b92cc7b84460f180e73370ac29a4a0ced8349148c4e91ed64d1cf"
+            },
+            {
+              "index": 139,
+              "row_sha256": "468b86f5571e9ae2d972e0c6d7727d3219662f70b0091313446e898e1e062135"
+            }
+          ],
+          "high_school_psychology": [
+            {
+              "index": 140,
+              "row_sha256": "6ac138f42484a5a37b9b3366784579fc6b991d36707f17cf89b1d9310259c309"
+            },
+            {
+              "index": 141,
+              "row_sha256": "2ac74860255eaf32fe2be74c87f8c0a2fc87869523429037eef403da577f1074"
+            },
+            {
+              "index": 142,
+              "row_sha256": "1ff5d1f016973491d0a9dbf2b58d51de86bcffe350f7861a09059112de27e711"
+            },
+            {
+              "index": 143,
+              "row_sha256": "b3d6bc0e6c8a7e9c24256848a5cbf480fc060ee6b203fd8c69396a38e6e41c3f"
+            },
+            {
+              "index": 144,
+              "row_sha256": "12261032ff2a5e7dd7f4689cf58e8e086bd8468c7e28ac9111581da32a78d0a2"
+            }
+          ],
+          "high_school_statistics": [
+            {
+              "index": 145,
+              "row_sha256": "e94702a02430902d7887d26dab365ce703d904d9fb0e9f6ef0ef4ce988e2dc50"
+            },
+            {
+              "index": 146,
+              "row_sha256": "b19fe9709ce8fb89ad11ec55de1ad1e9739693292317fb19205d086b36db6ef9"
+            },
+            {
+              "index": 147,
+              "row_sha256": "cb3140ebea3e91877164879ca933b789fdd123cfd154c0d60a70434f4ea8530c"
+            },
+            {
+              "index": 148,
+              "row_sha256": "23e0bd5d7d2c7150befc3c5f69834a443dc75fee81ba6b87f41144ce3910b389"
+            },
+            {
+              "index": 149,
+              "row_sha256": "213573846206a03ededbd4aa20d3bd77b06eb3dd9b0d65b0d8a1abbd86ac275f"
+            }
+          ],
+          "high_school_us_history": [
+            {
+              "index": 150,
+              "row_sha256": "21506e4e30661689c1237bec867927f0f150d9bcddd1d01c5f38932497b88c28"
+            },
+            {
+              "index": 151,
+              "row_sha256": "28243b188d1c4098d55a322d66cc2ec87043614192bb80aff30b891cd3302f04"
+            },
+            {
+              "index": 152,
+              "row_sha256": "1b463f0e13abf159f86babff99449373b18ba9ed1e6746f59f3b2f46890e3468"
+            },
+            {
+              "index": 153,
+              "row_sha256": "cd7f7df17b1e32330704e280dce92f5cc28ae32e6da1a214c6268dee3bde1bc6"
+            },
+            {
+              "index": 154,
+              "row_sha256": "6daa52a01fab63ebc1363dc01817187a95f2663bdef268988b8f56c5511bb9b7"
+            }
+          ],
+          "high_school_world_history": [
+            {
+              "index": 155,
+              "row_sha256": "8a669927cac4b085a7f09d5ad8ccc977cf8658438e57a967230bd3f12420e02b"
+            },
+            {
+              "index": 156,
+              "row_sha256": "5eb1547349dfd5c1512ec584c3227dc68d67015dab3c81691485c178ea1d503a"
+            },
+            {
+              "index": 157,
+              "row_sha256": "a2d52032fc2715c4b64d1abd3e78815eb60027b2e21e23747ef93a02c4f6b83c"
+            },
+            {
+              "index": 158,
+              "row_sha256": "54a0ea1015f9a00461c2925f1b98295af0179ded4a871aae4b2df53b4aeb8dca"
+            },
+            {
+              "index": 159,
+              "row_sha256": "f4f8675e2f58c9877fd1ca047da62fe4994487e57ba4339d2c14ff6114f65be9"
+            }
+          ],
+          "human_aging": [
+            {
+              "index": 160,
+              "row_sha256": "1eef1bf52eb398605004dfa37b9c6a0939a3c89a9a401321db6d0fd0fdb59fb9"
+            },
+            {
+              "index": 161,
+              "row_sha256": "8289781f8a0521cb9dffddd7d9f1c3e8ba1eb0b170a0eefdb6f7a110a624161f"
+            },
+            {
+              "index": 162,
+              "row_sha256": "7364d5e41ef43ef656b463c7cf9e21cf84e7bc527b76dd19b35181a930291d27"
+            },
+            {
+              "index": 163,
+              "row_sha256": "23747dd4e71fbb02387b7101934422d2e858f629eb7090bf87b8a03b565fdb1b"
+            },
+            {
+              "index": 164,
+              "row_sha256": "b6026497c4bac6005f7d333c244a5385f5d0905b5052566e4f0299a2e806602e"
+            }
+          ],
+          "human_sexuality": [
+            {
+              "index": 165,
+              "row_sha256": "1679c065ea1e50713c5f117e21f52d533c05fd4666e4588eeebcffed1e3398ed"
+            },
+            {
+              "index": 166,
+              "row_sha256": "6f164ca608d504aaff0f4dc458dad31f3f65b420dda9336869511ddef900ccd9"
+            },
+            {
+              "index": 167,
+              "row_sha256": "cd553c6f2e8538002613febe7425e7dcf29aa98676169a01ccef4d7b64e357e4"
+            },
+            {
+              "index": 168,
+              "row_sha256": "363fe6d97769a5ba4f7a8690da32267b7ede7ff4b418d4b4013c56e2867c069b"
+            },
+            {
+              "index": 169,
+              "row_sha256": "d60368a672474f7b4cdacdeb1e5ba7ba5dc27071411b5ededc3cef5d2be219de"
+            }
+          ],
+          "international_law": [
+            {
+              "index": 170,
+              "row_sha256": "640fc11221d7e7431dc2f14f927ef09ec0649f93d3a20b02f4705cb156c91777"
+            },
+            {
+              "index": 171,
+              "row_sha256": "099a942dba9781b87b4909ab23109e557f3f609acc16e35abd8d1f0aea782315"
+            },
+            {
+              "index": 172,
+              "row_sha256": "14527d82da555f0b71d8adb2e994179bdc58a8cd3a142abf4962ae7d1ec1aaee"
+            },
+            {
+              "index": 173,
+              "row_sha256": "30f47f684481ce2e50fb2903dee5d99a4870d2c01994d988f1aa4056cf0d8578"
+            },
+            {
+              "index": 174,
+              "row_sha256": "0d26a7d1f78e41309f545a7ba771e7f937429229c6a0575e5f337db4fa36d332"
+            }
+          ],
+          "jurisprudence": [
+            {
+              "index": 175,
+              "row_sha256": "9c1fc4465b79ed97c2a49d478d8782c1099a6e1efbea9736b99ff80a2d63de2a"
+            },
+            {
+              "index": 176,
+              "row_sha256": "ed651cbda8f3a44e4d5061732a77b8bf95b29a6b49122270126505a44b29b754"
+            },
+            {
+              "index": 177,
+              "row_sha256": "97ffd5d02e5475e8d3f74ac2ac8fe4ff913415feb50f06847a609cf6308cd935"
+            },
+            {
+              "index": 178,
+              "row_sha256": "c0f9f365815bac47fca77a76c558b34017fadeeab488d80c641c65646e712fd5"
+            },
+            {
+              "index": 179,
+              "row_sha256": "c87c91e56451593353049da9b6340c2291bb4c609a94c530e51a30e869fc236e"
+            }
+          ],
+          "logical_fallacies": [
+            {
+              "index": 180,
+              "row_sha256": "515dfa6b642079de5cfdb1ccbd301e882c7682706e0c0701578977a28b854f88"
+            },
+            {
+              "index": 181,
+              "row_sha256": "c40f579a992691fa01d7788d795f8469b4d3442266c39c0c4f43fa4e79316d33"
+            },
+            {
+              "index": 182,
+              "row_sha256": "9b56b92e9e5eca10eaf7896f4fdff68e655dcfa22f04322837a60a172ec2778f"
+            },
+            {
+              "index": 183,
+              "row_sha256": "d558eddc0a73dc06b14f7f78444334db262b02cc59236adf1dcd74312d7f14ca"
+            },
+            {
+              "index": 184,
+              "row_sha256": "2e76ff3f3bcf3f7cb95f259e6547ba8b913bb3057b907688abb79fe97dce46bc"
+            }
+          ],
+          "machine_learning": [
+            {
+              "index": 185,
+              "row_sha256": "c77c10c7d719d4d7a98e7ccf1df7a563df0fba805a9c859d250be1d9e624489c"
+            },
+            {
+              "index": 186,
+              "row_sha256": "4d564479b19263650c34a62d658b8127134ba349692941e1644005f75de96855"
+            },
+            {
+              "index": 187,
+              "row_sha256": "d05ab558af6490663f1a91e779693934f5ce9fcc60181b6453876fed36c8a1cc"
+            },
+            {
+              "index": 188,
+              "row_sha256": "fde9c02924bc7bc7e0bcba435c5391222884f2777ec1f8865966b1c3c0ab78c8"
+            },
+            {
+              "index": 189,
+              "row_sha256": "9c9981249e493884aa4e800acc1a3bca36cd6afed4a32a11f43a8e0516257965"
+            }
+          ],
+          "management": [
+            {
+              "index": 190,
+              "row_sha256": "dafd5f78cdeb0f88f958370d0bc4316c5b1fe03fa067bd112d9d7cafa1682a6f"
+            },
+            {
+              "index": 191,
+              "row_sha256": "59276871d5863005b0778720ee776d5c701a616f6b16d5a42e5dbefc03e5a0c0"
+            },
+            {
+              "index": 192,
+              "row_sha256": "a47c801b9c59a79a6ba6accba0f1f20284fc3bbda8d71007debb5b8148eb17cc"
+            },
+            {
+              "index": 193,
+              "row_sha256": "3548219ddf9fc3e92644e5cf11536cfd1073fda332c1d689a020cc03b932de71"
+            },
+            {
+              "index": 194,
+              "row_sha256": "ceaf9f27ebf3a891f57c6463c176e818bfba82b1b26beade1ec753071c866ce9"
+            }
+          ],
+          "marketing": [
+            {
+              "index": 195,
+              "row_sha256": "beab810f99770dc33f74d5cfca7f3b2686b11f53f15c331e6b31cd4ccaaaba0e"
+            },
+            {
+              "index": 196,
+              "row_sha256": "b002806886893ff4de371b8cf646f438892807cbd4f6aede78aa6125fa39bc3e"
+            },
+            {
+              "index": 197,
+              "row_sha256": "34bd7c8955473f6bf578e01b7a03355189c8d1f19a9cc7d29cc78c1ccfdd8e65"
+            },
+            {
+              "index": 198,
+              "row_sha256": "299527a1f8095a87c7f50ebfc9a0db716e497197e0129c06352d88f5ff12debb"
+            },
+            {
+              "index": 199,
+              "row_sha256": "9b96cd918de90bb4d8760e66fd02c201941d03dbc72cd7e9d77051805c78d704"
+            }
+          ],
+          "medical_genetics": [
+            {
+              "index": 200,
+              "row_sha256": "a78ab20b102960fa1700f748f8fcac84b1bbb9585c36ecc9c2844016b2705da0"
+            },
+            {
+              "index": 201,
+              "row_sha256": "c8aba15ee2f05dcba5a19e87bf23be551c6cacd56f0c277bada5da28c0455a15"
+            },
+            {
+              "index": 202,
+              "row_sha256": "c8a756014c466a5773f76bf5c643c291d7984622613e7a1e5c6c2c174d08fa07"
+            },
+            {
+              "index": 203,
+              "row_sha256": "4fcca3373bdf44545f2270a43567357d4c3c6dcf64ec45b94005c32c66453624"
+            },
+            {
+              "index": 204,
+              "row_sha256": "91899c2ec5fd8b9da08fed73e290da52d5979e3f19d7af329a52ab76f1d1fb38"
+            }
+          ],
+          "miscellaneous": [
+            {
+              "index": 205,
+              "row_sha256": "333fe0f25b652361e95da968a25438fe68f00b9c40edda983bfef46009c7dc34"
+            },
+            {
+              "index": 206,
+              "row_sha256": "6d950c3d41981634a05b5a5b81ab2e9712f2bced35a66e0e01315667c8f3f9f6"
+            },
+            {
+              "index": 207,
+              "row_sha256": "2def47e166a6e39a2cbd63c621375f97b864d53ec66dfc1200e3db53b69422d1"
+            },
+            {
+              "index": 208,
+              "row_sha256": "4e7d2dc070065ed2c3798cbf109a92483e5236cfe8884a80e8447a31f177f395"
+            },
+            {
+              "index": 209,
+              "row_sha256": "ac01925810fedc25d53a01d2bdd8225f0a972f142ec0f79d275c42f3ad365d61"
+            }
+          ],
+          "moral_disputes": [
+            {
+              "index": 210,
+              "row_sha256": "53aadf1d86e6178570672582c65b1d1c73c14ffd116288088edfb3f3a15e9d79"
+            },
+            {
+              "index": 211,
+              "row_sha256": "7ed416d41a9d7950e21a3a522b09a48c0a71885932d201f304a04cf512def8f1"
+            },
+            {
+              "index": 212,
+              "row_sha256": "38345bfe1aefdaa102f6f8aa569fd5186537f321673e8b0337d9c2ea09f72d9b"
+            },
+            {
+              "index": 213,
+              "row_sha256": "e82135dbf9289ac35763965301d7430bdb123e50b5a4f8a9f77537e01e0f2613"
+            },
+            {
+              "index": 214,
+              "row_sha256": "1f3c789e1314656dbfbe2f1d0d51381f67f65a21725df15fc8ad3874f8548612"
+            }
+          ],
+          "moral_scenarios": [
+            {
+              "index": 215,
+              "row_sha256": "67f1b0cc96aac611d8ecc733ecce2b1cea20a6f040c5f6ef928d0daf6e1278e9"
+            },
+            {
+              "index": 216,
+              "row_sha256": "0a7b9e6386c695a83881e5554edd9f3c27207b4026143deae96df1c9812e2338"
+            },
+            {
+              "index": 217,
+              "row_sha256": "f5ec354848d7d6a2c0a6329a2afb679c919f8545fa15b62f17d5574e77bea225"
+            },
+            {
+              "index": 218,
+              "row_sha256": "77438d8a04ca4babdc3b902939bf8c8ec8f7050583623921b3717d1527c52bd1"
+            },
+            {
+              "index": 219,
+              "row_sha256": "f9ee19411d047cf75965ac1113977fd4f3a803e2d6b83d704fd6100a592e4dc3"
+            }
+          ],
+          "nutrition": [
+            {
+              "index": 220,
+              "row_sha256": "a414695b874cb4f1501267ea6bc2ce65636e2655249ee86b5b42bb97f7386acc"
+            },
+            {
+              "index": 221,
+              "row_sha256": "46dec4751f9124ef13d510ac5d48cd0887ca82395d05aa9374e131c2b4fce806"
+            },
+            {
+              "index": 222,
+              "row_sha256": "e4fb78c5df188d1cf9fe6d7affc42cfa4f2e8b4edc01b80ee117ab73f0d88045"
+            },
+            {
+              "index": 223,
+              "row_sha256": "27aa58225e29df36885455770bf8b45935aa2240fc4bf2a3cc25ba1a9606574b"
+            },
+            {
+              "index": 224,
+              "row_sha256": "06be04e0bd7a0ee0016aac7abccf20a727f6f9c7aa8c032351947fe69f20c75c"
+            }
+          ],
+          "philosophy": [
+            {
+              "index": 225,
+              "row_sha256": "7988547a8673d2bc37333330bbc7aef42e52d47e2b82d1b016d00432b538cad4"
+            },
+            {
+              "index": 226,
+              "row_sha256": "8d8f23dc5bfedb48252e8c5fd6fc39ed4390515f20966bbc0fdd0f2a833af010"
+            },
+            {
+              "index": 227,
+              "row_sha256": "d3b5aa74c3958473a361f3768e8b8d9b94945182470bf290bdb47d5f9289254f"
+            },
+            {
+              "index": 228,
+              "row_sha256": "24f3412013154620cd95216d9042bbb7b5b81c4de525d5e3b41bfa8ed165bebc"
+            },
+            {
+              "index": 229,
+              "row_sha256": "37e280808487db101a0c3bc7950e59025f7aa21e41d3ab7a3ce3c6fa8a10a9fe"
+            }
+          ],
+          "prehistory": [
+            {
+              "index": 230,
+              "row_sha256": "d7fab0c76b146f811ad739b643696fab1baf8b0bb1dbfb23dcf8292bf01dd8a1"
+            },
+            {
+              "index": 231,
+              "row_sha256": "65064ec75c94f8fd20dcb1abe3fb1d13c988d363cb6839efe12ab8afca1e17f7"
+            },
+            {
+              "index": 232,
+              "row_sha256": "18d0ad473de3c35872fa162a14cf8123e67d2e51d51a81fa6855c5dbebf025d1"
+            },
+            {
+              "index": 233,
+              "row_sha256": "39dc82b14e0dd856778419d5f95c614ecc7e97d838ff26f31b7b34f765ce878d"
+            },
+            {
+              "index": 234,
+              "row_sha256": "b027a3750377ea10295cb994077908770b1d9fdac756561aad4138877fe054a4"
+            }
+          ],
+          "professional_accounting": [
+            {
+              "index": 235,
+              "row_sha256": "64369819dc83deb5a6d78049d5a55950f8d97ede59e1a40d78ac952f21c7ee5f"
+            },
+            {
+              "index": 236,
+              "row_sha256": "f5d59d11d95f16b23e728a88e137e10db36022cf7674351400ff88b8f56e4718"
+            },
+            {
+              "index": 237,
+              "row_sha256": "b59fabf7b7c80d5a659bbd5ba54b51a968ae90f5f49cb78986c9a0c8155f404c"
+            },
+            {
+              "index": 238,
+              "row_sha256": "60f57d143babfedea6790fd73b2d357d5eec9ec30b0f6909b4f5e201f4c79839"
+            },
+            {
+              "index": 239,
+              "row_sha256": "da57de298b8c5e2eb0838deebe91484965d9dfafeba013a952b645bd7649a175"
+            }
+          ],
+          "professional_law": [
+            {
+              "index": 240,
+              "row_sha256": "d2804ae854809ed7eda3bebfb47d0402bc826d5c0d27e7787988dad9f46431b9"
+            },
+            {
+              "index": 241,
+              "row_sha256": "5aeaa83764bd60c2f7a42890fee61fa44f48a66d3c59afadcebb396d97e51122"
+            },
+            {
+              "index": 242,
+              "row_sha256": "1eb36f289275c6029bedfaae67879a57ef2d9844e1f58729e2580fb89fe61786"
+            },
+            {
+              "index": 243,
+              "row_sha256": "a3726173df20c0ed199878d6385fd1fc1ccb376bd0bc4a5e0cfc678bd2bb70ec"
+            },
+            {
+              "index": 244,
+              "row_sha256": "59a3faa23ff778d1593c8a88b7bd51da85d1dd39d1ba8c221a6b9bcb6de9a0a5"
+            }
+          ],
+          "professional_medicine": [
+            {
+              "index": 245,
+              "row_sha256": "1c3614b7edc9f947c6713c36eb18b7d3f952713c95c34c99640c052547708138"
+            },
+            {
+              "index": 246,
+              "row_sha256": "a4d66598b0ef2f7ebcf6d15c3bea9c271c2dd01f8466d268e2b9c6c6cf170b88"
+            },
+            {
+              "index": 247,
+              "row_sha256": "3a9365e5a818675d8d255b6ea4198d1006191435aa038eac487f0591a138aed2"
+            },
+            {
+              "index": 248,
+              "row_sha256": "28cc2a8152a0c230303387e4e1164b7db213bd1c6f7d33960a1e7a6efee21100"
+            },
+            {
+              "index": 249,
+              "row_sha256": "86acfffde49c5313503c00f7829e0b802db6190eb47cb15c6810c2411f9134d3"
+            }
+          ],
+          "professional_psychology": [
+            {
+              "index": 250,
+              "row_sha256": "a654f7088ae99d245159d486bfa78f5ca33585fd4e79f9df278a9519cde08195"
+            },
+            {
+              "index": 251,
+              "row_sha256": "2beb43d2ebd1cc5f16a96f9ef7ba6adbb52aa43cb70e569b933147f35eaf4630"
+            },
+            {
+              "index": 252,
+              "row_sha256": "6248970fd25137cc2b6e00e37939312c66632b3ffe0925780f22cddc9e7ca023"
+            },
+            {
+              "index": 253,
+              "row_sha256": "7fe904dd10904037ed0b2a4be1d549f65ac18128746d2015b435102efbd6d4e4"
+            },
+            {
+              "index": 254,
+              "row_sha256": "451e6a169a8e0890ed49225eceb7f10362534c257b6ead78e356668401b25f22"
+            }
+          ],
+          "public_relations": [
+            {
+              "index": 255,
+              "row_sha256": "22e0f9776b98bf935fcd79ee123212000f3e69cba9b2f2a18d42aefbf595f2f9"
+            },
+            {
+              "index": 256,
+              "row_sha256": "8b31d2b4993a96d89b8f9093391bb1bed5b07fbfa9654e8330a0490daf1797e4"
+            },
+            {
+              "index": 257,
+              "row_sha256": "c296b4f092e645a986bd02a695886fa22b542f2a44f9ef2083382dd3f6a05e43"
+            },
+            {
+              "index": 258,
+              "row_sha256": "b2f8025abe3ec7da6557636a5453dba044c9c9be945336b6533e51aff09ff7ad"
+            },
+            {
+              "index": 259,
+              "row_sha256": "14d3b06fd8501698bf0126c5a24385e1d37a07a29c7d4403c78926c50e9210cb"
+            }
+          ],
+          "security_studies": [
+            {
+              "index": 260,
+              "row_sha256": "0a4d37c7d72f6d12c6d4c4080f454928f7dd12e874cb6b1f620131fc91eee86c"
+            },
+            {
+              "index": 261,
+              "row_sha256": "4a77a626f2c92706817970c861f43d4b0ae34eb1654bca7b33e8c6a6f01e3189"
+            },
+            {
+              "index": 262,
+              "row_sha256": "60955197f70734d489c2c87aaab384e6a85449e424a11a9d2655508e2fdfb25e"
+            },
+            {
+              "index": 263,
+              "row_sha256": "711edc7d220a07673bcff4d3994d4e7d5a912e29583f2c71d05d2a4404c2d984"
+            },
+            {
+              "index": 264,
+              "row_sha256": "f6c8d8a8ab63371fbe2c736d367b7d9a08ce1bbc35fca5391d0dbb8bac2a451f"
+            }
+          ],
+          "sociology": [
+            {
+              "index": 265,
+              "row_sha256": "57d54176558c4fc3d4f42a35ccf507e063feac4e73c00c45ab56194530d1b92d"
+            },
+            {
+              "index": 266,
+              "row_sha256": "8171c65370036add0546e41b65b1643371c10dd3e49027e7bcbbd63657bf3da5"
+            },
+            {
+              "index": 267,
+              "row_sha256": "ce2f0fff62be00b413216578073ccece04e7892859bf85382ba10da755b12e33"
+            },
+            {
+              "index": 268,
+              "row_sha256": "cea27547cfb54365c8156234e24ebc3c5948748771be8e82cd8bd8fa99e74140"
+            },
+            {
+              "index": 269,
+              "row_sha256": "c48406a757cd8f9993812e08fb6cd5beba2206ca66a834ad94f5a169ab94f38e"
+            }
+          ],
+          "us_foreign_policy": [
+            {
+              "index": 270,
+              "row_sha256": "04660aa458d4f63675a93b1ba32ff62f24933824e693fb498e93c215e4689925"
+            },
+            {
+              "index": 271,
+              "row_sha256": "7196c7a6f6132d5e176da0e26b6d894911ba4191ecffec40c40b5af4c3ff87e9"
+            },
+            {
+              "index": 272,
+              "row_sha256": "145efe02fa9fb08771d0f0f2f038490895179805dc5ee00baab9e40db34d8f2c"
+            },
+            {
+              "index": 273,
+              "row_sha256": "bd656bde247261a9ba98a6a9d9bb0a09bfdfd9e55587b25696267fe93889f4da"
+            },
+            {
+              "index": 274,
+              "row_sha256": "f0f9545160bcb41d6821879b51a0e21d01f60dee3db13a0c3121ebec77957802"
+            }
+          ],
+          "virology": [
+            {
+              "index": 275,
+              "row_sha256": "6fe1636ba81e7bd5c4a86183b071a4b242f63a5791f20d6457823251a93161fb"
+            },
+            {
+              "index": 276,
+              "row_sha256": "13add3190bb85497cf5b6f5848299f4f4036424855225a3df3fa8eb3fd04e463"
+            },
+            {
+              "index": 277,
+              "row_sha256": "ab25da9108f29bae94fd4f3041c7ec1c4656c9fa848072f376724314f3b42cda"
+            },
+            {
+              "index": 278,
+              "row_sha256": "da01c417218ce459beeaa755a660baf0e63dec555ddf40ba070b632b8dc647a5"
+            },
+            {
+              "index": 279,
+              "row_sha256": "bf532add2d1e31dc7275cd1e6aa29ce417a8a8695485add28ac60b673cc4e67b"
+            }
+          ],
+          "world_religions": [
+            {
+              "index": 280,
+              "row_sha256": "47afbae34aa1c8d031b01ce331a3aeacd988b63b5e6152878efcce72d62efa6f"
+            },
+            {
+              "index": 281,
+              "row_sha256": "6e6420827961cd6dd72aa5a7f919356266f972ce30a7e4dd8f94163bf64fd325"
+            },
+            {
+              "index": 282,
+              "row_sha256": "1da883e39a57f3b342442ebc624522c73fc57991563aa016a06858df3b956511"
+            },
+            {
+              "index": 283,
+              "row_sha256": "be4a3b8269d4ba66cd6de8d43bc2d23a75b49b5be366d90cf08a569d458681ec"
+            },
+            {
+              "index": 284,
+              "row_sha256": "58540179a8389f1e4aa437fde73d88b3ea7c217105230da3e81aaf5480169904"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "prompt_contract_sha256": "bb8ccea9dc88cf7e123db9683ba1975d98d31a7b35166ffe74d85c8e3c4a7ecf",
+  "content_sha256": "16a5adedb84a9bd7463b65eedf7eb0bf21d688a762ceda49310b0434f795b198"
+}

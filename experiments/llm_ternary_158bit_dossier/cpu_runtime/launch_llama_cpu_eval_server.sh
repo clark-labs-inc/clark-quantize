@@ -7,6 +7,14 @@ port=${3:-8091}
 unit="llama-cpu-eval-${label}"
 run_dir=${CPU_EVAL_RUN_DIR:-/workspace/quant-runs/cq3-4b-ptq-scope-20260817}
 server_bin=${LLAMA_SERVER_BIN:-/workspace/build/llama.cpp/bin/llama-server}
+threads=${LLAMA_THREADS:-4}
+parallel=${LLAMA_PARALLEL:-1}
+context=${LLAMA_CONTEXT:-2048}
+
+if (( threads <= 0 || parallel <= 0 || context <= 0 )); then
+    echo "LLAMA_THREADS, LLAMA_PARALLEL, and LLAMA_CONTEXT must be positive" >&2
+    exit 2
+fi
 
 if systemctl is-active --quiet "$unit.service"; then
     echo "$unit.service is already active"
@@ -19,7 +27,8 @@ systemd-run --unit="$unit" --collect \
     --property=CPUQuota=800% \
     --property=Nice=5 \
     "$server_bin" \
-    -m "$model" -t 4 -tb 4 -c 2048 -b 512 -ub 512 \
+    -m "$model" -t "$threads" -tb "$threads" -c "$context" -np "$parallel" \
+    -b 512 -ub 512 \
     --host 127.0.0.1 --port "$port" --no-warmup \
     --log-file "$run_dir/server-${label}.log"
 

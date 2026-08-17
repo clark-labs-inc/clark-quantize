@@ -1,0 +1,75 @@
+{
+  "schema": "qwen35_4b_cpu_layer30_mmlu_preregistration_v1",
+  "status": "frozen_before_any_mmlu_model_evaluation",
+  "created_at": "2026-08-17",
+  "objective": "independently replicate the v4 one-layer capability result on a larger subject-balanced knowledge/reasoning slice before authorizing any added quantized depth",
+  "predecessor": {
+    "decision": "receipts/qwen35_4b_cpu_layer30_qat_v4/decision.json",
+    "decision_content_sha256": "85357d256c093d3d3a2bc09882b7f03971c9f92eae38e201ec3a6ec05445454c",
+    "required_next_experiment": "distinct frozen capability replication such as a subject-balanced MMLU slice"
+  },
+  "manifest": {
+    "path": "qwen35_4b_cpu_layer30_mmlu_v1.json",
+    "file_sha256": "e3e38ccb1bf35c56b600f1cf39bbd0ea38072f2b4bdd5fc36146c143fb658dba",
+    "content_sha256": "16a5adedb84a9bd7463b65eedf7eb0bf21d688a762ceda49310b0434f795b198",
+    "dataset": "cais/mmlu",
+    "config": "all",
+    "test_split_revision": "c30699e8356da336a370243923dbaf21066bb9fe",
+    "test_fingerprint": "436299c1c09696bb",
+    "dev_support_fingerprint": "ca7a71e4c243f30b",
+    "seed": 20260816,
+    "rows": 64,
+    "subjects": 57,
+    "shots_per_subject": 5,
+    "sampling": "deterministic near-equal subject stratification"
+  },
+  "arms": [
+    {
+      "label": "bf16",
+      "path": "/workspace/models/controls/Qwen3.5-4B-BF16.gguf",
+      "sha256": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974"
+    },
+    {
+      "label": "direct-ptq-layer30",
+      "path": "/workspace/models/controls/Qwen3.5-4B-layer30-DirectPTQ-CQ3.gguf",
+      "sha256": "3e1ba3a29a38de8ff67f7b508563a74b3ea84cdabfa385f0a0b3a749d75e7a9b"
+    },
+    {
+      "label": "qat-v4-layer30",
+      "path": "/workspace/models/controls/Qwen3.5-4B-layer30-CPUQAT-v4-CQ3.gguf",
+      "sha256": "d6cbc5bf0e9804e49d26bd40ddb9972db40237fdb4f534545419eea56da02ebb"
+    }
+  ],
+  "scorer": {
+    "name": "llama_cpp_next_token_abcd_v1",
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "choice_tokens": {
+      "A": 357,
+      "B": 417,
+      "C": 351,
+      "D": 414
+    },
+    "standalone_space_token": 220,
+    "method": "apply a grammar allowing only the four single-token labels, exclude the standalone-space token, request post-sampling probabilities after only a temperature-1 sampler, and choose the maximum of the four returned probabilities",
+    "invariant": "all four and only four bound choice-token IDs must be returned with positive finite probabilities summing to one",
+    "workers": 4,
+    "server_parallel_slots": 4,
+    "server_total_context": 8192,
+    "per_slot_context": 2048,
+    "checkpoint_every_rows": 4
+  },
+  "validity": {
+    "all_arms": "completed 64/64 against identical manifest and evaluator contracts",
+    "missing_or_partial": "infrastructure_invalid, never scored as zero",
+    "model_binding": "each evaluator hashes the local GGUF and matches every server response path to that artifact",
+    "restart": "contract-checked partial receipts preserve frozen row order and resume at a four-row batch boundary"
+  },
+  "decision_rules": {
+    "candidate_vs_bf16": "candidate may lose at most three correct items out of 64, which is at most 4.6875 percentage points",
+    "candidate_vs_direct_ptq": "candidate correct count must be greater than or equal to direct PTQ",
+    "depth_expansion": "only if both rules pass may a separately preregistered two-layer experiment be designed; this gate cannot authorize broad or whole-model expansion"
+  },
+  "claim_boundary": "paired 64-row capability replication for one quantized MLP layer on Qwen3.5-4B; not leaderboard-comparable, not whole-model ternary, and not a breakthrough"
+}
