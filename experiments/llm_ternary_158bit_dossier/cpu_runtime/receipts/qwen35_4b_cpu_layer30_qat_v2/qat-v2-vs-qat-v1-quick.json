@@ -1,0 +1,59 @@
+{
+  "schema": "cpu_quick_variant_comparison_v1",
+  "created_at": "2026-08-17T06:33:49.139085+00:00",
+  "a": {
+    "label": "qat-v2-exact-l30",
+    "model_sha256": "b1fa2c8323880fe386f6ec3923973ca4cb3b00e8d9593fea8eba574f758e052e"
+  },
+  "b": {
+    "label": "qat-v1-mismatched-export",
+    "model_sha256": "57d763000b4a2b68d268240c542b94d45accd152aed9d8829de31d1b1d463cc9"
+  },
+  "cute": {
+    "manifest_content_sha256": "cbc71368d5be89d5610d55990f9de248a434c6bfbb11e5c130718fa0fac2714a",
+    "n": 20,
+    "a_correct": 5,
+    "b_correct": 5,
+    "a_only_correct": 0,
+    "b_only_correct": 0,
+    "exact_output_equal": 19,
+    "normalized_prediction_equal": 19,
+    "correctness_equal": 20,
+    "differences": [
+      {
+        "task": "sub_char",
+        "id": "sub_char:line887",
+        "gold": "plrchase",
+        "a": {
+          "correct": false,
+          "prediction": "plcrchase",
+          "output": "plcrchase"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "plcrchse",
+          "output": "plcrchse"
+        }
+      }
+    ]
+  },
+  "math_code": {
+    "manifest_content_sha256": "bb71cad0c51f0acc8167ef5df53ee629fd0660b8cad43e734427c3285ef6c130",
+    "n": 14,
+    "a_correct": 9,
+    "b_correct": 9,
+    "a_only_correct": 0,
+    "b_only_correct": 0,
+    "exact_output_equal": 14,
+    "normalized_prediction_equal": 14,
+    "correctness_equal": 14,
+    "differences": []
+  },
+  "inputs": {
+    "a_math": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v2/eval/math-code-qat-v2-l30.json",
+    "a_cute": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v2/eval/cute-qat-v2-l30.json",
+    "b_math": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v1/eval/math-code-qat-l30.json",
+    "b_cute": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v1/eval/cute-qat-l30.json"
+  },
+  "report_content_sha256": "afcf92f99a4524b5be5d0170721c06d2f69b73bac3c3da079c1eda5c09293b80"
+}

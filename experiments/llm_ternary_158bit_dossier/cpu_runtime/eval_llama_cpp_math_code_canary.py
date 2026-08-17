@@ -175,6 +175,7 @@ def main() -> None:
         "schema": "cpu_math_code_canary_result_v1",
         "model_label": args.model_label,
         "model_sha256": args.model_sha256,
+        "evaluator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "manifest": str(args.manifest),
         "manifest_content_sha256": claimed,
         "server": args.server,
