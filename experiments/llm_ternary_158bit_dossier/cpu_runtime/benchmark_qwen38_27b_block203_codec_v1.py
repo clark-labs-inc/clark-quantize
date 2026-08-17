@@ -33,11 +33,17 @@ from clark_quantize.ternary_cpu import (
 from benchmark_ternary_gemv import file_sha256, load_tensor_codes
 
 
+PREREGISTRATION_SCHEMAS = {
+    "clark_qwen38_27b_block203_codec_preregistration_v1",
+    "clark_qwen38_27b_block203_codec_preregistration_v2",
+}
+
+
 def validate_preregistration(value: dict, args: argparse.Namespace) -> None:
     sample = value.get("sample", {})
     performance = value.get("performance", {})
     if (
-        value.get("schema") != "clark_qwen38_27b_block203_codec_preregistration_v1"
+        value.get("schema") not in PREREGISTRATION_SCHEMAS
         or value.get("model", {}).get("id") != "Qwen/Qwen3.8-27B"
         or sample.get("tensor") != args.tensor
         or sample.get("rows") != args.rows
@@ -102,8 +108,36 @@ def main() -> None:
     preregistration_content = args.preregistration.read_bytes()
     preregistration = json.loads(preregistration_content)
     validate_preregistration(preregistration, args)
+    preregistration_schema = preregistration["schema"]
     if not native_available():
         raise RuntimeError("the preregistered benchmark requires the native CPU library")
+
+    codec_parent = None
+    codec_parent_path = None
+    if preregistration_schema.endswith("_v2"):
+        frozen_parent = preregistration["parent"]
+        codec_parent_path = Path(frozen_parent["receipt"])
+        codec_parent = json.loads(codec_parent_path.read_text())
+        parent_build = codec_parent.get("build", {})
+        if (
+            codec_parent.get("schema") != frozen_parent["required_schema"]
+            or codec_parent.get("promotion", {}).get("passed") is not True
+            or parent_build.get("repo_commit") != frozen_parent["required_repo_commit"]
+            or parent_build.get("c_source_sha256")
+            != frozen_parent["required_c_source_sha256"]
+            or parent_build.get("python_wrapper_sha256")
+            != frozen_parent["required_python_wrapper_sha256"]
+            or parent_build.get("benchmark_sha256")
+            != frozen_parent["required_benchmark_sha256"]
+            or codec_parent.get("preregistration", {}).get("sha256")
+            != frozen_parent["required_preregistration_sha256"]
+        ):
+            raise ValueError("v1 codec parent differs from the frozen v2 baseline")
+        artifact_schema = codec_parent["preregistration"]["rules"]["parent"][
+            "artifact_schema"
+        ]
+    else:
+        artifact_schema = preregistration["parent"]["artifact_schema"]
 
     pack_receipt = json.loads(args.pack_receipt.read_text())
     expected_revision = preregistration["model"]["revision"]
@@ -113,13 +147,19 @@ def main() -> None:
     ):
         raise ValueError("full-pack receipt is not the promoted Qwen3.8-27B parent")
     reader = QwenBase3ArtifactReader(args.artifact)
-    if reader.manifest.get("schema") != preregistration["parent"]["artifact_schema"]:
+    if reader.manifest.get("schema") != artifact_schema:
         raise ValueError("artifact schema differs from preregistration")
 
     codes, _, record_indices = load_tensor_codes(
         reader, args.tensor, args.rows, args.columns
     )
     codes = np.ascontiguousarray(codes.reshape(-1), dtype=np.int8)
+    codes_sha256 = hashlib.sha256(codes.tobytes()).hexdigest()
+    if (
+        codec_parent is not None
+        and codec_parent.get("parent", {}).get("codes_sha256") != codes_sha256
+    ):
+        raise ValueError("v2 tensor codes differ from the v1 codec baseline")
     payload_bits, payload_bytes = block203_size(codes.size)
     row_bits, row_bytes = block203_size(args.columns)
     if row_bits % 8 != 0 or row_bytes * args.rows != payload_bytes:
@@ -188,6 +228,47 @@ def main() -> None:
     all_pack_hashes_identical = len(set(pack_hashes)) == 1
     all_unpack_hashes_identical = len(set(unpack_hashes)) == 1
     selected_rows_match = all(item["equal"] for item in reference_parity.values())
+    host = {
+        "hostname": socket.gethostname(),
+        "platform": platform.platform(),
+        "machine": platform.machine(),
+        "processor": platform.processor(),
+        "affinity": sorted(os.sched_getaffinity(0))
+        if hasattr(os, "sched_getaffinity")
+        else None,
+    }
+    baseline_comparison = None
+    comparison_passed = True
+    if codec_parent is not None:
+        parent_host = codec_parent.get("host", {})
+        same_host_contract = all(
+            host.get(key) == parent_host.get(key)
+            for key in ("hostname", "machine", "affinity")
+        )
+        parent_pack = codec_parent["performance"]["pack"]["median_seconds"]
+        parent_unpack = codec_parent["performance"]["unpack"]["median_seconds"]
+        pack_speedup = parent_pack / pack_summary["median_seconds"]
+        unpack_speedup = parent_unpack / unpack_summary["median_seconds"]
+        payload_sha_matches = (
+            pack_hashes[0]
+            == codec_parent["correctness"]["pack_payload_sha256"]
+        )
+        baseline_comparison = {
+            "receipt": str(codec_parent_path),
+            "receipt_sha256": file_sha256(codec_parent_path),
+            "same_hostname_machine_and_affinity": same_host_contract,
+            "payload_sha256_matches_v1": payload_sha_matches,
+            "v1_pack_median_seconds": parent_pack,
+            "v1_unpack_median_seconds": parent_unpack,
+            "pack_speedup_over_v1": pack_speedup,
+            "unpack_speedup_over_v1": unpack_speedup,
+        }
+        comparison_passed = (
+            same_host_contract
+            and payload_sha_matches
+            and pack_speedup >= promotion["minimum_pack_speedup_over_v1"]
+            and unpack_speedup >= promotion["minimum_unpack_speedup_over_v1"]
+        )
     passed = (
         exact_roundtrip
         and all_pack_hashes_identical
@@ -199,6 +280,7 @@ def main() -> None:
         <= promotion["maximum_projected_whole_model_unpack_seconds"]
         and payload_bits_per_trit
         <= promotion["maximum_payload_bits_per_ternary_parameter"]
+        and comparison_passed
     )
 
     native_library = next(
@@ -210,7 +292,7 @@ def main() -> None:
         if path.exists()
     )
     report = {
-        "schema": "clark_qwen38_27b_block203_codec_receipt_v1",
+        "schema": preregistration_schema.replace("preregistration", "receipt"),
         "created_at": time.time(),
         "preregistration": {
             "path": str(args.preregistration),
@@ -225,7 +307,7 @@ def main() -> None:
             "tensor": args.tensor,
             "record_indices": record_indices,
             "codes": int(codes.size),
-            "codes_sha256": hashlib.sha256(codes.tobytes()).hexdigest(),
+            "codes_sha256": codes_sha256,
         },
         "build": {
             "repo_commit": subprocess.check_output(
@@ -237,13 +319,7 @@ def main() -> None:
             "python_wrapper_sha256": file_sha256(REPO / "clark_quantize/ternary_cpu.py"),
             "benchmark_sha256": file_sha256(Path(__file__)),
         },
-        "host": {
-            "hostname": socket.gethostname(),
-            "platform": platform.platform(),
-            "machine": platform.machine(),
-            "processor": platform.processor(),
-            "affinity": sorted(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else None,
-        },
+        "host": host,
         "format": {
             "group_trits": 128,
             "group_bits": 203,
@@ -269,6 +345,7 @@ def main() -> None:
             "ternary_parameters": ternary_parameters,
             "cache_eviction_bytes": args.cache_eviction_bytes,
         },
+        "baseline_comparison": baseline_comparison,
         "promotion": {
             "passed": passed,
             "rules": promotion,
