@@ -29,7 +29,15 @@
     "source_worktree": "/workspace/src/llama.cpp-qwen38-selective-v1",
     "build_type": "Release",
     "ggml_native": true,
-    "threads": 4
+    "threads": 4,
+    "required_build_targets": [
+      "llama-quantize",
+      "llama-cli",
+      "llama-server",
+      "llama-perplexity",
+      "llama-bench",
+      "test-cq3"
+    ]
   },
   "tensor_scope": {
     "target_regex": "^blk\\.0\\.ffn_(down|gate|up)\\.weight$",

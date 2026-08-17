@@ -68,7 +68,7 @@ if pgrep -af 'llama-(server|cli|bench|perplexity)' | grep -v -F "$0" > "$run_dir
   exit 2
 fi
 
-require_sha256 "$prereg" 69c5bfb1676308154fc6c3a2cbf0fb324efb17f8818ccd027a4e94acc0188f94
+require_sha256 "$prereg" dfba2e0b7aed4b5654a1c3f5c561a363b6e9496b86920973c2820b162f89740c
 require_sha256 "$cq3_patch" b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1
 require_sha256 "$selective_patch" 19a40bf56d1ed3d1af6ea12d941891a75252b8b6541229c21db8102b2dd2e7c1
 require_sha256 "$scope_verifier" 3a2a864ad8d93b28154c04bddf2410a2f22c6887c373abea08c84c78cd526cce
@@ -98,7 +98,7 @@ cmake -S "$llama_source" -B "$llama_build" \
   -DLLAMA_BUILD_TOOLS=ON \
   > "$run_dir/cmake-configure.log" 2>&1
 cmake --build "$llama_build" --parallel 4 \
-  --target llama-quantize llama-cli llama-server llama-perplexity test-cq3 \
+  --target llama-quantize llama-cli llama-server llama-perplexity llama-bench test-cq3 \
   > "$run_dir/cmake-build.log" 2>&1
 LD_LIBRARY_PATH="$llama_build/bin" "$llama_build/bin/test-cq3" \
   > "$run_dir/test-cq3.log" 2>&1
@@ -109,7 +109,8 @@ git -C "$llama_source" diff --binary > "$state_dir/llama-source.diff"
 sha256sum "$prereg" "$cq3_patch" "$selective_patch" "$scope_verifier" \
   "$llama_build/bin/llama-quantize" "$llama_build/bin/llama-cli" \
   "$llama_build/bin/llama-server" "$llama_build/bin/llama-perplexity" \
-  "$llama_build/bin/test-cq3" "$state_dir/llama-source.diff" \
+  "$llama_build/bin/llama-bench" "$llama_build/bin/test-cq3" \
+  "$state_dir/llama-source.diff" \
   > "$state_dir/inputs.sha256"
 
 if [[ ! -s "$candidate" ]]; then
@@ -216,7 +217,7 @@ receipt = {
     "scope_receipt": {"path": str(scope_path), "sha256": sha256(scope_path)},
     "binaries": {
         name: sha256(build / "bin" / name)
-        for name in ("llama-quantize", "llama-cli", "llama-server", "llama-perplexity", "test-cq3")
+        for name in ("llama-quantize", "llama-cli", "llama-server", "llama-perplexity", "llama-bench", "test-cq3")
     },
     "host": {
         "platform": platform.platform(),

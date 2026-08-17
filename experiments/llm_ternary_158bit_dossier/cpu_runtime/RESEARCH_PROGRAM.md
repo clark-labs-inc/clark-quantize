@@ -289,17 +289,19 @@ and will be revised only from measured rooflines and end-to-end profiles.
    848 non-target payloads remain byte-identical.
 3. Run the candidate's frozen CUTE, MATH/code, MMLU, and WikiText suite; a
    quality-complete result and a promotion pass are separate receipts.
-4. Write the `.cq3` v1 container and scalar C++ oracle.
-5. Build a shape-driven ternary GEMV benchmark for the exact Qwen matrices.
-6. Benchmark three compute layouts on M5 Max: radix-5 LUT, aligned 2-bit, and
+4. If and only if quality passes, run the paired 27B Q4-versus-selective-CQ3
+   throughput suite with one identical binary and frozen core masks.
+5. Write the `.cq3` v1 container and scalar C++ oracle.
+6. Build a shape-driven ternary GEMV benchmark for the exact Qwen matrices.
+7. Benchmark three compute layouts on M5 Max: radix-5 LUT, aligned 2-bit, and
    dual bitplanes.
-7. Dispatch the validated ARM64 fused gate/up DOTPROD plus SwiGLU operator from
+8. Dispatch the validated ARM64 fused gate/up DOTPROD plus SwiGLU operator from
    the packed GGML Qwen graph; the row-blocked CQ3 `MUL_MAT` prerequisite is
    complete and reproducible.
-8. Implement ARM64 A16 correctness for graph parity around the promoted A8
+9. Implement ARM64 A16 correctness for graph parity around the promoted A8
    DOTPROD kernel.
-9. Profile and optimize the upstream single-token DeltaNet state update.
-10. Load the 27B packed artifact through the GGML graph.
+10. Profile and optimize the upstream single-token DeltaNet state update.
+11. Load the 27B packed artifact through the GGML graph.
 
 No deeper 27B training spend is justified until the current 27B candidate
 passes the frozen capability and full-graph receipt gates.
