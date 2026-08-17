@@ -1,0 +1,51 @@
+{
+  "schema": "qwen38_27b_row_normalized_scale_codebook4_preregistration_v1",
+  "created_at": "2026-08-17T13:31:00Z",
+  "objective": "Test whether one FP16 output-row anchor plus a per-tensor 4-bit log-ratio codebook repairs the rejected Qwen3.8-27B global 4-bit scale representation while remaining close to the base-3 storage limit",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "source_code_manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4",
+    "mapped_tensors": 402,
+    "mapped_scales": 209920000,
+    "claim_boundary": "static scale reconstruction on the authenticated mapped 402-tensor Qwen3.8-27B artifact only"
+  },
+  "parent_negative": {
+    "receipt": "receipts/qwen38-27b-scale-codebook4-v1-summary.json",
+    "global_normalized_rmse": 0.042784640043328735,
+    "maximum_tensor_normalized_rmse": 0.10913625999857615,
+    "maximum_tensor_p99_relative_error_nonzero_scales": 0.1667670934858706,
+    "diagnosis": "one global linear-scale 16-entry codebook per tensor spends entries on cross-row magnitude variation"
+  },
+  "candidate": {
+    "row_anchor": "geometric mean of nonzero group scales in each output row, frozen to FP16",
+    "ratio_codebook": "one 16-entry FP16 multiplicative codebook per tensor with entry zero fixed to exact zero",
+    "fit": "deterministic Lloyd iterations in log-ratio space",
+    "final_assignment": "minimum absolute scale error against frozen FP16-anchor times FP16-ratio products",
+    "indices": "two 4-bit indices per byte",
+    "decoder_accumulation": "FP32 multiplication of the two stored FP16 factors",
+    "iterations": 50,
+    "chunk_rows": 256
+  },
+  "storage_gate": {
+    "count_all_index_bytes": true,
+    "count_all_row_anchor_bytes": true,
+    "count_all_codebook_bytes": true,
+    "maximum_combined_bytes_for_mapped_402_tensors": 125000000,
+    "future_complete_bundle_rule": "if static reconstruction passes, inventory all remaining 264 rank-2+ tensors and require a separately measured complete-bundle projection no greater than 1.64 bpw before export"
+  },
+  "reconstruction_gate": {
+    "maximum_global_normalized_rmse": 0.02,
+    "maximum_per_tensor_normalized_rmse": 0.05,
+    "maximum_per_tensor_p99_relative_error_nonzero_scales": 0.10
+  },
+  "promotion_rules": [
+    "all 402 tensor sources and outputs must be authenticated and restartable",
+    "all three frozen reconstruction limits and the storage limit must pass",
+    "a static pass authorizes only the remaining-tensor fit and complete storage accounting",
+    "CUTE, MATH, MMLU-type, WikiText, and runtime evaluation remain mandatory after any export",
+    "infrastructure-invalid work is neither a zero nor a completed score",
+    "this gate cannot establish a model-quality or breakthrough claim"
+  ]
+}
