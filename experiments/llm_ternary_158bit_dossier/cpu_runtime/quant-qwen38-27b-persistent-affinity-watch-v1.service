@@ -7,10 +7,10 @@ StartLimitIntervalSec=0
 [Service]
 Type=oneshot
 WorkingDirectory=/workspace/clark-quantize-cpu-qat
-Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-4ec311a.bundle
-Environment=EXPECTED_COMMIT=4ec311a3e66eee20c72ff7cc7c152aa6d63769f8
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-ee58de1.bundle
+Environment=EXPECTED_COMMIT=ee58de1f24f2dd3f226045aa2d8f42cc2c07d40a
 Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
-ExecStart=/bin/bash /workspace/tmp/watch-qwen38-27b-persistent-affinity-v1-4ec311a.sh
+ExecStart=/bin/bash /workspace/tmp/watch-qwen38-27b-persistent-affinity-v1-ee58de1.sh
 CPUAffinity=0 2 4 6
 CPUQuota=400%
 MemoryMax=12G
