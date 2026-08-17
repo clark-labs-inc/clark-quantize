@@ -7,12 +7,18 @@ import argparse
 import hashlib
 import json
 import os
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 import torch
 import torch.nn.functional as F
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(REPO_ROOT) in sys.path:
+    sys.path.remove(str(REPO_ROOT))
+sys.path.insert(0, str(REPO_ROOT))
 
 from clark_quantize.qwen_qat import hard_ternary_weight
 from experiments.qwen_agentworld.train_mlp_triplet_qat import (

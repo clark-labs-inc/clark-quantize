@@ -38,13 +38,19 @@ require_sha256 "$source_jsonl" 89542ace1ac7496f82727cc82985b70decb757dff4be9350d
 require_sha256 "$activation_cache" 9a3daa21df6fe627245cf17917404cae190b43726a58d781bb81e13a08bf4d9e
 require_sha256 "$inventory" 793d872a2b75fb51e640afec9472fba2c605e03b610ffae9c5d171d33851f344
 
+if [[ -s "$run_dir/source.commit" ]]; then
+  receipt_prefix=resume-
+else
+  receipt_prefix=
+fi
 sha256sum "$prereg" "$source_jsonl" "$model_dir/model.safetensors.index.json" \
   "$activation_cache" "$inventory" \
   "$agent_dir/train_mlp_triplet_qat.py" \
-  "$runtime_dir/eval_mlp_triplet_reconstruction.py" > "$run_dir/inputs.sha256"
-git rev-parse HEAD > "$run_dir/source.commit"
-git status --short > "$run_dir/source.status"
-if [[ -s "$run_dir/source.status" ]]; then
+  "$runtime_dir/eval_mlp_triplet_reconstruction.py" \
+  > "$run_dir/${receipt_prefix}inputs.sha256"
+git rev-parse HEAD > "$run_dir/${receipt_prefix}source.commit"
+git status --short > "$run_dir/${receipt_prefix}source.status"
+if [[ -s "$run_dir/source.status" || -s "$run_dir/${receipt_prefix}source.status" ]]; then
   echo "held-out QAT requires a clean source checkout" >&2
   exit 2
 fi
@@ -82,7 +88,7 @@ if [[ ! -s "$selected_patch" || ! -s "$run_dir/layer30-heldout-qat.json" ]]; the
     > "$run_dir/train.log" 2>&1
 fi
 
-"$python_bin" "$runtime_dir/eval_mlp_triplet_reconstruction.py" \
+PYTHONPATH="$repo" "$python_bin" "$runtime_dir/eval_mlp_triplet_reconstruction.py" \
   --model-dir "$model_dir" \
   --inventory "$inventory" \
   --activation-cache "$activation_cache" \
