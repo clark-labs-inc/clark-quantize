@@ -1,0 +1,22 @@
+[Unit]
+Description=Benchmark constant-divisor Qwen3.8-27B block203 row-scale4 AVX2 kernel
+After=network-online.target quant-qwen38-27b-block203-row-scale4-direct-gemv-watch-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-6a7016e.bundle
+Environment=EXPECTED_COMMIT=6a7016eb427decb7034cbfbb7145c82c3c3a90a2
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/tmp/watch-qwen38-27b-block203-row-scale4-constdiv-v1-6a7016e.sh
+CPUQuota=100%
+MemoryMax=8G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target
