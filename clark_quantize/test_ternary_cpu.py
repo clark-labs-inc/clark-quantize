@@ -235,6 +235,53 @@ class TernaryCpuNativeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "non-finite"):
             ternary_cpu.swiglu_f32(gate, up)
 
+    def test_qwen38_causal_conv4_matches_oracle_and_updates_state(self) -> None:
+        generator = np.random.default_rng(20260817)
+        for channels in (1, 7, 8, 17, 10240):
+            weights = generator.normal(size=(4, channels)).astype(np.float32)
+            initial = generator.normal(size=(3, channels)).astype(np.float32)
+            activation = generator.normal(size=channels).astype(np.float32)
+            expected_value = initial[0] * weights[0]
+            expected_value = expected_value + initial[1] * weights[1]
+            expected_value = expected_value + initial[2] * weights[2]
+            expected_value = expected_value + activation * weights[3]
+            expected = expected_value / (
+                np.float32(1.0) + np.exp(-expected_value)
+            )
+            expected_state = np.stack(
+                (initial[1], initial[2], activation)
+            )
+
+            scalar_state = initial.copy()
+            scalar = ternary_cpu.causal_conv4_silu_f32(
+                activation,
+                scalar_state,
+                weights,
+                implementation="scalar",
+            )
+            np.testing.assert_allclose(scalar, expected, rtol=1e-6, atol=2e-7)
+            np.testing.assert_array_equal(scalar_state, expected_state)
+            if ternary_cpu.cpu_features()["avx2"]:
+                avx_state = initial.copy()
+                avx = ternary_cpu.causal_conv4_silu_f32(
+                    activation,
+                    avx_state,
+                    weights,
+                    implementation="avx2",
+                )
+                np.testing.assert_array_equal(avx, scalar)
+                np.testing.assert_array_equal(avx_state, scalar_state)
+
+        bad = np.zeros((3, 8), dtype=np.float32)
+        bad[1, 2] = np.nan
+        with self.assertRaisesRegex(ValueError, "non-finite"):
+            ternary_cpu.causal_conv4_silu_f32(
+                np.zeros(8, dtype=np.float32),
+                bad,
+                np.ones((4, 8), dtype=np.float32),
+                implementation="scalar",
+            )
+
     def test_scalar_matches_groupwise_integer_oracle(self) -> None:
         codes, scales, quantized, activation_scales, sums, packed = self.fixture()
         actual = ternary_cpu.gemv_q8_group128_2bit(

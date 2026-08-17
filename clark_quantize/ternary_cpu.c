@@ -3581,6 +3581,139 @@ int cq3_sum_u8_scalar(const uint8_t *input, uint64_t count, uint64_t *sum) {
     return CQ3_OK;
 }
 
+static int cq3_validate_causal_conv4(
+    const float *input,
+    const float *state,
+    const float *weights,
+    uint64_t channels,
+    float *output
+) {
+    if (input == NULL || state == NULL || weights == NULL || output == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    if (channels == 0U || channels > UINT64_MAX / 4U) {
+        return CQ3_ERROR_SHAPE;
+    }
+    for (uint64_t channel = 0U; channel < channels; ++channel) {
+        if (!isfinite(input[channel]) ||
+                !isfinite(state[channel]) ||
+                !isfinite(state[channels + channel]) ||
+                !isfinite(state[2U * channels + channel]) ||
+                !isfinite(weights[channel]) ||
+                !isfinite(weights[channels + channel]) ||
+                !isfinite(weights[2U * channels + channel]) ||
+                !isfinite(weights[3U * channels + channel])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    return CQ3_OK;
+}
+
+static float cq3_silu_scalar(float value) {
+    return value / (1.0f + expf(-value));
+}
+
+int cq3_causal_conv4_silu_f32_scalar(
+    const float *CQ3_RESTRICT input,
+    float *CQ3_RESTRICT state,
+    const float *CQ3_RESTRICT weights,
+    uint64_t channels,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_causal_conv4(
+        input, state, weights, channels, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+    for (uint64_t channel = 0U; channel < channels; ++channel) {
+        const float value =
+            state[channel] * weights[channel] +
+            state[channels + channel] * weights[channels + channel] +
+            state[2U * channels + channel] *
+                weights[2U * channels + channel] +
+            input[channel] * weights[3U * channels + channel];
+        state[channel] = state[channels + channel];
+        state[channels + channel] = state[2U * channels + channel];
+        state[2U * channels + channel] = input[channel];
+        output[channel] = cq3_silu_scalar(value);
+    }
+    return CQ3_OK;
+}
+
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+__attribute__((target("avx2")))
+static void cq3_causal_conv4_silu_f32_avx2_impl(
+    const float *CQ3_RESTRICT input,
+    float *CQ3_RESTRICT state,
+    const float *CQ3_RESTRICT weights,
+    uint64_t channels,
+    float *CQ3_RESTRICT output
+) {
+    uint64_t channel = 0U;
+    float lanes[8];
+    for (; channel + 8U <= channels; channel += 8U) {
+        const __m256 x = _mm256_loadu_ps(input + channel);
+        const __m256 s0 = _mm256_loadu_ps(state + channel);
+        const __m256 s1 = _mm256_loadu_ps(state + channels + channel);
+        const __m256 s2 = _mm256_loadu_ps(state + 2U * channels + channel);
+        const __m256 w0 = _mm256_loadu_ps(weights + channel);
+        const __m256 w1 = _mm256_loadu_ps(weights + channels + channel);
+        const __m256 w2 = _mm256_loadu_ps(weights + 2U * channels + channel);
+        const __m256 w3 = _mm256_loadu_ps(weights + 3U * channels + channel);
+        __m256 value = _mm256_mul_ps(s0, w0);
+        value = _mm256_add_ps(value, _mm256_mul_ps(s1, w1));
+        value = _mm256_add_ps(value, _mm256_mul_ps(s2, w2));
+        value = _mm256_add_ps(value, _mm256_mul_ps(x, w3));
+        _mm256_storeu_ps(lanes, value);
+        _mm256_storeu_ps(state + channel, s1);
+        _mm256_storeu_ps(state + channels + channel, s2);
+        _mm256_storeu_ps(state + 2U * channels + channel, x);
+        for (uint32_t lane = 0U; lane < 8U; ++lane) {
+            output[channel + lane] = cq3_silu_scalar(lanes[lane]);
+        }
+    }
+    for (; channel < channels; ++channel) {
+        const float value =
+            state[channel] * weights[channel] +
+            state[channels + channel] * weights[channels + channel] +
+            state[2U * channels + channel] *
+                weights[2U * channels + channel] +
+            input[channel] * weights[3U * channels + channel];
+        state[channel] = state[channels + channel];
+        state[channels + channel] = state[2U * channels + channel];
+        state[2U * channels + channel] = input[channel];
+        output[channel] = cq3_silu_scalar(value);
+    }
+}
+#endif
+
+int cq3_causal_conv4_silu_f32_avx2(
+    const float *CQ3_RESTRICT input,
+    float *CQ3_RESTRICT state,
+    const float *CQ3_RESTRICT weights,
+    uint64_t channels,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_causal_conv4(
+        input, state, weights, channels, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    if ((cq3_cpu_features() & CQ3_FEATURE_AVX2) == 0U) {
+        return CQ3_ERROR_ISA;
+    }
+    cq3_causal_conv4_silu_f32_avx2_impl(
+        input, state, weights, channels, output
+    );
+    return CQ3_OK;
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
 #if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
 __attribute__((target("avx2")))
 static uint64_t cq3_sum_u8_avx2_impl(const uint8_t *input, uint64_t count) {

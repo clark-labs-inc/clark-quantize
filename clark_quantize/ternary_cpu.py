@@ -205,6 +205,14 @@ def _load_library() -> ctypes.CDLL | None:
             f32p, f32p, ctypes.c_uint64, f32p,
         )
         library.cq3_swiglu_f32.restype = ctypes.c_int
+        if hasattr(library, "cq3_causal_conv4_silu_f32_scalar"):
+            causal_conv_args = (
+                f32p, f32p, f32p, ctypes.c_uint64, f32p,
+            )
+            library.cq3_causal_conv4_silu_f32_scalar.argtypes = causal_conv_args
+            library.cq3_causal_conv4_silu_f32_scalar.restype = ctypes.c_int
+            library.cq3_causal_conv4_silu_f32_avx2.argtypes = causal_conv_args
+            library.cq3_causal_conv4_silu_f32_avx2.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_scalar.argtypes = gemv_args
         library.cq3_gemv_q8_group128_radix5_scalar.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_avx2.argtypes = gemv_args
@@ -1184,6 +1192,56 @@ def swiglu_f32(gate: np.ndarray, up: np.ndarray) -> np.ndarray:
         output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
     )
     _check(status, "FP32 SwiGLU")
+    return output
+
+
+def causal_conv4_silu_f32(
+    activation: np.ndarray,
+    state: np.ndarray,
+    weights: np.ndarray,
+    *,
+    implementation: str = "avx2",
+) -> np.ndarray:
+    """Update three-sample FP32 state and run Qwen3.8 conv4 plus SiLU."""
+    if _LIBRARY is None or not hasattr(
+        _LIBRARY, "cq3_causal_conv4_silu_f32_scalar"
+    ):
+        raise RuntimeError("native Qwen3.8 causal-conv4 kernel is absent")
+    values = _array(activation, np.float32, ndim=1)
+    history = np.asarray(state)
+    kernels = _array(weights, np.float32, ndim=2)
+    if (
+        history.dtype != np.float32
+        or history.ndim != 2
+        or not history.flags.c_contiguous
+        or not history.flags.writeable
+        or history.shape != (3, values.size)
+        or kernels.shape != (4, values.size)
+        or values.size == 0
+    ):
+        raise ValueError(
+            "causal-conv4 requires writable FP32 state [3, channels] and "
+            "weights [4, channels]"
+        )
+    functions = {
+        "scalar": _LIBRARY.cq3_causal_conv4_silu_f32_scalar,
+        "avx2": _LIBRARY.cq3_causal_conv4_silu_f32_avx2,
+    }
+    try:
+        function = functions[implementation]
+    except KeyError as error:
+        raise ValueError(
+            f"unknown causal-conv4 implementation {implementation}"
+        ) from error
+    output = np.empty(values.size, dtype=np.float32)
+    status = function(
+        values.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        history.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        kernels.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        values.size,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+    )
+    _check(status, "Qwen3.8 causal-conv4 SiLU")
     return output
 
 
