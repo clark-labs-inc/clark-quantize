@@ -1,6 +1,8 @@
+import inspect
+
 import torch
 
-from collect_teacher_rollout_cache import alignment_counts, causal_label_sequence, extract_text
+from collect_teacher_rollout_cache import alignment_counts, causal_label_sequence, extract_text, load_model
 
 
 def test_causal_label_sequence_predicts_every_completion_token() -> None:
@@ -24,3 +26,7 @@ def test_alignment_counts_distinguishes_greedy_from_topk() -> None:
     targets = torch.tensor([4, 7])
 
     assert alignment_counts(top_indices, targets) == (1, 2)
+
+
+def test_collector_loader_accepts_explicit_cpu_device() -> None:
+    assert "device" in inspect.signature(load_model).parameters

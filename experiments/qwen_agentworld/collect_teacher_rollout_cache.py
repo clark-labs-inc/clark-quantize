@@ -26,8 +26,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from collect_onpolicy_survival_cache import load_model, parse_layers, token_ids_for_strings
-from train_mlp_triplet_survival_qat import register_hidden_hooks
+from collect_onpolicy_survival_cache import parse_layers, token_ids_for_strings
+from train_mlp_triplet_survival_qat import load_model, register_hidden_hooks
 
 
 def extract_text(row: dict[str, Any]) -> str:
