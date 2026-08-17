@@ -1,0 +1,22 @@
+[Unit]
+Description=Wait for Qwen3.8-27B control gates, then run bounded layer-0 activation QAT
+After=network-online.target quant-qwen38-27b-infrastructure-retry-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-29d39ff.bundle
+Environment=EXPECTED_COMMIT=29d39ffb34cd3b2bddd41c2e3a9300bd8d42cf02
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/tmp/watch-qwen38-27b-layer0-mlp-activation-qat-v1-29d39ff.sh
+CPUQuota=400%
+MemoryMax=29G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target
