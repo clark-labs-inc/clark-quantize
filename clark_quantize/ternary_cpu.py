@@ -87,6 +87,18 @@ def _load_library() -> ctypes.CDLL | None:
             u8p, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, i8p,
         )
         library.cq3_unpack_block203_rows.restype = ctypes.c_int
+        if hasattr(library, "cq3_transcode_block203_rows_to_group128_2bit"):
+            library.cq3_transcode_block203_rows_to_group128_2bit.argtypes = (
+                u8p,
+                ctypes.c_uint64,
+                ctypes.c_uint64,
+                ctypes.c_uint64,
+                u8p,
+                ctypes.c_uint64,
+            )
+            library.cq3_transcode_block203_rows_to_group128_2bit.restype = (
+                ctypes.c_int
+            )
         library.cq3_pack_aligned2.argtypes = (i8p, ctypes.c_uint64, u8p)
         library.cq3_pack_aligned2.restype = ctypes.c_int
         library.cq3_unpack_aligned2.argtypes = (u8p, ctypes.c_uint64, i8p)
@@ -367,6 +379,37 @@ def unpack_block203_rows(
         output.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
     )
     _check(status, "block-203 matrix unpack")
+    return output
+
+
+def transcode_block203_rows_to_group128_2bit(
+    packed: np.ndarray, rows: int, columns: int
+) -> np.ndarray:
+    """Stream canonical block203 rows into the aligned SIMD compute layout."""
+    source = _array(packed, np.uint8).reshape(-1)
+    _, expected_bytes = block203_matrix_size(rows, columns)
+    if (
+        rows <= 0
+        or columns <= 0
+        or columns % 128
+        or source.size != expected_bytes
+    ):
+        raise ValueError("block203-to-aligned2 dimensions do not match")
+    if _LIBRARY is None or not hasattr(
+        _LIBRARY, "cq3_transcode_block203_rows_to_group128_2bit"
+    ):
+        codes = unpack_block203_rows(source, rows, columns)
+        return pack_group128_2bit(codes)
+    output = np.empty(rows * columns // 4, dtype=np.uint8)
+    status = _LIBRARY.cq3_transcode_block203_rows_to_group128_2bit(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        source.size,
+        rows,
+        columns,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        output.size,
+    )
+    _check(status, "block203-to-aligned2 transcode")
     return output
 
 
@@ -735,7 +778,10 @@ def gemv_q8_group128_2bit_row_scale4(
     activation_sums: np.ndarray,
     *,
     implementation: str = "avx2",
+    threads: int = 1,
     group_size: int = 128,
+    executor: ThreadPoolExecutor | None = None,
+    cpu_ids: list[int] | None = None,
     validated: bool = False,
 ) -> np.ndarray:
     """Aligned-2 GEMV using the exact Qwen3.8-27B row-scale4 payload."""
@@ -781,21 +827,74 @@ def gemv_q8_group128_2bit_row_scale4(
     }
     if implementation not in functions:
         raise ValueError(f"unknown row-scale4 GEMV implementation {implementation!r}")
+    function = functions[implementation]
     output = np.empty(rows, dtype=np.float32)
-    status = functions[implementation](
-        weights.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
-        indices.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
-        anchors_u16.ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
-        codebook_u16.ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
-        activation.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
-        act_scales.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
-        act_sums.ctypes.data_as(ctypes.POINTER(ctypes.c_int32)),
-        rows,
-        columns,
-        group_size,
-        output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
-    )
-    _check(status, f"{implementation} row-scale4 GEMV")
+    thread_count = min(max(int(threads), 1), rows)
+    if cpu_ids is not None and len(cpu_ids) < thread_count:
+        raise ValueError("cpu_ids must supply one CPU for every worker")
+    if thread_count > 1 and groups % 2:
+        raise ValueError(
+            "threaded row-scale4 sharding requires byte-aligned scale rows"
+        )
+    row_scale_bytes = groups // 2 if groups % 2 == 0 else 0
+
+    def run(row_start: int, row_stop: int, cpu_id: int | None = None) -> None:
+        affinity = (
+            os.sched_getaffinity(0)
+            if cpu_id is not None and hasattr(os, "sched_getaffinity")
+            else None
+        )
+        try:
+            if affinity is not None:
+                os.sched_setaffinity(0, {cpu_id})
+            scale_offset = row_start * row_scale_bytes if row_start else 0
+            status = function(
+                weights[row_start:].ctypes.data_as(
+                    ctypes.POINTER(ctypes.c_uint8)
+                ),
+                indices[scale_offset:].ctypes.data_as(
+                    ctypes.POINTER(ctypes.c_uint8)
+                ),
+                anchors_u16[row_start:].ctypes.data_as(
+                    ctypes.POINTER(ctypes.c_uint16)
+                ),
+                codebook_u16.ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
+                activation.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+                act_scales.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+                act_sums.ctypes.data_as(ctypes.POINTER(ctypes.c_int32)),
+                row_stop - row_start,
+                columns,
+                group_size,
+                output[row_start:].ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+            )
+            _check(status, f"{implementation} row-scale4 GEMV")
+        finally:
+            if affinity is not None:
+                os.sched_setaffinity(0, affinity)
+
+    if thread_count == 1:
+        run(0, rows, cpu_ids[0] if cpu_ids else None)
+    else:
+        boundaries = [
+            rows * index // thread_count for index in range(thread_count + 1)
+        ]
+        owner = executor is None
+        pool = executor or ThreadPoolExecutor(max_workers=thread_count)
+        try:
+            futures = [
+                pool.submit(
+                    run,
+                    boundaries[index],
+                    boundaries[index + 1],
+                    cpu_ids[index] if cpu_ids else None,
+                )
+                for index in range(thread_count)
+            ]
+            for future in futures:
+                future.result()
+        finally:
+            if owner:
+                pool.shutdown()
     return output
 
 

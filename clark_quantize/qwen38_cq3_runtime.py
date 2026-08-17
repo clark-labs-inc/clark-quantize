@@ -17,9 +17,11 @@ import numpy as np
 from .base3_block203 import matrix_payload_bits, matrix_payload_bytes
 from .qwen38_cq3_container import CQ3ContainerError, Qwen38CQ3Reader
 from .ternary_cpu import (
+    gemv_q8_group128_2bit_row_scale4,
     gemv_q8_group128_block203_row_scale4,
     quantize_q8,
     swiglu_f32,
+    transcode_block203_rows_to_group128_2bit,
 )
 
 
@@ -47,6 +49,23 @@ class Qwen38CQ3TernaryTensorView:
     packed_scale_indices: np.ndarray
     row_anchors: np.ndarray
     ratio_codebook: np.ndarray
+
+    def derive_aligned2(self) -> "Qwen38CQ3AlignedTensor":
+        """Derive the wider SIMD compute image without an int8 weight matrix."""
+        weights = transcode_block203_rows_to_group128_2bit(
+            self.packed_weights, self.rows, self.columns
+        ).reshape(self.rows, self.columns // 4)
+        weights.flags.writeable = False
+        return Qwen38CQ3AlignedTensor(
+            name=self.name,
+            shape=self.shape,
+            rows=self.rows,
+            columns=self.columns,
+            packed_weights=weights,
+            packed_scale_indices=self.packed_scale_indices,
+            row_anchors=self.row_anchors,
+            ratio_codebook=self.ratio_codebook,
+        )
 
     def gemv_q8(
         self,
@@ -89,6 +108,75 @@ class Qwen38CQ3TernaryTensorView:
         cpu_ids: list[int] | None = None,
     ) -> np.ndarray:
         """Quantize one activation vector to A8 and run direct-storage GEMV."""
+        values = np.asarray(activation, dtype=np.float32)
+        if values.ndim != 1 or values.size != self.columns:
+            raise ValueError(
+                f"{self.name} requires one activation vector of length "
+                f"{self.columns}"
+            )
+        activation_q8, activation_scales, activation_sums = quantize_q8(
+            values, GROUP_SIZE
+        )
+        return self.gemv_q8(
+            activation_q8,
+            activation_scales,
+            activation_sums,
+            implementation=implementation,
+            threads=threads,
+            executor=executor,
+            cpu_ids=cpu_ids,
+        )
+
+
+@dataclass(frozen=True)
+class Qwen38CQ3AlignedTensor:
+    """Derived aligned-2 weight bytes plus canonical row-scale4 views."""
+
+    name: str
+    shape: tuple[int, ...]
+    rows: int
+    columns: int
+    packed_weights: np.ndarray
+    packed_scale_indices: np.ndarray
+    row_anchors: np.ndarray
+    ratio_codebook: np.ndarray
+
+    def gemv_q8(
+        self,
+        activation_q8: np.ndarray,
+        activation_scales: np.ndarray,
+        activation_sums: np.ndarray,
+        *,
+        implementation: str = "scalar",
+        threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
+        cpu_ids: list[int] | None = None,
+    ) -> np.ndarray:
+        return gemv_q8_group128_2bit_row_scale4(
+            self.packed_weights,
+            self.packed_scale_indices,
+            self.row_anchors,
+            self.ratio_codebook,
+            activation_q8,
+            activation_scales,
+            activation_sums,
+            implementation=implementation,
+            threads=threads,
+            executor=executor,
+            cpu_ids=cpu_ids,
+            group_size=GROUP_SIZE,
+            validated=True,
+        )
+
+    def gemv_f32(
+        self,
+        activation: np.ndarray,
+        *,
+        implementation: str = "scalar",
+        threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
+        cpu_ids: list[int] | None = None,
+    ) -> np.ndarray:
         values = np.asarray(activation, dtype=np.float32)
         if values.ndim != 1 or values.size != self.columns:
             raise ValueError(

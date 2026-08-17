@@ -92,6 +92,58 @@ class TernaryCpuPackingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "canonical|code"):
             ternary_cpu.unpack_block203_rows(noncanonical, 2, 128)
 
+    def test_block203_stream_transcode_matches_aligned_compute_image(self) -> None:
+        generator = np.random.default_rng(20260817)
+        for rows, columns in (
+            (1, 128),
+            (3, 256),
+            (7, 512),
+            (8, 1024),
+            (17, 5120),
+        ):
+            cases = (
+                np.full((rows, columns), -1, dtype=np.int8),
+                np.zeros((rows, columns), dtype=np.int8),
+                np.ones((rows, columns), dtype=np.int8),
+                generator.integers(
+                    -1, 2, size=(rows, columns), dtype=np.int8
+                ),
+            )
+            for codes in cases:
+                block203 = ternary_cpu.pack_block203_rows(codes)
+                actual = (
+                    ternary_cpu.transcode_block203_rows_to_group128_2bit(
+                        block203, rows, columns
+                    )
+                )
+                expected = ternary_cpu.pack_group128_2bit(codes)
+                np.testing.assert_array_equal(actual, expected)
+                np.testing.assert_array_equal(
+                    ternary_cpu.unpack_group128_2bit(actual, codes.size),
+                    codes.reshape(-1),
+                )
+
+    def test_block203_stream_transcode_rejects_invalid_payloads(self) -> None:
+        noncanonical = np.frombuffer(
+            (3**128).to_bytes(matrix_payload_bytes(1, 128), "little"),
+            dtype=np.uint8,
+        ).copy()
+        with self.assertRaisesRegex(ValueError, "canonical|code"):
+            ternary_cpu.transcode_block203_rows_to_group128_2bit(
+                noncanonical, 1, 128
+            )
+        valid = ternary_cpu.pack_block203_rows(
+            np.zeros((2, 128), dtype=np.int8)
+        )
+        with self.assertRaisesRegex(ValueError, "dimensions"):
+            ternary_cpu.transcode_block203_rows_to_group128_2bit(
+                valid[:-1], 2, 128
+            )
+        with self.assertRaisesRegex(ValueError, "dimensions"):
+            ternary_cpu.transcode_block203_rows_to_group128_2bit(
+                valid, 2, 129
+            )
+
     def test_aligned2_roundtrip_including_partial_bytes(self) -> None:
         generator = np.random.default_rng(20260817)
         for count in range(33):
@@ -274,6 +326,18 @@ class TernaryCpuNativeTests(unittest.TestCase):
             sums,
             implementation="scalar",
         )
+        row_threaded_scalar = ternary_cpu.gemv_q8_group128_2bit_row_scale4(
+            packed_weights,
+            packed_scale_codes,
+            anchors,
+            codebook,
+            quantized,
+            activation_scales,
+            sums,
+            implementation="scalar",
+            threads=4,
+        )
+        np.testing.assert_array_equal(row_threaded_scalar, row_scalar)
         oracle = np.empty(codes.shape[0], dtype=np.float32)
         for row in range(codes.shape[0]):
             total = np.float32(0.0)
@@ -351,6 +415,18 @@ class TernaryCpuNativeTests(unittest.TestCase):
                 implementation="avx2",
             )
             np.testing.assert_allclose(row_avx2, row_scalar, rtol=1e-5, atol=5e-5)
+            row_threaded_avx2 = ternary_cpu.gemv_q8_group128_2bit_row_scale4(
+                packed_weights,
+                packed_scale_codes,
+                anchors,
+                codebook,
+                quantized,
+                activation_scales,
+                sums,
+                implementation="avx2",
+                threads=4,
+            )
+            np.testing.assert_array_equal(row_threaded_avx2, row_avx2)
             block203_avx2 = ternary_cpu.gemv_q8_group128_block203_row_scale4(
                 block203_weights,
                 packed_scale_codes,

@@ -22,7 +22,12 @@ from clark_quantize.qwen38_cq3_runtime import (
     Qwen38CQ3RuntimeImage,
 )
 from clark_quantize.scale_codebook import pack_nibbles
-from clark_quantize.ternary_cpu import native_available, quantize_q8, swiglu_f32
+from clark_quantize.ternary_cpu import (
+    native_available,
+    pack_group128_2bit,
+    quantize_q8,
+    swiglu_f32,
+)
 
 
 class Qwen38CQ3RuntimeTests(unittest.TestCase):
@@ -273,12 +278,31 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
                     activation_sums,
                     implementation="scalar_chunk16",
                 )
+                aligned = view.derive_aligned2()
+                np.testing.assert_array_equal(
+                    aligned.packed_weights.reshape(-1),
+                    pack_group128_2bit(codes),
+                )
+                aligned_one_thread = aligned.gemv_q8(
+                    activation_q8,
+                    activation_scales,
+                    activation_sums,
+                    implementation="scalar",
+                )
                 with ThreadPoolExecutor(max_workers=4) as executor:
                     four_threads = view.gemv_q8(
                         activation_q8,
                         activation_scales,
                         activation_sums,
                         implementation="scalar_chunk16",
+                        threads=4,
+                        executor=executor,
+                    )
+                    aligned_four_threads = aligned.gemv_q8(
+                        activation_q8,
+                        activation_scales,
+                        activation_sums,
+                        implementation="scalar",
                         threads=4,
                         executor=executor,
                     )
@@ -299,6 +323,10 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
                 )
                 np.testing.assert_allclose(one_thread, expected, rtol=2e-6, atol=2e-6)
                 np.testing.assert_array_equal(four_threads, one_thread)
+                np.testing.assert_array_equal(aligned_one_thread, one_thread)
+                np.testing.assert_array_equal(
+                    aligned_four_threads, aligned_one_thread
+                )
 
     def test_payload_corruption_and_metadata_drift_fail_closed(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

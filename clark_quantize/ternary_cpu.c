@@ -519,6 +519,80 @@ int cq3_unpack_block203_rows(
     return payload_cursor == payload_bits ? CQ3_OK : CQ3_ERROR_SHAPE;
 }
 
+int cq3_transcode_block203_rows_to_group128_2bit(
+    const uint8_t *packed,
+    uint64_t packed_bytes,
+    uint64_t rows,
+    uint64_t columns,
+    uint8_t *aligned,
+    uint64_t aligned_bytes
+) {
+    uint64_t payload_bits = 0U;
+    uint64_t expected_bytes = 0U;
+    int status = cq3_block203_matrix_size(
+        rows, columns, &payload_bits, &expected_bytes
+    );
+    if (status != CQ3_OK) {
+        return status;
+    }
+    if (columns % CQ3_BLOCK203_TRITS_PER_GROUP != 0U ||
+            rows > UINT64_MAX / columns) {
+        return CQ3_ERROR_SHAPE;
+    }
+    const uint64_t count = rows * columns;
+    if (packed_bytes != expected_bytes || count / 4U != aligned_bytes) {
+        return CQ3_ERROR_SHAPE;
+    }
+    if (packed == NULL || aligned == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    const uint32_t unused_bits = (uint32_t)(expected_bytes * 8U - payload_bits);
+    if (unused_bits != 0U &&
+            (packed[expected_bytes - 1U] >> (8U - unused_bits)) != 0U) {
+        return CQ3_ERROR_CODE;
+    }
+    memset(aligned, 0, aligned_bytes);
+    const uint64_t groups_per_row = columns / CQ3_BLOCK203_TRITS_PER_GROUP;
+    uint64_t payload_cursor = 0U;
+    for (uint64_t row = 0U; row < rows; ++row) {
+        for (uint64_t group = 0U; group < groups_per_row; ++group) {
+            uint64_t limbs[4] = {0U, 0U, 0U, 0U};
+            cq3_block203_read_bits(
+                packed,
+                CQ3_BLOCK203_BITS_PER_GROUP,
+                &payload_cursor,
+                limbs
+            );
+            uint8_t *output = aligned +
+                (row * groups_per_row + group) * 32U;
+            for (uint32_t index = 0U;
+                    index < CQ3_BLOCK203_TRITS_PER_GROUP; index += 5U) {
+                const uint32_t chunk_count =
+                    CQ3_BLOCK203_TRITS_PER_GROUP - index < 5U
+                        ? CQ3_BLOCK203_TRITS_PER_GROUP - index
+                        : 5U;
+                uint32_t chunk = cq3_block203_divmod_small(
+                    limbs, cq3_block203_powers3[chunk_count]
+                );
+                for (uint32_t lane = 0U; lane < chunk_count; ++lane) {
+                    const uint32_t position = index + lane;
+                    const uint8_t digit = (uint8_t)(chunk % 3U);
+                    output[position % 32U] |=
+                        (uint8_t)(digit << ((position / 32U) * 2U));
+                    chunk /= 3U;
+                }
+                if (chunk != 0U) {
+                    return CQ3_ERROR_CODE;
+                }
+            }
+            if (!cq3_block203_is_zero(limbs)) {
+                return CQ3_ERROR_CODE;
+            }
+        }
+    }
+    return payload_cursor == payload_bits ? CQ3_OK : CQ3_ERROR_SHAPE;
+}
+
 enum {
     CQ3_FEATURE_AVX2 = 1,
     CQ3_FEATURE_F16C = 2,
