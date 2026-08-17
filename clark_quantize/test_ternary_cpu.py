@@ -13,6 +13,10 @@ from clark_quantize.base3_block203 import (
     row_payload_bits,
     row_payload_bytes,
 )
+from clark_quantize.qwen38_row_scale_codebook import (
+    reconstruct_row_normalized_scales,
+)
+from clark_quantize.scale_codebook import pack_nibbles
 
 
 class TernaryCpuPackingTests(unittest.TestCase):
@@ -215,6 +219,100 @@ class TernaryCpuNativeTests(unittest.TestCase):
             implementation="scalar",
         )
         np.testing.assert_allclose(radix5, aligned, rtol=1e-6, atol=1e-6)
+
+    def test_row_scale4_native_decode_matches_frozen_fp32_contract(self) -> None:
+        generator = np.random.default_rng(20260817)
+        rows, groups = 19, 37
+        anchors = generator.lognormal(-2.0, 0.8, size=rows).astype(np.float16)
+        codebook = np.concatenate(
+            (
+                np.zeros(1, dtype=np.float16),
+                np.geomspace(0.4, 2.5, 15, dtype=np.float32).astype(np.float16),
+            )
+        )
+        codes = generator.integers(0, 16, size=(rows, groups), dtype=np.uint8)
+        packed = np.frombuffer(pack_nibbles(codes), dtype=np.uint8).copy()
+        expected = reconstruct_row_normalized_scales(anchors, codebook, codes)
+        scalar = ternary_cpu.decode_row_scale4(
+            packed, anchors, codebook, groups, implementation="scalar"
+        )
+        np.testing.assert_array_equal(scalar, expected)
+        if ternary_cpu.cpu_features()["avx2"]:
+            avx2 = ternary_cpu.decode_row_scale4(
+                packed, anchors, codebook, groups, implementation="avx2"
+            )
+            np.testing.assert_array_equal(avx2, scalar)
+
+    def test_row_scale4_gemv_matches_fp32_product_oracle(self) -> None:
+        codes, _, quantized, activation_scales, sums, packed_weights = self.fixture(
+            rows=19, columns=512
+        )
+        generator = np.random.default_rng(88)
+        anchors = generator.uniform(0.02, 0.2, size=codes.shape[0]).astype(np.float16)
+        codebook = np.concatenate(
+            (
+                np.zeros(1, dtype=np.float16),
+                np.linspace(0.5, 1.5, 15, dtype=np.float32).astype(np.float16),
+            )
+        )
+        scale_codes = generator.integers(
+            0, 16, size=(codes.shape[0], codes.shape[1] // 128), dtype=np.uint8
+        )
+        packed_scale_codes = np.frombuffer(
+            pack_nibbles(scale_codes), dtype=np.uint8
+        ).copy()
+        materialized = reconstruct_row_normalized_scales(
+            anchors, codebook, scale_codes
+        )
+        row_scalar = ternary_cpu.gemv_q8_group128_2bit_row_scale4(
+            packed_weights,
+            packed_scale_codes,
+            anchors,
+            codebook,
+            quantized,
+            activation_scales,
+            sums,
+            implementation="scalar",
+        )
+        oracle = np.empty(codes.shape[0], dtype=np.float32)
+        for row in range(codes.shape[0]):
+            total = np.float32(0.0)
+            for group in range(codes.shape[1] // 128):
+                start = group * 128
+                dot = int(np.dot(
+                    codes[row, start:start + 128].astype(np.int32),
+                    quantized[start:start + 128].astype(np.int32),
+                ))
+                contribution = np.float32(dot) * materialized[row, group]
+                contribution = contribution * activation_scales[group]
+                total = np.float32(total + contribution)
+            oracle[row] = total
+        np.testing.assert_allclose(row_scalar, oracle, rtol=1e-6, atol=1e-6)
+        if ternary_cpu.cpu_features()["avx2"]:
+            row_avx2 = ternary_cpu.gemv_q8_group128_2bit_row_scale4(
+                packed_weights,
+                packed_scale_codes,
+                anchors,
+                codebook,
+                quantized,
+                activation_scales,
+                sums,
+                implementation="avx2",
+            )
+            np.testing.assert_allclose(row_avx2, row_scalar, rtol=1e-5, atol=5e-5)
+
+    def test_row_scale4_rejects_noncanonical_payloads(self) -> None:
+        anchors = np.ones(1, dtype=np.float16)
+        codebook = np.ones(16, dtype=np.float16)
+        codebook[0] = 0
+        packed = np.frombuffer(pack_nibbles(np.zeros(3, dtype=np.uint8)), dtype=np.uint8).copy()
+        packed[-1] |= np.uint8(0x10)
+        with self.assertRaisesRegex(ValueError, "canonical|code"):
+            ternary_cpu.decode_row_scale4(packed, anchors, codebook, 3)
+        packed[-1] &= np.uint8(0x0F)
+        codebook[0] = np.float16(1.0)
+        with self.assertRaisesRegex(ValueError, "canonical"):
+            ternary_cpu.decode_row_scale4(packed, anchors, codebook, 3)
 
     def test_stream_control_reads_every_byte(self) -> None:
         values = np.arange(1_000_003, dtype=np.uint8)

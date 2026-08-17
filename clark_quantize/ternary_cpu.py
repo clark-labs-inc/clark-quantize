@@ -107,6 +107,14 @@ def _load_library() -> ctypes.CDLL | None:
         library.cq3_expand_q8_radix5.restype = ctypes.c_int
         library.cq3_expand_q8_radix5_planes.argtypes = (i8p, ctypes.c_uint64, i8p)
         library.cq3_expand_q8_radix5_planes.restype = ctypes.c_int
+        if hasattr(library, "cq3_decode_row_scale4_scalar"):
+            row_scale_args = (
+                u8p, u16p, u16p, ctypes.c_uint64, ctypes.c_uint64, f32p,
+            )
+            library.cq3_decode_row_scale4_scalar.argtypes = row_scale_args
+            library.cq3_decode_row_scale4_scalar.restype = ctypes.c_int
+            library.cq3_decode_row_scale4_avx2.argtypes = row_scale_args
+            library.cq3_decode_row_scale4_avx2.restype = ctypes.c_int
         gemv_args = (
             u8p, u16p, i8p, f32p, i32p,
             ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint32, f32p,
@@ -117,6 +125,19 @@ def _load_library() -> ctypes.CDLL | None:
         library.cq3_gemv_q8_group128_2bit_avx2.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_2bit_arm_dotprod.argtypes = gemv_args
         library.cq3_gemv_q8_group128_2bit_arm_dotprod.restype = ctypes.c_int
+        if hasattr(library, "cq3_gemv_q8_group128_2bit_row_scale4_scalar"):
+            row_scale_gemv_args = (
+                u8p, u8p, u16p, u16p, i8p, f32p, i32p,
+                ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint32, f32p,
+            )
+            library.cq3_gemv_q8_group128_2bit_row_scale4_scalar.argtypes = (
+                row_scale_gemv_args
+            )
+            library.cq3_gemv_q8_group128_2bit_row_scale4_scalar.restype = ctypes.c_int
+            library.cq3_gemv_q8_group128_2bit_row_scale4_avx2.argtypes = (
+                row_scale_gemv_args
+            )
+            library.cq3_gemv_q8_group128_2bit_row_scale4_avx2.restype = ctypes.c_int
         swiglu_gemv_args = (
             u8p, u16p, u8p, u16p, i8p, f32p, i32p,
             ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint32, f32p,
@@ -605,6 +626,131 @@ def gemv_q8_group128_2bit(
         finally:
             if owner:
                 pool.shutdown()
+    return output
+
+
+def decode_row_scale4(
+    packed_indices: np.ndarray,
+    row_anchors: np.ndarray,
+    ratio_codebook: np.ndarray,
+    groups: int,
+    *,
+    implementation: str = "scalar",
+    validated: bool = False,
+) -> np.ndarray:
+    """Decode the Qwen3.8-27B row-anchor plus 4-bit ratio representation."""
+    if _LIBRARY is None or not hasattr(_LIBRARY, "cq3_decode_row_scale4_scalar"):
+        raise RuntimeError("Clark ternary CPU library lacks row-scale4 support")
+    indices = _array(packed_indices, np.uint8, ndim=1)
+    anchors_u16 = _array(row_anchors, np.float16, ndim=1).view(np.uint16)
+    codebook_u16 = _array(ratio_codebook, np.float16, ndim=1).view(np.uint16)
+    rows = anchors_u16.size
+    count = rows * int(groups)
+    if (
+        rows == 0
+        or groups <= 0
+        or groups > 256
+        or indices.size != (count + 1) // 2
+        or codebook_u16.shape != (16,)
+    ):
+        raise ValueError("row-scale4 tensor dimensions do not match")
+    if not validated and (
+        not np.all(np.isfinite(anchors_u16.view(np.float16)))
+        or not np.all(np.isfinite(codebook_u16.view(np.float16)))
+        or codebook_u16.view(np.float16)[0] != np.float16(0.0)
+        or (count & 1 and int(indices[-1]) & 0xF0)
+    ):
+        raise ValueError("row-scale4 payload is non-canonical or non-finite")
+    functions = {
+        "scalar": _LIBRARY.cq3_decode_row_scale4_scalar,
+        "avx2": _LIBRARY.cq3_decode_row_scale4_avx2,
+    }
+    if implementation not in functions:
+        raise ValueError(f"unknown row-scale4 implementation {implementation!r}")
+    output = np.empty((rows, groups), dtype=np.float32)
+    status = functions[implementation](
+        indices.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        anchors_u16.ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
+        codebook_u16.ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
+        rows,
+        groups,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+    )
+    _check(status, f"{implementation} row-scale4 decode")
+    return output
+
+
+def gemv_q8_group128_2bit_row_scale4(
+    packed_weights: np.ndarray,
+    packed_scale_indices: np.ndarray,
+    row_anchors: np.ndarray,
+    ratio_codebook: np.ndarray,
+    activation_q8: np.ndarray,
+    activation_scales: np.ndarray,
+    activation_sums: np.ndarray,
+    *,
+    implementation: str = "avx2",
+    group_size: int = 128,
+    validated: bool = False,
+) -> np.ndarray:
+    """Aligned-2 GEMV using the exact Qwen3.8-27B row-scale4 payload."""
+    if _LIBRARY is None or not hasattr(
+        _LIBRARY, "cq3_gemv_q8_group128_2bit_row_scale4_scalar"
+    ):
+        raise RuntimeError("Clark ternary CPU library lacks row-scale4 GEMV support")
+    weights = _array(packed_weights, np.uint8, ndim=2)
+    indices = _array(packed_scale_indices, np.uint8, ndim=1)
+    anchors_u16 = _array(row_anchors, np.float16, ndim=1).view(np.uint16)
+    codebook_u16 = _array(ratio_codebook, np.float16, ndim=1).view(np.uint16)
+    activation = _array(activation_q8, np.int8, ndim=1)
+    act_scales = _array(activation_scales, np.float32, ndim=1)
+    act_sums = _array(activation_sums, np.int32, ndim=1)
+    rows = weights.shape[0]
+    columns = activation.size
+    groups = columns // group_size if group_size else 0
+    count = rows * groups
+    if (
+        rows == 0
+        or columns == 0
+        or group_size != 128
+        or columns % group_size
+        or weights.shape[1] != columns // 4
+        or anchors_u16.shape != (rows,)
+        or codebook_u16.shape != (16,)
+        or indices.size != (count + 1) // 2
+        or act_scales.shape != (groups,)
+        or act_sums.shape != (groups,)
+    ):
+        raise ValueError("row-scale4 group-128 GEMV dimensions do not match")
+    if not validated and (
+        not np.all(np.isfinite(anchors_u16.view(np.float16)))
+        or not np.all(np.isfinite(codebook_u16.view(np.float16)))
+        or not np.all(np.isfinite(act_scales))
+        or codebook_u16.view(np.float16)[0] != np.float16(0.0)
+        or (count & 1 and int(indices[-1]) & 0xF0)
+    ):
+        raise ValueError("row-scale4 group-128 GEMV payload is non-canonical")
+    functions = {
+        "scalar": _LIBRARY.cq3_gemv_q8_group128_2bit_row_scale4_scalar,
+        "avx2": _LIBRARY.cq3_gemv_q8_group128_2bit_row_scale4_avx2,
+    }
+    if implementation not in functions:
+        raise ValueError(f"unknown row-scale4 GEMV implementation {implementation!r}")
+    output = np.empty(rows, dtype=np.float32)
+    status = functions[implementation](
+        weights.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        indices.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        anchors_u16.ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
+        codebook_u16.ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
+        activation.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+        act_scales.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        act_sums.ctypes.data_as(ctypes.POINTER(ctypes.c_int32)),
+        rows,
+        columns,
+        group_size,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+    )
+    _check(status, f"{implementation} row-scale4 GEMV")
     return output
 
 

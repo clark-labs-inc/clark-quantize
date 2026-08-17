@@ -561,6 +561,145 @@ static float cq3_half_to_float(uint16_t value) {
     return output;
 }
 
+static int cq3_validate_row_scale4(
+    const uint8_t *packed_indices,
+    const uint16_t *row_anchors,
+    const uint16_t *ratio_codebook,
+    uint64_t rows,
+    uint64_t groups,
+    float *output
+) {
+    if (packed_indices == NULL || row_anchors == NULL ||
+        ratio_codebook == NULL || output == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    if (rows == 0U || groups == 0U || groups > CQ3_MAX_GROUPS_PER_ROW ||
+        rows > UINT64_MAX / groups) {
+        return CQ3_ERROR_SHAPE;
+    }
+    if (cq3_half_to_float(ratio_codebook[0]) != 0.0f) {
+        return CQ3_ERROR_CODE;
+    }
+    for (uint32_t index = 0U; index < 16U; ++index) {
+        if (!isfinite(cq3_half_to_float(ratio_codebook[index]))) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    for (uint64_t row = 0U; row < rows; ++row) {
+        if (!isfinite(cq3_half_to_float(row_anchors[row]))) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    const uint64_t count = rows * groups;
+    if ((count & 1U) != 0U && (packed_indices[count / 2U] & 0xf0U) != 0U) {
+        return CQ3_ERROR_CODE;
+    }
+    return CQ3_OK;
+}
+
+int cq3_decode_row_scale4_scalar(
+    const uint8_t *CQ3_RESTRICT packed_indices,
+    const uint16_t *CQ3_RESTRICT row_anchors,
+    const uint16_t *CQ3_RESTRICT ratio_codebook,
+    uint64_t rows,
+    uint64_t groups,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_row_scale4(
+        packed_indices, row_anchors, ratio_codebook, rows, groups, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+    for (uint64_t row = 0U; row < rows; ++row) {
+        const float anchor = cq3_half_to_float(row_anchors[row]);
+        for (uint64_t group = 0U; group < groups; ++group) {
+            const uint64_t linear = row * groups + group;
+            const uint8_t code = (packed_indices[linear / 2U] >>
+                ((linear & 1U) * 4U)) & 0x0fU;
+            output[linear] = anchor * cq3_half_to_float(ratio_codebook[code]);
+        }
+    }
+    return CQ3_OK;
+}
+
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+__attribute__((target("avx2,f16c")))
+static void cq3_decode_row_scale4_avx2_impl(
+    const uint8_t *CQ3_RESTRICT packed_indices,
+    const uint16_t *CQ3_RESTRICT row_anchors,
+    const uint16_t *CQ3_RESTRICT ratio_codebook,
+    uint64_t rows,
+    uint64_t groups,
+    float *CQ3_RESTRICT output
+) {
+    float ratios[16];
+    _mm256_storeu_ps(
+        ratios,
+        _mm256_cvtph_ps(_mm_loadu_si128((const __m128i *)ratio_codebook))
+    );
+    _mm256_storeu_ps(
+        ratios + 8U,
+        _mm256_cvtph_ps(_mm_loadu_si128((const __m128i *)(ratio_codebook + 8U)))
+    );
+    for (uint64_t row = 0U; row < rows; ++row) {
+        const __m256 anchor = _mm256_set1_ps(_cvtsh_ss(row_anchors[row]));
+        uint64_t group = 0U;
+        for (; group + 8U <= groups; group += 8U) {
+            const uint64_t linear = row * groups + group;
+            uint32_t code_values[8];
+            for (uint32_t lane = 0U; lane < 8U; ++lane) {
+                const uint64_t index = linear + lane;
+                code_values[lane] = (packed_indices[index / 2U] >>
+                    ((index & 1U) * 4U)) & 0x0fU;
+            }
+            const __m256i codes = _mm256_loadu_si256(
+                (const __m256i *)code_values
+            );
+            const __m256 decoded = _mm256_mul_ps(
+                anchor, _mm256_i32gather_ps(ratios, codes, 4)
+            );
+            _mm256_storeu_ps(output + linear, decoded);
+        }
+        const float scalar_anchor = _cvtsh_ss(row_anchors[row]);
+        for (; group < groups; ++group) {
+            const uint64_t linear = row * groups + group;
+            const uint8_t code = (packed_indices[linear / 2U] >>
+                ((linear & 1U) * 4U)) & 0x0fU;
+            output[linear] = scalar_anchor * ratios[code];
+        }
+    }
+}
+#endif
+
+int cq3_decode_row_scale4_avx2(
+    const uint8_t *CQ3_RESTRICT packed_indices,
+    const uint16_t *CQ3_RESTRICT row_anchors,
+    const uint16_t *CQ3_RESTRICT ratio_codebook,
+    uint64_t rows,
+    uint64_t groups,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_row_scale4(
+        packed_indices, row_anchors, ratio_codebook, rows, groups, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    const uint32_t required = CQ3_FEATURE_AVX2 | CQ3_FEATURE_F16C;
+    if ((cq3_cpu_features() & required) != required) {
+        return CQ3_ERROR_ISA;
+    }
+    cq3_decode_row_scale4_avx2_impl(
+        packed_indices, row_anchors, ratio_codebook, rows, groups, output
+    );
+    return CQ3_OK;
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
 #if CQ3_ARM64 && defined(__ARM_FEATURE_FP16_SCALAR_ARITHMETIC)
 static inline float cq3_half_to_float_arm(uint16_t value) {
     float16_t half;
@@ -1013,6 +1152,237 @@ int cq3_gemv_q8_group128_2bit_avx2(
     return cq3_gemv_q8_group128_2bit_avx2_impl(
         weights, weight_scales, activation, activation_scales,
         activation_sums, rows, columns, group_size, output
+    );
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
+int cq3_gemv_q8_group128_2bit_row_scale4_scalar(
+    const uint8_t *CQ3_RESTRICT weights,
+    const uint8_t *CQ3_RESTRICT packed_scale_indices,
+    const uint16_t *CQ3_RESTRICT row_anchors,
+    const uint16_t *CQ3_RESTRICT ratio_codebook,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    uint32_t group_size,
+    float *CQ3_RESTRICT output
+) {
+    if (activation_sums == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    const int gemv_validation = cq3_validate_gemv(
+        weights, row_anchors, activation, activation_scales,
+        output, rows, columns, group_size
+    );
+    if (gemv_validation != CQ3_OK) {
+        return gemv_validation;
+    }
+    const uint64_t groups = columns / group_size;
+    const int scale_validation = cq3_validate_row_scale4(
+        packed_scale_indices, row_anchors, ratio_codebook,
+        rows, groups, output
+    );
+    if (scale_validation != CQ3_OK) {
+        return scale_validation;
+    }
+    const uint64_t row_bytes = columns / 4U;
+    for (uint64_t row = 0U; row < rows; ++row) {
+        const float anchor = cq3_half_to_float(row_anchors[row]);
+        float total = 0.0f;
+        for (uint64_t group = 0U; group < groups; ++group) {
+            const uint64_t scale_index = row * groups + group;
+            const uint8_t ratio_index = (packed_scale_indices[scale_index / 2U] >>
+                ((scale_index & 1U) * 4U)) & 0x0fU;
+            const float weight_scale =
+                anchor * cq3_half_to_float(ratio_codebook[ratio_index]);
+            const uint64_t code_offset =
+                row * row_bytes + group * (group_size / 4U);
+            const uint64_t activation_offset = group * group_size;
+            int32_t dot = 0;
+            for (uint32_t lane = 0U; lane < group_size; ++lane) {
+                const uint8_t digit =
+                    (weights[code_offset + lane % 32U] >>
+                        ((lane / 32U) * 2U)) & 3U;
+                if (digit == 3U) {
+                    return CQ3_ERROR_CODE;
+                }
+                dot += ((int32_t)digit - 1) *
+                    (int32_t)activation[activation_offset + lane];
+            }
+            total += (float)dot * weight_scale * activation_scales[group];
+        }
+        output[row] = total;
+    }
+    return CQ3_OK;
+}
+
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+__attribute__((target("avx2,f16c,fma")))
+static int cq3_gemv_q8_group128_2bit_row_scale4_avx2_impl(
+    const uint8_t *CQ3_RESTRICT weights,
+    const uint8_t *CQ3_RESTRICT packed_scale_indices,
+    const uint16_t *CQ3_RESTRICT row_anchors,
+    const uint16_t *CQ3_RESTRICT ratio_codebook,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    uint32_t group_size,
+    float *CQ3_RESTRICT output
+) {
+    float ratios[16];
+    _mm256_storeu_ps(
+        ratios,
+        _mm256_cvtph_ps(_mm_loadu_si128((const __m128i *)ratio_codebook))
+    );
+    _mm256_storeu_ps(
+        ratios + 8U,
+        _mm256_cvtph_ps(_mm_loadu_si128((const __m128i *)(ratio_codebook + 8U)))
+    );
+    const uint64_t groups = columns / group_size;
+    const uint64_t row_bytes = columns / 4U;
+    const __m256i mask = _mm256_set1_epi8(3);
+    const __m256i ones = _mm256_set1_epi16(1);
+    for (uint64_t row = 0U; row < rows; ++row) {
+        float combined_scales[CQ3_MAX_GROUPS_PER_ROW];
+        const __m256 anchor = _mm256_set1_ps(_cvtsh_ss(row_anchors[row]));
+        uint64_t scale_group = 0U;
+        for (; scale_group + 8U <= groups; scale_group += 8U) {
+            const uint64_t linear = row * groups + scale_group;
+            uint32_t code_values[8];
+            for (uint32_t lane = 0U; lane < 8U; ++lane) {
+                const uint64_t index = linear + lane;
+                code_values[lane] = (packed_scale_indices[index / 2U] >>
+                    ((index & 1U) * 4U)) & 0x0fU;
+            }
+            const __m256i codes = _mm256_loadu_si256(
+                (const __m256i *)code_values
+            );
+            const __m256 scales = _mm256_mul_ps(
+                _mm256_mul_ps(
+                    anchor, _mm256_i32gather_ps(ratios, codes, 4)
+                ),
+                _mm256_loadu_ps(activation_scales + scale_group)
+            );
+            _mm256_storeu_ps(combined_scales + scale_group, scales);
+        }
+        const float scalar_anchor = _cvtsh_ss(row_anchors[row]);
+        for (; scale_group < groups; ++scale_group) {
+            const uint64_t linear = row * groups + scale_group;
+            const uint8_t code = (packed_scale_indices[linear / 2U] >>
+                ((linear & 1U) * 4U)) & 0x0fU;
+            combined_scales[scale_group] = scalar_anchor * ratios[code]
+                * activation_scales[scale_group];
+        }
+        __m256 total = _mm256_setzero_ps();
+        for (uint64_t group = 0U; group < groups; ++group) {
+            const __m256i packed = _mm256_loadu_si256(
+                (const __m256i *)(weights + row * row_bytes + group * 32U)
+            );
+            const int8_t *x = activation + group * 128U;
+            const __m256i digits0 = _mm256_and_si256(packed, mask);
+            const __m256i digits1 = _mm256_and_si256(
+                _mm256_srli_epi16(packed, 2), mask
+            );
+            const __m256i digits2 = _mm256_and_si256(
+                _mm256_srli_epi16(packed, 4), mask
+            );
+            const __m256i digits3 = _mm256_and_si256(
+                _mm256_srli_epi16(packed, 6), mask
+            );
+            const __m256i values0 = _mm256_loadu_si256(
+                (const __m256i *)(x + 0U)
+            );
+            const __m256i values1 = _mm256_loadu_si256(
+                (const __m256i *)(x + 32U)
+            );
+            const __m256i values2 = _mm256_loadu_si256(
+                (const __m256i *)(x + 64U)
+            );
+            const __m256i values3 = _mm256_loadu_si256(
+                (const __m256i *)(x + 96U)
+            );
+            const __m256i products01 = _mm256_add_epi16(
+                _mm256_maddubs_epi16(digits0, values0),
+                _mm256_maddubs_epi16(digits1, values1)
+            );
+            const __m256i products23 = _mm256_add_epi16(
+                _mm256_maddubs_epi16(digits2, values2),
+                _mm256_maddubs_epi16(digits3, values3)
+            );
+            const __m256i accumulator = _mm256_madd_epi16(
+                _mm256_add_epi16(products01, products23), ones
+            );
+            const __m256i centered = _mm256_sub_epi32(
+                accumulator,
+                _mm256_set_epi32(
+                    0, 0, 0, 0, 0, 0, 0, activation_sums[group]
+                )
+            );
+            total = _mm256_fmadd_ps(
+                _mm256_cvtepi32_ps(centered),
+                _mm256_set1_ps(combined_scales[group]),
+                total
+            );
+        }
+        __m128 horizontal = _mm_add_ps(
+            _mm256_castps256_ps128(total),
+            _mm256_extractf128_ps(total, 1)
+        );
+        horizontal = _mm_hadd_ps(horizontal, horizontal);
+        horizontal = _mm_hadd_ps(horizontal, horizontal);
+        output[row] = _mm_cvtss_f32(horizontal);
+    }
+    return CQ3_OK;
+}
+#endif
+
+int cq3_gemv_q8_group128_2bit_row_scale4_avx2(
+    const uint8_t *CQ3_RESTRICT weights,
+    const uint8_t *CQ3_RESTRICT packed_scale_indices,
+    const uint16_t *CQ3_RESTRICT row_anchors,
+    const uint16_t *CQ3_RESTRICT ratio_codebook,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    uint32_t group_size,
+    float *CQ3_RESTRICT output
+) {
+    if (activation_sums == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    const int gemv_validation = cq3_validate_gemv(
+        weights, row_anchors, activation, activation_scales,
+        output, rows, columns, group_size
+    );
+    if (gemv_validation != CQ3_OK) {
+        return gemv_validation;
+    }
+    const uint64_t groups = columns / group_size;
+    const int scale_validation = cq3_validate_row_scale4(
+        packed_scale_indices, row_anchors, ratio_codebook,
+        rows, groups, output
+    );
+    if (scale_validation != CQ3_OK) {
+        return scale_validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    const uint32_t required = CQ3_FEATURE_AVX2 | CQ3_FEATURE_F16C |
+        CQ3_FEATURE_FMA;
+    if ((cq3_cpu_features() & required) != required) {
+        return CQ3_ERROR_ISA;
+    }
+    return cq3_gemv_q8_group128_2bit_row_scale4_avx2_impl(
+        weights, packed_scale_indices, row_anchors, ratio_codebook,
+        activation, activation_scales, activation_sums,
+        rows, columns, group_size, output
     );
 #else
     return CQ3_ERROR_ISA;
