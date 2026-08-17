@@ -9,6 +9,12 @@ python_bin=${PYTHON_BIN:-/workspace/venvs/quant-cpu/bin/python}
 state=${STATE_DIR:-/workspace/quant-state/qwen38-27b-layer0-mlp-activation-qat-watch-v1}
 parent_state=${PARENT_STATE:-/workspace/quant-state/qwen38-27b-infrastructure-retry-v1}
 parent_unit=${PARENT_UNIT:-quant-qwen38-27b-infrastructure-retry-v1.service}
+geometry_unit=${GEOMETRY_UNIT:-quant-qwen38-27b-geometric-ternary-ablation-v2.service}
+rate_unit=${RATE_UNIT:-quant-qwen38-27b-ternary-type-class-rate-v1.service}
+hash_unit=${HASH_UNIT:-quant-qwen38-27b-hash-residual-screen-v1.service}
+geometry_receipt=${GEOMETRY_RECEIPT:-/workspace/quant-state/qwen38-27b-geometric-ternary-ablation-v1.json}
+rate_receipt=${RATE_RECEIPT:-/workspace/quant-state/qwen38-27b-ternary-type-class-rate-v1.json}
+hash_receipt=${HASH_RECEIPT:-/workspace/quant-state/qwen38-27b-hash-residual-screen-v1.json}
 runtime=experiments/llm_ternary_158bit_dossier/cpu_runtime
 candidate=/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0-activation-QAT-v1.gguf
 materialization=/workspace/quant-state/qwen38-27b-layer0-mlp-activation-qat-materialization-v1.json
@@ -28,13 +34,38 @@ if [[ -z "$expected_commit" ]]; then
   expected_commit=${bundle_commits[0]}
 fi
 
-while systemctl is-active --quiet "$parent_unit"; do
-  sleep 30
+for prerequisite_unit in "$parent_unit" "$geometry_unit" "$rate_unit" "$hash_unit"; do
+  while systemctl is-active --quiet "$prerequisite_unit"; do
+    sleep 30
+  done
 done
 if [[ ! -s "$parent_state/RETRY_TERMINAL" || ! -s "$parent_state/receipt.json" ]]; then
   echo "parent Qwen3.8-27B retry did not produce its terminal receipt" >&2
   exit 3
 fi
+"$python_bin" - "$geometry_receipt" "$rate_receipt" "$hash_receipt" <<'PY'
+import json
+from pathlib import Path
+import sys
+
+expected = {
+    "qwen38_27b_geometric_ternary_ablation_receipt_v1",
+    "qwen38_27b_ternary_type_class_rate_receipt_v1",
+    "qwen38_27b_hash_residual_screen_receipt_v1",
+}
+observed = set()
+for raw in sys.argv[1:]:
+    path = Path(raw)
+    if not path.is_file() or path.stat().st_size == 0:
+        raise SystemExit(f"Qwen3.8-27B prerequisite receipt is absent: {path}")
+    payload = json.loads(path.read_text())
+    observed.add(payload.get("schema"))
+    gate = payload.get("gate")
+    if not isinstance(gate, dict) or not isinstance(gate.get("passed"), bool):
+        raise SystemExit(f"Qwen3.8-27B prerequisite receipt is nonterminal: {path}")
+if observed != expected:
+    raise SystemExit(f"Qwen3.8-27B prerequisite receipt schemas changed: {observed}")
+PY
 for marker in \
   /workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1/QUALITY_COMPLETE \
   /workspace/quant-state/qwen38-27b-layer0-mlp-direct-cq3-v1/CANDIDATE_READY \
@@ -46,6 +77,8 @@ for marker in \
 done
 
 mkdir -p "$state"
+sha256sum "$parent_state/receipt.json" "$geometry_receipt" "$rate_receipt" \
+  "$hash_receipt" > "$state/prerequisites.sha256"
 cd "$repo"
 if [[ -n "$(git status --porcelain)" ]]; then
   echo "refusing dirty Qwen3.8-27B research repository" >&2
