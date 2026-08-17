@@ -3,6 +3,15 @@
 Status: **the frozen byte-accounting gate passed**. The authoritative projection
 is not an exported model and has no quality or runtime promotion.
 
+Update: the prerequisite 402-tensor 4-bit scale-codebook fit subsequently
+**failed all three frozen reconstruction thresholds**. Global normalized RMSE
+was 4.2785% (2% maximum), worst-tensor normalized RMSE was 10.9136% (5%
+maximum), and worst per-tensor p99 relative error was 16.6767% (10% maximum).
+Therefore the projected 1.624562-bpw layout is a valid storage calculation but
+is not an export candidate. The remaining 264-tensor fit and complete-container
+export are not promoted. See
+`receipts/qwen38-27b-scale-codebook4-v1-summary.json`.
+
 Receipt: `receipts/qwen38-27b-storage-budget-v1.json`, SHA-256
 `1e37e00ff6736e6614d77f7dd1a1f69aecae96503e1659b0d027df9a37caec92`.
 
