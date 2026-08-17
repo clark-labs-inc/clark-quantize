@@ -1,0 +1,109 @@
+{
+  "schema": "qwen38_27b_static_entropy_codec_sample_preregistration_v1",
+  "receipt_schema": "qwen38_27b_static_entropy_codec_sample_receipt_v1",
+  "status": "frozen_before_authoritative_real_Qwen_chunk_run",
+  "frozen_at_utc": "2026-08-17T19:32:41Z",
+  "hypothesis": "A deterministic 15-bit static arithmetic model fitted independently to each authenticated Qwen3.8-27B ternary chunk can preserve every trit exactly, save at least 0.04 bits per trit against uniform base-3 including its real 23-byte frame header, stay within 0.001 bits per trit of empirical entropy, and decode natively at a practical load-time rate",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "source_manifest": "/workspace/quant-runs/qwen38-base3-full/artifacts/qwen38-optimal.cq3q/codes.cq3d/manifest.json",
+    "source_manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4",
+    "required_chunks": 4,
+    "required_trits": 2621440,
+    "selection_rule": "four indices frozen before codec execution spanning layer-0 qkv, layer-0 z, a later linear-attention qkv tensor, and the final LM-head shard",
+    "chunks": [
+      {
+        "index": 0,
+        "tensor": "model.language_model.layers.0.linear_attn.in_proj_qkv.weight",
+        "trits": 655360,
+        "raw_sha256": "cb9173598b4a2d4edaec9cf660d7625086359548049a645c2f2ae64dde4012a9",
+        "frame_sha256": "000b6d0ef3d24fa9f515d324223f48d166290a7afc0c5f9e9cdce5e1b8dea7d3"
+      },
+      {
+        "index": 127,
+        "tensor": "model.language_model.layers.0.linear_attn.in_proj_z.weight",
+        "trits": 655360,
+        "raw_sha256": "cf75052c2a798170ada940328445634e2d40ecbed02c456bd66b25b49165b1f7",
+        "frame_sha256": "cf476ced46c0c827888188e8d6488b833cec6ff98bccf37ff7215ef68fe0505b"
+      },
+      {
+        "index": 1024,
+        "tensor": "model.language_model.layers.2.linear_attn.in_proj_qkv.weight",
+        "trits": 655360,
+        "raw_sha256": "58751a1c2b464ace7a802ee484c06b81f6729d44113b73d8ed0af730991ad803",
+        "frame_sha256": "ee11ef79db25cdc84cda88665ea06abdf0680bb3772fa491c21cb81ed775db2a"
+      },
+      {
+        "index": 34343,
+        "tensor": "lm_head.weight",
+        "trits": 655360,
+        "raw_sha256": "8cffe0e165b741a03a482a897fc1f5746045fb05d37345f25011e39a98c27be0",
+        "frame_sha256": "86f939afa7edd8f714d08c2023e36960dddc11fdda694be153cc41df0b62b56c"
+      }
+    ]
+  },
+  "codec": {
+    "frame_magic": "CQ3S1",
+    "probability_model": "two-pass per-frame static frequencies",
+    "frequency_total": 32768,
+    "frequency_apportionment": "reserve one count for each observed symbol, then integer largest-remainder allocation with symbol-order tie breaking",
+    "header": "23 bytes: 5-byte magic, uint32 trit count, uint32 payload bit count, three uint16 frequencies, uint32 CRC over all preceding header fields plus payload",
+    "arithmetic_state_bits": 32,
+    "native_decoder": "portable C11; the hot inference path still uses a separately transcoded ISA-specific compute image"
+  },
+  "measurement": {
+    "decode_repetitions": 7,
+    "persist_every_static_sample_frame": true,
+    "authenticate_manifest_frame_and_raw_trit_hashes": true,
+    "require_native_and_python_unit_test_equality_before_run": true,
+    "compare_real_total_frame_bytes_including_headers": true,
+    "compare_native_static_and_uniform_decoder_throughput": true,
+    "no_capability_eval_needed_because_exact_trits_are_unchanged": true
+  },
+  "gate": {
+    "required_chunks": 4,
+    "required_trits": 2621440,
+    "minimum_saving_vs_uniform_bits_per_trit": 0.04,
+    "maximum_static_over_entropy_bits_per_trit": 0.001,
+    "minimum_static_native_decode_mtrits_per_second": 25.0,
+    "minimum_static_over_uniform_native_decode_throughput": 0.5
+  },
+  "frozen_inputs": {
+    "codec": {
+      "path": "clark_quantize/qwen38_static_ternary_codec.py",
+      "sha256": "20d4b9b265cadf51a8e88892799481591a49f70037c705db885f23c4debaef47"
+    },
+    "native_decoder": {
+      "path": "clark_quantize/base3_native.c",
+      "sha256": "ee136a453a347f2d7ea124f0550826de860b9a209cd4af71c6a716ec9a939b62"
+    },
+    "uniform_control": {
+      "path": "clark_quantize/base3.py",
+      "sha256": "0abd5bca61dbc1ce5c30a4cc17c5fe19431147d06201883763a0e147e445c50b"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_static_entropy_codec_sample_v1.py",
+      "sha256": "ccffc240f712898a85cfc33654c2229f351bd5a108d6637d44edbd405e956f12"
+    },
+    "tests": {
+      "path": "clark_quantize/test_qwen38_static_ternary_codec.py",
+      "sha256": "c7548df607cf104e6e49ed8c2597dfe36a42a80e14a8a9cc4591d9b0e5363760"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 100,
+    "memory_max_gib": 2,
+    "swap_must_remain_zero": true,
+    "persistent_output_bytes": "less than 1 MiB",
+    "run_only_after_the_frozen_complete_rate_gate_passes": true
+  },
+  "promotion_rules": [
+    "a pass promotes CQ3S1 to a complete restartable re-encode experiment, not directly to a whole-model rate claim",
+    "a fail retains both the exact frames and the negative receipt and does not authorize changing the selected chunks or thresholds",
+    "this is a distribution and load-time codec; it makes no direct-decode hot-kernel speed claim",
+    "because decoded trits are byte-exact, capability is inherited only after independent hashes prove the whole artifact round-trips",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this lane",
+    "this sampled codec result alone cannot establish a scientific breakthrough"
+  ]
+}
