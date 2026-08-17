@@ -300,6 +300,17 @@ class TernaryCpuNativeTests(unittest.TestCase):
             implementation="scalar",
         )
         np.testing.assert_allclose(block203_scalar, row_scalar, rtol=1e-6, atol=1e-6)
+        block203_constdiv_scalar = ternary_cpu.gemv_q8_group128_block203_row_scale4(
+            block203_weights,
+            packed_scale_codes,
+            anchors,
+            codebook,
+            quantized,
+            activation_scales,
+            sums,
+            implementation="scalar_constdiv",
+        )
+        np.testing.assert_array_equal(block203_constdiv_scalar, block203_scalar)
         noncanonical_block203 = block203_weights.copy()
         payload_bits, _ = ternary_cpu.block203_matrix_size(*codes.shape)
         unused_bits = noncanonical_block203.nbytes * 8 - payload_bits
@@ -342,6 +353,19 @@ class TernaryCpuNativeTests(unittest.TestCase):
             np.testing.assert_allclose(
                 block203_avx2, block203_scalar, rtol=1e-5, atol=5e-5
             )
+            block203_constdiv_avx2 = (
+                ternary_cpu.gemv_q8_group128_block203_row_scale4(
+                    block203_weights,
+                    packed_scale_codes,
+                    anchors,
+                    codebook,
+                    quantized,
+                    activation_scales,
+                    sums,
+                    implementation="avx2_constdiv",
+                )
+            )
+            np.testing.assert_array_equal(block203_constdiv_avx2, block203_avx2)
 
     def test_row_scale4_rejects_noncanonical_payloads(self) -> None:
         anchors = np.ones(1, dtype=np.float16)

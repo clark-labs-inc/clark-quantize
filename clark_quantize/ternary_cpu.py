@@ -151,6 +151,22 @@ def _load_library() -> ctypes.CDLL | None:
             library.cq3_gemv_q8_group128_block203_row_scale4_avx2.restype = (
                 ctypes.c_int
             )
+        if hasattr(
+            library,
+            "cq3_gemv_q8_group128_block203_row_scale4_scalar_constdiv",
+        ):
+            library.cq3_gemv_q8_group128_block203_row_scale4_scalar_constdiv.argtypes = (
+                row_scale_gemv_args
+            )
+            library.cq3_gemv_q8_group128_block203_row_scale4_scalar_constdiv.restype = (
+                ctypes.c_int
+            )
+            library.cq3_gemv_q8_group128_block203_row_scale4_avx2_constdiv.argtypes = (
+                row_scale_gemv_args
+            )
+            library.cq3_gemv_q8_group128_block203_row_scale4_avx2_constdiv.restype = (
+                ctypes.c_int
+            )
         swiglu_gemv_args = (
             u8p, u16p, u8p, u16p, i8p, f32p, i32p,
             ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint32, f32p,
@@ -821,6 +837,20 @@ def gemv_q8_group128_block203_row_scale4(
         "scalar": _LIBRARY.cq3_gemv_q8_group128_block203_row_scale4_scalar,
         "avx2": _LIBRARY.cq3_gemv_q8_group128_block203_row_scale4_avx2,
     }
+    if hasattr(
+        _LIBRARY,
+        "cq3_gemv_q8_group128_block203_row_scale4_scalar_constdiv",
+    ):
+        functions.update(
+            {
+                "scalar_constdiv": (
+                    _LIBRARY.cq3_gemv_q8_group128_block203_row_scale4_scalar_constdiv
+                ),
+                "avx2_constdiv": (
+                    _LIBRARY.cq3_gemv_q8_group128_block203_row_scale4_avx2_constdiv
+                ),
+            }
+        )
     if implementation not in functions:
         raise ValueError(
             f"unknown block203 row-scale4 GEMV implementation {implementation!r}"
