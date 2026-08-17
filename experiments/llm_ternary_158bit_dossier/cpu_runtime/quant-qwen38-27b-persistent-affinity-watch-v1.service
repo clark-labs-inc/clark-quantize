@@ -1,0 +1,26 @@
+[Unit]
+Description=Benchmark persistent worker affinity on Qwen3.8-27B full text graph
+After=network-online.target quant-qwen38-27b-aligned2-prefill-skip-lm-head-watch-v1.service
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-40bd6bc.bundle
+Environment=EXPECTED_COMMIT=40bd6bcbe63afb1a97079514f18de81c183544e9
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/bin/bash /workspace/tmp/watch-qwen38-27b-persistent-affinity-v1-40bd6bc.sh
+CPUAffinity=0 2 4 6
+CPUQuota=400%
+MemoryMax=12G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target
