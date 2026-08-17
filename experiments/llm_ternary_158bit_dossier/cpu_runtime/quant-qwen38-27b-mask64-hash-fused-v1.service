@@ -1,0 +1,21 @@
+[Unit]
+Description=Benchmark one-call mask64 plus learned-hash GEMV on Qwen3.8-27B
+After=network-online.target quant-qwen38-27b-mask64-gemv-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-mask64-hash-fused.bundle
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/tmp/watch_qwen38_27b_mask64_hash_fused_v1.sh
+CPUQuota=100%
+MemoryMax=512M
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

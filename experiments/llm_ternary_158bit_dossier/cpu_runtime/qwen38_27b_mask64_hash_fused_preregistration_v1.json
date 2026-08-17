@@ -1,0 +1,113 @@
+{
+  "schema": "qwen38_27b_mask64_hash_fused_preregistration_v1",
+  "receipt_schema": "qwen38_27b_mask64_hash_fused_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T22:05:00Z",
+  "hypothesis": "The ratio-128 learned one-sparse Clark-Hash correction can be added to direct 1.5-bit mask64 ternary Qwen3.8-27B MLP GEMV in one native CPU call while retaining at least 95 percent of mask64-only AVX2 throughput, agreeing with the explicit dequantized formula T x plus A times R x within 5e-4 absolute error, and retaining the at-most-1.57-bit complete component ledger",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_compute_forbidden": true,
+    "claim_boundary": "synthetic exact-support full-shape fused microkernel only; not a real-weight approximation, complete layer, token-throughput, model-quality, semi-lossless, or breakthrough result"
+  },
+  "formula": {
+    "weight_approximation": "W approximately equals T plus A R",
+    "runtime": "y equals T x plus A times R x",
+    "ternary_runtime": "mask64 support plus support-ordered signs with row-anchor scale4",
+    "route": "one learned bucket and one learned sign per input coordinate; R x is computed once from groupwise-dequantized Q8 activation",
+    "correction": "ratio-128 signed INT4 A with one FP16 scale per output row",
+    "fusion_boundary": "one public C call with one output buffer; R x scratch is at most 136 FP32 values and no dense residual is materialized"
+  },
+  "cases": [
+    {
+      "name": "gate_or_up_projection",
+      "rows": 17408,
+      "columns": 5120,
+      "sketch_dim": 40
+    },
+    {
+      "name": "down_projection",
+      "rows": 5120,
+      "columns": 17408,
+      "sketch_dim": 136
+    }
+  ],
+  "measurement": {
+    "seed": 158127,
+    "ternary_codes": "deterministic synthetic exact-64-support groups",
+    "route": "deterministic synthetic one-sparse signed routing with the exact learned-route dimensions",
+    "correction_codes": "deterministic signed INT4 in [-7,7] with FP16 row scales",
+    "activation": "deterministic signed INT8 with per-group FP32 scales",
+    "warmups": 3,
+    "repetitions": 11,
+    "statistic": "median monotonic wall-clock nanoseconds",
+    "threading": "one process pinned to one physical CPU; kernels are single-threaded",
+    "comparison": "one-call fused AVX2 BMI2 kernel versus the same mask64 AVX2 BMI2 base call without correction",
+    "timing_order": "alternated by case to reduce systematic first-run bias",
+    "compiler": "system C compiler with C11 O3 Wall Wextra Werror shared PIC and mtune=native"
+  },
+  "gate": {
+    "required_cases": 2,
+    "maximum_absolute_error": 0.0005,
+    "minimum_fused_throughput_fraction_of_mask64_only": 0.95,
+    "maximum_complete_component_bits_per_weight": 1.57
+  },
+  "resources": {
+    "required_isa": [
+      "AVX2",
+      "FMA",
+      "F16C",
+      "BMI2"
+    ],
+    "cpu_quota_percent": 100,
+    "memory_max_mib": 512,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 10,
+    "persistent_output_bytes": "less than 1 MiB",
+    "run_after_mask64_and_learned_route_gates": true
+  },
+  "promotion_rules": [
+    "every shape must independently meet correctness storage and fused-overhead thresholds",
+    "the control and candidate must use identical mask64 codes scales and activation",
+    "the correction must be checked against an explicit dequantized T x plus A times R x oracle",
+    "a pass only establishes that the correction path is computationally cheap enough to integrate",
+    "real learned routes real coefficients capability and end-to-end token throughput require separate gates",
+    "a failed gate remains a terminal useful result and requires a separately versioned optimization",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "this benchmark cannot establish semi-lossless compression or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "mask64_native_c": {
+      "path": "clark_quantize/qwen38_fixed_support_mask64_cpu.c",
+      "sha256": "af12f49bfb975541ff5030ec50ffe6abb7df96a203dbdd9a014e170bfce85644"
+    },
+    "fused_native_c": {
+      "path": "clark_quantize/qwen38_mask64_hash_fused_cpu.c",
+      "sha256": "7f8be0c3afa1fe490286e1618ef45cedc83bd5b71f246093b107afd4d2d957c8"
+    },
+    "mask64_binding": {
+      "path": "clark_quantize/qwen38_fixed_support_mask64_cpu.py",
+      "sha256": "d8dd4ea2d223dcf81184166d676f7e248c10809d7fb5b8a6f62163b62bdff908"
+    },
+    "fused_binding": {
+      "path": "clark_quantize/qwen38_mask64_hash_fused_cpu.py",
+      "sha256": "cd8fb102dd10b05f0a959ff241a40bdfa412af5f4c6c406eb4dce50a6532100e"
+    },
+    "int4_packer": {
+      "path": "clark_quantize/qwen38_hash_residual_cpu.py",
+      "sha256": "ed2d8b44491d3483ef0ae59e342db69c541b5e87837bf77b1385481aa403f6ca"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_qwen38_mask64_hash_fused_cpu.py",
+      "sha256": "3a03e7108e5b20b43c2257a0e9b2151581c23777639f21f4f3b47a26fc84b37d"
+    },
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_mask64_hash_fused_v1.py",
+      "sha256": "6e8c0086e10c6a860b9a6fed3e25a729abb53f171ede7bf40709d102e5dfdebb"
+    },
+    "build_script": {
+      "path": "scripts/cpu/build_qwen38_mask64_hash_fused_cpu.sh",
+      "sha256": "8b770311d38ce580ea4729cc8ed00db063423f771333bbbfff6249858bf650e3"
+    }
+  }
+}
