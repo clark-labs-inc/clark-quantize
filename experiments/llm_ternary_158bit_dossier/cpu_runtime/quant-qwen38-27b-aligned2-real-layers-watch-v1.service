@@ -1,0 +1,26 @@
+[Unit]
+Description=Validate real Qwen3.8-27B DeltaNet and attention decoder layers
+After=network-online.target quant-qwen38-27b-recurrent-delta-avx2-watch-v2.service
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-c989700.bundle
+Environment=EXPECTED_COMMIT=c9897000e50ba5d1ad34b8c9f66398e95a758a12
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/bin/bash /workspace/tmp/watch-qwen38-27b-aligned2-real-layers-v1-c989700.sh
+CPUAffinity=0 2 4 6
+CPUQuota=400%
+MemoryMax=4G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target
