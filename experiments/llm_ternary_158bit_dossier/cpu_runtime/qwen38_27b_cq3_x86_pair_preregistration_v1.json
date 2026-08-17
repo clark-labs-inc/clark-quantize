@@ -1,0 +1,86 @@
+{
+  "schema": "qwen38_27b_cq3_x86_pair_preregistration_v1",
+  "status": "frozen_before_authoritative_build_or_benchmark",
+  "frozen_at_utc": "2026-08-17T11:19:36Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "operator": "single-token layer-0 MLP gate and up projections",
+    "rows_per_projection": 17408,
+    "columns_per_projection": 5120,
+    "weight_type": "CQ3_0",
+    "activation_type": "CQ8_0",
+    "claim_boundary": "exact-shape synthetic microkernel evidence only; no model quality, whole-graph, token-throughput, energy, or breakthrough claim"
+  },
+  "upstream": {
+    "repository": "https://github.com/ggml-org/llama.cpp.git",
+    "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "inputs": {
+    "base_patch": {
+      "path": "llama_cpp_4df29be_cq3.patch",
+      "sha256": "b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1"
+    },
+    "candidate_patch": {
+      "path": "llama_cpp_4df29be_cq3_x86_pair_v1.patch",
+      "sha256": "684568733cd3cc3464fa55ba0def22ed05e33684352c1f8ee5215c95afc832ad"
+    },
+    "benchmark_source": {
+      "path": "qwen38_27b_cq3_x86_pair_bench_v1.inc",
+      "sha256": "18ad5425d182c8aec18d895e2ba649604ff3e6028c78d3dbc7c81369dabd354a"
+    }
+  },
+  "candidate": {
+    "isa": "x86_64 AVX2 plus FMA when enabled by the native build",
+    "paired_rows": 4,
+    "design": "reuse each shared CQ8_0 activation vector across four gate and four up rows while preserving the per-row arithmetic and reduction order",
+    "fallback": "the existing generic CQ3_0 dot product for non-AVX2 x86 builds",
+    "integration_status": "microkernel prerequisite only; not wired into the ggml graph executor"
+  },
+  "control": {
+    "implementation": "two complete projections through the existing dispatched ggml_vec_dot_cq3_0_cq8_0 path",
+    "execution_order": "all gate rows followed by all up rows",
+    "same_binary": true,
+    "same_weights_and_activation": true
+  },
+  "correctness": {
+    "run_test_cq3_without_benchmark": true,
+    "test_rows": 5,
+    "test_columns": 4096,
+    "tail_coverage": "four-row block plus one-row tail",
+    "require_bit_exact_gate_and_up_outputs": true,
+    "benchmark_preflight_requires_bit_exact_outputs": true,
+    "infrastructure_invalid_is_not_a_zero_or_completed_result": true
+  },
+  "benchmark": {
+    "host_alias": "quant",
+    "host_class": "Hetzner CCX33 dedicated-vCPU instance",
+    "cpu": "AMD EPYC-Milan Processor under KVM",
+    "physical_cores": 4,
+    "threads_per_core": 2,
+    "l3_bytes": 33554432,
+    "affinity": "taskset CPU 0",
+    "build_type": "Release",
+    "native_isa": true,
+    "warmups": 2,
+    "repetitions": 9,
+    "paired_order": "alternate control-first and candidate-first inside one process",
+    "cache_eviction_bytes_before_each_measurement": 268435456,
+    "benchmark_weights": "deterministic synthetic ternary rows at the exact Qwen3.8-27B projection shape; not real model artifact bytes",
+    "activation": "deterministic FP32 vector quantized once to CQ8_0",
+    "primary_metric": "ratio of control median microseconds to candidate median microseconds"
+  },
+  "promotion": {
+    "require_all_correctness_tests": true,
+    "minimum_speedup": 1.03,
+    "negative_result_rule": "a valid speedup below 1.03 is recorded as a kernel rejection, not an infrastructure failure",
+    "next_gate_if_promoted": "wire the paired kernel into a guarded x86 ggml graph path, then require backend reference tests and Qwen3.8-27B CUTE plus MMLU parity before end-to-end token-throughput comparison",
+    "does_not_satisfy_breakthrough_gate": true
+  },
+  "resource_guards": {
+    "do_not_run_while_authoritative_qwen38_27b_quality_or_throughput_services_are_active": true,
+    "minimum_available_memory_gib": 8,
+    "minimum_free_disk_gib": 8,
+    "swap_must_remain_zero": true,
+    "output_directory": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1"
+  }
+}
