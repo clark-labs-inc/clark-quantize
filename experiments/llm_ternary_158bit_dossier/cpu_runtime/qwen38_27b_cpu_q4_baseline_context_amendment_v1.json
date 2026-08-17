@@ -1,0 +1,38 @@
+{
+  "schema": "qwen38_27b_cpu_q4_baseline_context_amendment_v1",
+  "created_at": "2026-08-17T10:28:00Z",
+  "parent_preregistration": "qwen38_27b_cpu_q4_baseline_preregistration_v1.json",
+  "parent_preregistration_sha256": "66ab9467b366b43afe1eb373a721f1d39578a486ace5dc53e3c7131ae29dc919",
+  "status": "frozen_before_any_completed_quality_report",
+  "observed_infrastructure_issue": {
+    "attempt": "Qwen3.8-27B Q4_K_M server with one slot and 32768-token total context",
+    "process_rss_kib_observed": 30513988,
+    "node_physical_memory_gib": 30,
+    "completed_quality_items": 1,
+    "partial_result_disposition": "infrastructure_invalid_not_scored",
+    "partial_log": "/workspace/quant-runs/qwen38-27b-cpu-q4-baseline-v1/cute.infrastructure-invalid-32768ctx.log",
+    "reason": "The 32K server left inadequate physical-memory margin for a trustworthy no-swap evaluation even though it became healthy"
+  },
+  "sole_contract_change": {
+    "field": "runtime.context",
+    "from": 32768,
+    "to": 8192
+  },
+  "coverage_justification": {
+    "largest_observed_frozen_mmlu_prompt_tokens": 2789,
+    "context_tokens": 8192,
+    "all_frozen_cute_math_code_and_mmlu_items_fit": true,
+    "wikitext_context_unchanged": 512
+  },
+  "unchanged": [
+    "Qwen3.8-27B model and revision",
+    "Q4_K_M artifact bytes and SHA-256",
+    "llama.cpp revision and binaries",
+    "CUTE manifest and evaluator",
+    "MATH/code manifest and evaluator",
+    "WikiText corpus and evaluator",
+    "MMLU manifest, scorer, rows, seed, and one-worker contract",
+    "four physical CPU cores",
+    "all evaluation outputs and scoring rules"
+  ]
+}

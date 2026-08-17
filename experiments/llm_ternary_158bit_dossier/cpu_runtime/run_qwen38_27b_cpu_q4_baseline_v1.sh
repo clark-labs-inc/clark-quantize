@@ -12,6 +12,7 @@ wiki_corpus=${WIKI_CORPUS:-/workspace/quant-runs/cq3-4b-ptq-scope-20260817/wikit
 port=${PORT:-8094}
 runtime_dir="$repo/experiments/llm_ternary_158bit_dossier/cpu_runtime"
 prereg="$runtime_dir/qwen38_27b_cpu_q4_baseline_preregistration_v1.json"
+context_amendment="$runtime_dir/qwen38_27b_cpu_q4_baseline_context_amendment_v1.json"
 cute_manifest="$runtime_dir/cute_quick_v1.json"
 math_code_manifest="$runtime_dir/math_code_canary_v1.json"
 mmlu_manifest="$runtime_dir/qwen35_4b_cpu_layer30_mmlu_v1.json"
@@ -53,6 +54,7 @@ if systemctl list-units --type=service --state=running --no-legend \
 fi
 
 require_sha256 "$prereg" 66ab9467b366b43afe1eb373a721f1d39578a486ace5dc53e3c7131ae29dc919
+require_sha256 "$context_amendment" b8ca7bc3676a8cd67253c246c2d5aed9b503824cc5066efb257a5c7a72a61549
 require_sha256 "$cute_manifest" 19dd73eedf737d11f7c94d039822de62314abf31e3fb739a9a875fe65c5bbd16
 require_sha256 "$math_code_manifest" 1ec0b41ce3ca3597d65013ac0c8a48c208c4e03b05f0109be61319252c09dab0
 require_sha256 "$mmlu_manifest" e3e38ccb1bf35c56b600f1cf39bbd0ea38072f2b4bdd5fc36146c143fb658dba
@@ -96,7 +98,7 @@ fi
 require_sha256 "$model" "$expected_model_sha"
 printf 'complete\n' > "$state_dir/DOWNLOAD_COMPLETE"
 
-sha256sum "$prereg" "$cute_manifest" "$math_code_manifest" "$mmlu_manifest" \
+sha256sum "$prereg" "$context_amendment" "$cute_manifest" "$math_code_manifest" "$mmlu_manifest" \
   "$wiki_corpus" "$model" "$llama_build/bin/llama-server" \
   "$llama_build/bin/llama-perplexity" > "$state_dir/inputs.sha256"
 
@@ -115,7 +117,7 @@ fi
 
 CPU_EVAL_RUN_DIR="$run_dir" \
 LLAMA_PARALLEL=1 \
-LLAMA_CONTEXT=32768 \
+LLAMA_CONTEXT=8192 \
 LLAMA_THREADS=4 \
   "$runtime_dir/launch_llama_cpu_eval_server.sh" "$model" "$label" "$port"
 
