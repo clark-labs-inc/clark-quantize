@@ -1,0 +1,81 @@
+{
+  "schema": "clark_llama_cpp_cq3_arm_x86_portability_receipt_v1",
+  "date": "2026-08-17",
+  "host": {
+    "hostname": "ubuntu-32gb-hel1-1",
+    "provider_shape": "Hetzner CCX33",
+    "architecture": "x86_64",
+    "cpu": "AMD EPYC-Milan Processor",
+    "sockets": 1,
+    "cores_per_socket": 4,
+    "threads_per_core": 2,
+    "logical_cpus": 8,
+    "required_isa_present": [
+      "AVX2",
+      "F16C",
+      "FMA"
+    ],
+    "compiler": "cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "cmake": "4.2.3"
+  },
+  "source": {
+    "remote_worktree": "/workspace/tmp/llama-cq3-arm-x86-v1.5SN4Ps/source",
+    "upstream_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "full_diff_sha256": "3a3a96cad42f2dad689c59e6942e2268bde8f01d9e2af063c3679e2b8c0a48f4",
+    "git_diff_check_passed": true,
+    "base_patch": {
+      "name": "llama_cpp_4df29be_cq3.patch",
+      "sha256": "b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1"
+    },
+    "arm_delta_patch": {
+      "name": "llama_cpp_4df29be_cq3_arm_v2.patch",
+      "sha256": "f646aef73c5623af4f325f6923d9855cd698b71f4784e6795a8b658162661127"
+    }
+  },
+  "build": {
+    "cmake_flags": [
+      "-DGGML_NATIVE=ON",
+      "-DLLAMA_BUILD_TESTS=ON",
+      "-DLLAMA_BUILD_EXAMPLES=OFF",
+      "-DLLAMA_BUILD_TOOLS=OFF",
+      "-DLLAMA_BUILD_SERVER=OFF",
+      "-DCMAKE_BUILD_TYPE=Release"
+    ],
+    "targets": [
+      "test-cq3",
+      "test-backend-ops"
+    ],
+    "parallel_jobs": 8,
+    "passed": true,
+    "binaries": {
+      "test-cq3": "7e85f888f414fb92383270caa79f0dd8cb2d3e5b41c4d0b460665cdef981ac61",
+      "test-backend-ops": "a63ce852b6d02289beaf38b4bff470cf2eb90e64a40ecfb0ceafef886ae92338"
+    }
+  },
+  "tests": {
+    "test_cq3": {
+      "exit_code": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    "backend_ops": {
+      "command": "build/bin/test-backend-ops test -b CPU -o MUL_MAT -p .*type_a=cq3_0.* --output console",
+      "cases": [
+        "m=16,n=1,k=256",
+        "m=16,n=8,k=512",
+        "m=16,n=1,k=5120",
+        "m=17408,n=1,k=5120"
+      ],
+      "passed_cases": 4,
+      "total_cases": 4,
+      "backends_passed": 1,
+      "backends_total": 1,
+      "passed": true
+    }
+  },
+  "conclusion": {
+    "arm_delta_preserves_x86_avx2_build_and_correctness": true,
+    "performance_measured_on_x86": false,
+    "authorizes_model_or_breakthrough_claim": false
+  }
+}

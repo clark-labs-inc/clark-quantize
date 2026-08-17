@@ -1,0 +1,883 @@
+{
+  "builds": {
+    "binaries": {
+      "candidate_test_backend_ops_sha256": "e53f9f2f20fa9855528fcf77e552708d212bcba1e43dfc375aa31bec5a50304e",
+      "candidate_test_cq3_sha256": "97d16b5c3b6f6389182b633942bb1e4ebbcf0c92e9c196af02e8371b3d336afb",
+      "control_test_backend_ops_sha256": "c4ae04f69ed1c894d320567b4de83f286ad1c678061acf083bdc24aad1b7d96b"
+    },
+    "candidate_cmake_cache_sha256": "5df9a55fbc28ee0c8b4f062ac5f1f72be0f8f5012bb528a69c9dd0580a9aa332",
+    "control_cmake_cache_sha256": "2111db23aa5c0dc8d57a53b18fecf069331c022b54085ba608b126f2179aecc8",
+    "receipts": {
+      "candidate": {
+        "command": [
+          "cmake",
+          "--build",
+          "/tmp/clark-llama-cq3-arm.2A2Ha2/build",
+          "--target",
+          "test-cq3",
+          "test-backend-ops",
+          "-j",
+          "8"
+        ],
+        "cwd": null,
+        "returncode": 0,
+        "stderr": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "[  0%] Built target llama-common-base\n[  0%] Built target cpp-httplib\n[  4%] Built target ggml-base\n[  4%] Built target ggml-blas\n[  7%] Built target ggml-metal\n[ 14%] Built target ggml-cpu\n[ 15%] Built target ggml\n[ 85%] Built target llama\n[100%] Built target llama-common\n[100%] Built target test-cq3\n[  0%] Built target llama-common-base\n[  0%] Built target cpp-httplib\n[  4%] Built target ggml-base\n[  4%] Built target ggml-blas\n[  7%] Built target ggml-metal\n[ 14%] Built target ggml-cpu\n[ 15%] Built target ggml\n[ 84%] Built target llama\n[ 98%] Built target llama-common\n[100%] Built target test-backend-ops\n",
+        "stdout_sha256": "2af991575648ad579f8d5ac66ba96402aa15a6b59018807e08391d353e1c96f8",
+        "wall_seconds": 0.9505923329999999
+      },
+      "control": {
+        "command": [
+          "cmake",
+          "--build",
+          "/tmp/clark-llama-cq3-scalar.QrafgW/build",
+          "--target",
+          "test-backend-ops",
+          "-j",
+          "8"
+        ],
+        "cwd": null,
+        "returncode": 0,
+        "stderr": "CMAKE_BUILD_TYPE=Release\nCMake Warning at ggml/src/CMakeLists.txt:231 (message):\n  OpenMP not found\n\n\nCMake Warning at ggml/src/ggml-cpu/CMakeLists.txt:138 (message):\n  ARM -march/-mcpu not found, -mcpu=native will be used\nCall Stack (most recent call first):\n  ggml/src/CMakeLists.txt:470 (ggml_add_cpu_backend_variant_impl)\n\n\n",
+        "stderr_sha256": "f6ca90026373fa723211fb2a02888ca67c77e1ddcd38ac20be1c06346d08e0f5",
+        "stdout": "-- llama.cpp version: 0.1.0-dev\n-- sccache found, compilation results will be cached. Disable with GGML_CCACHE=OFF.\n-- CMAKE_SYSTEM_PROCESSOR: arm64\n-- GGML_SYSTEM_ARCH: ARM\n-- Could NOT find OpenMP_C (missing: OpenMP_C_FLAGS OpenMP_C_LIB_NAMES) \n-- Could NOT find OpenMP_CXX (missing: OpenMP_CXX_FLAGS OpenMP_CXX_LIB_NAMES) \n-- Could NOT find OpenMP (missing: OpenMP_C_FOUND OpenMP_CXX_FOUND) \n-- Including CPU backend\n-- Accelerate framework found\n-- ARM detected\n-- Checking for ARM features using flags:\n--   -U__ARM_FEATURE_SVE\n--   -mcpu=native+dotprod+i8mm+nosve+sme\n-- Adding CPU backend variant ggml-cpu: -U__ARM_FEATURE_SVE;-mcpu=native+dotprod+i8mm+nosve+sme \n-- BLAS found, Libraries: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework\n-- BLAS found, Includes: \n-- Including BLAS backend\n-- Metal framework found\n-- Including METAL backend\n-- ggml version: 0.20.0\n-- ggml commit:  4df29be4f-dirty\n-- OpenSSL found: 3.6.3\n-- Generating embedded license file for target: llama-app\n-- Configuring done (0.4s)\n-- Generating done (0.1s)\n-- Build files have been written to: /tmp/clark-llama-cq3-scalar.QrafgW/build\n[  0%] Built target llama-common-base\n[  0%] Built target cpp-httplib\n[  4%] Built target ggml-base\n[  4%] Built target ggml-blas\n[  7%] Built target ggml-metal\n[ 14%] Built target ggml-cpu\n[ 15%] Built target ggml\n[ 84%] Built target llama\n[ 98%] Built target llama-common\n[100%] Built target test-backend-ops\n",
+        "stdout_sha256": "9c123be121b8b9e1ccdfc3d85e29a2718a1547e2bee3c4cb09be45bdb145b232",
+        "wall_seconds": 1.3876994999999999
+      }
+    }
+  },
+  "correctness": {
+    "backend_case_count": 4,
+    "backend_ops": {
+      "command": [
+        "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-backend-ops",
+        "test",
+        "-b",
+        "CPU",
+        "-o",
+        "MUL_MAT",
+        "-p",
+        ".*type_a=cq3_0.*",
+        "--output",
+        "console"
+      ],
+      "cwd": null,
+      "returncode": 0,
+      "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x106926710 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x106926390 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.007 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+      "stderr_sha256": "3caebe76f4ea9e6c4116686528a8471a362e843a221603b5b1c7322e05c50620",
+      "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=16,n=1,k=256,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1): \u001b[1;32mOK\u001b[0m\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=16,n=8,k=512,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1): \u001b[1;32mOK\u001b[0m\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=16,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1): \u001b[1;32mOK\u001b[0m\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1): \u001b[1;32mOK\u001b[0m\n  4/4 tests passed\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+      "stdout_sha256": "ca51add7dd712bf98c95b84376dcaefe2bd1f397706da048bf12ca1209f0657c",
+      "wall_seconds": 5.127833333
+    },
+    "passed": true,
+    "test_cq3": {
+      "command": [
+        "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-cq3"
+      ],
+      "cwd": null,
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": 0.010882209000000032
+    }
+  },
+  "host": {
+    "cpu_brand": "Apple M5 Max",
+    "logical_cpus": 18,
+    "machine": "arm64",
+    "node": "stans-MacBook-Pro.local",
+    "os_version": "25E253",
+    "physical_cpus": "18",
+    "platform": "macOS-26.4.1-arm64-arm-64bit",
+    "processor": "arm"
+  },
+  "performance": {
+    "median_microseconds_per_run": {
+      "candidate": 139.32,
+      "control": 175.92
+    },
+    "median_speedup": 1.2627045650301465,
+    "microseconds_per_run": {
+      "candidate": [
+        133.09,
+        177.87,
+        142.07,
+        176.4,
+        139.32,
+        138.48,
+        159.61,
+        125.59,
+        134.41
+      ],
+      "control": [
+        175.92,
+        152.43,
+        152.59,
+        172.61,
+        156.79,
+        198.37,
+        269.12,
+        193.76,
+        214.76
+      ]
+    },
+    "paired_speedup_maximum": 1.6861098928638556,
+    "paired_speedup_median": 1.3218123074611163,
+    "paired_speedup_minimum": 0.8569741946365323,
+    "samples": [
+      {
+        "order": [
+          "control",
+          "candidate"
+        ],
+        "repetition": 0,
+        "results": {
+          "candidate": {
+            "command": [
+              "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 133.09,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1044b6210 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1044b3c10 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.007 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "bba69b3e675d83422f4e6034c9be51000dea436f9d50a0f44a12024e5ecbaad7",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                7515 runs -   133.09 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.34 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "25f813001c2b455eb8bf19ba2744acdd4e89e391c4ffb51057be1f3ed2aa2080",
+            "wall_seconds": 1.5035304170000003
+          },
+          "control": {
+            "command": [
+              "/tmp/clark-llama-cq3-scalar.QrafgW/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 175.92,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1061fc4b0 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1061fa930 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.007 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "263f9f8d829bc7f8eb815f8f51cb5fbe24e3b841700f1ff3333a29a1d13ed12e",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                5715 runs -   175.92 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.01 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "6cd7d9fffd60585584c7565172b1c2e2942d8a9899ab215f8a283e5635f09eca",
+            "wall_seconds": 1.493985833
+          }
+        },
+        "speedup": 1.3218123074611163
+      },
+      {
+        "order": [
+          "candidate",
+          "control"
+        ],
+        "repetition": 1,
+        "results": {
+          "candidate": {
+            "command": [
+              "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 177.87,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1045a2ad0 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x10459f550 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.007 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "c5b11bf1957744e966043f676442cc0555d3d190d533f9d900754d959fdb24dd",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                5625 runs -   177.87 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.00 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "2862603f22d06147a49fac4ae60b01d76f99c9c06fe6f411ab7cae0713fcaf23",
+            "wall_seconds": 1.502978749999997
+          },
+          "control": {
+            "command": [
+              "/tmp/clark-llama-cq3-scalar.QrafgW/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 152.43,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x10612f0a0 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x10612ec80 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.007 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "e49dc6495e3fe5d72813d037e19961eb9b15f7d520cd8eebcbb92e53868589d2",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                6570 runs -   152.43 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.17 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "875b127e4307bcefc9a7c076a6d144dfe7fed8f87e615a71ac863b1ed709d5df",
+            "wall_seconds": 1.5114944590000015
+          }
+        },
+        "speedup": 0.8569741946365323
+      },
+      {
+        "order": [
+          "control",
+          "candidate"
+        ],
+        "repetition": 2,
+        "results": {
+          "candidate": {
+            "command": [
+              "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 142.07,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1023760c0 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x102373ac0 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.009 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "daab9b73e2a7095df5c94aab431ea3622725fa10d2801e2db57fdafc552747b0",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                7065 runs -   142.07 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.25 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "4cf6672ddda9819e842b03c737a04a504b90e363ae6441a688f54e83d4f3dca5",
+            "wall_seconds": 1.515964167
+          },
+          "control": {
+            "command": [
+              "/tmp/clark-llama-cq3-scalar.QrafgW/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 152.59,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x101da8f90 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x101da7260 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "0d54a51083b62cf021b7f18e5b81d03f6b088027a71a8b7b1ad1003fc68c169f",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                6570 runs -   152.59 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.17 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "76757ce9d0099d12709fdefad6603f726d55a1b6c5feddde5a89ae3ce5c18bb2",
+            "wall_seconds": 1.527738417000002
+          }
+        },
+        "speedup": 1.0740480045048217
+      },
+      {
+        "order": [
+          "candidate",
+          "control"
+        ],
+        "repetition": 3,
+        "results": {
+          "candidate": {
+            "command": [
+              "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 176.4,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1037e66e0 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1037e3160 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "4dce679ea21ba969b287bc8f02e24fb3c3f33a6b28ad51d2cf21286db27d9ce3",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                5805 runs -   176.40 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.01 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "c891489014467bd8768489507ebc4a26812bfa8c81085750aadd0a86b8e687f0",
+            "wall_seconds": 1.5837627080000019
+          },
+          "control": {
+            "command": [
+              "/tmp/clark-llama-cq3-scalar.QrafgW/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 172.61,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1022f7220 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1022f6e00 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "10b3fd291050c950974617a09f7b374b4f851633de22e96dcc0548bf4cf97494",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                5805 runs -   172.61 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.03 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "2405f2e6a0edc2510b1769081f1a8e517aea6e6ec92c8ad8f950aecb7800a050",
+            "wall_seconds": 1.5106986669999998
+          }
+        },
+        "speedup": 0.978514739229025
+      },
+      {
+        "order": [
+          "control",
+          "candidate"
+        ],
+        "repetition": 4,
+        "results": {
+          "candidate": {
+            "command": [
+              "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 139.32,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x106718190 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x10671a390 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "70612378d0a4402f6991d75ea5d081ec4aa5087002fc965393b7d1887f9d1d84",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                7200 runs -   139.32 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.28 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "bf7864d6f1ed0e8308edfaa6dd84780734972a03023b63994e4df643779eaee7",
+            "wall_seconds": 1.527198833
+          },
+          "control": {
+            "command": [
+              "/tmp/clark-llama-cq3-scalar.QrafgW/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 156.79,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x103bdf2a0 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x103bddc90 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "dcf9cd6727a7a0a71211de441dc472aa7407a7cbbdcb496ebe96b94db42f2682",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                6390 runs -   156.79 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.14 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "6444a3bc85c1ea630feda9b6e1f77664248d582cb3eecbd005744039edfdfe93",
+            "wall_seconds": 1.5348826250000016
+          }
+        },
+        "speedup": 1.125394774619581
+      },
+      {
+        "order": [
+          "candidate",
+          "control"
+        ],
+        "repetition": 5,
+        "results": {
+          "candidate": {
+            "command": [
+              "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 138.48,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x10266a730 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x102668130 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "528162e47c76b185ac5a085881262f94318049645e2668228a0551d502740779",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                7245 runs -   138.48 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.29 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "1ce8f3bf26c9bf86365896da5904e5b8da10d4f57f83da5deccaa1a02deafff4",
+            "wall_seconds": 1.5796253329999992
+          },
+          "control": {
+            "command": [
+              "/tmp/clark-llama-cq3-scalar.QrafgW/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 198.37,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1024a30e0 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1024a2cc0 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "a14082ac944fa539f915209111c4831e6c915c87c2cc498685376e0990f306d6",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                5085 runs -   198.37 us/run - 178.26 MFLOP/run - \u001b[1;34m898.60 GFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "53742cf2ff224c5536cbdbb1d7e29e0d35c750992d2f28723cd2fc99a78590c2",
+            "wall_seconds": 1.5422571670000025
+          }
+        },
+        "speedup": 1.4324812247255923
+      },
+      {
+        "order": [
+          "control",
+          "candidate"
+        ],
+        "repetition": 6,
+        "results": {
+          "candidate": {
+            "command": [
+              "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 159.61,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x103bcdaa0 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x103bcb4a0 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "395fea49e6eb7ffec2b498514fba11b43d0df609587f5b9d26e9dddead0d5b69",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                6615 runs -   159.61 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.12 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "be7019dfce12cbd2f82b3dadd500d63b8507b08f6622f703b452ee924104178e",
+            "wall_seconds": 1.584239917000005
+          },
+          "control": {
+            "command": [
+              "/tmp/clark-llama-cq3-scalar.QrafgW/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 269.12,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x103fbac40 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x103fba300 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "df6629b1ac4018c14fa889d4390620975d01d2848cf4c4424984c27a279f9369",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                3735 runs -   269.12 us/run - 178.26 MFLOP/run - \u001b[1;34m662.37 GFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "caf603ed9f3e9cf7d307b9c5dea48c09e965a1a6d6672b59171c03ebf41675c7",
+            "wall_seconds": 1.5351432919999972
+          }
+        },
+        "speedup": 1.6861098928638556
+      },
+      {
+        "order": [
+          "candidate",
+          "control"
+        ],
+        "repetition": 7,
+        "results": {
+          "candidate": {
+            "command": [
+              "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 125.59,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1064c2400 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1064bfe00 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "7cbdea8bfa066cda8ee665a5deb3e3d361958c3a0ee59514e79341eeb6f91337",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                7965 runs -   125.59 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.42 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "f45b7600cf473586d9e3acc9abb337881cfe68d6100ef532cb40513112dedc95",
+            "wall_seconds": 1.507038417000004
+          },
+          "control": {
+            "command": [
+              "/tmp/clark-llama-cq3-scalar.QrafgW/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 193.76,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1027c8e90 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1027c7110 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "5bd673f64e95ce66c8ff07ec96684f701e59ac3ef114c3a954500614f3964043",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                5175 runs -   193.76 us/run - 178.26 MFLOP/run - \u001b[1;34m919.97 GFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "0f9c28ea8dbf9d9365cedc87d65f69985502d8def56e60f9d06970a65d770c4c",
+            "wall_seconds": 1.5354264579999963
+          }
+        },
+        "speedup": 1.5427979934708176
+      },
+      {
+        "order": [
+          "control",
+          "candidate"
+        ],
+        "repetition": 8,
+        "results": {
+          "candidate": {
+            "command": [
+              "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 134.41,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x101d2e080 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x101d2dd00 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "6a85c41a7ac98265e79015f5f5b2133fb2c81bd0a2d443a633f4e904b8475e4b",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                7695 runs -   134.41 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.33 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "4388aba2c8835b17fa7bb1456af1bc8bd6f3e1e14582d4f38f7cdc8384f218b5",
+            "wall_seconds": 1.556409500000001
+          },
+          "control": {
+            "command": [
+              "/tmp/clark-llama-cq3-scalar.QrafgW/build/bin/test-backend-ops",
+              "perf",
+              "-b",
+              "CPU",
+              "-o",
+              "MUL_MAT",
+              "-p",
+              ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+              "--output",
+              "console"
+            ],
+            "cwd": null,
+            "microseconds_per_run": 214.76,
+            "returncode": 0,
+            "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x103b00f30 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x103aff3c0 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.008 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+            "stderr_sha256": "dcffec80ccc991930bc3104294e95d51e1b737e62c51d26596325797756477b2",
+            "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                4680 runs -   214.76 us/run - 178.26 MFLOP/run - \u001b[1;34m830.03 GFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+            "stdout_sha256": "7e3b32e57a86910948427224cfb6b8e1898f199b09f1cb0dba52094de2b73554",
+            "wall_seconds": 1.5193293330000017
+          }
+        },
+        "speedup": 1.5977977829030579
+      }
+    ],
+    "warmups": [
+      {
+        "candidate": {
+          "command": [
+            "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-backend-ops",
+            "perf",
+            "-b",
+            "CPU",
+            "-o",
+            "MUL_MAT",
+            "-p",
+            ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+            "--output",
+            "console"
+          ],
+          "cwd": null,
+          "microseconds_per_run": 142.15,
+          "returncode": 0,
+          "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x103232340 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x10322fd40 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.007 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+          "stderr_sha256": "82563f0ed742d21d4d9d0dd3f43e7ccface9c7310922c28f5aff3969ba64c959",
+          "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                7065 runs -   142.15 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.25 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+          "stdout_sha256": "f02b506cd2fb14394bfd8f2c2cf2262a872d26d6ac5b4712b07b9c39016de6c1",
+          "wall_seconds": 1.4945862499999993
+        },
+        "control": {
+          "command": [
+            "/tmp/clark-llama-cq3-scalar.QrafgW/build/bin/test-backend-ops",
+            "perf",
+            "-b",
+            "CPU",
+            "-o",
+            "MUL_MAT",
+            "-p",
+            ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+            "--output",
+            "console"
+          ],
+          "cwd": null,
+          "microseconds_per_run": 144.74,
+          "returncode": 0,
+          "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x10677a530 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x106778f20 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.007 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+          "stderr_sha256": "5369926f579a357282747b9b8e7d1a1b7147cb9574e59e79a11d670c5e226816",
+          "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                6930 runs -   144.74 us/run - 178.26 MFLOP/run - \u001b[1;34m  1.23 TFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+          "stdout_sha256": "75be794a4a2327b51c1c0fb3d89d390ec9b7b5ad5833b93e57bfd0ad39c22fa8",
+          "wall_seconds": 1.4882410419999994
+        }
+      },
+      {
+        "candidate": {
+          "command": [
+            "/tmp/clark-llama-cq3-arm.2A2Ha2/build/bin/test-backend-ops",
+            "perf",
+            "-b",
+            "CPU",
+            "-o",
+            "MUL_MAT",
+            "-p",
+            ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+            "--output",
+            "console"
+          ],
+          "cwd": null,
+          "microseconds_per_run": 190.02,
+          "returncode": 0,
+          "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1045ea6a0 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1045ea320 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.007 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+          "stderr_sha256": "cee06cf06fd69d0ff1226f9a989768d517c5a988024fc1c6187cb7fbf15449b1",
+          "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                5265 runs -   190.02 us/run - 178.26 MFLOP/run - \u001b[1;34m938.11 GFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+          "stdout_sha256": "647d89f65aeb18161870b0ad335bc972a21587d18360d95197accf52db6a876c",
+          "wall_seconds": 1.4950198750000006
+        },
+        "control": {
+          "command": [
+            "/tmp/clark-llama-cq3-scalar.QrafgW/build/bin/test-backend-ops",
+            "perf",
+            "-b",
+            "CPU",
+            "-o",
+            "MUL_MAT",
+            "-p",
+            ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+            "--output",
+            "console"
+          ],
+          "cwd": null,
+          "microseconds_per_run": 181.58,
+          "returncode": 0,
+          "stderr": "ggml_metal_device_init: testing tensor API for f16 support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1067f8b40 | th_max = 1024 | th_width =   32\nggml_metal_device_init: testing tensor API for bfloat support\nggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'\nggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x1067f6fc0 | th_max = 1024 | th_width =   32\nggml_metal_library_init: using embedded metal library\nggml_metal_library_init: loaded in 0.007 sec\nggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)\nggml_metal_device_init: GPU name:   MTL0 (Apple M5 Max)\nggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)\nggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)\nggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)\nggml_metal_device_init: simdgroup reduction   = true\nggml_metal_device_init: simdgroup matrix mul. = true\nggml_metal_device_init: has unified memory    = true\nggml_metal_device_init: has bfloat            = true\nggml_metal_device_init: has tensor            = true\nggml_metal_device_init: use residency sets    = true\nggml_metal_device_init: use shared buffers    = true\nggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB\n",
+          "stderr_sha256": "3f1d00e4b9b46e46e7927777b65173884cd6999d47384c0fdb326a22d8fb678e",
+          "stdout": "Testing 3 devices\n\nBackend 1/3: MTL0\n  Skipping\nBackend 2/3: BLAS\n  Skipping\nBackend 3/3: CPU\n  Device description: Apple M5 Max\n  Device memory: 65536 MB (65536 MB free)\n\n  MUL_MAT(type_a=cq3_0,type_b=f32,m=17408,n=1,k=5120,bs=[1,1],nr=[1,1],per=[0,1,2,3],k_v=0,o=1):                5580 runs -   181.58 us/run - 178.26 MFLOP/run - \u001b[1;34m981.71 GFLOPS\u001b[0m\n  Backend CPU: \u001b[1;32mOK\u001b[0m\n3/3 backends passed\n\u001b[1;32mOK\u001b[0m\n",
+          "stdout_sha256": "4343c2562b0cbbfbb7be941aa3028e3135810941b8b20511e5696afcbd369d5c",
+          "wall_seconds": 1.5144646670000004
+        }
+      }
+    ]
+  },
+  "preregistration": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/llm_ternary_158bit_dossier/cpu_runtime/llama_cpp_cq3_arm_preregistration_v1.json",
+    "rules": {
+      "benchmark_sha256": "952b081596883ca561f78957047b2b7e0cdb2659fffa79843895461f2a225d76",
+      "builds": {
+        "candidate": {
+          "cmake_cache_sha256": "5df9a55fbc28ee0c8b4f062ac5f1f72be0f8f5012bb528a69c9dd0580a9aa332"
+        },
+        "cmake_flags": [
+          "-DGGML_NATIVE=ON",
+          "-DLLAMA_BUILD_TESTS=ON",
+          "-DLLAMA_BUILD_EXAMPLES=OFF",
+          "-DLLAMA_BUILD_TOOLS=OFF",
+          "-DLLAMA_BUILD_SERVER=OFF",
+          "-DCMAKE_BUILD_TYPE=Release"
+        ],
+        "control": {
+          "cmake_cache_sha256": "2111db23aa5c0dc8d57a53b18fecf069331c022b54085ba608b126f2179aecc8"
+        }
+      },
+      "candidate": {
+        "design": "reuse each CQ8_0 activation group across up to sixteen CQ3_0 rows before advancing",
+        "dispatch": "ARM-only fast path inside ggml_compute_forward_mul_mat_one_chunk for one activation column",
+        "isa": "AArch64 NEON DOTPROD",
+        "row_block": 16
+      },
+      "control": {
+        "implementation": "GGML CQ3_0 scalar generic row dot product",
+        "same_upstream_revision_base_patch_build_type_native_flags_shape_and_thread_count": true
+      },
+      "correctness": {
+        "cq3_filter": ".*type_a=cq3_0.*",
+        "expected_backend_cases": 4,
+        "ggml_backend_nmse_limit": 0.0005,
+        "includes_real_shape_reference_comparison": true,
+        "includes_sixteen_row_block_and_one_row_tail": true,
+        "run_test_cq3": true
+      },
+      "exploratory_basis": {
+        "naive_per_row_arm_dotprod_speedup": 1.03,
+        "row_block_candidates": {
+          "16": 123.68,
+          "32": 179.47,
+          "4": 147.6,
+          "8": 126.45
+        },
+        "selection": "sixteen rows retained; thirty-two rows rejected for register-spill regression",
+        "units": "single exploratory test-backend-ops microseconds per run; non-authoritative and subject to process noise"
+      },
+      "frozen_at_utc": "2026-08-17T04:12:00Z",
+      "operator": {
+        "activation_compute_type": "CQ8_0",
+        "activation_input_type": "F32",
+        "benchmark_weights": "llama.cpp deterministic synthetic initialization at the exact operator shape; not real model artifact bytes",
+        "compute_image_bits_per_weight_including_fp16_group_scales": 2.125,
+        "k": 5120,
+        "m": 17408,
+        "model_shape": "Qwen3.8-27B single-token gate or up projection",
+        "n": 1,
+        "name": "GGML_OP_MUL_MAT",
+        "weight_type": "CQ3_0"
+      },
+      "patches": {
+        "arm_delta": {
+          "path": "llama_cpp_4df29be_cq3_arm_v2.patch",
+          "sha256": "f646aef73c5623af4f325f6923d9855cd698b71f4784e6795a8b658162661127"
+        },
+        "base": {
+          "path": "llama_cpp_4df29be_cq3.patch",
+          "sha256": "b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1"
+        }
+      },
+      "performance": {
+        "ggml_cpu_threads": 18,
+        "host_scope": "Darwin arm64 Apple M5 Max",
+        "measurement": "each process runs duplicated graph operators for at least one second and reports normalized microseconds per run",
+        "paired_order": "alternate control-first and candidate-first at process granularity",
+        "repetitions": 9,
+        "test_filter": ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+        "thread_source": "test-backend-ops N_THREADS equals std::thread::hardware_concurrency()",
+        "warmups": 2
+      },
+      "promotion": {
+        "does_not_promote_fused_gate_up_swiglu_graph_dispatch": true,
+        "does_not_satisfy_full_model_quality_energy_or_breakthrough_gates": true,
+        "maximum_candidate_median_microseconds": 150.0,
+        "minimum_median_speedup": 1.15,
+        "require_all_correctness_tests": true,
+        "requires_cute_math_or_mmlu_after_model_graph_integration": true,
+        "scope": "K2/K11 ARM CQ3_0 GGML graph dispatch only"
+      },
+      "schema": "clark_llama_cpp_cq3_arm_preregistration_v1",
+      "sources": {
+        "candidate": {
+          "file_sha256": {
+            "ggml/src/ggml-cpu/arch-fallback.h": "0a45381d9209213d3c30ec5134e64d83139b1a7633d383e4991e4c7ffe763ed0",
+            "ggml/src/ggml-cpu/arch/arm/quants.c": "5a0d91b730d7155d55dfd88a0b99796708d48b2e48f29b1f271cb8e21fea8f11",
+            "ggml/src/ggml-cpu/ggml-cpu.c": "a4b902acdcc7efb7f5bcd20ad81ad8951b3fc976ca2ae281c51a16507c2037d6",
+            "ggml/src/ggml-cpu/quants.h": "200149a502a9fb2d180843f5e98ed8acd9eefe5cdf633bf239b5ca9958790e31",
+            "tests/test-backend-ops.cpp": "0c1f2132a3f0b45d8d5ba23474a54e2bc2952b463a81a5de118fa3a4e5b2a164",
+            "tests/test-cq3.cpp": "8a9e58dd133b55eae6ef5086f01cdfdc318bbd6120414ede06cf79c64364e6f1"
+          },
+          "full_diff_sha256": "3a3a96cad42f2dad689c59e6942e2268bde8f01d9e2af063c3679e2b8c0a48f4",
+          "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+        },
+        "control": {
+          "file_sha256": {
+            "ggml/src/ggml-cpu/arch-fallback.h": "618df37f0b63d20291c20eea2bdad0e89da8f89faf1b3f07e535ecda4ba6a058",
+            "ggml/src/ggml-cpu/arch/arm/quants.c": "9fccd3897db24c9df89b8431b588175894e5f54697cf45768d0c6e6c5544093e",
+            "ggml/src/ggml-cpu/ggml-cpu.c": "54d571f108ef9533cea08b22064803e41a795e1989cf3ea3363275a1cc62e614",
+            "ggml/src/ggml-cpu/quants.h": "199ee3b5a66f950679e2c6834d6be6932509f8a916779c97d0d694889c79682d",
+            "tests/test-backend-ops.cpp": "58a022e4f0a55339920a3e6f1b1a5a5844480bb520531dd9a4cabd39d87605c7",
+            "tests/test-cq3.cpp": "c1ebb7aae9df65453e7b957b77c0bc983ed695b646edf688b44e0c3305cba6b2"
+          },
+          "full_diff_sha256": "2aa68af50a404b9281563435ee51d301d0744994fa58a9b62355700cddd2f29d",
+          "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+        }
+      },
+      "status": "frozen_before_authoritative_paired_run",
+      "upstream": {
+        "repository": "https://github.com/ggml-org/llama.cpp.git",
+        "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+      }
+    },
+    "sha256": "48b57265f5f2f2f75827a88563cb512d3660a2b82cc3e7ff16d760df285cce69"
+  },
+  "promotion": {
+    "authorizes_model_or_breakthrough_claim": false,
+    "capability_eval_required_after_model_graph_integration": true,
+    "passed": true,
+    "rules": {
+      "does_not_promote_fused_gate_up_swiglu_graph_dispatch": true,
+      "does_not_satisfy_full_model_quality_energy_or_breakthrough_gates": true,
+      "maximum_candidate_median_microseconds": 150.0,
+      "minimum_median_speedup": 1.15,
+      "require_all_correctness_tests": true,
+      "requires_cute_math_or_mmlu_after_model_graph_integration": true,
+      "scope": "K2/K11 ARM CQ3_0 GGML graph dispatch only"
+    },
+    "scope": "ARM CQ3_0 single-token GGML MUL_MAT dispatch only"
+  },
+  "schema": "clark_llama_cpp_cq3_arm_receipt_v1",
+  "sources": {
+    "candidate": {
+      "file_sha256": {
+        "ggml/src/ggml-cpu/arch-fallback.h": "0a45381d9209213d3c30ec5134e64d83139b1a7633d383e4991e4c7ffe763ed0",
+        "ggml/src/ggml-cpu/arch/arm/quants.c": "5a0d91b730d7155d55dfd88a0b99796708d48b2e48f29b1f271cb8e21fea8f11",
+        "ggml/src/ggml-cpu/ggml-cpu.c": "a4b902acdcc7efb7f5bcd20ad81ad8951b3fc976ca2ae281c51a16507c2037d6",
+        "ggml/src/ggml-cpu/quants.h": "200149a502a9fb2d180843f5e98ed8acd9eefe5cdf633bf239b5ca9958790e31",
+        "tests/test-backend-ops.cpp": "0c1f2132a3f0b45d8d5ba23474a54e2bc2952b463a81a5de118fa3a4e5b2a164",
+        "tests/test-cq3.cpp": "8a9e58dd133b55eae6ef5086f01cdfdc318bbd6120414ede06cf79c64364e6f1"
+      },
+      "full_diff_sha256": "3a3a96cad42f2dad689c59e6942e2268bde8f01d9e2af063c3679e2b8c0a48f4",
+      "path": "/tmp/clark-llama-cq3-arm.2A2Ha2",
+      "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+    },
+    "control": {
+      "file_sha256": {
+        "ggml/src/ggml-cpu/arch-fallback.h": "618df37f0b63d20291c20eea2bdad0e89da8f89faf1b3f07e535ecda4ba6a058",
+        "ggml/src/ggml-cpu/arch/arm/quants.c": "9fccd3897db24c9df89b8431b588175894e5f54697cf45768d0c6e6c5544093e",
+        "ggml/src/ggml-cpu/ggml-cpu.c": "54d571f108ef9533cea08b22064803e41a795e1989cf3ea3363275a1cc62e614",
+        "ggml/src/ggml-cpu/quants.h": "199ee3b5a66f950679e2c6834d6be6932509f8a916779c97d0d694889c79682d",
+        "tests/test-backend-ops.cpp": "58a022e4f0a55339920a3e6f1b1a5a5844480bb520531dd9a4cabd39d87605c7",
+        "tests/test-cq3.cpp": "c1ebb7aae9df65453e7b957b77c0bc983ed695b646edf688b44e0c3305cba6b2"
+      },
+      "full_diff_sha256": "2aa68af50a404b9281563435ee51d301d0744994fa58a9b62355700cddd2f29d",
+      "path": "/tmp/clark-llama-cq3-scalar.QrafgW",
+      "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+    }
+  }
+}

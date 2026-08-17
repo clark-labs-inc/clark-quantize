@@ -222,7 +222,10 @@ all three ISA lanes, with reproducible build and benchmark receipts.
    v1 milestone is complete at 60.39 GB/s on four workers and 67.20% of its
    measured read roofline. The native gate/up plus SwiGLU operator is also
    complete: it is bit-exact and improves the real layer-0 pair by 8.1% at four
-   workers and 27.6% at eight. GGML graph dispatch is still required.
+   workers and 27.6% at eight. CQ3 single-token `MUL_MAT` now has a row-blocked
+   ARM GGML dispatch: the frozen exact-shape comparison is 139.32 versus 175.92
+   us/run, or 1.263x over the scalar GGML fallback, with x86 portability tests
+   passing. Dispatching the fused gate/up plus SwiGLU operator is still open.
 2. Bring up one DeltaNet layer, one full-attention layer, and one MLP block.
 3. Execute all text layers with scalar fallbacks for unfinished operators.
 4. Remove fallbacks in profile order until the full graph is useful.
@@ -275,8 +278,9 @@ and will be revised only from measured rooflines and end-to-end profiles.
 3. Build a shape-driven ternary GEMV benchmark for the exact Qwen matrices.
 4. Benchmark three compute layouts on M5 Max: radix-5 LUT, aligned 2-bit, and
    dual bitplanes.
-5. Fuse ARM64 gate/up DOTPROD dispatch and SwiGLU to remove the observed
-   sub-millisecond worker-boundary bottleneck.
+5. Dispatch the validated ARM64 fused gate/up DOTPROD plus SwiGLU operator from
+   the packed GGML Qwen graph; the row-blocked CQ3 `MUL_MAT` prerequisite is
+   complete and reproducible.
 6. Implement ARM64 A16 correctness for graph parity around the promoted A8
    DOTPROD kernel.
 7. Profile and optimize the upstream single-token DeltaNet state update.

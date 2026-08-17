@@ -75,6 +75,32 @@
     "v1_promotion_passed": true,
     "full_k2_70_percent_exit_gate_passed": false
   },
+  "llama_cpp_arm_cq3_graph": {
+    "upstream_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "shape": [17408, 1, 5120],
+    "row_block": 16,
+    "ggml_cpu_threads": 18,
+    "warmups": 2,
+    "paired_repetitions": 9,
+    "base_patch_sha256": "b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1",
+    "arm_delta_patch_sha256": "f646aef73c5623af4f325f6923d9855cd698b71f4784e6795a8b658162661127",
+    "preregistration_sha256": "48b57265f5f2f2f75827a88563cb512d3660a2b82cc3e7ff16d760df285cce69",
+    "arm_benchmark_receipt_sha256": "4e487978b28c8aa63f48013ce7a54ff8b3e88adf1dc7597e7bf5ed646de53878",
+    "x86_portability_receipt_sha256": "f9bc85db9a01460c637b3b64ba6bff6cc4cfa7b9f1e1dad8b31534819c80a690",
+    "control_median_microseconds": 175.92,
+    "candidate_median_microseconds": 139.32,
+    "median_speedup": 1.2627045650301465,
+    "paired_speedup_median": 1.3218123074611163,
+    "paired_speedup_minimum": 0.8569741946365323,
+    "paired_speedup_maximum": 1.6861098928638556,
+    "arm_backend_cases_passed": 4,
+    "arm_backend_cases_total": 4,
+    "x86_backend_cases_passed": 4,
+    "x86_backend_cases_total": 4,
+    "operator_promotion_passed": true,
+    "full_model_graph_gate_passed": false,
+    "capability_gate_required_after_model_integration": true
+  },
   "arm_fused_swiglu": {
     "host": "Apple M5 Max",
     "tensors": [
@@ -101,6 +127,7 @@
     "promoted": [
       "K2 group-128 aligned-2 AVX2 microkernel",
       "K2 group-128 aligned-2 ARM DOTPROD v1 microkernel",
+      "K2/K11 ARM row-blocked CQ3_0 GGML single-token MUL_MAT dispatch",
       "K4 ARM fused gate/up plus SwiGLU native operator"
     ],
     "not_proven": [

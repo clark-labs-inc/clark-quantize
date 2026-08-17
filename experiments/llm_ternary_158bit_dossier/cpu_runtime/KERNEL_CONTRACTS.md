@@ -82,6 +82,15 @@ absolute error `7.15e-7`. The preregistered ARM v1 milestone passed, but the
 70% K2 exit gate and full-graph gate remain open. Eight workers add no
 throughput, motivating native fused gate/up dispatch rather than more Python
 worker fan-out.
+The v2 ARM path is now wired into GGML's real single-token `MUL_MAT` dispatch.
+It blocks 16 output rows so each `CQ8_0` activation load feeds 16 `CQ3_0`
+rows. On the exact `17408 x 5120` Qwen projection shape, a frozen nine-pair
+M5 Max run measured `139.32 us/run` versus `175.92 us/run` for GGML's scalar
+fallback, a `1.263x` median speedup. All four backend reference cases pass,
+including a 16-row-plus-tail test, and the same two-patch source builds and
+passes on the AVX2 Milan node. This promotes K2/K11 ARM graph arithmetic only;
+the benchmark uses deterministic exact-shape weights rather than a model GGUF,
+so token parity and capability gates remain open.
 The benchmark matrix families are the exact Qwen shapes:
 
 - `5120 -> 17408` and `17408 -> 5120` for the MLP;
