@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
+import json
 from math import prod
 from pathlib import Path
 from typing import Mapping
@@ -24,6 +25,7 @@ from .ternary_cpu import (
     gemv_q8_group128_block203_row_scale4,
     quantize_q8,
     recurrent_gated_delta_f32,
+    rmsnorm_offset_f32,
     rmsnorm_rope_f32,
     rmsnorm_silu_gate_f32,
     sigmoid_gate_f32,
@@ -929,3 +931,128 @@ class Qwen38CQ3FullAttention:
         return self.out.gemv_q8(
             gated_q8, gated_scales, gated_sums, **arguments
         )
+
+
+@dataclass(frozen=True)
+class Qwen38CQ3DecoderLayer:
+    """One Qwen3.8 decoder layer with both residual paths composed."""
+
+    mixer_kind: str
+    mixer: Qwen38CQ3DeltaNet | Qwen38CQ3FullAttention
+    mlp: Qwen38CQ3MLP
+    input_norm_offsets: np.ndarray
+    post_attention_norm_offsets: np.ndarray
+
+    HIDDEN_SIZE = 5120
+
+    def __post_init__(self) -> None:
+        if self.mixer_kind not in ("linear_attention", "full_attention"):
+            raise CQ3RuntimeError("Qwen3.8 decoder mixer kind changed")
+        for name in ("input_norm_offsets", "post_attention_norm_offsets"):
+            value = getattr(self, name)
+            if (
+                not isinstance(value, np.ndarray)
+                or value.dtype != np.float32
+                or not value.flags.c_contiguous
+                or value.shape != (self.HIDDEN_SIZE,)
+                or not np.all(np.isfinite(value))
+            ):
+                raise CQ3RuntimeError(
+                    f"Qwen3.8 decoder retained {name} contract changed"
+                )
+
+    @classmethod
+    def from_image(
+        cls, image: Qwen38CQ3RuntimeImage, layer: int
+    ) -> "Qwen38CQ3DecoderLayer":
+        if not isinstance(layer, int) or isinstance(layer, bool) or layer < 0:
+            raise ValueError("Qwen3.8-27B layer index must be non-negative")
+        config = json.loads(image.auxiliary_file("config.json").tobytes())
+        text_config = config.get("text_config", {})
+        layer_types = text_config.get("layer_types")
+        if (
+            not isinstance(layer_types, list)
+            or layer >= len(layer_types)
+            or text_config.get("hidden_size") != cls.HIDDEN_SIZE
+        ):
+            raise CQ3RuntimeError("Qwen3.8 decoder config changed")
+        mixer_kind = layer_types[layer]
+        if mixer_kind == "linear_attention":
+            mixer = Qwen38CQ3DeltaNet.from_image(image, layer)
+        elif mixer_kind == "full_attention":
+            mixer = Qwen38CQ3FullAttention.from_image(image, layer)
+        else:
+            raise CQ3RuntimeError("Qwen3.8 decoder layer type changed")
+        prefix = f"model.language_model.layers.{layer}"
+        return cls(
+            mixer_kind=mixer_kind,
+            mixer=mixer,
+            mlp=Qwen38CQ3MLP.from_image(image, layer),
+            input_norm_offsets=np.ascontiguousarray(
+                image.exact_tensor(f"{prefix}.input_layernorm.weight").as_f32()
+            ),
+            post_attention_norm_offsets=np.ascontiguousarray(
+                image.exact_tensor(
+                    f"{prefix}.post_attention_layernorm.weight"
+                ).as_f32()
+            ),
+        )
+
+    def forward(
+        self,
+        hidden_state: np.ndarray,
+        mixer_state: tuple[np.ndarray, np.ndarray] | Qwen38AttentionState,
+        position: int,
+        *,
+        gemv_implementation: str = "scalar_chunk16",
+        elementwise_implementation: str = "scalar",
+        threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
+        cpu_ids: list[int] | None = None,
+        validated_state: bool = False,
+    ) -> np.ndarray:
+        values = np.asarray(hidden_state, dtype=np.float32)
+        if values.ndim != 1 or values.size != self.HIDDEN_SIZE:
+            raise ValueError("Qwen3.8 decoder hidden state shape changed")
+        normalized = rmsnorm_offset_f32(
+            values,
+            self.input_norm_offsets,
+            implementation=elementwise_implementation,
+        )
+        common = {
+            "gemv_implementation": gemv_implementation,
+            "elementwise_implementation": elementwise_implementation,
+            "threads": threads,
+            "executor": executor,
+            "cpu_ids": cpu_ids,
+            "validated_state": validated_state,
+        }
+        if self.mixer_kind == "linear_attention":
+            if not isinstance(mixer_state, tuple) or len(mixer_state) != 2:
+                raise ValueError("Qwen3.8 DeltaNet decoder state is absent")
+            mixed = self.mixer.forward(
+                normalized, mixer_state[0], mixer_state[1], **common
+            )
+        else:
+            if not isinstance(mixer_state, Qwen38AttentionState):
+                raise ValueError("Qwen3.8 full-attention decoder state is absent")
+            mixed = self.mixer.forward(
+                normalized, mixer_state, position, **common
+            )
+        after_mixer = values + mixed
+        post_normalized = rmsnorm_offset_f32(
+            after_mixer,
+            self.post_attention_norm_offsets,
+            implementation=elementwise_implementation,
+        )
+        mlp_output = self.mlp.forward(
+            post_normalized,
+            implementation=gemv_implementation,
+            threads=threads,
+            executor=executor,
+            cpu_ids=cpu_ids,
+        )
+        output = after_mixer + mlp_output
+        if not np.all(np.isfinite(output)):
+            raise ValueError("Qwen3.8 decoder produced non-finite output")
+        return output

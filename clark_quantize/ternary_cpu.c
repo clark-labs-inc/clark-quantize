@@ -4339,6 +4339,136 @@ static int cq3_validate_rmsnorm_rope(
     return CQ3_OK;
 }
 
+static int cq3_validate_rmsnorm_offset(
+    const float *input,
+    const float *norm_weight_offsets,
+    uint32_t rows,
+    uint32_t width,
+    float epsilon,
+    float *output
+) {
+    if (input == NULL || norm_weight_offsets == NULL || output == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    if (rows == 0U || width == 0U ||
+            !isfinite(epsilon) || epsilon <= 0.0f) {
+        return CQ3_ERROR_SHAPE;
+    }
+    for (uint32_t column = 0U; column < width; ++column) {
+        if (!isfinite(norm_weight_offsets[column])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    const uint64_t values = (uint64_t)rows * width;
+    for (uint64_t index = 0U; index < values; ++index) {
+        if (!isfinite(input[index])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    return CQ3_OK;
+}
+
+int cq3_rmsnorm_offset_f32_scalar(
+    const float *CQ3_RESTRICT input,
+    const float *CQ3_RESTRICT norm_weight_offsets,
+    uint32_t rows,
+    uint32_t width,
+    float epsilon,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_rmsnorm_offset(
+        input, norm_weight_offsets, rows, width, epsilon, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+    for (uint32_t row = 0U; row < rows; ++row) {
+        const float *row_input = input + (uint64_t)row * width;
+        float *row_output = output + (uint64_t)row * width;
+        float squares = 0.0f;
+        for (uint32_t column = 0U; column < width; ++column) {
+            squares += row_input[column] * row_input[column];
+        }
+        const float inverse_rms = 1.0f / sqrtf(
+            squares / (float)width + epsilon
+        );
+        for (uint32_t column = 0U; column < width; ++column) {
+            row_output[column] = row_input[column] * inverse_rms *
+                (1.0f + norm_weight_offsets[column]);
+        }
+    }
+    return CQ3_OK;
+}
+
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+__attribute__((target("avx2")))
+static void cq3_rmsnorm_offset_f32_avx2_impl(
+    const float *CQ3_RESTRICT input,
+    const float *CQ3_RESTRICT norm_weight_offsets,
+    uint32_t rows,
+    uint32_t width,
+    float epsilon,
+    float *CQ3_RESTRICT output
+) {
+    const __m256 one = _mm256_set1_ps(1.0f);
+    for (uint32_t row = 0U; row < rows; ++row) {
+        const float *row_input = input + (uint64_t)row * width;
+        float *row_output = output + (uint64_t)row * width;
+        float squares = 0.0f;
+        for (uint32_t column = 0U; column < width; ++column) {
+            squares += row_input[column] * row_input[column];
+        }
+        const float inverse_rms = 1.0f / sqrtf(
+            squares / (float)width + epsilon
+        );
+        const __m256 inverse_vector = _mm256_set1_ps(inverse_rms);
+        uint32_t column = 0U;
+        for (; column + 8U <= width; column += 8U) {
+            const __m256 normalized = _mm256_mul_ps(
+                _mm256_loadu_ps(row_input + column), inverse_vector
+            );
+            const __m256 factor = _mm256_add_ps(
+                one, _mm256_loadu_ps(norm_weight_offsets + column)
+            );
+            _mm256_storeu_ps(
+                row_output + column, _mm256_mul_ps(normalized, factor)
+            );
+        }
+        for (; column < width; ++column) {
+            row_output[column] = row_input[column] * inverse_rms *
+                (1.0f + norm_weight_offsets[column]);
+        }
+    }
+}
+#endif
+
+int cq3_rmsnorm_offset_f32_avx2(
+    const float *CQ3_RESTRICT input,
+    const float *CQ3_RESTRICT norm_weight_offsets,
+    uint32_t rows,
+    uint32_t width,
+    float epsilon,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_rmsnorm_offset(
+        input, norm_weight_offsets, rows, width, epsilon, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    if ((cq3_cpu_features() & CQ3_FEATURE_AVX2) == 0U) {
+        return CQ3_ERROR_ISA;
+    }
+    cq3_rmsnorm_offset_f32_avx2_impl(
+        input, norm_weight_offsets, rows, width, epsilon, output
+    );
+    return CQ3_OK;
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
 int cq3_rmsnorm_rope_f32_scalar(
     const float *CQ3_RESTRICT input,
     const float *CQ3_RESTRICT norm_weight_offsets,

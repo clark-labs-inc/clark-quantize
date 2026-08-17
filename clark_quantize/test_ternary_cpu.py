@@ -441,6 +441,26 @@ class TernaryCpuNativeTests(unittest.TestCase):
                 )
                 np.testing.assert_array_equal(avx2, scalar)
 
+    def test_qwen38_offset_rmsnorm_matches_fp32_oracle(self) -> None:
+        generator = np.random.default_rng(20260817)
+        for rows, width in ((3, 17), (1, 5120)):
+            values = generator.normal(size=(rows, width)).astype(np.float32)
+            offsets = generator.normal(scale=0.1, size=width).astype(np.float32)
+            variance = np.mean(values * values, axis=1, keepdims=True)
+            expected = (
+                values / np.sqrt(variance + np.float32(1e-6))
+                * (np.float32(1.0) + offsets)
+            ).astype(np.float32)
+            scalar = ternary_cpu.rmsnorm_offset_f32(
+                values, offsets, implementation="scalar"
+            )
+            np.testing.assert_allclose(scalar, expected, rtol=2e-6, atol=2e-6)
+            if ternary_cpu.cpu_features()["avx2"]:
+                avx2 = ternary_cpu.rmsnorm_offset_f32(
+                    values, offsets, implementation="avx2"
+                )
+                np.testing.assert_array_equal(avx2, scalar)
+
     def test_qwen38_gqa_decode_matches_fp32_oracle(self) -> None:
         generator = np.random.default_rng(20260817)
         for query_heads, kv_heads, dimension, capacity, context in (

@@ -213,6 +213,13 @@ sigmoid gate, sequential text RoPE, and mutable FP32 KV state. FP32 KV is the
 correctness format in this implementation; BF16/int8 cache formats, real-layer
 parity, context-length scaling, and end-to-end capability remain open.
 
+The canonical and aligned-cache runtimes also compose one complete decoder
+layer: learned-offset input RMSNorm, the selected DeltaNet or full-attention
+mixer, residual addition, learned-offset post-attention RMSNorm, the existing
+three-projection MLP, and the second residual. This closes the operator topology
+for one layer at batch-one decode. Authenticated real-tensor execution and
+teacher/capability parity are still required before stacking 64 layers.
+
 ## K10: lexical tensors
 
 Embedding and LM head are untied and each contains about 1.27B parameters.

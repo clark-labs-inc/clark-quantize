@@ -24,6 +24,7 @@ from .qwen38_cq3_runtime import (
     CQ3RuntimeError,
     Qwen38CQ3AlignedTensor,
     Qwen38CQ3DeltaNet,
+    Qwen38CQ3DecoderLayer,
     Qwen38CQ3FullAttention,
     Qwen38CQ3MLP,
     Qwen38CQ3RuntimeImage,
@@ -761,6 +762,40 @@ class Qwen38Aligned2RuntimeImage:
             ),
             k_norm_offsets=np.ascontiguousarray(
                 self.exact_tensor(f"{prefix}.k_norm.weight").as_f32()
+            ),
+        )
+
+    def decoder_layer(self, layer: int) -> Qwen38CQ3DecoderLayer:
+        if not isinstance(layer, int) or isinstance(layer, bool) or layer < 0:
+            raise ValueError("Qwen3.8-27B layer index must be non-negative")
+        config = json.loads(self.auxiliary_file("config.json").tobytes())
+        text_config = config.get("text_config", {})
+        layer_types = text_config.get("layer_types")
+        if (
+            not isinstance(layer_types, list)
+            or layer >= len(layer_types)
+            or text_config.get("hidden_size") != Qwen38CQ3DecoderLayer.HIDDEN_SIZE
+        ):
+            raise CQ3RuntimeError("Qwen3.8 decoder config changed")
+        mixer_kind = layer_types[layer]
+        if mixer_kind == "linear_attention":
+            mixer = self.deltanet(layer)
+        elif mixer_kind == "full_attention":
+            mixer = self.full_attention(layer)
+        else:
+            raise CQ3RuntimeError("Qwen3.8 decoder layer type changed")
+        prefix = f"model.language_model.layers.{layer}"
+        return Qwen38CQ3DecoderLayer(
+            mixer_kind=mixer_kind,
+            mixer=mixer,
+            mlp=self.mlp(layer),
+            input_norm_offsets=np.ascontiguousarray(
+                self.exact_tensor(f"{prefix}.input_layernorm.weight").as_f32()
+            ),
+            post_attention_norm_offsets=np.ascontiguousarray(
+                self.exact_tensor(
+                    f"{prefix}.post_attention_layernorm.weight"
+                ).as_f32()
             ),
         )
 

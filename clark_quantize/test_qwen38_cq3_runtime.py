@@ -20,6 +20,7 @@ from clark_quantize.qwen38_cq3_runtime import (
     CQ3RuntimeError,
     Qwen38AttentionState,
     Qwen38CQ3DeltaNet,
+    Qwen38CQ3DecoderLayer,
     Qwen38CQ3FullAttention,
     Qwen38CQ3MLP,
     Qwen38CQ3RuntimeImage,
@@ -33,6 +34,7 @@ from clark_quantize.ternary_cpu import (
     pack_group128_2bit,
     quantize_q8,
     recurrent_gated_delta_f32,
+    rmsnorm_offset_f32,
     rmsnorm_rope_f32,
     rmsnorm_silu_gate_f32,
     sigmoid_gate_f32,
@@ -62,6 +64,28 @@ class FakeProjection:
                 activation_sums.copy(),
             )
         )
+        return self.output.copy()
+
+
+class FakeMixer:
+    def __init__(self, output: np.ndarray) -> None:
+        self.output = output
+        self.inputs: list[np.ndarray] = []
+
+    def forward(self, activation: np.ndarray, *state, **kwargs) -> np.ndarray:
+        del state, kwargs
+        self.inputs.append(activation.copy())
+        return self.output.copy()
+
+
+class FakeMLP:
+    def __init__(self, output: np.ndarray) -> None:
+        self.output = output
+        self.inputs: list[np.ndarray] = []
+
+    def forward(self, activation: np.ndarray, **kwargs) -> np.ndarray:
+        del kwargs
+        self.inputs.append(activation.copy())
         return self.output.copy()
 
 
@@ -614,6 +638,46 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "sequential KV length"):
             layer.forward(activation, state, 0)
+
+    @unittest.skipUnless(native_available(), "native ternary CPU library is absent")
+    def test_decoder_layer_residual_topology_matches_manual_graph(self) -> None:
+        width = Qwen38CQ3DecoderLayer.HIDDEN_SIZE
+        hidden = np.linspace(-1.0, 1.0, width, dtype=np.float32)
+        mixer_output = np.sin(
+            np.arange(width, dtype=np.float32) * np.float32(0.001)
+        ) * np.float32(0.1)
+        mlp_output = np.cos(
+            np.arange(width, dtype=np.float32) * np.float32(0.002)
+        ) * np.float32(0.05)
+        input_offsets = np.linspace(-0.1, 0.1, width, dtype=np.float32)
+        post_offsets = np.linspace(0.1, -0.1, width, dtype=np.float32)
+        mixer = FakeMixer(mixer_output)
+        mlp = FakeMLP(mlp_output)
+        layer = Qwen38CQ3DecoderLayer(
+            mixer_kind="linear_attention",
+            mixer=mixer,
+            mlp=mlp,
+            input_norm_offsets=input_offsets,
+            post_attention_norm_offsets=post_offsets,
+        )
+        actual = layer.forward(
+            hidden,
+            (np.zeros(1, dtype=np.float32), np.zeros(1, dtype=np.float32)),
+            0,
+            gemv_implementation="scalar_chunk16",
+            elementwise_implementation="scalar",
+        )
+        expected_mixer_input = rmsnorm_offset_f32(
+            hidden, input_offsets, implementation="scalar"
+        )
+        after_mixer = hidden + mixer_output
+        expected_mlp_input = rmsnorm_offset_f32(
+            after_mixer, post_offsets, implementation="scalar"
+        )
+        expected = after_mixer + mlp_output
+        np.testing.assert_array_equal(mixer.inputs[0], expected_mixer_input)
+        np.testing.assert_array_equal(mlp.inputs[0], expected_mlp_input)
+        np.testing.assert_array_equal(actual, expected)
 
 
 if __name__ == "__main__":

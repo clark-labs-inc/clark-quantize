@@ -265,6 +265,19 @@ def _load_library() -> ctypes.CDLL | None:
             library.cq3_rmsnorm_rope_f32_scalar.restype = ctypes.c_int
             library.cq3_rmsnorm_rope_f32_avx2.argtypes = rmsnorm_rope_args
             library.cq3_rmsnorm_rope_f32_avx2.restype = ctypes.c_int
+        if hasattr(library, "cq3_rmsnorm_offset_f32_scalar"):
+            rmsnorm_offset_args = (
+                f32p, f32p, ctypes.c_uint32, ctypes.c_uint32,
+                ctypes.c_float, f32p,
+            )
+            library.cq3_rmsnorm_offset_f32_scalar.argtypes = (
+                rmsnorm_offset_args
+            )
+            library.cq3_rmsnorm_offset_f32_scalar.restype = ctypes.c_int
+            library.cq3_rmsnorm_offset_f32_avx2.argtypes = (
+                rmsnorm_offset_args
+            )
+            library.cq3_rmsnorm_offset_f32_avx2.restype = ctypes.c_int
         if hasattr(library, "cq3_gqa_decode_f32_scalar"):
             gqa_args = (
                 f32p, f32p, f32p, ctypes.c_uint32, ctypes.c_uint32,
@@ -1525,6 +1538,57 @@ def rmsnorm_rope_f32(
         output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
     )
     _check(status, "Qwen3.8 RMSNorm RoPE")
+    return output
+
+
+def rmsnorm_offset_f32(
+    input_values: np.ndarray,
+    norm_weight_offsets: np.ndarray,
+    *,
+    epsilon: float = 1e-6,
+    implementation: str = "scalar",
+) -> np.ndarray:
+    """Apply Qwen3.8 RMSNorm whose learned weights are offsets from one."""
+    if _LIBRARY is None or not hasattr(
+        _LIBRARY, "cq3_rmsnorm_offset_f32_scalar"
+    ):
+        raise RuntimeError("native Qwen3.8 offset RMSNorm kernel is absent")
+    values = np.asarray(input_values, dtype=np.float32)
+    if values.ndim not in (1, 2):
+        raise ValueError("offset RMSNorm tensor shapes do not compose")
+    if not values.flags.c_contiguous:
+        values = np.ascontiguousarray(values)
+    rows = 1 if values.ndim == 1 else values.shape[0]
+    width = values.shape[-1]
+    weights = _array(norm_weight_offsets, np.float32, ndim=1)
+    if (
+        rows == 0
+        or width == 0
+        or weights.shape != (width,)
+        or not np.isfinite(epsilon)
+        or epsilon <= 0.0
+    ):
+        raise ValueError("offset RMSNorm tensor shapes do not compose")
+    functions = {
+        "scalar": _LIBRARY.cq3_rmsnorm_offset_f32_scalar,
+        "avx2": _LIBRARY.cq3_rmsnorm_offset_f32_avx2,
+    }
+    try:
+        function = functions[implementation]
+    except KeyError as error:
+        raise ValueError(
+            f"unknown offset RMSNorm implementation {implementation}"
+        ) from error
+    output = np.empty_like(values)
+    status = function(
+        values.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        weights.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        rows,
+        width,
+        float(epsilon),
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+    )
+    _check(status, "Qwen3.8 offset RMSNorm")
     return output
 
 
