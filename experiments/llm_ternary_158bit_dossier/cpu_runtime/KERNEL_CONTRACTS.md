@@ -1,7 +1,7 @@
 # Qwen CPU Kernel Contracts
 
-Status: implementation contract v1
-Date: 2026-08-16
+Status: implementation contract v2
+Date: 2026-08-17
 
 These are operator contracts, not implementation promises. Each optimized
 kernel must retain a scalar reference and must be testable independently of the
@@ -12,11 +12,22 @@ GGML weight type and operator path in a pinned llama.cpp revision. Upstream
 Qwen3.5 CPU operators are correctness and performance controls; they are
 replaced only where profiling shows a material end-to-end gain.
 
+The complete storage ledger covers all 1,199 checkpoint tensors and all
+27,781,427,952 parameters, including the 26,895,998,464-parameter text model,
+424,699,392 MTP parameters, and 460,730,096 vision parameters. The first CPU
+generation graph is the text causal-LM path. It must be called text-only until
+the vision encoder and MTP execution paths receive their own correctness and
+performance gates; complete storage is not proof of complete multimodal
+execution.
+
 ## Common numeric contract
 
 - Weight codes are exactly `{-1, 0, +1}`.
 - Matmul weights use groups of 128 consecutive input features.
-- Each group has one stored little-endian FP16 scale.
+- Each group scale is reconstructed as one little-endian FP16 row anchor times
+  one little-endian FP16 ratio selected by a 4-bit index from the tensor's
+  16-entry ratio codebook. This is the Qwen3.8-27B row-normalized scale4
+  contract; older per-group FP16-scale receipts remain historical controls.
 - The A16 reference accumulates group partials in FP32.
 - The A8 path uses group-128 max-absolute scales, `lrintf` under the default
   round-to-nearest mode, clipping to `[-127, 127]`, and a unit scale for an
@@ -45,7 +56,8 @@ replaced only where profiling shows a material end-to-end gain.
 
 ## K0: canonical pack and compute-image transcode
 
-Input is canonical radix-5 codes, FP16 scales, tensor metadata, and checksums.
+Input is canonical bit-contiguous block203 base-3 codes, row-normalized scale4
+factors, tensor metadata, and checksums.
 Output is an aligned, mmap-safe compute image containing the same logical codes
 and scales. Candidate physical layouts are:
 
@@ -82,6 +94,13 @@ absolute error `7.15e-7`. The preregistered ARM v1 milestone passed, but the
 70% K2 exit gate and full-graph gate remain open. Eight workers add no
 throughput, motivating native fused gate/up dispatch rather than more Python
 worker fan-out.
+For the Qwen3.8-27B row-normalized artifact, the canonical complete-container
+target is at most 1.64 bits per model parameter. The optional aligned-2 CPU
+working representation is separately budgeted at approximately 2.035 bits per
+model parameter: 6,945,078,272 aligned weight bytes, 119,265,240 shared
+row-scale bytes, and 2,229,728 exactly retained bytes across 27,781,427,952
+parameters. Canonical storage rate and active compute rate must never be
+reported as the same number.
 The v2 ARM path is now wired into GGML's real single-token `MUL_MAT` dispatch.
 It blocks 16 output rows so each `CQ8_0` activation load feeds 16 `CQ3_0`
 rows. On the exact `17408 x 5120` Qwen projection shape, a frozen nine-pair
@@ -94,7 +113,9 @@ so token parity and capability gates remain open.
 The benchmark matrix families are the exact Qwen shapes:
 
 - `5120 -> 17408` and `17408 -> 5120` for the MLP;
-- `5120 -> 10240`, `5120 -> 6144`, and `6144 -> 5120` for DeltaNet;
+- `5120 -> 10240` for DeltaNet q/k/v, `5120 -> 6144` for z, two
+  separate `5120 -> 48` projections for a and b, and `6144 -> 5120`
+  for the DeltaNet output;
 - `5120 -> 12288`, `5120 -> 1024`, `6144 -> 5120` for full attention;
 - `5120 -> 248320` for the LM head.
 
