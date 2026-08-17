@@ -48,6 +48,17 @@ class TernaryCpuPackingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "canonical|code"):
             ternary_cpu.unpack_group128_radix5(bad, codes.size)
 
+    def test_radix5_plane_activation_layout(self) -> None:
+        activation = np.arange(-128, 128, dtype=np.int16).astype(np.int8)
+        expanded = ternary_cpu.expand_q8_radix5_planes(activation).reshape(2, 5, 32)
+        for group in range(2):
+            for position in range(128):
+                self.assertEqual(
+                    int(expanded[group, position % 5, position // 5]),
+                    int(activation[group * 128 + position]),
+                )
+            self.assertTrue(np.all(expanded[group, :, 26:] == 0))
+
 
 @unittest.skipUnless(ternary_cpu.native_available(), "Clark ternary CPU library is not built")
 class TernaryCpuNativeTests(unittest.TestCase):
@@ -185,12 +196,23 @@ class TernaryCpuNativeTests(unittest.TestCase):
             packed_radix5, scales, expanded, activation_scales, sums,
             implementation="avx2_nogather_static", threads=4,
         )
+        expanded_planes = ternary_cpu.expand_q8_radix5_planes(quantized)
+        radix5_planes = ternary_cpu.gemv_q8_group128_radix5(
+            packed_radix5, scales, expanded_planes, activation_scales, sums,
+            implementation="avx2_planes",
+        )
+        radix5_planes_threaded = ternary_cpu.gemv_q8_group128_radix5(
+            packed_radix5, scales, expanded_planes, activation_scales, sums,
+            implementation="avx2_planes", threads=4,
+        )
         np.testing.assert_allclose(radix5, scalar, rtol=1e-5, atol=5e-5)
         np.testing.assert_array_equal(radix5_threaded, radix5)
         np.testing.assert_array_equal(radix5_nogather, radix5)
         np.testing.assert_array_equal(radix5_nogather_threaded, radix5_nogather)
         np.testing.assert_array_equal(radix5_static, radix5)
         np.testing.assert_array_equal(radix5_static_threaded, radix5_static)
+        np.testing.assert_allclose(radix5_planes, radix5, rtol=1e-5, atol=5e-5)
+        np.testing.assert_array_equal(radix5_planes_threaded, radix5_planes)
 
 
 if __name__ == "__main__":

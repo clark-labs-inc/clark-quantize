@@ -1,0 +1,58 @@
+{
+  "schema": "clark_radix5_direct_gemv_preregistration_v4",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "artifact_schema": "clark_chunked_base3_v1",
+  "predecessor": {
+    "best_receipt": "receipts/radix5-direct-gemv-v2.json",
+    "best_receipt_sha256": "381c328c24cfc915f31bfcec6e72d9db32243fc7fd33173b30484b86dec75ee6",
+    "best_four_core_throughput_fraction_of_aligned2": 0.6821671810986987,
+    "latest_receipt": "receipts/radix5-direct-gemv-v3.json",
+    "latest_receipt_sha256": "fabacd9d0e206fbc3c3fac7eee513a8635a3457d48f563b8ea15d7d17c4b10da"
+  },
+  "hypothesis": "Arithmetic SIMD division-by-three can decode 32 radix-5 bytes into five contiguous digit planes without indirect table loads; paired with a 160-byte plane-major A8 image, it will preserve exact 1.75-bit weights and retain at least 70% of aligned-two-bit four-core throughput.",
+  "kernel": {
+    "implementation": "avx2_planes",
+    "registered_changes": [
+      "decode two vectors of 16 radix-5 bytes using exact unsigned-16 multiply-by-171 and shift-by-9 division by three",
+      "transpose A8 once per token into five 32-byte digit planes per group, with six zero-padded segment lanes",
+      "remove all data-dependent digit-table loads"
+    ]
+  },
+  "tensor": {
+    "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "group_size": 128
+  },
+  "formats": {
+    "aligned2": {"code_bytes_per_group": 32, "fp16_scale_bytes_per_group": 2, "bits_per_weight": 2.125},
+    "radix5_group128": {"code_bytes_per_group": 26, "fp16_scale_bytes_per_group": 2, "bits_per_weight": 1.75, "padding_trits_per_group": 2}
+  },
+  "activation": {
+    "dtype": "float32_to_group128_int8",
+    "seed": 20260817,
+    "radix5_layout": "five contiguous 32-byte planes per group; 26 live segment values and six zero lanes per plane",
+    "bytes_per_group": 160
+  },
+  "correctness": {
+    "rows": 128,
+    "maximum_absolute_error_vs_aligned2": 0.00005,
+    "require_exact_radix5_roundtrip": true,
+    "require_exact_thread_determinism": true,
+    "require_exact_divide_by_three_for_all_uint8_values": true
+  },
+  "performance": {
+    "warmups": 2,
+    "repetitions": 7,
+    "threads": [1, 2, 4],
+    "thread_placement": "persistent_workers_pinned_once_to_distinct_physical_cores",
+    "cache_eviction_bytes": 268435456,
+    "comparison_order": "alternate which format runs first on every repetition"
+  },
+  "promotion": {
+    "maximum_radix5_compute_image_bits_per_weight_including_fp16_scales": 1.75,
+    "minimum_radix5_throughput_fraction_of_aligned2": 0.70,
+    "pareto_speed_threshold": 1.0,
+    "does_not_authorize_model_quality_or_breakthrough_claim": true
+  }
+}

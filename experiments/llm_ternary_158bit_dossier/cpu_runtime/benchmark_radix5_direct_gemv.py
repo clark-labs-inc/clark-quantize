@@ -22,6 +22,7 @@ from clark_quantize.qwen_base3_artifact import QwenBase3ArtifactReader
 from clark_quantize.ternary_cpu import (
     cpu_features,
     expand_q8_radix5,
+    expand_q8_radix5_planes,
     gemv_q8_group128_2bit,
     gemv_q8_group128_radix5,
     memory_read_sum,
@@ -54,6 +55,7 @@ def validate_preregistration(value: dict, args: argparse.Namespace) -> None:
             "clark_radix5_direct_gemv_preregistration_v1",
             "clark_radix5_direct_gemv_preregistration_v2",
             "clark_radix5_direct_gemv_preregistration_v3",
+            "clark_radix5_direct_gemv_preregistration_v4",
         }
         or tensor.get("name") != args.tensor
         or tensor.get("rows") != args.rows
@@ -129,7 +131,12 @@ def main() -> None:
     generator = np.random.default_rng(preregistration["activation"]["seed"])
     activation = generator.normal(size=args.columns).astype(np.float32)
     activation_q8, activation_scales, activation_sums = quantize_q8(activation)
-    activation_radix5 = expand_q8_radix5(activation_q8)
+    activation_radix5_scalar = expand_q8_radix5(activation_q8)
+    activation_radix5 = (
+        expand_q8_radix5_planes(activation_q8)
+        if radix5_implementation == "avx2_planes"
+        else activation_radix5_scalar
+    )
     check_rows = int(preregistration["correctness"]["rows"])
     aligned_scalar = gemv_q8_group128_2bit(
         packed_aligned[:check_rows], weight_scales[:check_rows],
@@ -138,7 +145,7 @@ def main() -> None:
     )
     radix5_scalar = gemv_q8_group128_radix5(
         packed_radix5[:check_rows], weight_scales[:check_rows],
-        activation_radix5, activation_scales, activation_sums,
+        activation_radix5_scalar, activation_scales, activation_sums,
         implementation="scalar", validated=True,
     )
     radix5_avx2 = gemv_q8_group128_radix5(
@@ -287,6 +294,7 @@ def main() -> None:
             "radix5_bits_per_weight_including_scales": radix5_bits,
             "radix5_byte_reduction_percent": 100.0 * (1.0 - radix5_weight_bytes / aligned_weight_bytes),
             "exact_radix5_roundtrip": exact_roundtrip,
+            "radix5_activation_bytes": activation_radix5.nbytes,
         },
         "correctness": {
             "scalar_radix5_vs_aligned2_max_abs": scalar_max_abs,

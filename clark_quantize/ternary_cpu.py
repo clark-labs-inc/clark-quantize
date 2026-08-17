@@ -62,6 +62,8 @@ def _load_library() -> ctypes.CDLL | None:
         library.cq3_quantize_f32_q8.restype = ctypes.c_int
         library.cq3_expand_q8_radix5.argtypes = (i8p, ctypes.c_uint64, i8p)
         library.cq3_expand_q8_radix5.restype = ctypes.c_int
+        library.cq3_expand_q8_radix5_planes.argtypes = (i8p, ctypes.c_uint64, i8p)
+        library.cq3_expand_q8_radix5_planes.restype = ctypes.c_int
         gemv_args = (
             u8p, u16p, i8p, f32p, i32p,
             ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint32, f32p,
@@ -78,6 +80,8 @@ def _load_library() -> ctypes.CDLL | None:
         library.cq3_gemv_q8_group128_radix5_avx2_nogather.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_avx2_nogather_static.argtypes = gemv_args
         library.cq3_gemv_q8_group128_radix5_avx2_nogather_static.restype = ctypes.c_int
+        library.cq3_gemv_q8_group128_radix5_avx2_planes.argtypes = gemv_args
+        library.cq3_gemv_q8_group128_radix5_avx2_planes.restype = ctypes.c_int
         library.cq3_sum_u8_scalar.argtypes = (u8p, ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64))
         library.cq3_sum_u8_scalar.restype = ctypes.c_int
         library.cq3_sum_u8_avx2.argtypes = (u8p, ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64))
@@ -301,6 +305,28 @@ def expand_q8_radix5(activation_q8: np.ndarray) -> np.ndarray:
     return output
 
 
+def expand_q8_radix5_planes(activation_q8: np.ndarray) -> np.ndarray:
+    """Transpose A8 into five 32-byte radix-5 digit planes per group."""
+    source = _array(activation_q8, np.int8, ndim=1)
+    if source.size == 0 or source.size % 128:
+        raise ValueError("radix-5 plane expansion requires a nonzero multiple of 128 values")
+    groups = source.size // 128
+    output = np.empty(groups * 5 * 32, dtype=np.int8)
+    if _LIBRARY is None:
+        shaped = np.zeros((groups, 5, 32), dtype=np.int8)
+        source_groups = source.reshape(groups, 128)
+        for position in range(128):
+            shaped[:, position % 5, position // 5] = source_groups[:, position]
+        return shaped.reshape(-1)
+    status = _LIBRARY.cq3_expand_q8_radix5_planes(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+        source.size,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+    )
+    _check(status, "radix-5 plane A8 expansion")
+    return output
+
+
 def gemv_q8_group128_2bit(
     packed_weights: np.ndarray,
     weight_scales: np.ndarray,
@@ -423,7 +449,9 @@ def gemv_q8_group128_radix5(
         rows == 0 or groups == 0 or group_size != 128
         or weights.shape[1] != groups * 26
         or scales_u16.shape != (rows, groups)
-        or activation.shape != (groups * 28 * 8,)
+        or activation.shape != (
+            groups * (5 * 32 if implementation == "avx2_planes" else 28 * 8),
+        )
         or act_sums.shape != (groups,)
     ):
         raise ValueError("group-128 radix-5 GEMV tensor dimensions do not match")
@@ -438,6 +466,7 @@ def gemv_q8_group128_radix5(
         "avx2": _LIBRARY.cq3_gemv_q8_group128_radix5_avx2,
         "avx2_nogather": _LIBRARY.cq3_gemv_q8_group128_radix5_avx2_nogather,
         "avx2_nogather_static": _LIBRARY.cq3_gemv_q8_group128_radix5_avx2_nogather_static,
+        "avx2_planes": _LIBRARY.cq3_gemv_q8_group128_radix5_avx2_planes,
     }
     if implementation not in functions:
         raise ValueError(f"unknown radix-5 GEMV implementation {implementation!r}")

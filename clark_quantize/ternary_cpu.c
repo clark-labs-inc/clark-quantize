@@ -14,6 +14,10 @@
 #define CQ3_RADIX5_BYTES_PER_GROUP 26U
 #define CQ3_RADIX5_SEGMENTS_PADDED 28U
 #define CQ3_RADIX5_ACTIVATION_STRIDE (CQ3_RADIX5_SEGMENTS_PADDED * 8U)
+#define CQ3_RADIX5_PLANE_WIDTH 32U
+#define CQ3_RADIX5_PLANES 5U
+#define CQ3_RADIX5_PLANE_ACTIVATION_STRIDE \
+    (CQ3_RADIX5_PLANE_WIDTH * CQ3_RADIX5_PLANES)
 
 #if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
 #define CQ3_RADIX5_DIGITS(value) ( \
@@ -343,6 +347,33 @@ int cq3_expand_q8_radix5(
             const uint32_t lane = position % 5U;
             expanded[group * CQ3_RADIX5_ACTIVATION_STRIDE + segment * 8U + lane] =
                 activation[group * 128U + position];
+        }
+    }
+    return CQ3_OK;
+}
+
+int cq3_expand_q8_radix5_planes(
+    const int8_t *activation,
+    uint64_t columns,
+    int8_t *expanded
+) {
+    if (activation == NULL || expanded == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    if (columns == 0U || columns % 128U != 0U) {
+        return CQ3_ERROR_SHAPE;
+    }
+    const uint64_t groups = columns / 128U;
+    memset(expanded, 0, groups * CQ3_RADIX5_PLANE_ACTIVATION_STRIDE);
+    for (uint64_t group = 0U; group < groups; ++group) {
+        for (uint32_t position = 0U; position < 128U; ++position) {
+            const uint32_t segment = position / 5U;
+            const uint32_t plane = position % 5U;
+            expanded[
+                group * CQ3_RADIX5_PLANE_ACTIVATION_STRIDE
+                + plane * CQ3_RADIX5_PLANE_WIDTH
+                + segment
+            ] = activation[group * 128U + position];
         }
     }
     return CQ3_OK;
@@ -706,6 +737,117 @@ static int cq3_gemv_q8_group128_radix5_avx2_impl(
     }
     return CQ3_OK;
 }
+
+__attribute__((target("avx2,f16c,fma")))
+static int cq3_gemv_q8_group128_radix5_planes_avx2_impl(
+    const uint8_t *CQ3_RESTRICT weights,
+    const uint16_t *CQ3_RESTRICT weight_scales,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    uint32_t group_size,
+    float *CQ3_RESTRICT output
+) {
+    const uint64_t groups = columns / group_size;
+    const uint64_t row_bytes = groups * CQ3_RADIX5_BYTES_PER_GROUP;
+    const __m256i divide_by_three = _mm256_set1_epi16(171);
+    const __m256i ones = _mm256_set1_epi16(1);
+    for (uint64_t row = 0U; row < rows; ++row) {
+        float combined_scales[CQ3_MAX_GROUPS_PER_ROW];
+        uint64_t scale_group = 0U;
+        for (; scale_group + 8U <= groups; scale_group += 8U) {
+            const __m128i half_scales = _mm_loadu_si128(
+                (const __m128i *)(weight_scales + row * groups + scale_group)
+            );
+            const __m256 float_scales = _mm256_mul_ps(
+                _mm256_cvtph_ps(half_scales),
+                _mm256_loadu_ps(activation_scales + scale_group)
+            );
+            _mm256_storeu_ps(combined_scales + scale_group, float_scales);
+        }
+        for (; scale_group < groups; ++scale_group) {
+            combined_scales[scale_group] =
+                _cvtsh_ss(weight_scales[row * groups + scale_group])
+                * activation_scales[scale_group];
+        }
+
+        __m256 total = _mm256_setzero_ps();
+        for (uint64_t group = 0U; group < groups; ++group) {
+            const uint8_t *codes =
+                weights + row * row_bytes + group * CQ3_RADIX5_BYTES_PER_GROUP;
+            const int8_t *values =
+                activation + group * CQ3_RADIX5_PLANE_ACTIVATION_STRIDE;
+            const __m128i packed_low = _mm_loadu_si128((const __m128i *)codes);
+            __m128i packed_high;
+            if (group + 1U < groups || row + 1U < rows) {
+                packed_high = _mm_loadu_si128((const __m128i *)(codes + 16U));
+            } else {
+                uint8_t tail[16] = {0U};
+                memcpy(tail, codes + 16U, 10U);
+                packed_high = _mm_loadu_si128((const __m128i *)tail);
+            }
+            __m256i remaining_low = _mm256_cvtepu8_epi16(packed_low);
+            __m256i remaining_high = _mm256_cvtepu8_epi16(packed_high);
+            __m256i products = _mm256_setzero_si256();
+            for (uint32_t plane = 0U; plane < CQ3_RADIX5_PLANES; ++plane) {
+                const __m256i quotient_low = _mm256_srli_epi16(
+                    _mm256_mullo_epi16(remaining_low, divide_by_three), 9
+                );
+                const __m256i quotient_high = _mm256_srli_epi16(
+                    _mm256_mullo_epi16(remaining_high, divide_by_three), 9
+                );
+                const __m256i digits_low = _mm256_sub_epi16(
+                    remaining_low,
+                    _mm256_add_epi16(
+                        quotient_low, _mm256_slli_epi16(quotient_low, 1)
+                    )
+                );
+                const __m256i digits_high = _mm256_sub_epi16(
+                    remaining_high,
+                    _mm256_add_epi16(
+                        quotient_high, _mm256_slli_epi16(quotient_high, 1)
+                    )
+                );
+                const __m256i digits = _mm256_permute4x64_epi64(
+                    _mm256_packus_epi16(digits_low, digits_high), 0xd8
+                );
+                products = _mm256_add_epi16(
+                    products,
+                    _mm256_maddubs_epi16(
+                        digits,
+                        _mm256_loadu_si256(
+                            (const __m256i *)(
+                                values + plane * CQ3_RADIX5_PLANE_WIDTH
+                            )
+                        )
+                    )
+                );
+                remaining_low = quotient_low;
+                remaining_high = quotient_high;
+            }
+            const __m256i accumulator = _mm256_madd_epi16(products, ones);
+            const __m256i centered = _mm256_sub_epi32(
+                accumulator,
+                _mm256_set_epi32(0, 0, 0, 0, 0, 0, 0, activation_sums[group])
+            );
+            total = _mm256_fmadd_ps(
+                _mm256_cvtepi32_ps(centered),
+                _mm256_set1_ps(combined_scales[group]),
+                total
+            );
+        }
+        __m128 horizontal = _mm_add_ps(
+            _mm256_castps256_ps128(total),
+            _mm256_extractf128_ps(total, 1)
+        );
+        horizontal = _mm_hadd_ps(horizontal, horizontal);
+        horizontal = _mm_hadd_ps(horizontal, horizontal);
+        output[row] = _mm_cvtss_f32(horizontal);
+    }
+    return CQ3_OK;
+}
 #endif
 
 int cq3_gemv_q8_group128_radix5_avx2(
@@ -807,6 +949,41 @@ int cq3_gemv_q8_group128_radix5_avx2_nogather_static(
     return cq3_gemv_q8_group128_radix5_avx2_impl(
         weights, weight_scales, activation, activation_scales,
         activation_sums, rows, columns, group_size, output, 2
+    );
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
+int cq3_gemv_q8_group128_radix5_avx2_planes(
+    const uint8_t *CQ3_RESTRICT weights,
+    const uint16_t *CQ3_RESTRICT weight_scales,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    uint32_t group_size,
+    float *CQ3_RESTRICT output
+) {
+    if (activation_sums == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    const int validation = cq3_validate_gemv(
+        weights, weight_scales, activation, activation_scales,
+        output, rows, columns, group_size
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    const uint32_t required = CQ3_FEATURE_AVX2 | CQ3_FEATURE_F16C | CQ3_FEATURE_FMA;
+    if ((cq3_cpu_features() & required) != required) {
+        return CQ3_ERROR_ISA;
+    }
+    return cq3_gemv_q8_group128_radix5_planes_avx2_impl(
+        weights, weight_scales, activation, activation_scales,
+        activation_sums, rows, columns, group_size, output
     );
 #else
     return CQ3_ERROR_ISA;
