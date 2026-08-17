@@ -1,8 +1,8 @@
 """C-ABI CPU primitives for Clark group-128 ternary weights.
 
-The canonical base-3 artifact remains the storage source of truth.  These
-helpers create and execute a 2-bit-per-code compute image whose group boundaries
-match the FP16 scale grid exactly.
+The canonical base-3 artifact remains the storage source of truth. These
+helpers compare an aligned two-bit compute image with a direct group-aligned
+radix-5 image whose group boundaries match the FP16 scale grid exactly.
 """
 from __future__ import annotations
 
@@ -52,10 +52,16 @@ def _load_library() -> ctypes.CDLL | None:
         library.cq3_pack_group128_2bit.restype = ctypes.c_int
         library.cq3_unpack_group128_2bit.argtypes = (u8p, ctypes.c_uint64, i8p)
         library.cq3_unpack_group128_2bit.restype = ctypes.c_int
+        library.cq3_pack_group128_radix5.argtypes = (i8p, ctypes.c_uint64, u8p)
+        library.cq3_pack_group128_radix5.restype = ctypes.c_int
+        library.cq3_unpack_group128_radix5.argtypes = (u8p, ctypes.c_uint64, i8p)
+        library.cq3_unpack_group128_radix5.restype = ctypes.c_int
         library.cq3_quantize_f32_q8.argtypes = (
             f32p, ctypes.c_uint64, ctypes.c_uint32, i8p, f32p, i32p,
         )
         library.cq3_quantize_f32_q8.restype = ctypes.c_int
+        library.cq3_expand_q8_radix5.argtypes = (i8p, ctypes.c_uint64, i8p)
+        library.cq3_expand_q8_radix5.restype = ctypes.c_int
         gemv_args = (
             u8p, u16p, i8p, f32p, i32p,
             ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint32, f32p,
@@ -64,6 +70,10 @@ def _load_library() -> ctypes.CDLL | None:
         library.cq3_gemv_q8_group128_2bit_scalar.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_2bit_avx2.argtypes = gemv_args
         library.cq3_gemv_q8_group128_2bit_avx2.restype = ctypes.c_int
+        library.cq3_gemv_q8_group128_radix5_scalar.argtypes = gemv_args
+        library.cq3_gemv_q8_group128_radix5_scalar.restype = ctypes.c_int
+        library.cq3_gemv_q8_group128_radix5_avx2.argtypes = gemv_args
+        library.cq3_gemv_q8_group128_radix5_avx2.restype = ctypes.c_int
         library.cq3_sum_u8_scalar.argtypes = (u8p, ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64))
         library.cq3_sum_u8_scalar.restype = ctypes.c_int
         library.cq3_sum_u8_avx2.argtypes = (u8p, ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64))
@@ -191,6 +201,58 @@ def unpack_group128_2bit(packed: np.ndarray, count: int) -> np.ndarray:
     return output
 
 
+def pack_group128_radix5(codes: np.ndarray) -> np.ndarray:
+    """Pack every 128-code scale group into 26 radix-5 bytes."""
+    source = _array(codes, np.int8).reshape(-1)
+    if source.size == 0 or source.size % 128:
+        raise ValueError("group-128 radix-5 images require a nonzero multiple of 128 codes")
+    groups = source.size // 128
+    if _LIBRARY is None:
+        if source.min() < -1 or source.max() > 1:
+            raise ValueError("ternary codes must be in {-1, 0, +1}")
+        digits = (source.astype(np.uint16) + 1).reshape(groups, 128)
+        padded = np.zeros((groups, 130), dtype=np.uint16)
+        padded[:, :128] = digits
+        powers = np.asarray([1, 3, 9, 27, 81], dtype=np.uint16)
+        return np.ascontiguousarray((padded.reshape(groups, 26, 5) * powers).sum(axis=2), dtype=np.uint8).reshape(-1)
+    output = np.empty(groups * 26, dtype=np.uint8)
+    status = _LIBRARY.cq3_pack_group128_radix5(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+        source.size,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+    )
+    _check(status, "group-128 radix-5 pack")
+    return output
+
+
+def unpack_group128_radix5(packed: np.ndarray, count: int) -> np.ndarray:
+    source = _array(packed, np.uint8).reshape(-1)
+    if count <= 0 or count % 128 or source.size != count // 128 * 26:
+        raise ValueError("group-128 radix-5 dimensions do not match")
+    if _LIBRARY is None:
+        if np.any(source > 242):
+            raise ValueError("group-128 radix-5 payload is non-canonical")
+        groups = count // 128
+        values = source.astype(np.uint16).reshape(groups, 26)
+        digits = np.empty((groups, 26, 5), dtype=np.uint8)
+        remaining = values
+        for lane in range(5):
+            digits[:, :, lane] = remaining % 3
+            remaining = remaining // 3
+        flat = digits.reshape(groups, 130)
+        if np.any(flat[:, 128:] != 0):
+            raise ValueError("group-128 radix-5 padding is non-canonical")
+        return (flat[:, :128].reshape(-1).astype(np.int8) - 1).astype(np.int8, copy=False)
+    output = np.empty(count, dtype=np.int8)
+    status = _LIBRARY.cq3_unpack_group128_radix5(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        count,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+    )
+    _check(status, "group-128 radix-5 unpack")
+    return output
+
+
 def quantize_q8(activation: np.ndarray, group_size: int = 128) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     if _LIBRARY is None:
         raise RuntimeError("Clark ternary CPU library is not built")
@@ -211,6 +273,28 @@ def quantize_q8(activation: np.ndarray, group_size: int = 128) -> tuple[np.ndarr
     )
     _check(status, "A8 quantization")
     return quantized, scales, sums
+
+
+def expand_q8_radix5(activation_q8: np.ndarray) -> np.ndarray:
+    """Expand A8 into 28 eight-byte segments per group for radix-5 gathers."""
+    source = _array(activation_q8, np.int8, ndim=1)
+    if source.size == 0 or source.size % 128:
+        raise ValueError("radix-5 A8 expansion requires a nonzero multiple of 128 values")
+    groups = source.size // 128
+    output = np.empty(groups * 28 * 8, dtype=np.int8)
+    if _LIBRARY is None:
+        shaped = np.zeros((groups, 28, 8), dtype=np.int8)
+        source_groups = source.reshape(groups, 128)
+        for position in range(128):
+            shaped[:, position // 5, position % 5] = source_groups[:, position]
+        return shaped.reshape(-1)
+    status = _LIBRARY.cq3_expand_q8_radix5(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+        source.size,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+    )
+    _check(status, "radix-5 A8 expansion")
+    return output
 
 
 def gemv_q8_group128_2bit(
@@ -279,6 +363,101 @@ def gemv_q8_group128_2bit(
                 output[row_start:].ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
             )
             _check(status, f"{implementation} GEMV")
+        finally:
+            if affinity is not None:
+                os.sched_setaffinity(0, affinity)
+
+    if thread_count == 1:
+        run(0, rows, cpu_ids[0] if cpu_ids else None)
+    else:
+        boundaries = [rows * index // thread_count for index in range(thread_count + 1)]
+        owner = executor is None
+        pool = executor or ThreadPoolExecutor(max_workers=thread_count)
+        try:
+            futures = [
+                pool.submit(
+                    run,
+                    boundaries[index],
+                    boundaries[index + 1],
+                    cpu_ids[index] if cpu_ids else None,
+                )
+                for index in range(thread_count)
+            ]
+            for future in futures:
+                future.result()
+        finally:
+            if owner:
+                pool.shutdown()
+    return output
+
+
+def gemv_q8_group128_radix5(
+    packed_weights: np.ndarray,
+    weight_scales: np.ndarray,
+    activation_radix5: np.ndarray,
+    activation_scales: np.ndarray,
+    activation_sums: np.ndarray,
+    *,
+    implementation: str = "avx2",
+    threads: int = 1,
+    group_size: int = 128,
+    executor: ThreadPoolExecutor | None = None,
+    cpu_ids: list[int] | None = None,
+    validated: bool = False,
+) -> np.ndarray:
+    if _LIBRARY is None:
+        raise RuntimeError("Clark ternary CPU library is not built")
+    weights = _array(packed_weights, np.uint8, ndim=2)
+    scales_u16 = _array(weight_scales, np.float16, ndim=2).view(np.uint16)
+    activation = _array(activation_radix5, np.int8, ndim=1)
+    act_scales = _array(activation_scales, np.float32, ndim=1)
+    act_sums = _array(activation_sums, np.int32, ndim=1)
+    rows = weights.shape[0]
+    groups = act_scales.size
+    columns = groups * group_size
+    if (
+        rows == 0 or groups == 0 or group_size != 128
+        or weights.shape[1] != groups * 26
+        or scales_u16.shape != (rows, groups)
+        or activation.shape != (groups * 28 * 8,)
+        or act_sums.shape != (groups,)
+    ):
+        raise ValueError("group-128 radix-5 GEMV tensor dimensions do not match")
+    if not validated and (
+        np.any(weights > 242)
+        or not np.all(np.isfinite(scales_u16.view(np.float16)))
+        or not np.all(np.isfinite(act_scales))
+    ):
+        raise ValueError("group-128 radix-5 GEMV inputs must be canonical and finite")
+    functions = {
+        "scalar": _LIBRARY.cq3_gemv_q8_group128_radix5_scalar,
+        "avx2": _LIBRARY.cq3_gemv_q8_group128_radix5_avx2,
+    }
+    if implementation not in functions:
+        raise ValueError(f"unknown radix-5 GEMV implementation {implementation!r}")
+    function = functions[implementation]
+    output = np.empty(rows, dtype=np.float32)
+    thread_count = min(max(int(threads), 1), rows)
+    if cpu_ids is not None and len(cpu_ids) < thread_count:
+        raise ValueError("cpu_ids must supply one CPU for every worker")
+
+    def run(row_start: int, row_stop: int, cpu_id: int | None = None) -> None:
+        affinity = os.sched_getaffinity(0) if cpu_id is not None and hasattr(os, "sched_getaffinity") else None
+        try:
+            if affinity is not None:
+                os.sched_setaffinity(0, {cpu_id})
+            status = function(
+                weights[row_start:].ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+                scales_u16[row_start:].ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
+                activation.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+                act_scales.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+                act_sums.ctypes.data_as(ctypes.POINTER(ctypes.c_int32)),
+                row_stop - row_start,
+                columns,
+                group_size,
+                output[row_start:].ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+            )
+            _check(status, f"{implementation} radix-5 GEMV")
         finally:
             if affinity is not None:
                 os.sched_setaffinity(0, affinity)

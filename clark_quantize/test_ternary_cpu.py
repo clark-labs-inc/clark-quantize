@@ -34,6 +34,20 @@ class TernaryCpuPackingTests(unittest.TestCase):
             codes,
         )
 
+    def test_group128_radix5_roundtrip_and_canonical_padding(self) -> None:
+        generator = np.random.default_rng(20260817)
+        codes = generator.integers(-1, 2, size=128 * 3, dtype=np.int8)
+        packed = ternary_cpu.pack_group128_radix5(codes)
+        self.assertEqual(packed.size, 26 * 3)
+        np.testing.assert_array_equal(
+            ternary_cpu.unpack_group128_radix5(packed, codes.size),
+            codes,
+        )
+        bad = packed.copy()
+        bad[25] = np.uint8(int(bad[25]) + 27)
+        with self.assertRaisesRegex(ValueError, "canonical|code"):
+            ternary_cpu.unpack_group128_radix5(bad, codes.size)
+
 
 @unittest.skipUnless(ternary_cpu.native_available(), "Clark ternary CPU library is not built")
 class TernaryCpuNativeTests(unittest.TestCase):
@@ -83,6 +97,22 @@ class TernaryCpuNativeTests(unittest.TestCase):
             expected[row] = total
         np.testing.assert_allclose(actual, expected, rtol=1e-6, atol=1e-6)
 
+    def test_radix5_scalar_matches_aligned_scalar(self) -> None:
+        codes, scales, quantized, activation_scales, sums, packed = self.fixture()
+        aligned = ternary_cpu.gemv_q8_group128_2bit(
+            packed, scales, quantized, activation_scales, sums,
+            implementation="scalar",
+        )
+        packed_radix5 = np.stack([
+            ternary_cpu.pack_group128_radix5(row) for row in codes
+        ])
+        expanded = ternary_cpu.expand_q8_radix5(quantized)
+        radix5 = ternary_cpu.gemv_q8_group128_radix5(
+            packed_radix5, scales, expanded, activation_scales, sums,
+            implementation="scalar",
+        )
+        np.testing.assert_allclose(radix5, aligned, rtol=1e-6, atol=1e-6)
+
     def test_stream_control_reads_every_byte(self) -> None:
         values = np.arange(1_000_003, dtype=np.uint8)
         expected = int(values.astype(np.uint64).sum())
@@ -111,7 +141,7 @@ class TernaryCpuNativeTests(unittest.TestCase):
 
     @unittest.skipUnless(ternary_cpu.cpu_features()["avx2"], "AVX2 is unavailable")
     def test_avx2_matches_scalar_and_is_thread_deterministic(self) -> None:
-        _, scales, quantized, activation_scales, sums, packed = self.fixture(rows=31, columns=512)
+        codes, scales, quantized, activation_scales, sums, packed = self.fixture(rows=31, columns=512)
         scalar = ternary_cpu.gemv_q8_group128_2bit(
             packed, scales, quantized, activation_scales, sums,
             implementation="scalar",
@@ -126,6 +156,21 @@ class TernaryCpuNativeTests(unittest.TestCase):
         )
         np.testing.assert_allclose(avx2, scalar, rtol=1e-5, atol=5e-5)
         np.testing.assert_array_equal(threaded, avx2)
+
+        packed_radix5 = np.stack([
+            ternary_cpu.pack_group128_radix5(row) for row in codes
+        ])
+        expanded = ternary_cpu.expand_q8_radix5(quantized)
+        radix5 = ternary_cpu.gemv_q8_group128_radix5(
+            packed_radix5, scales, expanded, activation_scales, sums,
+            implementation="avx2",
+        )
+        radix5_threaded = ternary_cpu.gemv_q8_group128_radix5(
+            packed_radix5, scales, expanded, activation_scales, sums,
+            implementation="avx2", threads=4,
+        )
+        np.testing.assert_allclose(radix5, scalar, rtol=1e-5, atol=5e-5)
+        np.testing.assert_array_equal(radix5_threaded, radix5)
 
 
 if __name__ == "__main__":
