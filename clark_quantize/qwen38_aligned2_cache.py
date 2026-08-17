@@ -15,10 +15,15 @@ import os
 from pathlib import Path
 from typing import BinaryIO, Mapping
 
+import numpy as np
+
 from .base3_chunks import atomic_bytes, canonical_json
 from .qwen38_cq3_container import MODEL_ID, Qwen38CQ3Reader, align_up
 from .qwen38_cq3_runtime import (
     ROW_NORMALIZED_ENCODING,
+    CQ3RuntimeError,
+    Qwen38CQ3AlignedTensor,
+    Qwen38CQ3MLP,
     Qwen38CQ3RuntimeImage,
 )
 from .ternary_cpu import native_block203_transcode_available
@@ -482,3 +487,265 @@ class Qwen38Aligned2CacheBuilder:
         state["manifest_sha256"] = _sha256_file(self.manifest_path)
         atomic_bytes(self.state_path, canonical_json(state))
         return manifest
+
+
+class Qwen38Aligned2RuntimeImage:
+    """Authenticated mmap execution over aligned weights and canonical scales."""
+
+    def __init__(
+        self,
+        container_path: str | Path,
+        cache_path: str | Path,
+        manifest_path: str | Path,
+        *,
+        verify_source_container: bool = False,
+        verify_full_cache: bool = False,
+    ) -> None:
+        self.container_path = Path(container_path)
+        self.cache_path = Path(cache_path)
+        self.manifest_path = Path(manifest_path)
+        self.manifest = _load_canonical_json(self.manifest_path)
+        identity = self.manifest.get("identity")
+        if not isinstance(identity, dict):
+            raise Qwen38Aligned2CacheError("aligned2 runtime identity is absent")
+        identity_sha256 = hashlib.sha256(canonical_json(identity)).hexdigest()
+        cache = self.manifest.get("cache", {})
+        if (
+            self.manifest.get("schema") != CACHE_MANIFEST_SCHEMA
+            or self.manifest.get("complete") is not True
+            or self.manifest.get("identity_sha256") != identity_sha256
+            or identity.get("schema")
+            != "qwen38_27b_aligned2_cache_identity_v1"
+            or identity.get("alignment") != CACHE_ALIGNMENT
+            or identity.get("cache_path") != str(self.cache_path.resolve())
+            or cache.get("path") != str(self.cache_path.resolve())
+            or cache.get("full_int8_weight_matrix_materialized") is not False
+        ):
+            raise Qwen38Aligned2CacheError("aligned2 runtime manifest changed")
+        source_identity = identity.get("source", {})
+        if source_identity.get("path") != str(self.container_path.resolve()):
+            raise Qwen38Aligned2CacheError("aligned2 runtime source path changed")
+        if not self.cache_path.is_file():
+            raise Qwen38Aligned2CacheError("aligned2 runtime cache is absent")
+        cache_bytes = int(cache.get("bytes", -1))
+        if (
+            cache_bytes < 0
+            or self.cache_path.stat().st_size != cache_bytes
+            or identity.get("ledger", {}).get("cache_file_bytes")
+            != cache_bytes
+        ):
+            raise Qwen38Aligned2CacheError("aligned2 runtime cache size changed")
+
+        self.source = Qwen38CQ3RuntimeImage(self.container_path)
+        try:
+            source_reader = self.source._reader
+            source_model = source_reader.directory["model"]
+            if (
+                source_identity.get("bytes") != source_reader.file_bytes
+                or source_identity.get("root_sha256")
+                != source_reader.header["root_sha256"]
+                or source_identity.get("directory_sha256")
+                != source_reader.header["directory_sha256"]
+                or source_identity.get("model") != source_model
+                or source_identity.get("parameters")
+                != source_reader.header["parameter_count"]
+                or source_model.get("id") != MODEL_ID
+            ):
+                raise Qwen38Aligned2CacheError(
+                    "aligned2 runtime source identity changed"
+                )
+            if (
+                verify_source_container
+                and _sha256_file(self.container_path)
+                != source_identity.get("sha256")
+            ):
+                raise Qwen38Aligned2CacheError(
+                    "aligned2 runtime source SHA-256 changed"
+                )
+            layout = identity.get("layout")
+            tensors = self.manifest.get("tensors")
+            if (
+                not isinstance(layout, list)
+                or not isinstance(tensors, list)
+                or len(layout) != len(tensors)
+            ):
+                raise Qwen38Aligned2CacheError(
+                    "aligned2 runtime tensor inventory changed"
+                )
+            self.records: dict[str, dict] = {}
+            previous_end = 0
+            for layout_record, tensor_record in zip(layout, tensors):
+                name = layout_record.get("name")
+                offset = layout_record.get("offset")
+                size = layout_record.get("bytes")
+                if (
+                    not isinstance(name, str)
+                    or not name
+                    or name in self.records
+                    or not isinstance(offset, int)
+                    or offset < previous_end
+                    or offset % CACHE_ALIGNMENT
+                    or not isinstance(size, int)
+                    or size <= 0
+                    or offset + size > cache_bytes
+                    or any(
+                        tensor_record.get(key) != layout_record.get(key)
+                        for key in ("name", "offset", "bytes")
+                    )
+                    or not isinstance(tensor_record.get("sha256"), str)
+                    or len(tensor_record["sha256"]) != 64
+                ):
+                    raise Qwen38Aligned2CacheError(
+                        "aligned2 runtime tensor record is invalid"
+                    )
+                try:
+                    source_tensor = self.source.tensors[name]
+                    code_id, scale_id = source_tensor["sections"]
+                    code = source_reader.sections[code_id]
+                    scales = source_reader.sections[scale_id]
+                except (KeyError, ValueError, TypeError, IndexError) as error:
+                    raise Qwen38Aligned2CacheError(
+                        f"aligned2 source tensor {name} is absent"
+                    ) from error
+                if (
+                    source_tensor.get("encoding") != ROW_NORMALIZED_ENCODING
+                    or code_id != layout_record.get("source_code_section")
+                    or code["sha256"]
+                    != layout_record.get("source_code_sha256")
+                    or scale_id != layout_record.get("source_scale_section")
+                    or scales["sha256"]
+                    != layout_record.get("source_scale_sha256")
+                    or scales["bytes"]
+                    != layout_record.get("source_scale_bytes")
+                ):
+                    raise Qwen38Aligned2CacheError(
+                        f"aligned2 source tensor {name} identity changed"
+                    )
+                self.records[name] = {
+                    **layout_record,
+                    "sha256": tensor_record["sha256"],
+                }
+                previous_end = offset + size
+            if previous_end != cache_bytes:
+                raise Qwen38Aligned2CacheError(
+                    "aligned2 runtime cache envelope changed"
+                )
+            self._mapping: np.memmap | None = np.memmap(
+                self.cache_path, dtype=np.uint8, mode="r"
+            )
+            self._verified_tensors: set[str] = set()
+            self._closed = False
+            if verify_full_cache and _sha256_file(self.cache_path) != cache.get(
+                "sha256"
+            ):
+                raise Qwen38Aligned2CacheError(
+                    "aligned2 runtime full cache SHA-256 changed"
+                )
+        except BaseException:
+            self.source.close()
+            raise
+
+    def __enter__(self) -> "Qwen38Aligned2RuntimeImage":
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        self.close()
+
+    def close(self) -> None:
+        if not self._closed:
+            self.source.close()
+            self._mapping = None
+            self._closed = True
+
+    def _require_open(self) -> np.memmap:
+        if self._closed or self._mapping is None:
+            raise RuntimeError("Qwen3.8 aligned2 runtime image is closed")
+        return self._mapping
+
+    def _verify_tensor(self, name: str) -> dict:
+        mapping = self._require_open()
+        try:
+            record = self.records[name]
+        except KeyError as error:
+            raise KeyError(f"unknown Qwen3.8 aligned2 tensor {name!r}") from error
+        if name not in self._verified_tensors:
+            start = record["offset"]
+            stop = start + record["bytes"]
+            digest = hashlib.sha256(mapping[start:stop]).hexdigest()
+            if digest != record["sha256"]:
+                raise Qwen38Aligned2CacheError(
+                    f"aligned2 runtime tensor {name} SHA-256 mismatch"
+                )
+            self._verified_tensors.add(name)
+        return record
+
+    def aligned_tensor(self, name: str) -> Qwen38CQ3AlignedTensor:
+        """Authenticate and map aligned weights plus canonical row scales."""
+        mapping = self._require_open()
+        record = self._verify_tensor(name)
+        scales = self.source.scale_tensor(name)
+        shape = tuple(int(value) for value in record["shape"])
+        if (
+            scales.shape != shape
+            or scales.rows != record["rows"]
+            or scales.columns != record["columns"]
+            or record["bytes"] != scales.rows * scales.columns // 4
+        ):
+            raise Qwen38Aligned2CacheError(
+                f"aligned2 runtime tensor {name} dimensions changed"
+            )
+        start = record["offset"]
+        weights = mapping[start : start + record["bytes"]].reshape(
+            scales.rows, scales.columns // 4
+        )
+        weights.flags.writeable = False
+        return Qwen38CQ3AlignedTensor(
+            name=name,
+            shape=shape,
+            rows=scales.rows,
+            columns=scales.columns,
+            packed_weights=weights,
+            packed_scale_indices=scales.packed_scale_indices,
+            row_anchors=scales.row_anchors,
+            ratio_codebook=scales.ratio_codebook,
+        )
+
+    def mlp(self, layer: int) -> Qwen38CQ3MLP:
+        if not isinstance(layer, int) or isinstance(layer, bool) or layer < 0:
+            raise ValueError("Qwen3.8-27B layer index must be non-negative")
+        prefix = f"model.language_model.layers.{layer}.mlp"
+        return Qwen38CQ3MLP(
+            gate=self.aligned_tensor(f"{prefix}.gate_proj.weight"),
+            up=self.aligned_tensor(f"{prefix}.up_proj.weight"),
+            down=self.aligned_tensor(f"{prefix}.down_proj.weight"),
+        )
+
+    def exact_tensor(self, name: str):
+        return self.source.exact_tensor(name)
+
+    def auxiliary_file(self, name: str) -> np.ndarray:
+        return self.source.auxiliary_file(name)
+
+    def verify_runtime_inputs(self) -> dict:
+        """Verify cache weights and every canonical non-base3 runtime section."""
+        for name in self.records:
+            self._verify_tensor(name)
+            self.source.scale_tensor(name)
+        exact = 0
+        for tensor in self.source.tensors.values():
+            encoding = tensor.get("encoding")
+            if isinstance(encoding, str) and encoding.startswith(
+                "retained_exact_"
+            ):
+                self.source.exact_tensor(tensor["name"])
+                exact += 1
+        for name in self.source.auxiliary_files:
+            self.source.auxiliary_file(name)
+        return {
+            "schema": "qwen38_27b_aligned2_runtime_verify_receipt_v1",
+            "aligned_weight_tensors_verified": len(self._verified_tensors),
+            "row_scale_tensors_verified": len(self.records),
+            "retained_exact_tensors_verified": exact,
+            "auxiliary_files_verified": len(self.source.auxiliary_files),
+            "canonical_block203_weight_sections_read": False,
+        }

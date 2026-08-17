@@ -198,6 +198,19 @@ class Qwen38CQ3AlignedTensor:
 
 
 @dataclass(frozen=True)
+class Qwen38CQ3ScaleTensorView:
+    """Authenticated row-scale4 views without reading the base-3 payload."""
+
+    name: str
+    shape: tuple[int, ...]
+    rows: int
+    columns: int
+    packed_scale_indices: np.ndarray
+    row_anchors: np.ndarray
+    ratio_codebook: np.ndarray
+
+
+@dataclass(frozen=True)
 class Qwen38CQ3ExactTensorView:
     """Zero-copy raw view of one exactly retained Qwen3.8-27B tensor."""
 
@@ -287,8 +300,17 @@ class Qwen38CQ3RuntimeImage:
         result.flags.writeable = False
         return result
 
-    def ternary_tensor(self, name: str) -> Qwen38CQ3TernaryTensorView:
-        """Authenticate and map one directly executable ternary matrix."""
+    def _ternary_parts(
+        self, name: str, *, authenticate_weights: bool
+    ) -> tuple[
+        tuple[int, ...],
+        int,
+        int,
+        Mapping[str, object],
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+    ]:
         tensor = self._record(name)
         if tensor.get("encoding") != ROW_NORMALIZED_ENCODING:
             raise CQ3RuntimeError(f"{name} is not a row-normalized ternary matrix")
@@ -299,10 +321,17 @@ class Qwen38CQ3RuntimeImage:
             raise CQ3RuntimeError(f"{name} is not executable by group-128 GEMV")
         section_ids = tensor["sections"]
         if len(section_ids) != 2:
-            raise CQ3RuntimeError(f"{name} does not have exactly code and scale sections")
-        code = self._verify_section(section_ids[0])
+            raise CQ3RuntimeError(
+                f"{name} does not have exactly code and scale sections"
+            )
+        code = self._reader.sections[section_ids[0]]
+        if authenticate_weights:
+            self._verify_section(section_ids[0])
         scales = self._verify_section(section_ids[1])
-        if code["kind"] != "ternary_block203" or scales["kind"] != ROW_NORMALIZED_SCALE_KIND:
+        if (
+            code["kind"] != "ternary_block203"
+            or scales["kind"] != ROW_NORMALIZED_SCALE_KIND
+        ):
             raise CQ3RuntimeError(f"{name} section kinds differ from the runtime ABI")
 
         code_metadata = code["metadata"]
@@ -342,20 +371,43 @@ class Qwen38CQ3RuntimeImage:
         ):
             raise CQ3RuntimeError(f"{name} row-scale4 metadata or byte ledger changed")
 
-        weights = self._u8_view(code)
         indices = self._u8_view(scales, 0, index_bytes)
         anchors = self._u8_view(scales, index_bytes, anchor_bytes).view("<f2")
         codebook = self._u8_view(
             scales, index_bytes + anchor_bytes, codebook_bytes
         ).view("<f2")
-        for array in (weights, indices, anchors, codebook):
+        for array in (indices, anchors, codebook):
             array.flags.writeable = False
+        return shape, rows, columns, code, indices, anchors, codebook
+
+    def ternary_tensor(self, name: str) -> Qwen38CQ3TernaryTensorView:
+        """Authenticate and map one directly executable ternary matrix."""
+        shape, rows, columns, code, indices, anchors, codebook = (
+            self._ternary_parts(name, authenticate_weights=True)
+        )
+        weights = self._u8_view(code)
+        weights.flags.writeable = False
         return Qwen38CQ3TernaryTensorView(
             name=name,
             shape=shape,
             rows=rows,
             columns=columns,
             packed_weights=weights,
+            packed_scale_indices=indices,
+            row_anchors=anchors,
+            ratio_codebook=codebook,
+        )
+
+    def scale_tensor(self, name: str) -> Qwen38CQ3ScaleTensorView:
+        """Authenticate only scales for a separately authenticated weight cache."""
+        shape, rows, columns, _, indices, anchors, codebook = self._ternary_parts(
+            name, authenticate_weights=False
+        )
+        return Qwen38CQ3ScaleTensorView(
+            name=name,
+            shape=shape,
+            rows=rows,
+            columns=columns,
             packed_scale_indices=indices,
             row_anchors=anchors,
             ratio_codebook=codebook,
