@@ -1,6 +1,6 @@
 [Unit]
 Description=Wait for Qwen3.8-27B control gates, then run bounded layer-0 activation QAT
-After=network-online.target quant-qwen38-27b-infrastructure-retry-v1.service
+After=network-online.target quant-qwen38-27b-infrastructure-retry-v1.service quant-qwen38-27b-activation-hash-residual-v1.service quant-qwen38-27b-row-scale-pipeline-v2.service
 Wants=network-online.target
 
 [Service]

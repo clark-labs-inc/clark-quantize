@@ -1,0 +1,122 @@
+{
+  "schema": "qwen38_27b_activation_hash_residual_preregistration_v1",
+  "receipt_schema": "qwen38_27b_activation_hash_residual_receipt_v1",
+  "status": "frozen_before_authoritative_real_activation_run",
+  "frozen_at_utc": "2026-08-17T20:01:47Z",
+  "hypothesis": "Conditioned on the frozen data-free Clark-Hash residual gate passing, activation-weighted fitting followed by twelve hard-INT4 coefficient steps will reduce held-out Qwen3.8-27B sampled-row output error by at least 1% versus the exported data-free hash correction, without regressing the symmetric optimal group-128 ternary output baseline or exceeding 1.57 projected component bits per weight",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "qwen_4b_compute_forbidden": true,
+    "target_layer": 0,
+    "sampled_parameters": 442368,
+    "sampled_rows": "the same frozen sixteen middle rows of each layer-0 gate, up, and down projection used by the parent hash-residual screen",
+    "claim_boundary": "sampled Qwen3.8-27B layer-output screen only; not a complete layer, model, capability, storage, runtime, semi-lossless, or breakthrough result"
+  },
+  "parents": {
+    "hash_screen_preregistration": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_hash_residual_screen_preregistration_v1.json",
+    "required_hash_receipt": "/workspace/quant-state/qwen38-27b-hash-residual-screen-v1.json",
+    "required_hash_gate": "passed true",
+    "candidate_selection": "use exactly the parent gate's selected_candidate; no seed, dimension, support, tensor, or row reselection is permitted",
+    "activation_preregistration": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_layer0_mlp_activation_qat_preregistration_v1.json",
+    "activation_cache": "/workspace/quant-runs/qwen38-27b-layer0-mlp-activation-qat-v1/activations.pt",
+    "activation_cache_receipt": "/workspace/quant-state/qwen38-27b-layer0-mlp-activation-cache-v1.json"
+  },
+  "activation_data": {
+    "calibration_and_validation_texts": "exactly the disjoint, pre-evaluation splits frozen by the activation-QAT preregistration",
+    "gate_up_inputs": "exact BF16 layer-0 prefix post-attention normalized states",
+    "down_inputs": "exact BF16 gate/up-derived SwiGLU states",
+    "evaluation_data_exclusion": "CUTE, MATH-500, code trace, MMLU, and WikiText items are forbidden from both activation splits",
+    "validation_use": "held-out validation activations are used only for the frozen promotion decision, never coefficient fitting or checkpoint selection"
+  },
+  "representation": {
+    "formula": "W approximately equals T plus A R",
+    "ternary_matrix": "reuse the deterministic parent candidate's fixed-support group-128 T with exported FP16 group scales",
+    "projection": "reuse the parent Clark Hash SplitMix64 sparse signed R with four hashes per input and no stored matrix",
+    "coefficient_matrix": "signed per-output-row INT4 levels -7 through 7 plus one FP16 scale",
+    "runtime_algebra": "T x plus A times R x",
+    "gate_up_reuse": "one R x sketch may be shared by the gate and up projections when their selected dimensions and projection seed agree"
+  },
+  "training": {
+    "closed_form": "solve calibration-output least squares for A with ridge centered on the parent data-free coefficients",
+    "relative_ridge": 0.001,
+    "hard_forward": "signed per-row INT4 with an FP16 export scale and straight-through coefficient gradients",
+    "steps": 12,
+    "learning_rate": 0.0003,
+    "optimizer": "AdamW",
+    "weight_decay": 0.0,
+    "data_free_anchor_weight": 0.001,
+    "gradient_clip_norm": 1.0,
+    "checkpoint_selection": "retain the lowest calibration NMSE exported INT4 coefficient step, including closed-form step zero; validation is never used for selection",
+    "ternary_codes_and_scales_trainable": false,
+    "projection_trainable": false
+  },
+  "gate": {
+    "required_tensor_spans": 3,
+    "minimum_relative_validation_error_reduction_vs_data_free": 0.01,
+    "maximum_tensor_relative_validation_regression_vs_data_free": 0.005,
+    "require_nonnegative_aggregate_validation_error_reduction_vs_symmetric": true,
+    "maximum_projected_component_bits_per_weight": 1.57,
+    "maximum_kernel_identity_error": 0.0005
+  },
+  "resources": {
+    "cpu_threads": 4,
+    "memory_max_gib": 8,
+    "minimum_free_disk_gib": 10,
+    "swap_must_remain_zero": true,
+    "persistent_output_bytes": "less than 4 MiB excluding the separately authenticated shared activation cache",
+    "concurrent_llama_or_training_processes": 0
+  },
+  "promotion_rules": [
+    "a parent hash rejection produces a valid nonpromotion skip and does not launch activation fitting",
+    "a pass advances to complete layer-output materialization and native fused T plus A R kernel work only",
+    "a fail is a valid negative result for this frozen family and does not authorize seed, span, validation, or threshold tuning",
+    "CUTE MMLU-type MATH WikiText code and paired CPU throughput remain mandatory before any model-quality claim",
+    "complete-model scales retained tensors layout metadata and native runtime bytes remain separately required",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "this sampled screen cannot establish a semi-lossless or scientific breakthrough claim"
+  ],
+  "frozen_inputs": {
+    "activation_hash_module": {
+      "path": "clark_quantize/qwen38_activation_hash_residual.py",
+      "sha256": "0d55227173a4a3cb08b196d520cae0e4c5a0e76cdb1bc0ef397bc63a2baeabe5"
+    },
+    "activation_hash_tests": {
+      "path": "clark_quantize/test_qwen38_activation_hash_residual.py",
+      "sha256": "64b6a945396da894b077eb311e09925d2f2d231ca99a7222ac3dda3cfa561099"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_activation_hash_residual_v1.py",
+      "sha256": "f7c1bf6747036cc29c03da88b8b59406b7c3ee0870a5dab9fb222750e8bc8e5e"
+    },
+    "watcher": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/watch_qwen38_27b_activation_hash_residual_v1.sh",
+      "sha256": "95eeb362a7a896af42320f839d585c2641ad6bc432f7217b9131902d9cb23e2f"
+    },
+    "terminal_wait_helper": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/wait_for_qwen38_terminal_receipt.sh",
+      "sha256": "b874a8ed05100d01d8b71449b7c9b4951495728d76173fab9fc02a57ef2ecbb7"
+    },
+    "service": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/quant-qwen38-27b-activation-hash-residual-v1.service",
+      "sha256": "9a37a10c02fe0a92251ffa9fd2cb1b6140cdf145b4953424a652d4243a115c20"
+    },
+    "activation_collector": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/collect_qwen38_27b_layer0_mlp_activations_v1.py",
+      "sha256": "628ab835ce69bdc84c917412953b390053a474e782deaf326e4f81c8ca1d0933"
+    },
+    "parent_hash_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_hash_residual_screen_preregistration_v1.json",
+      "sha256": "e0d9a613f4286004aa4c2339d8f97fd248d4c4dc5ba0bf70036e75d768261605"
+    },
+    "activation_qat_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_layer0_mlp_activation_qat_preregistration_v1.json",
+      "sha256": "d7f8495d9cc3f7400b4d2933b183d3ea714e057f57101182703b17f8b9cae63d"
+    },
+    "data_free_hash_module": {
+      "path": "clark_quantize/qwen38_hash_residual.py",
+      "sha256": "896583e383b2b94128934903ff2015ee40bbfdfcd48b35e3540121ef7bca62cf"
+    }
+  }
+}

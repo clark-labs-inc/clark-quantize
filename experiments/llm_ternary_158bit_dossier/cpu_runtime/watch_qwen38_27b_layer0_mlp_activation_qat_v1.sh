@@ -14,11 +14,15 @@ rate_unit=${RATE_UNIT:-quant-qwen38-27b-ternary-type-class-rate-v1.service}
 hash_unit=${HASH_UNIT:-quant-qwen38-27b-hash-residual-screen-v1.service}
 static_codec_unit=${STATIC_CODEC_UNIT:-quant-qwen38-27b-static-entropy-codec-sample-v1.service}
 static_full_unit=${STATIC_FULL_UNIT:-quant-qwen38-27b-static-entropy-full-v1.service}
+activation_hash_unit=${ACTIVATION_HASH_UNIT:-quant-qwen38-27b-activation-hash-residual-v1.service}
+row_scale_pipeline_unit=${ROW_SCALE_PIPELINE_UNIT:-quant-qwen38-27b-row-scale-pipeline-v2.service}
 geometry_receipt=${GEOMETRY_RECEIPT:-/workspace/quant-state/qwen38-27b-geometric-ternary-ablation-v1.json}
 rate_receipt=${RATE_RECEIPT:-/workspace/quant-state/qwen38-27b-ternary-type-class-rate-v1.json}
 hash_receipt=${HASH_RECEIPT:-/workspace/quant-state/qwen38-27b-hash-residual-screen-v1.json}
 static_codec_receipt=${STATIC_CODEC_RECEIPT:-/workspace/quant-state/qwen38-27b-static-entropy-codec-sample-v1.json}
 static_full_receipt=${STATIC_FULL_RECEIPT:-/workspace/quant-state/qwen38-27b-static-entropy-full-v1.json}
+activation_hash_receipt=${ACTIVATION_HASH_RECEIPT:-/workspace/quant-state/qwen38-27b-activation-hash-residual-v1.json}
+row_scale_pipeline_receipt=${ROW_SCALE_PIPELINE_RECEIPT:-/workspace/quant-state/qwen38-27b-row-scale-pipeline-v2/receipt.json}
 runtime=experiments/llm_ternary_158bit_dossier/cpu_runtime
 candidate=/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0-activation-QAT-v1.gguf
 materialization=/workspace/quant-state/qwen38-27b-layer0-mlp-activation-qat-materialization-v1.json
@@ -38,20 +42,24 @@ if [[ -z "$expected_commit" ]]; then
   expected_commit=${bundle_commits[0]}
 fi
 
-for prerequisite_unit in \
-  "$parent_unit" "$geometry_unit" "$rate_unit" "$hash_unit" \
-  "$static_codec_unit" "$static_full_unit"; do
-  while systemctl is-active --quiet "$prerequisite_unit"; do
-    sleep 30
-  done
-done
+# shellcheck source=wait_for_qwen38_terminal_receipt.sh
+source "$(dirname "$0")/wait_for_qwen38_terminal_receipt.sh"
+qwen38_wait_for_terminal_receipt "$parent_unit" "$parent_state/receipt.json" 30
+qwen38_wait_for_terminal_receipt "$geometry_unit" "$geometry_receipt" 30
+qwen38_wait_for_terminal_receipt "$rate_unit" "$rate_receipt" 30
+qwen38_wait_for_terminal_receipt "$hash_unit" "$hash_receipt" 30
+qwen38_wait_for_terminal_receipt "$static_codec_unit" "$static_codec_receipt" 30
+qwen38_wait_for_terminal_receipt "$static_full_unit" "$static_full_receipt" 30
+qwen38_wait_for_terminal_receipt "$activation_hash_unit" "$activation_hash_receipt" 30
+qwen38_wait_for_terminal_receipt "$row_scale_pipeline_unit" "$row_scale_pipeline_receipt" 30
 if [[ ! -s "$parent_state/RETRY_TERMINAL" || ! -s "$parent_state/receipt.json" ]]; then
   echo "parent Qwen3.8-27B retry did not produce its terminal receipt" >&2
   exit 3
 fi
 "$python_bin" - \
   "$geometry_receipt" "$rate_receipt" "$hash_receipt" \
-  "$static_codec_receipt" "$static_full_receipt" <<'PY'
+  "$static_codec_receipt" "$static_full_receipt" "$activation_hash_receipt" \
+  "$row_scale_pipeline_receipt" <<'PY'
 import json
 from pathlib import Path
 import sys
@@ -69,6 +77,11 @@ static_full_schemas = {
     "qwen38_27b_static_entropy_full_receipt_v1",
     "qwen38_27b_static_entropy_full_skip_receipt_v1",
 }
+activation_hash_schemas = {
+    "qwen38_27b_activation_hash_residual_receipt_v1",
+    "qwen38_27b_activation_hash_residual_skip_receipt_v1",
+}
+row_scale_pipeline_schemas = {"qwen38_27b_row_scale_pipeline_receipt_v2"}
 observed = set()
 for raw in sys.argv[1:]:
     path = Path(raw)
@@ -83,7 +96,9 @@ if (
     not expected.issubset(observed)
     or len(observed & static_schemas) != 1
     or len(observed & static_full_schemas) != 1
-    or len(observed) != 5
+    or len(observed & activation_hash_schemas) != 1
+    or len(observed & row_scale_pipeline_schemas) != 1
+    or len(observed) != 7
 ):
     raise SystemExit(f"Qwen3.8-27B prerequisite receipt schemas changed: {observed}")
 PY
@@ -100,6 +115,7 @@ done
 mkdir -p "$state"
 sha256sum "$parent_state/receipt.json" "$geometry_receipt" "$rate_receipt" \
   "$hash_receipt" "$static_codec_receipt" "$static_full_receipt" \
+  "$activation_hash_receipt" "$row_scale_pipeline_receipt" \
   > "$state/prerequisites.sha256"
 cd "$repo"
 if [[ -n "$(git status --porcelain)" ]]; then

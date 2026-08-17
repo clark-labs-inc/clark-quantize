@@ -95,6 +95,76 @@ def atomic_json(value: dict[str, Any], path: Path) -> None:
     os.replace(temporary, path)
 
 
+def validate_existing_cache(
+    cache_path: Path,
+    receipt_path: Path,
+    *,
+    preregistration_path: Path,
+    cache_contract: dict[str, Any],
+    index_path: Path,
+) -> dict[str, Any] | None:
+    """Return a complete authenticated cache receipt, or reject partial state."""
+    if not cache_path.exists() and not receipt_path.exists():
+        return None
+    if not cache_path.is_file() or not receipt_path.is_file():
+        raise RuntimeError("partial Qwen3.8-27B activation cache requires inspection")
+    receipt = json.loads(receipt_path.read_text())
+    preregistration_sha256 = sha256_file(preregistration_path)
+    if (
+        receipt.get("schema") != "qwen38_27b_layer0_mlp_activation_cache_receipt_v1"
+        or receipt.get("model_id") != MODEL_ID
+        or receipt.get("model_revision") != MODEL_REVISION
+        or receipt.get("preregistration", {}).get("sha256") != preregistration_sha256
+        or receipt.get("checkpoint", {}).get("index_sha256") != sha256_file(index_path)
+        or receipt.get("cache", {}).get("path") != str(cache_path)
+        or receipt.get("cache", {}).get("sha256") != sha256_file(cache_path)
+        or receipt.get("cache", {}).get("bytes") != cache_path.stat().st_size
+        or receipt.get("complete") is not True
+        or receipt.get("finite") is not True
+    ):
+        raise ValueError("existing Qwen3.8-27B activation-cache receipt is invalid")
+    cache = torch.load(cache_path, map_location="cpu", weights_only=False)
+    rows = receipt.get("rows", {})
+    dimensions = receipt.get("dimensions", {})
+    calibration_rows = rows.get("mlp_calibration")
+    validation_rows = rows.get("mlp_validation")
+    if (
+        not isinstance(calibration_rows, int)
+        or not 0 < calibration_rows <= int(cache_contract["maximum_calibration_rows"])
+        or not isinstance(validation_rows, int)
+        or not 0 < validation_rows <= int(cache_contract["maximum_validation_rows"])
+        or rows.get("down_calibration") != calibration_rows
+        or rows.get("down_validation") != validation_rows
+        or dimensions != {"hidden": 5120, "intermediate": 17408}
+    ):
+        raise ValueError("existing Qwen3.8-27B activation-cache dimensions are invalid")
+    expected_tensors = {
+        "mlp_input_calibration": (calibration_rows, 5120),
+        "mlp_input_validation": (validation_rows, 5120),
+        "down_input_calibration": (calibration_rows, 17408),
+        "down_input_validation": (validation_rows, 17408),
+    }
+    if (
+        cache.get("schema") != "qwen38_27b_layer0_mlp_activation_cache_v1"
+        or cache.get("model_id") != MODEL_ID
+        or cache.get("model_revision") != MODEL_REVISION
+        or cache.get("preregistration_sha256") != preregistration_sha256
+        or cache.get("calibration_texts") != cache_contract["calibration_texts"]
+        or cache.get("validation_texts") != cache_contract["validation_texts"]
+    ):
+        raise ValueError("existing Qwen3.8-27B activation-cache payload is invalid")
+    for name, shape in expected_tensors.items():
+        value = cache.get(name)
+        if (
+            not isinstance(value, torch.Tensor)
+            or tuple(value.shape) != shape
+            or value.dtype != torch.float16
+            or not bool(torch.isfinite(value).all())
+        ):
+            raise ValueError(f"existing Qwen3.8-27B activation tensor is invalid: {name}")
+    return receipt
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-dir", type=Path, default=Path("/workspace/models/Qwen3.8-27B"))
@@ -128,6 +198,16 @@ def main() -> None:
         raise ValueError("Qwen3.8-27B checkpoint receipt identity mismatch")
     index_path = args.model_dir / "model.safetensors.index.json"
     weight_map = json.loads(index_path.read_text())["weight_map"]
+    existing = validate_existing_cache(
+        args.cache,
+        args.receipt,
+        preregistration_path=args.preregistration,
+        cache_contract=cache_contract,
+        index_path=index_path,
+    )
+    if existing is not None:
+        print(json.dumps(existing, indent=2, sort_keys=True))
+        return
 
     from transformers import AutoConfig, AutoTokenizer
     from transformers.models.qwen3_5.modeling_qwen3_5 import Qwen3_5DecoderLayer

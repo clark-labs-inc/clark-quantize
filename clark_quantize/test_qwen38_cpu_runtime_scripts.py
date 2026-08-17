@@ -260,6 +260,14 @@ def test_qwen38_qat_services_pin_the_single_immutable_bundle_head() -> None:
             "quant-qwen38-27b-layer0-mlp-activation-qat-paired-watch-v1.service",
             "watch_qwen38_27b_layer0_mlp_activation_qat_paired_v1.sh",
         ),
+        (
+            "quant-qwen38-27b-activation-hash-residual-v1.service",
+            "watch_qwen38_27b_activation_hash_residual_v1.sh",
+        ),
+        (
+            "quant-qwen38-27b-row-scale-pipeline-v2.service",
+            "watch_qwen38_27b_row_scale_pipeline_v2.sh",
+        ),
     )
     for unit_name, watcher_name in pairs:
         unit = (RUNTIME / unit_name).read_text()
@@ -271,3 +279,19 @@ def test_qwen38_qat_services_pin_the_single_immutable_bundle_head() -> None:
         assert '[[ ! "${bundle_commits[0]}" =~ ^[0-9a-f]{40}$ ]]' in watcher
         assert 'git merge --ff-only FETCH_HEAD' in watcher
         assert 'git rev-parse HEAD' in watcher
+
+
+def test_qwen38_terminal_wait_distinguishes_queued_jobs_from_completion() -> None:
+    helper = (RUNTIME / "wait_for_qwen38_terminal_receipt.sh").read_text()
+    activation_hash = (RUNTIME / "watch_qwen38_27b_activation_hash_residual_v1.sh").read_text()
+    row_scale = (RUNTIME / "watch_qwen38_27b_row_scale_pipeline_v2.sh").read_text()
+    amendment = json.loads(
+        (RUNTIME / "qwen38_27b_row_scale_orchestration_amendment_v2.json").read_text()
+    )
+    assert "list-jobs --no-legend --plain" in helper
+    assert '$2 == target { found = 1 }' in helper
+    assert "qwen38_unit_has_job" in helper
+    assert "qwen38_wait_for_terminal_receipt" in activation_hash
+    assert "qwen38_wait_for_terminal_receipt" in row_scale
+    assert amendment["incident"]["scientific_receipts_created"] is False
+    assert amendment["incident"]["classification"].startswith("infrastructure-invalid")
