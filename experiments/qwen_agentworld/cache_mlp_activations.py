@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from collections import defaultdict
@@ -37,6 +38,12 @@ def parse_layers(value: str) -> set[int] | None:
 
 def first_parameter_device(model: torch.nn.Module) -> torch.device:
     return next(model.parameters()).device
+
+
+def atomic_torch_save(payload: Any, path: Path) -> None:
+    temporary = path.with_name(f".{path.name}.tmp")
+    torch.save(payload, temporary)
+    os.replace(temporary, path)
 
 
 def main() -> None:
@@ -132,7 +139,7 @@ def main() -> None:
         "layers": layers,
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    torch.save(payload, args.out)
+    atomic_torch_save(payload, args.out)
     print(json.dumps({"out": str(args.out), "rows": len(row_meta), "layers": sorted(layers)}, indent=2))
 
 

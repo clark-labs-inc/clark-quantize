@@ -1,0 +1,104 @@
+{
+  "schema": "qwen35_cpu_layer30_calibration_split_v4",
+  "status": "frozen_before_teacher_cache_collection",
+  "created_at": "2026-08-17",
+  "source": {
+    "path": "qwen35_4b_cpu_layer30_train_v4.jsonl",
+    "sha256": "e2a355b62c9e456aa22f0fa609705cf17eb66948d80a6470b49bc1132db40cb8",
+    "rows": 48,
+    "task_counts": {
+      "knowledge": 8,
+      "math": 8,
+      "code": 8,
+      "instruct": 8,
+      "multilingual": 8,
+      "reasoning": 8
+    }
+  },
+  "split_policy": "within each task, rows 1-4 train, rows 5-6 select the exact hard artifact, and rows 7-8 are independent reconstruction test rows",
+  "train": {
+    "indices": [0, 1, 2, 3, 8, 9, 10, 11, 16, 17, 18, 19, 24, 25, 26, 27, 32, 33, 34, 35, 40, 41, 42, 43],
+    "ids": [
+      "knowledge-v4-01",
+      "knowledge-v4-02",
+      "knowledge-v4-03",
+      "knowledge-v4-04",
+      "math-v4-01",
+      "math-v4-02",
+      "math-v4-03",
+      "math-v4-04",
+      "code-v4-01",
+      "code-v4-02",
+      "code-v4-03",
+      "code-v4-04",
+      "instruct-v4-01",
+      "instruct-v4-02",
+      "instruct-v4-03",
+      "instruct-v4-04",
+      "multilingual-v4-01",
+      "multilingual-v4-02",
+      "multilingual-v4-03",
+      "multilingual-v4-04",
+      "reasoning-v4-01",
+      "reasoning-v4-02",
+      "reasoning-v4-03",
+      "reasoning-v4-04"
+    ],
+    "rows": 24,
+    "maximum_positions_after_cache": 576
+  },
+  "validation_selection": {
+    "indices": [4, 5, 12, 13, 20, 21, 28, 29, 36, 37, 44, 45],
+    "ids": [
+      "knowledge-v4-05",
+      "knowledge-v4-06",
+      "math-v4-05",
+      "math-v4-06",
+      "code-v4-05",
+      "code-v4-06",
+      "instruct-v4-05",
+      "instruct-v4-06",
+      "multilingual-v4-05",
+      "multilingual-v4-06",
+      "reasoning-v4-05",
+      "reasoning-v4-06"
+    ],
+    "rows": 12,
+    "maximum_positions_after_cache": 288
+  },
+  "independent_test": {
+    "indices": [6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47],
+    "ids": [
+      "knowledge-v4-07",
+      "knowledge-v4-08",
+      "math-v4-07",
+      "math-v4-08",
+      "code-v4-07",
+      "code-v4-08",
+      "instruct-v4-07",
+      "instruct-v4-08",
+      "multilingual-v4-07",
+      "multilingual-v4-08",
+      "reasoning-v4-07",
+      "reasoning-v4-08"
+    ],
+    "rows": 12,
+    "maximum_positions_after_cache": 288,
+    "usage": "never used by AdamW or exact-artifact checkpoint selection"
+  },
+  "generation_contract": {
+    "max_model_len": 256,
+    "generated_tokens_per_row": 24,
+    "top_k": 128,
+    "hidden_layers": [30],
+    "projection_dim": 64,
+    "greedy": true,
+    "completion_alignment_required": "every generated target token must appear in teacher top-k at its causal prediction position"
+  },
+  "external_evaluation_exclusion": {
+    "cute_quick_manifest": "cute_quick_v1.json",
+    "math_code_manifest": "math_code_canary_v1.json",
+    "policy": "the calibration source contains no row copied from either frozen capability manifest"
+  },
+  "content_sha256": "0fa79c91a45e50d05bed81274de0a6746fbb29cdbfb4f01610f5e59fde23e64e"
+}

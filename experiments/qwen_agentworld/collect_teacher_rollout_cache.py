@@ -130,6 +130,90 @@ def load_jsonl(path: Path, max_rows: int) -> list[dict[str, Any]]:
     return rows
 
 
+def checkpoint_contract(
+    args: argparse.Namespace,
+    *,
+    input_sha256: str,
+    hidden_layers: list[int],
+    source_rows: int,
+) -> dict[str, Any]:
+    return {
+        "model_dir": str(args.model_dir.resolve()),
+        "input": str(args.input.resolve()),
+        "input_sha256": input_sha256,
+        "source_rows": source_rows,
+        "max_rows": args.max_rows,
+        "max_model_len": args.max_model_len,
+        "generate_tokens": args.generate_tokens,
+        "top_k": args.top_k,
+        "hidden_layers": hidden_layers,
+        "projection_dim": args.projection_dim,
+        "projection_seed": args.projection_seed,
+        "seed": args.seed,
+        "device": args.device,
+        "torch_threads": args.torch_threads,
+    }
+
+
+def validate_checkpoint_rows(
+    completed: list[dict[str, Any]], sources: list[dict[str, Any]]
+) -> None:
+    if len(completed) > len(sources):
+        raise ValueError("checkpoint contains more rows than the frozen source")
+    for index, row in enumerate(completed):
+        source = sources[index]
+        expected_id = source.get("id", index)
+        expected_task = source.get("source", "teacher_rollout")
+        if row.get("index") != index:
+            raise ValueError(f"checkpoint row {index} has the wrong index")
+        if row.get("id") != expected_id:
+            raise ValueError(f"checkpoint row {index} has the wrong source id")
+        if row.get("task") != expected_task:
+            raise ValueError(f"checkpoint row {index} has the wrong source task")
+
+
+def teacher_cache_receipt(path: Path, payload: dict[str, Any]) -> dict[str, Any]:
+    rows = payload["rows"]
+    return {
+        "schema": "qwen_teacher_rollout_cache_v1",
+        "path": str(path),
+        "sha256": sha256_file(path),
+        "size_bytes": path.stat().st_size,
+        "rows": len(rows),
+        "task_counts": {
+            task: sum(row["task"] == task for row in rows)
+            for task in sorted({row["task"] for row in rows})
+        },
+        "total_generated_tokens": sum(row["generated_tokens"] for row in rows),
+        "greedy_alignment_matches": sum(
+            row["greedy_alignment_matches"] for row in rows
+        ),
+        "greedy_alignment_total": sum(row["generated_tokens"] for row in rows),
+        "topk_alignment_matches": sum(row["topk_alignment_matches"] for row in rows),
+        "topk_alignment_total": sum(row["generated_tokens"] for row in rows),
+        "label_semantics": payload["label_semantics"],
+        "hidden_layers": payload["hidden_layers"],
+        "hidden_projection_dim": payload["hidden_projection_dim"],
+        "runtime_device": payload["runtime_device"],
+        "torch_threads": payload["torch_threads"],
+        "resumed_from_rows": payload["resumed_from_rows"],
+        "checkpoint_every": payload["checkpoint_every"],
+        "rows_summary": [
+            {
+                "index": row["index"],
+                "task": row["task"],
+                "id": row["id"],
+                "tokens": row["tokens"],
+                "generated_tokens": row["generated_tokens"],
+                "greedy_alignment_matches": row["greedy_alignment_matches"],
+                "topk_alignment_matches": row["topk_alignment_matches"],
+                "completion_preview": row["completion_text"][:240],
+            }
+            for row in rows
+        ],
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-dir", required=True, type=Path)
@@ -145,14 +229,96 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=20260816)
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
     parser.add_argument("--torch-threads", type=int, default=0)
+    parser.add_argument("--checkpoint-every", type=int, default=0)
+    parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
 
     if args.torch_threads < 0:
         raise ValueError("torch-threads must be non-negative")
+    if args.checkpoint_every < 0:
+        raise ValueError("checkpoint-every must be non-negative")
     if args.torch_threads:
         torch.set_num_threads(args.torch_threads)
     if args.generate_tokens < 1 or args.generate_tokens >= args.max_model_len:
         raise ValueError("generate-tokens must be positive and smaller than max-model-len")
+
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    partial_path = args.out.with_suffix(args.out.suffix + ".partial")
+    receipt_path = args.out.with_suffix(args.out.suffix + ".json")
+    hidden_layers = parse_layers(args.hidden_layers)
+    sources = load_jsonl(args.input, args.max_rows)
+    contract = checkpoint_contract(
+        args,
+        input_sha256=sha256_file(args.input),
+        hidden_layers=hidden_layers,
+        source_rows=len(sources),
+    )
+    if args.out.exists():
+        if not args.resume:
+            raise FileExistsError(
+                f"output already exists; pass --resume to repair/verify its receipt: {args.out}"
+            )
+        payload = torch.load(args.out, map_location="cpu")
+        if payload.get("format") != "qwen_agentworld_teacher_behavior_v1":
+            raise ValueError(f"unsupported final cache format: {payload.get('format')!r}")
+        if payload.get("collection_contract") != contract:
+            raise ValueError("final teacher-cache contract does not match this run")
+        final_rows = payload.get("rows", [])
+        validate_checkpoint_rows(final_rows, sources)
+        if len(final_rows) != len(sources):
+            raise ValueError("final teacher-cache row count does not match frozen source")
+        receipt = teacher_cache_receipt(args.out, payload)
+        atomic_write_json(receipt, receipt_path)
+        partial_path.unlink(missing_ok=True)
+        print(
+            json.dumps(
+                {
+                    "event": "teacher_cache_receipt_repaired",
+                    "path": str(receipt_path),
+                    "rows": len(final_rows),
+                }
+            ),
+            flush=True,
+        )
+        return
+    out_rows: list[dict[str, Any]] = []
+    resumed_from_rows = 0
+    if partial_path.exists():
+        if not args.resume:
+            raise FileExistsError(
+                f"partial checkpoint exists; pass --resume after inspection: {partial_path}"
+            )
+        checkpoint = torch.load(partial_path, map_location="cpu")
+        if checkpoint.get("format") != "qwen_teacher_rollout_cache_checkpoint_v1":
+            raise ValueError(f"unsupported checkpoint format: {checkpoint.get('format')!r}")
+        if checkpoint.get("contract") != contract:
+            raise ValueError("teacher-cache checkpoint contract does not match this run")
+        out_rows = list(checkpoint.get("rows", []))
+        validate_checkpoint_rows(out_rows, sources)
+        resumed_from_rows = len(out_rows)
+        print(
+            json.dumps(
+                {
+                    "event": "teacher_cache_resume",
+                    "completed_rows": resumed_from_rows,
+                    "checkpoint": str(partial_path),
+                }
+            ),
+            flush=True,
+        )
+    elif args.resume:
+        raise FileNotFoundError(f"resume requested but checkpoint is missing: {partial_path}")
+
+    def save_checkpoint() -> None:
+        atomic_torch_save(
+            {
+                "format": "qwen_teacher_rollout_cache_checkpoint_v1",
+                "contract": contract,
+                "completed_rows": len(out_rows),
+                "rows": out_rows,
+            },
+            partial_path,
+        )
 
     torch.manual_seed(args.seed)
     tokenizer = transformers.AutoTokenizer.from_pretrained(args.model_dir, trust_remote_code=True)
@@ -164,14 +330,12 @@ def main() -> None:
     model.eval()
     device = next(model.parameters()).device
 
-    hidden_layers = parse_layers(args.hidden_layers)
     keep_ref = {"keep": 1}
     handles, captured = register_hidden_hooks(model, hidden_layers, keep_ref)
     projection_cache: dict[tuple[int, int, int], torch.Tensor] = {}
-    sources = load_jsonl(args.input, args.max_rows)
-    out_rows: list[dict[str, Any]] = []
     try:
-        for index, source in enumerate(sources):
+        for index in range(resumed_from_rows, len(sources)):
+            source = sources[index]
             chat_text = tokenizer.apply_chat_template(
                 [{"role": "user", "content": extract_text(source)}],
                 tokenize=False,
@@ -262,10 +426,26 @@ def main() -> None:
             del outputs, logits, top_values, top_indices, generated
             captured.clear()
             torch.cuda.empty_cache()
+            if args.checkpoint_every and len(out_rows) % args.checkpoint_every == 0:
+                save_checkpoint()
+                print(
+                    json.dumps(
+                        {
+                            "event": "teacher_cache_checkpoint",
+                            "completed_rows": len(out_rows),
+                            "checkpoint": str(partial_path),
+                        }
+                    ),
+                    flush=True,
+                )
     finally:
         for handle in handles:
             handle.remove()
 
+    if len(out_rows) != len(sources):
+        raise RuntimeError(
+            f"teacher-cache row count mismatch: {len(out_rows)} != {len(sources)}"
+        )
     payload = {
         "format": "qwen_agentworld_teacher_behavior_v1",
         "label_semantics": "teacher_completion_next_token_v1",
@@ -279,44 +459,18 @@ def main() -> None:
         "hidden_projection_seed": args.projection_seed,
         "runtime_device": str(device),
         "torch_threads": torch.get_num_threads(),
+        "resumed_from_rows": resumed_from_rows,
+        "checkpoint_every": args.checkpoint_every,
+        "collection_contract": contract,
         "format_token_ids": token_ids_for_strings(tokenizer, ["<think>", "</think>", "\n", "[", "]", "{", "}", '"']),
         "collapse_token_ids": token_ids_for_strings(tokenizer, ["<think>", "assistant", "\n\n", "\n"]),
         "rows": out_rows,
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
     atomic_torch_save(payload, args.out)
-    receipt = {
-        "schema": "qwen_teacher_rollout_cache_v1",
-        "path": str(args.out),
-        "sha256": sha256_file(args.out),
-        "size_bytes": args.out.stat().st_size,
-        "rows": len(out_rows),
-        "task_counts": {task: sum(row["task"] == task for row in out_rows) for task in sorted({row["task"] for row in out_rows})},
-        "total_generated_tokens": sum(row["generated_tokens"] for row in out_rows),
-        "greedy_alignment_matches": sum(row["greedy_alignment_matches"] for row in out_rows),
-        "greedy_alignment_total": sum(row["generated_tokens"] for row in out_rows),
-        "topk_alignment_matches": sum(row["topk_alignment_matches"] for row in out_rows),
-        "topk_alignment_total": sum(row["generated_tokens"] for row in out_rows),
-        "label_semantics": payload["label_semantics"],
-        "hidden_layers": hidden_layers,
-        "hidden_projection_dim": args.projection_dim,
-        "runtime_device": str(device),
-        "torch_threads": torch.get_num_threads(),
-        "rows_summary": [
-            {
-                "index": row["index"],
-                "task": row["task"],
-                "id": row["id"],
-                "tokens": row["tokens"],
-                "generated_tokens": row["generated_tokens"],
-                "greedy_alignment_matches": row["greedy_alignment_matches"],
-                "topk_alignment_matches": row["topk_alignment_matches"],
-                "completion_preview": row["completion_text"][:240],
-            }
-            for row in out_rows
-        ],
-    }
-    atomic_write_json(receipt, args.out.with_suffix(args.out.suffix + ".json"))
+    receipt = teacher_cache_receipt(args.out, payload)
+    atomic_write_json(receipt, receipt_path)
+    partial_path.unlink(missing_ok=True)
     print(json.dumps({key: value for key, value in receipt.items() if key != "rows_summary"}, indent=2), flush=True)
 
 
