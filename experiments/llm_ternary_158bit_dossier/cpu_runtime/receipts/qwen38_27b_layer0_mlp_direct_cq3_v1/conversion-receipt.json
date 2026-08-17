@@ -1,0 +1,44 @@
+{
+  "baseline_summary": {
+    "path": "/workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1/summary.json",
+    "sha256": "1557f1aac13f6c557e89006427aa829e2707f07ad73aa29611763e754c409a64"
+  },
+  "binaries": {
+    "llama-bench": "155eb2f52f2b55429885d93bcb5cedae6ab68285d694d2f91ac8c3fd789e51f3",
+    "llama-cli": "a80bb7369cd510bf82a7eafe79fb9521c5d78610831fca0f9f6ac8e45a873a40",
+    "llama-perplexity": "1a5fd9403c959fd4e6c1342778ffce747f990532ead5e20227396c34db5693d9",
+    "llama-quantize": "30c8e7234e1e3486077f238901df5f83accd49248e928b80586f93e84bb87b7d",
+    "llama-server": "53d64ef9635604ca1e6f0d9feec7fbe2ed87c30d0c6f3daae22aae02d3555aa3",
+    "test-cq3": "2c1dfa7f1e1fca79d7fef2ff16de8315349b16a7346865c39a57a70288e01834"
+  },
+  "candidate": {
+    "bytes": 18894489952,
+    "path": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0.gguf",
+    "sha256": "019c803e317625c2b1c3df8c3b4e2c63b28283599287ebff0f964ff71379e4e4"
+  },
+  "checks": {
+    "candidate_bytes": true,
+    "load_smoke_exit_zero": true,
+    "load_smoke_no_swap": true,
+    "non_target_count": true,
+    "scope_valid": true,
+    "target_count": true
+  },
+  "claim_boundary": "direct Q4-to-CQ3 selective PTQ of one Qwen3.8-27B MLP triplet; quality is not yet established",
+  "created_at": "2026-08-17T17:23:13.518119+00:00",
+  "host": {
+    "cpu_count": 8,
+    "machine": "x86_64",
+    "platform": "Linux-7.0.0-29-generic-x86_64-with-glibc2.43"
+  },
+  "preregistration": {
+    "path": "/workspace/clark-quantize-cpu-qat/experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_layer0_mlp_direct_cq3_preregistration_v1.json",
+    "sha256": "dfba2e0b7aed4b5654a1c3f5c561a363b6e9496b86920973c2820b162f89740c"
+  },
+  "schema": "qwen38_27b_layer0_mlp_direct_cq3_conversion_receipt_v1",
+  "scope_receipt": {
+    "path": "/workspace/quant-state/qwen38-27b-layer0-mlp-direct-cq3-v1/gguf-scope.json",
+    "sha256": "ceb120276e39a59dfa81de272bbf263b4e03fd697bea5fab82d65acaef794c5a"
+  },
+  "valid": true
+}
