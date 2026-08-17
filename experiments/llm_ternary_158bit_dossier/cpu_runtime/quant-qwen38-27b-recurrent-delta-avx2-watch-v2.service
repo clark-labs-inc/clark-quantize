@@ -1,0 +1,32 @@
+[Unit]
+Description=Benchmark model-correct Qwen3.8-27B recurrent DeltaNet AVX2
+After=network-online.target quant-qwen38-27b-aligned2-full-cache-watch-v1.service
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-d6e5264.bundle
+Environment=EXPECTED_COMMIT=d6e526434207ebe1bf68a9c8c304d74f2e68a6e1
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+Environment=STATE_DIR=/workspace/quant-state/qwen38-27b-recurrent-delta-avx2-watch-v2
+Environment=RESULT_RECEIPT=/workspace/quant-state/qwen38-27b-recurrent-delta-avx2-v2.json
+Environment=PREREGISTRATION_FILE=qwen38_27b_recurrent_delta_avx2_preregistration_v2.json
+Environment=BENCHMARK_FILE=benchmark_qwen38_27b_recurrent_delta_avx2_v2.py
+Environment=RECEIPT_SCHEMA=qwen38_27b_recurrent_delta_avx2_receipt_v2
+Environment=WATCH_RECEIPT_SCHEMA=qwen38_27b_recurrent_delta_avx2_watch_receipt_v2
+ExecStart=/bin/bash /workspace/tmp/watch-qwen38-27b-recurrent-delta-avx2-v2-d6e5264.sh
+CPUAffinity=4
+CPUQuota=100%
+MemoryMax=512M
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target
