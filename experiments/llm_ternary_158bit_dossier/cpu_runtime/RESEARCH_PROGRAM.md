@@ -44,6 +44,11 @@ continuous islands, and tensor layouts that the CPU kernels execute.
 6. **No new 27B bulk run before the 4B runtime gate.** The existing 4B success
    is the development checkpoint. It must first execute through the real
    packed CPU graph, including the hybrid recurrent blocks.
+7. **Generation capability is an early stop gate.** Every candidate runs the
+   pinned quick perplexity, MATH-500, and CUTE character-level preflight before
+   longer training, depth expansion, or 27B scale-up. MMLU may substitute for
+   CUTE when the runtime cannot support character generation. The exact policy
+   and receipt contract are in `QUALITY_PREFLIGHT.md`.
 
 ## Exact Qwen3.8-27B text graph
 
@@ -220,7 +225,8 @@ all three ISA lanes, with reproducible build and benchmark receipts.
 
 ### Phase 2: 4B end-to-end proof
 
-1. Run frozen KL/perplexity and MATH, GSM8K, MMLU, and HumanEval-style gates.
+1. Run the mandatory quick perplexity, MATH-500, and CUTE/MMLU tripwire, then
+   run frozen KL/perplexity and MATH, GSM8K, MMLU, and HumanEval-style gates.
 2. Compare BF16, int4, radix-5-transcoded ternary, and 2-bit-native ternary.
 3. Record model bytes, peak RSS, cold/warm load, prefill, decode, and energy.
 4. Lock the kernel numerics that training must emulate.
@@ -246,7 +252,7 @@ Every promoted build records:
 | Axis | Required measurements |
 | --- | --- |
 | Correctness | code/scale hashes, layerwise max/mean error, greedy-token parity |
-| Quality | parent KL/perplexity, MATH, GSM8K, MMLU, HumanEval-style execution |
+| Quality | quick MATH-500 plus CUTE/MMLU, then parent KL/perplexity, GSM8K, MMLU, and HumanEval-style execution |
 | Storage | canonical bytes, compute-image bytes, continuous-island ledger |
 | Memory | peak RSS, KV bytes/token, recurrent state, scratch peak |
 | Speed | cold/warm load, TTFT, prefill tok/s, decode tok/s at 1/2/4/8 threads |
@@ -286,3 +292,6 @@ full-graph receipt.
 - [llama.cpp Qwen3.5 graph](https://github.com/ggml-org/llama.cpp/blob/master/src/models/qwen35.cpp)
   is the intended graph/runtime substrate. It is pinned and validated rather
   than followed at a floating branch tip.
+- [CUTE](https://github.com/Leukas/CUTE) supplies the pinned character-level
+  data and prompt contract for the quick orthographic/manipulation tripwire.
+  Clark's 20-row development slice is explicitly not a full CUTE score.

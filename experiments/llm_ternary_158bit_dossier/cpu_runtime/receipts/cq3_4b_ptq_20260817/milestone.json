@@ -1,0 +1,92 @@
+{
+  "schema": "cpu_cq3_4b_ptq_milestone_v1",
+  "date_utc": "2026-08-17",
+  "status": "completed_negative_result",
+  "decision": "reject_ptq_quality_and_move_to_qat_export",
+  "claims": {
+    "native_runtime_integration": true,
+    "whole_model_1_58_bits": false,
+    "quality_retained": false,
+    "speed_or_size_pareto_win_over_scope_matched_tq2": false,
+    "scientific_breakthrough": false
+  },
+  "node": {
+    "provider_class": "Hetzner CCX33",
+    "cpu": "AMD EPYC-Milan Processor",
+    "physical_cores": 4,
+    "hardware_threads": 8,
+    "numa_nodes": 1,
+    "ram_bytes": 32852049920,
+    "swap_bytes": 0
+  },
+  "runtime": {
+    "upstream": "ggml-org/llama.cpp",
+    "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "patch": "../../llama_cpp_4df29be_cq3.patch",
+    "patch_sha256": "b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1",
+    "cq3_raw_block": {
+      "weights": 256,
+      "bytes": 68,
+      "raw_bits_per_weight": 2.125,
+      "scale_groups": 2,
+      "weights_per_scale": 128,
+      "scale_dtype": "FP16"
+    },
+    "verified": [
+      "CQ3 scalar quantize/dequantize",
+      "AVX2 CQ3 x CQ8 dot",
+      "GGML MUL_MAT dispatch",
+      "GGML GET_ROWS dispatch",
+      "GGUF model load and generation",
+      "Python GGUF metadata/tensor reader"
+    ]
+  },
+  "conversion": {
+    "source_model": "Qwen3.5-4B BF16 GGUF",
+    "source_sha256": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974",
+    "source_file_bytes": 8665620192,
+    "candidate_sha256": "072ffb19ae20fdabb0a64f4e49097f8a77fbabd49fd5eb47bc705b5012950476",
+    "candidate_file_bytes": 1193348832,
+    "candidate_file_bits_per_model_parameter": 2.2066612236068006,
+    "llama_quant_size_mib": 1127.61,
+    "llama_reported_bits_per_weight": 2.19,
+    "tensor_count": 441,
+    "cq3_tensor_count": 208,
+    "manual_bf16_override_count": 49,
+    "manual_bf16_ssm_alpha_beta_count": 48,
+    "manual_bf16_nextn_count": 1,
+    "wall_seconds": 62.20,
+    "peak_rss_kib": 12569352,
+    "quantize_log_sha256": "3054dde4356480a9f67d66a3c9414195a90647cb2f3800b6260e6cb3cfc985c8",
+    "dry_run_log_sha256": "f2a93470e113324ca5d5f1b3b03be5c4bf8651bb95e65a6d5604277d16e3d21d"
+  },
+  "performance": {
+    "contract": "llama-bench, pp128 and tg32, four physical cores 0,2,4,6, five repetitions",
+    "bf16": {"prefill_tokens_per_second": 16.628655, "decode_tokens_per_second": 4.198784, "bench_model_bytes": 8654651392},
+    "cq3": {"prefill_tokens_per_second": 17.838019, "decode_tokens_per_second": 26.153301, "bench_model_bytes": 1182380032},
+    "tq1": {"prefill_tokens_per_second": 16.693795, "decode_tokens_per_second": 18.040704, "bench_model_bytes": 1303662592},
+    "scope_matched_tq2": {"prefill_tokens_per_second": 17.331371, "decode_tokens_per_second": 27.201484, "bench_model_bytes": 1148721152},
+    "cq3_decode_speedup_over_bf16": 6.228779808630308,
+    "tq2_decode_advantage_over_cq3_percent": 4.00784206934337,
+    "cq3_file_size_over_tq2_percent": 2.90240334858054
+  },
+  "quality": {
+    "wikitext2_ppl": {"bf16": 8.4960, "cq3": 29536.6852, "cq3_to_bf16_ratio": 3476.5401600753294},
+    "math500_quick": {"bf16_correct": 5, "cq3_correct": 0, "n": 8},
+    "code_trace": {"bf16_correct": 4, "cq3_correct": 0, "n": 6},
+    "cute_quick_20": {"bf16_correct": 8, "cq3_correct": 0, "n": 20, "leaderboard_comparable": false},
+    "tripwire_decision": "stop_for_catastrophic_forgetting"
+  },
+  "receipt_sha256": {
+    "bench-bf16.json": "2ff0970bfa74bd9bb6ff594c5386385bf89988cd15e63b951290b50c4098d2b2",
+    "bench-cq3.json": "c978dd737ab8cc855daf93b2c4692cf33920835e3c093ad8f16b063277a854fd",
+    "bench-tq1.json": "b90cc7573f48673f8dae876f319906897c246329b0ee5c6c197e6b744c34d016",
+    "bench-tq2-scope.json": "1f0c894b90b3797f1e07a0926dea407eba8bffaca3d9ad7c8c8c3938d28e7a04",
+    "canary-bf16.json": "22fae89e490fec7426388bd406a64c32bc14466c6370c906bb6e8a2c59f9ea42",
+    "canary-cq3.json": "25d95b4bcc4da381b3fc8691f93fc7a2f231a3a29ba38fa2de84d88a641da216",
+    "cute-quick-bf16.json": "7e022cf401a8b737e77bcc84fd6b2440b718460cfd845b0d38b3263eeada9ba1",
+    "cute-quick-cq3.json": "d3495004c273d836de631044f6031766f47098aa3447ccbfc46eeb49a2647e50",
+    "capability-tripwire-cq3.json": "50920ea1b44590f44e20bf1b19923381ad72e43e315877ec96205ad01d247da1"
+  },
+  "next_experiment": "Export or reproduce the successful 4B hard-ternary QAT weights under the exact CQ3 group-128 scale and accumulation contract, then rerun this quick gate before any longer evaluation."
+}

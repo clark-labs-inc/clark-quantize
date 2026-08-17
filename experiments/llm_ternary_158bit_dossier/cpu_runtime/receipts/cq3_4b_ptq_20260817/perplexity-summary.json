@@ -1,0 +1,42 @@
+{
+  "schema": "cpu_perplexity_quick_comparison_v1",
+  "dataset": {
+    "name": "WikiText-2 raw test",
+    "path_on_node": "/workspace/quant-runs/cq3-4b-ptq-scope-20260817/wikitext-2-raw/wiki.test.raw",
+    "sha256": "173c87a53759e0201f33e0ccf978e510c2042d7f2cb78229d9a50d79b9e7dd08"
+  },
+  "contract": {
+    "chunks": 4,
+    "context": 512,
+    "batch": 512,
+    "ubatch": 512,
+    "threads": 4,
+    "affinity": [0, 2, 4, 6],
+    "note": "All artifacts used the same first four chunks and runtime build."
+  },
+  "results": [
+    {
+      "model": "BF16",
+      "model_sha256": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974",
+      "ppl": 8.4960,
+      "plus_minus": 0.72338,
+      "log_sha256": "a40219aca34ca2d552a30de20f973bc8cbdf83c722611b298752125a95be55cf"
+    },
+    {
+      "model": "CQ3_0 scope-matched PTQ",
+      "model_sha256": "072ffb19ae20fdabb0a64f4e49097f8a77fbabd49fd5eb47bc705b5012950476",
+      "ppl": 29536.6852,
+      "plus_minus": 2719.65386,
+      "ratio_to_bf16": 3476.5401600753294,
+      "log_sha256": "008ba08e4c0c1f2018a1ce9e05e6238b4f8da08317b810619e092c5802ed7db0"
+    },
+    {
+      "model": "TQ2_0 scope-matched PTQ",
+      "model_sha256": "597dc394be3112c7cd9d025df0b0427da7b0c7a24b65f303349aab2804ef769b",
+      "ppl": 2260224.1462,
+      "plus_minus": 168475.01557,
+      "log_sha256": "a8b9624d0a123445eb5ff6d70a0616d497af18496bed21aeccc3847922b4f380"
+    }
+  ],
+  "decision": "CQ3 PTQ is catastrophically degraded; do not proceed to a longer evaluation or scale-up."
+}

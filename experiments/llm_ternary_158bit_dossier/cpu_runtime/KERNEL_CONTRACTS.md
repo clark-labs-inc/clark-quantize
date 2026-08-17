@@ -69,7 +69,11 @@ application into FP32 accumulation and avoid materializing unpacked weights.
 The first promoted AVX2 implementation uses A8 activations, an authenticated
 2.125-bit/weight compute image including FP16 scales, and reaches 79.44% of the
 measured four-core memory-read roofline on the CCX33 Milan control. This is a
-microkernel result; GGML/full-layer integration remains a separate gate.
+microkernel result. The same code/scale contract is now integrated as GGML
+`CQ3_0`/`CQ8_0`, including `MUL_MAT` and embedding `GET_ROWS`, and executes the
+full Qwen3.5-4B graph. That runtime milestone does not promote the PTQ model:
+the frozen perplexity, MATH-500, code, and CUTE tripwire rejected its quality.
+QAT-to-runtime numerical agreement remains a separate gate.
 The benchmark matrix families are the exact Qwen shapes:
 
 - `5120 -> 17408` and `17408 -> 5120` for the MLP;
