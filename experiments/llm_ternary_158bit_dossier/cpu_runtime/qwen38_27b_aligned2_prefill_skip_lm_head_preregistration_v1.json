@@ -1,0 +1,127 @@
+{
+  "schema": "qwen38_27b_aligned2_prefill_skip_lm_head_preregistration_v1",
+  "receipt_schema": "qwen38_27b_aligned2_prefill_skip_lm_head_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T17:12:00Z",
+  "objective": "Measure an exact Qwen3.8-27B sequential prompt optimization that advances all 64 layers and mutable state without computing the 248320-row LM head on prompt tokens whose logits are discarded",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "operator": "batch-one sequential prefill over the complete 64-layer text graph",
+    "prompt_tokens": 16,
+    "control_lm_head_calls": 16,
+    "candidate_lm_head_calls": 1,
+    "state_dtype": "FP32",
+    "full_logits_materialized": false
+  },
+  "input": {
+    "kind": "frozen valid-token structural sequence",
+    "token_ids": [248045, 872, 198, 6645, 315, 13177, 198, 248046, 198, 248045, 77091, 198, 9707, 1139, 23888, 198],
+    "position_start": 0,
+    "context_capacity": 16,
+    "fresh_state_per_run": true,
+    "semantic_capability_interpretation": false
+  },
+  "parent": {
+    "full_text_receipt": "/workspace/quant-state/qwen38-27b-aligned2-full-text-v1.json",
+    "required_schema": "qwen38_27b_aligned2_full_text_receipt_v1",
+    "must_pass": true,
+    "source_container_cache_and_manifest_must_match": true
+  },
+  "control": {
+    "path": "forward_token_topk count 1 after every token",
+    "discarded_intermediate_top1_results": 15,
+    "gemv_implementation": "avx2",
+    "physical_threads": 4
+  },
+  "candidate": {
+    "path": "advance_token for the first 15 tokens and forward_token_topk count 1 for the final token",
+    "skipped_lm_head_evaluations": 15,
+    "streaming_row_chunk": 4096,
+    "gemv_implementation": "avx2",
+    "physical_threads": 4
+  },
+  "measurement": {
+    "physical_threads": 4,
+    "warmups_per_implementation": 1,
+    "paired_repetitions": 3,
+    "paired_order": "alternating control-candidate and candidate-control",
+    "state_allocation_excluded_from_timing": true,
+    "all_64_layers_and_Python_dispatch_included_in_timing": true,
+    "reuse_thread_pool": true,
+    "page_faults_measured_after_warmups": true
+  },
+  "gate": {
+    "require_exact_final_top1_values": true,
+    "require_exact_final_top1_indices": true,
+    "require_exact_final_state": true,
+    "minimum_speedup": 1.02,
+    "required_authenticated_aligned_tensor_count": 666,
+    "maximum_process_peak_rss_bytes": 10737418240,
+    "require_zero_major_page_faults": true,
+    "require_all_outputs_states_and_timings_finite": true
+  },
+  "frozen_inputs": {
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_aligned2_prefill_skip_lm_head_v1.py",
+      "sha256": "debd249fc186044cb2e3a43f66f186a700ff30ef2586fee00595ea8ee8a31d31"
+    },
+    "full_text_helpers": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_aligned2_full_text_v1.py",
+      "sha256": "d15e5a44f8eb9bf02866393bbf13e0874322ad6daba86549ddbac6cb9ab23533"
+    },
+    "parent_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_aligned2_full_text_preregistration_v1.json",
+      "sha256": "f44f32a496cdf65e2c21e67c6aa3272a59fae2f5932ddc2d98257ed097a0839d"
+    },
+    "aligned_cache_runtime": {
+      "path": "clark_quantize/qwen38_aligned2_cache.py",
+      "sha256": "714d0c6ef3e1d3fe53036651f2d733cbd848e5811e61b1c6989501a1a6042ef4"
+    },
+    "model_runtime": {
+      "path": "clark_quantize/qwen38_cq3_runtime.py",
+      "sha256": "652412365666430108e4642db2e871632f6ab34957d718e195bec4d1e7693ec6"
+    },
+    "aligned_cache_tests": {
+      "path": "clark_quantize/test_qwen38_aligned2_cache.py",
+      "sha256": "1644e9e77a188e63305f3c6e04b59066eebd0d00a66e9b2ad6186565b2b5975b"
+    },
+    "model_runtime_tests": {
+      "path": "clark_quantize/test_qwen38_cq3_runtime.py",
+      "sha256": "dca9993c048cdef6a8672ed9a8fdf2c708e6843fd650f546a0381d44108e7edb"
+    },
+    "native_wrapper": {
+      "path": "clark_quantize/ternary_cpu.py",
+      "sha256": "ce706e66ac61d2919a80f0c838432b9df31ff469412ce95a3d61c56c15bed7a9"
+    },
+    "native_source": {
+      "path": "clark_quantize/ternary_cpu.c",
+      "sha256": "00acb5674e1ae2de188d7d7dfefcf5cf33776ca634c597469dc5e3b168248488"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_ternary_cpu.py",
+      "sha256": "b2da7716b78c5094360299a635ac2ac030412f9bea7ca726cc4c0856170e4a03"
+    },
+    "native_build": {
+      "path": "scripts/cpu/build_ternary_cpu.sh",
+      "sha256": "273db81adcefce5525288927cbcdde5f4beff65b136e35235ba8c4909c22e75b"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 12,
+    "swap_must_remain_zero": true,
+    "new_persistent_artifact_bytes": 0,
+    "run_after_the_capability_queue_to_avoid_compute_competition": true
+  },
+  "promotion_rules": [
+    "a pass promotes only the exact state-preserving prompt advance optimization",
+    "a valid parity speed memory or fault miss is retained as a negative result",
+    "the benchmark is structurally valid but has no semantic capability interpretation",
+    "the Qwen3.8 CUTE and MATH receipts remain the quality authority",
+    "the observed sequential prefill tokens per second is not a batched-prefill claim",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "no scientific breakthrough claim can come from this optimization alone",
+    "Qwen 4B compute is forbidden in this research lane"
+  ]
+}
