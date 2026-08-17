@@ -149,6 +149,68 @@ guard bits per chunk, byte-align every chunk, and 64-byte-align every tensor.
 6. Export only a candidate that survives CUTE, MMLU-type, MATH, WikiText, and
    paired CPU prefill/decode throughput gates.
 
+## Clark Hash as a trained residual path
+
+Clark Hash observes that a stored vector and a floating query can be scored
+asymmetrically after the same deterministic sparse signed projection.  A linear
+layer has the same algebra: weight rows are the stored vectors and the current
+activation is the query.  With a sparse projection `R`, the direct estimator is
+
+```text
+W x ~= (W R^T) (R x).
+```
+
+The activation sketch `R x` is formed once and shared by every output row.  The
+paper's SplitMix64 bucket/sign construction is cheap and stateless, which is
+attractive for CPU inference.
+
+This direct estimator is not semi-lossless.  For `m < d`, the sketch has rank at
+most `m` and cannot reconstruct an arbitrary dense row.  Johnson-Lindenstrauss
+preservation applies to a fixed finite set of vectors or inner products with a
+probabilistic distortion, not to exact recovery of every future activation.
+
+The frozen hybrid under test is instead
+
+```text
+W ~= T + A R,
+y  = T x + A (R x),
+```
+
+where `T` is a rate-constrained ternary residual and `A` is a small correction
+matrix.  For fixed `T`, the data-free coefficient solve is
+
+```text
+A* = (W - T) R^T (R R^T + lambda I)^-1.
+```
+
+For fixed `A`, the best ternary residual with exactly `k` nonzeros per group
+uses the top-`k` residual magnitudes and their mean absolute value as the group
+scale.  These two updates form a monotone FP32 coordinate fit.  Export then
+quantizes `A` to signed per-row int4 and `T` scales to FP16 for the first screen.
+
+At Qwen input width 5120, one frozen candidate uses a sketch of 80 coordinates
+and 60 nonzero ternary values per 128-weight group.  Its projected component
+rate is about 1.566 bits/weight when counting empirical ternary entropy, int4
+hash coefficients, one FP16 hash scale per row, a row-normalized 4-bit ternary
+scale layout, and both row side channels.  This is only a component projection;
+the first error screen still uses FP16 ternary group scales and cannot promote a
+complete storage claim.
+
+If the data-free screen passes, the next training step replaces Frobenius least
+squares with calibration activations:
+
+```text
+A* = argmin_A ||(W - T) X - A (R X)||_F^2,
+```
+
+followed by a short teacher-output/KL QAT phase over the layer.  Here
+"semi-lossless" is reserved for a candidate whose frozen layer outputs,
+capability evals, and perplexity remain within preregistered tolerances.  It
+never means byte-exact reconstruction of the original dense weights.
+
+Clark Hash paper source: <https://github.com/clark-labs-inc/clark-hash/blob/main/arxiv_submission/main.tex>
+at publication commit `de609c2c55dcbf727deea8bdf7bcc657743ce120`.
+
 ## Related-work boundary
 
 - QuIP: <https://arxiv.org/abs/2307.13304>
