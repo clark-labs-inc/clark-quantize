@@ -45,6 +45,7 @@ if [[ -n "$(git status --short)" ]]; then
 fi
 
 require_sha256 "$manifest" e3e38ccb1bf35c56b600f1cf39bbd0ea38072f2b4bdd5fc36146c143fb658dba
+require_sha256 "$prereg" 82a585776b357c395500e55ed34e0531e2d3c31bd796e306d74482ac721b3dcb
 require_sha256 "$model" "$expected_sha256"
 git rev-parse HEAD > "$run_dir/${model_label}-source.commit"
 git -C /workspace/src/llama.cpp rev-parse HEAD > "$run_dir/${model_label}-llama.commit"
