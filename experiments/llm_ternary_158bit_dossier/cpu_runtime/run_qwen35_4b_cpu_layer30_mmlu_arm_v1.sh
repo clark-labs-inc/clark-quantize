@@ -11,6 +11,7 @@ run_dir=${RUN_DIR:-/workspace/quant-runs/qwen35-4b-cpu-layer30-mmlu-v1}
 runtime_dir="$repo/experiments/llm_ternary_158bit_dossier/cpu_runtime"
 manifest="$runtime_dir/qwen35_4b_cpu_layer30_mmlu_v1.json"
 prereg="$runtime_dir/qwen35_4b_cpu_layer30_mmlu_preregistration_v1.json"
+context_amendment="$runtime_dir/qwen35_4b_cpu_layer30_mmlu_context_amendment_v1.json"
 evaluator="$runtime_dir/eval_llama_cpp_mmlu.py"
 launcher="$runtime_dir/launch_llama_cpu_eval_server.sh"
 out="$run_dir/mmlu-${model_label}.json"
@@ -46,10 +47,11 @@ fi
 
 require_sha256 "$manifest" e3e38ccb1bf35c56b600f1cf39bbd0ea38072f2b4bdd5fc36146c143fb658dba
 require_sha256 "$prereg" 82a585776b357c395500e55ed34e0531e2d3c31bd796e306d74482ac721b3dcb
+require_sha256 "$context_amendment" 75f31f8bdbdf71c0b50dea46e5833d8e45670ecc54cdfac14969ea831b413e1d
 require_sha256 "$model" "$expected_sha256"
 git rev-parse HEAD > "$run_dir/${model_label}-source.commit"
 git -C /workspace/src/llama.cpp rev-parse HEAD > "$run_dir/${model_label}-llama.commit"
-sha256sum "$prereg" "$manifest" "$evaluator" "$launcher" "$model" \
+sha256sum "$prereg" "$context_amendment" "$manifest" "$evaluator" "$launcher" "$model" \
     /workspace/build/llama.cpp/bin/llama-server \
     > "$run_dir/${model_label}-inputs.sha256"
 
@@ -60,7 +62,7 @@ trap cleanup EXIT
 
 CPU_EVAL_RUN_DIR="$run_dir" \
 LLAMA_PARALLEL=4 \
-LLAMA_CONTEXT=8192 \
+LLAMA_CONTEXT=32768 \
 LLAMA_THREADS=4 \
     "$launcher" "$model" "$model_label" "$port"
 

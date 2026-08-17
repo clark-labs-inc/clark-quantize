@@ -1,0 +1,36 @@
+{
+  "schema": "qwen35_4b_cpu_layer30_mmlu_context_amendment_v1",
+  "status": "frozen_after_infrastructure_invalid_bf16_partial",
+  "created_at": "2026-08-17T08:47:30Z",
+  "original_preregistration": {
+    "path": "qwen35_4b_cpu_layer30_mmlu_preregistration_v1.json",
+    "sha256": "82a585776b357c395500e55ed34e0531e2d3c31bd796e306d74482ac721b3dcb"
+  },
+  "trigger": {
+    "arm": "bf16-mmlu-v1",
+    "status": "infrastructure_invalid",
+    "completed_records": 20,
+    "total_records": 64,
+    "completed_correct": 13,
+    "failure": "request (2789 tokens) exceeds the available context size (2048 tokens)",
+    "partial_snapshot_sha256": "c85529e0985fd6b67d0fd5417b8f23e1a0e709ad07e31a7872318396a3643fc8",
+    "failure_log_snapshot_sha256": "2cc1f589801bc1dcc212cad679d9cd60ab75b85b9cd0eee593fa088bdd7e2040"
+  },
+  "amendment": {
+    "only_change": "increase llama.cpp total context from 8192 to 32768 while retaining four parallel slots",
+    "server_total_context": 32768,
+    "per_slot_context": 8192,
+    "workers": 4,
+    "resume": "retain and contract-check the first 20 completed BF16 records, then resume from the next frozen manifest row"
+  },
+  "unchanged": [
+    "manifest and row order",
+    "five-shot prompts",
+    "model artifacts",
+    "choice-token scorer",
+    "seeds",
+    "checkpoint cadence",
+    "decision thresholds"
+  ],
+  "disclosure": "The BF16 partial accuracy was observable before this infrastructure-only amendment. No row, answer, model, score rule, or promotion threshold was changed, and neither quantized arm had started. The invalid 2048-token attempt remains preserved as a separate snapshot and is not reported as a completed benchmark."
+}
