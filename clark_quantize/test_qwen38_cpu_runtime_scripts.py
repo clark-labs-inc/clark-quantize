@@ -7,6 +7,8 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import threading
+from unittest import mock
 
 import numpy as np
 
@@ -24,6 +26,21 @@ def load_cute_module():
     sys.path.insert(0, str(RUNTIME))
     spec = importlib.util.spec_from_file_location(
         name, RUNTIME / "eval_qwen38_27b_aligned2_cute_v1.py"
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_persistent_affinity_module():
+    name = "qwen38_persistent_affinity_test_module"
+    if name in sys.modules:
+        return sys.modules[name]
+    sys.path.insert(0, str(RUNTIME))
+    spec = importlib.util.spec_from_file_location(
+        name, RUNTIME / "benchmark_qwen38_27b_persistent_affinity_v1.py"
     )
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -88,6 +105,47 @@ def test_qwen38_cute_generation_advances_prompt_and_stops_on_eos() -> None:
     assert result["forward_tokens"] == 3
     assert result["final_state_position"] == 3
     assert result["finish_reason"] == "stop"
+
+
+def test_qwen38_persistent_executor_pins_each_worker_once() -> None:
+    module = load_persistent_affinity_module()
+    local = threading.local()
+    set_calls: list[tuple[int, frozenset[int]]] = []
+    lock = threading.Lock()
+
+    def set_affinity(pid: int, values: set[int]) -> None:
+        affinity = frozenset(values)
+        local.affinity = affinity
+        with lock:
+            set_calls.append((threading.get_native_id(), affinity))
+
+    def get_affinity(pid: int) -> set[int]:
+        return set(getattr(local, "affinity", frozenset({0, 2, 4, 6})))
+
+    with mock.patch.object(
+        module.os, "sched_setaffinity", set_affinity, create=True
+    ), mock.patch.object(
+        module.os, "sched_getaffinity", get_affinity, create=True
+    ):
+        with module.persistent_pinned_executor([0, 2, 4, 6]) as (
+            executor,
+            records,
+        ):
+            observed = [
+                executor.submit(module.os.sched_getaffinity, 0).result()
+                for _ in range(8)
+            ]
+
+    assert len(records) == 4
+    assert sorted(record["affinity"] for record in records) == [
+        [0],
+        [2],
+        [4],
+        [6],
+    ]
+    assert len(set(record["native_thread_id"] for record in records)) == 4
+    assert len(set_calls) == 4
+    assert all(len(value) == 1 for value in observed)
 
 
 def test_qwen38_service_commit_chain_is_monotonic() -> None:
