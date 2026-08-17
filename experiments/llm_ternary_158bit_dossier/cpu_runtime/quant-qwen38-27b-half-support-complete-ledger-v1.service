@@ -1,6 +1,6 @@
 [Unit]
 Description=Audit complete half-support plus hash storage for Qwen3.8-27B
-After=network-online.target quant-qwen38-27b-mask64-hash-fused-v1.service
+After=network-online.target quant-qwen38-27b-half-support-tail-hash-fused-v1.service
 Wants=network-online.target
 
 [Service]
