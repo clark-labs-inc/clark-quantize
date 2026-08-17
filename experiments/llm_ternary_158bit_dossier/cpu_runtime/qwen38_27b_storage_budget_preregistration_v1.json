@@ -1,0 +1,81 @@
+{
+  "schema": "qwen38_27b_storage_budget_preregistration_v1",
+  "status": "frozen_before_authoritative_budget_run",
+  "frozen_at_utc": "2026-08-17T11:30:44Z",
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "shards": 18,
+    "source_shard_bytes": 55563006776
+  },
+  "frozen_inputs": {
+    "calculator": {
+      "path": "clark_quantize/qwen38_storage_budget.py",
+      "sha256": "eed77a1e32009f0c6be607c168bd840482712a535949737877c6584f0ce2f706"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_storage_budget_v1.py",
+      "sha256": "5e2b25686273ee945a2a4a5b76022ca0ddb6220d14c10fe958a5b0c67d8dfc6f"
+    },
+    "tests": {
+      "path": "clark_quantize/test_qwen38_storage_budget.py",
+      "sha256": "a325ced33f25ea3d975a9ebc109b173834e3e404ed7f268ee296ace618d16ea1"
+    }
+  },
+  "expected_inventory": {
+    "tensor_count": 1199,
+    "total_parameters": 27781427952,
+    "ternary_rank_ge_2_tensors": 666,
+    "ternary_rank_ge_2_parameters": 27780313088,
+    "retained_rank_1_tensors": 533,
+    "retained_rank_1_parameters": 1114864
+  },
+  "coverage": {
+    "ternary": "every rank-2-or-higher checkpoint tensor, flattening all trailing dimensions within each first-dimension row",
+    "retained_exact": "rank-1 tensors at their authenticated source dtype",
+    "scope_includes": [
+      "language model",
+      "embedding and language-model head",
+      "visual tower and merger",
+      "MTP module",
+      "convolutional tensors"
+    ],
+    "scope_excludes": "no checkpoint parameters"
+  },
+  "candidate_layout": {
+    "name": "base3_group128_codebook4",
+    "code": "each complete group of 128 trits is an integer in [0, 3^128), stored in exactly 203 bits; tensor sections are bit-packed and aligned to 64 bytes",
+    "scales": "one 4-bit index per group into one 16-entry FP16 codebook per tensor",
+    "retained": "rank-1 tensors retain their source dtype",
+    "metadata": "128-byte header, 32-byte footer, and one 8-byte-aligned record per tensor with a 64-byte fixed record plus UTF-8 name and uint64 dimensions",
+    "auxiliary_files": "all top-level non-safetensors files from the pinned model directory are included byte-for-byte",
+    "alignment_bytes": 64
+  },
+  "comparators": [
+    "base3_group128_fp16",
+    "base3_group128_codebook6",
+    "base3_group512_fp16",
+    "base3_row_fp16",
+    "radix5_group128_fp16",
+    "aligned2_group128_fp16"
+  ],
+  "gate": {
+    "maximum_projected_complete_bundle_bits_per_total_parameter": 1.63,
+    "require_exact_inventory_match": true,
+    "require_all_scale_codebooks_alignment_metadata_retained_tensors_and_auxiliary_files_counted": true,
+    "infrastructure_invalid_is_not_a_zero_or_completed_result": true
+  },
+  "claim_boundary": {
+    "this_gate_can_prove": "byte-accounting feasibility for a fully specified projected weight layout",
+    "this_gate_cannot_prove": [
+      "an exported artifact exists",
+      "4-bit scale codebooks preserve tensor or model quality",
+      "the 203-bit group decoder is fast",
+      "end-to-end CPU token throughput",
+      "energy or cost advantage",
+      "a scientific breakthrough"
+    ],
+    "next_if_passed": "fit and freeze per-tensor scale codebooks on Qwen3.8-27B, verify exact pack/decode, then require CUTE and MMLU capability parity before any runtime promotion"
+  }
+}
