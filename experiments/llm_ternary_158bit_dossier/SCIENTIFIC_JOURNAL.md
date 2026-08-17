@@ -227,3 +227,43 @@ worker full pack was launched and remains unpromoted until its independent final
 decode and receipt complete.
 
 Evidence: [Hetzner CCX33 bring-up and controls](cpu_runtime/HETZNER_CCX33_RUN_20260816.md)
+
+## 2026-08-17 — Qwen3.8-27B-only scope and frozen CPU controls
+
+The active compute boundary is now `Qwen/Qwen3.8-27B` only. Historical 4B
+receipts remain useful for experiment design, but no new 4B training,
+evaluation, export, or optimization can satisfy this lane. On the `quant` CPU
+node, re-downloadable 4B weight artifacts were removed after confirming that no
+4B process or service was active; code, receipts, logs, and all 27B assets were
+retained. This reclaimed about 68 GiB of physical disk and left 105 GiB free
+for the restartable 27B transaction.
+
+The frozen Qwen3.8-27B `Q4_K_M` control, model SHA-256
+`31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34`,
+completed its quick capability suite with all receipts valid: CUTE-Quick-20
+`9/20`, MATH quick-8 `5/8`, code trace `5/6`, MMLU quick-64 `52/64`, and
+WikiText perplexity `5.7847`. These are frozen development denominators, not
+leaderboard-comparable scores.
+
+On the four-physical-core AMD EPYC Milan CCX33, the same Q4 control completed
+five-repeat llama.cpp measurements. Four-thread mean prefill was `5.478380`,
+`7.046852`, and `6.913716` tokens/second for 128, 512, and 2,048 prompt tokens;
+four-thread 128-token decode was `1.885590` tokens/second. The corresponding
+one-thread decode was `1.069560`, and two-thread decode was `1.735790`
+tokens/second. This is a CPU throughput control only; it does not establish a
+CQ3 advantage.
+
+The first direct Q4-to-CQ3 candidate then changed exactly
+`blk.0.ffn_{down,gate,up}.weight` from GGUF type 12 to type 43. All 848
+non-target tensors matched byte-for-byte, all three target payloads changed,
+and the 18,894,489,952-byte candidate passed a real load/generation smoke with
+zero swap and 28,442,764 KiB peak RSS. Its independent CUTE, math/code, MMLU,
+and perplexity gate is still required before any capability or promotion claim.
+
+Evidence:
+
+- [Qwen3.8-27B-only scope](cpu_runtime/QWEN38_27B_ONLY_SCOPE.md)
+- [Q4 quality control](cpu_runtime/receipts/qwen38_27b_cpu_q4_baseline_v1/summary.json)
+- [Q4 throughput control](cpu_runtime/receipts/qwen38_27b_cpu_throughput_v1/summary.json)
+- [selective CQ3 conversion receipt](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_v1/conversion-receipt.json)
+- [selective tensor-scope proof](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_v1/gguf-scope.json)

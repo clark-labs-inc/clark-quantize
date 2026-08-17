@@ -1,6 +1,6 @@
 # LLM 1.58-bit Ternary Artifact Index
 
-Status date: 2026-08-16
+Status date: 2026-08-17
 
 This is a link-only index. Existing experiment files remain in their original
 locations so historical commands, imports, and archived paths continue to work.
@@ -10,8 +10,12 @@ locations so historical commands, imports, and archived paths continue to work.
 | Artifact | Role | Evidence boundary |
 | --- | --- | --- |
 | [CPU-first research program](cpu_runtime/RESEARCH_PROGRAM.md) | Active runtime, training, hardware, and promotion sequence | Design and work order; performance targets are not measured claims |
+| [Qwen3.8-27B-only scope](cpu_runtime/QWEN38_27B_ONLY_SCOPE.md) | Current model and compute boundary | Historical smaller-model receipts are reference-only and cannot launch or satisfy an active gate |
 | [CPU kernel contracts](cpu_runtime/KERNEL_CONTRACTS.md) | Qwen graph operator and numerical contract | Design v0; optimized kernels are not implemented yet |
-| [Hetzner CCX33 bring-up and controls](cpu_runtime/HETZNER_CCX33_RUN_20260816.md) | Reproducible CPU environment, 4B llama.cpp control, and 27B pack launch | Full 27B arithmetic pack remains running until its final receipt promotes |
+| [Hetzner CCX33 bring-up and controls](cpu_runtime/HETZNER_CCX33_RUN_20260816.md) | Reproducible CPU environment, historical controls, and completed 27B arithmetic pack | Packing evidence is separate from model capability and end-to-end runtime evidence |
+| [Qwen3.8-27B Q4 quality control](cpu_runtime/receipts/qwen38_27b_cpu_q4_baseline_v1/summary.json) | Frozen CUTE, math/code, MMLU, and WikiText reference | Quick development suite, not leaderboard-comparable or a full model-quality characterization |
+| [Qwen3.8-27B Q4 CPU throughput control](cpu_runtime/receipts/qwen38_27b_cpu_throughput_v1/summary.json) | Repeated 1-, 2-, and 4-thread prefill/decode baseline | Throughput only; load latency, TTFT, energy, and candidate comparisons remain separate gates |
+| [Qwen3.8-27B selective CQ3 conversion](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_v1/conversion-receipt.json) | Exact three-tensor layer-0 MLP conversion and load smoke | Byte scope and loadability only; capability evaluation is still required |
 
 ## Primary run records
 
