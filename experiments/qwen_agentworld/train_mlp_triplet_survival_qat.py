@@ -114,7 +114,7 @@ class QuantSwiGLUMLP(torch.nn.Module):
         losses = []
         for master in (self.gate, self.up, self.down):
             with torch.no_grad():
-                quantized = ste_quantized_weight(master, mode=self.mode, group_size=self.group_size).detach()
+                quantized = self.quantized(master).detach()
             denom = master.detach().float().square().mean().clamp_min(1e-8)
             losses.append((master.float() - quantized.float()).square().mean() / denom)
         return torch.stack(losses).mean()
@@ -122,9 +122,9 @@ class QuantSwiGLUMLP(torch.nn.Module):
     @torch.no_grad()
     def hard_weights(self) -> dict[str, torch.Tensor]:
         return {
-            "gate": ste_quantized_weight(self.gate, mode=self.mode, group_size=self.group_size).detach().cpu().to(torch.bfloat16),
-            "up": ste_quantized_weight(self.up, mode=self.mode, group_size=self.group_size).detach().cpu().to(torch.bfloat16),
-            "down": ste_quantized_weight(self.down, mode=self.mode, group_size=self.group_size).detach().cpu().to(torch.bfloat16),
+            "gate": self.quantized(self.gate).detach().cpu().to(torch.bfloat16),
+            "up": self.quantized(self.up).detach().cpu().to(torch.bfloat16),
+            "down": self.quantized(self.down).detach().cpu().to(torch.bfloat16),
         }
 
 

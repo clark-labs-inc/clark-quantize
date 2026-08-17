@@ -4,6 +4,7 @@ import torch
 
 from clark_quantize.qwen_qat import hard_ternary_weight
 from train_mlp_triplet_qat import QuantMLPTriplet, train_layer
+from train_mlp_triplet_survival_qat import QuantSwiGLUMLP
 
 
 def test_artifact_exact_hard_weights_match_training_forward_quantizer() -> None:
@@ -15,6 +16,27 @@ def test_artifact_exact_hard_weights_match_training_forward_quantizer() -> None:
         gate,
         up,
         down,
+        mode="ternary",
+        group_size=2,
+        artifact_exact_ternary=True,
+    )
+
+    exported = model.hard_weights()
+    for name in ("gate", "up", "down"):
+        expected = hard_ternary_weight(
+            getattr(model, name), group_size=2, row_batch=128
+        ).to(torch.bfloat16)
+        torch.testing.assert_close(exported[name], expected, rtol=0, atol=0)
+
+
+def test_survival_qat_artifact_exact_export_matches_training_quantizer() -> None:
+    torch.manual_seed(32)
+    source = torch.nn.Module()
+    source.gate_proj = torch.nn.Linear(4, 6, bias=False)
+    source.up_proj = torch.nn.Linear(4, 6, bias=False)
+    source.down_proj = torch.nn.Linear(6, 4, bias=False)
+    model = QuantSwiGLUMLP(
+        source,
         mode="ternary",
         group_size=2,
         artifact_exact_ternary=True,

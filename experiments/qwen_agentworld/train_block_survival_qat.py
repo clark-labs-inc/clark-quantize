@@ -22,6 +22,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from clark_air.quant.master_weight_qat import ste_quantized_weight
+from clark_quantize.qwen_qat import hard_ternary_ste
 from train_mlp_triplet_survival_qat import (
     QuantSwiGLUMLP,
     anti_collapse_loss,
@@ -108,17 +109,27 @@ def available_norm_names(model: torch.nn.Module, layer_id: int) -> list[str]:
 
 
 class QuantLinear(torch.nn.Module):
-    def __init__(self, source: torch.nn.Linear, *, mode: str, group_size: int) -> None:
+    def __init__(
+        self,
+        source: torch.nn.Linear,
+        *,
+        mode: str,
+        group_size: int,
+        artifact_exact_ternary: bool = False,
+    ) -> None:
         super().__init__()
         self.master = torch.nn.Parameter(source.weight.detach().float().clone())
         self.mode = mode
         self.group_size = group_size
+        self.artifact_exact_ternary = artifact_exact_ternary
         if source.bias is None:
             self.register_buffer("bias", None)
         else:
             self.register_buffer("bias", source.bias.detach().clone())
 
     def quantized(self) -> torch.Tensor:
+        if self.mode == "ternary" and self.artifact_exact_ternary:
+            return hard_ternary_ste(self.master, group_size=self.group_size, row_batch=128)
         return ste_quantized_weight(self.master, mode=self.mode, group_size=self.group_size)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -142,9 +153,15 @@ def replace_linear_with_quant(
     *,
     mode: str,
     group_size: int,
+    artifact_exact_ternary: bool = False,
 ) -> QuantLinear:
     source = model.get_submodule(module_name)
-    quant = QuantLinear(source, mode=mode, group_size=group_size).to(next(source.parameters()).device)
+    quant = QuantLinear(
+        source,
+        mode=mode,
+        group_size=group_size,
+        artifact_exact_ternary=artifact_exact_ternary,
+    ).to(next(source.parameters()).device)
     parent, attr = get_parent_and_attr(model, module_name)
     setattr(parent, attr, quant)
     return quant
@@ -238,7 +255,13 @@ def train_block(
         for name in available_projection_names(model, layer_id):
             if args.projection_regex and not re.search(args.projection_regex, name):
                 continue
-            quant_linears[name] = replace_linear_with_quant(model, name, mode=args.mode, group_size=args.group_size)
+            quant_linears[name] = replace_linear_with_quant(
+                model,
+                name,
+                mode=args.mode,
+                group_size=args.group_size,
+                artifact_exact_ternary=args.artifact_exact_ternary,
+            )
 
     norm_params: list[torch.nn.Parameter] = []
     norm_names = available_norm_names(model, layer_id) if args.train_norms else []
