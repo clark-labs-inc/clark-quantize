@@ -56,6 +56,7 @@ def validate_preregistration(value: dict, args: argparse.Namespace) -> None:
             "clark_radix5_direct_gemv_preregistration_v2",
             "clark_radix5_direct_gemv_preregistration_v3",
             "clark_radix5_direct_gemv_preregistration_v4",
+            "clark_radix5_direct_gemv_preregistration_v5",
         }
         or tensor.get("name") != args.tensor
         or tensor.get("rows") != args.rows

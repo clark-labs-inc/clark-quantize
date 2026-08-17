@@ -738,6 +738,184 @@ static int cq3_gemv_q8_group128_radix5_avx2_impl(
     return CQ3_OK;
 }
 
+__attribute__((target("avx2,f16c,fma"), always_inline))
+static inline __m256i cq3_radix5_lookup4_nogather(
+    const uint64_t *lookup,
+    uint32_t indices
+) {
+    return _mm256_set_epi64x(
+        (long long int)lookup[(indices >> 24U) & 0xffU],
+        (long long int)lookup[(indices >> 16U) & 0xffU],
+        (long long int)lookup[(indices >> 8U) & 0xffU],
+        (long long int)lookup[indices & 0xffU]
+    );
+}
+
+__attribute__((target("avx2,f16c,fma")))
+static int cq3_gemv_q8_group128_radix5_pair_avx2_impl(
+    const uint8_t *CQ3_RESTRICT weights,
+    const uint16_t *CQ3_RESTRICT weight_scales,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    uint32_t group_size,
+    float *CQ3_RESTRICT output
+) {
+    uint64_t digit_lookup[256];
+    for (uint32_t value = 0U; value < 256U; ++value) {
+        uint32_t remaining = value;
+        uint64_t digits = 0U;
+        for (uint32_t lane = 0U; lane < 5U; ++lane) {
+            digits |= (uint64_t)(remaining % 3U) << (lane * 8U);
+            remaining /= 3U;
+        }
+        digit_lookup[value] = digits;
+    }
+
+    const uint64_t groups = columns / group_size;
+    const uint64_t row_bytes = groups * CQ3_RADIX5_BYTES_PER_GROUP;
+    const __m256i ones = _mm256_set1_epi16(1);
+    uint64_t row = 0U;
+    for (; row + 1U < rows; row += 2U) {
+        float combined_scales0[CQ3_MAX_GROUPS_PER_ROW];
+        float combined_scales1[CQ3_MAX_GROUPS_PER_ROW];
+        uint64_t scale_group = 0U;
+        for (; scale_group + 8U <= groups; scale_group += 8U) {
+            const __m256 activation_scale =
+                _mm256_loadu_ps(activation_scales + scale_group);
+            const __m128i half_scales0 = _mm_loadu_si128(
+                (const __m128i *)(weight_scales + row * groups + scale_group)
+            );
+            const __m128i half_scales1 = _mm_loadu_si128(
+                (const __m128i *)(weight_scales + (row + 1U) * groups + scale_group)
+            );
+            _mm256_storeu_ps(
+                combined_scales0 + scale_group,
+                _mm256_mul_ps(_mm256_cvtph_ps(half_scales0), activation_scale)
+            );
+            _mm256_storeu_ps(
+                combined_scales1 + scale_group,
+                _mm256_mul_ps(_mm256_cvtph_ps(half_scales1), activation_scale)
+            );
+        }
+        for (; scale_group < groups; ++scale_group) {
+            combined_scales0[scale_group] =
+                _cvtsh_ss(weight_scales[row * groups + scale_group])
+                * activation_scales[scale_group];
+            combined_scales1[scale_group] =
+                _cvtsh_ss(weight_scales[(row + 1U) * groups + scale_group])
+                * activation_scales[scale_group];
+        }
+
+        __m256 total0 = _mm256_setzero_ps();
+        __m256 total1 = _mm256_setzero_ps();
+        for (uint64_t group = 0U; group < groups; ++group) {
+            const uint8_t *codes0 =
+                weights + row * row_bytes + group * CQ3_RADIX5_BYTES_PER_GROUP;
+            const uint8_t *codes1 = codes0 + row_bytes;
+            const int8_t *values = activation + group * CQ3_RADIX5_ACTIVATION_STRIDE;
+            __m256i accumulator0 = _mm256_setzero_si256();
+            __m256i accumulator1 = _mm256_setzero_si256();
+            for (uint32_t segment = 0U; segment < 24U; segment += 4U) {
+                uint32_t indices0;
+                uint32_t indices1;
+                memcpy(&indices0, codes0 + segment, sizeof(indices0));
+                memcpy(&indices1, codes1 + segment, sizeof(indices1));
+                const __m256i activations = _mm256_loadu_si256(
+                    (const __m256i *)(values + segment * 8U)
+                );
+                accumulator0 = _mm256_add_epi32(
+                    accumulator0,
+                    _mm256_madd_epi16(
+                        _mm256_maddubs_epi16(
+                            cq3_radix5_lookup4_nogather(digit_lookup, indices0),
+                            activations
+                        ),
+                        ones
+                    )
+                );
+                accumulator1 = _mm256_add_epi32(
+                    accumulator1,
+                    _mm256_madd_epi16(
+                        _mm256_maddubs_epi16(
+                            cq3_radix5_lookup4_nogather(digit_lookup, indices1),
+                            activations
+                        ),
+                        ones
+                    )
+                );
+            }
+            const __m256i tail_activations = _mm256_loadu_si256(
+                (const __m256i *)(values + 24U * 8U)
+            );
+            const __m256i tail_digits0 = _mm256_set_epi64x(
+                0, 0,
+                (long long int)digit_lookup[codes0[25]],
+                (long long int)digit_lookup[codes0[24]]
+            );
+            const __m256i tail_digits1 = _mm256_set_epi64x(
+                0, 0,
+                (long long int)digit_lookup[codes1[25]],
+                (long long int)digit_lookup[codes1[24]]
+            );
+            accumulator0 = _mm256_add_epi32(
+                accumulator0,
+                _mm256_madd_epi16(
+                    _mm256_maddubs_epi16(tail_digits0, tail_activations), ones
+                )
+            );
+            accumulator1 = _mm256_add_epi32(
+                accumulator1,
+                _mm256_madd_epi16(
+                    _mm256_maddubs_epi16(tail_digits1, tail_activations), ones
+                )
+            );
+            const __m256i sum = _mm256_set_epi32(
+                0, 0, 0, 0, 0, 0, 0, activation_sums[group]
+            );
+            total0 = _mm256_fmadd_ps(
+                _mm256_cvtepi32_ps(_mm256_sub_epi32(accumulator0, sum)),
+                _mm256_set1_ps(combined_scales0[group]),
+                total0
+            );
+            total1 = _mm256_fmadd_ps(
+                _mm256_cvtepi32_ps(_mm256_sub_epi32(accumulator1, sum)),
+                _mm256_set1_ps(combined_scales1[group]),
+                total1
+            );
+        }
+        __m128 horizontal0 = _mm_add_ps(
+            _mm256_castps256_ps128(total0), _mm256_extractf128_ps(total0, 1)
+        );
+        __m128 horizontal1 = _mm_add_ps(
+            _mm256_castps256_ps128(total1), _mm256_extractf128_ps(total1, 1)
+        );
+        horizontal0 = _mm_hadd_ps(horizontal0, horizontal0);
+        horizontal0 = _mm_hadd_ps(horizontal0, horizontal0);
+        horizontal1 = _mm_hadd_ps(horizontal1, horizontal1);
+        horizontal1 = _mm_hadd_ps(horizontal1, horizontal1);
+        output[row] = _mm_cvtss_f32(horizontal0);
+        output[row + 1U] = _mm_cvtss_f32(horizontal1);
+    }
+    if (row < rows) {
+        return cq3_gemv_q8_group128_radix5_avx2_impl(
+            weights + row * row_bytes,
+            weight_scales + row * groups,
+            activation,
+            activation_scales,
+            activation_sums,
+            1U,
+            columns,
+            group_size,
+            output + row,
+            0
+        );
+    }
+    return CQ3_OK;
+}
+
 __attribute__((target("avx2,f16c,fma")))
 static int cq3_gemv_q8_group128_radix5_planes_avx2_impl(
     const uint8_t *CQ3_RESTRICT weights,
@@ -982,6 +1160,41 @@ int cq3_gemv_q8_group128_radix5_avx2_planes(
         return CQ3_ERROR_ISA;
     }
     return cq3_gemv_q8_group128_radix5_planes_avx2_impl(
+        weights, weight_scales, activation, activation_scales,
+        activation_sums, rows, columns, group_size, output
+    );
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
+int cq3_gemv_q8_group128_radix5_avx2_nogather_pair(
+    const uint8_t *CQ3_RESTRICT weights,
+    const uint16_t *CQ3_RESTRICT weight_scales,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    uint32_t group_size,
+    float *CQ3_RESTRICT output
+) {
+    if (activation_sums == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    const int validation = cq3_validate_gemv(
+        weights, weight_scales, activation, activation_scales,
+        output, rows, columns, group_size
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    const uint32_t required = CQ3_FEATURE_AVX2 | CQ3_FEATURE_F16C | CQ3_FEATURE_FMA;
+    if ((cq3_cpu_features() & required) != required) {
+        return CQ3_ERROR_ISA;
+    }
+    return cq3_gemv_q8_group128_radix5_pair_avx2_impl(
         weights, weight_scales, activation, activation_scales,
         activation_sums, rows, columns, group_size, output
     );

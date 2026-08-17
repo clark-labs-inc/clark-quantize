@@ -1,0 +1,377 @@
+{
+  "schema": "clark_radix5_direct_gemv_receipt_v5",
+  "created_at": 1786934860.4705632,
+  "preregistration": {
+    "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/radix5_direct_gemv_preregistration_v5.json",
+    "sha256": "1e2cdb5eecc64cc4a7700bb33ad73552019269b1480f9cf5c09f0a414b7ff622",
+    "rules": {
+      "schema": "clark_radix5_direct_gemv_preregistration_v5",
+      "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "artifact_schema": "clark_chunked_base3_v1",
+      "predecessor": {
+        "best_receipt": "receipts/radix5-direct-gemv-v2.json",
+        "best_receipt_sha256": "381c328c24cfc915f31bfcec6e72d9db32243fc7fd33173b30484b86dec75ee6",
+        "best_four_core_throughput_fraction_of_aligned2": 0.6821671810986987,
+        "promotion_passed": false
+      },
+      "hypothesis": "Interleaving two output rows will expose independent lookup and dot-product work and reuse each activation vector, preserving the v2 no-gather algorithm and 1.75-bit image while lifting four-core throughput above the 70% retention gate.",
+      "kernel": {
+        "implementation": "avx2_nogather_pair",
+        "only_registered_change": "compute two output rows together with independent accumulators and one shared activation load per four radix-5 segments",
+        "odd_row_tail": "fall back to the v2 no-gather single-row kernel"
+      },
+      "tensor": {
+        "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+        "rows": 17408,
+        "columns": 5120,
+        "group_size": 128
+      },
+      "formats": {
+        "aligned2": {
+          "code_bytes_per_group": 32,
+          "fp16_scale_bytes_per_group": 2,
+          "bits_per_weight": 2.125
+        },
+        "radix5_group128": {
+          "code_bytes_per_group": 26,
+          "fp16_scale_bytes_per_group": 2,
+          "bits_per_weight": 1.75,
+          "padding_trits_per_group": 2
+        }
+      },
+      "activation": {
+        "dtype": "float32_to_group128_int8",
+        "seed": 20260817,
+        "radix5_layout": "28 eight-byte segments per group; five live A8 values and three zero lanes per segment"
+      },
+      "correctness": {
+        "rows": 128,
+        "maximum_absolute_error_vs_aligned2": 5e-05,
+        "require_exact_radix5_roundtrip": true,
+        "require_exact_thread_determinism": true
+      },
+      "performance": {
+        "warmups": 2,
+        "repetitions": 7,
+        "threads": [
+          1,
+          2,
+          4
+        ],
+        "thread_placement": "persistent_workers_pinned_once_to_distinct_physical_cores",
+        "cache_eviction_bytes": 268435456,
+        "comparison_order": "alternate which format runs first on every repetition"
+      },
+      "promotion": {
+        "maximum_radix5_compute_image_bits_per_weight_including_fp16_scales": 1.75,
+        "minimum_radix5_throughput_fraction_of_aligned2": 0.7,
+        "pareto_speed_threshold": 1.0,
+        "does_not_authorize_model_quality_or_breakthrough_claim": true
+      }
+    }
+  },
+  "parent": {
+    "artifact": "/workspace/quant-runs/qwen38-base3-full/artifacts/qwen38-optimal.cq3q",
+    "manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4",
+    "pack_receipt": "/workspace/quant-state/qwen38-base3-full.json",
+    "pack_receipt_sha256": "ef6b8608411ba48abc85b0da390e3e8dec2b8cfad8290739c0c17557bf14cef5",
+    "tensor": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "record_indices": [
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223,
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231,
+      232,
+      233,
+      234,
+      235,
+      236,
+      237,
+      238,
+      239,
+      240,
+      241,
+      242,
+      243,
+      244,
+      245,
+      246,
+      247,
+      248,
+      249,
+      250,
+      251,
+      252,
+      253,
+      254,
+      255,
+      256,
+      257,
+      258,
+      259,
+      260,
+      261,
+      262,
+      263,
+      264,
+      265,
+      266,
+      267,
+      268,
+      269,
+      270,
+      271,
+      272,
+      273,
+      274,
+      275,
+      276,
+      277,
+      278,
+      279,
+      280,
+      281,
+      282,
+      283,
+      284,
+      285,
+      286,
+      287,
+      288,
+      289,
+      290,
+      291,
+      292,
+      293,
+      294,
+      295,
+      296,
+      297,
+      298,
+      299,
+      300,
+      301,
+      302,
+      303,
+      304,
+      305,
+      306,
+      307,
+      308,
+      309,
+      310,
+      311,
+      312,
+      313,
+      314,
+      315,
+      316,
+      317,
+      318,
+      319,
+      320,
+      321,
+      322,
+      323,
+      324,
+      325,
+      326,
+      327,
+      328,
+      329,
+      330,
+      331,
+      332,
+      333,
+      334,
+      335,
+      336,
+      337,
+      338,
+      339,
+      340,
+      341,
+      342,
+      343
+    ],
+    "codes_sha256": "d660e496eda4884dbca3d2479f0c1dd2124b9af79b8c787c8796b413f53b41ac"
+  },
+  "build": {
+    "radix5_implementation": "avx2_nogather_pair",
+    "native_library": "/workspace/clark-quantize/clark_quantize/_ternary_cpu.so",
+    "native_library_sha256": "a488bc6f7ada82178d8e6512ab4e8c89cf278bbbeb0e2181456cb5aa92a1ad2f",
+    "c_source_sha256": "3d4b6c1ec01718d1defaeb6334a5a80cbd790ede08a89a007edbaef3cb58404b",
+    "python_wrapper_sha256": "93da026acd5df3d4196c7d429b2ce084013ec3883e3e5639e603edfb4a142c9a",
+    "benchmark_sha256": "a191827a71c333170202b8d4e71ea8c4ecc722c80fd04f98351be5ab01130cdb",
+    "cpu_features": {
+      "avx2": true,
+      "f16c": true,
+      "fma": true
+    },
+    "physical_cpu_ids": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "format": {
+    "aligned2_weight_bytes": 23674880,
+    "radix5_weight_bytes": 19496960,
+    "aligned2_bits_per_weight_including_scales": 2.125,
+    "radix5_bits_per_weight_including_scales": 1.75,
+    "radix5_byte_reduction_percent": 17.647058823529417,
+    "exact_radix5_roundtrip": true,
+    "radix5_activation_bytes": 8960
+  },
+  "correctness": {
+    "scalar_radix5_vs_aligned2_max_abs": 0.0,
+    "avx2_radix5_vs_aligned2_max_abs": 4.76837158203125e-07,
+    "full_matrix_cross_format_max_abs": 1.1920928955078125e-06,
+    "thread_deterministic": true
+  },
+  "performance": {
+    "1": {
+      "aligned2": {
+        "samples_seconds": [
+          0.003466950998699758,
+          0.0027169910026714206,
+          0.0015103410005394835,
+          0.0015017299992905464,
+          0.0015105809980013873,
+          0.0015107199978956487,
+          0.001476841000112472
+        ],
+        "median_seconds": 0.0015105809980013873,
+        "minimum_seconds": 0.001476841000112472,
+        "maximum_seconds": 0.003466950998699758,
+        "effective_weight_gbytes_per_second": 15.672698141525448,
+        "output_sha256": "cc337e8e2b61cb119acffe7af33334ea354f81d62f6b9899c756781596a17143"
+      },
+      "radix5": {
+        "samples_seconds": [
+          0.011731343998690136,
+          0.0078101130020513665,
+          0.005438641001092037,
+          0.005346301997633418,
+          0.005368801001168322,
+          0.0053615319993696176,
+          0.005350991999875987
+        ],
+        "median_seconds": 0.005368801001168322,
+        "minimum_seconds": 0.005346301997633418,
+        "maximum_seconds": 0.011731343998690136,
+        "effective_weight_gbytes_per_second": 3.6315296461457978,
+        "throughput_fraction_of_aligned2": 0.28136282154482256,
+        "output_sha256": "0359b7866e165ca6b70bc513f7b831cb5f0b5621f61545b15e6ea09508784eae"
+      }
+    },
+    "2": {
+      "aligned2": {
+        "samples_seconds": [
+          0.000886029996763682,
+          0.0008475689974147826,
+          0.0009555889992043376,
+          0.000913440999283921,
+          0.0009715609994600527,
+          0.0008789409985183738,
+          0.0009219309977197554
+        ],
+        "median_seconds": 0.000913440999283921,
+        "minimum_seconds": 0.0008475689974147826,
+        "maximum_seconds": 0.0009715609994600527,
+        "effective_weight_gbytes_per_second": 25.91834614229007,
+        "output_sha256": "cc337e8e2b61cb119acffe7af33334ea354f81d62f6b9899c756781596a17143"
+      },
+      "radix5": {
+        "samples_seconds": [
+          0.002818241002387367,
+          0.00284350099900621,
+          0.002890801002649823,
+          0.002839531000063289,
+          0.0028483509995567147,
+          0.0028088400031265337,
+          0.0028649119994952343
+        ],
+        "median_seconds": 0.00284350099900621,
+        "minimum_seconds": 0.0028088400031265337,
+        "maximum_seconds": 0.002890801002649823,
+        "effective_weight_gbytes_per_second": 6.856674221958809,
+        "throughput_fraction_of_aligned2": 0.3212381495920572,
+        "output_sha256": "0359b7866e165ca6b70bc513f7b831cb5f0b5621f61545b15e6ea09508784eae"
+      }
+    },
+    "4": {
+      "aligned2": {
+        "samples_seconds": [
+          0.0008589999997639097,
+          0.0008452500005660113,
+          0.0008784400015429128,
+          0.0008510810002917424,
+          0.0007926910002424847,
+          0.0008613499994680751,
+          0.0008731699999771081
+        ],
+        "median_seconds": 0.0008589999997639097,
+        "minimum_seconds": 0.0007926910002424847,
+        "maximum_seconds": 0.0008784400015429128,
+        "effective_weight_gbytes_per_second": 27.560977888832223,
+        "output_sha256": "cc337e8e2b61cb119acffe7af33334ea354f81d62f6b9899c756781596a17143"
+      },
+      "radix5": {
+        "samples_seconds": [
+          0.0016321299990522675,
+          0.001621241000975715,
+          0.0016087910007627215,
+          0.0016947010008152574,
+          0.0016481710008520167,
+          0.001892120999400504,
+          0.0016244600010395516
+        ],
+        "median_seconds": 0.0016321299990522675,
+        "minimum_seconds": 0.0016087910007627215,
+        "maximum_seconds": 0.001892120999400504,
+        "effective_weight_gbytes_per_second": 11.945715115414423,
+        "throughput_fraction_of_aligned2": 0.5263061154826558,
+        "output_sha256": "0359b7866e165ca6b70bc513f7b831cb5f0b5621f61545b15e6ea09508784eae"
+      }
+    }
+  },
+  "promotion": {
+    "passed": false,
+    "four_core_throughput_fraction_of_aligned2": 0.5263061154826558,
+    "four_core_pareto_speed_win": false,
+    "scope": "direct radix-5 K2 prototype only; no model-quality or breakthrough claim"
+  },
+  "report_content_sha256": "4e4d272ef6c4e98603bccaac6c360c97cf02c89a8c1b9c6def0859c12b43e7b4"
+}

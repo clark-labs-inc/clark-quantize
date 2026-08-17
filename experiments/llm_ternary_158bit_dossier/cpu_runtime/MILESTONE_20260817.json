@@ -41,6 +41,19 @@
       {"id": "v5_fma_tuned_pinned_once", "receipt_sha256": "985400fd4c066af40d436f695e3f2f248bb0673b24b6bfee97c02bbf85c97f37", "c_source_sha256": "80c2da9250777536e6978ba39f3d180d548757cdf7f36b96707241eeea2669a3", "four_core_gbytes_per_second": 28.061112531384804, "roofline_fraction": 0.7944078210405149, "scalar_speedup": 33.247903279933055, "maximum_absolute_error": 7.450580596923828e-7, "promotion_passed": true}
     ]
   },
+  "direct_radix5_gemv": {
+    "compute_image_bits_per_weight_including_fp16_scales": 1.75,
+    "aligned2_control_bits_per_weight_including_fp16_scales": 2.125,
+    "minimum_throughput_fraction_gate": 0.7,
+    "iterations": [
+      {"id": "v1_avx2_gather", "receipt_sha256": "8da4c6dae189aa4eeabc8b8d1ff316c3bceb9424a482e250c8a5a1b0dcfc72d3", "four_core_gbytes_per_second": 8.285782518270977, "throughput_fraction_of_aligned2": 0.3699222540351195, "promotion_passed": false},
+      {"id": "v2_ordinary_load_lut", "receipt_sha256": "381c328c24cfc915f31bfcec6e72d9db32243fc7fd33173b30484b86dec75ee6", "four_core_gbytes_per_second": 15.405662721290076, "throughput_fraction_of_aligned2": 0.6821671810986987, "promotion_passed": false},
+      {"id": "v3_static_lut", "receipt_sha256": "fabacd9d0e206fbc3c3fac7eee513a8635a3457d48f563b8ea15d7d17c4b10da", "four_core_gbytes_per_second": 14.933550641188438, "throughput_fraction_of_aligned2": 0.6706830145182462, "promotion_passed": false},
+      {"id": "v4_arithmetic_planes", "receipt_sha256": "f478b3cec60d5d82617a0fc02426e457df28171bcd21b445ae6347fef2370560", "four_core_gbytes_per_second": 11.552727156377129, "throughput_fraction_of_aligned2": 0.517276093414561, "promotion_passed": false},
+      {"id": "v5_paired_rows", "receipt_sha256": "bb8d929d4435fea452d6429a7ee8a9000e2e780200f52086e9ae0df6610b2900", "four_core_gbytes_per_second": 11.945715115414423, "throughput_fraction_of_aligned2": 0.5263061154826558, "promotion_passed": false}
+    ],
+    "decision": "closed_without_promotion; retain canonical radix5 for storage and aligned2 for AVX2 compute"
+  },
   "claim_boundary": {
     "promoted": "K2 group-128 aligned-2 AVX2 microkernel",
     "not_proven": [
@@ -52,5 +65,5 @@
       "scientific breakthrough"
     ]
   },
-  "next_gate": "GGML weight-type integration, full-layer parity, and paired 4B BF16/Q4/TQ1_0/Clark evaluation"
+  "next_gate": "Rebuild the promising 4B hard-ternary QAT recipe from scratch, then require the frozen WikiText, MATH-500, and CUTE/MMLU tripwire before longer continuation, depth expansion, or 27B scale-up; keep aligned2 as the AVX2 compute image until a denser format passes its own preregistered kernel gate"
 }
