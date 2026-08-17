@@ -2,7 +2,30 @@ from types import SimpleNamespace
 
 import torch
 
-from train_mlp_triplet_qat import train_layer
+from clark_quantize.qwen_qat import hard_ternary_weight
+from train_mlp_triplet_qat import QuantMLPTriplet, train_layer
+
+
+def test_artifact_exact_hard_weights_match_training_forward_quantizer() -> None:
+    torch.manual_seed(31)
+    gate = torch.randn(6, 4)
+    up = torch.randn(6, 4)
+    down = torch.randn(4, 6)
+    model = QuantMLPTriplet(
+        gate,
+        up,
+        down,
+        mode="ternary",
+        group_size=2,
+        artifact_exact_ternary=True,
+    )
+
+    exported = model.hard_weights()
+    for name in ("gate", "up", "down"):
+        expected = hard_ternary_weight(
+            getattr(model, name), group_size=2, row_batch=128
+        ).to(torch.bfloat16)
+        torch.testing.assert_close(exported[name], expected, rtol=0, atol=0)
 
 
 def test_completed_checkpoint_resumes_without_changing_hard_weights(tmp_path) -> None:
