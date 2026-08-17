@@ -9,6 +9,10 @@ ordering_unit=${ORDERING_UNIT:-quant-qwen38-27b-aligned2-full-cache-watch-v1.ser
 state=${STATE_DIR:-/workspace/quant-state/qwen38-27b-recurrent-delta-avx2-watch-v1}
 result=${RESULT_RECEIPT:-/workspace/quant-state/qwen38-27b-recurrent-delta-avx2-v1.json}
 runtime=experiments/llm_ternary_158bit_dossier/cpu_runtime
+preregistration=${PREREGISTRATION_FILE:-qwen38_27b_recurrent_delta_avx2_preregistration_v1.json}
+benchmark=${BENCHMARK_FILE:-benchmark_qwen38_27b_recurrent_delta_avx2_v1.py}
+receipt_schema=${RECEIPT_SCHEMA:-qwen38_27b_recurrent_delta_avx2_receipt_v1}
+watch_receipt_schema=${WATCH_RECEIPT_SCHEMA:-qwen38_27b_recurrent_delta_avx2_watch_receipt_v1}
 library=$repo/clark_quantize/_ternary_cpu.so
 
 while systemctl is-active --quiet "$ordering_unit"; do
@@ -49,8 +53,8 @@ fi
 git rev-parse HEAD > "$state/repository.commit"
 date -u +%FT%TZ > "$state/started-at.txt"
 sha256sum \
-  "$runtime/qwen38_27b_recurrent_delta_avx2_preregistration_v1.json" \
-  "$runtime/benchmark_qwen38_27b_recurrent_delta_avx2_v1.py" \
+  "$runtime/$preregistration" \
+  "$runtime/$benchmark" \
   clark_quantize/ternary_cpu.c \
   clark_quantize/ternary_cpu.py \
   clark_quantize/test_ternary_cpu.py \
@@ -70,7 +74,7 @@ printf 'pass\n' > "$state/TESTS_PASS"
 
 set +e
 CLARK_TERNARY_CPU_LIB="$library" PYTHONPATH="$repo" \
-  "$python_bin" "$runtime/benchmark_qwen38_27b_recurrent_delta_avx2_v1.py" \
+  "$python_bin" "$runtime/$benchmark" \
   --receipt "$result" \
   > "$state/benchmark.stdout" 2> "$state/benchmark.stderr"
 benchmark_status=$?
@@ -83,11 +87,11 @@ if (( benchmark_status != 0 && benchmark_status != 2 )); then
   echo "Qwen3.8-27B recurrent DeltaNet benchmark had unexpected exit $benchmark_status" >&2
   exit "$benchmark_status"
 fi
-"$python_bin" - "$result" "$benchmark_status" <<'PY'
+"$python_bin" - "$result" "$benchmark_status" "$receipt_schema" <<'PY'
 import json, sys
 receipt = json.load(open(sys.argv[1]))
 status = int(sys.argv[2])
-if receipt.get("schema") != "qwen38_27b_recurrent_delta_avx2_receipt_v1":
+if receipt.get("schema") != sys.argv[3]:
     raise SystemExit("recurrent DeltaNet receipt schema changed")
 passed = receipt.get("gate", {}).get("passed") is True
 if passed != (status == 0):
@@ -101,11 +105,11 @@ fi
 free -b > "$state/memory-after.txt"
 printf 'terminal\n' > "$state/BENCHMARK_TERMINAL"
 
-"$python_bin" - "$state" "$result" <<'PY'
+"$python_bin" - "$state" "$result" "$watch_receipt_schema" <<'PY'
 import hashlib, json, sys
 from datetime import datetime, timezone
 from pathlib import Path
-state, result = map(Path, sys.argv[1:])
+state, result = map(Path, sys.argv[1:3])
 content = result.read_bytes()
 candidate = json.loads(content)
 files = {}
@@ -116,7 +120,7 @@ for path in sorted(state.iterdir()):
             "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         }
 receipt = {
-    "schema": "qwen38_27b_recurrent_delta_avx2_watch_receipt_v1",
+    "schema": sys.argv[3],
     "completed_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     "model": "Qwen/Qwen3.8-27B",
     "terminal": True,

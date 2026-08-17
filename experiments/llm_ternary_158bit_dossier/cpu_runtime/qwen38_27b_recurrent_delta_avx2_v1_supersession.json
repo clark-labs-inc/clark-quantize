@@ -1,0 +1,17 @@
+{
+  "schema": "qwen38_27b_recurrent_delta_avx2_supersession_v1",
+  "created_at_utc": "2026-08-17T16:05:00Z",
+  "superseded_preregistration": "qwen38_27b_recurrent_delta_avx2_preregistration_v1.json",
+  "superseded_preregistration_sha256": "683d6710014b1ad2dc56bcafdf6d66a91ca812e9e459cb5c988afdc9308ea793",
+  "superseded_before_execution": true,
+  "candidate_receipt_created": false,
+  "watch_receipt_created": false,
+  "reason": "The v1 scalar control assumed q/k were already normalized and omitted Qwen3.8-27B's additional query scale of 1/sqrt(128). The error was found by re-reading the pinned Transformers Qwen3.5 recurrent fallback before the waiting service executed.",
+  "model_contract_source": {
+    "transformers_version": "5.15.0",
+    "modeling_qwen3_5_py_sha256": "67cf849081143a998f0e189c551e4b5f532365a055805570747385e400372abb",
+    "equation": "q = raw_q * rsqrt(sum(raw_q^2) + 1e-6) / sqrt(128); k = raw_k * rsqrt(sum(raw_k^2) + 1e-6)"
+  },
+  "replacement": "qwen38_27b_recurrent_delta_avx2_preregistration_v2.json",
+  "scientific_interpretation": "v1 has no performance or correctness observation and is neither a failed result nor a completed result"
+}

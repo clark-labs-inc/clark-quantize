@@ -20,7 +20,7 @@ GEMV_PREREGISTRATION = (
 RECURRENT_DELTA_PREREGISTRATION = (
     ROOT
     / "experiments/llm_ternary_158bit_dossier/cpu_runtime/"
-    "qwen38_27b_recurrent_delta_avx2_preregistration_v1.json"
+    "qwen38_27b_recurrent_delta_avx2_preregistration_v2.json"
 )
 
 
@@ -136,6 +136,9 @@ class EvaluationPreregistrationTests(unittest.TestCase):
         )
         self.assertTrue(value["gate"]["require_exact_scalar_avx2_output"])
         self.assertTrue(value["gate"]["require_exact_scalar_avx2_final_state"])
+        self.assertEqual(value["model_contract"]["qk_l2_epsilon"], 1e-6)
+        self.assertEqual(value["model_contract"]["query_scale"], "1/sqrt(128)")
+        self.assertTrue(value["supersedes"]["before_execution"])
         self.assertGreaterEqual(
             value["gate"][
                 "minimum_full_stack_recurrence_only_tokens_per_second"

@@ -288,8 +288,6 @@ class TernaryCpuNativeTests(unittest.TestCase):
             value_heads = key_heads * repeat
             query = generator.normal(size=(key_heads, dimension)).astype(np.float32)
             key = generator.normal(size=(key_heads, dimension)).astype(np.float32)
-            query /= np.linalg.norm(query, axis=1, keepdims=True)
-            key /= np.linalg.norm(key, axis=1, keepdims=True)
             value = generator.normal(size=(value_heads, dimension)).astype(np.float32)
             log_decay = -generator.uniform(0.001, 2.0, size=value_heads).astype(np.float32)
             beta = generator.uniform(0.01, 0.99, size=value_heads).astype(np.float32)
@@ -301,12 +299,19 @@ class TernaryCpuNativeTests(unittest.TestCase):
             expected = np.empty_like(value)
             for head in range(value_heads):
                 key_head = head // repeat
+                normalized_query = query[key_head] / np.sqrt(
+                    np.sum(query[key_head] * query[key_head]) + np.float32(1e-6)
+                )
+                normalized_query /= np.sqrt(np.float32(dimension))
+                normalized_key = key[key_head] / np.sqrt(
+                    np.sum(key[key_head] * key[key_head]) + np.float32(1e-6)
+                )
                 expected_state[head] *= np.exp(log_decay[head])
                 with np.errstate(all="ignore"):
-                    memory = key[key_head] @ expected_state[head]
+                    memory = normalized_key @ expected_state[head]
                     delta = (value[head] - memory) * beta[head]
-                    expected_state[head] += np.outer(key[key_head], delta)
-                    expected[head] = query[key_head] @ expected_state[head]
+                    expected_state[head] += np.outer(normalized_key, delta)
+                    expected[head] = normalized_query @ expected_state[head]
             self.assertTrue(np.all(np.isfinite(expected)))
             self.assertTrue(np.all(np.isfinite(expected_state)))
 

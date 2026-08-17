@@ -1294,7 +1294,7 @@ def recurrent_gated_delta_f32(
     implementation: str = "scalar",
     validated: bool = False,
 ) -> np.ndarray:
-    """Run one Qwen3.8 recurrent Gated DeltaNet token in FP32."""
+    """Run one Qwen3.8 recurrent Gated DeltaNet token from raw q/k in FP32."""
     if _LIBRARY is None or not hasattr(
         _LIBRARY, "cq3_recurrent_gated_delta_f32_scalar"
     ):

@@ -97,20 +97,25 @@ def run_full_stack(
     return elapsed, output
 
 
-def main() -> None:
+def main(
+    *,
+    preregistration_filename: str = (
+        "qwen38_27b_recurrent_delta_avx2_preregistration_v1.json"
+    ),
+    default_receipt: str = (
+        "/workspace/quant-state/qwen38-27b-recurrent-delta-avx2-v1.json"
+    ),
+    receipt_schema: str = "qwen38_27b_recurrent_delta_avx2_receipt_v1",
+) -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--receipt",
         type=Path,
-        default=Path(
-            "/workspace/quant-state/qwen38-27b-recurrent-delta-avx2-v1.json"
-        ),
+        default=Path(default_receipt),
     )
     args = parser.parse_args()
     runtime = Path(__file__).resolve().parent
-    prereg_path = (
-        runtime / "qwen38_27b_recurrent_delta_avx2_preregistration_v1.json"
-    )
+    prereg_path = runtime / preregistration_filename
     prereg = json.loads(prereg_path.read_text())
     scope = prereg["scope"]
     if scope["active_model_only"] != "Qwen/Qwen3.8-27B":
@@ -136,8 +141,6 @@ def main() -> None:
     generator = np.random.default_rng(int(prereg["candidate"]["seed"]))
     query = generator.normal(size=(layers, key_heads, dimension)).astype(np.float32)
     key = generator.normal(size=(layers, key_heads, dimension)).astype(np.float32)
-    query /= np.linalg.norm(query, axis=2, keepdims=True)
-    key /= np.linalg.norm(key, axis=2, keepdims=True)
     value = generator.normal(size=(layers, value_heads, dimension)).astype(np.float32)
     log_decay = -generator.uniform(
         0.001, 2.0, size=(layers, value_heads)
@@ -250,7 +253,7 @@ def main() -> None:
         and major_faults == 0
     )
     receipt = {
-        "schema": "qwen38_27b_recurrent_delta_avx2_receipt_v1",
+        "schema": receipt_schema,
         "created_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "repository_commit": subprocess.check_output(
             ["git", "-C", str(REPO), "rev-parse", "HEAD"], text=True

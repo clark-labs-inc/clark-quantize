@@ -145,11 +145,12 @@ The native FP32 scalar oracle and AVX2 channel-vectorized implementation now
 exist and cover the exact 10,240-channel shape. Randomized state/output tests
 pass locally; the AVX2 performance and x86 parity gate remains open.
 
-K6 consumes normalized q/k, value, sigmoid beta, and FP32 decay `g`. Per value
-head it updates an FP32 `128 x 128` recurrent matrix and emits one 128-wide
-value. The implementation must not allocate a new 3 MiB state per layer per
-token. Q and K heads are logically repeated from 16 to 48 heads, but the kernel
-should index or broadcast them rather than materializing the repeats.
+K6 consumes raw q/k, value, sigmoid beta, and FP32 decay `g`. It fuses the
+reference q/k L2 normalization with epsilon `1e-6` and the additional query
+scale `1/sqrt(128)`. Per value head it updates an FP32 `128 x 128` recurrent
+matrix and emits one 128-wide value. The implementation must not allocate a
+new 3 MiB state per layer per token. Q and K heads are logically repeated from
+16 to 48 heads, but the kernel indexes them rather than materializing repeats.
 The dependency-free FP32 scalar C oracle now implements the exact 16-to-48
 head mapping and mutates the real `48 x 128 x 128` state in place. It matches a
 NumPy equation-level control on the full Qwen shape. An AVX2 implementation

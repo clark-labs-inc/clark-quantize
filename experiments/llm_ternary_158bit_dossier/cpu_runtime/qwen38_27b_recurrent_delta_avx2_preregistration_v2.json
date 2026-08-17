@@ -1,0 +1,76 @@
+{
+  "schema": "qwen38_27b_recurrent_delta_avx2_preregistration_v2",
+  "receipt_schema": "qwen38_27b_recurrent_delta_avx2_receipt_v2",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T16:06:00Z",
+  "supersedes": {
+    "preregistration": "qwen38_27b_recurrent_delta_avx2_preregistration_v1.json",
+    "preregistration_sha256": "683d6710014b1ad2dc56bcafdf6d66a91ca812e9e459cb5c988afdc9308ea793",
+    "before_execution": true,
+    "reason": "v1 omitted fused q/k L2 normalization and the required query scale"
+  },
+  "objective": "Validate and measure the model-correct AVX2 single-token recurrent Gated DeltaNet update at the exact Qwen3.8-27B shape, including raw q/k preprocessing and an actual 48-layer state stream",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "operator": "single-token recurrent Gated DeltaNet q/k preprocessing plus state update",
+    "key_heads": 16,
+    "value_heads": 48,
+    "query_key_repeat_factor": 3,
+    "head_dimension": 128,
+    "deltanet_layers": 48,
+    "state_dtype": "FP32",
+    "state_bytes_per_layer": 3145728,
+    "state_bytes_all_layers": 150994944,
+    "claim_boundary": "isolated q/k preprocessing and recurrence only; excludes projections, causal convolution, post-recurrence RMSNorm/gating, output projection, attention, MLP, lexical operators, sampling, and end-to-end model execution"
+  },
+  "model_contract": {
+    "source": "Transformers 5.15.0 qwen3_5 recurrent fallback",
+    "source_sha256": "67cf849081143a998f0e189c551e4b5f532365a055805570747385e400372abb",
+    "qk_l2_epsilon": 0.000001,
+    "query_scale": "1/sqrt(128)",
+    "raw_q_contract": "q = raw_q * rsqrt(sum(raw_q^2) + 1e-6) / sqrt(128)",
+    "raw_k_contract": "k = raw_k * rsqrt(sum(raw_k^2) + 1e-6)",
+    "state_equations": "state *= exp(g); memory = k @ state; delta = (value - memory) * beta; state += outer(k, delta); output = q @ state"
+  },
+  "candidate": {
+    "implementation": "cq3_recurrent_gated_delta_f32_avx2_trusted",
+    "vector_axis": "eight adjacent state columns",
+    "numeric_contract": "scalar-order FP32 q/k norm sums and separate FP32 multiply/add in the same per-column row order as the scalar oracle; no FMA contraction",
+    "state_update": "in place without materialized normalized q/k or repeated 16-to-48 q/k heads and without per-token state allocation",
+    "trusted_entry_contract": "the enclosing graph guarantees finite raw q/k/value/decay/beta/state; the entry point still checks pointers and dimensions and the kernel still rejects non-finite output",
+    "seed": 20260817
+  },
+  "control": {
+    "implementation": "cq3_recurrent_gated_delta_f32_scalar_trusted",
+    "parity_requirement": "bit-exact FP32 output and final state at the exact one-layer model shape using the same model-correct raw q/k contract"
+  },
+  "measurement": {
+    "one_layer_warmups_per_implementation": 2,
+    "one_layer_paired_repetitions": 11,
+    "one_layer_order": "alternating scalar-avx2 and avx2-scalar pairs with state reset outside the timed interval",
+    "full_stack_warmups": 1,
+    "full_stack_repetitions": 7,
+    "full_stack_state": "48 independent 3 MiB recurrent states, updated sequentially without reset between timed tokens",
+    "threads": 1,
+    "cpu_affinity": "exactly one caller-supplied logical CPU",
+    "cache_interpretation": "the full 144 MiB state stream is authoritative for recurrence-only tokens/s; one-layer latency is a kernel diagnostic only"
+  },
+  "gate": {
+    "require_exact_scalar_avx2_output": true,
+    "require_exact_scalar_avx2_final_state": true,
+    "minimum_one_layer_avx2_speedup_over_scalar": 3.0,
+    "minimum_full_stack_recurrence_only_tokens_per_second": 2.0,
+    "maximum_full_stack_median_seconds_per_token": 0.5,
+    "maximum_process_peak_rss_bytes": 268435456,
+    "require_all_outputs_and_states_finite": true,
+    "require_zero_major_page_faults_during_timed_full_stack": true
+  },
+  "promotion_rules": [
+    "a pass promotes only the model-correct AVX2 q/k preprocessing plus recurrence implementation from reference to measured kernel",
+    "a pass does not establish full-layer parity because projections, convolution, post-recurrence normalization and gating, and output projection remain outside this benchmark",
+    "a pass does not establish end-to-end tokens per second, model capability, storage efficiency, or energy efficiency",
+    "CUTE plus MMLU-type or MATH-500 capability gates remain mandatory after graph integration",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "no scientific breakthrough claim can come from this isolated microkernel"
+  ]
+}

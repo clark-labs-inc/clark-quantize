@@ -3715,6 +3715,7 @@ int cq3_causal_conv4_silu_f32_avx2(
 }
 
 #define CQ3_GATED_DELTA_MAX_HEAD_DIM 256U
+#define CQ3_GATED_DELTA_QK_EPSILON 1.0e-6f
 
 static int cq3_validate_recurrent_gated_delta_shape(
     const float *CQ3_RESTRICT query,
@@ -3810,13 +3811,26 @@ static int cq3_recurrent_gated_delta_f32_scalar_impl(
         float *head_state = state + (uint64_t)head * head_dim * head_dim;
         float *head_output = output + (uint64_t)head * head_dim;
         const float decay = expf(log_decay[head]);
+        float query_squares = 0.0f;
+        float key_squares = 0.0f;
+        for (uint32_t row = 0U; row < head_dim; ++row) {
+            query_squares += q[row] * q[row];
+            key_squares += k[row] * k[row];
+        }
+        const float query_multiplier = 1.0f / (
+            sqrtf(query_squares + CQ3_GATED_DELTA_QK_EPSILON) *
+            sqrtf((float)head_dim)
+        );
+        const float key_multiplier = 1.0f / sqrtf(
+            key_squares + CQ3_GATED_DELTA_QK_EPSILON
+        );
         for (uint32_t column = 0U; column < head_dim; ++column) {
             memory[column] = 0.0f;
             head_output[column] = 0.0f;
         }
         for (uint32_t row = 0U; row < head_dim; ++row) {
             float *state_row = head_state + (uint64_t)row * head_dim;
-            const float key_value = k[row];
+            const float key_value = k[row] * key_multiplier;
             for (uint32_t column = 0U; column < head_dim; ++column) {
                 state_row[column] *= decay;
                 memory[column] += state_row[column] * key_value;
@@ -3828,8 +3842,8 @@ static int cq3_recurrent_gated_delta_f32_scalar_impl(
         }
         for (uint32_t row = 0U; row < head_dim; ++row) {
             float *state_row = head_state + (uint64_t)row * head_dim;
-            const float key_value = k[row];
-            const float query_value = q[row];
+            const float key_value = k[row] * key_multiplier;
+            const float query_value = q[row] * query_multiplier;
             for (uint32_t column = 0U; column < head_dim; ++column) {
                 state_row[column] += key_value * delta[column];
                 head_output[column] += state_row[column] * query_value;
@@ -3919,6 +3933,19 @@ static int cq3_recurrent_gated_delta_f32_avx2_impl(
         float *head_state = state + (uint64_t)head * head_dim * head_dim;
         float *head_output = output + (uint64_t)head * head_dim;
         const float decay = expf(log_decay[head]);
+        float query_squares = 0.0f;
+        float key_squares = 0.0f;
+        for (uint32_t row = 0U; row < head_dim; ++row) {
+            query_squares += q[row] * q[row];
+            key_squares += k[row] * k[row];
+        }
+        const float query_multiplier = 1.0f / (
+            sqrtf(query_squares + CQ3_GATED_DELTA_QK_EPSILON) *
+            sqrtf((float)head_dim)
+        );
+        const float key_multiplier = 1.0f / sqrtf(
+            key_squares + CQ3_GATED_DELTA_QK_EPSILON
+        );
         uint32_t column = 0U;
         const __m256 zero = _mm256_setzero_ps();
         for (; column + 8U <= head_dim; column += 8U) {
@@ -3932,7 +3959,9 @@ static int cq3_recurrent_gated_delta_f32_avx2_impl(
         for (uint32_t row = 0U; row < head_dim; ++row) {
             float *state_row = head_state + (uint64_t)row * head_dim;
             const __m256 decay_vector = _mm256_set1_ps(decay);
-            const __m256 key_vector = _mm256_set1_ps(k[row]);
+            const __m256 key_vector = _mm256_set1_ps(
+                k[row] * key_multiplier
+            );
             column = 0U;
             for (; column + 8U <= head_dim; column += 8U) {
                 __m256 state_vector = _mm256_loadu_ps(state_row + column);
@@ -3947,7 +3976,8 @@ static int cq3_recurrent_gated_delta_f32_avx2_impl(
             }
             for (; column < head_dim; ++column) {
                 state_row[column] *= decay;
-                memory[column] += state_row[column] * k[row];
+                memory[column] +=
+                    state_row[column] * (k[row] * key_multiplier);
             }
         }
         const __m256 beta_vector = _mm256_set1_ps(beta[head]);
@@ -3965,8 +3995,10 @@ static int cq3_recurrent_gated_delta_f32_avx2_impl(
         }
         for (uint32_t row = 0U; row < head_dim; ++row) {
             float *state_row = head_state + (uint64_t)row * head_dim;
-            const __m256 key_vector = _mm256_set1_ps(k[row]);
-            const __m256 query_vector = _mm256_set1_ps(q[row]);
+            const float key_value = k[row] * key_multiplier;
+            const float query_value = q[row] * query_multiplier;
+            const __m256 key_vector = _mm256_set1_ps(key_value);
+            const __m256 query_vector = _mm256_set1_ps(query_value);
             column = 0U;
             for (; column + 8U <= head_dim; column += 8U) {
                 __m256 state_vector = _mm256_loadu_ps(state_row + column);
@@ -3984,8 +4016,8 @@ static int cq3_recurrent_gated_delta_f32_avx2_impl(
                 _mm256_storeu_ps(head_output + column, output_vector);
             }
             for (; column < head_dim; ++column) {
-                state_row[column] += k[row] * delta[column];
-                head_output[column] += state_row[column] * q[row];
+                state_row[column] += key_value * delta[column];
+                head_output[column] += state_row[column] * query_value;
             }
         }
         for (column = 0U; column < head_dim; ++column) {
