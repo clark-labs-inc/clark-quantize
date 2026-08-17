@@ -121,25 +121,34 @@ int cq3_block203_size(
     return CQ3_OK;
 }
 
-static int cq3_block203_mul3_add(uint64_t limbs[4], uint32_t digit) {
-    unsigned __int128 carry = digit;
+static const uint16_t cq3_block203_powers3[6] = {1U, 3U, 9U, 27U, 81U, 243U};
+
+static int cq3_block203_mul_small_add(
+    uint64_t limbs[4],
+    uint32_t multiplier,
+    uint32_t addend
+) {
+    unsigned __int128 carry = addend;
     for (uint32_t limb = 0U; limb < 4U; ++limb) {
         const unsigned __int128 value =
-            (unsigned __int128)limbs[limb] * 3U + carry;
+            (unsigned __int128)limbs[limb] * multiplier + carry;
         limbs[limb] = (uint64_t)value;
         carry = value >> 64U;
     }
     return carry == 0U ? CQ3_OK : CQ3_ERROR_SHAPE;
 }
 
-static uint32_t cq3_block203_divmod3(uint64_t limbs[4]) {
+static uint32_t cq3_block203_divmod_small(
+    uint64_t limbs[4],
+    uint32_t divisor
+) {
     uint32_t remainder = 0U;
     for (uint32_t reverse = 4U; reverse > 0U; --reverse) {
         const uint32_t limb = reverse - 1U;
         const unsigned __int128 value =
             ((unsigned __int128)remainder << 64U) | limbs[limb];
-        limbs[limb] = (uint64_t)(value / 3U);
-        remainder = (uint32_t)(value % 3U);
+        limbs[limb] = (uint64_t)(value / divisor);
+        remainder = (uint32_t)(value % divisor);
     }
     return remainder;
 }
@@ -235,15 +244,31 @@ int cq3_pack_block203(
                 : CQ3_BLOCK203_TRITS_PER_GROUP
         );
         uint64_t limbs[4] = {0U, 0U, 0U, 0U};
-        for (uint32_t reverse = group_count; reverse > 0U; --reverse) {
-            const int code = (int)codes[start + reverse - 1U];
-            if (code < -1 || code > 1) {
-                return CQ3_ERROR_CODE;
+        uint32_t chunk_count = group_count % 5U;
+        if (chunk_count == 0U) {
+            chunk_count = 5U;
+        }
+        uint32_t chunk_start = group_count - chunk_count;
+        while (1) {
+            uint32_t chunk_value = 0U;
+            for (uint32_t lane = 0U; lane < chunk_count; ++lane) {
+                const int code = (int)codes[start + chunk_start + lane];
+                if (code < -1 || code > 1) {
+                    return CQ3_ERROR_CODE;
+                }
+                chunk_value += (uint32_t)(code + 1) * cq3_block203_powers3[lane];
             }
-            status = cq3_block203_mul3_add(limbs, (uint32_t)(code + 1));
+            status = cq3_block203_mul_small_add(
+                limbs, cq3_block203_powers3[chunk_count], chunk_value
+            );
             if (status != CQ3_OK) {
                 return status;
             }
+            if (chunk_start == 0U) {
+                break;
+            }
+            chunk_count = 5U;
+            chunk_start -= chunk_count;
         }
         cq3_block203_write_bits(
             limbs,
@@ -293,8 +318,19 @@ int cq3_unpack_block203(
             &payload_cursor,
             limbs
         );
-        for (uint32_t index = 0U; index < group_count; ++index) {
-            codes[start + index] = (int8_t)cq3_block203_divmod3(limbs) - 1;
+        for (uint32_t index = 0U; index < group_count; index += 5U) {
+            const uint32_t chunk_count =
+                group_count - index < 5U ? group_count - index : 5U;
+            uint32_t chunk_value = cq3_block203_divmod_small(
+                limbs, cq3_block203_powers3[chunk_count]
+            );
+            for (uint32_t lane = 0U; lane < chunk_count; ++lane) {
+                codes[start + index + lane] = (int8_t)(chunk_value % 3U) - 1;
+                chunk_value /= 3U;
+            }
+            if (chunk_value != 0U) {
+                return CQ3_ERROR_CODE;
+            }
         }
         if (!cq3_block203_is_zero(limbs)) {
             return CQ3_ERROR_CODE;
