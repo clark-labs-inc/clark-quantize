@@ -10,7 +10,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-REPO = Path(__file__).resolve().parents[4]
+REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO))
 
 from clark_quantize.base3_chunks import atomic_bytes, canonical_json
