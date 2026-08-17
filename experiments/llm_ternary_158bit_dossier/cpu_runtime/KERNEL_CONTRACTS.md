@@ -227,6 +227,13 @@ The first graph may use Q6/Q8 embedding rows and an int4/Q6 head. A ternary head
 is promoted only if QAT recovers the lexical quality loss. The LM-head kernel
 must fuse or stream top-k selection so it does not materialize avoidable copies
 of the 248,320-way logit vector.
+Both canonical block203 and aligned-cache tensor views can now decode one
+byte-addressable embedding row with its row-anchor/codebook scales without
+materializing the vocabulary matrix. The text-only runtime composes that row,
+64 authenticated decoder layers and their compact states, final learned-offset
+RMSNorm, the 248,320-row LM-head GEMV, and deterministic top-k. It currently
+materializes one FP32 logits vector and therefore does not yet satisfy the
+fused streaming top-k product target.
 
 ## K11: execution system
 

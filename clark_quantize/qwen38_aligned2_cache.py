@@ -28,6 +28,7 @@ from .qwen38_cq3_runtime import (
     Qwen38CQ3FullAttention,
     Qwen38CQ3MLP,
     Qwen38CQ3RuntimeImage,
+    Qwen38CQ3TextModel,
 )
 from .ternary_cpu import native_block203_transcode_available
 
@@ -797,6 +798,32 @@ class Qwen38Aligned2RuntimeImage:
                     f"{prefix}.post_attention_layernorm.weight"
                 ).as_f32()
             ),
+        )
+
+    def text_model(self) -> Qwen38CQ3TextModel:
+        config = json.loads(self.auxiliary_file("config.json").tobytes())
+        text_config = config.get("text_config", {})
+        layer_types = tuple(text_config.get("layer_types", ()))
+        if (
+            text_config.get("hidden_size") != Qwen38CQ3TextModel.HIDDEN_SIZE
+            or text_config.get("vocab_size") != Qwen38CQ3TextModel.VOCAB_SIZE
+            or text_config.get("num_hidden_layers") != Qwen38CQ3TextModel.LAYERS
+            or len(layer_types) != Qwen38CQ3TextModel.LAYERS
+        ):
+            raise CQ3RuntimeError("Qwen3.8 text config changed")
+        return Qwen38CQ3TextModel(
+            embedding=self.aligned_tensor(
+                "model.language_model.embed_tokens.weight"
+            ),
+            layers=tuple(
+                self.decoder_layer(layer)
+                for layer in range(Qwen38CQ3TextModel.LAYERS)
+            ),
+            layer_types=layer_types,
+            final_norm_offsets=np.ascontiguousarray(
+                self.exact_tensor("model.language_model.norm.weight").as_f32()
+            ),
+            lm_head=self.aligned_tensor("lm_head.weight"),
         )
 
     def exact_tensor(self, name: str):

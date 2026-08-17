@@ -31,6 +31,8 @@ from .ternary_cpu import (
     sigmoid_gate_f32,
     swiglu_f32,
     transcode_block203_rows_to_group128_2bit,
+    unpack_block203_rows,
+    unpack_group128_2bit,
 )
 
 
@@ -40,6 +42,23 @@ ROW_NORMALIZED_SCALE_KIND = (
 )
 GROUP_SIZE = 128
 FULL_GROUP_BITS = 203
+
+
+def _decode_row_scales(
+    packed_indices: np.ndarray,
+    row_anchors: np.ndarray,
+    ratio_codebook: np.ndarray,
+    row: int,
+    groups: int,
+) -> np.ndarray:
+    positions = np.arange(row * groups, (row + 1) * groups, dtype=np.int64)
+    packed = packed_indices[positions // 2]
+    shifts = ((positions & 1) * 4).astype(np.uint8)
+    indices = (packed >> shifts) & np.uint8(0x0F)
+    return (
+        np.float32(row_anchors[row])
+        * ratio_codebook[indices].astype(np.float32)
+    )
 
 
 class CQ3RuntimeError(CQ3ContainerError):
@@ -136,6 +155,33 @@ class Qwen38CQ3TernaryTensorView:
             cpu_ids=cpu_ids,
         )
 
+    def decode_row_f32(self, row: int) -> np.ndarray:
+        """Decode one authenticated row without materializing the matrix."""
+        if not isinstance(row, int) or isinstance(row, bool) or not 0 <= row < self.rows:
+            raise ValueError(f"{self.name} row index is out of range")
+        row_bits = matrix_payload_bits(1, self.columns)
+        if row_bits % 8:
+            raise CQ3RuntimeError(
+                f"{self.name} rows are not independently byte-addressable"
+            )
+        row_bytes = matrix_payload_bytes(1, self.columns)
+        start = row * row_bytes
+        codes = unpack_block203_rows(
+            self.packed_weights[start : start + row_bytes], 1, self.columns
+        )[0]
+        groups = self.columns // GROUP_SIZE
+        scales = _decode_row_scales(
+            self.packed_scale_indices,
+            self.row_anchors,
+            self.ratio_codebook,
+            row,
+            groups,
+        )
+        return (
+            codes.reshape(groups, GROUP_SIZE).astype(np.float32)
+            * scales[:, None]
+        ).reshape(self.columns)
+
 
 @dataclass(frozen=True)
 class Qwen38CQ3AlignedTensor:
@@ -204,6 +250,26 @@ class Qwen38CQ3AlignedTensor:
             executor=executor,
             cpu_ids=cpu_ids,
         )
+
+    def decode_row_f32(self, row: int) -> np.ndarray:
+        """Decode one row from the aligned working representation."""
+        if not isinstance(row, int) or isinstance(row, bool) or not 0 <= row < self.rows:
+            raise ValueError(f"{self.name} row index is out of range")
+        codes = unpack_group128_2bit(
+            self.packed_weights[row], self.columns
+        )
+        groups = self.columns // GROUP_SIZE
+        scales = _decode_row_scales(
+            self.packed_scale_indices,
+            self.row_anchors,
+            self.ratio_codebook,
+            row,
+            groups,
+        )
+        return (
+            codes.reshape(groups, GROUP_SIZE).astype(np.float32)
+            * scales[:, None]
+        ).reshape(self.columns)
 
 
 @dataclass(frozen=True)
@@ -1056,3 +1122,172 @@ class Qwen38CQ3DecoderLayer:
         if not np.all(np.isfinite(output)):
             raise ValueError("Qwen3.8 decoder produced non-finite output")
         return output
+
+
+@dataclass
+class Qwen38TextState:
+    """All mutable batch-one text state for the 64-layer Qwen3.8 graph."""
+
+    layer_states: list[tuple[np.ndarray, np.ndarray] | Qwen38AttentionState]
+    position: int = 0
+
+    @classmethod
+    def allocate(
+        cls, layer_types: tuple[str, ...], context_capacity: int
+    ) -> "Qwen38TextState":
+        if len(layer_types) != Qwen38CQ3TextModel.LAYERS:
+            raise ValueError("Qwen3.8 text layer inventory changed")
+        states: list[tuple[np.ndarray, np.ndarray] | Qwen38AttentionState] = []
+        for layer_type in layer_types:
+            if layer_type == "linear_attention":
+                states.append(
+                    (
+                        np.zeros(
+                            (3, Qwen38CQ3DeltaNet.CONV_DIM), dtype=np.float32
+                        ),
+                        np.zeros(
+                            (
+                                Qwen38CQ3DeltaNet.VALUE_HEADS,
+                                Qwen38CQ3DeltaNet.HEAD_DIM,
+                                Qwen38CQ3DeltaNet.HEAD_DIM,
+                            ),
+                            dtype=np.float32,
+                        ),
+                    )
+                )
+            elif layer_type == "full_attention":
+                states.append(Qwen38AttentionState.allocate(context_capacity))
+            else:
+                raise ValueError("Qwen3.8 text layer type changed")
+        return cls(states)
+
+
+@dataclass(frozen=True)
+class Qwen38CQ3TextModel:
+    """Text-only batch-one Qwen3.8-27B decode graph over CQ3 tensors."""
+
+    embedding: Qwen38CQ3TernaryTensorView | Qwen38CQ3AlignedTensor
+    layers: tuple[Qwen38CQ3DecoderLayer, ...]
+    layer_types: tuple[str, ...]
+    final_norm_offsets: np.ndarray
+    lm_head: Qwen38CQ3TernaryTensorView | Qwen38CQ3AlignedTensor
+
+    HIDDEN_SIZE = 5120
+    VOCAB_SIZE = 248320
+    LAYERS = 64
+
+    def __post_init__(self) -> None:
+        if (
+            tuple(self.embedding.shape) != (self.VOCAB_SIZE, self.HIDDEN_SIZE)
+            or tuple(self.lm_head.shape) != (self.VOCAB_SIZE, self.HIDDEN_SIZE)
+            or len(self.layers) != self.LAYERS
+            or len(self.layer_types) != self.LAYERS
+            or tuple(layer.mixer_kind for layer in self.layers) != self.layer_types
+            or self.final_norm_offsets.dtype != np.float32
+            or not self.final_norm_offsets.flags.c_contiguous
+            or self.final_norm_offsets.shape != (self.HIDDEN_SIZE,)
+            or not np.all(np.isfinite(self.final_norm_offsets))
+        ):
+            raise CQ3RuntimeError("Qwen3.8 text graph contract changed")
+
+    @classmethod
+    def from_image(
+        cls, image: Qwen38CQ3RuntimeImage
+    ) -> "Qwen38CQ3TextModel":
+        config = json.loads(image.auxiliary_file("config.json").tobytes())
+        text_config = config.get("text_config", {})
+        layer_types = tuple(text_config.get("layer_types", ()))
+        if (
+            text_config.get("hidden_size") != cls.HIDDEN_SIZE
+            or text_config.get("vocab_size") != cls.VOCAB_SIZE
+            or text_config.get("num_hidden_layers") != cls.LAYERS
+            or len(layer_types) != cls.LAYERS
+        ):
+            raise CQ3RuntimeError("Qwen3.8 text config changed")
+        return cls(
+            embedding=image.ternary_tensor(
+                "model.language_model.embed_tokens.weight"
+            ),
+            layers=tuple(
+                Qwen38CQ3DecoderLayer.from_image(image, layer)
+                for layer in range(cls.LAYERS)
+            ),
+            layer_types=layer_types,
+            final_norm_offsets=np.ascontiguousarray(
+                image.exact_tensor("model.language_model.norm.weight").as_f32()
+            ),
+            lm_head=image.ternary_tensor("lm_head.weight"),
+        )
+
+    def allocate_state(self, context_capacity: int) -> Qwen38TextState:
+        return Qwen38TextState.allocate(self.layer_types, context_capacity)
+
+    def forward_token(
+        self,
+        token_id: int,
+        state: Qwen38TextState,
+        *,
+        gemv_implementation: str = "scalar_chunk16",
+        elementwise_implementation: str = "scalar",
+        threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
+        cpu_ids: list[int] | None = None,
+        validated_state: bool = False,
+    ) -> np.ndarray:
+        if (
+            not isinstance(token_id, int)
+            or isinstance(token_id, bool)
+            or not 0 <= token_id < self.VOCAB_SIZE
+        ):
+            raise ValueError("Qwen3.8 token id is out of range")
+        if len(state.layer_states) != self.LAYERS or state.position < 0:
+            raise ValueError("Qwen3.8 text state inventory changed")
+        hidden = self.embedding.decode_row_f32(token_id)
+        for layer, layer_state in zip(self.layers, state.layer_states):
+            hidden = layer.forward(
+                hidden,
+                layer_state,
+                state.position,
+                gemv_implementation=gemv_implementation,
+                elementwise_implementation=elementwise_implementation,
+                threads=threads,
+                executor=executor,
+                cpu_ids=cpu_ids,
+                validated_state=validated_state,
+            )
+        hidden = rmsnorm_offset_f32(
+            hidden,
+            self.final_norm_offsets,
+            implementation=elementwise_implementation,
+        )
+        hidden_q8, hidden_scales, hidden_sums = quantize_q8(hidden, GROUP_SIZE)
+        logits = self.lm_head.gemv_q8(
+            hidden_q8,
+            hidden_scales,
+            hidden_sums,
+            implementation=gemv_implementation,
+            threads=threads,
+            executor=executor,
+            cpu_ids=cpu_ids,
+        )
+        if logits.shape != (self.VOCAB_SIZE,) or not np.all(np.isfinite(logits)):
+            raise ValueError("Qwen3.8 text graph produced invalid logits")
+        state.position += 1
+        return logits
+
+    @staticmethod
+    def topk(logits: np.ndarray, count: int) -> tuple[np.ndarray, np.ndarray]:
+        values = np.asarray(logits, dtype=np.float32)
+        if (
+            values.ndim != 1
+            or not isinstance(count, int)
+            or isinstance(count, bool)
+            or count <= 0
+            or count > values.size
+            or not np.all(np.isfinite(values))
+        ):
+            raise ValueError("Qwen3.8 top-k inputs are invalid")
+        selected = np.argpartition(values, -count)[-count:]
+        order = np.argsort(values[selected])[::-1]
+        indices = selected[order].astype(np.int64, copy=False)
+        return values[indices], indices

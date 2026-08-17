@@ -24,6 +24,8 @@ from clark_quantize.qwen38_cq3_runtime import (
     Qwen38CQ3FullAttention,
     Qwen38CQ3MLP,
     Qwen38CQ3RuntimeImage,
+    Qwen38CQ3TextModel,
+    Qwen38TextState,
 )
 from clark_quantize.scale_codebook import pack_nibbles
 from clark_quantize.ternary_cpu import (
@@ -86,6 +88,57 @@ class FakeMLP:
     def forward(self, activation: np.ndarray, **kwargs) -> np.ndarray:
         del kwargs
         self.inputs.append(activation.copy())
+        return self.output.copy()
+
+
+class FakeDecoder:
+    def __init__(self, mixer_kind: str) -> None:
+        self.mixer_kind = mixer_kind
+        self.inputs: list[np.ndarray] = []
+
+    def forward(
+        self, hidden: np.ndarray, state, position: int, **kwargs
+    ) -> np.ndarray:
+        del state, position, kwargs
+        self.inputs.append(hidden.copy())
+        return hidden.copy()
+
+
+class FakeLexicalTensor:
+    def __init__(
+        self,
+        shape: tuple[int, int],
+        *,
+        row: np.ndarray | None = None,
+        output: np.ndarray | None = None,
+    ) -> None:
+        self.shape = shape
+        self.rows, self.columns = shape
+        self.row = row
+        self.output = output
+        self.calls: list[tuple[np.ndarray, np.ndarray, np.ndarray]] = []
+
+    def decode_row_f32(self, row: int) -> np.ndarray:
+        del row
+        assert self.row is not None
+        return self.row.copy()
+
+    def gemv_q8(
+        self,
+        activation_q8: np.ndarray,
+        activation_scales: np.ndarray,
+        activation_sums: np.ndarray,
+        **kwargs,
+    ) -> np.ndarray:
+        del kwargs
+        self.calls.append(
+            (
+                activation_q8.copy(),
+                activation_scales.copy(),
+                activation_sums.copy(),
+            )
+        )
+        assert self.output is not None
         return self.output.copy()
 
 
@@ -302,6 +355,22 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
             np.testing.assert_array_equal(view.row_anchors, anchors)
             self.assertFalse(view.packed_weights.flags.writeable)
             self.assertTrue(np.shares_memory(view.packed_weights, image._mapping))
+            row = 3
+            groups = self.columns // 128
+            expected_scales = (
+                np.float32(anchors[row])
+                * view.ratio_codebook[
+                    indices.reshape(self.rows, groups)[row]
+                ].astype(np.float32)
+            )
+            expected_row = (
+                codes[row].reshape(groups, 128).astype(np.float32)
+                * expected_scales[:, None]
+            ).reshape(self.columns)
+            np.testing.assert_array_equal(view.decode_row_f32(row), expected_row)
+            np.testing.assert_array_equal(
+                view.derive_aligned2().decode_row_f32(row), expected_row
+            )
             exact = image.exact_tensor(
                 "model.layers.0.input_layernorm.weight"
             )
@@ -678,6 +747,69 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
         np.testing.assert_array_equal(mixer.inputs[0], expected_mixer_input)
         np.testing.assert_array_equal(mlp.inputs[0], expected_mlp_input)
         np.testing.assert_array_equal(actual, expected)
+
+    @unittest.skipUnless(native_available(), "native ternary CPU library is absent")
+    def test_text_graph_composes_embedding_layers_norm_head_and_topk(self) -> None:
+        model = Qwen38CQ3TextModel
+        embedding_row = np.linspace(
+            -1.0, 1.0, model.HIDDEN_SIZE, dtype=np.float32
+        )
+        logits = np.linspace(
+            -2.0, 2.0, model.VOCAB_SIZE, dtype=np.float32
+        )
+        embedding = FakeLexicalTensor(
+            (model.VOCAB_SIZE, model.HIDDEN_SIZE), row=embedding_row
+        )
+        lm_head = FakeLexicalTensor(
+            (model.VOCAB_SIZE, model.HIDDEN_SIZE), output=logits
+        )
+        layer_types = tuple(
+            "full_attention" if (index + 1) % 4 == 0 else "linear_attention"
+            for index in range(model.LAYERS)
+        )
+        layers = tuple(FakeDecoder(kind) for kind in layer_types)
+        final_offsets = np.linspace(
+            -0.05, 0.05, model.HIDDEN_SIZE, dtype=np.float32
+        )
+        graph = model(
+            embedding=embedding,
+            layers=layers,
+            layer_types=layer_types,
+            final_norm_offsets=final_offsets,
+            lm_head=lm_head,
+        )
+        state = Qwen38TextState([object() for _ in range(model.LAYERS)])
+        actual = graph.forward_token(
+            17,
+            state,
+            gemv_implementation="scalar_chunk16",
+            elementwise_implementation="scalar",
+        )
+        np.testing.assert_array_equal(actual, logits)
+        self.assertEqual(state.position, 1)
+        for layer in layers:
+            np.testing.assert_array_equal(layer.inputs[0], embedding_row)
+        expected_hidden = rmsnorm_offset_f32(
+            embedding_row, final_offsets, implementation="scalar"
+        )
+        expected_head_input = quantize_q8(expected_hidden)
+        self.assertEqual(len(lm_head.calls), 1)
+        for observed, expected in zip(lm_head.calls[0], expected_head_input):
+            np.testing.assert_array_equal(observed, expected)
+        top_values, top_indices = graph.topk(actual, 4)
+        np.testing.assert_array_equal(
+            top_indices,
+            np.asarray(
+                [
+                    model.VOCAB_SIZE - 1,
+                    model.VOCAB_SIZE - 2,
+                    model.VOCAB_SIZE - 3,
+                    model.VOCAB_SIZE - 4,
+                ],
+                dtype=np.int64,
+            ),
+        )
+        np.testing.assert_array_equal(top_values, actual[top_indices])
 
 
 if __name__ == "__main__":
