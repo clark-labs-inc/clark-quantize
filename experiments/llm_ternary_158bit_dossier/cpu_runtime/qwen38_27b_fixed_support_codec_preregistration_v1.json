@@ -1,0 +1,100 @@
+{
+  "schema": "qwen38_27b_fixed_support_codec_preregistration_v1",
+  "receipt_schema": "qwen38_27b_fixed_support_codec_receipt_v1",
+  "status": "frozen_before_authoritative_real_weight_export",
+  "frozen_at_utc": "2026-08-17T20:58:00Z",
+  "hypothesis": "The fixed nonzero count already imposed by the selected Qwen3.8-27B Clark-Hash ternary residual makes each group an exact finite state space of choose(128,k) times 2^k, so enumerative support-plus-sign coding will round-trip every selected real code while reducing the parent's entropy-projected sampled structural rate by at least 0.015 bits per weight and remaining at or below 1.56 bits per sampled weight after counting a 64-byte tensor header, row anchors, 4-bit scale indices, a 16-entry FP16 scale-ratio codebook, packed INT4 hash coefficients, and coefficient row scales",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "qwen_4b_compute_forbidden": true,
+    "sampled_parameters": 442368,
+    "sampled_rows": "the same frozen sixteen middle rows of layer-0 gate, up, and down used by the parent hash-residual screen",
+    "claim_boundary": "exact sampled code representation and structural rate only; not a complete-layer, complete-model, scale-quality, capability, runtime, semi-lossless, or breakthrough result"
+  },
+  "parent": {
+    "preregistration": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_hash_residual_screen_preregistration_v1.json",
+    "required_receipt": "/workspace/quant-state/qwen38-27b-hash-residual-screen-v1.json",
+    "required_gate": "passed true",
+    "candidate_selection": "use exactly gate.selected_candidate and replay its frozen real-weight error before encoding"
+  },
+  "codec": {
+    "group_size": 128,
+    "state_space": "binomial(128,k) times 2^k",
+    "support_order": "standard ascending-position lexicographic combination rank",
+    "sign_order": "one low-order bit per ascending support position; zero means -1 and one means +1",
+    "group_integer": "support rank shifted left by k, bitwise-or sign bits",
+    "group_width": "ceil(log2(binomial(128,k) times 2^k))",
+    "candidate_widths": {
+      "hash128_sparse64": 189,
+      "hash64_sparse60": 184,
+      "hash32_sparse54": 176
+    },
+    "bitstream": "group integers concatenated least-significant-bit first with only terminal byte padding, which must remain zero",
+    "header": "64-byte little-endian CQ3HFS1 header authenticating dimensions, k, sketch dimension, seed, bit length, and tensor-name hash"
+  },
+  "rate_ledger": {
+    "materialized": [
+      "64-byte tensor header",
+      "exact fixed-support ternary payload including terminal byte padding"
+    ],
+    "structurally_counted_but_quality_gated_elsewhere": [
+      "one FP16 row anchor",
+      "one 4-bit scale-ratio index per group",
+      "one 16-entry FP16 scale-ratio codebook per tensor",
+      "two signed INT4 hash coefficients per byte with row alignment",
+      "one FP16 hash-coefficient scale per output row"
+    ],
+    "not_counted_as_model_storage": "deterministic sparse projection buckets and signs regenerated from the stored seed; active compute metadata remains reported separately"
+  },
+  "gate": {
+    "required_tensor_spans": 3,
+    "required_parameters": 442368,
+    "maximum_structural_projected_bits_per_weight": 1.56,
+    "minimum_bits_per_weight_reduction_vs_parent_projection": 0.015
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 4,
+    "minimum_free_disk_gib": 10,
+    "swap_must_remain_zero": true,
+    "concurrent_llama_or_training_processes": 0,
+    "persistent_output_bytes": "less than 1 MiB"
+  },
+  "promotion_rules": [
+    "a parent rejection produces a valid nonpromotion skip and does not recompute or export codes",
+    "a pass replaces the Shannon estimate only for exact fixed-support code storage; it does not prove the separately projected scale representation preserves quality",
+    "complete-model tensor eligibility, retained tensors, headers, scale codebooks, alignment, and indexes must still be counted from a complete artifact",
+    "the exact codec may advance to a native pack/decode implementation and whole-model layout only after this real-code gate",
+    "CUTE MMLU-type MATH WikiText code and paired CPU throughput remain mandatory before any model-quality claim",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "this sampled representation gate cannot establish semi-lossless compression or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "codec": {
+      "path": "clark_quantize/qwen38_fixed_support_codec.py",
+      "sha256": "f44e605742cecd550b8d77662f88567ca59ebc333625f6e374114faf9e520506"
+    },
+    "tests": {
+      "path": "clark_quantize/test_qwen38_fixed_support_codec.py",
+      "sha256": "ad2925be8625d491ba981e5d43a5435007c5e811eb60272dad98a01c33343ab7"
+    },
+    "exporter": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/export_qwen38_27b_fixed_support_codec_v1.py",
+      "sha256": "26a5d7586d7fd1043bd43eeaad639974ffacb206d1767381e4d7e0b0017c80bc"
+    },
+    "hash_residual_fit": {
+      "path": "clark_quantize/qwen38_hash_residual.py",
+      "sha256": "896583e383b2b94128934903ff2015ee40bbfdfcd48b35e3540121ef7bca62cf"
+    },
+    "int4_packer": {
+      "path": "clark_quantize/qwen38_hash_residual_cpu.py",
+      "sha256": "ed2d8b44491d3483ef0ae59e342db69c541b5e87837bf77b1385481aa403f6ca"
+    },
+    "parent_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_hash_residual_screen_preregistration_v1.json",
+      "sha256": "e0d9a613f4286004aa4c2339d8f97fd248d4c4dc5ba0bf70036e75d768261605"
+    }
+  }
+}

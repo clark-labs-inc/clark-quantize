@@ -1,6 +1,6 @@
 [Unit]
 Description=Benchmark native Qwen3.8-27B Clark-Hash residual correction
-After=network-online.target quant-qwen38-27b-hash-residual-screen-v1.service
+After=network-online.target quant-qwen38-27b-hash-residual-screen-v1.service quant-qwen38-27b-fixed-support-codec-v1.service
 Before=quant-qwen38-27b-activation-hash-residual-v1.service
 Wants=network-online.target
 
