@@ -4247,6 +4247,59 @@ int cq3_rmsnorm_silu_gate_f32_avx2(
 #endif
 }
 
+static float cq3_sigmoid_scalar(float value) {
+    if (value >= 0.0f) {
+        return 1.0f / (1.0f + expf(-value));
+    }
+    const float exponential = expf(value);
+    return exponential / (1.0f + exponential);
+}
+
+static float cq3_softplus_scalar(float value) {
+    if (value > 20.0f) {
+        return value;
+    }
+    if (value < -20.0f) {
+        return expf(value);
+    }
+    return log1pf(expf(value));
+}
+
+int cq3_gated_delta_parameters_f32(
+    const float *CQ3_RESTRICT projected_a,
+    const float *CQ3_RESTRICT projected_b,
+    const float *CQ3_RESTRICT a_log,
+    const float *CQ3_RESTRICT dt_bias,
+    uint32_t heads,
+    float *CQ3_RESTRICT log_decay,
+    float *CQ3_RESTRICT beta
+) {
+    if (projected_a == NULL || projected_b == NULL || a_log == NULL ||
+            dt_bias == NULL || log_decay == NULL || beta == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    if (heads == 0U) {
+        return CQ3_ERROR_SHAPE;
+    }
+    for (uint32_t head = 0U; head < heads; ++head) {
+        if (!isfinite(projected_a[head]) || !isfinite(projected_b[head]) ||
+                !isfinite(a_log[head]) || !isfinite(dt_bias[head])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    for (uint32_t head = 0U; head < heads; ++head) {
+        beta[head] = cq3_sigmoid_scalar(projected_b[head]);
+        const float step = cq3_softplus_scalar(
+            projected_a[head] + dt_bias[head]
+        );
+        log_decay[head] = -expf(a_log[head]) * step;
+        if (!isfinite(beta[head]) || !isfinite(log_decay[head])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    return CQ3_OK;
+}
+
 #if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
 __attribute__((target("avx2")))
 static uint64_t cq3_sum_u8_avx2_impl(const uint8_t *input, uint64_t count) {

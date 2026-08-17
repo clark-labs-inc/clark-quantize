@@ -17,9 +17,13 @@ import numpy as np
 from .base3_block203 import matrix_payload_bits, matrix_payload_bytes
 from .qwen38_cq3_container import CQ3ContainerError, Qwen38CQ3Reader
 from .ternary_cpu import (
+    causal_conv4_silu_f32,
+    gated_delta_parameters_f32,
     gemv_q8_group128_2bit_row_scale4,
     gemv_q8_group128_block203_row_scale4,
     quantize_q8,
+    recurrent_gated_delta_f32,
+    rmsnorm_silu_gate_f32,
     swiglu_f32,
     transcode_block203_rows_to_group128_2bit,
 )
@@ -218,6 +222,21 @@ class Qwen38CQ3ExactTensorView:
     shape: tuple[int, ...]
     source_dtype: str
     raw: np.ndarray
+
+    def as_f32(self) -> np.ndarray:
+        """Decode an authenticated retained tensor into a shaped FP32 array."""
+        if self.source_dtype == "BF16":
+            bits = self.raw.view("<u2").astype(np.uint32) << np.uint32(16)
+            values = bits.view(np.float32)
+        elif self.source_dtype == "F16":
+            values = self.raw.view("<f2").astype(np.float32)
+        elif self.source_dtype == "F32":
+            values = self.raw.view("<f4").astype(np.float32, copy=False)
+        else:
+            raise CQ3RuntimeError(
+                f"unsupported retained tensor dtype {self.source_dtype!r}"
+            )
+        return values.reshape(self.shape)
 
 
 class Qwen38CQ3RuntimeImage:
@@ -532,4 +551,179 @@ class Qwen38CQ3MLP:
             intermediate_scales,
             intermediate_sums,
             **arguments,
+        )
+
+
+@dataclass(frozen=True)
+class Qwen38CQ3DeltaNet:
+    """One exact-shape Qwen3.8-27B single-token linear-attention path."""
+
+    qkv: Qwen38CQ3TernaryTensorView | Qwen38CQ3AlignedTensor
+    z: Qwen38CQ3TernaryTensorView | Qwen38CQ3AlignedTensor
+    a: Qwen38CQ3TernaryTensorView | Qwen38CQ3AlignedTensor
+    b: Qwen38CQ3TernaryTensorView | Qwen38CQ3AlignedTensor
+    out: Qwen38CQ3TernaryTensorView | Qwen38CQ3AlignedTensor
+    conv_weights: np.ndarray
+    a_log: np.ndarray
+    dt_bias: np.ndarray
+    norm_weights: np.ndarray
+
+    HIDDEN_SIZE = 5120
+    KEY_HEADS = 16
+    VALUE_HEADS = 48
+    HEAD_DIM = 128
+    KEY_DIM = KEY_HEADS * HEAD_DIM
+    VALUE_DIM = VALUE_HEADS * HEAD_DIM
+    CONV_DIM = 2 * KEY_DIM + VALUE_DIM
+
+    def __post_init__(self) -> None:
+        expected_shapes = {
+            "qkv": (self.CONV_DIM, self.HIDDEN_SIZE),
+            "z": (self.VALUE_DIM, self.HIDDEN_SIZE),
+            "a": (self.VALUE_HEADS, self.HIDDEN_SIZE),
+            "b": (self.VALUE_HEADS, self.HIDDEN_SIZE),
+            "out": (self.HIDDEN_SIZE, self.VALUE_DIM),
+        }
+        for name, shape in expected_shapes.items():
+            if tuple(getattr(self, name).shape) != shape:
+                raise CQ3RuntimeError(
+                    f"Qwen3.8 DeltaNet {name} projection shape changed"
+                )
+        arrays = {
+            "conv_weights": (4, self.CONV_DIM),
+            "a_log": (self.VALUE_HEADS,),
+            "dt_bias": (self.VALUE_HEADS,),
+            "norm_weights": (self.HEAD_DIM,),
+        }
+        for name, shape in arrays.items():
+            value = getattr(self, name)
+            if (
+                not isinstance(value, np.ndarray)
+                or value.dtype != np.float32
+                or not value.flags.c_contiguous
+                or value.shape != shape
+                or not np.all(np.isfinite(value))
+            ):
+                raise CQ3RuntimeError(
+                    f"Qwen3.8 DeltaNet retained {name} contract changed"
+                )
+
+    @classmethod
+    def from_image(
+        cls, image: Qwen38CQ3RuntimeImage, layer: int
+    ) -> "Qwen38CQ3DeltaNet":
+        if not isinstance(layer, int) or isinstance(layer, bool) or layer < 0:
+            raise ValueError("Qwen3.8-27B layer index must be non-negative")
+        prefix = f"model.language_model.layers.{layer}.linear_attn"
+        conv = image.exact_tensor(f"{prefix}.conv1d.weight").as_f32()
+        if conv.shape != (cls.CONV_DIM, 1, 4):
+            raise CQ3RuntimeError("Qwen3.8 DeltaNet conv1d shape changed")
+        return cls(
+            qkv=image.ternary_tensor(f"{prefix}.in_proj_qkv.weight"),
+            z=image.ternary_tensor(f"{prefix}.in_proj_z.weight"),
+            a=image.ternary_tensor(f"{prefix}.in_proj_a.weight"),
+            b=image.ternary_tensor(f"{prefix}.in_proj_b.weight"),
+            out=image.ternary_tensor(f"{prefix}.out_proj.weight"),
+            conv_weights=np.ascontiguousarray(conv[:, 0, :].T),
+            a_log=np.ascontiguousarray(
+                image.exact_tensor(f"{prefix}.A_log").as_f32()
+            ),
+            dt_bias=np.ascontiguousarray(
+                image.exact_tensor(f"{prefix}.dt_bias").as_f32()
+            ),
+            norm_weights=np.ascontiguousarray(
+                image.exact_tensor(f"{prefix}.norm.weight").as_f32()
+            ),
+        )
+
+    def forward(
+        self,
+        activation: np.ndarray,
+        conv_state: np.ndarray,
+        recurrent_state: np.ndarray,
+        *,
+        gemv_implementation: str = "scalar_chunk16",
+        elementwise_implementation: str = "scalar",
+        threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
+        cpu_ids: list[int] | None = None,
+        validated_state: bool = False,
+    ) -> np.ndarray:
+        """Execute one token, mutating compact conv and recurrent state in place."""
+        values = np.asarray(activation, dtype=np.float32)
+        if values.ndim != 1 or values.size != self.HIDDEN_SIZE:
+            raise ValueError(
+                "Qwen3.8 DeltaNet activation does not match hidden size"
+            )
+        if (
+            conv_state.dtype != np.float32
+            or not conv_state.flags.c_contiguous
+            or not conv_state.flags.writeable
+            or conv_state.shape != (3, self.CONV_DIM)
+            or recurrent_state.dtype != np.float32
+            or not recurrent_state.flags.c_contiguous
+            or not recurrent_state.flags.writeable
+            or recurrent_state.shape
+            != (self.VALUE_HEADS, self.HEAD_DIM, self.HEAD_DIM)
+        ):
+            raise ValueError("Qwen3.8 DeltaNet state shapes do not compose")
+
+        activation_q8, activation_scales, activation_sums = quantize_q8(
+            values, GROUP_SIZE
+        )
+        arguments = {
+            "implementation": gemv_implementation,
+            "threads": threads,
+            "executor": executor,
+            "cpu_ids": cpu_ids,
+        }
+        mixed_qkv = self.qkv.gemv_q8(
+            activation_q8, activation_scales, activation_sums, **arguments
+        )
+        z = self.z.gemv_q8(
+            activation_q8, activation_scales, activation_sums, **arguments
+        ).reshape(self.VALUE_HEADS, self.HEAD_DIM)
+        projected_a = self.a.gemv_q8(
+            activation_q8, activation_scales, activation_sums, **arguments
+        )
+        projected_b = self.b.gemv_q8(
+            activation_q8, activation_scales, activation_sums, **arguments
+        )
+        mixed_qkv = causal_conv4_silu_f32(
+            mixed_qkv,
+            conv_state,
+            self.conv_weights,
+            implementation=elementwise_implementation,
+        )
+        query = mixed_qkv[: self.KEY_DIM].reshape(
+            self.KEY_HEADS, self.HEAD_DIM
+        )
+        key = mixed_qkv[self.KEY_DIM : 2 * self.KEY_DIM].reshape(
+            self.KEY_HEADS, self.HEAD_DIM
+        )
+        value = mixed_qkv[2 * self.KEY_DIM :].reshape(
+            self.VALUE_HEADS, self.HEAD_DIM
+        )
+        log_decay, beta = gated_delta_parameters_f32(
+            projected_a, projected_b, self.a_log, self.dt_bias
+        )
+        recurrent = recurrent_gated_delta_f32(
+            query,
+            key,
+            value,
+            log_decay,
+            beta,
+            recurrent_state,
+            implementation=elementwise_implementation,
+            validated=validated_state,
+        )
+        gated = rmsnorm_silu_gate_f32(
+            recurrent,
+            self.norm_weights,
+            z,
+            implementation=elementwise_implementation,
+        ).reshape(self.VALUE_DIM)
+        gated_q8, gated_scales, gated_sums = quantize_q8(gated, GROUP_SIZE)
+        return self.out.gemv_q8(
+            gated_q8, gated_scales, gated_sums, **arguments
         )

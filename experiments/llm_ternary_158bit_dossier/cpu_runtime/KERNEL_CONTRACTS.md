@@ -178,6 +178,18 @@ FP32 result is bit-exact with the scalar oracle; a faster approximate vector
 exponential is not authorized without a separately frozen error and
 full-layer parity gate. Fusion into activation quantization and the output
 projection remains open.
+The preceding 48-wide parameter transform is also native and numerically
+stable: `beta = sigmoid(b)` and
+`g = -exp(A_log) * softplus(a + dt_bias)`, with the reference softplus
+threshold of 20. These small retained-precision operations are not candidates
+for ternary approximation.
+The direct block203 and authenticated aligned-cache runtimes now compose these
+pieces into a real-shape single-token DeltaNet path: one shared A8 hidden-state
+quantization feeds qkv/z/a/b, compact three-sample conv state and the 3 MiB
+recurrent state mutate in place, post-recurrence gating is applied, and one A8
+quantization feeds the `6144 -> 5120` output projection. This is graph code,
+not yet a promoted layer: real-container execution, teacher parity, and frozen
+layer throughput remain open.
 
 ## K8-K9: full attention
 

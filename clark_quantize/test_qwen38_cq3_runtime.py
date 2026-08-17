@@ -18,16 +18,46 @@ from clark_quantize.qwen38_cq3_container import (
 )
 from clark_quantize.qwen38_cq3_runtime import (
     CQ3RuntimeError,
+    Qwen38CQ3DeltaNet,
     Qwen38CQ3MLP,
     Qwen38CQ3RuntimeImage,
 )
 from clark_quantize.scale_codebook import pack_nibbles
 from clark_quantize.ternary_cpu import (
+    causal_conv4_silu_f32,
+    gated_delta_parameters_f32,
     native_available,
     pack_group128_2bit,
     quantize_q8,
+    recurrent_gated_delta_f32,
+    rmsnorm_silu_gate_f32,
     swiglu_f32,
 )
+
+
+class FakeProjection:
+    def __init__(self, shape: tuple[int, int], output: np.ndarray) -> None:
+        self.shape = shape
+        self.rows, self.columns = shape
+        self.output = np.ascontiguousarray(output, dtype=np.float32)
+        self.calls: list[tuple[np.ndarray, np.ndarray, np.ndarray]] = []
+
+    def gemv_q8(
+        self,
+        activation_q8: np.ndarray,
+        activation_scales: np.ndarray,
+        activation_sums: np.ndarray,
+        **kwargs,
+    ) -> np.ndarray:
+        del kwargs
+        self.calls.append(
+            (
+                activation_q8.copy(),
+                activation_scales.copy(),
+                activation_sums.copy(),
+            )
+        )
+        return self.output.copy()
 
 
 class Qwen38CQ3RuntimeTests(unittest.TestCase):
@@ -248,6 +278,11 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
             )
             self.assertEqual(exact.source_dtype, "BF16")
             self.assertEqual(exact.raw.tobytes(), bytes(range(8)))
+            expected_exact = (
+                np.frombuffer(bytes(range(8)), dtype="<u2").astype(np.uint32)
+                << np.uint32(16)
+            ).view(np.float32)
+            np.testing.assert_array_equal(exact.as_f32(), expected_exact)
             self.assertEqual(image.auxiliary_file("config.json").tobytes(), b"{}\n")
             receipt = image.verify_all()
             self.assertEqual(receipt["sections_verified"], 4)
@@ -391,6 +426,111 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
                     mlp.forward(np.zeros(127, dtype=np.float32))
                 with self.assertRaisesRegex(ValueError, "layer index"):
                     Qwen38CQ3MLP.from_image(image, True)
+
+    @unittest.skipUnless(native_available(), "native ternary CPU library is absent")
+    def test_exact_shape_deltanet_graph_matches_manual_primitives(self) -> None:
+        model = Qwen38CQ3DeltaNet
+        index = np.arange(model.CONV_DIM, dtype=np.float32)
+        mixed_qkv = np.sin(index * np.float32(0.003)) * np.float32(0.25)
+        z_values = np.cos(
+            np.arange(model.VALUE_DIM, dtype=np.float32) * np.float32(0.005)
+        ) * np.float32(0.2)
+        projected_a = np.linspace(-1.0, 1.0, model.VALUE_HEADS, dtype=np.float32)
+        projected_b = np.linspace(1.0, -1.0, model.VALUE_HEADS, dtype=np.float32)
+        output_value = np.linspace(
+            -0.5, 0.5, model.HIDDEN_SIZE, dtype=np.float32
+        )
+        qkv = FakeProjection((model.CONV_DIM, model.HIDDEN_SIZE), mixed_qkv)
+        z = FakeProjection((model.VALUE_DIM, model.HIDDEN_SIZE), z_values)
+        a = FakeProjection((model.VALUE_HEADS, model.HIDDEN_SIZE), projected_a)
+        b = FakeProjection((model.VALUE_HEADS, model.HIDDEN_SIZE), projected_b)
+        out = FakeProjection((model.HIDDEN_SIZE, model.VALUE_DIM), output_value)
+        conv_weights = np.zeros((4, model.CONV_DIM), dtype=np.float32)
+        conv_weights[3] = np.linspace(
+            0.05, 0.25, model.CONV_DIM, dtype=np.float32
+        )
+        a_log = np.linspace(-3.0, 0.0, model.VALUE_HEADS, dtype=np.float32)
+        dt_bias = np.linspace(-0.5, 0.5, model.VALUE_HEADS, dtype=np.float32)
+        norm_weights = np.linspace(0.75, 1.25, model.HEAD_DIM, dtype=np.float32)
+        layer = model(
+            qkv=qkv,
+            z=z,
+            a=a,
+            b=b,
+            out=out,
+            conv_weights=conv_weights,
+            a_log=a_log,
+            dt_bias=dt_bias,
+            norm_weights=norm_weights,
+        )
+        activation = np.linspace(
+            -1.0, 1.0, model.HIDDEN_SIZE, dtype=np.float32
+        )
+        initial_conv = np.zeros((3, model.CONV_DIM), dtype=np.float32)
+        initial_recurrent = np.zeros(
+            (model.VALUE_HEADS, model.HEAD_DIM, model.HEAD_DIM),
+            dtype=np.float32,
+        )
+        actual_conv = initial_conv.copy()
+        actual_recurrent = initial_recurrent.copy()
+        actual = layer.forward(
+            activation,
+            actual_conv,
+            actual_recurrent,
+            gemv_implementation="scalar_chunk16",
+            elementwise_implementation="scalar",
+            validated_state=True,
+        )
+        np.testing.assert_array_equal(actual, output_value)
+
+        expected_input_q8 = quantize_q8(activation)
+        for projection in (qkv, z, a, b):
+            self.assertEqual(len(projection.calls), 1)
+            for observed, expected in zip(projection.calls[0], expected_input_q8):
+                np.testing.assert_array_equal(observed, expected)
+
+        expected_conv = initial_conv.copy()
+        convolved = causal_conv4_silu_f32(
+            mixed_qkv,
+            expected_conv,
+            conv_weights,
+            implementation="scalar",
+        )
+        query = convolved[: model.KEY_DIM].reshape(
+            model.KEY_HEADS, model.HEAD_DIM
+        )
+        key = convolved[model.KEY_DIM : 2 * model.KEY_DIM].reshape(
+            model.KEY_HEADS, model.HEAD_DIM
+        )
+        value = convolved[2 * model.KEY_DIM :].reshape(
+            model.VALUE_HEADS, model.HEAD_DIM
+        )
+        log_decay, beta = gated_delta_parameters_f32(
+            projected_a, projected_b, a_log, dt_bias
+        )
+        expected_recurrent = initial_recurrent.copy()
+        recurrent = recurrent_gated_delta_f32(
+            query,
+            key,
+            value,
+            log_decay,
+            beta,
+            expected_recurrent,
+            implementation="scalar",
+            validated=True,
+        )
+        gated = rmsnorm_silu_gate_f32(
+            recurrent,
+            norm_weights,
+            z_values.reshape(model.VALUE_HEADS, model.HEAD_DIM),
+            implementation="scalar",
+        ).reshape(model.VALUE_DIM)
+        expected_output_q8 = quantize_q8(gated)
+        self.assertEqual(len(out.calls), 1)
+        for observed, expected in zip(out.calls[0], expected_output_q8):
+            np.testing.assert_array_equal(observed, expected)
+        np.testing.assert_array_equal(actual_conv, expected_conv)
+        np.testing.assert_array_equal(actual_recurrent, expected_recurrent)
 
 
 if __name__ == "__main__":

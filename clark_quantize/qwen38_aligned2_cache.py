@@ -23,6 +23,7 @@ from .qwen38_cq3_runtime import (
     ROW_NORMALIZED_ENCODING,
     CQ3RuntimeError,
     Qwen38CQ3AlignedTensor,
+    Qwen38CQ3DeltaNet,
     Qwen38CQ3MLP,
     Qwen38CQ3RuntimeImage,
 )
@@ -718,6 +719,31 @@ class Qwen38Aligned2RuntimeImage:
             gate=self.aligned_tensor(f"{prefix}.gate_proj.weight"),
             up=self.aligned_tensor(f"{prefix}.up_proj.weight"),
             down=self.aligned_tensor(f"{prefix}.down_proj.weight"),
+        )
+
+    def deltanet(self, layer: int) -> Qwen38CQ3DeltaNet:
+        if not isinstance(layer, int) or isinstance(layer, bool) or layer < 0:
+            raise ValueError("Qwen3.8-27B layer index must be non-negative")
+        prefix = f"model.language_model.layers.{layer}.linear_attn"
+        conv = self.exact_tensor(f"{prefix}.conv1d.weight").as_f32()
+        if conv.shape != (Qwen38CQ3DeltaNet.CONV_DIM, 1, 4):
+            raise CQ3RuntimeError("Qwen3.8 DeltaNet conv1d shape changed")
+        return Qwen38CQ3DeltaNet(
+            qkv=self.aligned_tensor(f"{prefix}.in_proj_qkv.weight"),
+            z=self.aligned_tensor(f"{prefix}.in_proj_z.weight"),
+            a=self.aligned_tensor(f"{prefix}.in_proj_a.weight"),
+            b=self.aligned_tensor(f"{prefix}.in_proj_b.weight"),
+            out=self.aligned_tensor(f"{prefix}.out_proj.weight"),
+            conv_weights=np.ascontiguousarray(conv[:, 0, :].T),
+            a_log=np.ascontiguousarray(
+                self.exact_tensor(f"{prefix}.A_log").as_f32()
+            ),
+            dt_bias=np.ascontiguousarray(
+                self.exact_tensor(f"{prefix}.dt_bias").as_f32()
+            ),
+            norm_weights=np.ascontiguousarray(
+                self.exact_tensor(f"{prefix}.norm.weight").as_f32()
+            ),
         )
 
     def exact_tensor(self, name: str):

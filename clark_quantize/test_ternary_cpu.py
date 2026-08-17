@@ -369,6 +369,31 @@ class TernaryCpuNativeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "non-finite"):
             ternary_cpu.rmsnorm_silu_gate_f32(values, weights, gate)
 
+    def test_qwen38_gated_delta_parameters_match_stable_oracle(self) -> None:
+        projected_a = np.asarray([-50.0, -2.0, 0.0, 2.0, 50.0], dtype=np.float32)
+        projected_b = np.asarray([-50.0, -1.0, 0.0, 1.0, 50.0], dtype=np.float32)
+        a_log = np.asarray([-4.0, -2.0, -1.0, 0.0, 1.0], dtype=np.float32)
+        dt_bias = np.asarray([0.5, -0.25, 0.0, 0.25, -0.5], dtype=np.float32)
+        log_decay, beta = ternary_cpu.gated_delta_parameters_f32(
+            projected_a, projected_b, a_log, dt_bias
+        )
+        expected_beta = np.exp(-np.logaddexp(0.0, -projected_b)).astype(
+            np.float32
+        )
+        expected_decay = (
+            -np.exp(a_log) * np.logaddexp(0.0, projected_a + dt_bias)
+        ).astype(np.float32)
+        np.testing.assert_allclose(beta, expected_beta, rtol=2e-6, atol=1e-7)
+        np.testing.assert_allclose(
+            log_decay, expected_decay, rtol=2e-6, atol=1e-7
+        )
+
+        projected_a[0] = np.nan
+        with self.assertRaisesRegex(ValueError, "non-finite"):
+            ternary_cpu.gated_delta_parameters_f32(
+                projected_a, projected_b, a_log, dt_bias
+            )
+
     def test_scalar_matches_groupwise_integer_oracle(self) -> None:
         codes, scales, quantized, activation_scales, sums, packed = self.fixture()
         actual = ternary_cpu.gemv_q8_group128_2bit(

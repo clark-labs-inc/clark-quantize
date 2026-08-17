@@ -251,6 +251,11 @@ def _load_library() -> ctypes.CDLL | None:
                 rmsnorm_gate_args
             )
             library.cq3_rmsnorm_silu_gate_f32_avx2.restype = ctypes.c_int
+        if hasattr(library, "cq3_gated_delta_parameters_f32"):
+            library.cq3_gated_delta_parameters_f32.argtypes = (
+                f32p, f32p, f32p, f32p, ctypes.c_uint32, f32p, f32p,
+            )
+            library.cq3_gated_delta_parameters_f32.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_scalar.argtypes = gemv_args
         library.cq3_gemv_q8_group128_radix5_scalar.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_avx2.argtypes = gemv_args
@@ -1401,6 +1406,43 @@ def rmsnorm_silu_gate_f32(
     )
     _check(status, "Qwen3.8 RMSNorm SiLU gate")
     return output
+
+
+def gated_delta_parameters_f32(
+    projected_a: np.ndarray,
+    projected_b: np.ndarray,
+    a_log: np.ndarray,
+    dt_bias: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Compute Qwen3.8 log-decay g and sigmoid beta in stable FP32."""
+    if _LIBRARY is None or not hasattr(
+        _LIBRARY, "cq3_gated_delta_parameters_f32"
+    ):
+        raise RuntimeError("native Qwen3.8 delta parameter kernel is absent")
+    a = _array(projected_a, np.float32, ndim=1)
+    b = _array(projected_b, np.float32, ndim=1)
+    learned_a_log = _array(a_log, np.float32, ndim=1)
+    learned_dt_bias = _array(dt_bias, np.float32, ndim=1)
+    if (
+        a.size == 0
+        or b.shape != a.shape
+        or learned_a_log.shape != a.shape
+        or learned_dt_bias.shape != a.shape
+    ):
+        raise ValueError("Gated DeltaNet parameter vectors do not compose")
+    log_decay = np.empty_like(a)
+    beta = np.empty_like(a)
+    status = _LIBRARY.cq3_gated_delta_parameters_f32(
+        a.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        b.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        learned_a_log.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        learned_dt_bias.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        a.size,
+        log_decay.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        beta.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+    )
+    _check(status, "Qwen3.8 Gated DeltaNet parameters")
+    return log_decay, beta
 
 
 def gemv_q8_group128_2bit_swiglu(
