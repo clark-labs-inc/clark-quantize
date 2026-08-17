@@ -1,0 +1,137 @@
+{
+  "schema": "qwen38_27b_cq3_export_preregistration_v1",
+  "status": "frozen_before_authoritative_export",
+  "frozen_at_utc": "2026-08-17T12:31:00Z",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_work_frozen": true,
+    "purpose": "materialize and independently authenticate the complete 666-ternary-tensor plus 533-exact-tensor Qwen3.8-27B CQ3 representation"
+  },
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "inventory_sha256": "8533a0edfba093faf2a865391405408461613b92ef83e8d511436f2ed96bc14d",
+    "tensors": 1199,
+    "parameters": 27781427952,
+    "rank_ge_2_ternary_tensors": 666,
+    "rank_ge_2_ternary_parameters": 27780313088,
+    "rank_1_exact_tensors": 533,
+    "rank_1_exact_parameters": 1114864
+  },
+  "prerequisites": {
+    "mapped_402_tensor_code_manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4",
+    "mapped_402_tensor_scale_gate_must_pass": true,
+    "complete_666_tensor_scale_gate_must_pass": true,
+    "scale_count": 217521520,
+    "storage_projection_receipt_sha256": "1e37e00ff6736e6614d77f7dd1a1f69aecae96503e1659b0d027df9a37caec92"
+  },
+  "representation": {
+    "ternary_codec": "canonical little-endian base-3 block integers",
+    "full_group": "128 trits in exactly 203 bits",
+    "tail_group": "ceil(tail_trits * log2(3)) bits with canonical codeword and zero padding checks",
+    "group_boundaries": "reset for every flattened first-dimension row",
+    "tensor_code_stream": "bit-contiguous with no row or batch padding and zero padding only in the final tensor byte",
+    "scale_index": "4 bits, low nibble first",
+    "scale_codebook": "16 little-endian FP16 values per rank-2-or-higher tensor",
+    "retained": "rank-1 source tensor bytes exactly preserved",
+    "auxiliary": "all top-level non-safetensors model files byte-for-byte",
+    "section_alignment_bytes": 64,
+    "atomic_container": true
+  },
+  "restart_contract": {
+    "row_batch": 128,
+    "mapped_transcode_workers": 4,
+    "one_authenticated_code_spool_per_ternary_tensor": true,
+    "one_authenticated_exact_spool_per_retained_tensor": true,
+    "partial_manifest_atomically_replaced_after_every_tensor": true,
+    "nonfinal_batch_must_be_byte_aligned": true,
+    "every_batch_pack_unpack_roundtrip_required": true,
+    "final_container_temp_fsync_rename": true
+  },
+  "frozen_inputs": {
+    "container": {
+      "path": "clark_quantize/qwen38_cq3_container.py",
+      "sha256": "f889bc12f0c152d2229249169cad594a568e7365597897f7e022c123c3d3ea7b"
+    },
+    "container_tests": {
+      "path": "clark_quantize/test_qwen38_cq3_container.py",
+      "sha256": "d4505e173d657469ee86e383ac82abd9ef59814ec448a2e476c704eb13696af0"
+    },
+    "export_implementation": {
+      "path": "clark_quantize/qwen38_cq3_export.py",
+      "sha256": "4cc60fd6dbd42249d6376da5f55139fec392bcf0b148b21e7811493ec5b2e5f1"
+    },
+    "export_tests": {
+      "path": "clark_quantize/test_qwen38_cq3_export.py",
+      "sha256": "5a4fd6de2e8471740021d06b5a5d3eeed65613cfdaf7b952437222fc6fd14a32"
+    },
+    "reference_block203": {
+      "path": "clark_quantize/base3_block203.py",
+      "sha256": "c71975669f1c0d335f6c2b05473505077dfeab71cb5e009ca1f4305b68406e77"
+    },
+    "native_wrapper": {
+      "path": "clark_quantize/ternary_cpu.py",
+      "sha256": "1f1c1ce6972d0a4b0d9ccf2a5eaf73679a9f972101d278dd340beb5d417f0fe7"
+    },
+    "native_source": {
+      "path": "clark_quantize/ternary_cpu.c",
+      "sha256": "48a049eda3eca405e44ee2c23a70b83c09eecb5b6d2c027c5970392855218781"
+    },
+    "native_build": {
+      "path": "scripts/cpu/build_ternary_cpu.sh",
+      "sha256": "273db81adcefce5525288927cbcdde5f4beff65b136e35235ba8c4909c22e75b"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_cq3_export_v1.py",
+      "sha256": "0abc78714361c8cba8435cd9c4a1ce8801ad25850bc34166eca6aff10099b5f1"
+    },
+    "watcher": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/watch_qwen38_27b_cq3_export_v1.sh",
+      "sha256": "dcb4f7a763143bb4f1da7954cb82587b8caa175fe985846abfd07fb96f2abe99"
+    },
+    "storage_projection_receipt": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38-27b-storage-budget-v1.json",
+      "sha256": "1e37e00ff6736e6614d77f7dd1a1f69aecae96503e1659b0d027df9a37caec92"
+    }
+  },
+  "projected_ledger": {
+    "ternary_code_payload_bytes": 5507270842,
+    "scale_index_and_codebook_payload_bytes": 108782072,
+    "retained_exact_payload_bytes": 2229728,
+    "auxiliary_model_file_bytes": 23108348,
+    "projected_complete_bundle_bytes": 5641581820,
+    "projected_complete_bundle_bpw": 1.624562086512579
+  },
+  "gate": {
+    "maximum_measured_complete_container_bpw": 1.63,
+    "require_exact_projected_payload_bytes_by_kind": true,
+    "require_all_1199_tensor_records": true,
+    "require_all_27781427952_parameters": true,
+    "require_every_section_sha256_verified_from_the_final_container": true,
+    "valid_threshold_miss_is_a_negative_result": true,
+    "infrastructure_invalid_is_neither_a_zero_nor_a_completed_result": true
+  },
+  "resources": {
+    "run_only_after_all_prior_qwen38_quality_throughput_kernel_codec_and_scale_services_are_terminal": true,
+    "minimum_available_memory_gib": 8,
+    "minimum_free_disk_before_spooling_gib": 14,
+    "minimum_free_disk_before_assembly": "projected complete container plus 1 GiB",
+    "swap_must_remain_zero": true,
+    "memory_max_gib": 28,
+    "cpu_quota_percent": 400,
+    "spool_and_output": "/workspace/quant-runs/qwen38-cq3-container-v1",
+    "receipt": "/workspace/quant-state/qwen38-27b-cq3-export-v1.json"
+  },
+  "claim_boundary": {
+    "this_gate_can_prove": "a complete authenticated Qwen3.8-27B container meets the frozen measured storage limit and every stored code batch round-trips exactly",
+    "this_gate_cannot_prove": [
+      "model capability retention",
+      "end-to-end inference correctness",
+      "direct-decode speed",
+      "tokens per second",
+      "a scientific breakthrough"
+    ],
+    "next_if_passed": "derive a runnable compute image and require paired Qwen3.8-27B CUTE MATH code MMLU WikiText and throughput gates before promotion"
+  }
+}

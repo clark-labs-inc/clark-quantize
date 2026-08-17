@@ -170,6 +170,36 @@ class Qwen38CQ3ContainerTests(unittest.TestCase):
             self.assertFalse(path.exists())
             self.assertEqual(list(root.iterdir()), [])
 
+    def test_multi_part_section_has_one_hash_and_no_internal_alignment(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            path = root / "parts.cq3"
+            first = root / "indices.bin"
+            first.write_bytes(b"abc")
+            with Qwen38CQ3Writer(
+                path,
+                model={"id": "Qwen/Qwen3.8-27B", "revision": "test"},
+                strategy={"name": "test"},
+                parameter_count=1,
+            ) as writer:
+                writer.add_section_parts(
+                    "weight.scales",
+                    "scale_indices_and_codebook",
+                    (first, b"def"),
+                    metadata={"index_bytes": 3, "codebook_bytes": 3},
+                )
+                writer.finalize(
+                    tensors=[{
+                        "name": "weight",
+                        "shape": [1],
+                        "parameters": 1,
+                        "sections": ["weight.scales"],
+                    }]
+                )
+            with Qwen38CQ3Reader(path) as reader:
+                self.assertEqual(reader.read_section("weight.scales"), b"abcdef")
+                self.assertEqual(reader.verify_all()["sections_verified"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

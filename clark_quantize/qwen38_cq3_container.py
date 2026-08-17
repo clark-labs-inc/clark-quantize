@@ -213,6 +213,19 @@ class Qwen38CQ3Writer:
         *,
         metadata: Mapping[str, object] | None = None,
     ) -> dict:
+        return self.add_section_parts(
+            section_id, kind, (source,), metadata=metadata
+        )
+
+    def add_section_parts(
+        self,
+        section_id: str,
+        kind: str,
+        sources: Iterable[bytes | bytearray | memoryview | Path],
+        *,
+        metadata: Mapping[str, object] | None = None,
+    ) -> dict:
+        """Stream several sources into one authenticated aligned section."""
         if self._finalized or self._handle.closed:
             raise RuntimeError("container writer is closed")
         if not section_id or section_id in self._section_ids:
@@ -225,10 +238,15 @@ class Qwen38CQ3Writer:
         _zero_bytes(self._handle, offset - self._handle.tell())
         digest = hashlib.sha256()
         size = 0
-        for content in _source_chunks(source):
-            self._handle.write(content)
-            digest.update(content)
-            size += len(content)
+        source_count = 0
+        for source in sources:
+            source_count += 1
+            for content in _source_chunks(source):
+                self._handle.write(content)
+                digest.update(content)
+                size += len(content)
+        if source_count == 0:
+            raise ValueError("a container section requires at least one source")
         record = {
             "id": section_id,
             "kind": kind,
