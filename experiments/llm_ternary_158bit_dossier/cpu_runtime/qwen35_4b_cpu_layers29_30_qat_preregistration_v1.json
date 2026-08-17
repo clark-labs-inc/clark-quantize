@@ -1,0 +1,120 @@
+{
+  "schema": "clark_qwen35_cpu_two_mlp_qat_preregistration_v1",
+  "status": "frozen_before_layer29_activation_cache_collection",
+  "created_at": "2026-08-17",
+  "objective": "test the smallest authorized depth increase by preserving the validated layer-30 v4 patch exactly and adding one independently selected exact-ternary layer-29 MLP patch",
+  "predecessors": {
+    "one_layer_v4": {
+      "decision_receipt": "receipts/qwen35_4b_cpu_layer30_qat_v4/decision.json",
+      "decision_content_sha256": "85357d256c093d3d3a2bc09882b7f03971c9f92eae38e201ec3a6ec05445454c",
+      "candidate_patch_sha256": "793cfc84332a6749a07cae2cb72ef16e4bc2b6e50577755b362cb2074f25182e"
+    },
+    "mmlu_replication": {
+      "decision_receipt": "receipts/qwen35_4b_cpu_layer30_mmlu_v1/mmlu-decision.json",
+      "decision_file_sha256": "2a772ab78e4b29bf5b2a81ec9588bb351e396427ffbf946d59f9bd43eaa1a124",
+      "decision_content_sha256": "32815556b02686f290b117634757c6e3ee36b82ef734633a3d47186066b317ee",
+      "decision": "authorize_preregistered_two_layer_experiment",
+      "broad_depth_expansion_authorized": false
+    }
+  },
+  "model": {
+    "id": "Qwen/Qwen3.5-4B",
+    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "model_dir": "/workspace/models/Qwen3.5-4B",
+    "parameter_count_observed": 4659865088
+  },
+  "hardware": {
+    "host_alias": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "smt_threads": 8,
+    "ram_gib_usable": 30,
+    "accelerator": null,
+    "torch_threads": 4,
+    "service_memory_max": "28G"
+  },
+  "frozen_source": {
+    "prompt_bank": "qwen35_4b_cpu_layer30_train_v4.jsonl",
+    "prompt_bank_sha256": "e2a355b62c9e456aa22f0fa609705cf17eb66948d80a6470b49bc1132db40cb8",
+    "rows": 48,
+    "tasks": [
+      "knowledge",
+      "math",
+      "code",
+      "instruct",
+      "multilingual",
+      "reasoning"
+    ],
+    "rows_per_task": 8,
+    "split_manifest": "qwen35_4b_cpu_layer30_split_v4.json",
+    "split_manifest_file_sha256": "a253a051e7945e099d8e5057e51ff0935434f228b901e1c12b5ee6162ae823f2",
+    "split_rows": {
+      "train": 24,
+      "validation_selection": 12,
+      "independent_test": 12
+    },
+    "teacher_cache": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/teacher-completions.pt",
+    "teacher_cache_sha256": "79cc7281cb5d64ac08b636e9ca542346ba0c5f6ed95037b9f05df3c25654a00c",
+    "teacher_rows": 48,
+    "causal_topk_alignment": "1029/1029"
+  },
+  "candidate": {
+    "preserved_layer": 30,
+    "added_layer": 29,
+    "rationale": "layer 29 is adjacent and immediately upstream of validated layer 30, so the experiment adds exactly one layer while end-to-end evaluation exposes their strongest local interaction",
+    "preserved_patch": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/layer30-heldout-selected.safetensors",
+    "preserved_patch_sha256": "793cfc84332a6749a07cae2cb72ef16e4bc2b6e50577755b362cb2074f25182e",
+    "scope_regex": "model[.]language_model[.]layers[.](29|30)[.]mlp[.](gate|up|down)_proj[.]weight",
+    "gguf_scope_regex": "blk[.](29|30)[.]ffn_(gate|up|down)[.]weight",
+    "target_tensor_count": 6,
+    "quantization": "symmetric hard ternary",
+    "group_size": 128,
+    "gguf_type": "CQ3_0",
+    "all_other_tensors": "byte-identical to the frozen BF16 GGUF parent"
+  },
+  "layer29_training": {
+    "activation_source": "BF16 teacher MLP inputs and outputs from the frozen 48-row cache",
+    "positions_per_row": 24,
+    "initialization": "fresh from BF16",
+    "steps": 64,
+    "batch_size": 32,
+    "optimizer": "AdamW",
+    "learning_rate": 0.00002,
+    "codebook_weight": 0.001,
+    "gradient_clip": 1.0,
+    "validation_every_steps": 4,
+    "artifact_selection": "minimum validation normalized reconstruction loss across exact hard artifacts, including step-zero direct PTQ",
+    "checkpoint_every_steps": 4,
+    "checkpoint_retention": 1,
+    "patch_merge": "the new three-tensor layer-29 patch and exact retained three-tensor layer-30 patch must be disjoint and merge to exactly six tensors"
+  },
+  "controls": {
+    "bf16": "Qwen3.5-4B BF16 GGUF",
+    "one_layer_v4": "exact retained layer-30 CPU-QAT v4 CQ3 GGUF",
+    "direct_ptq_two_layer": "the layer-29 and layer-30 MLP triplets quantized directly from BF16 to CQ3_0 without training",
+    "candidate_two_layer": "new held-out-selected layer-29 patch plus byte-exact retained v4 layer-30 patch, packed to CQ3_0"
+  },
+  "mandatory_evaluation": {
+    "independent_reconstruction": "layer 29 on the same 12 sealed rows across all six tasks",
+    "exact_gguf_generation": [
+      "CUTE-Quick-20",
+      "MATH-500 pinned quick 8",
+      "sealed code traces 6"
+    ],
+    "likelihood": "WikiText-2 first four 512-token chunks",
+    "larger_capability": "the frozen 64-row five-shot subject-balanced MMLU replication after quick gates pass",
+    "invalid_run_rule": "missing, partial, context-failed, or infrastructure-failed reports are invalid, never zero"
+  },
+  "decision_rules": {
+    "training_value": "layer-29 candidate must improve independent-test normalized reconstruction loss by at least 10 percent relative to direct PTQ",
+    "exact_scope": "exactly six target tensors are CQ3_0, all 435 non-target tensors are byte-identical across BF16, direct PTQ, and candidate, and layer-30 patch SHA-256 remains the frozen v4 value before packing",
+    "cute": "candidate must score at least 6/20, lose at most one item versus one-layer v4, and score at least direct two-layer PTQ",
+    "math500": "candidate must score at least 5/8 and at least direct two-layer PTQ",
+    "code": "candidate must score at least 4/6 and at least direct two-layer PTQ",
+    "wikitext": "candidate perplexity must be no greater than direct two-layer PTQ and no greater than 8.7729, which is one-layer v4 plus 0.10",
+    "mmlu": "candidate must score at least direct two-layer PTQ, lose at most three items versus BF16, and lose at most two items versus one-layer v4",
+    "next_scope": "only if every rule passes may a separately preregistered experiment add exactly one third MLP layer; broad or whole-model depth expansion remains forbidden"
+  },
+  "claim_boundary": "an exactly two-MLP-layer Qwen3.5-4B CPU-QAT depth rung; not whole-model ternary training, not Qwen3.8-27B, and not a breakthrough"
+}
+
