@@ -13,10 +13,12 @@ geometry_unit=${GEOMETRY_UNIT:-quant-qwen38-27b-geometric-ternary-ablation-v2.se
 rate_unit=${RATE_UNIT:-quant-qwen38-27b-ternary-type-class-rate-v1.service}
 hash_unit=${HASH_UNIT:-quant-qwen38-27b-hash-residual-screen-v1.service}
 static_codec_unit=${STATIC_CODEC_UNIT:-quant-qwen38-27b-static-entropy-codec-sample-v1.service}
+static_full_unit=${STATIC_FULL_UNIT:-quant-qwen38-27b-static-entropy-full-v1.service}
 geometry_receipt=${GEOMETRY_RECEIPT:-/workspace/quant-state/qwen38-27b-geometric-ternary-ablation-v1.json}
 rate_receipt=${RATE_RECEIPT:-/workspace/quant-state/qwen38-27b-ternary-type-class-rate-v1.json}
 hash_receipt=${HASH_RECEIPT:-/workspace/quant-state/qwen38-27b-hash-residual-screen-v1.json}
 static_codec_receipt=${STATIC_CODEC_RECEIPT:-/workspace/quant-state/qwen38-27b-static-entropy-codec-sample-v1.json}
+static_full_receipt=${STATIC_FULL_RECEIPT:-/workspace/quant-state/qwen38-27b-static-entropy-full-v1.json}
 runtime=experiments/llm_ternary_158bit_dossier/cpu_runtime
 candidate=/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0-activation-QAT-v1.gguf
 materialization=/workspace/quant-state/qwen38-27b-layer0-mlp-activation-qat-materialization-v1.json
@@ -37,7 +39,8 @@ if [[ -z "$expected_commit" ]]; then
 fi
 
 for prerequisite_unit in \
-  "$parent_unit" "$geometry_unit" "$rate_unit" "$hash_unit" "$static_codec_unit"; do
+  "$parent_unit" "$geometry_unit" "$rate_unit" "$hash_unit" \
+  "$static_codec_unit" "$static_full_unit"; do
   while systemctl is-active --quiet "$prerequisite_unit"; do
     sleep 30
   done
@@ -47,7 +50,8 @@ if [[ ! -s "$parent_state/RETRY_TERMINAL" || ! -s "$parent_state/receipt.json" ]
   exit 3
 fi
 "$python_bin" - \
-  "$geometry_receipt" "$rate_receipt" "$hash_receipt" "$static_codec_receipt" <<'PY'
+  "$geometry_receipt" "$rate_receipt" "$hash_receipt" \
+  "$static_codec_receipt" "$static_full_receipt" <<'PY'
 import json
 from pathlib import Path
 import sys
@@ -61,6 +65,10 @@ static_schemas = {
     "qwen38_27b_static_entropy_codec_sample_receipt_v1",
     "qwen38_27b_static_entropy_codec_sample_skip_receipt_v1",
 }
+static_full_schemas = {
+    "qwen38_27b_static_entropy_full_receipt_v1",
+    "qwen38_27b_static_entropy_full_skip_receipt_v1",
+}
 observed = set()
 for raw in sys.argv[1:]:
     path = Path(raw)
@@ -71,7 +79,12 @@ for raw in sys.argv[1:]:
     gate = payload.get("gate")
     if not isinstance(gate, dict) or not isinstance(gate.get("passed"), bool):
         raise SystemExit(f"Qwen3.8-27B prerequisite receipt is nonterminal: {path}")
-if not expected.issubset(observed) or len(observed & static_schemas) != 1 or len(observed) != 4:
+if (
+    not expected.issubset(observed)
+    or len(observed & static_schemas) != 1
+    or len(observed & static_full_schemas) != 1
+    or len(observed) != 5
+):
     raise SystemExit(f"Qwen3.8-27B prerequisite receipt schemas changed: {observed}")
 PY
 for marker in \
@@ -86,7 +99,8 @@ done
 
 mkdir -p "$state"
 sha256sum "$parent_state/receipt.json" "$geometry_receipt" "$rate_receipt" \
-  "$hash_receipt" "$static_codec_receipt" > "$state/prerequisites.sha256"
+  "$hash_receipt" "$static_codec_receipt" "$static_full_receipt" \
+  > "$state/prerequisites.sha256"
 cd "$repo"
 if [[ -n "$(git status --porcelain)" ]]; then
   echo "refusing dirty Qwen3.8-27B research repository" >&2

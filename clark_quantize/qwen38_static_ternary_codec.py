@@ -48,6 +48,31 @@ def _load_native_decoder() -> ctypes._CFuncPtr | None:
 _NATIVE_DECODER = _load_native_decoder()
 
 
+def _load_native_encoder() -> ctypes._CFuncPtr | None:
+    library = base3._NATIVE_DECODER
+    if library is None:
+        return None
+    try:
+        function = library.cq3_encode_static
+    except AttributeError:
+        return None
+    function.argtypes = (
+        ctypes.POINTER(ctypes.c_int8),
+        ctypes.c_uint64,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        ctypes.POINTER(ctypes.c_uint8),
+        ctypes.c_uint64,
+        ctypes.POINTER(ctypes.c_uint64),
+    )
+    function.restype = ctypes.c_int
+    return function
+
+
+_NATIVE_ENCODER = _load_native_encoder()
+
+
 def quantized_frequencies(codes: np.ndarray) -> tuple[int, int, int]:
     """Return deterministic positive-on-support frequencies summing to 32768."""
     array = base3._codes_array(codes)
@@ -81,17 +106,11 @@ def _validate_frequencies(frequencies: tuple[int, int, int]) -> None:
         raise ValueError("static ternary frequencies must sum to 32768")
 
 
-def encode_payload(
+def _encode_payload_python(
     codes: np.ndarray,
-    frequencies: tuple[int, int, int] | None = None,
-) -> tuple[bytes, int, tuple[int, int, int]]:
-    """Encode exact trits with a deterministic frozen frequency table."""
+    frequencies: tuple[int, int, int],
+) -> tuple[bytes, int]:
     array = base3._codes_array(codes)
-    frequencies = frequencies or quantized_frequencies(array)
-    _validate_frequencies(frequencies)
-    counts = np.bincount(array.astype(np.int16) + 1, minlength=3)
-    if any(count and frequency == 0 for count, frequency in zip(counts, frequencies)):
-        raise ValueError("static frequency table assigns zero mass to an observed symbol")
     cumulative = (0, frequencies[0], frequencies[0] + frequencies[1], FREQUENCY_TOTAL)
     writer = base3._BitWriter()
     low = 0
@@ -129,7 +148,53 @@ def encode_payload(
             high = ((high << 1) & base3._MASK) | 1
     pending += 1
     emit(0 if low < base3._QUARTER else 1)
-    payload, bit_length = writer.finish()
+    return writer.finish()
+
+
+def _encode_payload_native(
+    codes: np.ndarray,
+    frequencies: tuple[int, int, int],
+) -> tuple[bytes, int]:
+    if _NATIVE_ENCODER is None:
+        raise RuntimeError("native static ternary encoder is unavailable")
+    array = np.ascontiguousarray(base3._codes_array(codes))
+    capacity_bytes = max(8, (15 * int(array.size) + 66 + 7) // 8)
+    output = np.zeros(capacity_bytes, dtype=np.uint8)
+    bit_length = ctypes.c_uint64()
+    source_pointer = (
+        array.ctypes.data_as(ctypes.POINTER(ctypes.c_int8))
+        if array.size
+        else ctypes.POINTER(ctypes.c_int8)()
+    )
+    status = _NATIVE_ENCODER(
+        source_pointer,
+        int(array.size),
+        *frequencies,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        capacity_bytes,
+        ctypes.byref(bit_length),
+    )
+    if status != 0:  # pragma: no cover
+        raise ValueError(f"native static ternary encoder failed with status {status}")
+    payload_bytes = (bit_length.value + 7) // 8
+    return output[:payload_bytes].tobytes(), int(bit_length.value)
+
+
+def encode_payload(
+    codes: np.ndarray,
+    frequencies: tuple[int, int, int] | None = None,
+) -> tuple[bytes, int, tuple[int, int, int]]:
+    """Encode exact trits with a deterministic frozen frequency table."""
+    array = base3._codes_array(codes)
+    frequencies = frequencies or quantized_frequencies(array)
+    _validate_frequencies(frequencies)
+    counts = np.bincount(array.astype(np.int16) + 1, minlength=3)
+    if any(count and frequency == 0 for count, frequency in zip(counts, frequencies)):
+        raise ValueError("static frequency table assigns zero mass to an observed symbol")
+    if _NATIVE_ENCODER is None:
+        payload, bit_length = _encode_payload_python(array, frequencies)
+    else:
+        payload, bit_length = _encode_payload_native(array, frequencies)
     return payload, bit_length, frequencies
 
 
@@ -255,3 +320,7 @@ def frame_metadata(frame: bytes) -> dict[str, object]:
 
 def native_decoder_available() -> bool:
     return _NATIVE_DECODER is not None
+
+
+def native_encoder_available() -> bool:
+    return _NATIVE_ENCODER is not None

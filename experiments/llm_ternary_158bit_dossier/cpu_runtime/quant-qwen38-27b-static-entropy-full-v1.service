@@ -1,0 +1,19 @@
+[Unit]
+Description=Export every authenticated mapped Qwen3.8-27B code as exact CQ3S1
+After=quant-qwen38-27b-static-entropy-codec-sample-v1.service
+Before=quant-qwen38-27b-layer0-mlp-activation-qat-watch-v1.service
+
+[Service]
+Type=oneshot
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-static-entropy-full.bundle
+ExecStart=/workspace/tmp/watch_qwen38_27b_static_entropy_full_v1.sh
+CPUQuota=400%
+MemoryMax=6G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

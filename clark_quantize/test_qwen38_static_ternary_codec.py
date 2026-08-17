@@ -73,6 +73,18 @@ class Qwen38StaticTernaryCodecTests(unittest.TestCase):
             np.testing.assert_array_equal(native, python)
             np.testing.assert_array_equal(native, source)
 
+    @unittest.skipUnless(static.native_encoder_available(), "static native encoder is not built")
+    def test_native_and_python_encoders_are_byte_exact(self) -> None:
+        generator = np.random.default_rng(877)
+        for count in (0, 1, 31, 128, 1025, 65537):
+            source = generator.choice(
+                np.asarray([-1, 0, 1], dtype=np.int8), count, p=(0.19, 0.59, 0.22)
+            )
+            frequencies = static.quantized_frequencies(source)
+            native = static._encode_payload_native(source, frequencies)
+            python = static._encode_payload_python(source, frequencies)
+            self.assertEqual(native, python)
+
 
 if __name__ == "__main__":
     unittest.main()

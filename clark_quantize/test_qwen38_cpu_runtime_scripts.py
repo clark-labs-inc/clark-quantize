@@ -213,8 +213,6 @@ def test_qwen38_service_commit_chain_is_monotonic() -> None:
     if not (REPO / ".git").exists():
         return
     units = (
-        "quant-qwen38-27b-layer0-mlp-activation-qat-watch-v1.service",
-        "quant-qwen38-27b-layer0-mlp-activation-qat-paired-watch-v1.service",
         "quant-qwen38-27b-row-normalized-scale-codebook4-watch-v1.service",
         "quant-qwen38-27b-full-row-normalized-scale-codebook4-watch-v1.service",
         "quant-qwen38-27b-row-scale4-kernel-watch-v1.service",
@@ -250,3 +248,26 @@ def test_qwen38_service_commit_chain_is_monotonic() -> None:
         assert result.returncode == 0, (
             f"{unit} moves Qwen3.8 service checkout backward: {parent} -> {child}"
         )
+
+
+def test_qwen38_qat_services_pin_the_single_immutable_bundle_head() -> None:
+    pairs = (
+        (
+            "quant-qwen38-27b-layer0-mlp-activation-qat-watch-v1.service",
+            "watch_qwen38_27b_layer0_mlp_activation_qat_v1.sh",
+        ),
+        (
+            "quant-qwen38-27b-layer0-mlp-activation-qat-paired-watch-v1.service",
+            "watch_qwen38_27b_layer0_mlp_activation_qat_paired_v1.sh",
+        ),
+    )
+    for unit_name, watcher_name in pairs:
+        unit = (RUNTIME / unit_name).read_text()
+        watcher = (RUNTIME / watcher_name).read_text()
+        assert "Environment=EXPECTED_COMMIT=" not in unit
+        assert re.search(r"^Environment=BUNDLE=/workspace/tmp/.+\.bundle$", unit, re.M)
+        assert 'git bundle list-heads "$bundle" "$bundle_branch"' in watcher
+        assert '${#bundle_commits[@]} != 1' in watcher
+        assert '[[ ! "${bundle_commits[0]}" =~ ^[0-9a-f]{40}$ ]]' in watcher
+        assert 'git merge --ff-only FETCH_HEAD' in watcher
+        assert 'git rev-parse HEAD' in watcher

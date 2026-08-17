@@ -19,6 +19,44 @@ static inline uint32_t cq3_read_bit(
     return (uint32_t)((payload[offset >> 3U] >> (7U - (offset & 7U))) & 1U);
 }
 
+typedef struct {
+    uint8_t *payload;
+    uint64_t capacity_bits;
+    uint64_t position;
+} cq3_bit_writer;
+
+static inline int cq3_write_bit(cq3_bit_writer *writer, uint32_t bit) {
+    if (writer->position >= writer->capacity_bits) {
+        return -4;
+    }
+    const uint64_t offset = writer->position++;
+    if (bit != 0U) {
+        writer->payload[offset >> 3U] |=
+            (uint8_t)(1U << (7U - (offset & 7U)));
+    }
+    return 0;
+}
+
+static int cq3_emit_static_bit(
+    cq3_bit_writer *writer,
+    uint32_t bit,
+    uint64_t *pending
+) {
+    int status = cq3_write_bit(writer, bit);
+    if (status != 0) {
+        return status;
+    }
+    const uint32_t inverse = 1U - bit;
+    while (*pending != 0U) {
+        status = cq3_write_bit(writer, inverse);
+        if (status != 0) {
+            return status;
+        }
+        *pending -= 1U;
+    }
+    return 0;
+}
+
 int cq3_decode_uniform(
     const uint8_t *payload,
     uint64_t bit_length,
@@ -135,5 +173,87 @@ int cq3_decode_static(
                 cq3_read_bit(payload, bit_length, &position);
         }
     }
+    return 0;
+}
+
+int cq3_encode_static(
+    const int8_t *codes,
+    uint64_t count,
+    uint32_t frequency_minus,
+    uint32_t frequency_zero,
+    uint32_t frequency_plus,
+    uint8_t *payload,
+    uint64_t payload_capacity_bytes,
+    uint64_t *bit_length
+) {
+    const uint64_t cumulative[4] = {
+        0U,
+        (uint64_t)frequency_minus,
+        (uint64_t)frequency_minus + (uint64_t)frequency_zero,
+        (uint64_t)frequency_minus + (uint64_t)frequency_zero +
+            (uint64_t)frequency_plus,
+    };
+    const uint64_t total = cumulative[3];
+    if (total == 0U || total > 32768U || bit_length == 0) {
+        return -1;
+    }
+    if ((count != 0U && codes == 0) || payload == 0 ||
+        payload_capacity_bytes > UINT64_MAX / 8U) {
+        return -2;
+    }
+    cq3_bit_writer writer = {
+        payload,
+        payload_capacity_bytes * 8U,
+        0U,
+    };
+    uint64_t low = 0U;
+    uint64_t high = CQ3_MASK;
+    uint64_t pending = 0U;
+    for (uint64_t index = 0U; index < count; ++index) {
+        const int32_t signed_symbol = (int32_t)codes[index] + 1;
+        if (signed_symbol < 0 || signed_symbol > 2) {
+            return -3;
+        }
+        const uint64_t symbol = (uint64_t)signed_symbol;
+        if (cumulative[symbol] == cumulative[symbol + 1U]) {
+            return -3;
+        }
+        const uint64_t width = high - low + 1U;
+        const uint64_t old_low = low;
+        low = old_low + width * cumulative[symbol] / total;
+        high = old_low + width * cumulative[symbol + 1U] / total - 1U;
+        for (;;) {
+            int status;
+            if (high < CQ3_HALF) {
+                status = cq3_emit_static_bit(&writer, 0U, &pending);
+            } else if (low >= CQ3_HALF) {
+                status = cq3_emit_static_bit(&writer, 1U, &pending);
+                low -= CQ3_HALF;
+                high -= CQ3_HALF;
+            } else if (low >= CQ3_QUARTER && high < CQ3_THREE_QUARTER) {
+                pending += 1U;
+                low -= CQ3_QUARTER;
+                high -= CQ3_QUARTER;
+                status = 0;
+            } else {
+                break;
+            }
+            if (status != 0) {
+                return status;
+            }
+            low = (low << 1U) & CQ3_MASK;
+            high = ((high << 1U) & CQ3_MASK) | 1U;
+        }
+    }
+    pending += 1U;
+    const int status = cq3_emit_static_bit(
+        &writer,
+        low < CQ3_QUARTER ? 0U : 1U,
+        &pending
+    );
+    if (status != 0) {
+        return status;
+    }
+    *bit_length = writer.position;
     return 0;
 }
