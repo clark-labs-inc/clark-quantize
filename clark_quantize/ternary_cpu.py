@@ -214,11 +214,30 @@ def _load_library() -> ctypes.CDLL | None:
             library.cq3_causal_conv4_silu_f32_avx2.argtypes = causal_conv_args
             library.cq3_causal_conv4_silu_f32_avx2.restype = ctypes.c_int
         if hasattr(library, "cq3_recurrent_gated_delta_f32_scalar"):
-            library.cq3_recurrent_gated_delta_f32_scalar.argtypes = (
+            recurrent_delta_args = (
                 f32p, f32p, f32p, f32p, f32p, f32p,
                 ctypes.c_uint32, ctypes.c_uint32, ctypes.c_uint32, f32p,
             )
+            library.cq3_recurrent_gated_delta_f32_scalar.argtypes = (
+                recurrent_delta_args
+            )
             library.cq3_recurrent_gated_delta_f32_scalar.restype = ctypes.c_int
+            library.cq3_recurrent_gated_delta_f32_scalar_trusted.argtypes = (
+                recurrent_delta_args
+            )
+            library.cq3_recurrent_gated_delta_f32_scalar_trusted.restype = (
+                ctypes.c_int
+            )
+            library.cq3_recurrent_gated_delta_f32_avx2.argtypes = (
+                recurrent_delta_args
+            )
+            library.cq3_recurrent_gated_delta_f32_avx2.restype = ctypes.c_int
+            library.cq3_recurrent_gated_delta_f32_avx2_trusted.argtypes = (
+                recurrent_delta_args
+            )
+            library.cq3_recurrent_gated_delta_f32_avx2_trusted.restype = (
+                ctypes.c_int
+            )
         library.cq3_gemv_q8_group128_radix5_scalar.argtypes = gemv_args
         library.cq3_gemv_q8_group128_radix5_scalar.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_avx2.argtypes = gemv_args
@@ -1260,12 +1279,9 @@ def recurrent_gated_delta_f32(
     state: np.ndarray,
     *,
     implementation: str = "scalar",
+    validated: bool = False,
 ) -> np.ndarray:
     """Run one Qwen3.8 recurrent Gated DeltaNet token in FP32."""
-    if implementation != "scalar":
-        raise ValueError(
-            f"unknown recurrent Gated DeltaNet implementation {implementation}"
-        )
     if _LIBRARY is None or not hasattr(
         _LIBRARY, "cq3_recurrent_gated_delta_f32_scalar"
     ):
@@ -1292,8 +1308,24 @@ def recurrent_gated_delta_f32(
         or memory.shape != (v.shape[0], q.shape[1], q.shape[1])
     ):
         raise ValueError("recurrent Gated DeltaNet tensor shapes do not compose")
+    if validated:
+        functions = {
+            "scalar": _LIBRARY.cq3_recurrent_gated_delta_f32_scalar_trusted,
+            "avx2": _LIBRARY.cq3_recurrent_gated_delta_f32_avx2_trusted,
+        }
+    else:
+        functions = {
+            "scalar": _LIBRARY.cq3_recurrent_gated_delta_f32_scalar,
+            "avx2": _LIBRARY.cq3_recurrent_gated_delta_f32_avx2,
+        }
+    try:
+        function = functions[implementation]
+    except KeyError as error:
+        raise ValueError(
+            f"unknown recurrent Gated DeltaNet implementation {implementation}"
+        ) from error
     output = np.empty_like(v)
-    status = _LIBRARY.cq3_recurrent_gated_delta_f32_scalar(
+    status = function(
         q.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
         k.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
         v.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),

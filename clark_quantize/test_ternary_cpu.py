@@ -318,6 +318,19 @@ class TernaryCpuNativeTests(unittest.TestCase):
             np.testing.assert_allclose(
                 actual_state, expected_state, rtol=2e-5, atol=2e-6
             )
+            if ternary_cpu.cpu_features()["avx2"]:
+                avx_state = initial.copy()
+                avx = ternary_cpu.recurrent_gated_delta_f32(
+                    query,
+                    key,
+                    value,
+                    log_decay,
+                    beta,
+                    avx_state,
+                    implementation="avx2",
+                )
+                np.testing.assert_array_equal(avx, actual)
+                np.testing.assert_array_equal(avx_state, actual_state)
 
         query[0, 0] = np.nan
         with self.assertRaisesRegex(ValueError, "non-finite"):

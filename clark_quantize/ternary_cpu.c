@@ -3716,7 +3716,7 @@ int cq3_causal_conv4_silu_f32_avx2(
 
 #define CQ3_GATED_DELTA_MAX_HEAD_DIM 256U
 
-int cq3_recurrent_gated_delta_f32_scalar(
+static int cq3_validate_recurrent_gated_delta_shape(
     const float *CQ3_RESTRICT query,
     const float *CQ3_RESTRICT key,
     const float *CQ3_RESTRICT value,
@@ -3737,6 +3737,28 @@ int cq3_recurrent_gated_delta_f32_scalar(
             head_dim > CQ3_GATED_DELTA_MAX_HEAD_DIM ||
             key_heads > UINT32_MAX / repeat_factor) {
         return CQ3_ERROR_SHAPE;
+    }
+    return CQ3_OK;
+}
+
+static int cq3_validate_recurrent_gated_delta(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key,
+    const float *CQ3_RESTRICT value,
+    const float *CQ3_RESTRICT log_decay,
+    const float *CQ3_RESTRICT beta,
+    float *CQ3_RESTRICT state,
+    uint32_t key_heads,
+    uint32_t repeat_factor,
+    uint32_t head_dim,
+    float *CQ3_RESTRICT output
+) {
+    const int shape_validation = cq3_validate_recurrent_gated_delta_shape(
+        query, key, value, log_decay, beta, state,
+        key_heads, repeat_factor, head_dim, output
+    );
+    if (shape_validation != CQ3_OK) {
+        return shape_validation;
     }
     const uint32_t value_heads = key_heads * repeat_factor;
     const uint64_t key_values = (uint64_t)key_heads * head_dim;
@@ -3762,7 +3784,22 @@ int cq3_recurrent_gated_delta_f32_scalar(
             return CQ3_ERROR_NONFINITE;
         }
     }
+    return CQ3_OK;
+}
 
+static int cq3_recurrent_gated_delta_f32_scalar_impl(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key,
+    const float *CQ3_RESTRICT value,
+    const float *CQ3_RESTRICT log_decay,
+    const float *CQ3_RESTRICT beta,
+    float *CQ3_RESTRICT state,
+    uint32_t key_heads,
+    uint32_t repeat_factor,
+    uint32_t head_dim,
+    float *CQ3_RESTRICT output
+) {
+    const uint32_t value_heads = key_heads * repeat_factor;
     float memory[CQ3_GATED_DELTA_MAX_HEAD_DIM];
     float delta[CQ3_GATED_DELTA_MAX_HEAD_DIM];
     for (uint32_t head = 0U; head < value_heads; ++head) {
@@ -3805,6 +3842,224 @@ int cq3_recurrent_gated_delta_f32_scalar(
         }
     }
     return CQ3_OK;
+}
+
+int cq3_recurrent_gated_delta_f32_scalar(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key,
+    const float *CQ3_RESTRICT value,
+    const float *CQ3_RESTRICT log_decay,
+    const float *CQ3_RESTRICT beta,
+    float *CQ3_RESTRICT state,
+    uint32_t key_heads,
+    uint32_t repeat_factor,
+    uint32_t head_dim,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_recurrent_gated_delta(
+        query, key, value, log_decay, beta, state,
+        key_heads, repeat_factor, head_dim, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+    return cq3_recurrent_gated_delta_f32_scalar_impl(
+        query, key, value, log_decay, beta, state,
+        key_heads, repeat_factor, head_dim, output
+    );
+}
+
+int cq3_recurrent_gated_delta_f32_scalar_trusted(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key,
+    const float *CQ3_RESTRICT value,
+    const float *CQ3_RESTRICT log_decay,
+    const float *CQ3_RESTRICT beta,
+    float *CQ3_RESTRICT state,
+    uint32_t key_heads,
+    uint32_t repeat_factor,
+    uint32_t head_dim,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_recurrent_gated_delta_shape(
+        query, key, value, log_decay, beta, state,
+        key_heads, repeat_factor, head_dim, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+    return cq3_recurrent_gated_delta_f32_scalar_impl(
+        query, key, value, log_decay, beta, state,
+        key_heads, repeat_factor, head_dim, output
+    );
+}
+
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+__attribute__((target("avx2")))
+static int cq3_recurrent_gated_delta_f32_avx2_impl(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key,
+    const float *CQ3_RESTRICT value,
+    const float *CQ3_RESTRICT log_decay,
+    const float *CQ3_RESTRICT beta,
+    float *CQ3_RESTRICT state,
+    uint32_t key_heads,
+    uint32_t repeat_factor,
+    uint32_t head_dim,
+    float *CQ3_RESTRICT output
+) {
+    const uint32_t value_heads = key_heads * repeat_factor;
+    float memory[CQ3_GATED_DELTA_MAX_HEAD_DIM];
+    float delta[CQ3_GATED_DELTA_MAX_HEAD_DIM];
+    for (uint32_t head = 0U; head < value_heads; ++head) {
+        const uint32_t key_head = head / repeat_factor;
+        const float *q = query + (uint64_t)key_head * head_dim;
+        const float *k = key + (uint64_t)key_head * head_dim;
+        const float *v = value + (uint64_t)head * head_dim;
+        float *head_state = state + (uint64_t)head * head_dim * head_dim;
+        float *head_output = output + (uint64_t)head * head_dim;
+        const float decay = expf(log_decay[head]);
+        uint32_t column = 0U;
+        const __m256 zero = _mm256_setzero_ps();
+        for (; column + 8U <= head_dim; column += 8U) {
+            _mm256_storeu_ps(memory + column, zero);
+            _mm256_storeu_ps(head_output + column, zero);
+        }
+        for (; column < head_dim; ++column) {
+            memory[column] = 0.0f;
+            head_output[column] = 0.0f;
+        }
+        for (uint32_t row = 0U; row < head_dim; ++row) {
+            float *state_row = head_state + (uint64_t)row * head_dim;
+            const __m256 decay_vector = _mm256_set1_ps(decay);
+            const __m256 key_vector = _mm256_set1_ps(k[row]);
+            column = 0U;
+            for (; column + 8U <= head_dim; column += 8U) {
+                __m256 state_vector = _mm256_loadu_ps(state_row + column);
+                state_vector = _mm256_mul_ps(state_vector, decay_vector);
+                _mm256_storeu_ps(state_row + column, state_vector);
+                __m256 memory_vector = _mm256_loadu_ps(memory + column);
+                memory_vector = _mm256_add_ps(
+                    memory_vector,
+                    _mm256_mul_ps(state_vector, key_vector)
+                );
+                _mm256_storeu_ps(memory + column, memory_vector);
+            }
+            for (; column < head_dim; ++column) {
+                state_row[column] *= decay;
+                memory[column] += state_row[column] * k[row];
+            }
+        }
+        const __m256 beta_vector = _mm256_set1_ps(beta[head]);
+        column = 0U;
+        for (; column + 8U <= head_dim; column += 8U) {
+            const __m256 value_vector = _mm256_loadu_ps(v + column);
+            const __m256 memory_vector = _mm256_loadu_ps(memory + column);
+            const __m256 delta_vector = _mm256_mul_ps(
+                _mm256_sub_ps(value_vector, memory_vector), beta_vector
+            );
+            _mm256_storeu_ps(delta + column, delta_vector);
+        }
+        for (; column < head_dim; ++column) {
+            delta[column] = (v[column] - memory[column]) * beta[head];
+        }
+        for (uint32_t row = 0U; row < head_dim; ++row) {
+            float *state_row = head_state + (uint64_t)row * head_dim;
+            const __m256 key_vector = _mm256_set1_ps(k[row]);
+            const __m256 query_vector = _mm256_set1_ps(q[row]);
+            column = 0U;
+            for (; column + 8U <= head_dim; column += 8U) {
+                __m256 state_vector = _mm256_loadu_ps(state_row + column);
+                const __m256 delta_vector = _mm256_loadu_ps(delta + column);
+                state_vector = _mm256_add_ps(
+                    state_vector,
+                    _mm256_mul_ps(key_vector, delta_vector)
+                );
+                _mm256_storeu_ps(state_row + column, state_vector);
+                __m256 output_vector = _mm256_loadu_ps(head_output + column);
+                output_vector = _mm256_add_ps(
+                    output_vector,
+                    _mm256_mul_ps(state_vector, query_vector)
+                );
+                _mm256_storeu_ps(head_output + column, output_vector);
+            }
+            for (; column < head_dim; ++column) {
+                state_row[column] += k[row] * delta[column];
+                head_output[column] += state_row[column] * q[row];
+            }
+        }
+        for (column = 0U; column < head_dim; ++column) {
+            if (!isfinite(head_output[column])) {
+                return CQ3_ERROR_NONFINITE;
+            }
+        }
+    }
+    return CQ3_OK;
+}
+#endif
+
+int cq3_recurrent_gated_delta_f32_avx2(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key,
+    const float *CQ3_RESTRICT value,
+    const float *CQ3_RESTRICT log_decay,
+    const float *CQ3_RESTRICT beta,
+    float *CQ3_RESTRICT state,
+    uint32_t key_heads,
+    uint32_t repeat_factor,
+    uint32_t head_dim,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_recurrent_gated_delta(
+        query, key, value, log_decay, beta, state,
+        key_heads, repeat_factor, head_dim, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    if ((cq3_cpu_features() & CQ3_FEATURE_AVX2) == 0U) {
+        return CQ3_ERROR_ISA;
+    }
+    return cq3_recurrent_gated_delta_f32_avx2_impl(
+        query, key, value, log_decay, beta, state,
+        key_heads, repeat_factor, head_dim, output
+    );
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
+int cq3_recurrent_gated_delta_f32_avx2_trusted(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key,
+    const float *CQ3_RESTRICT value,
+    const float *CQ3_RESTRICT log_decay,
+    const float *CQ3_RESTRICT beta,
+    float *CQ3_RESTRICT state,
+    uint32_t key_heads,
+    uint32_t repeat_factor,
+    uint32_t head_dim,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_recurrent_gated_delta_shape(
+        query, key, value, log_decay, beta, state,
+        key_heads, repeat_factor, head_dim, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    if ((cq3_cpu_features() & CQ3_FEATURE_AVX2) == 0U) {
+        return CQ3_ERROR_ISA;
+    }
+    return cq3_recurrent_gated_delta_f32_avx2_impl(
+        query, key, value, log_decay, beta, state,
+        key_heads, repeat_factor, head_dim, output
+    );
+#else
+    return CQ3_ERROR_ISA;
+#endif
 }
 
 #if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))

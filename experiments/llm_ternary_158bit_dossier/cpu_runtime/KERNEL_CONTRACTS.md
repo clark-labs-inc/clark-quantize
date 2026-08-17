@@ -152,8 +152,16 @@ token. Q and K heads are logically repeated from 16 to 48 heads, but the kernel
 should index or broadcast them rather than materializing the repeats.
 The dependency-free FP32 scalar C oracle now implements the exact 16-to-48
 head mapping and mutates the real `48 x 128 x 128` state in place. It matches a
-NumPy equation-level control on the full Qwen shape. AVX2 row/column tiling,
-thread placement across heads/layers, and frozen throughput remain open.
+NumPy equation-level control on the full Qwen shape. An AVX2 implementation
+vectors eight adjacent state columns while preserving the scalar accumulation
+order and avoiding FMA contraction. Safe public entries validate every input;
+trusted graph entries retain pointer, shape, and finite-output checks while
+avoiding a redundant 3 MiB finite-state scan after the enclosing graph has
+already established state validity. The authoritative x86 gate is frozen to
+require bit-exact scalar parity, at least 3x one-layer speedup, and at least 2
+recurrence-only tokens/s while streaming all 48 independent states (144 MiB),
+not repeatedly timing one cache-resident state. That x86 gate, thread placement
+across heads/layers, and full-layer parity remain open.
 
 K7 is a distinct chunked-prefill algorithm. It uses bounded tiles and returns
 the same final recurrent state as the scalar token-by-token oracle. Numerical

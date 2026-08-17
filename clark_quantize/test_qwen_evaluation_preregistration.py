@@ -17,6 +17,11 @@ TARGET_158 = ROOT / "experiments/qwen38_27b_spot/target_158_preregistration.json
 GEMV_PREREGISTRATION = (
     ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime/gemv_preregistration_v5.json"
 )
+RECURRENT_DELTA_PREREGISTRATION = (
+    ROOT
+    / "experiments/llm_ternary_158bit_dossier/cpu_runtime/"
+    "qwen38_27b_recurrent_delta_avx2_preregistration_v1.json"
+)
 
 
 def load_script(name: str):
@@ -117,6 +122,28 @@ class EvaluationPreregistrationTests(unittest.TestCase):
         args.rows -= 1
         with self.assertRaisesRegex(ValueError, "differ"):
             GEMV.validate_preregistration(value, args)
+
+    def test_qwen38_recurrent_delta_gate_covers_full_state_stream(self) -> None:
+        value = json.loads(RECURRENT_DELTA_PREREGISTRATION.read_text())
+        scope = value["scope"]
+        self.assertEqual(scope["active_model_only"], "Qwen/Qwen3.8-27B")
+        self.assertEqual(scope["value_heads"], 48)
+        self.assertEqual(scope["head_dimension"], 128)
+        self.assertEqual(scope["deltanet_layers"], 48)
+        self.assertEqual(
+            scope["state_bytes_all_layers"],
+            scope["deltanet_layers"] * scope["state_bytes_per_layer"],
+        )
+        self.assertTrue(value["gate"]["require_exact_scalar_avx2_output"])
+        self.assertTrue(value["gate"]["require_exact_scalar_avx2_final_state"])
+        self.assertGreaterEqual(
+            value["gate"][
+                "minimum_full_stack_recurrence_only_tokens_per_second"
+            ],
+            2.0,
+        )
+        self.assertIn("CUTE", " ".join(value["promotion_rules"]))
+        self.assertIn("MMLU", " ".join(value["promotion_rules"]))
 
 
 if __name__ == "__main__":
