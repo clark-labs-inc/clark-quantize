@@ -101,6 +101,38 @@
     "full_model_graph_gate_passed": false,
     "capability_gate_required_after_model_integration": true
   },
+  "llama_cpp_arm_cq3_fused_graph": {
+    "upstream_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "graph": "CQ3_0 gate MUL_MAT plus CQ3_0 up MUL_MAT plus un-swapped F32 SwiGLU",
+    "shape_each_projection": [17408, 5120],
+    "paired_rows": 8,
+    "base_patch_sha256": "b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1",
+    "arm_row_blocked_patch_sha256": "f646aef73c5623af4f325f6923d9855cd698b71f4784e6795a8b658162661127",
+    "fused_graph_patch_sha256": "cbde7d2e4c23a13eb24207ccea6ceb75d63eeb7a37dfba20aa95fcae9968d5b4",
+    "preregistration_sha256": "2613e64d21771205787a92a642ead5010e174fb9b5f1a8005c7928a2e53039b4",
+    "arm_benchmark_receipt_sha256": "1ab203ef47c789759fc31968b4637d1151ab8d077f9d99cfeb9326d4089844a9",
+    "x86_portability_receipt_sha256": "928cbbbd9fa0b70311b5315d50da4531849eca6c313d4d0a8c37f542527aa2de",
+    "model_parity_capability_receipt_sha256": "ba2c51dcbc75614528ab8f73ba0bf85235af519b52170da5366f2423153cb150",
+    "thread_lanes": {
+      "1": {"control_median_microseconds": 2341.94, "candidate_median_microseconds": 2225.65, "ratio_of_medians": 1.0522499045222744, "paired_speedup_median": 1.0536285274222459, "promotion_passed": true},
+      "4": {"control_median_microseconds": 769.6, "candidate_median_microseconds": 702.56, "ratio_of_medians": 1.0954224550216354, "paired_speedup_median": 1.1001358015867344, "promotion_passed": true},
+      "8": {"control_median_microseconds": 529.62, "candidate_median_microseconds": 506.63, "ratio_of_medians": 1.0453782839547598, "paired_speedup_median": 1.0453782839547598, "promotion_passed": true}
+    },
+    "arm_backend_cases_passed": 2,
+    "arm_backend_cases_total": 2,
+    "x86_backend_cases_passed": 2,
+    "x86_backend_cases_total": 2,
+    "model_runtime_semantic_records_exact": 34,
+    "model_runtime_semantic_records_total": 34,
+    "quick_capability": {
+      "cute_quick_20": {"bf16_correct": 8, "candidate_correct": 0, "total": 20, "passed": false},
+      "math500": {"bf16_correct": 5, "candidate_correct": 0, "total": 8, "passed": false},
+      "decision": "stop_for_catastrophic_forgetting"
+    },
+    "graph_kernel_promotion_passed": true,
+    "model_artifact_promotion_passed": false,
+    "scientific_breakthrough_proven": false
+  },
   "arm_fused_swiglu": {
     "host": "Apple M5 Max",
     "tensors": [
@@ -128,7 +160,8 @@
       "K2 group-128 aligned-2 AVX2 microkernel",
       "K2 group-128 aligned-2 ARM DOTPROD v1 microkernel",
       "K2/K11 ARM row-blocked CQ3_0 GGML single-token MUL_MAT dispatch",
-      "K4 ARM fused gate/up plus SwiGLU native operator"
+      "K4 ARM fused gate/up plus SwiGLU native operator",
+      "K2/K11 ARM CQ3_0 fused gate/up plus SwiGLU GGML graph dispatch"
     ],
     "not_proven": [
       "whole-model 1.58-bit storage",
@@ -139,5 +172,5 @@
       "scientific breakthrough"
     ]
   },
-  "next_gate": "Dispatch the fused ARM gate/up plus SwiGLU operator from the packed GGML graph, prove token parity, and run the frozen WikiText, MATH-500, and CUTE/MMLU tripwire; in parallel, run the preregistered restartable 4B QAT stage only on an admitted 80 GB GPU"
+  "next_gate": "Produce a quality-aware 4B ternary training candidate and require the exact artifact to pass CUTE-Quick-20 plus quick MATH-500 (or the frozen MMLU substitute) before deeper training or 27B scaling; then measure full-model CPU token throughput and energy with the promoted fused graph path"
 }

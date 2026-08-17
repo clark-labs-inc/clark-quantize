@@ -1,0 +1,104 @@
+{
+  "schema": "clark_cq3_fused_arm_model_parity_and_capability_receipt_v1",
+  "created_at_utc": "2026-08-17T04:54:16Z",
+  "amended_at_utc": "2026-08-17T05:05:40Z",
+  "status": "runtime_parity_passed_capability_failed",
+  "host": {
+    "cpu": "Apple M5 Max",
+    "architecture": "arm64",
+    "logical_cpus": 18,
+    "runtime_threads": 4,
+    "gpu_layers": 0,
+    "server_ports": {
+      "fused": 8093,
+      "unfused": 8094
+    }
+  },
+  "source": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "full_diff_sha256": "200720cc958d8f907173d3f415d84012d26eaadb2811e4ec1966a996395dc120",
+    "server_binary_sha256": "f482eb398a6c82d22924dd1c7568770c98a5cecc31866347b9392b2648e723bf",
+    "model_validation_cmake_cache_sha256": "a82cf3de99f7726fc547032ab36907c5b9c5d008189ee9cceed9fdb3c8accac7",
+    "post_run_contract_fix": "standalone ARM row-block assertion restored to <=16 and paired assertion narrowed to <=8; the rebuilt Release server SHA-256 remained byte-identical"
+  },
+  "model": {
+    "label": "Qwen3.5-4B-CQ3_0-QATScope",
+    "sha256": "072ffb19ae20fdabb0a64f4e49097f8a77fbabd49fd5eb47bc705b5012950476",
+    "bytes": 1193348832,
+    "same_artifact_for_fused_and_unfused": true
+  },
+  "runtime_variants": {
+    "fused": {
+      "GGML_CPU_DISABLE_FUSION": "0",
+      "cpu_only": true
+    },
+    "unfused_control": {
+      "GGML_CPU_DISABLE_FUSION": "1",
+      "cpu_only": true
+    }
+  },
+  "frozen_inputs": {
+    "cute_manifest_sha256": "19dd73eedf737d11f7c94d039822de62314abf31e3fb739a9a875fe65c5bbd16",
+    "math_code_manifest_sha256": "1ec0b41ce3ca3597d65013ac0c8a48c208c4e03b05f0109be61319252c09dab0",
+    "cute_evaluator_sha256": "9c40a48a0c3f0544156a20ccccdc12f7e90bbae8afd391bf640ead1ff234c8ab",
+    "math_code_evaluator_sha256": "92544e6d89275e8fb19319376a0f845e362ad13c61afe952983f063e3986620b",
+    "comparison_evaluator_sha256": "0654ffa7028e1181e230c0273783775ac2ca6ccb9c11ae7a2e2dda490aa79ea7",
+    "bf16_baseline_receipt_sha256": {
+      "math_code": "22fae89e490fec7426388bd406a64c32bc14466c6370c906bb6e8a2c59f9ea42",
+      "cute": "7e022cf401a8b737e77bcc84fd6b2440b718460cfd845b0d38b3263eeada9ba1"
+    },
+    "bf16_model_sha256": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974"
+  },
+  "result_files_sha256": {
+    "canary-cq3-fused-arm.json": "527eb8925a672c039bdb74c39770e51c0c61e8d4a9244ba8ccf7df04f44aab13",
+    "canary-cq3-unfused-arm.json": "5d8063e4105a8cc1f78355d072d439a4372a398a9cab5551d6e2e44debd36913",
+    "cute-quick-cq3-fused-arm.json": "38597717183d601a0752a44853abd98ef01cd505b384c0b0d3e708078e85258a",
+    "cute-quick-cq3-unfused-arm.json": "39df8affbb73fc6664412324dcbf2ead997f6c8a143a83f28310ee1a42038d86",
+    "capability-tripwire-cq3-fused-arm.json": "6cffa360866d0bd9014c98340fb8568b41085f58e7de4f20adc80f058bec3966"
+  },
+  "runtime_parity": {
+    "comparison_fields": [
+      "task",
+      "id",
+      "correct",
+      "prediction",
+      "gold",
+      "output",
+      "finish_reason",
+      "usage"
+    ],
+    "cute_records": {
+      "n": 20,
+      "fused_semantic_sha256": "ebd5aac0c665ab170d6de6ec6dd39a35a50ae18ef2dae3bbf9945e7c4acb0714",
+      "unfused_semantic_sha256": "ebd5aac0c665ab170d6de6ec6dd39a35a50ae18ef2dae3bbf9945e7c4acb0714",
+      "exact": true
+    },
+    "math_code_records": {
+      "n": 14,
+      "fused_semantic_sha256": "db24b6f770c22f8401ae34c3bae059896e28734188427dca98052cc303748995",
+      "unfused_semantic_sha256": "db24b6f770c22f8401ae34c3bae059896e28734188427dca98052cc303748995",
+      "exact": true
+    },
+    "passed": true
+  },
+  "capability": {
+    "comparison_exit_code": 2,
+    "decision": "stop_for_catastrophic_forgetting",
+    "math500": {
+      "bf16_correct": 5,
+      "candidate_correct": 0,
+      "n": 8,
+      "required_candidate_correct": 3,
+      "passed": false
+    },
+    "cute_quick_20": {
+      "bf16_correct": 8,
+      "candidate_correct": 0,
+      "n": 20,
+      "required_candidate_correct": 5,
+      "passed": false
+    },
+    "passed": false
+  },
+  "conclusion": "The fused ARM runtime preserves the exact generated records of the same-host unfused CQ3 runtime, so the fusion does not cause additional forgetting. The CQ3 PTQ artifact itself remains catastrophically degraded against its exact BF16 parent and cannot be promoted or scaled."
+}
