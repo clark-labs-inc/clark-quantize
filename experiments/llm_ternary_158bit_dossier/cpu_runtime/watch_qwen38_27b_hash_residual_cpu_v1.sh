@@ -11,12 +11,15 @@ parent_unit=${PARENT_UNIT:-quant-qwen38-27b-hash-residual-screen-v1.service}
 parent_receipt=${PARENT_RECEIPT:-/workspace/quant-state/qwen38-27b-hash-residual-screen-v1.json}
 codec_unit=${CODEC_UNIT:-quant-qwen38-27b-fixed-support-codec-v1.service}
 codec_receipt=${CODEC_RECEIPT:-/workspace/quant-state/qwen38-27b-fixed-support-codec-v1.json}
+storage_unit=${STORAGE_UNIT:-quant-qwen38-27b-hash-storage-budget-v1.service}
+storage_receipt=${STORAGE_RECEIPT:-/workspace/quant-state/qwen38-27b-hash-storage-budget-v1.json}
 runtime=experiments/llm_ternary_158bit_dossier/cpu_runtime
 
 # shellcheck source=wait_for_qwen38_terminal_receipt.sh
 source "$(dirname "$0")/wait_for_qwen38_terminal_receipt.sh"
 qwen38_wait_for_terminal_receipt "$parent_unit" "$parent_receipt" 30
 qwen38_wait_for_terminal_receipt "$codec_unit" "$codec_receipt" 30
+qwen38_wait_for_terminal_receipt "$storage_unit" "$storage_receipt" 30
 
 if [[ -s "$result" ]] && "$python_bin" - "$result" <<'PY'
 import json, sys

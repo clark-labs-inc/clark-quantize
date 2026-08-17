@@ -1,0 +1,106 @@
+{
+  "schema": "qwen38_27b_hash_storage_budget_preregistration_v1",
+  "receipt_schema": "qwen38_27b_hash_storage_budget_receipt_v1",
+  "status": "frozen_before_authoritative_complete_inventory_run",
+  "frozen_at_utc": "2026-08-17T21:08:00Z",
+  "hypothesis": "Applying the exact selected fixed-support plus Clark-Hash structural layout to every compatible Qwen3.8-27B checkpoint tensor, while retaining every incompatible tensor at its authenticated source dtype and counting all tensor headers, payload byte rounding, 64-byte section alignment, scale side channels, tensor metadata, and auxiliary model files, will cover at least 99.5% of parameters with the compact representation and project a complete bundle at or below log2(3), approximately 1.585 bits per total parameter",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "qwen_4b_compute_forbidden": true,
+    "coverage": "all 1,199 checkpoint tensors and every top-level non-safetensors model file",
+    "claim_boundary": "complete structural byte projection only; not a complete exported artifact, whole-model fit, scale-quality, capability, runtime, semi-lossless, or breakthrough result"
+  },
+  "parents": {
+    "hash_preregistration": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_hash_residual_screen_preregistration_v1.json",
+    "required_hash_receipt": "/workspace/quant-state/qwen38-27b-hash-residual-screen-v1.json",
+    "fixed_support_preregistration": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_fixed_support_codec_preregistration_v1.json",
+    "required_fixed_support_receipt": "/workspace/quant-state/qwen38-27b-fixed-support-codec-v1.json",
+    "required_gates": "both passed true with exactly the same selected_candidate"
+  },
+  "expected_inventory": {
+    "tensor_count": 1199,
+    "total_parameters": 27781427952,
+    "inventory_sha256": "8533a0edfba093faf2a865391405408461613b92ef83e8d511436f2ed96bc14d",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df"
+  },
+  "eligibility": {
+    "compact": "rank-2-or-higher tensors whose flattened input width is divisible by both 128 and the selected input-to-sketch ratio and whose sketch dimension fits uint16 load-time buckets",
+    "retained": "every other tensor byte-for-byte at its authenticated source dtype",
+    "no_padding_to_gain_eligibility": true,
+    "no_tensor_excluded_from_denominator": true
+  },
+  "compact_tensor_bytes": [
+    "64-byte CQ3HFS tensor codec header",
+    "exact enumerative fixed-support ternary payload rounded to its terminal byte",
+    "one FP16 row anchor",
+    "one 4-bit scale-ratio index per group",
+    "one 16-entry FP16 scale-ratio codebook per tensor",
+    "row-aligned signed INT4 hash coefficients",
+    "one FP16 hash-coefficient scale per output row",
+    "64-byte alignment of the complete tensor section"
+  ],
+  "global_bytes": [
+    "128-byte layout header and 32-byte footer",
+    "one 8-byte-aligned tensor record containing a 64-byte fixed record, UTF-8 name, and uint64 dimensions",
+    "all top-level non-safetensors model files byte-for-byte"
+  ],
+  "active_compute_memory": {
+    "storage_treatment": "excluded from canonical model bytes because it is deterministically regenerated from the stored seed",
+    "separately_report": [
+      "one shared uint16 bucket plus signed int8 sign mapping per unique projection shape and hash repetition",
+      "maximum FP32 sketch scratch bytes per worker"
+    ]
+  },
+  "gate": {
+    "required_total_parameters": 27781427952,
+    "required_total_tensors": 1199,
+    "minimum_fixed_support_parameter_fraction": 0.995,
+    "maximum_complete_bundle_bits_per_total_parameter": 1.585
+  },
+  "resources": {
+    "cpu_quota_percent": 100,
+    "memory_max_gib": 2,
+    "minimum_free_disk_gib": 10,
+    "swap_must_remain_zero": true,
+    "concurrent_llama_or_training_processes": 0,
+    "weight_payloads_read": false,
+    "persistent_output_bytes": "less than 4 MiB"
+  },
+  "promotion_rules": [
+    "a rejected hash or fixed-support parent produces a valid nonpromotion skip and no complete budget run",
+    "a pass proves only byte-accounting feasibility for the selected structural representation",
+    "every compact tensor still requires a whole-tensor fit and row-scale quality gate before artifact export",
+    "the embedding and LM head remain included in both the byte denominator and future capability gates",
+    "complete model CUTE MMLU-type MATH WikiText code and paired CPU throughput remain mandatory",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "this structural ledger cannot establish semi-lossless compression or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "ledger": {
+      "path": "clark_quantize/qwen38_hash_storage_budget.py",
+      "sha256": "98a66bbbff7d7c38de3eb8c801f570dd86d80430060fe92e2eab988561b7c9a5"
+    },
+    "tests": {
+      "path": "clark_quantize/test_qwen38_hash_storage_budget.py",
+      "sha256": "d585df075254bec873400bbb697d6545a8ca610ee32e8fcbe40f8a110ba01ed8"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_hash_storage_budget_v1.py",
+      "sha256": "42f9ed43af26d671758fba7afedbf5e2aeec2b8419d660dbfb3136051608a9f5"
+    },
+    "inventory": {
+      "path": "clark_quantize/qwen38_storage_budget.py",
+      "sha256": "eed77a1e32009f0c6be607c168bd840482712a535949737877c6584f0ce2f706"
+    },
+    "fixed_support_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_fixed_support_codec_preregistration_v1.json",
+      "sha256": "c7b01c8b82d914e95359a2cb242484d70cff0856978f2a3e36a817e9e62c9519"
+    },
+    "hash_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_hash_residual_screen_preregistration_v1.json",
+      "sha256": "e0d9a613f4286004aa4c2339d8f97fd248d4c4dc5ba0bf70036e75d768261605"
+    }
+  }
+}
