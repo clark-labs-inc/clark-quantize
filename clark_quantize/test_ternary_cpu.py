@@ -282,6 +282,49 @@ class TernaryCpuNativeTests(unittest.TestCase):
                 implementation="scalar",
             )
 
+    def test_qwen38_recurrent_gated_delta_matches_fp32_oracle(self) -> None:
+        generator = np.random.default_rng(20260817)
+        for key_heads, repeat, dimension in ((2, 3, 8), (16, 3, 128)):
+            value_heads = key_heads * repeat
+            query = generator.normal(size=(key_heads, dimension)).astype(np.float32)
+            key = generator.normal(size=(key_heads, dimension)).astype(np.float32)
+            query /= np.linalg.norm(query, axis=1, keepdims=True)
+            key /= np.linalg.norm(key, axis=1, keepdims=True)
+            value = generator.normal(size=(value_heads, dimension)).astype(np.float32)
+            log_decay = -generator.uniform(0.001, 2.0, size=value_heads).astype(np.float32)
+            beta = generator.uniform(0.01, 0.99, size=value_heads).astype(np.float32)
+            initial = generator.normal(
+                scale=0.05,
+                size=(value_heads, dimension, dimension),
+            ).astype(np.float32)
+            expected_state = initial.copy()
+            expected = np.empty_like(value)
+            for head in range(value_heads):
+                key_head = head // repeat
+                expected_state[head] *= np.exp(log_decay[head])
+                with np.errstate(all="ignore"):
+                    memory = key[key_head] @ expected_state[head]
+                    delta = (value[head] - memory) * beta[head]
+                    expected_state[head] += np.outer(key[key_head], delta)
+                    expected[head] = query[key_head] @ expected_state[head]
+            self.assertTrue(np.all(np.isfinite(expected)))
+            self.assertTrue(np.all(np.isfinite(expected_state)))
+
+            actual_state = initial.copy()
+            actual = ternary_cpu.recurrent_gated_delta_f32(
+                query, key, value, log_decay, beta, actual_state
+            )
+            np.testing.assert_allclose(actual, expected, rtol=2e-5, atol=2e-6)
+            np.testing.assert_allclose(
+                actual_state, expected_state, rtol=2e-5, atol=2e-6
+            )
+
+        query[0, 0] = np.nan
+        with self.assertRaisesRegex(ValueError, "non-finite"):
+            ternary_cpu.recurrent_gated_delta_f32(
+                query, key, value, log_decay, beta, initial.copy()
+            )
+
     def test_scalar_matches_groupwise_integer_oracle(self) -> None:
         codes, scales, quantized, activation_scales, sums, packed = self.fixture()
         actual = ternary_cpu.gemv_q8_group128_2bit(

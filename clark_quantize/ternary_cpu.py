@@ -213,6 +213,12 @@ def _load_library() -> ctypes.CDLL | None:
             library.cq3_causal_conv4_silu_f32_scalar.restype = ctypes.c_int
             library.cq3_causal_conv4_silu_f32_avx2.argtypes = causal_conv_args
             library.cq3_causal_conv4_silu_f32_avx2.restype = ctypes.c_int
+        if hasattr(library, "cq3_recurrent_gated_delta_f32_scalar"):
+            library.cq3_recurrent_gated_delta_f32_scalar.argtypes = (
+                f32p, f32p, f32p, f32p, f32p, f32p,
+                ctypes.c_uint32, ctypes.c_uint32, ctypes.c_uint32, f32p,
+            )
+            library.cq3_recurrent_gated_delta_f32_scalar.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_scalar.argtypes = gemv_args
         library.cq3_gemv_q8_group128_radix5_scalar.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_avx2.argtypes = gemv_args
@@ -1242,6 +1248,64 @@ def causal_conv4_silu_f32(
         output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
     )
     _check(status, "Qwen3.8 causal-conv4 SiLU")
+    return output
+
+
+def recurrent_gated_delta_f32(
+    query: np.ndarray,
+    key: np.ndarray,
+    value: np.ndarray,
+    log_decay: np.ndarray,
+    beta: np.ndarray,
+    state: np.ndarray,
+    *,
+    implementation: str = "scalar",
+) -> np.ndarray:
+    """Run one Qwen3.8 recurrent Gated DeltaNet token in FP32."""
+    if implementation != "scalar":
+        raise ValueError(
+            f"unknown recurrent Gated DeltaNet implementation {implementation}"
+        )
+    if _LIBRARY is None or not hasattr(
+        _LIBRARY, "cq3_recurrent_gated_delta_f32_scalar"
+    ):
+        raise RuntimeError("native Qwen3.8 recurrent delta kernel is absent")
+    q = _array(query, np.float32, ndim=2)
+    k = _array(key, np.float32, ndim=2)
+    v = _array(value, np.float32, ndim=2)
+    g = _array(log_decay, np.float32, ndim=1)
+    b = _array(beta, np.float32, ndim=1)
+    memory = np.asarray(state)
+    if (
+        q.shape != k.shape
+        or q.shape[0] == 0
+        or q.shape[1] == 0
+        or q.shape[1] > 256
+        or v.ndim != 2
+        or v.shape[1] != q.shape[1]
+        or v.shape[0] % q.shape[0]
+        or g.shape != (v.shape[0],)
+        or b.shape != (v.shape[0],)
+        or memory.dtype != np.float32
+        or not memory.flags.c_contiguous
+        or not memory.flags.writeable
+        or memory.shape != (v.shape[0], q.shape[1], q.shape[1])
+    ):
+        raise ValueError("recurrent Gated DeltaNet tensor shapes do not compose")
+    output = np.empty_like(v)
+    status = _LIBRARY.cq3_recurrent_gated_delta_f32_scalar(
+        q.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        k.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        v.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        g.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        b.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        memory.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        q.shape[0],
+        v.shape[0] // q.shape[0],
+        q.shape[1],
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+    )
+    _check(status, "Qwen3.8 recurrent Gated DeltaNet")
     return output
 
 

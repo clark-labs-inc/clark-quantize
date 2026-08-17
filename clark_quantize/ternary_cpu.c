@@ -3714,6 +3714,99 @@ int cq3_causal_conv4_silu_f32_avx2(
 #endif
 }
 
+#define CQ3_GATED_DELTA_MAX_HEAD_DIM 256U
+
+int cq3_recurrent_gated_delta_f32_scalar(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key,
+    const float *CQ3_RESTRICT value,
+    const float *CQ3_RESTRICT log_decay,
+    const float *CQ3_RESTRICT beta,
+    float *CQ3_RESTRICT state,
+    uint32_t key_heads,
+    uint32_t repeat_factor,
+    uint32_t head_dim,
+    float *CQ3_RESTRICT output
+) {
+    if (query == NULL || key == NULL || value == NULL ||
+            log_decay == NULL || beta == NULL || state == NULL ||
+            output == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    if (key_heads == 0U || repeat_factor == 0U || head_dim == 0U ||
+            head_dim > CQ3_GATED_DELTA_MAX_HEAD_DIM ||
+            key_heads > UINT32_MAX / repeat_factor) {
+        return CQ3_ERROR_SHAPE;
+    }
+    const uint32_t value_heads = key_heads * repeat_factor;
+    const uint64_t key_values = (uint64_t)key_heads * head_dim;
+    const uint64_t value_values = (uint64_t)value_heads * head_dim;
+    const uint64_t state_values = value_values * head_dim;
+    for (uint64_t index = 0U; index < key_values; ++index) {
+        if (!isfinite(query[index]) || !isfinite(key[index])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    for (uint64_t index = 0U; index < value_values; ++index) {
+        if (!isfinite(value[index])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    for (uint32_t head = 0U; head < value_heads; ++head) {
+        if (!isfinite(log_decay[head]) || !isfinite(beta[head])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    for (uint64_t index = 0U; index < state_values; ++index) {
+        if (!isfinite(state[index])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+
+    float memory[CQ3_GATED_DELTA_MAX_HEAD_DIM];
+    float delta[CQ3_GATED_DELTA_MAX_HEAD_DIM];
+    for (uint32_t head = 0U; head < value_heads; ++head) {
+        const uint32_t key_head = head / repeat_factor;
+        const float *q = query + (uint64_t)key_head * head_dim;
+        const float *k = key + (uint64_t)key_head * head_dim;
+        const float *v = value + (uint64_t)head * head_dim;
+        float *head_state = state + (uint64_t)head * head_dim * head_dim;
+        float *head_output = output + (uint64_t)head * head_dim;
+        const float decay = expf(log_decay[head]);
+        for (uint32_t column = 0U; column < head_dim; ++column) {
+            memory[column] = 0.0f;
+            head_output[column] = 0.0f;
+        }
+        for (uint32_t row = 0U; row < head_dim; ++row) {
+            float *state_row = head_state + (uint64_t)row * head_dim;
+            const float key_value = k[row];
+            for (uint32_t column = 0U; column < head_dim; ++column) {
+                state_row[column] *= decay;
+                memory[column] += state_row[column] * key_value;
+            }
+        }
+        for (uint32_t column = 0U; column < head_dim; ++column) {
+            delta[column] =
+                (v[column] - memory[column]) * beta[head];
+        }
+        for (uint32_t row = 0U; row < head_dim; ++row) {
+            float *state_row = head_state + (uint64_t)row * head_dim;
+            const float key_value = k[row];
+            const float query_value = q[row];
+            for (uint32_t column = 0U; column < head_dim; ++column) {
+                state_row[column] += key_value * delta[column];
+                head_output[column] += state_row[column] * query_value;
+            }
+        }
+        for (uint32_t column = 0U; column < head_dim; ++column) {
+            if (!isfinite(head_output[column])) {
+                return CQ3_ERROR_NONFINITE;
+            }
+        }
+    }
+    return CQ3_OK;
+}
+
 #if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
 __attribute__((target("avx2")))
 static uint64_t cq3_sum_u8_avx2_impl(const uint8_t *input, uint64_t count) {

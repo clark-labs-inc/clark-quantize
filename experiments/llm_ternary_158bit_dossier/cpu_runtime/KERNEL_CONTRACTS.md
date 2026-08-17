@@ -141,12 +141,19 @@ parity, capability, and end-to-end performance remain open.
 K5 maintains a three-sample history for the width-4 depthwise convolution over
 10,240 channels, applies the trained convolution weights, and applies SiLU.
 The single-token path updates state in place.
+The native FP32 scalar oracle and AVX2 channel-vectorized implementation now
+exist and cover the exact 10,240-channel shape. Randomized state/output tests
+pass locally; the AVX2 performance and x86 parity gate remains open.
 
 K6 consumes normalized q/k, value, sigmoid beta, and FP32 decay `g`. Per value
 head it updates an FP32 `128 x 128` recurrent matrix and emits one 128-wide
 value. The implementation must not allocate a new 3 MiB state per layer per
 token. Q and K heads are logically repeated from 16 to 48 heads, but the kernel
 should index or broadcast them rather than materializing the repeats.
+The dependency-free FP32 scalar C oracle now implements the exact 16-to-48
+head mapping and mutates the real `48 x 128 x 128` state in place. It matches a
+NumPy equation-level control on the full Qwen shape. AVX2 row/column tiling,
+thread placement across heads/layers, and frozen throughput remain open.
 
 K7 is a distinct chunked-prefill algorithm. It uses bounded tiles and returns
 the same final recurrent state as the scalar token-by-token oracle. Numerical
