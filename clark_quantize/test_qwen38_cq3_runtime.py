@@ -866,6 +866,22 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
         np.testing.assert_array_equal(streaming_indices, top_indices)
         np.testing.assert_array_equal(streaming_values, top_values)
         self.assertEqual(streaming_state.position, 1)
+        lm_head.calls.clear()
+        advance_state = Qwen38TextState(
+            [object() for _ in range(model.LAYERS)]
+        )
+        self.assertIsNone(
+            graph.advance_token(
+                17,
+                advance_state,
+                gemv_implementation="scalar_chunk16",
+                elementwise_implementation="scalar",
+            )
+        )
+        self.assertEqual(advance_state.position, 1)
+        self.assertEqual(lm_head.calls, [])
+        for layer in layers:
+            np.testing.assert_array_equal(layer.inputs[-1], embedding_row)
 
 
 if __name__ == "__main__":

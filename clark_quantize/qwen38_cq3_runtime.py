@@ -1436,6 +1436,31 @@ class Qwen38CQ3TextModel:
         state.position += 1
         return logits
 
+    def advance_token(
+        self,
+        token_id: int,
+        state: Qwen38TextState,
+        *,
+        gemv_implementation: str = "scalar_chunk16",
+        elementwise_implementation: str = "scalar",
+        threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
+        cpu_ids: list[int] | None = None,
+        validated_state: bool = False,
+    ) -> None:
+        """Advance text state without evaluating the vocabulary projection."""
+        self._forward_hidden(
+            token_id,
+            state,
+            gemv_implementation=gemv_implementation,
+            elementwise_implementation=elementwise_implementation,
+            threads=threads,
+            executor=executor,
+            cpu_ids=cpu_ids,
+            validated_state=validated_state,
+        )
+        state.position += 1
+
     def forward_token_topk(
         self,
         token_id: int,
