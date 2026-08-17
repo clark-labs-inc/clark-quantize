@@ -13,9 +13,13 @@ The active sequence is:
    that every non-target GGUF payload remains byte-identical;
 4. run CUTE, MATH/code, MMLU, and perplexity parity on that candidate;
 5. compare paired baseline/candidate token throughput only after quality passes;
-6. promote CPU kernels only through separately frozen correctness and
+6. train the same layer-0 triplet in bounded output-row shards from exact 27B
+   BF16 activations, with disjoint activation validation and per-shard rollback;
+7. run CUTE, MATH/code, MMLU, and perplexity again on the materialized trained
+   candidate before any throughput or quality claim;
+8. promote CPU kernels only through separately frozen correctness and
    performance gates; and
-7. expand ternary depth only after the preceding 27B gate is valid.
+9. expand ternary depth only after the preceding 27B gate is valid.
 
 Every model or graph integration must include a quick CUTE check and MMLU-type
 capability evidence. Infrastructure-invalid work is neither a zero nor a

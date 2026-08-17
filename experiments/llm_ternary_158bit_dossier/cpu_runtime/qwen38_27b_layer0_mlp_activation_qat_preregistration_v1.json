@@ -1,0 +1,127 @@
+{
+  "schema": "qwen38_27b_layer0_mlp_activation_qat_preregistration_v1",
+  "created_at": "2026-08-17T13:03:00Z",
+  "objective": "Determine whether bounded row-sharded hard-ternary training on exact Qwen3.8-27B layer-0 activations improves a runnable selective CQ3_0 candidate without capability loss",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "qwen_4b_compute_forbidden": true,
+    "target_layer": 0,
+    "target_tensors": [
+      "model.language_model.layers.0.mlp.down_proj.weight",
+      "model.language_model.layers.0.mlp.gate_proj.weight",
+      "model.language_model.layers.0.mlp.up_proj.weight"
+    ],
+    "target_parameters": 267386880,
+    "claim_boundary": "activation-aware layerwise QAT for one Qwen3.8-27B MLP triplet; not end-to-end QAT, not a whole-model ternary result, and not a breakthrough"
+  },
+  "parent_identity": {
+    "bf16_checkpoint": "/workspace/models/Qwen3.8-27B",
+    "download_receipt": "/workspace/models/Qwen3.8-27B/CLARK_DOWNLOAD_RECEIPT.json",
+    "q4_runtime_control": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "q4_runtime_control_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "structural_template": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0.gguf",
+    "structural_template_rule": "The template must have a valid selective-conversion receipt. Its three target payloads may be replaced, while every non-target byte remains bound to the Q4 control."
+  },
+  "activation_cache": {
+    "method": "run the exact BF16-weight layer-0 linear-attention prefix, then cache post-attention RMS-normalized MLP inputs and exact gate/up-derived down-projection inputs",
+    "accumulation": "CPU float32 accumulation where explicitly converted; source weights remain byte-exact BF16 checkpoint tensors",
+    "maximum_sequence_tokens": 96,
+    "maximum_calibration_rows": 256,
+    "maximum_validation_rows": 96,
+    "calibration_texts": [
+      "Explain why a reversible storage codec and a lossy weight quantizer require different correctness tests.",
+      "Compute 73 times 29 and verify the answer using subtraction from 73 times 30.",
+      "Write a Python function that returns the indices of all local maxima in a numeric list.",
+      "Describe two reasons a language model can have lower reconstruction error but worse free generation.",
+      "En español, explica por qué una evaluación debe permanecer separada de los datos de entrenamiento.",
+      "A machine completes five ninths of a job in 35 minutes at constant speed. Find the total time.",
+      "Give JSON arguments for a weather tool that requests a three day forecast for Helsinki.",
+      "Contrast memory bandwidth and arithmetic throughput for single-token transformer decoding."
+    ],
+    "validation_texts": [
+      "A jar contains red, blue, and green marbles in the ratio 2:3:5. What fraction are not green?",
+      "Implement a stable deduplication function that preserves the first appearance of each item.",
+      "Why can selecting hyperparameters on a benchmark invalidate the final benchmark conclusion?",
+      "Summarize how per-group scales affect the honest bits-per-weight of a ternary model."
+    ],
+    "separation_rule": "No CUTE, MATH-500, code-trace, MMLU, or WikiText evaluation item may enter either activation split."
+  },
+  "training": {
+    "method": "hard-forward straight-through-estimator activation reconstruction",
+    "row_shard": 128,
+    "group_size": 128,
+    "steps_per_row_shard": 6,
+    "optimizer": "AdamW",
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0,
+    "gradient_clip_norm": 1.0,
+    "weight_reconstruction_weight": 0.01,
+    "seed": 20260817,
+    "shard_selection": "train gate and up first, derive the candidate SwiGLU state, then train down against the exact-parent MLP output; retain a row shard only when both calibration and disjoint validation activation NMSE strictly improve, otherwise emit its step-zero optimal-MSE ternary codes and scales",
+    "checkpoint_policy": "write one authenticated payload and shard ledger per completed tensor; retain no optimizer state after a row shard is committed",
+    "resource_limits": {
+      "cpu_threads": 4,
+      "memory_max_bytes": 30000000000,
+      "minimum_free_disk_bytes": 10737418240,
+      "concurrent_llama_or_training_processes": 0
+    }
+  },
+  "representation": {
+    "ggml_type": "CQ3_0",
+    "ggml_type_id": 43,
+    "block_weights": 256,
+    "groups_per_block": 2,
+    "group_weights": 128,
+    "block_bytes": 68,
+    "effective_bits_per_target_weight": 2.125,
+    "payload_contract": "64 two-bit code bytes followed by two little-endian FP16 scales for every 256 weights",
+    "future_storage_boundary": "This runnable rung does not claim the final 1.58-bit storage layout. The exact block-203 codec remains a separate offline result."
+  },
+  "numeric_promotion_gate": {
+    "all_source_and_cache_receipts_valid": true,
+    "all_shards_finite": true,
+    "minimum_global_relative_validation_nmse_improvement": 0.01,
+    "maximum_tensor_relative_validation_nmse_regression": 0.0,
+    "maximum_weighted_code_churn_fraction": 0.05,
+    "exact_payload_pack_unpack_roundtrip": true,
+    "exact_target_payload_byte_counts": true,
+    "numeric_pass_authorizes": "materialize one separately hashed runnable GGUF candidate and begin frozen capability evaluation only"
+  },
+  "capability_gate": {
+    "order": [
+      "CUTE_Quick_20",
+      "MATH_500_quick_8",
+      "sealed_code_trace_6",
+      "MMLU_64_five_shot_exact_option_likelihood",
+      "WikiText_4x512",
+      "paired_CPU_throughput_only_after_quality_pass"
+    ],
+    "relative_to_pinned_q4_control": {
+      "cute_max_correct_loss": 2,
+      "math500_max_correct_loss": 1,
+      "code_trace_max_correct_loss": 1,
+      "mmlu_minimum_correct": "max(control_correct - 3, ceil(0.90 * control_correct))",
+      "wikitext_max_perplexity_ratio": 1.05
+    },
+    "throughput_promotion": {
+      "minimum_paired_median_gain": 0.05,
+      "minimum_any_authoritative_pair_ratio": 1.0
+    }
+  },
+  "stop_conditions": [
+    "model revision or source tensor identity mismatch",
+    "activation split overlap or evaluation-data contamination",
+    "non-finite loss, activation, gradient, code, or scale",
+    "post-clip gradient norm greater than 1.0",
+    "memory or disk admission failure",
+    "payload roundtrip or GGUF byte-scope failure",
+    "any invalid capability receipt"
+  ],
+  "interpretation": {
+    "loss_only_is_not_quality": true,
+    "successful_training_is_not_promotion": true,
+    "infrastructure_invalid_is_neither_zero_nor_complete": true,
+    "breakthrough_claim_permitted": false
+  }
+}

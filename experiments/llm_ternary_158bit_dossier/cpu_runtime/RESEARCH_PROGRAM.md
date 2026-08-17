@@ -42,9 +42,12 @@ continuous islands, and tensor layouts that the CPU kernels execute.
    BF16/FP16-activation path establishes graph and weight parity. Per-token or
    per-tile int8 activation quantization is promoted only after a paired
    quality gate.
-5. **GPU QAT serves the CPU runtime.** Global QAT remains a GPU workload. Pure
-   CPU QAT is a portability experiment, not the planned way to spend the main
-   token budget.
+5. **Training serves the CPU runtime.** Global end-to-end QAT would still need
+   a larger accelerator or memory-rich distributed node. The active CPU lane
+   instead trains one Qwen3.8-27B output-row shard at a time against exact
+   layer activations, commits only hard runtime codes/scales, and discards each
+   shard's optimizer state. This bounded selective method is not presented as
+   global QAT.
 6. **Qwen3.8-27B only.** The existing 4B receipts may inform the numerical and
    evaluation contracts, but active experiments, runtime work, and performance
    claims use the pinned 27B parent or a directly derived 27B artifact.
@@ -291,20 +294,29 @@ and will be revised only from measured rooflines and end-to-end profiles.
    quality-complete result and a promotion pass are separate receipts.
 4. If and only if quality passes, run the paired 27B Q4-versus-selective-CQ3
    throughput suite with one identical binary and frozen core masks.
-5. Write the `.cq3` v1 container and scalar C++ oracle.
-6. Build a shape-driven ternary GEMV benchmark for the exact Qwen matrices.
-7. Benchmark three compute layouts on M5 Max: radix-5 LUT, aligned 2-bit, and
+5. Use the direct candidate as a structural runtime control, then run the
+   preregistered BF16-source activation-aware layer-0 QAT rescue. Gate/up are
+   trained first; down is trained on the resulting candidate SwiGLU state
+   against the exact-parent MLP output. Per-shard validation rollback prevents
+   a worse shard from entering the payload.
+6. Materialize the trained payload only after its numeric gate, then require
+   the same CUTE, MATH/code, MMLU, and WikiText suite. Loss or activation NMSE
+   alone cannot promote it.
+7. Write the `.cq3` v1 container and scalar C++ oracle.
+8. Build a shape-driven ternary GEMV benchmark for the exact Qwen matrices.
+9. Benchmark three compute layouts on M5 Max: radix-5 LUT, aligned 2-bit, and
    dual bitplanes.
-8. Dispatch the validated ARM64 fused gate/up DOTPROD plus SwiGLU operator from
+10. Dispatch the validated ARM64 fused gate/up DOTPROD plus SwiGLU operator from
    the packed GGML Qwen graph; the row-blocked CQ3 `MUL_MAT` prerequisite is
    complete and reproducible.
-9. Implement ARM64 A16 correctness for graph parity around the promoted A8
+11. Implement ARM64 A16 correctness for graph parity around the promoted A8
    DOTPROD kernel.
-10. Profile and optimize the upstream single-token DeltaNet state update.
-11. Load the 27B packed artifact through the GGML graph.
+12. Profile and optimize the upstream single-token DeltaNet state update.
+13. Load the 27B packed artifact through the GGML graph.
 
-No deeper 27B training spend is justified until the current 27B candidate
-passes the frozen capability and full-graph receipt gates.
+No depth expansion beyond the one preregistered layer-0 rescue is justified
+until a runnable 27B candidate passes the frozen capability and full-graph
+receipt gates.
 
 ## External technical references
 
