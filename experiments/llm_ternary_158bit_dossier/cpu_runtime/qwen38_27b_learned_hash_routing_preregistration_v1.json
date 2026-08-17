@@ -1,0 +1,132 @@
+{
+  "schema": "qwen38_27b_learned_hash_routing_preregistration_v1",
+  "receipt_schema": "qwen38_27b_learned_hash_routing_receipt_v1",
+  "status": "frozen_before_authoritative_real_weight_run",
+  "frozen_at_utc": "2026-08-17T21:15:00Z",
+  "hypothesis": "At the same fixed-support ternary and INT4 correction dimensions, a one-sparse signed routing learned on disjoint Qwen3.8-27B output rows reduces heldout exported weight error by at least 0.5% against the frozen four-hash random Clark-JL control, with no tensor regressing by more than 1%, while counting the learned route and remaining below 1.56 component bits per weight",
+  "clark_hash_source": {
+    "repository": "clark-labs-inc/clark-hash",
+    "paper_path": "arxiv_submission/main.tex",
+    "paper_blob_sha": "4a7c7ffa06ac9c650c6b822cd0bc111d501c3818",
+    "publication_commit": "de609c2c55dcbf727deea8bdf7bcc657743ce120",
+    "method_reused": "sparse signed input-to-sketch routing and asymmetric floating-input scoring",
+    "important_change": "bucket assignments and signs are learned once per layer routing group by signed residual-column vector quantization; they are stored and honestly counted rather than regenerated from a random seed"
+  },
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "qwen_4b_compute_forbidden": true,
+    "train_and_evaluation_rows_disjoint": true,
+    "tensors": [
+      {
+        "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+        "shape": [17408, 5120],
+        "shard": "model-00001-of-00018.safetensors",
+        "train_row_span": [8640, 8704],
+        "evaluation_row_span": [8704, 8720]
+      },
+      {
+        "name": "model.language_model.layers.0.mlp.up_proj.weight",
+        "shape": [17408, 5120],
+        "shard": "model-00001-of-00018.safetensors",
+        "train_row_span": [8640, 8704],
+        "evaluation_row_span": [8704, 8720]
+      },
+      {
+        "name": "model.language_model.layers.0.mlp.down_proj.weight",
+        "shape": [5120, 17408],
+        "shard": "model-00001-of-00018.safetensors",
+        "train_row_span": [2496, 2560],
+        "evaluation_row_span": [2560, 2576]
+      }
+    ],
+    "shared_routing_groups": [
+      {
+        "name": "gate_up",
+        "members": [
+          "model.language_model.layers.0.mlp.gate_proj.weight",
+          "model.language_model.layers.0.mlp.up_proj.weight"
+        ]
+      },
+      {
+        "name": "down",
+        "members": [
+          "model.language_model.layers.0.mlp.down_proj.weight"
+        ]
+      }
+    ]
+  },
+  "candidate": {
+    "representation": "W approximately equals T plus A R",
+    "group_size": 128,
+    "nonzero_per_group": 64,
+    "input_to_sketch_ratio": 128,
+    "coordinate_iterations": 3,
+    "routing_iterations": 6,
+    "routing": "one learned bucket and sign per input coordinate; gate and up share one routing",
+    "routing_training": "deterministic farthest-signed initialization followed by monotone signed Lloyd updates on training-row residual columns",
+    "heldout_fit": "freeze routing, then alternate exact fixed-support ternary projection and exact clusterwise coefficient means on evaluation rows",
+    "hash_coefficient_export": "signed per-output-row INT4 with one FP16 scale",
+    "ternary_scale_export_for_error": "FP16 per group",
+    "ternary_scale_storage_projection": "one FP16 row anchor plus 4-bit group ratio indices and one 16-entry FP16 tensor codebook",
+    "random_control_hashes_per_input": 4,
+    "random_control_seed": 6840346601621575288,
+    "probe_seed": 15802738
+  },
+  "storage": {
+    "learned_route": "bit-pack ceil(log2(sketch_dim)) bucket bits plus one sign bit per input coordinate",
+    "ternary_codes": "exact fixed-support enumerative width ceil(log2(binomial(128,64)*2^64))",
+    "hash_codes": "row-aligned signed INT4",
+    "per_tensor_header_bytes": 64,
+    "conservative_gate_up_accounting": "the projected rate charges the shared gate/up route to each tensor independently; a later whole-model ledger may count the shared physical bytes once"
+  },
+  "gate": {
+    "required_evaluation_spans": 3,
+    "minimum_aggregate_error_reduction_vs_random": 0.005,
+    "maximum_per_tensor_error_regression": 0.01,
+    "maximum_component_bits_per_weight": 1.56,
+    "maximum_kernel_identity_error": 0.0005
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 2,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 10,
+    "persistent_output_bytes": "less than 2 MiB",
+    "run_after_existing_serialized_Qwen38_chain": true
+  },
+  "promotion_rules": [
+    "train and evaluation row spans are immutable and disjoint",
+    "a pass only promotes learned routing to a full-layer and real-activation screen",
+    "a failure is a valid negative result and does not authorize row or threshold tuning",
+    "learned bucket and sign storage must remain in every complete byte ledger",
+    "a heldout weight-space pass is not evidence of activation or capability preservation",
+    "CUTE MMLU-type MATH WikiText code and paired CPU throughput remain mandatory",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "this screen cannot establish semi-lossless compression or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "prototype": {
+      "path": "clark_quantize/qwen38_learned_hash_residual.py",
+      "sha256": "7e0a51f7596fbd9e6a4dd4483a67f8ee0324f69f7d30490bedb081fc7a658762"
+    },
+    "prototype_tests": {
+      "path": "clark_quantize/test_qwen38_learned_hash_residual.py",
+      "sha256": "fdf441e61b5071edb8cb349c2d24cf0efec77204f52e2f3a4ea8c1c4408601b0"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_learned_hash_routing_v1.py",
+      "sha256": "172c9bad8c616acaa464c228355e4bf22ea11a7b9b660af9a17294eabdb622d3"
+    },
+    "random_control": {
+      "path": "clark_quantize/qwen38_hash_residual.py",
+      "sha256": "896583e383b2b94128934903ff2015ee40bbfdfcd48b35e3540121ef7bca62cf"
+    },
+    "fixed_support_codec": {
+      "path": "clark_quantize/qwen38_fixed_support_codec.py",
+      "sha256": "e5e1f17bceed2334e3a57087c3c2e9ff090123b964012d18038545fcc14d6678"
+    }
+  }
+}
