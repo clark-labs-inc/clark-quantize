@@ -203,6 +203,15 @@ the product format target is int8 with explicit per-head or per-block scales.
 At batch one, total BF16 KV growth is 64 KiB/token and int8 target growth is
 about 32 KiB/token before scale metadata. Cache quantization is evaluated for
 quality separately from ternary weight error.
+Dependency-free scalar and AVX2 decode primitives now implement the actual
+24-query/4-KV/256-dimension GQA shape. Q/K preprocessing applies the model's
+`(1 + weight)` per-head RMSNorm and partial 64-dimension RoPE; the cache stays
+head-major so each historical 256-value K/V row is contiguous, and q heads
+index the six-way shared KV head without materializing repeats. The canonical
+and aligned-cache runtimes compose q/k/v/o projections, the fused q-projection
+sigmoid gate, sequential text RoPE, and mutable FP32 KV state. FP32 KV is the
+correctness format in this implementation; BF16/int8 cache formats, real-layer
+parity, context-length scaling, and end-to-end capability remain open.
 
 ## K10: lexical tensors
 

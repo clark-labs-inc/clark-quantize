@@ -18,7 +18,9 @@ from clark_quantize.qwen38_cq3_container import (
 )
 from clark_quantize.qwen38_cq3_runtime import (
     CQ3RuntimeError,
+    Qwen38AttentionState,
     Qwen38CQ3DeltaNet,
+    Qwen38CQ3FullAttention,
     Qwen38CQ3MLP,
     Qwen38CQ3RuntimeImage,
 )
@@ -26,11 +28,14 @@ from clark_quantize.scale_codebook import pack_nibbles
 from clark_quantize.ternary_cpu import (
     causal_conv4_silu_f32,
     gated_delta_parameters_f32,
+    gqa_decode_f32,
     native_available,
     pack_group128_2bit,
     quantize_q8,
     recurrent_gated_delta_f32,
+    rmsnorm_rope_f32,
     rmsnorm_silu_gate_f32,
+    sigmoid_gate_f32,
     swiglu_f32,
 )
 
@@ -531,6 +536,84 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
             np.testing.assert_array_equal(observed, expected)
         np.testing.assert_array_equal(actual_conv, expected_conv)
         np.testing.assert_array_equal(actual_recurrent, expected_recurrent)
+
+    @unittest.skipUnless(native_available(), "native ternary CPU library is absent")
+    def test_exact_shape_full_attention_graph_matches_manual_primitives(self) -> None:
+        model = Qwen38CQ3FullAttention
+        q_rows = np.arange(model.QUERY_HEADS * model.HEAD_DIM * 2, dtype=np.float32)
+        projected_q = np.sin(q_rows * np.float32(0.002)) * np.float32(0.2)
+        kv_rows = np.arange(model.KV_DIM, dtype=np.float32)
+        projected_k = np.cos(kv_rows * np.float32(0.003)) * np.float32(0.2)
+        projected_v = np.sin(kv_rows * np.float32(0.005)) * np.float32(0.3)
+        output_value = np.linspace(
+            -0.25, 0.25, model.HIDDEN_SIZE, dtype=np.float32
+        )
+        q = FakeProjection((model.QUERY_DIM * 2, model.HIDDEN_SIZE), projected_q)
+        k = FakeProjection((model.KV_DIM, model.HIDDEN_SIZE), projected_k)
+        v = FakeProjection((model.KV_DIM, model.HIDDEN_SIZE), projected_v)
+        out = FakeProjection((model.HIDDEN_SIZE, model.QUERY_DIM), output_value)
+        q_offsets = np.linspace(-0.1, 0.1, model.HEAD_DIM, dtype=np.float32)
+        k_offsets = np.linspace(0.1, -0.1, model.HEAD_DIM, dtype=np.float32)
+        layer = model(
+            q=q,
+            k=k,
+            v=v,
+            out=out,
+            q_norm_offsets=q_offsets,
+            k_norm_offsets=k_offsets,
+        )
+        activation = np.linspace(
+            -1.0, 1.0, model.HIDDEN_SIZE, dtype=np.float32
+        )
+        state = Qwen38AttentionState.allocate(4)
+        actual = layer.forward(
+            activation,
+            state,
+            0,
+            gemv_implementation="scalar_chunk16",
+            elementwise_implementation="scalar",
+            validated_state=True,
+        )
+        np.testing.assert_array_equal(actual, output_value)
+        self.assertEqual(state.length, 1)
+
+        expected_input_q8 = quantize_q8(activation)
+        for projection in (q, k, v):
+            self.assertEqual(len(projection.calls), 1)
+            for observed, expected in zip(projection.calls[0], expected_input_q8):
+                np.testing.assert_array_equal(observed, expected)
+        shaped_q = projected_q.reshape(model.QUERY_HEADS, model.HEAD_DIM * 2)
+        raw_query = shaped_q[:, : model.HEAD_DIM]
+        gate = shaped_q[:, model.HEAD_DIM :].reshape(model.QUERY_DIM)
+        raw_key = projected_k.reshape(model.KV_HEADS, model.HEAD_DIM)
+        raw_value = projected_v.reshape(model.KV_HEADS, model.HEAD_DIM)
+        cosine, sine = model.text_rope(0)
+        expected_query = rmsnorm_rope_f32(
+            raw_query, q_offsets, cosine, sine, implementation="scalar"
+        )
+        expected_key = rmsnorm_rope_f32(
+            raw_key, k_offsets, cosine, sine, implementation="scalar"
+        )
+        expected_state = Qwen38AttentionState.allocate(4)
+        expected_state.append(expected_key, raw_value)
+        attended = gqa_decode_f32(
+            expected_query,
+            expected_state.key,
+            expected_state.value,
+            1,
+            implementation="scalar",
+            validated=True,
+        ).reshape(model.QUERY_DIM)
+        gated = sigmoid_gate_f32(attended, gate)
+        expected_output_q8 = quantize_q8(gated)
+        self.assertEqual(len(out.calls), 1)
+        for observed, expected in zip(out.calls[0], expected_output_q8):
+            np.testing.assert_array_equal(observed, expected)
+        np.testing.assert_array_equal(state.key, expected_state.key)
+        np.testing.assert_array_equal(state.value, expected_state.value)
+
+        with self.assertRaisesRegex(ValueError, "sequential KV length"):
+            layer.forward(activation, state, 0)
 
 
 if __name__ == "__main__":

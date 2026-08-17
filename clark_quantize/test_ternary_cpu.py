@@ -394,6 +394,105 @@ class TernaryCpuNativeTests(unittest.TestCase):
                 projected_a, projected_b, a_log, dt_bias
             )
 
+    def test_qwen38_rmsnorm_rope_matches_fp32_oracle(self) -> None:
+        generator = np.random.default_rng(20260817)
+        for heads, dimension, rotary_dimension in ((3, 16, 8), (24, 256, 64)):
+            values = generator.normal(size=(heads, dimension)).astype(np.float32)
+            offsets = generator.normal(scale=0.1, size=dimension).astype(np.float32)
+            angles = generator.uniform(-2.0, 2.0, size=rotary_dimension // 2).astype(
+                np.float32
+            )
+            cosine = np.concatenate((np.cos(angles), np.cos(angles))).astype(
+                np.float32
+            )
+            sine = np.concatenate((np.sin(angles), np.sin(angles))).astype(
+                np.float32
+            )
+            variance = np.mean(values * values, axis=1, keepdims=True)
+            expected = (
+                values / np.sqrt(variance + np.float32(1e-6))
+                * (np.float32(1.0) + offsets)
+            ).astype(np.float32)
+            unrotated = expected.copy()
+            half = rotary_dimension // 2
+            expected[:, :half] = (
+                unrotated[:, :half] * cosine[:half]
+                - unrotated[:, half:rotary_dimension] * sine[:half]
+            )
+            expected[:, half:rotary_dimension] = (
+                unrotated[:, half:rotary_dimension] * cosine[half:]
+                + unrotated[:, :half] * sine[half:]
+            )
+            scalar = ternary_cpu.rmsnorm_rope_f32(
+                values,
+                offsets,
+                cosine,
+                sine,
+                implementation="scalar",
+            )
+            np.testing.assert_allclose(scalar, expected, rtol=2e-6, atol=2e-6)
+            if ternary_cpu.cpu_features()["avx2"]:
+                avx2 = ternary_cpu.rmsnorm_rope_f32(
+                    values,
+                    offsets,
+                    cosine,
+                    sine,
+                    implementation="avx2",
+                )
+                np.testing.assert_array_equal(avx2, scalar)
+
+    def test_qwen38_gqa_decode_matches_fp32_oracle(self) -> None:
+        generator = np.random.default_rng(20260817)
+        for query_heads, kv_heads, dimension, capacity, context in (
+            (4, 2, 8, 7, 5),
+            (24, 4, 256, 40, 33),
+        ):
+            query = generator.normal(size=(query_heads, dimension)).astype(np.float32)
+            key = generator.normal(size=(kv_heads, capacity, dimension)).astype(
+                np.float32
+            )
+            value = generator.normal(size=(kv_heads, capacity, dimension)).astype(
+                np.float32
+            )
+            expected = np.empty_like(query)
+            groups = query_heads // kv_heads
+            with np.errstate(all="ignore"):
+                for head in range(query_heads):
+                    cache_head = head // groups
+                    scores = (
+                        key[cache_head, :context] @ query[head]
+                        / np.sqrt(np.float32(dimension))
+                    )
+                    probabilities = np.exp(scores - np.max(scores))
+                    probabilities /= np.sum(probabilities)
+                    expected[head] = probabilities @ value[cache_head, :context]
+            self.assertTrue(np.all(np.isfinite(expected)))
+            scalar = ternary_cpu.gqa_decode_f32(
+                query, key, value, context, implementation="scalar"
+            )
+            np.testing.assert_allclose(scalar, expected, rtol=3e-5, atol=3e-6)
+            if ternary_cpu.cpu_features()["avx2"]:
+                avx2 = ternary_cpu.gqa_decode_f32(
+                    query,
+                    key,
+                    value,
+                    context,
+                    implementation="avx2",
+                    validated=True,
+                )
+                np.testing.assert_allclose(avx2, scalar, rtol=3e-5, atol=3e-6)
+
+        query[0, 0] = np.nan
+        with self.assertRaisesRegex(ValueError, "non-finite"):
+            ternary_cpu.gqa_decode_f32(query, key, value, context)
+
+    def test_qwen38_sigmoid_gate_is_stable(self) -> None:
+        values = np.linspace(-2.0, 2.0, 5, dtype=np.float32)
+        gate = np.asarray([-100.0, -1.0, 0.0, 1.0, 100.0], dtype=np.float32)
+        actual = ternary_cpu.sigmoid_gate_f32(values, gate)
+        expected = values * np.exp(-np.logaddexp(0.0, -gate)).astype(np.float32)
+        np.testing.assert_allclose(actual, expected, rtol=2e-6, atol=1e-7)
+
     def test_scalar_matches_groupwise_integer_oracle(self) -> None:
         codes, scales, quantized, activation_scales, sums, packed = self.fixture()
         actual = ternary_cpu.gemv_q8_group128_2bit(

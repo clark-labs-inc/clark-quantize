@@ -4300,6 +4300,537 @@ int cq3_gated_delta_parameters_f32(
     return CQ3_OK;
 }
 
+static int cq3_validate_rmsnorm_rope(
+    const float *input,
+    const float *norm_weight_offsets,
+    const float *cosine,
+    const float *sine,
+    uint32_t heads,
+    uint32_t head_dim,
+    uint32_t rotary_dim,
+    float epsilon,
+    float *output
+) {
+    if (input == NULL || norm_weight_offsets == NULL || cosine == NULL ||
+            sine == NULL || output == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    if (heads == 0U || head_dim == 0U || rotary_dim == 0U ||
+            rotary_dim > head_dim || (rotary_dim & 1U) != 0U ||
+            !isfinite(epsilon) || epsilon <= 0.0f) {
+        return CQ3_ERROR_SHAPE;
+    }
+    for (uint32_t column = 0U; column < head_dim; ++column) {
+        if (!isfinite(norm_weight_offsets[column])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    for (uint32_t column = 0U; column < rotary_dim; ++column) {
+        if (!isfinite(cosine[column]) || !isfinite(sine[column])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    const uint64_t values = (uint64_t)heads * head_dim;
+    for (uint64_t index = 0U; index < values; ++index) {
+        if (!isfinite(input[index])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    return CQ3_OK;
+}
+
+int cq3_rmsnorm_rope_f32_scalar(
+    const float *CQ3_RESTRICT input,
+    const float *CQ3_RESTRICT norm_weight_offsets,
+    const float *CQ3_RESTRICT cosine,
+    const float *CQ3_RESTRICT sine,
+    uint32_t heads,
+    uint32_t head_dim,
+    uint32_t rotary_dim,
+    float epsilon,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_rmsnorm_rope(
+        input, norm_weight_offsets, cosine, sine,
+        heads, head_dim, rotary_dim, epsilon, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+    const uint32_t half_rotary = rotary_dim / 2U;
+    for (uint32_t head = 0U; head < heads; ++head) {
+        const float *head_input = input + (uint64_t)head * head_dim;
+        float *head_output = output + (uint64_t)head * head_dim;
+        float squares = 0.0f;
+        for (uint32_t column = 0U; column < head_dim; ++column) {
+            squares += head_input[column] * head_input[column];
+        }
+        const float inverse_rms = 1.0f / sqrtf(
+            squares / (float)head_dim + epsilon
+        );
+        for (uint32_t column = 0U; column < head_dim; ++column) {
+            head_output[column] = head_input[column] * inverse_rms *
+                (1.0f + norm_weight_offsets[column]);
+        }
+        for (uint32_t column = 0U; column < half_rotary; ++column) {
+            const uint32_t paired = column + half_rotary;
+            const float first = head_output[column];
+            const float second = head_output[paired];
+            head_output[column] = first * cosine[column] -
+                second * sine[column];
+            head_output[paired] = second * cosine[paired] +
+                first * sine[paired];
+        }
+    }
+    return CQ3_OK;
+}
+
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+__attribute__((target("avx2")))
+static void cq3_rmsnorm_rope_f32_avx2_impl(
+    const float *CQ3_RESTRICT input,
+    const float *CQ3_RESTRICT norm_weight_offsets,
+    const float *CQ3_RESTRICT cosine,
+    const float *CQ3_RESTRICT sine,
+    uint32_t heads,
+    uint32_t head_dim,
+    uint32_t rotary_dim,
+    float epsilon,
+    float *CQ3_RESTRICT output
+) {
+    const uint32_t half_rotary = rotary_dim / 2U;
+    for (uint32_t head = 0U; head < heads; ++head) {
+        const float *head_input = input + (uint64_t)head * head_dim;
+        float *head_output = output + (uint64_t)head * head_dim;
+        float squares = 0.0f;
+        for (uint32_t column = 0U; column < head_dim; ++column) {
+            squares += head_input[column] * head_input[column];
+        }
+        const float inverse_rms = 1.0f / sqrtf(
+            squares / (float)head_dim + epsilon
+        );
+        const __m256 inverse_vector = _mm256_set1_ps(inverse_rms);
+        const __m256 one = _mm256_set1_ps(1.0f);
+        uint32_t column = 0U;
+        for (; column + 8U <= head_dim; column += 8U) {
+            const __m256 values = _mm256_loadu_ps(head_input + column);
+            const __m256 offsets = _mm256_loadu_ps(
+                norm_weight_offsets + column
+            );
+            const __m256 normalized = _mm256_mul_ps(values, inverse_vector);
+            _mm256_storeu_ps(
+                head_output + column,
+                _mm256_mul_ps(normalized, _mm256_add_ps(one, offsets))
+            );
+        }
+        for (; column < head_dim; ++column) {
+            head_output[column] = head_input[column] * inverse_rms *
+                (1.0f + norm_weight_offsets[column]);
+        }
+        for (column = 0U; column < half_rotary; ++column) {
+            const uint32_t paired = column + half_rotary;
+            const float first = head_output[column];
+            const float second = head_output[paired];
+            head_output[column] = first * cosine[column] -
+                second * sine[column];
+            head_output[paired] = second * cosine[paired] +
+                first * sine[paired];
+        }
+    }
+}
+#endif
+
+int cq3_rmsnorm_rope_f32_avx2(
+    const float *CQ3_RESTRICT input,
+    const float *CQ3_RESTRICT norm_weight_offsets,
+    const float *CQ3_RESTRICT cosine,
+    const float *CQ3_RESTRICT sine,
+    uint32_t heads,
+    uint32_t head_dim,
+    uint32_t rotary_dim,
+    float epsilon,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_rmsnorm_rope(
+        input, norm_weight_offsets, cosine, sine,
+        heads, head_dim, rotary_dim, epsilon, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    if ((cq3_cpu_features() & CQ3_FEATURE_AVX2) == 0U) {
+        return CQ3_ERROR_ISA;
+    }
+    cq3_rmsnorm_rope_f32_avx2_impl(
+        input, norm_weight_offsets, cosine, sine,
+        heads, head_dim, rotary_dim, epsilon, output
+    );
+    return CQ3_OK;
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
+static int cq3_validate_gqa_decode_shape(
+    const float *query,
+    const float *key_cache,
+    const float *value_cache,
+    uint32_t query_heads,
+    uint32_t key_value_heads,
+    uint32_t head_dim,
+    uint32_t cache_capacity,
+    uint32_t context,
+    float *scratch_scores,
+    float *output
+) {
+    if (query == NULL || key_cache == NULL || value_cache == NULL ||
+            scratch_scores == NULL || output == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    if (query_heads == 0U || key_value_heads == 0U || head_dim == 0U ||
+            query_heads % key_value_heads != 0U || context == 0U ||
+            context > cache_capacity) {
+        return CQ3_ERROR_SHAPE;
+    }
+    return CQ3_OK;
+}
+
+static int cq3_validate_gqa_decode(
+    const float *query,
+    const float *key_cache,
+    const float *value_cache,
+    uint32_t query_heads,
+    uint32_t key_value_heads,
+    uint32_t head_dim,
+    uint32_t cache_capacity,
+    uint32_t context,
+    float *scratch_scores,
+    float *output
+) {
+    const int shape_validation = cq3_validate_gqa_decode_shape(
+        query, key_cache, value_cache, query_heads, key_value_heads,
+        head_dim, cache_capacity, context, scratch_scores, output
+    );
+    if (shape_validation != CQ3_OK) {
+        return shape_validation;
+    }
+    const uint64_t query_values = (uint64_t)query_heads * head_dim;
+    for (uint64_t index = 0U; index < query_values; ++index) {
+        if (!isfinite(query[index])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    for (uint32_t head = 0U; head < key_value_heads; ++head) {
+        for (uint32_t token = 0U; token < context; ++token) {
+            const uint64_t offset =
+                ((uint64_t)head * cache_capacity + token) * head_dim;
+            for (uint32_t column = 0U; column < head_dim; ++column) {
+                if (!isfinite(key_cache[offset + column]) ||
+                        !isfinite(value_cache[offset + column])) {
+                    return CQ3_ERROR_NONFINITE;
+                }
+            }
+        }
+    }
+    return CQ3_OK;
+}
+
+static int cq3_gqa_decode_f32_scalar_impl(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key_cache,
+    const float *CQ3_RESTRICT value_cache,
+    uint32_t query_heads,
+    uint32_t key_value_heads,
+    uint32_t head_dim,
+    uint32_t cache_capacity,
+    uint32_t context,
+    float *CQ3_RESTRICT scratch_scores,
+    float *CQ3_RESTRICT output
+) {
+    const uint32_t groups = query_heads / key_value_heads;
+    const float scale = 1.0f / sqrtf((float)head_dim);
+    for (uint32_t query_head = 0U; query_head < query_heads; ++query_head) {
+        const uint32_t cache_head = query_head / groups;
+        const float *head_query = query + (uint64_t)query_head * head_dim;
+        float maximum = -INFINITY;
+        for (uint32_t token = 0U; token < context; ++token) {
+            const float *key = key_cache +
+                ((uint64_t)cache_head * cache_capacity + token) * head_dim;
+            float score = 0.0f;
+            for (uint32_t column = 0U; column < head_dim; ++column) {
+                score += head_query[column] * key[column];
+            }
+            score *= scale;
+            scratch_scores[token] = score;
+            if (score > maximum) {
+                maximum = score;
+            }
+        }
+        float denominator = 0.0f;
+        for (uint32_t token = 0U; token < context; ++token) {
+            scratch_scores[token] = expf(scratch_scores[token] - maximum);
+            denominator += scratch_scores[token];
+        }
+        const float inverse_denominator = 1.0f / denominator;
+        float *head_output = output + (uint64_t)query_head * head_dim;
+        for (uint32_t column = 0U; column < head_dim; ++column) {
+            head_output[column] = 0.0f;
+        }
+        for (uint32_t token = 0U; token < context; ++token) {
+            const float probability =
+                scratch_scores[token] * inverse_denominator;
+            const float *value = value_cache +
+                ((uint64_t)cache_head * cache_capacity + token) * head_dim;
+            for (uint32_t column = 0U; column < head_dim; ++column) {
+                head_output[column] += probability * value[column];
+            }
+        }
+        for (uint32_t column = 0U; column < head_dim; ++column) {
+            if (!isfinite(head_output[column])) {
+                return CQ3_ERROR_NONFINITE;
+            }
+        }
+    }
+    return CQ3_OK;
+}
+
+int cq3_gqa_decode_f32_scalar(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key_cache,
+    const float *CQ3_RESTRICT value_cache,
+    uint32_t query_heads,
+    uint32_t key_value_heads,
+    uint32_t head_dim,
+    uint32_t cache_capacity,
+    uint32_t context,
+    float *CQ3_RESTRICT scratch_scores,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_gqa_decode(
+        query, key_cache, value_cache, query_heads, key_value_heads,
+        head_dim, cache_capacity, context, scratch_scores, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+    return cq3_gqa_decode_f32_scalar_impl(
+        query, key_cache, value_cache, query_heads, key_value_heads,
+        head_dim, cache_capacity, context, scratch_scores, output
+    );
+}
+
+int cq3_gqa_decode_f32_scalar_trusted(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key_cache,
+    const float *CQ3_RESTRICT value_cache,
+    uint32_t query_heads,
+    uint32_t key_value_heads,
+    uint32_t head_dim,
+    uint32_t cache_capacity,
+    uint32_t context,
+    float *CQ3_RESTRICT scratch_scores,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_gqa_decode_shape(
+        query, key_cache, value_cache, query_heads, key_value_heads,
+        head_dim, cache_capacity, context, scratch_scores, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+    return cq3_gqa_decode_f32_scalar_impl(
+        query, key_cache, value_cache, query_heads, key_value_heads,
+        head_dim, cache_capacity, context, scratch_scores, output
+    );
+}
+
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+__attribute__((target("avx2")))
+static int cq3_gqa_decode_f32_avx2_impl(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key_cache,
+    const float *CQ3_RESTRICT value_cache,
+    uint32_t query_heads,
+    uint32_t key_value_heads,
+    uint32_t head_dim,
+    uint32_t cache_capacity,
+    uint32_t context,
+    float *CQ3_RESTRICT scratch_scores,
+    float *CQ3_RESTRICT output
+) {
+    const uint32_t groups = query_heads / key_value_heads;
+    const float scale = 1.0f / sqrtf((float)head_dim);
+    for (uint32_t query_head = 0U; query_head < query_heads; ++query_head) {
+        const uint32_t cache_head = query_head / groups;
+        const float *head_query = query + (uint64_t)query_head * head_dim;
+        float maximum = -INFINITY;
+        for (uint32_t token = 0U; token < context; ++token) {
+            const float *key = key_cache +
+                ((uint64_t)cache_head * cache_capacity + token) * head_dim;
+            __m256 accumulator = _mm256_setzero_ps();
+            uint32_t column = 0U;
+            for (; column + 8U <= head_dim; column += 8U) {
+                accumulator = _mm256_add_ps(
+                    accumulator,
+                    _mm256_mul_ps(
+                        _mm256_loadu_ps(head_query + column),
+                        _mm256_loadu_ps(key + column)
+                    )
+                );
+            }
+            float lanes[8];
+            _mm256_storeu_ps(lanes, accumulator);
+            float score = lanes[0] + lanes[1] + lanes[2] + lanes[3] +
+                lanes[4] + lanes[5] + lanes[6] + lanes[7];
+            for (; column < head_dim; ++column) {
+                score += head_query[column] * key[column];
+            }
+            score *= scale;
+            scratch_scores[token] = score;
+            if (score > maximum) {
+                maximum = score;
+            }
+        }
+        float denominator = 0.0f;
+        for (uint32_t token = 0U; token < context; ++token) {
+            scratch_scores[token] = expf(scratch_scores[token] - maximum);
+            denominator += scratch_scores[token];
+        }
+        const float inverse_denominator = 1.0f / denominator;
+        float *head_output = output + (uint64_t)query_head * head_dim;
+        uint32_t column = 0U;
+        for (; column + 8U <= head_dim; column += 8U) {
+            _mm256_storeu_ps(head_output + column, _mm256_setzero_ps());
+        }
+        for (; column < head_dim; ++column) {
+            head_output[column] = 0.0f;
+        }
+        for (uint32_t token = 0U; token < context; ++token) {
+            const __m256 probability = _mm256_set1_ps(
+                scratch_scores[token] * inverse_denominator
+            );
+            const float *value = value_cache +
+                ((uint64_t)cache_head * cache_capacity + token) * head_dim;
+            column = 0U;
+            for (; column + 8U <= head_dim; column += 8U) {
+                const __m256 current = _mm256_loadu_ps(
+                    head_output + column
+                );
+                const __m256 contribution = _mm256_mul_ps(
+                    probability, _mm256_loadu_ps(value + column)
+                );
+                _mm256_storeu_ps(
+                    head_output + column,
+                    _mm256_add_ps(current, contribution)
+                );
+            }
+            for (; column < head_dim; ++column) {
+                head_output[column] +=
+                    (scratch_scores[token] * inverse_denominator) *
+                    value[column];
+            }
+        }
+        for (column = 0U; column < head_dim; ++column) {
+            if (!isfinite(head_output[column])) {
+                return CQ3_ERROR_NONFINITE;
+            }
+        }
+    }
+    return CQ3_OK;
+}
+#endif
+
+int cq3_gqa_decode_f32_avx2(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key_cache,
+    const float *CQ3_RESTRICT value_cache,
+    uint32_t query_heads,
+    uint32_t key_value_heads,
+    uint32_t head_dim,
+    uint32_t cache_capacity,
+    uint32_t context,
+    float *CQ3_RESTRICT scratch_scores,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_gqa_decode(
+        query, key_cache, value_cache, query_heads, key_value_heads,
+        head_dim, cache_capacity, context, scratch_scores, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    if ((cq3_cpu_features() & CQ3_FEATURE_AVX2) == 0U) {
+        return CQ3_ERROR_ISA;
+    }
+    return cq3_gqa_decode_f32_avx2_impl(
+        query, key_cache, value_cache, query_heads, key_value_heads,
+        head_dim, cache_capacity, context, scratch_scores, output
+    );
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
+int cq3_gqa_decode_f32_avx2_trusted(
+    const float *CQ3_RESTRICT query,
+    const float *CQ3_RESTRICT key_cache,
+    const float *CQ3_RESTRICT value_cache,
+    uint32_t query_heads,
+    uint32_t key_value_heads,
+    uint32_t head_dim,
+    uint32_t cache_capacity,
+    uint32_t context,
+    float *CQ3_RESTRICT scratch_scores,
+    float *CQ3_RESTRICT output
+) {
+    const int validation = cq3_validate_gqa_decode_shape(
+        query, key_cache, value_cache, query_heads, key_value_heads,
+        head_dim, cache_capacity, context, scratch_scores, output
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    if ((cq3_cpu_features() & CQ3_FEATURE_AVX2) == 0U) {
+        return CQ3_ERROR_ISA;
+    }
+    return cq3_gqa_decode_f32_avx2_impl(
+        query, key_cache, value_cache, query_heads, key_value_heads,
+        head_dim, cache_capacity, context, scratch_scores, output
+    );
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
+int cq3_sigmoid_gate_f32(
+    const float *CQ3_RESTRICT input,
+    const float *CQ3_RESTRICT gate,
+    uint64_t values,
+    float *CQ3_RESTRICT output
+) {
+    if (input == NULL || gate == NULL || output == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    if (values == 0U) {
+        return CQ3_ERROR_SHAPE;
+    }
+    for (uint64_t index = 0U; index < values; ++index) {
+        if (!isfinite(input[index]) || !isfinite(gate[index])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    for (uint64_t index = 0U; index < values; ++index) {
+        output[index] = input[index] * cq3_sigmoid_scalar(gate[index]);
+        if (!isfinite(output[index])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+    }
+    return CQ3_OK;
+}
+
 #if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
 __attribute__((target("avx2")))
 static uint64_t cq3_sum_u8_avx2_impl(const uint8_t *input, uint64_t count) {

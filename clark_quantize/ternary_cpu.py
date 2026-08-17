@@ -256,6 +256,33 @@ def _load_library() -> ctypes.CDLL | None:
                 f32p, f32p, f32p, f32p, ctypes.c_uint32, f32p, f32p,
             )
             library.cq3_gated_delta_parameters_f32.restype = ctypes.c_int
+        if hasattr(library, "cq3_rmsnorm_rope_f32_scalar"):
+            rmsnorm_rope_args = (
+                f32p, f32p, f32p, f32p, ctypes.c_uint32,
+                ctypes.c_uint32, ctypes.c_uint32, ctypes.c_float, f32p,
+            )
+            library.cq3_rmsnorm_rope_f32_scalar.argtypes = rmsnorm_rope_args
+            library.cq3_rmsnorm_rope_f32_scalar.restype = ctypes.c_int
+            library.cq3_rmsnorm_rope_f32_avx2.argtypes = rmsnorm_rope_args
+            library.cq3_rmsnorm_rope_f32_avx2.restype = ctypes.c_int
+        if hasattr(library, "cq3_gqa_decode_f32_scalar"):
+            gqa_args = (
+                f32p, f32p, f32p, ctypes.c_uint32, ctypes.c_uint32,
+                ctypes.c_uint32, ctypes.c_uint32, ctypes.c_uint32, f32p, f32p,
+            )
+            library.cq3_gqa_decode_f32_scalar.argtypes = gqa_args
+            library.cq3_gqa_decode_f32_scalar.restype = ctypes.c_int
+            library.cq3_gqa_decode_f32_scalar_trusted.argtypes = gqa_args
+            library.cq3_gqa_decode_f32_scalar_trusted.restype = ctypes.c_int
+            library.cq3_gqa_decode_f32_avx2.argtypes = gqa_args
+            library.cq3_gqa_decode_f32_avx2.restype = ctypes.c_int
+            library.cq3_gqa_decode_f32_avx2_trusted.argtypes = gqa_args
+            library.cq3_gqa_decode_f32_avx2_trusted.restype = ctypes.c_int
+        if hasattr(library, "cq3_sigmoid_gate_f32"):
+            library.cq3_sigmoid_gate_f32.argtypes = (
+                f32p, f32p, ctypes.c_uint64, f32p,
+            )
+            library.cq3_sigmoid_gate_f32.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_scalar.argtypes = gemv_args
         library.cq3_gemv_q8_group128_radix5_scalar.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_avx2.argtypes = gemv_args
@@ -1443,6 +1470,146 @@ def gated_delta_parameters_f32(
     )
     _check(status, "Qwen3.8 Gated DeltaNet parameters")
     return log_decay, beta
+
+
+def rmsnorm_rope_f32(
+    input_values: np.ndarray,
+    norm_weight_offsets: np.ndarray,
+    cosine: np.ndarray,
+    sine: np.ndarray,
+    *,
+    epsilon: float = 1e-6,
+    implementation: str = "scalar",
+) -> np.ndarray:
+    """Apply Qwen3.8 per-head RMSNorm and partial rotary embedding."""
+    if _LIBRARY is None or not hasattr(
+        _LIBRARY, "cq3_rmsnorm_rope_f32_scalar"
+    ):
+        raise RuntimeError("native Qwen3.8 RMSNorm RoPE kernel is absent")
+    values = _array(input_values, np.float32, ndim=2)
+    weights = _array(norm_weight_offsets, np.float32, ndim=1)
+    cos = _array(cosine, np.float32, ndim=1)
+    sin = _array(sine, np.float32, ndim=1)
+    if (
+        values.shape[0] == 0
+        or values.shape[1] == 0
+        or weights.shape != (values.shape[1],)
+        or cos.shape != sin.shape
+        or cos.size == 0
+        or cos.size > values.shape[1]
+        or cos.size % 2
+        or not np.isfinite(epsilon)
+        or epsilon <= 0.0
+    ):
+        raise ValueError("RMSNorm RoPE tensor shapes do not compose")
+    functions = {
+        "scalar": _LIBRARY.cq3_rmsnorm_rope_f32_scalar,
+        "avx2": _LIBRARY.cq3_rmsnorm_rope_f32_avx2,
+    }
+    try:
+        function = functions[implementation]
+    except KeyError as error:
+        raise ValueError(
+            f"unknown RMSNorm RoPE implementation {implementation}"
+        ) from error
+    output = np.empty_like(values)
+    status = function(
+        values.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        weights.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        cos.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        sin.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        values.shape[0],
+        values.shape[1],
+        cos.size,
+        float(epsilon),
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+    )
+    _check(status, "Qwen3.8 RMSNorm RoPE")
+    return output
+
+
+def gqa_decode_f32(
+    query: np.ndarray,
+    key_cache: np.ndarray,
+    value_cache: np.ndarray,
+    context: int,
+    *,
+    implementation: str = "scalar",
+    validated: bool = False,
+) -> np.ndarray:
+    """Run one Qwen3.8 grouped-query attention decode over a head-major cache."""
+    if _LIBRARY is None or not hasattr(
+        _LIBRARY, "cq3_gqa_decode_f32_scalar"
+    ):
+        raise RuntimeError("native Qwen3.8 GQA decode kernel is absent")
+    q = _array(query, np.float32, ndim=2)
+    keys = _array(key_cache, np.float32, ndim=3)
+    values = _array(value_cache, np.float32, ndim=3)
+    if (
+        keys.shape != values.shape
+        or q.shape[0] == 0
+        or keys.shape[0] == 0
+        or q.shape[1] == 0
+        or q.shape[1] != keys.shape[2]
+        or q.shape[0] % keys.shape[0]
+        or not isinstance(context, int)
+        or isinstance(context, bool)
+        or context <= 0
+        or context > keys.shape[1]
+    ):
+        raise ValueError("GQA decode tensor shapes do not compose")
+    if validated:
+        functions = {
+            "scalar": _LIBRARY.cq3_gqa_decode_f32_scalar_trusted,
+            "avx2": _LIBRARY.cq3_gqa_decode_f32_avx2_trusted,
+        }
+    else:
+        functions = {
+            "scalar": _LIBRARY.cq3_gqa_decode_f32_scalar,
+            "avx2": _LIBRARY.cq3_gqa_decode_f32_avx2,
+        }
+    try:
+        function = functions[implementation]
+    except KeyError as error:
+        raise ValueError(f"unknown GQA decode implementation {implementation}") from error
+    scratch = np.empty(context, dtype=np.float32)
+    output = np.empty_like(q)
+    status = function(
+        q.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        keys.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        values.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        q.shape[0],
+        keys.shape[0],
+        q.shape[1],
+        keys.shape[1],
+        context,
+        scratch.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+    )
+    _check(status, "Qwen3.8 GQA decode")
+    return output
+
+
+def sigmoid_gate_f32(
+    input_values: np.ndarray,
+    gate: np.ndarray,
+) -> np.ndarray:
+    """Multiply one FP32 vector by a numerically stable sigmoid gate."""
+    if _LIBRARY is None or not hasattr(_LIBRARY, "cq3_sigmoid_gate_f32"):
+        raise RuntimeError("native Qwen3.8 sigmoid gate kernel is absent")
+    values = _array(input_values, np.float32, ndim=1)
+    gates = _array(gate, np.float32, ndim=1)
+    if values.size == 0 or values.shape != gates.shape:
+        raise ValueError("sigmoid gate vectors do not compose")
+    output = np.empty_like(values)
+    status = _LIBRARY.cq3_sigmoid_gate_f32(
+        values.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        gates.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        values.size,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+    )
+    _check(status, "Qwen3.8 sigmoid gate")
+    return output
 
 
 def gemv_q8_group128_2bit_swiglu(

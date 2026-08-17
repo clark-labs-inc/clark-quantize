@@ -24,6 +24,7 @@ from .qwen38_cq3_runtime import (
     CQ3RuntimeError,
     Qwen38CQ3AlignedTensor,
     Qwen38CQ3DeltaNet,
+    Qwen38CQ3FullAttention,
     Qwen38CQ3MLP,
     Qwen38CQ3RuntimeImage,
 )
@@ -743,6 +744,23 @@ class Qwen38Aligned2RuntimeImage:
             ),
             norm_weights=np.ascontiguousarray(
                 self.exact_tensor(f"{prefix}.norm.weight").as_f32()
+            ),
+        )
+
+    def full_attention(self, layer: int) -> Qwen38CQ3FullAttention:
+        if not isinstance(layer, int) or isinstance(layer, bool) or layer < 0:
+            raise ValueError("Qwen3.8-27B layer index must be non-negative")
+        prefix = f"model.language_model.layers.{layer}.self_attn"
+        return Qwen38CQ3FullAttention(
+            q=self.aligned_tensor(f"{prefix}.q_proj.weight"),
+            k=self.aligned_tensor(f"{prefix}.k_proj.weight"),
+            v=self.aligned_tensor(f"{prefix}.v_proj.weight"),
+            out=self.aligned_tensor(f"{prefix}.o_proj.weight"),
+            q_norm_offsets=np.ascontiguousarray(
+                self.exact_tensor(f"{prefix}.q_norm.weight").as_f32()
+            ),
+            k_norm_offsets=np.ascontiguousarray(
+                self.exact_tensor(f"{prefix}.k_norm.weight").as_f32()
             ),
         )
 

@@ -19,11 +19,14 @@ from .qwen38_cq3_container import CQ3ContainerError, Qwen38CQ3Reader
 from .ternary_cpu import (
     causal_conv4_silu_f32,
     gated_delta_parameters_f32,
+    gqa_decode_f32,
     gemv_q8_group128_2bit_row_scale4,
     gemv_q8_group128_block203_row_scale4,
     quantize_q8,
     recurrent_gated_delta_f32,
+    rmsnorm_rope_f32,
     rmsnorm_silu_gate_f32,
+    sigmoid_gate_f32,
     swiglu_f32,
     transcode_block203_rows_to_group128_2bit,
 )
@@ -723,6 +726,205 @@ class Qwen38CQ3DeltaNet:
             z,
             implementation=elementwise_implementation,
         ).reshape(self.VALUE_DIM)
+        gated_q8, gated_scales, gated_sums = quantize_q8(gated, GROUP_SIZE)
+        return self.out.gemv_q8(
+            gated_q8, gated_scales, gated_sums, **arguments
+        )
+
+
+@dataclass
+class Qwen38AttentionState:
+    """Head-major FP32 KV state for one Qwen3.8 full-attention layer."""
+
+    key: np.ndarray
+    value: np.ndarray
+    length: int = 0
+
+    @classmethod
+    def allocate(cls, capacity: int) -> "Qwen38AttentionState":
+        if not isinstance(capacity, int) or isinstance(capacity, bool) or capacity <= 0:
+            raise ValueError("Qwen3.8 attention cache capacity must be positive")
+        shape = (Qwen38CQ3FullAttention.KV_HEADS, capacity, Qwen38CQ3FullAttention.HEAD_DIM)
+        return cls(np.zeros(shape, dtype=np.float32), np.zeros(shape, dtype=np.float32))
+
+    def append(self, key: np.ndarray, value: np.ndarray) -> None:
+        expected = (
+            Qwen38CQ3FullAttention.KV_HEADS,
+            Qwen38CQ3FullAttention.HEAD_DIM,
+        )
+        if (
+            self.key.dtype != np.float32
+            or self.value.dtype != np.float32
+            or not self.key.flags.c_contiguous
+            or not self.value.flags.c_contiguous
+            or not self.key.flags.writeable
+            or not self.value.flags.writeable
+            or self.key.shape != self.value.shape
+            or self.key.ndim != 3
+            or self.key.shape[0] != expected[0]
+            or self.key.shape[2] != expected[1]
+            or key.shape != expected
+            or value.shape != expected
+            or self.length < 0
+            or self.length >= self.key.shape[1]
+        ):
+            raise ValueError("Qwen3.8 attention KV state does not compose")
+        self.key[:, self.length, :] = key
+        self.value[:, self.length, :] = value
+        self.length += 1
+
+
+@dataclass(frozen=True)
+class Qwen38CQ3FullAttention:
+    """One exact-shape Qwen3.8-27B single-token full-attention path."""
+
+    q: Qwen38CQ3TernaryTensorView | Qwen38CQ3AlignedTensor
+    k: Qwen38CQ3TernaryTensorView | Qwen38CQ3AlignedTensor
+    v: Qwen38CQ3TernaryTensorView | Qwen38CQ3AlignedTensor
+    out: Qwen38CQ3TernaryTensorView | Qwen38CQ3AlignedTensor
+    q_norm_offsets: np.ndarray
+    k_norm_offsets: np.ndarray
+
+    HIDDEN_SIZE = 5120
+    QUERY_HEADS = 24
+    KV_HEADS = 4
+    HEAD_DIM = 256
+    QUERY_DIM = QUERY_HEADS * HEAD_DIM
+    KV_DIM = KV_HEADS * HEAD_DIM
+    ROTARY_DIM = 64
+    ROPE_THETA = 10_000_000.0
+
+    def __post_init__(self) -> None:
+        expected_shapes = {
+            "q": (self.QUERY_DIM * 2, self.HIDDEN_SIZE),
+            "k": (self.KV_DIM, self.HIDDEN_SIZE),
+            "v": (self.KV_DIM, self.HIDDEN_SIZE),
+            "out": (self.HIDDEN_SIZE, self.QUERY_DIM),
+        }
+        for name, shape in expected_shapes.items():
+            if tuple(getattr(self, name).shape) != shape:
+                raise CQ3RuntimeError(
+                    f"Qwen3.8 full-attention {name} projection shape changed"
+                )
+        for name in ("q_norm_offsets", "k_norm_offsets"):
+            value = getattr(self, name)
+            if (
+                not isinstance(value, np.ndarray)
+                or value.dtype != np.float32
+                or not value.flags.c_contiguous
+                or value.shape != (self.HEAD_DIM,)
+                or not np.all(np.isfinite(value))
+            ):
+                raise CQ3RuntimeError(
+                    f"Qwen3.8 full-attention retained {name} contract changed"
+                )
+
+    @classmethod
+    def from_image(
+        cls, image: Qwen38CQ3RuntimeImage, layer: int
+    ) -> "Qwen38CQ3FullAttention":
+        if not isinstance(layer, int) or isinstance(layer, bool) or layer < 0:
+            raise ValueError("Qwen3.8-27B layer index must be non-negative")
+        prefix = f"model.language_model.layers.{layer}.self_attn"
+        return cls(
+            q=image.ternary_tensor(f"{prefix}.q_proj.weight"),
+            k=image.ternary_tensor(f"{prefix}.k_proj.weight"),
+            v=image.ternary_tensor(f"{prefix}.v_proj.weight"),
+            out=image.ternary_tensor(f"{prefix}.o_proj.weight"),
+            q_norm_offsets=np.ascontiguousarray(
+                image.exact_tensor(f"{prefix}.q_norm.weight").as_f32()
+            ),
+            k_norm_offsets=np.ascontiguousarray(
+                image.exact_tensor(f"{prefix}.k_norm.weight").as_f32()
+            ),
+        )
+
+    @classmethod
+    def text_rope(cls, position: int) -> tuple[np.ndarray, np.ndarray]:
+        if not isinstance(position, int) or isinstance(position, bool) or position < 0:
+            raise ValueError("Qwen3.8 text position must be non-negative")
+        exponents = np.arange(0, cls.ROTARY_DIM, 2, dtype=np.float32) / np.float32(
+            cls.ROTARY_DIM
+        )
+        inverse_frequencies = np.float32(1.0) / np.power(
+            np.float32(cls.ROPE_THETA), exponents
+        )
+        frequencies = np.float32(position) * inverse_frequencies
+        cosine_half = np.cos(frequencies).astype(np.float32)
+        sine_half = np.sin(frequencies).astype(np.float32)
+        return (
+            np.concatenate((cosine_half, cosine_half)),
+            np.concatenate((sine_half, sine_half)),
+        )
+
+    def forward(
+        self,
+        activation: np.ndarray,
+        state: Qwen38AttentionState,
+        position: int,
+        *,
+        gemv_implementation: str = "scalar_chunk16",
+        elementwise_implementation: str = "scalar",
+        threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
+        cpu_ids: list[int] | None = None,
+        validated_state: bool = False,
+    ) -> np.ndarray:
+        """Execute one text token and append normalized/rotated K/V to cache."""
+        values = np.asarray(activation, dtype=np.float32)
+        if values.ndim != 1 or values.size != self.HIDDEN_SIZE:
+            raise ValueError(
+                "Qwen3.8 full-attention activation does not match hidden size"
+            )
+        if position != state.length:
+            raise ValueError(
+                "Qwen3.8 text position must equal the sequential KV length"
+            )
+        activation_q8, activation_scales, activation_sums = quantize_q8(
+            values, GROUP_SIZE
+        )
+        arguments = {
+            "implementation": gemv_implementation,
+            "threads": threads,
+            "executor": executor,
+            "cpu_ids": cpu_ids,
+        }
+        projected_q = self.q.gemv_q8(
+            activation_q8, activation_scales, activation_sums, **arguments
+        ).reshape(self.QUERY_HEADS, self.HEAD_DIM * 2)
+        query = projected_q[:, : self.HEAD_DIM]
+        gate = projected_q[:, self.HEAD_DIM :].reshape(self.QUERY_DIM)
+        key = self.k.gemv_q8(
+            activation_q8, activation_scales, activation_sums, **arguments
+        ).reshape(self.KV_HEADS, self.HEAD_DIM)
+        value = self.v.gemv_q8(
+            activation_q8, activation_scales, activation_sums, **arguments
+        ).reshape(self.KV_HEADS, self.HEAD_DIM)
+        cosine, sine = self.text_rope(position)
+        query = rmsnorm_rope_f32(
+            query,
+            self.q_norm_offsets,
+            cosine,
+            sine,
+            implementation=elementwise_implementation,
+        )
+        key = rmsnorm_rope_f32(
+            key,
+            self.k_norm_offsets,
+            cosine,
+            sine,
+            implementation=elementwise_implementation,
+        )
+        state.append(key, value)
+        attended = gqa_decode_f32(
+            query,
+            state.key,
+            state.value,
+            state.length,
+            implementation=elementwise_implementation,
+            validated=validated_state,
+        ).reshape(self.QUERY_DIM)
+        gated = sigmoid_gate_f32(attended, gate)
         gated_q8, gated_scales, gated_sums = quantize_q8(gated, GROUP_SIZE)
         return self.out.gemv_q8(
             gated_q8, gated_scales, gated_sums, **arguments
