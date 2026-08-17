@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -18,6 +20,29 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from clark_air.quant.master_weight_qat import ste_quantized_weight
+from clark_quantize.qwen_qat import hard_ternary_ste
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(8 * 1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def atomic_torch_save(payload: Any, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.name}.tmp")
+    torch.save(payload, temporary)
+    os.replace(temporary, path)
+
+
+def optimizer_to_device(optimizer: torch.optim.Optimizer, device: torch.device) -> None:
+    for state in optimizer.state.values():
+        for key, value in state.items():
+            if isinstance(value, torch.Tensor):
+                state[key] = value.to(device)
 
 
 def parse_layers(value: str, available: set[int]) -> list[int]:
@@ -66,15 +91,27 @@ def layer_tensor_name(layer_id: int, proj: str) -> str:
 
 
 class QuantMLPTriplet(torch.nn.Module):
-    def __init__(self, gate: torch.Tensor, up: torch.Tensor, down: torch.Tensor, *, mode: str, group_size: int) -> None:
+    def __init__(
+        self,
+        gate: torch.Tensor,
+        up: torch.Tensor,
+        down: torch.Tensor,
+        *,
+        mode: str,
+        group_size: int,
+        artifact_exact_ternary: bool = False,
+    ) -> None:
         super().__init__()
         self.gate = torch.nn.Parameter(gate.detach().float())
         self.up = torch.nn.Parameter(up.detach().float())
         self.down = torch.nn.Parameter(down.detach().float())
         self.mode = mode
         self.group_size = group_size
+        self.artifact_exact_ternary = artifact_exact_ternary
 
     def quantized(self, master: torch.Tensor) -> torch.Tensor:
+        if self.mode == "ternary" and self.artifact_exact_ternary:
+            return hard_ternary_ste(master, group_size=self.group_size, row_batch=128)
         return ste_quantized_weight(master, mode=self.mode, group_size=self.group_size)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -111,7 +148,14 @@ def train_layer(
     args: argparse.Namespace,
     device: torch.device,
 ) -> tuple[dict[str, torch.Tensor], dict[str, Any]]:
-    model = QuantMLPTriplet(gate, up, down, mode=args.mode, group_size=args.group_size).to(device)
+    model = QuantMLPTriplet(
+        gate,
+        up,
+        down,
+        mode=args.mode,
+        group_size=args.group_size,
+        artifact_exact_ternary=args.artifact_exact_ternary,
+    ).to(device)
     x = x.to(device=device, dtype=torch.float32)
     y = y.to(device=device, dtype=torch.float32)
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
@@ -119,7 +163,76 @@ def train_layer(
     generator.manual_seed(args.seed + layer_id)
     rows = x.shape[0]
     history = []
-    for step in range(args.steps_per_layer):
+    checkpoint_path = args.checkpoint_dir / f"layer-{layer_id}-latest.pt" if args.checkpoint_dir else None
+    checkpoint_contract = {
+        "layer": layer_id,
+        "mode": args.mode,
+        "group_size": args.group_size,
+        "artifact_exact_ternary": args.artifact_exact_ternary,
+        "steps_per_layer": args.steps_per_layer,
+        "batch_size": args.batch_size,
+        "lr": args.lr,
+        "weight_decay": args.weight_decay,
+        "code_weight": args.code_weight,
+        "grad_clip": args.grad_clip,
+        "seed": args.seed,
+        "activation_cache_sha256": args.activation_cache_sha256,
+        "inventory_sha256": args.inventory_sha256,
+        "base_patch_sha256": args.base_patch_sha256,
+        "x_shape": list(x.shape),
+        "y_shape": list(y.shape),
+    }
+    completed_steps = 0
+    resumed = False
+    resumed_complete = False
+    if checkpoint_path is not None and checkpoint_path.exists():
+        if not args.resume:
+            raise FileExistsError(f"checkpoint exists; pass --resume or choose a new directory: {checkpoint_path}")
+        checkpoint = torch.load(checkpoint_path, map_location="cpu")
+        if checkpoint.get("schema") != "qwen_mlp_triplet_qat_checkpoint_v1":
+            raise ValueError(f"unsupported checkpoint schema: {checkpoint.get('schema')!r}")
+        if checkpoint.get("contract") != checkpoint_contract:
+            raise ValueError("checkpoint contract does not match this run")
+        model.load_state_dict(checkpoint["model_state"])
+        opt.load_state_dict(checkpoint["optimizer_state"])
+        optimizer_to_device(opt, device)
+        generator.set_state(checkpoint["generator_state"])
+        history = list(checkpoint.get("history", []))
+        completed_steps = int(checkpoint["completed_steps"])
+        resumed_complete = bool(checkpoint.get("complete", False))
+        resumed = True
+        if completed_steps > args.steps_per_layer:
+            raise ValueError("checkpoint completed_steps exceeds steps_per_layer")
+        print(
+            json.dumps(
+                {
+                    "event": "resume",
+                    "layer": layer_id,
+                    "completed_steps": completed_steps,
+                    "checkpoint": str(checkpoint_path),
+                }
+            ),
+            flush=True,
+        )
+
+    def save_checkpoint(*, complete: bool) -> None:
+        if checkpoint_path is None:
+            return
+        atomic_torch_save(
+            {
+                "schema": "qwen_mlp_triplet_qat_checkpoint_v1",
+                "contract": checkpoint_contract,
+                "completed_steps": completed_steps,
+                "complete": complete,
+                "model_state": {key: value.detach().cpu() for key, value in model.state_dict().items()},
+                "optimizer_state": opt.state_dict(),
+                "generator_state": generator.get_state(),
+                "history": history,
+            },
+            checkpoint_path,
+        )
+
+    for step in range(completed_steps, args.steps_per_layer):
         index = torch.randint(rows, (min(args.batch_size, rows),), generator=generator)
         xb = x[index.to(device)]
         yb = y[index.to(device)]
@@ -142,7 +255,20 @@ def train_layer(
             }
             history.append(row)
             print(json.dumps({"layer": layer_id, **row}), flush=True)
-    return model.hard_weights(), {"layer": layer_id, "samples": rows, "history": history}
+        completed_steps = step + 1
+        if args.checkpoint_every and completed_steps % args.checkpoint_every == 0:
+            save_checkpoint(complete=False)
+    if not (resumed_complete and completed_steps == args.steps_per_layer):
+        save_checkpoint(complete=True)
+    checkpoint_sha256 = sha256_file(checkpoint_path) if checkpoint_path is not None else None
+    return model.hard_weights(), {
+        "layer": layer_id,
+        "samples": rows,
+        "history": history,
+        "resumed": resumed,
+        "checkpoint": str(checkpoint_path) if checkpoint_path is not None else None,
+        "checkpoint_sha256": checkpoint_sha256,
+    }
 
 
 def main() -> None:
@@ -157,6 +283,7 @@ def main() -> None:
     parser.add_argument("--max-layers", type=int, default=0)
     parser.add_argument("--mode", choices=["ternary", "binary"], default="ternary")
     parser.add_argument("--group-size", type=int, default=32)
+    parser.add_argument("--artifact-exact-ternary", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument("--steps-per-layer", type=int, default=300)
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--lr", type=float, default=2e-5)
@@ -165,10 +292,27 @@ def main() -> None:
     parser.add_argument("--grad-clip", type=float, default=1.0)
     parser.add_argument("--log-every", type=int, default=50)
     parser.add_argument("--seed", type=int, default=17)
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
+    parser.add_argument("--torch-threads", type=int, default=0)
+    parser.add_argument("--checkpoint-dir", type=Path)
+    parser.add_argument("--checkpoint-every", type=int, default=0)
+    parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
 
     if args.group_size <= 0:
         raise ValueError("--group-size must be positive")
+    if args.torch_threads < 0:
+        raise ValueError("torch-threads must be non-negative")
+    if args.checkpoint_every < 0:
+        raise ValueError("checkpoint-every must be non-negative")
+    if args.device == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError("CUDA was requested but is not available")
+    if args.torch_threads:
+        torch.set_num_threads(args.torch_threads)
+
+    args.activation_cache_sha256 = sha256_file(args.activation_cache)
+    args.inventory_sha256 = sha256_file(args.inventory)
+    args.base_patch_sha256 = sha256_file(args.base_patch) if args.base_patch else None
 
     activation_cache = torch.load(args.activation_cache, map_location="cpu")
     if activation_cache.get("format") != "qwen_mlp_activation_cache_v1":
@@ -183,7 +327,8 @@ def main() -> None:
 
     inventory = json.loads(args.inventory.read_text())
     patch = load_weight_patch(args.base_patch)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device_name = "cuda" if args.device == "auto" and torch.cuda.is_available() else ("cpu" if args.device == "auto" else args.device)
+    device = torch.device(device_name)
     output: dict[str, torch.Tensor] = {}
     reports = []
     for layer_id in selected:
@@ -216,6 +361,14 @@ def main() -> None:
         "layers": selected,
         "mode": args.mode,
         "group_size": args.group_size,
+        "artifact_exact_ternary": args.artifact_exact_ternary,
+        "runtime_device": str(device),
+        "torch_threads": torch.get_num_threads(),
+        "activation_cache_sha256": args.activation_cache_sha256,
+        "inventory_sha256": args.inventory_sha256,
+        "base_patch_sha256": args.base_patch_sha256,
+        "checkpoint_dir": str(args.checkpoint_dir) if args.checkpoint_dir else None,
+        "checkpoint_every": args.checkpoint_every,
         "reports": reports,
     }
     report_path = args.report or args.out.with_suffix(".report.json")

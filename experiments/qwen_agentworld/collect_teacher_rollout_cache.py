@@ -143,17 +143,21 @@ def main() -> None:
     parser.add_argument("--projection-dim", type=int, default=128)
     parser.add_argument("--projection-seed", type=int, default=20260701)
     parser.add_argument("--seed", type=int, default=20260816)
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
+    parser.add_argument("--torch-threads", type=int, default=0)
     args = parser.parse_args()
 
-    if not torch.cuda.is_available():
-        raise RuntimeError("CUDA is required")
+    if args.torch_threads < 0:
+        raise ValueError("torch-threads must be non-negative")
+    if args.torch_threads:
+        torch.set_num_threads(args.torch_threads)
     if args.generate_tokens < 1 or args.generate_tokens >= args.max_model_len:
         raise ValueError("generate-tokens must be positive and smaller than max-model-len")
 
     torch.manual_seed(args.seed)
     tokenizer = transformers.AutoTokenizer.from_pretrained(args.model_dir, trust_remote_code=True)
     tokenizer.truncation_side = "left"
-    model = load_model(args.model_dir)
+    model = load_model(args.model_dir, device=args.device)
     release_non_text_modules(model)
     for parameter in model.parameters():
         parameter.requires_grad_(False)
@@ -273,6 +277,8 @@ def main() -> None:
         "hidden_layers": hidden_layers,
         "hidden_projection_dim": args.projection_dim,
         "hidden_projection_seed": args.projection_seed,
+        "runtime_device": str(device),
+        "torch_threads": torch.get_num_threads(),
         "format_token_ids": token_ids_for_strings(tokenizer, ["<think>", "</think>", "\n", "[", "]", "{", "}", '"']),
         "collapse_token_ids": token_ids_for_strings(tokenizer, ["<think>", "assistant", "\n\n", "\n"]),
         "rows": out_rows,
@@ -294,6 +300,8 @@ def main() -> None:
         "label_semantics": payload["label_semantics"],
         "hidden_layers": hidden_layers,
         "hidden_projection_dim": args.projection_dim,
+        "runtime_device": str(device),
+        "torch_threads": torch.get_num_threads(),
         "rows_summary": [
             {
                 "index": row["index"],

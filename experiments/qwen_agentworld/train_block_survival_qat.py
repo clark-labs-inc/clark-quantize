@@ -222,7 +222,17 @@ def train_block(
     hidden_projection_dim: int,
     hidden_projection_seed: int,
 ) -> tuple[dict[str, torch.Tensor], dict[str, Any]]:
-    quant_mlp = replace_mlp_with_quant(model, layer_id, mode=args.mode, group_size=args.group_size) if args.train_mlp else None
+    quant_mlp = (
+        replace_mlp_with_quant(
+            model,
+            layer_id,
+            mode=args.mode,
+            group_size=args.group_size,
+            artifact_exact_ternary=args.artifact_exact_ternary,
+        )
+        if args.train_mlp
+        else None
+    )
     quant_linears: dict[str, QuantLinear] = {}
     if args.train_projections:
         for name in available_projection_names(model, layer_id):
@@ -364,10 +374,15 @@ def main() -> None:
     parser.add_argument("--train-projections", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--projection-regex")
     parser.add_argument("--train-norms", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--artifact-exact-ternary", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
+    parser.add_argument("--torch-threads", type=int, default=0)
     args = parser.parse_args()
 
-    if not torch.cuda.is_available():
-        raise RuntimeError("CUDA is required")
+    if args.torch_threads < 0:
+        raise ValueError("torch-threads must be non-negative")
+    if args.torch_threads:
+        torch.set_num_threads(args.torch_threads)
     cache = torch.load(args.cache, map_location="cpu")
     if cache.get("format") not in {"qwen_onpolicy_survival_cache_v1", "qwen_agentworld_teacher_behavior_v1"}:
         raise ValueError(f"unsupported cache format: {cache.get('format')!r}")
@@ -378,7 +393,7 @@ def main() -> None:
     if args.hidden_weight > 0 and any("teacher_hidden_proj" in row for row in rows) and hidden_projection_dim <= 0:
         raise ValueError("projected hidden labels require hidden_projection_dim metadata")
 
-    model = load_model(args.model_dir)
+    model = load_model(args.model_dir, device=args.device)
     release_non_text_modules(model)
     model.eval()
     available_layers = {
@@ -436,9 +451,12 @@ def main() -> None:
         "hidden_layers": hidden_layers,
         "mode": args.mode,
         "group_size": args.group_size,
+        "artifact_exact_ternary": args.artifact_exact_ternary,
         "steps_per_layer": args.steps_per_layer,
         "lr": args.lr,
         "projection_regex": args.projection_regex,
+        "runtime_device": str(device),
+        "torch_threads": torch.get_num_threads(),
         "train_rows": [
             {"index": row.get("index"), "task": row.get("task"), "id": row.get("id"), "tokens": int(row["tokens"]), "keep": int(row["keep"])}
             for row in rows
