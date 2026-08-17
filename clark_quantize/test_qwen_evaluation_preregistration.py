@@ -6,11 +6,17 @@ import json
 import math
 from pathlib import Path
 import unittest
+from unittest import mock
+
+import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[1]
 PREREGISTRATION = ROOT / "experiments/qwen38_27b_spot/evaluation_preregistration.json"
 TARGET_158 = ROOT / "experiments/qwen38_27b_spot/target_158_preregistration.json"
+GEMV_PREREGISTRATION = (
+    ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime/gemv_preregistration_v5.json"
+)
 
 
 def load_script(name: str):
@@ -24,6 +30,20 @@ def load_script(name: str):
 
 QUALITY = load_script("behavioral_quality_gate")
 RADIX = load_script("radix5_performance_gate")
+
+
+def load_path(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+GEMV = load_path(
+    "benchmark_ternary_gemv",
+    ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_ternary_gemv.py",
+)
 
 
 class EvaluationPreregistrationTests(unittest.TestCase):
@@ -50,6 +70,14 @@ class EvaluationPreregistrationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "differ"):
             RADIX.validate_preregistration(changed, args)
 
+    def test_radix_sample_regeneration_is_explicitly_cpu(self) -> None:
+        expected = (np.asarray([-1, 0, 1], dtype=np.int8), [{"name": "probe"}])
+        with mock.patch.object(RADIX, "load_codes", return_value=expected) as load_codes:
+            actual = RADIX.load_real_codes(Path("/model"), {"probes": []}, 512, 10_000_000)
+        self.assertIs(actual, expected)
+        self.assertEqual(load_codes.call_args.args[:4], (Path("/model"), {"probes": []}, 512, 10_000_000))
+        self.assertEqual(load_codes.call_args.args[4].type, "cpu")
+
     def test_target_158_ledger_is_complete_and_self_consistent(self) -> None:
         target = json.loads(TARGET_158.read_text())
         inventory = target["fixed_inventory_expectations"]
@@ -68,6 +96,27 @@ class EvaluationPreregistrationTests(unittest.TestCase):
         self.assertTrue(target["promotion"]["does_not_authorize_full_pack"])
         self.assertIn("vision", target["parameter_scope"]["ternary"])
         self.assertIn("MTP", target["parameter_scope"]["ternary"])
+
+    def test_cpu_gemv_preregistration_seals_shape_and_promotion_scope(self) -> None:
+        value = json.loads(GEMV_PREREGISTRATION.read_text())
+        args = argparse.Namespace(
+            tensor="model.language_model.layers.0.mlp.gate_proj.weight",
+            rows=17408,
+            columns=5120,
+            warmups=2,
+            repetitions=7,
+            threads=[1, 2, 4],
+            cache_eviction_bytes=268435456,
+        )
+        self.assertIs(GEMV.validate_preregistration(value, args), value)
+        self.assertEqual(
+            value["promotion"]["maximum_compute_image_bits_per_weight_including_fp16_scales"],
+            (128 * 2 + 16) / 128,
+        )
+        self.assertTrue(value["promotion"]["does_not_authorize_breakthrough_claim"])
+        args.rows -= 1
+        with self.assertRaisesRegex(ValueError, "differ"):
+            GEMV.validate_preregistration(value, args)
 
 
 if __name__ == "__main__":

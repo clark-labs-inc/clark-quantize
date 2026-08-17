@@ -1,6 +1,6 @@
 # Qwen CPU Kernel Contracts
 
-Status: design contract v0
+Status: implementation contract v1
 Date: 2026-08-16
 
 These are operator contracts, not implementation promises. Each optimized
@@ -18,9 +18,11 @@ replaced only where profiling shows a material end-to-end gain.
 - Matmul weights use groups of 128 consecutive input features.
 - Each group has one stored little-endian FP16 scale.
 - The A16 reference accumulates group partials in FP32.
-- The A8 path defines activation scale, rounding, clipping, zero handling, and
-  integer accumulation before QAT uses it. No backend-specific implicit
-  rounding is accepted.
+- The A8 path uses group-128 max-absolute scales, `lrintf` under the default
+  round-to-nearest mode, clipping to `[-127, 127]`, and a unit scale for an
+  all-zero group. Integer dots are exact. The promoted AVX2 path accumulates
+  eight lanes in FP32 with FMA across groups and performs one fixed pairwise
+  reduction per output row; deployment-aware QAT must emulate this order.
 - Tail groups are zero-padded and cannot change the logical tensor shape.
 - Optimized kernels must consume the same codes and scales as the scalar oracle.
 
@@ -29,9 +31,9 @@ replaced only where profiling shows a material end-to-end gain.
 | ID | Kernel | Decode | Prefill | First optimized ISA | Priority |
 | --- | --- | --- | --- | --- | ---: |
 | K0 | canonical pack/transcode/verify | load | load | portable scalar | 0 |
-| K1 | RMSNorm + A8 quantize + residual staging | every block | every block | ARM64 DOTPROD | 0 |
-| K2 | group-128 ternary GEMV | dominant | fallback | ARM64 DOTPROD | 0 |
-| K3 | group-128 ternary GEMM | small batches | dominant | ARM64 DOTPROD | 1 |
+| K1 | RMSNorm + A8 quantize + residual staging | every block | every block | x86 AVX2 | 0 |
+| K2 | group-128 ternary GEMV | dominant | fallback | x86 AVX2/F16C/FMA | 0 |
+| K3 | group-128 ternary GEMM | small batches | dominant | x86 AVX2 | 1 |
 | K4 | fused gate/up projection + SwiGLU | every block | every block | ARM64 | 1 |
 | K5 | depthwise causal-conv4 update | 48 layers | 48 layers | ARM64 | 0 |
 | K6 | recurrent Gated DeltaNet update | 48 layers | tail | ARM64 | 0 |
@@ -48,7 +50,8 @@ Output is an aligned, mmap-safe compute image containing the same logical codes
 and scales. Candidate physical layouts are:
 
 1. five-trit bytes plus register LUTs;
-2. aligned 2-bit signed codes;
+2. group-128-transposed 2-bit codes, where byte `j` stores logical positions
+   `j`, `j+32`, `j+64`, and `j+96`;
 3. separate positive and negative bitplanes.
 
 The transcode receipt includes source and output hashes, selected ISA, tile
@@ -63,6 +66,10 @@ re-reading and requantizing the same input.
 
 K2 specializes single-token matrix-vector work. It should fuse group-scale
 application into FP32 accumulation and avoid materializing unpacked weights.
+The first promoted AVX2 implementation uses A8 activations, an authenticated
+2.125-bit/weight compute image including FP16 scales, and reaches 79.44% of the
+measured four-core memory-read roofline on the CCX33 Milan control. This is a
+microkernel result; GGML/full-layer integration remains a separate gate.
 The benchmark matrix families are the exact Qwen shapes:
 
 - `5120 -> 17408` and `17408 -> 5120` for the MLP;

@@ -1,6 +1,6 @@
 # Hetzner CCX33 CPU Bring-up and Controls
 
-Status: full 27B arithmetic pack running
+Status: full 27B arithmetic pack complete; first AVX2 K2 microkernel promoted
 Date: 2026-08-16
 Source branch: `codex/qwen38-base3-research`
 Launch commit: `dc61ec9`
@@ -8,9 +8,10 @@ Launch commit: `dc61ec9`
 ## Scope and evidence boundary
 
 This record covers node provisioning, CPU environment validation, exact parent
-staging, a 4B stock llama.cpp control, and launch of the existing resumable 27B
-base-3 exporter. The one-prompt control is not a capability evaluation. The
-running full export is not reported as complete until its final receipt passes.
+staging, a 4B stock llama.cpp control, the completed resumable 27B base-3
+exporter, and the first native AVX2 ternary GEMV gate. The one-prompt control is
+not a capability evaluation. Kernel promotion is not graph-level quality or an
+end-to-end model claim.
 
 Bulky weights, GGUF files, packed chunks, and raw process output remain on the
 authorized `quant` node under `/workspace`. Git retains only source, protocols,
@@ -93,24 +94,73 @@ The one-million-real-trit arithmetic reference promoted:
 - 1.119 million encoded trits/second and 63.831 million decoded trits/second;
 - reference serial full-checkpoint projection: 6.669 hours.
 
-The full exporter was launched as transient service
+The full exporter completed under transient service
 `quant-qwen38-base3-full.service` with four workers, four maximum in-flight
-chunks, row batch 128, a 28 GiB memory cap, and at most three restart attempts.
-At the recorded launch snapshot it had committed 60 of 34,344 batches,
-regenerated 41,287,680 trits in 10.43 seconds, used about 0.90 GB peak service
-memory, and had not restarted. That early rate suggests roughly 1.8 hours, but
-the final receipt is authoritative.
+chunks, row batch 128, a 28 GiB memory cap, and no restart. It wrote and
+independently decoded all 34,344 batches and 26,869,760,000 mapped trits. The
+complete run took 7,661.90 seconds wall time at an effective 3.507 Mtrit/s; its
+parallel independent decode took 118.18 seconds. The exact arithmetic payload
+is 1.584963804 bits/trit. Once 419,840,000 bytes of FP16 scales and
+1,823,335,904 referenced high-precision bytes are counted, the honest payload
+is 7,567,508,848 bytes or 2.179156193 bits per original model parameter.
 
 Runtime paths:
 
 - progress: `/workspace/quant-state/qwen38-base3-full-progress.json`;
 - final receipt: `/workspace/quant-state/qwen38-base3-full.json`;
 - artifact: `/workspace/quant-runs/qwen38-base3-full/artifacts/qwen38-optimal.cq3q`.
+- final receipt SHA-256:
+  `ef6b8608411ba48abc85b0da390e3e8dec2b8cfad8290739c0c17557bf14cef5`.
+
+## Radix-5 K0 control
+
+After repairing the CPU sampler's missing explicit device argument, the sealed
+10,000,000-real-trit gate passed exactly. Five-trits-per-byte encoding measured
+178.670 Mtrit/s and decoding measured 472.594 Mtrit/s. The 1.6-bit code stream
+costs 50,506,750 projected bytes over ideal arithmetic coding, moving the honest
+whole-model projection from 2.179156 to 2.193445 bits per parameter. K0 is fast
+enough that hot GEMV, not artifact transcode, is the next bottleneck.
+
+## First K2 AVX2 kernel
+
+The native C11 library defines group-128 activation quantization, scalar and
+AVX2 A8-by-ternary GEMV, exact canonical-to-compute-image transcode, and a
+checksumed STREAM-like read control. The measured matrix is the real
+`model.language_model.layers.0.mlp.gate_proj.weight` tensor with shape
+`17408 x 5120`; its codes and FP16 scales are authenticated directly from the
+completed artifact. The group-transposed 2-bit compute image stores four
+logical positions per byte and costs exactly 2.125 bits/weight including one
+FP16 scale per 128 weights.
+
+The preregistered iterations retained failures instead of moving the target:
+
+| Iteration | Main change | Four-core GB/s | Read roofline | Scalar speedup | Promoted |
+| --- | --- | ---: | ---: | ---: | --- |
+| v0 | scalar table expansion | 5.976 | 17.20% | 5.97x | no |
+| v1 | group-transposed vector unpack | 12.055 | 34.31% | 23.74x | no |
+| v2 | persistent, physical-core workers | 21.607 | 60.55% | 22.15x | no |
+| v3 | F16C and lane-wise FP32 accumulation | 25.378 | 68.35% | 32.19x | no |
+| v4 | vectorized FP16 scale conversion | 25.595 | 67.05% | 31.25x | no |
+| v5 | FMA, Milan tuning, affinity set once | 28.061 | 79.44% | 33.25x | yes |
+
+The v5 output is exact across one, two, and four physical cores. Its maximum
+absolute difference from the sequential scalar accumulation was
+`7.450580596923828e-7`, below the sealed `5e-5` limit. The v5 receipt SHA-256 is
+`985400fd4c066af40d436f695e3f2f248bb0673b24b6bfee97c02bbf85c97f37`.
+This promotes the K2 microkernel only. It does not establish packed graph
+parity, capability retention, end-to-end token speed, energy advantage, or a
+scientific breakthrough.
+
+The final local and Linux suites each pass 94 tests; the non-AVX2 local host
+skips two ISA-specific assertions. The full Linux run also exposed and fixed a
+spot-harness descriptor race: heartbeat helpers now close inherited stdio, and
+the atomic status writer fsyncs its file, history, and parent directory instead
+of relying on an unbounded machine-wide `sync`.
 
 ## Next gate
 
-Wait for the final arithmetic-pack receipt and independent full decode. If it
-promotes, benchmark the 1.6-bit radix-5 compute/distribution control and begin
-the 4B native Clark weight-type integration. Behavioral 27B BF16-versus-packed
-evaluation does not fit this 32 GB node and must use a larger-memory CPU host or
-the existing high-memory GPU lane.
+Integrate the promoted K2 numeric and layout contract as a narrow GGML weight
+type, run full-layer parity, then load the 4B Qwen graph and compare paired
+BF16, Q4, TQ1_0, and Clark ternary execution. Behavioral 27B BF16-versus-packed
+evaluation still does not fit this 32 GB node and requires a larger-memory CPU
+host or the high-memory GPU lane.

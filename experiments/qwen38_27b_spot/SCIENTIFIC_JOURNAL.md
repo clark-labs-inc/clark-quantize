@@ -387,3 +387,34 @@ exceptions. The rerun passed all 54 checks. Completion-audit SHA-256 is
 `861b0711c901ac893b58e49543779199b6fff48e9e2c01fc78b112f8438c2ecb`;
 the terminal classifications are `ptq_valid_nonpromotion` and
 `ten_step_valid_nonpromotion`.
+
+## 2026-08-17 — CPU full-pack replication and first promoted K2 kernel
+
+The non-spot CCX33 CPU node completed the bounded full arithmetic pack with no
+restart. All 34,344 batches and 26,869,760,000 mapped trits independently
+decoded exactly. Arithmetic payload rate was 1.5849638042542993 bits/trit, but
+the honest complete payload remained 2.179156193432515 bits per original
+parameter after 419,840,000 FP16 scale bytes and 1,823,335,904 referenced
+high-precision bytes were counted. This confirms that near-ideal trit entropy
+coding alone does not make the current mapping an end-to-end 1.58-bit model.
+
+The repaired CPU radix-5 gate passed on ten million authenticated real Qwen
+trits at 178.670 Mtrit/s encode and 472.594 Mtrit/s decode. Its complete-model
+projection is 2.1934446042617153 bits per parameter, so the extra 0.0150375
+bits/trit is operationally cheap but does not solve the retained-tensor or
+scale-rate problem.
+
+A new dependency-free C11 K2 library was then tested on the real
+`17408 x 5120` layer-0 MLP gate matrix. The scalar-table prototype reached only
+5.976 GB/s and 17.20% of the measured read roofline. Group-transposed SIMD
+layout, persistent physical-core workers, lane-wise FP32 accumulation, F16C,
+FMA, Milan tuning, and one-time affinity increased the sealed v5 result to
+28.061 GB/s, 79.44% of the 35.323 GB/s four-core read control, and 33.25x the
+packed scalar oracle. Exact transcode and thread-count determinism passed; the
+maximum sequential-scalar deviation was 7.45e-7 against a 5e-5 limit. The
+compute image is 2.125 bits/weight including FP16 group scales.
+
+This result promotes K2 only. No graph-level generation, quality, token-speed,
+energy, or breakthrough claim follows from a single matrix microbenchmark.
+The next falsifiable step is narrow GGML integration followed by full-layer and
+4B packed-graph parity against BF16, Q4, and upstream TQ1_0 controls.

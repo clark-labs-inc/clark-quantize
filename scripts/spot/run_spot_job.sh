@@ -48,7 +48,6 @@ finish() {
     kill "${heartbeat_pid}" 2>/dev/null || true
     wait "${heartbeat_pid}" 2>/dev/null || true
   fi
-  sync
   python3 "${STATUS_PY}" --event exited --job "${JOB_NAME}" \
     ${child_pid:+--pid "${child_pid}"} --exit-code "${rc}" || true
   date -u +%FT%TZ >"${RUN_DIR}/finished_at.txt"
@@ -60,7 +59,6 @@ request_stop() {
   date -u +%FT%TZ >"${RUN_DIR}/checkpoint-requested-${signal}.txt"
   python3 "${STATUS_PY}" --event "signal_${signal}" --job "${JOB_NAME}" \
     ${child_pid:+--pid "${child_pid}"} || true
-  sync
   if [[ -n "${child_pid}" ]]; then
     if [[ -n "${child_group}" ]]; then
       kill -TERM -- "-${child_group}" 2>/dev/null || true
@@ -89,6 +87,7 @@ printf '%s\n' "${child_pid}" >"${RUN_DIR}/pid.txt"
 python3 "${STATUS_PY}" --event running --job "${JOB_NAME}" --pid "${child_pid}" || true
 (
   exec 9>&-
+  exec </dev/null >/dev/null 2>&1
   while true; do
     python3 "${STATUS_PY}" --event heartbeat --job "${JOB_NAME}" --pid "${child_pid}" || true
     sleep 30

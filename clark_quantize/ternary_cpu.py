@@ -1,0 +1,370 @@
+"""C-ABI CPU primitives for Clark group-128 ternary weights.
+
+The canonical base-3 artifact remains the storage source of truth.  These
+helpers create and execute a 2-bit-per-code compute image whose group boundaries
+match the FP16 scale grid exactly.
+"""
+from __future__ import annotations
+
+from concurrent.futures import ThreadPoolExecutor
+import ctypes
+import os
+from pathlib import Path
+
+import numpy as np
+
+
+FEATURE_AVX2 = 1
+FEATURE_F16C = 2
+FEATURE_FMA = 4
+_ERRORS = {
+    1: "invalid pointer argument",
+    2: "unsupported tensor shape",
+    3: "invalid or non-canonical ternary code",
+    4: "non-finite numeric input",
+    5: "requested CPU ISA is unavailable",
+}
+
+
+def _load_library() -> ctypes.CDLL | None:
+    explicit = os.environ.get("CLARK_TERNARY_CPU_LIB")
+    candidates = [Path(explicit)] if explicit else [
+        Path(__file__).with_name("_ternary_cpu.so"),
+        Path(__file__).with_name("_ternary_cpu.dylib"),
+    ]
+    for candidate in candidates:
+        try:
+            library = ctypes.CDLL(str(candidate))
+        except OSError:
+            continue
+        u8p = ctypes.POINTER(ctypes.c_uint8)
+        i8p = ctypes.POINTER(ctypes.c_int8)
+        u16p = ctypes.POINTER(ctypes.c_uint16)
+        i32p = ctypes.POINTER(ctypes.c_int32)
+        f32p = ctypes.POINTER(ctypes.c_float)
+        library.cq3_cpu_features.argtypes = ()
+        library.cq3_cpu_features.restype = ctypes.c_uint32
+        library.cq3_pack_aligned2.argtypes = (i8p, ctypes.c_uint64, u8p)
+        library.cq3_pack_aligned2.restype = ctypes.c_int
+        library.cq3_unpack_aligned2.argtypes = (u8p, ctypes.c_uint64, i8p)
+        library.cq3_unpack_aligned2.restype = ctypes.c_int
+        library.cq3_pack_group128_2bit.argtypes = (i8p, ctypes.c_uint64, u8p)
+        library.cq3_pack_group128_2bit.restype = ctypes.c_int
+        library.cq3_unpack_group128_2bit.argtypes = (u8p, ctypes.c_uint64, i8p)
+        library.cq3_unpack_group128_2bit.restype = ctypes.c_int
+        library.cq3_quantize_f32_q8.argtypes = (
+            f32p, ctypes.c_uint64, ctypes.c_uint32, i8p, f32p, i32p,
+        )
+        library.cq3_quantize_f32_q8.restype = ctypes.c_int
+        gemv_args = (
+            u8p, u16p, i8p, f32p, i32p,
+            ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint32, f32p,
+        )
+        library.cq3_gemv_q8_group128_2bit_scalar.argtypes = gemv_args
+        library.cq3_gemv_q8_group128_2bit_scalar.restype = ctypes.c_int
+        library.cq3_gemv_q8_group128_2bit_avx2.argtypes = gemv_args
+        library.cq3_gemv_q8_group128_2bit_avx2.restype = ctypes.c_int
+        library.cq3_sum_u8_scalar.argtypes = (u8p, ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64))
+        library.cq3_sum_u8_scalar.restype = ctypes.c_int
+        library.cq3_sum_u8_avx2.argtypes = (u8p, ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64))
+        library.cq3_sum_u8_avx2.restype = ctypes.c_int
+        return library
+    return None
+
+
+_LIBRARY = _load_library()
+
+
+def native_available() -> bool:
+    return _LIBRARY is not None
+
+
+def cpu_features() -> dict[str, bool]:
+    flags = int(_LIBRARY.cq3_cpu_features()) if _LIBRARY is not None else 0
+    return {
+        "avx2": bool(flags & FEATURE_AVX2),
+        "f16c": bool(flags & FEATURE_F16C),
+        "fma": bool(flags & FEATURE_FMA),
+    }
+
+
+def _check(status: int, operation: str) -> None:
+    if status:
+        raise ValueError(f"{operation} failed: {_ERRORS.get(status, f'error {status}')}")
+
+
+def _array(value, dtype, *, ndim: int | None = None) -> np.ndarray:
+    result = np.asarray(value, dtype=dtype)
+    if ndim is not None and result.ndim != ndim:
+        raise ValueError(f"expected a {ndim}-dimensional array")
+    return np.ascontiguousarray(result)
+
+
+def pack_aligned2(codes: np.ndarray) -> np.ndarray:
+    source = _array(codes, np.int8).reshape(-1)
+    if _LIBRARY is None:
+        if source.size and (source.min() < -1 or source.max() > 1):
+            raise ValueError("ternary codes must be in {-1, 0, +1}")
+        digits = source.astype(np.uint8) + 1
+        padding = (-digits.size) % 4
+        if padding:
+            digits = np.pad(digits, (0, padding), constant_values=1)
+        if not digits.size:
+            return np.empty(0, dtype=np.uint8)
+        groups = digits.reshape(-1, 4)
+        return np.ascontiguousarray(
+            groups[:, 0] | (groups[:, 1] << 2) | (groups[:, 2] << 4) | (groups[:, 3] << 6)
+        )
+    output = np.empty((source.size + 3) // 4, dtype=np.uint8)
+    status = _LIBRARY.cq3_pack_aligned2(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+        source.size,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+    )
+    _check(status, "aligned-2 pack")
+    return output
+
+
+def unpack_aligned2(packed: np.ndarray, count: int) -> np.ndarray:
+    source = _array(packed, np.uint8).reshape(-1)
+    if count < 0 or source.size != (count + 3) // 4:
+        raise ValueError("aligned-2 dimensions do not match")
+    if _LIBRARY is None:
+        digits = np.empty(source.size * 4, dtype=np.uint8)
+        for lane in range(4):
+            digits[lane::4] = (source >> (lane * 2)) & 3
+        if np.any(digits[:count] == 3) or np.any(digits[count:] != 1):
+            raise ValueError("aligned-2 payload is non-canonical")
+        return (digits[:count].astype(np.int8) - 1).astype(np.int8, copy=False)
+    output = np.empty(count, dtype=np.int8)
+    status = _LIBRARY.cq3_unpack_aligned2(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        count,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+    )
+    _check(status, "aligned-2 unpack")
+    return output
+
+
+def pack_group128_2bit(codes: np.ndarray) -> np.ndarray:
+    """Pack each 128-code group into 32 bytes arranged for SIMD bit extraction."""
+    source = _array(codes, np.int8).reshape(-1)
+    if source.size == 0 or source.size % 128:
+        raise ValueError("group-128 compute images require a nonzero multiple of 128 codes")
+    if _LIBRARY is None:
+        if source.min() < -1 or source.max() > 1:
+            raise ValueError("ternary codes must be in {-1, 0, +1}")
+        digits = (source.astype(np.uint8) + 1).reshape(-1, 128)
+        output = np.zeros((digits.shape[0], 32), dtype=np.uint8)
+        for quarter in range(4):
+            output |= digits[:, quarter * 32:(quarter + 1) * 32] << (quarter * 2)
+        return output.reshape(-1)
+    output = np.empty(source.size // 4, dtype=np.uint8)
+    status = _LIBRARY.cq3_pack_group128_2bit(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+        source.size,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+    )
+    _check(status, "group-128 2-bit pack")
+    return output
+
+
+def unpack_group128_2bit(packed: np.ndarray, count: int) -> np.ndarray:
+    source = _array(packed, np.uint8).reshape(-1)
+    if count <= 0 or count % 128 or source.size != count // 4:
+        raise ValueError("group-128 2-bit dimensions do not match")
+    if _LIBRARY is None:
+        values = source.reshape(-1, 32)
+        digits = np.empty((values.shape[0], 128), dtype=np.uint8)
+        for quarter in range(4):
+            digits[:, quarter * 32:(quarter + 1) * 32] = (values >> (quarter * 2)) & 3
+        if np.any(digits == 3):
+            raise ValueError("group-128 2-bit payload is non-canonical")
+        return (digits.reshape(-1).astype(np.int8) - 1).astype(np.int8, copy=False)
+    output = np.empty(count, dtype=np.int8)
+    status = _LIBRARY.cq3_unpack_group128_2bit(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        count,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+    )
+    _check(status, "group-128 2-bit unpack")
+    return output
+
+
+def quantize_q8(activation: np.ndarray, group_size: int = 128) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    if _LIBRARY is None:
+        raise RuntimeError("Clark ternary CPU library is not built")
+    source = _array(activation, np.float32, ndim=1)
+    if source.size == 0 or group_size <= 0 or source.size % group_size:
+        raise ValueError("activation length must be a nonzero multiple of group_size")
+    groups = source.size // group_size
+    quantized = np.empty(source.size, dtype=np.int8)
+    scales = np.empty(groups, dtype=np.float32)
+    sums = np.empty(groups, dtype=np.int32)
+    status = _LIBRARY.cq3_quantize_f32_q8(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        source.size,
+        group_size,
+        quantized.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+        scales.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+        sums.ctypes.data_as(ctypes.POINTER(ctypes.c_int32)),
+    )
+    _check(status, "A8 quantization")
+    return quantized, scales, sums
+
+
+def gemv_q8_group128_2bit(
+    packed_weights: np.ndarray,
+    weight_scales: np.ndarray,
+    activation_q8: np.ndarray,
+    activation_scales: np.ndarray,
+    activation_sums: np.ndarray,
+    *,
+    implementation: str = "avx2",
+    threads: int = 1,
+    group_size: int = 128,
+    executor: ThreadPoolExecutor | None = None,
+    cpu_ids: list[int] | None = None,
+    validated: bool = False,
+) -> np.ndarray:
+    if _LIBRARY is None:
+        raise RuntimeError("Clark ternary CPU library is not built")
+    weights = _array(packed_weights, np.uint8, ndim=2)
+    scales_u16 = _array(weight_scales, np.float16, ndim=2).view(np.uint16)
+    activation = _array(activation_q8, np.int8, ndim=1)
+    act_scales = _array(activation_scales, np.float32, ndim=1)
+    act_sums = _array(activation_sums, np.int32, ndim=1)
+    rows = weights.shape[0]
+    columns = activation.size
+    groups = columns // group_size if group_size else 0
+    if (
+        rows == 0 or columns == 0 or group_size != 128 or columns % group_size
+        or weights.shape[1] != columns // 4
+        or scales_u16.shape != (rows, groups)
+        or act_scales.shape != (groups,)
+        or act_sums.shape != (groups,)
+    ):
+        raise ValueError("group-128 GEMV tensor dimensions do not match")
+    if not validated and (
+        not np.all(np.isfinite(scales_u16.view(np.float16)))
+        or not np.all(np.isfinite(act_scales))
+    ):
+        raise ValueError("group-128 GEMV scales must be finite")
+    functions = {
+        "scalar": _LIBRARY.cq3_gemv_q8_group128_2bit_scalar,
+        "avx2": _LIBRARY.cq3_gemv_q8_group128_2bit_avx2,
+    }
+    if implementation not in functions:
+        raise ValueError(f"unknown GEMV implementation {implementation!r}")
+    function = functions[implementation]
+    output = np.empty(rows, dtype=np.float32)
+    thread_count = min(max(int(threads), 1), rows)
+    if cpu_ids is not None and len(cpu_ids) < thread_count:
+        raise ValueError("cpu_ids must supply one CPU for every worker")
+
+    def run(row_start: int, row_stop: int, cpu_id: int | None = None) -> None:
+        affinity = os.sched_getaffinity(0) if cpu_id is not None and hasattr(os, "sched_getaffinity") else None
+        try:
+            if affinity is not None:
+                os.sched_setaffinity(0, {cpu_id})
+            status = function(
+                weights[row_start:].ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+                scales_u16[row_start:].ctypes.data_as(ctypes.POINTER(ctypes.c_uint16)),
+                activation.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+                act_scales.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+                act_sums.ctypes.data_as(ctypes.POINTER(ctypes.c_int32)),
+                row_stop - row_start,
+                columns,
+                group_size,
+                output[row_start:].ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+            )
+            _check(status, f"{implementation} GEMV")
+        finally:
+            if affinity is not None:
+                os.sched_setaffinity(0, affinity)
+
+    if thread_count == 1:
+        run(0, rows, cpu_ids[0] if cpu_ids else None)
+    else:
+        boundaries = [rows * index // thread_count for index in range(thread_count + 1)]
+        owner = executor is None
+        pool = executor or ThreadPoolExecutor(max_workers=thread_count)
+        try:
+            futures = [
+                pool.submit(
+                    run,
+                    boundaries[index],
+                    boundaries[index + 1],
+                    cpu_ids[index] if cpu_ids else None,
+                )
+                for index in range(thread_count)
+            ]
+            for future in futures:
+                future.result()
+        finally:
+            if owner:
+                pool.shutdown()
+    return output
+
+
+def memory_read_sum(
+    data: np.ndarray,
+    *,
+    implementation: str = "avx2",
+    threads: int = 1,
+    executor: ThreadPoolExecutor | None = None,
+    cpu_ids: list[int] | None = None,
+) -> int:
+    """Read every byte and return a checksum for a STREAM-like bandwidth control."""
+    if _LIBRARY is None:
+        raise RuntimeError("Clark ternary CPU library is not built")
+    source = _array(data, np.uint8).reshape(-1)
+    if source.size == 0:
+        raise ValueError("bandwidth buffer must not be empty")
+    functions = {
+        "scalar": _LIBRARY.cq3_sum_u8_scalar,
+        "avx2": _LIBRARY.cq3_sum_u8_avx2,
+    }
+    if implementation not in functions:
+        raise ValueError(f"unknown memory-read implementation {implementation!r}")
+    function = functions[implementation]
+    thread_count = min(max(int(threads), 1), source.size)
+    if cpu_ids is not None and len(cpu_ids) < thread_count:
+        raise ValueError("cpu_ids must supply one CPU for every worker")
+
+    def run(start: int, stop: int, cpu_id: int | None = None) -> int:
+        affinity = os.sched_getaffinity(0) if cpu_id is not None and hasattr(os, "sched_getaffinity") else None
+        try:
+            if affinity is not None:
+                os.sched_setaffinity(0, {cpu_id})
+            result = ctypes.c_uint64()
+            status = function(
+                source[start:].ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+                stop - start,
+                ctypes.byref(result),
+            )
+            _check(status, f"{implementation} memory read")
+            return int(result.value)
+        finally:
+            if affinity is not None:
+                os.sched_setaffinity(0, affinity)
+
+    if thread_count == 1:
+        return run(0, source.size, cpu_ids[0] if cpu_ids else None)
+    boundaries = [source.size * index // thread_count for index in range(thread_count + 1)]
+    owner = executor is None
+    pool = executor or ThreadPoolExecutor(max_workers=thread_count)
+    try:
+        futures = [
+            pool.submit(
+                run,
+                boundaries[index],
+                boundaries[index + 1],
+                cpu_ids[index] if cpu_ids else None,
+            )
+            for index in range(thread_count)
+        ]
+        return sum(future.result() for future in futures)
+    finally:
+        if owner:
+            pool.shutdown()

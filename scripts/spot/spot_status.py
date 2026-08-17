@@ -72,6 +72,8 @@ def main() -> None:
     with tempfile.NamedTemporaryFile("w", dir=args.out.parent, delete=False) as handle:
         json.dump(receipt, handle, sort_keys=True)
         handle.write("\n")
+        handle.flush()
+        os.fsync(handle.fileno())
         temporary = Path(handle.name)
     os.chmod(temporary, 0o644)
     os.replace(temporary, args.out)
@@ -81,6 +83,13 @@ def main() -> None:
         with history.open("a") as handle:
             json.dump(receipt, handle, sort_keys=True)
             handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+    directory = os.open(args.out.parent, os.O_RDONLY)
+    try:
+        os.fsync(directory)
+    finally:
+        os.close(directory)
 
 
 if __name__ == "__main__":

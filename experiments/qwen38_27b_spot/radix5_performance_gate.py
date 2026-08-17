@@ -37,6 +37,17 @@ def validate_preregistration(preregistration: dict, args) -> dict:
     return performance
 
 
+def load_real_codes(model_dir: Path, preflight: dict, sample_rows: int, trits: int):
+    """Regenerate the sealed sample without requiring a CUDA runtime."""
+    return load_codes(
+        model_dir,
+        preflight,
+        sample_rows,
+        trits,
+        torch.device("cpu"),
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-dir", type=Path, default=Path("/workspace/models/Qwen3.8-27B"))
@@ -57,7 +68,7 @@ def main() -> None:
     preflight = json.loads(args.preflight.read_text())
     if preregistration.get("model_revision") != preflight["download_receipt"]["revision"]:
         raise ValueError("radix-5 preregistration model revision mismatch")
-    codes, sources = load_codes(args.model_dir, preflight, args.sample_rows, args.trits)
+    codes, sources = load_real_codes(args.model_dir, preflight, args.sample_rows, args.trits)
     source_sha256 = hashlib.sha256(codes.tobytes()).hexdigest()
 
     started = time.perf_counter()

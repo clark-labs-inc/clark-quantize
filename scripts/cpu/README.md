@@ -56,3 +56,21 @@ python experiments/qwen38_27b_spot/full_base3_pack.py \
 shards and creates the legacy download receipt required by the original spot
 pipeline. The full pack is chunked and resumable; CPU execution does not weaken
 its code, scale, source-identity, or independent-decode gates.
+
+Build and test the standalone ternary CPU primitives with:
+
+```bash
+bash scripts/cpu/build_ternary_cpu.sh
+python -m unittest clark_quantize.test_ternary_cpu
+```
+
+After the full 27B artifact has promoted, run the sealed real-matrix K2 gate:
+
+```bash
+python experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_ternary_gemv.py
+```
+
+The benchmark authenticates codes and FP16 scales from the artifact, evicts a
+256 MiB cache buffer between samples, pins persistent workers to distinct
+physical cores, compares against a checksumed STREAM-like read control, and
+writes `/workspace/quant-state/qwen38-ternary-gemv-avx2-v5.json`.

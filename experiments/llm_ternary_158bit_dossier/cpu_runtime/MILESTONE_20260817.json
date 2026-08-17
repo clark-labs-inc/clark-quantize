@@ -1,0 +1,56 @@
+{
+  "schema": "clark_cpu_ternary_milestone_v1",
+  "date": "2026-08-17",
+  "host": {
+    "provider_shape": "Hetzner CCX33",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "logical_cpus": 8,
+    "isa": ["AVX2", "F16C", "FMA"]
+  },
+  "full_base3_pack": {
+    "receipt_path": "/workspace/quant-state/qwen38-base3-full.json",
+    "receipt_sha256": "ef6b8608411ba48abc85b0da390e3e8dec2b8cfad8290739c0c17557bf14cef5",
+    "trits": 26869760000,
+    "chunks": 34344,
+    "payload_bits_per_trit": 1.5849638042542993,
+    "complete_payload_bytes": 7567508848,
+    "complete_effective_bits_per_parameter": 2.179156193432515,
+    "independent_decode_seconds": 118.17925847600054,
+    "promotion_passed": true
+  },
+  "radix5": {
+    "receipt_path": "/workspace/quant-state/qwen38-radix5-performance.json",
+    "receipt_sha256": "32666a61040f4cbe2cc26ad7b77e4632795aced9cd5c56ee917cc6aee1c7a9df",
+    "real_qwen_trits": 10000000,
+    "payload_bits_per_trit": 1.6,
+    "encode_mtrits_per_second": 178.67047263359186,
+    "decode_mtrits_per_second": 472.59381222753035,
+    "promotion_passed": true
+  },
+  "gemv": {
+    "tensor": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "shape": [17408, 5120],
+    "compute_image_bits_per_weight_including_fp16_scales": 2.125,
+    "iterations": [
+      {"id": "v0_table", "receipt_sha256": "11f46f675c129fe8775f101322a90e19523eda3a3ec9a268249ddb5324ca49e7", "four_core_gbytes_per_second": 5.975790290421246, "roofline_fraction": 0.17195863609217135, "scalar_speedup": 5.972532514041276, "promotion_passed": false},
+      {"id": "v1_transposed_unpinned", "receipt_sha256": "3721f3174b949a189e27fcceb037b933a2b17e0aca7c43e390fa5d09b4ab2dc4", "four_core_gbytes_per_second": 12.054603694342163, "roofline_fraction": 0.343081786566177, "scalar_speedup": 23.741301630742175, "promotion_passed": false},
+      {"id": "v2_physical_core_workers", "receipt_sha256": "fcead4997e980b54dc94a399066596e4f0db806954642f0523211a694d6d1694", "four_core_gbytes_per_second": 21.607082240476547, "roofline_fraction": 0.6054533464281329, "scalar_speedup": 22.150833211292703, "promotion_passed": false},
+      {"id": "v3_lane_accumulation", "receipt_sha256": "a9e3bc4f7aca62a31c6206e2bd2c9015607e3ece864cf44008efbf38e0f3bee7", "four_core_gbytes_per_second": 25.377725361416093, "roofline_fraction": 0.6835317312662428, "scalar_speedup": 32.186625025618376, "promotion_passed": false},
+      {"id": "v4_vector_scales", "receipt_sha256": "bdfef36841a2678e0f55bbb5447ec4c4532b2d9efa2334845d5196a70e9f7403", "four_core_gbytes_per_second": 25.594769211560706, "roofline_fraction": 0.6704606271076704, "scalar_speedup": 31.253940287488863, "promotion_passed": false},
+      {"id": "v5_fma_tuned_pinned_once", "receipt_sha256": "985400fd4c066af40d436f695e3f2f248bb0673b24b6bfee97c02bbf85c97f37", "c_source_sha256": "80c2da9250777536e6978ba39f3d180d548757cdf7f36b96707241eeea2669a3", "four_core_gbytes_per_second": 28.061112531384804, "roofline_fraction": 0.7944078210405149, "scalar_speedup": 33.247903279933055, "maximum_absolute_error": 7.450580596923828e-7, "promotion_passed": true}
+    ]
+  },
+  "claim_boundary": {
+    "promoted": "K2 group-128 aligned-2 AVX2 microkernel",
+    "not_proven": [
+      "whole-model 1.58-bit storage",
+      "full-layer or full-graph parity",
+      "model quality retention",
+      "end-to-end token throughput",
+      "energy or cost advantage",
+      "scientific breakthrough"
+    ]
+  },
+  "next_gate": "GGML weight-type integration, full-layer parity, and paired 4B BF16/Q4/TQ1_0/Clark evaluation"
+}
