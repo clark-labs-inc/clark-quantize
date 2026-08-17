@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import ast
 import importlib.util
+import json
 from pathlib import Path
 import re
 import subprocess
@@ -146,6 +147,20 @@ def test_qwen38_persistent_executor_pins_each_worker_once() -> None:
     assert len(set(record["native_thread_id"] for record in records)) == 4
     assert len(set_calls) == 4
     assert all(len(value) == 1 for value in observed)
+
+
+def test_qwen38_persistent_affinity_gate_matches_cpu_policy() -> None:
+    preregistration = json.loads(
+        (
+            RUNTIME
+            / "qwen38_27b_persistent_affinity_preregistration_v1.json"
+        ).read_text()
+    )
+    assert preregistration["scope"]["active_model_only"] == "Qwen/Qwen3.8-27B"
+    assert preregistration["gate"]["minimum_speedup"] == 1.05
+    assert preregistration["gate"]["require_exact_topk_values"] is True
+    assert preregistration["gate"]["require_exact_topk_indices"] is True
+    assert preregistration["gate"]["require_exact_full_state"] is True
 
 
 def test_qwen38_service_commit_chain_is_monotonic() -> None:

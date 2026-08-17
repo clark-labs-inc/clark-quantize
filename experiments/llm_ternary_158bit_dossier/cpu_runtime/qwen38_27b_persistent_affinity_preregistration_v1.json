@@ -2,7 +2,7 @@
   "schema": "qwen38_27b_persistent_affinity_preregistration_v1",
   "receipt_schema": "qwen38_27b_persistent_affinity_receipt_v1",
   "status": "frozen_before_authoritative_x86_run",
-  "frozen_at_utc": "2026-08-17T17:45:00Z",
+  "frozen_at_utc": "2026-08-17T17:56:00Z",
   "objective": "Measure whether pinning four persistent workers once removes per-GEMV Linux affinity syscall overhead from an exact full-graph Qwen3.8-27B decode token",
   "scope": {
     "active_model_only": "Qwen/Qwen3.8-27B",
@@ -56,7 +56,7 @@
     "require_exact_topk_values": true,
     "require_exact_topk_indices": true,
     "require_exact_full_state": true,
-    "minimum_speedup": 1.02,
+    "minimum_speedup": 1.05,
     "required_authenticated_aligned_tensor_count": 666,
     "maximum_process_peak_rss_bytes": 10737418240,
     "require_zero_major_page_faults": true,
