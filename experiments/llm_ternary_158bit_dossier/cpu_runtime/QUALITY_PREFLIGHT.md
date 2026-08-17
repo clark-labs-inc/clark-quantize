@@ -54,3 +54,18 @@ still apply.
 
 No long QAT continuation, layer-depth expansion, or 27B scale-up begins without
 this receipt chain for the candidate artifact being advanced.
+
+For llama.cpp-compatible candidates, run the full mandatory generation gate as
+one failure-preserving job:
+
+```bash
+run_llama_cpu_quick_gate.sh \
+  /path/to/candidate.gguf candidate-label \
+  /path/to/frozen-bf16-math.json /path/to/frozen-bf16-cute.json \
+  /path/to/output-directory
+```
+
+The wrapper hashes the exact candidate, launches and cleans up its isolated
+server, writes item-level CUTE and MATH/code reports atomically, and exits `2`
+when the frozen retention comparison rejects the candidate. A missing report
+or any other nonzero exit remains an infrastructure-invalid run, never a zero.
