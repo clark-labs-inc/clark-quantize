@@ -1,0 +1,104 @@
+{
+  "schema": "qwen38_27b_mask64_gemv_preregistration_v1",
+  "receipt_schema": "qwen38_27b_mask64_gemv_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T21:45:00Z",
+  "hypothesis": "A direct support-mask plus support-ordered-sign representation can execute exact k=64 ternary Qwen3.8-27B MLP GEMV on one x86 CPU core at no less than half the throughput of the mature aligned two-bit AVX2 control, while using exactly 1.5 raw code bits per weight and no more than 1.57 projected component bits per weight after the frozen row-scale and learned-hash correction ledger",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_compute_forbidden": true,
+    "claim_boundary": "synthetic exact-support full-shape microkernel only; not a complete layer, fused learned-hash correction, token-throughput, model-quality, semi-lossless, or breakthrough result"
+  },
+  "representation": {
+    "group_size": 128,
+    "nonzero_per_group": 64,
+    "group_bytes": 24,
+    "layout": "little-endian 128-bit support mask followed by one support-ordered 64-bit sign mask",
+    "raw_code_bits_per_weight": 1.5,
+    "decode_strategy": "BMI2 PDEP expands signs into support positions; a 256-entry nibble LUT expands ternary digits for AVX2 maddubs",
+    "canonical_storage_control": "the separately frozen 189-bit enumerative k64 codec remains the smaller exact on-disk representation; mask64 is the runtime representation"
+  },
+  "cases": [
+    {
+      "name": "gate_or_up_projection",
+      "rows": 17408,
+      "columns": 5120
+    },
+    {
+      "name": "down_projection",
+      "rows": 5120,
+      "columns": 17408
+    }
+  ],
+  "measurement": {
+    "seed": 158027,
+    "codes": "deterministic synthetic exact-64-support {-1,0,+1} groups generated in bounded-memory batches",
+    "activation": "deterministic signed INT8 with per-group FP32 scales",
+    "weight_scales": "per-row FP16 anchors plus packed 4-bit per-group FP16-ratio indices",
+    "warmups": 3,
+    "repetitions": 11,
+    "statistic": "median monotonic wall-clock nanoseconds",
+    "scalar_rows": 64,
+    "threading": "one process pinned to one physical CPU; both kernels are single-threaded",
+    "comparison": "mask64 AVX2 BMI2 direct GEMV versus the existing aligned group128 two-bit AVX2 row-scale4 GEMV on identical codes scales and activation",
+    "timing_order": "alternated by case to reduce systematic first-run bias",
+    "compiler": "system C compiler with C11 O3 Wall Wextra Werror shared PIC and mtune=native"
+  },
+  "gate": {
+    "required_cases": 2,
+    "maximum_absolute_error": 0.00005,
+    "minimum_throughput_fraction_of_aligned2": 0.5,
+    "minimum_avx2_speedup_vs_scalar": 1.25,
+    "maximum_complete_component_bits_per_weight": 1.57
+  },
+  "resources": {
+    "required_isa": [
+      "AVX2",
+      "FMA",
+      "F16C",
+      "BMI2"
+    ],
+    "cpu_quota_percent": 100,
+    "memory_max_mib": 512,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 10,
+    "persistent_output_bytes": "less than 1 MiB",
+    "run_after_existing_serialized_Qwen38_chain": true
+  },
+  "promotion_rules": [
+    "every case must independently meet every frozen correctness storage and performance threshold",
+    "the aligned two-bit control must use identical ternary codes scale metadata and activation",
+    "the projected component ledger counts mask64 codes 4-bit group scales learned-route metadata and ratio-128 packed INT4 correction A with row scales",
+    "the learned route may be shared by gate and up in a whole-layer ledger but is conservatively counted in each standalone component here",
+    "a failed gate remains a useful terminal result and requires a separately versioned optimization before rerun",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "this benchmark cannot establish semi-lossless compression model capability token throughput or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "native_c": {
+      "path": "clark_quantize/qwen38_fixed_support_mask64_cpu.c",
+      "sha256": "af12f49bfb975541ff5030ec50ffe6abb7df96a203dbdd9a014e170bfce85644"
+    },
+    "python_binding": {
+      "path": "clark_quantize/qwen38_fixed_support_mask64_cpu.py",
+      "sha256": "d8dd4ea2d223dcf81184166d676f7e248c10809d7fb5b8a6f62163b62bdff908"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_qwen38_fixed_support_mask64_cpu.py",
+      "sha256": "c52e29be3d934f3acb8751f0693e82516db2827ba8460b282daa6a1c3de570c3"
+    },
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_mask64_gemv_v1.py",
+      "sha256": "ae6e4227649301580dc8a871626b3cc189c70d9b34d537a3e2cab89d69195a36"
+    },
+    "build_script": {
+      "path": "scripts/cpu/build_qwen38_fixed_support_mask64_cpu.sh",
+      "sha256": "d67bb4ab7e06db2bc1f233bd288051e946f4b732749a4d5178c95484a7826e20"
+    },
+    "aligned2_control": {
+      "path": "clark_quantize/ternary_cpu.c",
+      "sha256": "00acb5674e1ae2de188d7d7dfefcf5cf33776ca634c597469dc5e3b168248488"
+    }
+  }
+}
