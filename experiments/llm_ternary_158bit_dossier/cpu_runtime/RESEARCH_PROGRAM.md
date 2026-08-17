@@ -3,7 +3,11 @@
 Status: active direction
 Start date: 2026-08-16
 Primary model: `Qwen/Qwen3.8-27B`, text-only runtime first
-Development model: `Qwen/Qwen3.5-4B`
+Active model scope: `Qwen/Qwen3.8-27B` only
+
+User direction on 2026-08-17 froze all Qwen3.5-4B work. Existing 4B receipts
+remain historical evidence, but no new implementation, export, evaluation, or
+compute is spent on them. Every active lane below targets Qwen3.8-27B.
 
 ## North star
 
@@ -41,14 +45,19 @@ continuous islands, and tensor layouts that the CPU kernels execute.
 5. **GPU QAT serves the CPU runtime.** Global QAT remains a GPU workload. Pure
    CPU QAT is a portability experiment, not the planned way to spend the main
    token budget.
-6. **No new 27B bulk run before the 4B runtime gate.** The existing 4B success
-   is the development checkpoint. It must first execute through the real
-   packed CPU graph, including the hybrid recurrent blocks.
+6. **Qwen3.8-27B only.** The existing 4B receipts may inform the numerical and
+   evaluation contracts, but active experiments, runtime work, and performance
+   claims use the pinned 27B parent or a directly derived 27B artifact.
 7. **Generation capability is an early stop gate.** Every candidate runs the
    pinned quick perplexity, MATH-500, and CUTE character-level preflight before
-   longer training, depth expansion, or 27B scale-up. MMLU may substitute for
+   longer training or depth expansion. MMLU may substitute for
    CUTE when the runtime cannot support character generation. The exact policy
    and receipt contract are in `QUALITY_PREFLIGHT.md`.
+8. **CPU tokens/second is a permanent side quest.** Prompt prefill and token
+   decode are measured separately whenever the node is otherwise idle. A speed
+   result is promoted only through the correctness and paired-measurement
+   ladder in `CPU_TOKENS_PER_SECOND_POLICY.md`; throughput work never runs
+   concurrently with an authoritative QAT or evaluation arm.
 
 ## Exact Qwen3.8-27B text graph
 
@@ -162,7 +171,7 @@ graph matches the PyTorch packed-forward oracle within registered tolerances.
   gate, and int8 KV-cache updates.
 - Fuse the two MLP input projections with SwiGLU and optimize the down projection.
 
-Exit gate: the 4B model generates the same greedy token stream as the packed
+Exit gate: the 27B model generates the same greedy token stream as the packed
 reference for a frozen prompt set, then reaches at least 70% of a measured
 memory-bandwidth roofline in the dominant GEMV microbenchmarks.
 
@@ -212,11 +221,11 @@ all three ISA lanes, with reproducible build and benchmark receipts.
 
 1. Pin a known-good llama.cpp revision and record its Qwen graph parity.
 2. Add the scalar oracle and `.cq3` v1 container.
-3. Extract exact 4B and 27B matrix-shape manifests.
+3. Extract the exact 27B matrix-shape manifest.
 4. Register correctness tolerances and a fixed microbenchmark corpus.
 5. Measure STREAM-like bandwidth and dense int4/BF16 controls on each host.
 
-### Phase 1: 4B decode engine
+### Phase 1: 27B decode engine
 
 1. Implement ARM64 GEMV first on the available M5 Max. The aligned-2 DOTPROD
    v1 milestone is complete at 60.39 GB/s on four workers and 67.20% of its
@@ -230,7 +239,7 @@ all three ISA lanes, with reproducible build and benchmark receipts.
 3. Execute all text layers with scalar fallbacks for unfinished operators.
 4. Remove fallbacks in profile order until the full graph is useful.
 
-### Phase 2: 4B end-to-end proof
+### Phase 2: 27B end-to-end proof
 
 1. Run the mandatory quick perplexity, MATH-500, and CUTE/MMLU tripwire, then
    run frozen KL/perplexity and MATH, GSM8K, MMLU, and HumanEval-style gates.
@@ -238,13 +247,13 @@ all three ISA lanes, with reproducible build and benchmark receipts.
 3. Record model bytes, peak RSS, cold/warm load, prefill, decode, and energy.
 4. Lock the kernel numerics that training must emulate.
 
-### Phase 3: CPU-aware 4B QAT
+### Phase 3: CPU-aware 27B QAT
 
 1. Re-run the successful global-QAT treatment with exact deployment numerics.
 2. Ablate A16 versus A8, lexical tensor formats, and recurrent precision.
 3. Promote only changes that improve capability per byte and per joule.
 
-### Phase 4: 27B scale-up
+### Phase 4: 27B depth scale-up
 
 1. Run global QAT on a sharded GPU node after the runtime contract is frozen.
 2. Export directly to `.cq3` plus ISA sidecars.
@@ -284,10 +293,10 @@ and will be revised only from measured rooflines and end-to-end profiles.
 6. Implement ARM64 A16 correctness for graph parity around the promoted A8
    DOTPROD kernel.
 7. Profile and optimize the upstream single-token DeltaNet state update.
-8. Load the 4B packed checkpoint through the GGML graph.
+8. Load the 27B packed artifact through the GGML graph.
 
-No 27B training spend is justified before these items produce a reproducible
-full-graph receipt.
+No deeper 27B training spend is justified until the current 27B candidate
+passes the frozen capability and full-graph receipt gates.
 
 ## External technical references
 

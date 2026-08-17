@@ -38,8 +38,8 @@ archive. Reopen the live source before reporting current status.
 
 ## Research boundary
 
-The active goal is text-first CPU inference for ternary Qwen-family models.
-The first development target is Qwen3.5-4B; Qwen3.8-27B is promoted only after
-the 4B packed graph runs end to end and freezes the deployment numerics that QAT
-must reproduce. Historical BackdropKit and GPU-QAT work remains separate and is
-not silently reclassified as CPU-runtime evidence.
+The active goal is text-first CPU inference for `Qwen/Qwen3.8-27B` only. User
+direction on 2026-08-17 froze all Qwen3.5-4B work; those receipts remain
+historical evidence but receive no new implementation, evaluation, export, or
+compute. Historical BackdropKit and GPU-QAT work remains separate and is not
+silently reclassified as CPU-runtime evidence.

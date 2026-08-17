@@ -1,0 +1,82 @@
+{
+  "schema": "qwen38_27b_cpu_q4_baseline_preregistration_v1",
+  "created_at": "2026-08-17T10:16:41Z",
+  "purpose": "Establish the first runnable, quality-scored, and throughput-ready Qwen3.8-27B CPU control on the 30 GiB quant node",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_work_frozen": true,
+    "model_changes": false,
+    "claim_boundary": "27B Q4_K_M runtime control and evaluation baseline; not a ternary candidate or parent-BF16-equivalence claim"
+  },
+  "parent": {
+    "model_id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "local_path": "/workspace/models/Qwen3.8-27B",
+    "download_receipt": "/workspace/models/Qwen3.8-27B/CLARK_DOWNLOAD_RECEIPT.json",
+    "model_index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "safetensors_bytes": 55563006776,
+    "shards": 18
+  },
+  "runtime_control": {
+    "repository": "ggml-org/Qwen3.8-27B-GGUF",
+    "revision": "0669b98607d47046c7c2b3f801011d54a08cfccf",
+    "filename": "Qwen3.8-27B-Q4_K_M.gguf",
+    "bytes": 18973870432,
+    "sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "local_path": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf"
+  },
+  "runtime": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "llama_server_sha256": "c1c5af73afc267dfd9256e8f97bd871e7842353dd25518587f68261d731a24c9",
+    "llama_perplexity_sha256": "9941787d0c8d35ed67dce640dc3c3a0cc55750f672d31dcb1e6dcd641fd15f78",
+    "threads": 4,
+    "parallel": 1,
+    "context": 32768,
+    "memory_max": "28G",
+    "cpu_quota": "800%"
+  },
+  "quality_contract": {
+    "cute_manifest": {
+      "path": "cute_quick_v1.json",
+      "sha256": "19dd73eedf737d11f7c94d039822de62314abf31e3fb739a9a875fe65c5bbd16",
+      "items": 20
+    },
+    "math_code_manifest": {
+      "path": "math_code_canary_v1.json",
+      "sha256": "1ec0b41ce3ca3597d65013ac0c8a48c208c4e03b05f0109be61319252c09dab0",
+      "math_items": 8,
+      "code_items": 6
+    },
+    "wikitext_corpus": {
+      "path": "/workspace/quant-runs/cq3-4b-ptq-scope-20260817/wikitext-2-raw/wiki.test.raw",
+      "sha256": "173c87a53759e0201f33e0ccf978e510c2042d7f2cb78229d9a50d79b9e7dd08",
+      "chunks": 4,
+      "context": 512
+    },
+    "mmlu_manifest": {
+      "path": "qwen35_4b_cpu_layer30_mmlu_v1.json",
+      "note": "The filename is historical; the frozen 64-row five-shot manifest and likelihood scorer are model-agnostic and are reused unchanged",
+      "sha256": "e3e38ccb1bf35c56b600f1cf39bbd0ea38072f2b4bdd5fc36146c143fb658dba",
+      "items": 64,
+      "dataset_revision": "c30699e8356da336a370243923dbaf21066bb9fe",
+      "seed": 20260816
+    }
+  },
+  "execution_order": [
+    "download_and_sha256_verify_Q4_K_M",
+    "load_smoke_and_runtime_metadata",
+    "CUTE_Quick_20",
+    "MATH_500_quick_8_and_code_6",
+    "WikiText_4x512",
+    "MMLU_64_five_shot_exact_option_likelihood",
+    "tokens_per_second_baseline_only_after_quality_receipts_are_valid"
+  ],
+  "validity_rules": [
+    "No 4B process or experiment may be launched",
+    "The Q4 artifact must match the pinned byte count and SHA-256",
+    "All item-level reports and raw outputs are retained",
+    "Infrastructure-invalid runs are neither zeroes nor completed scores",
+    "Throughput runs alone and only after all quality receipts are valid",
+    "This Q4 result is the runnable CPU control; historical parent-BF16 scores may be cited only when their exact sealed row manifest matches"
+  ]
+}
