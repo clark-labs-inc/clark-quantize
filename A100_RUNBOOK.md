@@ -42,6 +42,10 @@ cu130 wheel); FA3/FA4 are Hopper/Blackwell-gen and sm80 caps flash backward at
 head_dim 192 < Qwen3.5's 256 — SDPA auto-dispatch is correct on A100; revisit
 FA4 only on rented H100s.
 
+Pin Qwen3.5-4B to revision
+`851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`. Every scientific launch must
+pass this value with `--revision`; floating `main` is rejected.
+
 ## 2. Measure before training
 
 ```bash
@@ -64,35 +68,77 @@ python scripts/prepare_kd_arms.py --out /workspace/kd_arms_synth --synthetic 5e6
 python scripts/prepare_kd_arms.py --out /workspace/kd_arms --model Qwen/Qwen3.5-4B
 ```
 
-## 4. Phase 0 — smoke (hours)
+Seal the completed token files before loading a training model:
 
 ```bash
-python scripts/train_qwen35_ternary_kd.py --model Qwen/Qwen3.5-4B \
-  --data-root /workspace/kd_arms_synth --out /workspace/ckpt/pilot \
-  --budget-tokens 100e6 --seq-len <ladder-best> --micro-batch <ladder-best> \
-  --grad-accum 16 --probe-every 25 --ckpt-every 500
+python scripts/seal_kd_arms.py \
+  --data-root /workspace/kd_arms \
+  --model Qwen/Qwen3.5-4B \
+  --revision 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
 ```
-Pass criteria: tok/s within ~15% of ladder, `chunked-head verification` printed OK,
-probe KL falling, churn ≈ 0 early, no OOM at steady state (watch `peak_gb` in the log).
 
-## 5. Phase 1 — real run (~5B tokens)
+The trainer rehashes every arm against this manifest on fresh launch and
+resume. Missing, shortened, changed, symlinked, or unpinned data fails before
+model allocation.
+
+## 4. Phase 0 — bounded stage and mandatory capability gate
 
 ```bash
-python scripts/train_qwen35_ternary_kd.py --model Qwen/Qwen3.5-4B \
-  --data-root /workspace/kd_arms --out /workspace/ckpt/qwen35-4b-ternary \
-  --budget-tokens 5e9 --seq-len <best> --micro-batch <best> --grad-accum 32
+DATA_ROOT=/workspace/kd_arms \
+OUT_ROOT=/workspace/ckpt/qwen35-4b-ternary \
+STOP_AFTER_TOKENS=100000000 \
+scripts/spot/run_qwen35_4b_qat_stage.sh
 ```
-At 4k tok/s ≈ 14 days; at 3k ≈ 19 days. Checkpoints every 5k steps; the run is
-resumable from `ckpt_*.pt` (load state dicts; masters carry the run).
+The full schedule remains 5B tokens; `STOP_AFTER_TOKENS` is only a restart-safe
+operational boundary. Pass criteria: tok/s within ~15% of ladder,
+`chunked-head verification` printed OK, probe KL falling, no OOM at steady state,
+and a passing checkpoint-bound MMLU/GSM8K authorization receipt. The exact eval
+and resume commands are in `QWEN35_4B_QAT_STAGED_LAUNCH.md`. The trainer refuses
+to continue a planned stage checkpoint without that receipt.
 
-**Optional Phase 1.5 (throughput +25-30%, VRAM −9 GB):** once anchors would be
-done anyway, precompute the teacher cache and continue without a teacher:
+## 5. Phase 1 — staged continuation toward 5B tokens
+
+```bash
+DATA_ROOT=/workspace/kd_arms \
+OUT_ROOT=/workspace/ckpt/qwen35-4b-ternary \
+STOP_AFTER_TOKENS=500000000 \
+RESUME_CHECKPOINT=/workspace/ckpt/qwen35-4b-ternary/checkpoints/checkpoint-<N> \
+CAPABILITY_GATE_RECEIPT=/workspace/evals/qwen35-4b-step-<N>-authorization.json \
+scripts/spot/run_qwen35_4b_qat_stage.sh
+```
+At 4k tok/s ≈ 14 days; at 3k ≈ 19 days. Checkpoints are temporary-directory
+writes followed by an atomic rename and SHA-256 manifest. They retain the
+complete split model state without duplicating masters, optimizer state,
+Python/NumPy/Torch RNG, every arm RNG, KL-bandit RNG and estimates, movement
+servo, and KL history. At most two complete checkpoints are retained.
+
+Resume from the directory, not directly from `state.pt`:
+
+```bash
+python scripts/train_qwen35_ternary_kd.py <same exact arguments> \
+  --resume /workspace/ckpt/qwen35-4b-ternary/checkpoints/checkpoint-1000
+```
+
+Run identity includes the immutable model revision, sealed data hash, all
+training-affecting flags, source hashes, and framework versions. Drift fails
+closed. Old `ckpt_*.pt` files lack replay state and are non-promotable; they
+require the explicit `--allow-legacy-resume` escape hatch.
+
+SIGTERM/SIGINT requests are handled at the optimizer-step boundary: the
+trainer writes one complete checkpoint and exits without attempting export.
+
+**Legacy non-promotable throughput experiment:** teacher-cache files built by
+the current helper are not atomic or content-hash sealed. The trainer therefore
+rejects them unless `--allow-unsealed-teacher-cache` is passed, and any such run
+is explicitly non-promotable. A future sealed-cache format may restore this lane.
+
+For forensic reproduction only:
 ```bash
 python scripts/cache_teacher_topk.py --model Qwen/Qwen3.5-4B \
   --data-root /workspace/kd_arms --out /workspace/kd_teacher_k16 --k 16 --seq-len <best>
 # disk: ~230 GB at K=16 for 2.4B tokens; K=8 halves it
 python scripts/train_qwen35_ternary_kd.py ... --teacher-cache /workspace/kd_teacher_k16 \
-  --kd-topk 16 --anchor-frac 0
+  --allow-unsealed-teacher-cache --kd-topk 16 --anchor-frac 0
 ```
 Trade-off: K=16 (vs 64) truncates the teacher distribution tail; acceptable for
 the KD term (≥97% of teacher mass), and the freed VRAM usually buys a bigger
@@ -143,9 +189,12 @@ target: Ternary-Bonsai-4B = 70.7 avg @ 1.07 GB.
 ## 8.5 Mid-run checkpoint eval (`scripts/eval_ternary_ckpt.py`)
 
 Turns "probe-KL keeps dropping" into an actual capability number. Evaluates the
-**deployed bf16 dequant** of a `ckpt_*.pt` (reconstructed on CPU: dequant every
-`weight_master`, copy frozen tensors, drop vision/MTP for text eval — verified
-`0 left at base`). GSM8K (generate + exact-match) and MMLU (5-shot logprob).
+**deployed bf16 dequant** of an atomic QAT checkpoint directory (reconstructed
+on CPU: dequant every `weight_master`, copy frozen tensors, drop vision/MTP for
+text eval, and require an exact assignment for every base-model tensor). Legacy
+`ckpt_*.pt` inputs remain readable only for forensics and are non-promotable.
+The sealed Gate B manifest fixes the exact GSM8K generation and subject-balanced
+MMLU log-probability denominators.
 
 - **GPU preflight + self-cap**: aborts if free < `--min-free-gb`, caps the
   process to the free slack, so it cannot OOM a co-resident training run. On an
@@ -156,18 +205,46 @@ Turns "probe-KL keeps dropping" into an actual capability number. Evaluates the
   fully decoupled from training. GSM8K needs generation (too slow on CPU); run it
   on the GPU only when training frees the card, or on a second host.
 
+Create the immutable Gate B sample manifest once, using exact dataset revisions,
+and reuse the same file for the BF16 control and every checkpoint. The task names,
+sample counts, shots, dataset fingerprints, and row hashes live in this manifest;
+the evaluator intentionally has no `--tasks` or `--limit` escape hatch.
+
+```bash
+python experiments/large_scale_ternary/prepare_gate_b_manifest.py \
+  --tasks mmlu \
+  --mmlu-revision <exact-mmlu-commit> \
+  --mmlu-limit 100 \
+  --out /workspace/evals/qwen35-4b-mmlu-quick.json
+```
+
 ```bash
 # MMLU now, CPU-isolated (safe alongside training):
 CUDA_VISIBLE_DEVICES="" python scripts/eval_ternary_ckpt.py --model Qwen/Qwen3.5-4B \
-  --ckpt <run>/ckpt_1500.pt --tasks mmlu --limit 100 --device cpu --out eval_1500.json
-# GSM8K + MMLU on GPU when the card is free (or on the 4a100 host):
-python scripts/eval_ternary_ckpt.py --model Qwen/Qwen3.5-4B --ckpt <run>/ckpt_1500.pt \
-  --tasks gsm8k,mmlu --limit 200 --out eval_1500.json
-# retention baseline (base teacher, same samples):
-python scripts/eval_ternary_ckpt.py --model Qwen/Qwen3.5-4B --baseline --tasks mmlu,gsm8k --limit 200
+  --model-revision 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a \
+  --arm qat_ternary \
+  --ckpt <run>/checkpoints/checkpoint-1500 \
+  --manifest /workspace/evals/qwen35-4b-mmlu-quick.json \
+  --device cpu --out eval_1500.json
+
+# BF16 parent control, with the identical sealed denominator:
+CUDA_VISIBLE_DEVICES="" python scripts/eval_ternary_ckpt.py --model Qwen/Qwen3.5-4B \
+  --model-revision 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a \
+  --arm bf16 \
+  --manifest /workspace/evals/qwen35-4b-mmlu-quick.json \
+  --device cpu --out eval_bf16.json
 ```
 Read the number against Prism's 4B (70.7 avg) and the base Qwen3.5-4B teacher
-(run `--baseline`). Rising churn only matters if the benchmark rises with it.
+(the `--arm bf16` receipt). Rising churn only matters if capability also holds.
+
+The Gate B slice is useful during training, but it does not replace the mandatory
+promotion tripwire in `QUALITY_PREFLIGHT.md`. Before extending a checkpoint,
+expanding ternary depth, or moving to 27B, run the repository's frozen quick
+WikiText perplexity plus MATH-500 and CUTE-Quick-20 character-level suite against
+the exact BF16 parent. A pinned subject-balanced MMLU slice may replace CUTE only
+when the candidate runtime cannot generate characters. MATH-500 alone is the
+minimum emergency tripwire. Loss, KL, teacher-forced top-1, and kernel parity
+never authorize a model-changing continuation by themselves.
 
 ## 9. Known headroom not yet taken (in order of value/effort)
 

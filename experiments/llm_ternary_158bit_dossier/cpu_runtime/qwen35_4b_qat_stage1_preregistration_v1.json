@@ -1,0 +1,96 @@
+{
+  "schema": "clark_qwen35_global_qat_stage_preregistration_v1",
+  "status": "frozen_before_paid_gpu_launch",
+  "created_at": "2026-08-17",
+  "objective": "reproduce the previously promising global hard-ternary trajectory with exact restart state, then measure capability before spending beyond the first bounded stage",
+  "model": {
+    "id": "Qwen/Qwen3.5-4B",
+    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "parameter_count_observed": 4659865088,
+    "ternary_master_parameters_observed": 3565158400
+  },
+  "parent_evidence": {
+    "report": "QWEN35_4B_GLOBAL_TERNARY_RUN_20260711.md",
+    "observed_step": 19800,
+    "observed_tokens": 1946419200,
+    "mean_teacher_kl": 0.4246758,
+    "mean_top1_agreement": 0.751248,
+    "peak_allocated_gpu_gib": 59.8,
+    "limitation": "teacher-forced evidence only; the durable checkpoint is absent and no downstream capability evaluation was run"
+  },
+  "training_schedule": {
+    "full_budget_tokens": 5000000000,
+    "first_operational_stop_after_tokens": 100000000,
+    "seed": 20260817,
+    "sequence_length": 1536,
+    "micro_batch": 1,
+    "gradient_accumulation": 64,
+    "tokens_per_optimizer_step": 98304,
+    "master_learning_rate": 0.003,
+    "train_continuous_norms": true,
+    "norm_learning_rate": 0.0001,
+    "optimizer": "muon-fast",
+    "muon_state_dtype": "bfloat16",
+    "gradient_clip": 20.0,
+    "kd_topk": 128,
+    "kd_temperature": 2.0,
+    "ce_weight": 0.05,
+    "hidden_layers": "full",
+    "hidden_weight": 1.0,
+    "hidden_anneal_floor": 0.0,
+    "anchor_fraction_of_full_budget": 0.2,
+    "probe_every_steps": 150,
+    "checkpoint_every_steps": 250,
+    "checkpoint_retention": 2
+  },
+  "resource_admission": {
+    "accelerator": "one CUDA GPU with at least 80 GB physical memory",
+    "minimum_free_accelerator_gib_before_model_load": 65.0,
+    "observed_faithful_recipe_peak_allocated_gib": 59.8,
+    "minimum_free_disk_bytes_for_two_checkpoints_one_hidden_save_and_reserve": 81481656832,
+    "cpu_only_ccx33_decision": "reject_before_model_load"
+  },
+  "data": {
+    "arms": [
+      "knowledge",
+      "math",
+      "code",
+      "instruct",
+      "tools",
+      "multilingual"
+    ],
+    "format": "sealed uint32 token arms",
+    "probe_tokens_per_arm": 65536,
+    "full_file_sha256_rehash_before_model_load": true,
+    "teacher_cache": "forbidden_for_this_reproduction because legacy cache files are not atomically sealed and content-hashed"
+  },
+  "restart_contract": {
+    "format": "clark_qwen35_global_qat_state_v1",
+    "atomic_directory_promotion": true,
+    "state_sha256_required": true,
+    "exact_process_arm_bandit_servo_and_optimizer_replay": true,
+    "planned_stage_stop_does_not_change_full_budget_schedule": true
+  },
+  "capability_gate": {
+    "request_schema": "clark_qwen35_qat_capability_gate_request_v1",
+    "authorization_schema": "clark_qwen35_qat_continuation_authorization_v1",
+    "fast_checkpoint_native_gate": "100-row sealed subject-balanced MMLU, or sealed GSM8K when generation is practical",
+    "minimum_correct_item_retention_vs_exact_bf16_parent": 0.6,
+    "candidate_report_must_bind_exact_checkpoint_state_sha256": true,
+    "default_promotion_tripwire": [
+      "WikiText-2 perplexity",
+      "MATH-500 quick 8",
+      "CUTE-Quick-20"
+    ],
+    "mmlu_substitution": "allowed when the runtime cannot generate characters",
+    "continuation_policy": "no next training stage without a passing checkpoint-bound authorization receipt",
+    "promotion_policy": "this catastrophic-forgetting gate cannot authorize model promotion"
+  },
+  "stop_conditions": [
+    "non-finite loss or gradient",
+    "resource admission failure",
+    "checkpoint integrity or replay mismatch",
+    "capability retention below 60 percent on any selected quick task",
+    "dataset model source or run-identity drift"
+  ]
+}

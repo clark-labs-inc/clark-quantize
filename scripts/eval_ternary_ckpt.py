@@ -24,6 +24,11 @@ sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "experiments" / "large_scale_ternary"))
 
 from clark_quantize.ternary_kd import fused_absmean_dequant
+from clark_quantize.qwen_global_qat import (
+    GLOBAL_QAT_STATE_SCHEMA,
+    join_model_state,
+)
+from clark_quantize.qwen_qat import load_qat_checkpoint
 from gate_b_protocol import (
     GSM8K_SHOTS,
     checkpoint_assignment_plan,
@@ -56,6 +61,27 @@ def preflight_gpu(min_free_gb: float, device: str) -> None:
     fraction = min((free_gb - 0.75) / total_gb, 0.99)
     torch.cuda.set_per_process_memory_fraction(fraction)
     print(f"capped eval process to {fraction * total_gb:.1f} GB")
+
+
+def load_checkpoint_model_state(
+    checkpoint: Path,
+) -> tuple[dict, dict[str, torch.Tensor], dict]:
+    if checkpoint.is_dir():
+        payload, manifest = load_qat_checkpoint(checkpoint, map_location="cpu")
+        if payload.get("schema") != GLOBAL_QAT_STATE_SCHEMA:
+            raise ValueError("checkpoint directory is not a global QAT state")
+        return payload, join_model_state(payload), {
+            "checkpoint_format": GLOBAL_QAT_STATE_SCHEMA,
+            "checkpoint_state_sha256": manifest["state_sha256"],
+            "checkpoint_manifest_sha256": sha256_file(
+                checkpoint / "checkpoint.json"
+            ),
+        }
+    payload = torch.load(checkpoint, map_location="cpu")
+    return payload, payload.get("model", payload), {
+        "checkpoint_format": "legacy_non_atomic_pt",
+        "checkpoint_file_sha256": sha256_file(checkpoint),
+    }
 
 
 def load_deployed_model(
@@ -93,8 +119,9 @@ def load_deployed_model(
         arm_metadata = apply_ptq_ternary_dense(model, dtype=dtype)
     if checkpoint is not None:
         print(f"loading checkpoint {checkpoint} (CPU) ...")
-        payload = torch.load(checkpoint, map_location="cpu")
-        raw_state = payload.get("model", payload)
+        payload, raw_state, checkpoint_metadata = load_checkpoint_model_state(
+            checkpoint
+        )
         state = {
             key[len("_orig_mod.") :] if key.startswith("_orig_mod.") else key: value
             for key, value in raw_state.items()
@@ -121,6 +148,7 @@ def load_deployed_model(
             "method": "qat_ternary_checkpoint_dense_dequant_v1",
             "dequantized_tensors": dequantized,
             "checkpoint_step": payload.get("step", None),
+            **checkpoint_metadata,
         }
         del payload, raw_state, state, assignment, plan
 
@@ -361,9 +389,18 @@ def main() -> None:
             "tokenizer_vocab_sha256": digest_json(tokenizer.get_vocab()),
         },
         "checkpoint": (
-            {"path": str(args.ckpt), "sha256": sha256_file(args.ckpt)}
-            if args.ckpt
-            else None
+            {
+                "path": str(args.ckpt),
+                **(
+                    {
+                        "state_sha256": arm_metadata["checkpoint_state_sha256"],
+                        "manifest_sha256": arm_metadata["checkpoint_manifest_sha256"],
+                    }
+                    if args.ckpt and args.ckpt.is_dir()
+                    else {"sha256": sha256_file(args.ckpt)}
+                ),
+            }
+            if args.ckpt else None
         ),
         "manifest": {
             "path": str(args.manifest),
