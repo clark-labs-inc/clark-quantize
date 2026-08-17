@@ -1,0 +1,139 @@
+{
+  "schema": "llama_cpp_mmlu_replication_decision_v1",
+  "created_at": "2026-08-17T09:44:37.050247+00:00",
+  "status": "completed",
+  "pass": true,
+  "decision": "authorize_preregistered_two_layer_experiment",
+  "broad_depth_expansion_authorized": false,
+  "maximum_next_scope_if_passed": "one additional preregistered MLP layer on Qwen3.5-4B",
+  "claim_boundary": "paired 64-row one-layer replication; not leaderboard-comparable, whole-model, 27B, or a breakthrough",
+  "thresholds": {
+    "candidate_maximum_loss_vs_bf16_items": 3,
+    "candidate_minimum_correct_vs_direct_ptq": "greater_than_or_equal"
+  },
+  "observed": {
+    "bf16_correct": [
+      41,
+      64
+    ],
+    "direct_ptq_correct": [
+      43,
+      64
+    ],
+    "candidate_correct": [
+      43,
+      64
+    ],
+    "candidate_delta_vs_bf16_items": 2,
+    "candidate_delta_vs_direct_ptq_items": 0
+  },
+  "gates": {
+    "candidate_within_three_items_of_bf16": true,
+    "candidate_at_least_direct_ptq": true
+  },
+  "candidate_vs_bf16": {
+    "n": 64,
+    "left_correct": 43,
+    "right_correct": 41,
+    "left_only_correct": 4,
+    "right_only_correct": 2,
+    "prediction_equal": 57,
+    "correctness_equal": 58,
+    "differences": [
+      {
+        "sample_id": "mmlu:3170",
+        "subject": "high_school_chemistry",
+        "gold": "D",
+        "left_prediction": "A",
+        "left_correct": false,
+        "right_prediction": "D",
+        "right_correct": true
+      },
+      {
+        "sample_id": "mmlu:3241",
+        "subject": "high_school_computer_science",
+        "gold": "A",
+        "left_prediction": "A",
+        "left_correct": true,
+        "right_prediction": "D",
+        "right_correct": false
+      },
+      {
+        "sample_id": "mmlu:3835",
+        "subject": "high_school_government_and_politics",
+        "gold": "C",
+        "left_prediction": "A",
+        "left_correct": false,
+        "right_prediction": "C",
+        "right_correct": true
+      },
+      {
+        "sample_id": "mmlu:4371",
+        "subject": "high_school_mathematics",
+        "gold": "A",
+        "left_prediction": "A",
+        "left_correct": true,
+        "right_prediction": "D",
+        "right_correct": false
+      },
+      {
+        "sample_id": "mmlu:7308",
+        "subject": "medical_genetics",
+        "gold": "A",
+        "left_prediction": "A",
+        "left_correct": true,
+        "right_prediction": "C",
+        "right_correct": false
+      },
+      {
+        "sample_id": "mmlu:8685",
+        "subject": "moral_scenarios",
+        "gold": "A",
+        "left_prediction": "C",
+        "left_correct": false,
+        "right_prediction": "D",
+        "right_correct": false
+      },
+      {
+        "sample_id": "mmlu:930",
+        "subject": "college_chemistry",
+        "gold": "A",
+        "left_prediction": "A",
+        "left_correct": true,
+        "right_prediction": "D",
+        "right_correct": false
+      }
+    ]
+  },
+  "candidate_vs_direct_ptq": {
+    "n": 64,
+    "left_correct": 43,
+    "right_correct": 43,
+    "left_only_correct": 0,
+    "right_only_correct": 0,
+    "prediction_equal": 64,
+    "correctness_equal": 64,
+    "differences": []
+  },
+  "models": {
+    "bf16": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974",
+    "direct_ptq": "3e1ba3a29a38de8ff67f7b508563a74b3ea84cdabfa385f0a0b3a749d75e7a9b",
+    "candidate": "d6cbc5bf0e9804e49d26bd40ddb9972db40237fdb4f534545419eea56da02ebb"
+  },
+  "inputs": {
+    "bf16": {
+      "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-mmlu-v1/mmlu-bf16-mmlu-v1.json",
+      "sha256": "9f613887800fd46869b2518fccd4b12a979f3896e2f58b443da578da6b79f398"
+    },
+    "direct_ptq": {
+      "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-mmlu-v1/mmlu-ptq-l30-mmlu-v1.json",
+      "sha256": "9f768c64d0bb6e5cddaf9a570c7539dff751410d27f8aa6a09f26e0fd603fbd4"
+    },
+    "candidate": {
+      "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-mmlu-v1/mmlu-qat-v4-l30-mmlu-v1.json",
+      "sha256": "6cc520d976e82f1bc24ba87cc29c2af977bc73efe49fb82c50817a1cf034ebb7"
+    }
+  },
+  "evaluator_sha256": "196ae579f028fcd7687d51755cbd6ed63e22df9c951e618a65121ec3067e0b36",
+  "report_content_sha256": "32815556b02686f290b117634757c6e3ee36b82ef734633a3d47186066b317ee"
+}

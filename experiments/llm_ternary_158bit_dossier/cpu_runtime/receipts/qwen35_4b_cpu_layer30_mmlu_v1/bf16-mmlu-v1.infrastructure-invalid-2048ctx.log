@@ -1,0 +1,63 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{"event": "mmlu_batch", "completed": 4, "total": 64, "correct": 2, "accuracy": 0.5, "last_sample_id": "mmlu:436"}
+{"event": "mmlu_batch", "completed": 8, "total": 64, "correct": 5, "accuracy": 0.625, "last_sample_id": "mmlu:1032"}
+{"event": "mmlu_batch", "completed": 12, "total": 64, "correct": 7, "accuracy": 0.5833333333333334, "last_sample_id": "mmlu:1491"}
+{"event": "mmlu_batch", "completed": 16, "total": 64, "correct": 10, "accuracy": 0.625, "last_sample_id": "mmlu:2286"}
+{"event": "mmlu_batch", "completed": 20, "total": 64, "correct": 13, "accuracy": 0.65, "last_sample_id": "mmlu:3170"}
+Traceback (most recent call last):
+  File "/workspace/clark-quantize-cpu-qat/experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_mmlu.py", line 76, in request_json
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/urllib/request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/urllib/request.py", line 495, in open
+    response = meth(req, response)
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/urllib/request.py", line 604, in http_response
+    response = self.parent.error(
+        'http', request, response, code, msg, hdrs)
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/urllib/request.py", line 533, in error
+    return self._call_chain(*args)
+           ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/urllib/request.py", line 466, in _call_chain
+    result = func(*args)
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/urllib/request.py", line 613, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 400: Bad Request
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/workspace/clark-quantize-cpu-qat/experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_mmlu.py", line 441, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/clark-quantize-cpu-qat/experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_mmlu.py", line 363, in main
+    batch = list(executor.map(evaluate_one, positions))
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/concurrent/futures/_base.py", line 625, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/concurrent/futures/_base.py", line 318, in _result_or_cancel
+    return fut.result(timeout)
+           ~~~~~~~~~~^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/concurrent/futures/_base.py", line 460, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/concurrent/futures/_base.py", line 402, in __get_result
+    raise self._exception
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/workspace/clark-quantize-cpu-qat/experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_mmlu.py", line 326, in evaluate_one
+    response, latency_ms = request_json(
+                           ~~~~~~~~~~~~^
+        args.server,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        timeout=args.timeout,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/workspace/clark-quantize-cpu-qat/experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_mmlu.py", line 80, in request_json
+    raise RuntimeError(
+        f"server returned HTTP {error.code} for {endpoint}: {detail}"
+    ) from error
+RuntimeError: server returned HTTP 400 for /v1/chat/completions: {"error":{"code":400,"message":"request (2789 tokens) exceeds the available context size (2048 tokens), try increasing it","type":"exceed_context_size_error","n_prompt_tokens":2789,"n_ctx":2048}}

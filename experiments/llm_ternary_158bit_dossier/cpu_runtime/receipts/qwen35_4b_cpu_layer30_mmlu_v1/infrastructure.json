@@ -1,0 +1,103 @@
+{
+  "schema": "qwen35_4b_cpu_layer30_mmlu_infrastructure_v1",
+  "status": "completed",
+  "run_date_utc": "2026-08-17",
+  "node": {
+    "provider_class": "Hetzner CCX33 dedicated-vCPU instance",
+    "cpu_model": "AMD EPYC-Milan Processor",
+    "architecture": "x86_64",
+    "physical_cores": 4,
+    "threads_per_core": 2,
+    "logical_cpus": 8,
+    "isa_observed": [
+      "AVX",
+      "AVX2",
+      "FMA",
+      "BMI1",
+      "BMI2"
+    ],
+    "ram_gib_reported": 30,
+    "swap_bytes": 0,
+    "filesystem_bytes": 241591910400,
+    "filesystem_free_gib_after_run": 61
+  },
+  "source": {
+    "clark_quantize_commit": "e0732d6e6513c1ec9b60f86d0baf5661b19f4b35",
+    "llama_cpp_commit": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "llama_server_sha256": "c1c5af73afc267dfd9256e8f97bd871e7842353dd25518587f68261d731a24c9",
+    "evaluator_sha256": "a604ca9a528231fa17de78ab2a7ffed7c1b9a0b9a9ca74459c2d894f1f3612d3",
+    "assessor_sha256": "196ae579f028fcd7687d51755cbd6ed63e22df9c951e618a65121ec3067e0b36"
+  },
+  "models": {
+    "bf16": {
+      "bytes": 8665620192,
+      "sha256": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974"
+    },
+    "direct_ptq_layer30": {
+      "bytes": 8542863136,
+      "sha256": "3e1ba3a29a38de8ff67f7b508563a74b3ea84cdabfa385f0a0b3a749d75e7a9b"
+    },
+    "cpu_qat_v4_layer30": {
+      "bytes": 8542863168,
+      "sha256": "d6cbc5bf0e9804e49d26bd40ddb9972db40237fdb4f534545419eea56da02ebb"
+    }
+  },
+  "server_contract": {
+    "threads": 4,
+    "parallel_slots": 4,
+    "total_context_tokens": 32768,
+    "per_slot_context_tokens": 8192,
+    "batch": 512,
+    "microbatch": 512,
+    "memory_max_gib": 28,
+    "cpu_quota_percent": 800,
+    "nice": 5
+  },
+  "invalid_attempt": {
+    "arm": "bf16",
+    "status": "infrastructure_invalid",
+    "reason": "2789-token request exceeded the original 2048-token per-slot context",
+    "completed_records_preserved": 20,
+    "partial_correct_observed": 13,
+    "wrapper_wall_seconds": 393.641,
+    "server_wall_seconds": 336.843,
+    "server_memory_peak_gib": 4.8,
+    "counted_as_model_score": false
+  },
+  "completed_arms": {
+    "bf16_resumed": {
+      "wrapper_wall_seconds": 875.778,
+      "wrapper_memory_peak_mib": 106.7,
+      "server_wall_seconds": 820.194,
+      "server_cpu_seconds": 3865.586,
+      "server_memory_peak_gib": 8.2,
+      "correct": 41,
+      "n": 64
+    },
+    "direct_ptq_layer30": {
+      "wrapper_wall_seconds": 1168.273,
+      "wrapper_memory_peak_gib": 2.0,
+      "server_wall_seconds": 1109.461,
+      "server_cpu_seconds": 5234.742,
+      "server_memory_peak_gib": 12.8,
+      "correct": 43,
+      "n": 64
+    },
+    "cpu_qat_v4_layer30": {
+      "wrapper_wall_seconds": 1175.894,
+      "wrapper_memory_peak_gib": 4.6,
+      "server_wall_seconds": 1115.873,
+      "server_cpu_seconds": 5259.547,
+      "server_memory_peak_gib": 10.0,
+      "correct": 43,
+      "n": 64
+    }
+  },
+  "resource_notes": [
+    "The wrapper peaks for the quantized arms include cold-file page cache charged while SHA-256 hashing the GGUF artifacts.",
+    "The llama-server peaks also include model mappings and page cache charged to the systemd cgroup.",
+    "No swap was configured or used.",
+    "Arms ran sequentially, so CPU contention between model servers did not contaminate the comparison."
+  ]
+}
+
