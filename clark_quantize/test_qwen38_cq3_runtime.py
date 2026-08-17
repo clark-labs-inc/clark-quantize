@@ -141,6 +141,25 @@ class FakeLexicalTensor:
         assert self.output is not None
         return self.output.copy()
 
+    def topk_q8(
+        self,
+        activation_q8: np.ndarray,
+        activation_scales: np.ndarray,
+        activation_sums: np.ndarray,
+        count: int,
+        **kwargs,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        output = self.gemv_q8(
+            activation_q8,
+            activation_scales,
+            activation_sums,
+            **kwargs,
+        )
+        indices = np.lexsort(
+            (np.arange(output.size, dtype=np.int64), -output)
+        )[:count]
+        return output[indices], indices
+
 
 class Qwen38CQ3RuntimeTests(unittest.TestCase):
     rows = 8
@@ -460,6 +479,29 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
                 np.testing.assert_array_equal(
                     aligned_four_threads, aligned_one_thread
                 )
+                top_values, top_indices = view.topk_q8(
+                    activation_q8,
+                    activation_scales,
+                    activation_sums,
+                    3,
+                    row_chunk=3,
+                    implementation="scalar_chunk16",
+                )
+                aligned_top_values, aligned_top_indices = aligned.topk_q8(
+                    activation_q8,
+                    activation_scales,
+                    activation_sums,
+                    3,
+                    row_chunk=3,
+                    implementation="scalar",
+                )
+                expected_indices = np.lexsort(
+                    (np.arange(self.rows), -one_thread)
+                )[:3]
+                np.testing.assert_array_equal(top_indices, expected_indices)
+                np.testing.assert_array_equal(top_values, one_thread[top_indices])
+                np.testing.assert_array_equal(aligned_top_indices, top_indices)
+                np.testing.assert_array_equal(aligned_top_values, top_values)
 
     def test_payload_corruption_and_metadata_drift_fail_closed(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -810,6 +852,20 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
             ),
         )
         np.testing.assert_array_equal(top_values, actual[top_indices])
+        streaming_state = Qwen38TextState(
+            [object() for _ in range(model.LAYERS)]
+        )
+        streaming_values, streaming_indices = graph.forward_token_topk(
+            17,
+            streaming_state,
+            4,
+            row_chunk=1024,
+            gemv_implementation="scalar_chunk16",
+            elementwise_implementation="scalar",
+        )
+        np.testing.assert_array_equal(streaming_indices, top_indices)
+        np.testing.assert_array_equal(streaming_values, top_values)
+        self.assertEqual(streaming_state.position, 1)
 
 
 if __name__ == "__main__":

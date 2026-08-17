@@ -61,6 +61,20 @@ def _decode_row_scales(
     )
 
 
+def _merge_topk(
+    retained_values: np.ndarray,
+    retained_indices: np.ndarray,
+    values: np.ndarray,
+    offset: int,
+    count: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    indices = np.arange(offset, offset + values.size, dtype=np.int64)
+    candidate_values = np.concatenate((retained_values, values))
+    candidate_indices = np.concatenate((retained_indices, indices))
+    order = np.lexsort((candidate_indices, -candidate_values))[:count]
+    return candidate_values[order], candidate_indices[order]
+
+
 class CQ3RuntimeError(CQ3ContainerError):
     """The storage container cannot be used by the frozen native runtime."""
 
@@ -182,6 +196,70 @@ class Qwen38CQ3TernaryTensorView:
             * scales[:, None]
         ).reshape(self.columns)
 
+    def topk_q8(
+        self,
+        activation_q8: np.ndarray,
+        activation_scales: np.ndarray,
+        activation_sums: np.ndarray,
+        count: int,
+        *,
+        row_chunk: int = 4096,
+        implementation: str = "scalar_chunk16",
+        threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
+        cpu_ids: list[int] | None = None,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Stream rows through GEMV and retain only deterministic top-k."""
+        if (
+            not isinstance(count, int)
+            or isinstance(count, bool)
+            or count <= 0
+            or count > self.rows
+            or not isinstance(row_chunk, int)
+            or isinstance(row_chunk, bool)
+            or row_chunk <= 0
+        ):
+            raise ValueError(f"{self.name} streaming top-k arguments are invalid")
+        row_bits = matrix_payload_bits(1, self.columns)
+        groups = self.columns // GROUP_SIZE
+        if row_bits % 8 or groups % 2:
+            raise CQ3RuntimeError(
+                f"{self.name} rows are not independently byte-addressable"
+            )
+        row_bytes = row_bits // 8
+        scale_bytes = groups // 2
+        retained_values = np.empty(0, dtype=np.float32)
+        retained_indices = np.empty(0, dtype=np.int64)
+        for start in range(0, self.rows, row_chunk):
+            stop = min(start + row_chunk, self.rows)
+            chunk = Qwen38CQ3TernaryTensorView(
+                name=f"{self.name}[{start}:{stop}]",
+                shape=(stop - start, self.columns),
+                rows=stop - start,
+                columns=self.columns,
+                packed_weights=self.packed_weights[
+                    start * row_bytes : stop * row_bytes
+                ],
+                packed_scale_indices=self.packed_scale_indices[
+                    start * scale_bytes : stop * scale_bytes
+                ],
+                row_anchors=self.row_anchors[start:stop],
+                ratio_codebook=self.ratio_codebook,
+            )
+            values = chunk.gemv_q8(
+                activation_q8,
+                activation_scales,
+                activation_sums,
+                implementation=implementation,
+                threads=threads,
+                executor=executor,
+                cpu_ids=cpu_ids,
+            )
+            retained_values, retained_indices = _merge_topk(
+                retained_values, retained_indices, values, start, count
+            )
+        return retained_values, retained_indices
+
 
 @dataclass(frozen=True)
 class Qwen38CQ3AlignedTensor:
@@ -270,6 +348,65 @@ class Qwen38CQ3AlignedTensor:
             codes.reshape(groups, GROUP_SIZE).astype(np.float32)
             * scales[:, None]
         ).reshape(self.columns)
+
+    def topk_q8(
+        self,
+        activation_q8: np.ndarray,
+        activation_scales: np.ndarray,
+        activation_sums: np.ndarray,
+        count: int,
+        *,
+        row_chunk: int = 4096,
+        implementation: str = "scalar",
+        threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
+        cpu_ids: list[int] | None = None,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        if (
+            not isinstance(count, int)
+            or isinstance(count, bool)
+            or count <= 0
+            or count > self.rows
+            or not isinstance(row_chunk, int)
+            or isinstance(row_chunk, bool)
+            or row_chunk <= 0
+        ):
+            raise ValueError(f"{self.name} streaming top-k arguments are invalid")
+        groups = self.columns // GROUP_SIZE
+        if groups % 2:
+            raise CQ3RuntimeError(
+                f"{self.name} scales are not independently byte-addressable"
+            )
+        scale_bytes = groups // 2
+        retained_values = np.empty(0, dtype=np.float32)
+        retained_indices = np.empty(0, dtype=np.int64)
+        for start in range(0, self.rows, row_chunk):
+            stop = min(start + row_chunk, self.rows)
+            chunk = Qwen38CQ3AlignedTensor(
+                name=f"{self.name}[{start}:{stop}]",
+                shape=(stop - start, self.columns),
+                rows=stop - start,
+                columns=self.columns,
+                packed_weights=self.packed_weights[start:stop],
+                packed_scale_indices=self.packed_scale_indices[
+                    start * scale_bytes : stop * scale_bytes
+                ],
+                row_anchors=self.row_anchors[start:stop],
+                ratio_codebook=self.ratio_codebook,
+            )
+            values = chunk.gemv_q8(
+                activation_q8,
+                activation_scales,
+                activation_sums,
+                implementation=implementation,
+                threads=threads,
+                executor=executor,
+                cpu_ids=cpu_ids,
+            )
+            retained_values, retained_indices = _merge_topk(
+                retained_values, retained_indices, values, start, count
+            )
+        return retained_values, retained_indices
 
 
 @dataclass(frozen=True)
@@ -1222,7 +1359,7 @@ class Qwen38CQ3TextModel:
     def allocate_state(self, context_capacity: int) -> Qwen38TextState:
         return Qwen38TextState.allocate(self.layer_types, context_capacity)
 
-    def forward_token(
+    def _forward_hidden(
         self,
         token_id: int,
         state: Qwen38TextState,
@@ -1260,6 +1397,30 @@ class Qwen38CQ3TextModel:
             self.final_norm_offsets,
             implementation=elementwise_implementation,
         )
+        return hidden
+
+    def forward_token(
+        self,
+        token_id: int,
+        state: Qwen38TextState,
+        *,
+        gemv_implementation: str = "scalar_chunk16",
+        elementwise_implementation: str = "scalar",
+        threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
+        cpu_ids: list[int] | None = None,
+        validated_state: bool = False,
+    ) -> np.ndarray:
+        hidden = self._forward_hidden(
+            token_id,
+            state,
+            gemv_implementation=gemv_implementation,
+            elementwise_implementation=elementwise_implementation,
+            threads=threads,
+            executor=executor,
+            cpu_ids=cpu_ids,
+            validated_state=validated_state,
+        )
         hidden_q8, hidden_scales, hidden_sums = quantize_q8(hidden, GROUP_SIZE)
         logits = self.lm_head.gemv_q8(
             hidden_q8,
@@ -1275,6 +1436,51 @@ class Qwen38CQ3TextModel:
         state.position += 1
         return logits
 
+    def forward_token_topk(
+        self,
+        token_id: int,
+        state: Qwen38TextState,
+        count: int,
+        *,
+        row_chunk: int = 4096,
+        gemv_implementation: str = "scalar_chunk16",
+        elementwise_implementation: str = "scalar",
+        threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
+        cpu_ids: list[int] | None = None,
+        validated_state: bool = False,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        hidden = self._forward_hidden(
+            token_id,
+            state,
+            gemv_implementation=gemv_implementation,
+            elementwise_implementation=elementwise_implementation,
+            threads=threads,
+            executor=executor,
+            cpu_ids=cpu_ids,
+            validated_state=validated_state,
+        )
+        hidden_q8, hidden_scales, hidden_sums = quantize_q8(hidden, GROUP_SIZE)
+        values, indices = self.lm_head.topk_q8(
+            hidden_q8,
+            hidden_scales,
+            hidden_sums,
+            count,
+            row_chunk=row_chunk,
+            implementation=gemv_implementation,
+            threads=threads,
+            executor=executor,
+            cpu_ids=cpu_ids,
+        )
+        if (
+            values.shape != (count,)
+            or indices.shape != (count,)
+            or not np.all(np.isfinite(values))
+        ):
+            raise ValueError("Qwen3.8 streaming LM head produced invalid top-k")
+        state.position += 1
+        return values, indices
+
     @staticmethod
     def topk(logits: np.ndarray, count: int) -> tuple[np.ndarray, np.ndarray]:
         values = np.asarray(logits, dtype=np.float32)
@@ -1287,7 +1493,6 @@ class Qwen38CQ3TextModel:
             or not np.all(np.isfinite(values))
         ):
             raise ValueError("Qwen3.8 top-k inputs are invalid")
-        selected = np.argpartition(values, -count)[-count:]
-        order = np.argsort(values[selected])[::-1]
-        indices = selected[order].astype(np.int64, copy=False)
+        all_indices = np.arange(values.size, dtype=np.int64)
+        indices = np.lexsort((all_indices, -values))[:count]
         return values[indices], indices

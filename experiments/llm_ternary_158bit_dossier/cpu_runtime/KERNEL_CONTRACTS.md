@@ -232,8 +232,10 @@ byte-addressable embedding row with its row-anchor/codebook scales without
 materializing the vocabulary matrix. The text-only runtime composes that row,
 64 authenticated decoder layers and their compact states, final learned-offset
 RMSNorm, the 248,320-row LM-head GEMV, and deterministic top-k. It currently
-materializes one FP32 logits vector and therefore does not yet satisfy the
-fused streaming top-k product target.
+offers both a full-logit correctness path and a row-streamed deterministic
+top-k path whose scratch is bounded by the configured row chunk. The streaming
+path avoids the full FP32 logits allocation; a single fused native top-k kernel
+and its context-level throughput gate remain open.
 
 ## K11: execution system
 
