@@ -233,6 +233,7 @@ def test_qwen38_service_commit_chain_is_monotonic() -> None:
         "quant-qwen38-27b-aligned2-math500-watch-v1.service",
         "quant-qwen38-27b-aligned2-prefill-skip-lm-head-watch-v1.service",
         "quant-qwen38-27b-persistent-affinity-watch-v1.service",
+        "quant-qwen38-27b-full-graph-profile-watch-v1.service",
     )
     commits = []
     for unit in units:
