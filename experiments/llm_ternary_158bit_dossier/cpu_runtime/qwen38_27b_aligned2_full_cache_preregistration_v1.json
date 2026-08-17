@@ -1,0 +1,121 @@
+{
+  "schema": "qwen38_27b_aligned2_full_cache_preregistration_v1",
+  "status": "frozen_before_conditional_whole_model_cache_build",
+  "frozen_at_utc": "2026-08-17T15:35:13Z",
+  "objective": "Conditionally build a complete restartable and authenticated aligned-2 weight cache for every row-normalized ternary tensor in Qwen3.8-27B, while keeping the near-base-3 CQ3 container as the canonical storage source",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "tensor_count": 666,
+    "model_parameters": 27781427952,
+    "ternary_parameters": 27780313088,
+    "retained_exact_parameters": 1114864,
+    "cache_file_bytes": 6945078272,
+    "row_scale_bytes_shared_from_canonical_container": 119265240,
+    "retained_exact_bytes_shared_from_canonical_container": 2229728,
+    "projected_active_runtime_weight_bytes": 7066573240,
+    "projected_active_runtime_bits_per_model_parameter": 2.0349056937489127
+  },
+  "parent": {
+    "actual_tensor_aligned2_gate": "/workspace/quant-state/qwen38-27b-aligned2-cache-v1.json",
+    "must_pass_before_any_cache_allocation": true,
+    "source_container_path_size_and_sha256_must_match": true
+  },
+  "format": {
+    "alignment_bytes": 64,
+    "layout": "fixed offsets in canonical tensor order",
+    "payload": "group128 aligned 2-bit weight bytes only",
+    "shared_from_canonical_container": "row-scale4 factors, exactly retained tensors, metadata, and auxiliary files",
+    "per_tensor_sha256": true,
+    "full_cache_sha256": true,
+    "canonical_json_manifest": true,
+    "atomic_checkpoint_after_each_tensor": true,
+    "resume_requires_exact_source_layout_and_committed_prefix_hashes": true,
+    "full_int8_weight_matrix_materialized": false
+  },
+  "measurement": {
+    "physical_workers": 4,
+    "authenticate_source_sections_serially": true,
+    "transcode_independent_tensor_batch_in_parallel": true,
+    "independent_full_manifest_and_cache_readback": true,
+    "elapsed_time_includes_resume_validation_build_and_final_readback": true
+  },
+  "gate": {
+    "required_tensor_count": 666,
+    "required_ternary_parameters": 27780313088,
+    "required_cache_file_bytes": 6945078272,
+    "maximum_active_runtime_bits_per_model_parameter": 2.05,
+    "minimum_free_bytes_after_build": 17179869184,
+    "maximum_elapsed_seconds": 7200.0,
+    "require_no_full_int8_weight_matrix": true,
+    "require_manifest_and_full_cache_verification": true,
+    "all_measurements_must_be_finite": true
+  },
+  "frozen_inputs": {
+    "builder_entrypoint": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/build_qwen38_27b_aligned2_cache_v1.py",
+      "sha256": "e2a520114a0d49dd522b0d3151759bb8d82b6ffc4777580c6a5fdf7acb4704aa"
+    },
+    "cache_builder": {
+      "path": "clark_quantize/qwen38_aligned2_cache.py",
+      "sha256": "d14013ee690f4b4119c6a3d3b03041751385a00494ca7d6f56c56986a3cf9102"
+    },
+    "cache_builder_tests": {
+      "path": "clark_quantize/test_qwen38_aligned2_cache.py",
+      "sha256": "eb0ce92eb9371629e94139e6860cf3a8290c36ccb4fc3cad24817a4cb98f8d1c"
+    },
+    "runtime": {
+      "path": "clark_quantize/qwen38_cq3_runtime.py",
+      "sha256": "965b0fc5b8f5739945cead05399fec645f5ca4c3267e1824343e5f315146e129"
+    },
+    "runtime_tests": {
+      "path": "clark_quantize/test_qwen38_cq3_runtime.py",
+      "sha256": "044e45dfe4c96ea884686019d86414800ec2147d0bf3e909bf281610faed761d"
+    },
+    "native_wrapper": {
+      "path": "clark_quantize/ternary_cpu.py",
+      "sha256": "8c5f23ac7c4eb94d9ecbafd0cf6cc25de73824c025c264beefe4dbb66b74a616"
+    },
+    "native_source": {
+      "path": "clark_quantize/ternary_cpu.c",
+      "sha256": "29ae048154f99f84f91ca36cec880a00397ae6816779940794dc77f05deca685"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_ternary_cpu.py",
+      "sha256": "6bb36a94abb9d64d280e1891d5f3d8d74a61291434ade1ff4590e4721dc000f7"
+    },
+    "container": {
+      "path": "clark_quantize/qwen38_cq3_container.py",
+      "sha256": "f889bc12f0c152d2229249169cad594a568e7365597897f7e022c123c3d3ea7b"
+    },
+    "native_build": {
+      "path": "scripts/cpu/build_ternary_cpu.sh",
+      "sha256": "273db81adcefce5525288927cbcdde5f4beff65b136e35235ba8c4909c22e75b"
+    },
+    "parent_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_aligned2_cache_preregistration_v1.json",
+      "sha256": "cf762e82512a704122ff5dc95fc3266adbb4515e558ab6099ca67005d01e7d57"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 4,
+    "swap_must_remain_zero": true,
+    "minimum_free_bytes_after_build": 17179869184,
+    "maximum_new_cache_bytes": 6945078272,
+    "restart_on_interruption_or_failure": true,
+    "enabled_service_resumes_after_node_reboot": true,
+    "run_only_after_actual_tensor_aligned2_gate_is_terminal_and_passed": true
+  },
+  "promotion_rules": [
+    "a parent speed rejection prevents cache allocation and is retained as a valid nonpromotion",
+    "a valid build time storage memory ledger or integrity threshold miss is retained as a negative result",
+    "the canonical CQ3 container remains the storage source of truth at or below 1.64 bits per model parameter",
+    "the derived cache and combined disk footprint must be disclosed separately from the active runtime weight representation",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "a complete cache does not prove that the whole-model graph is runnable",
+    "CUTE, MATH-500, code, MMLU-type, WikiText, and paired end-to-end throughput remain mandatory before model promotion",
+    "no scientific breakthrough claim can come from cache construction alone",
+    "Qwen 4B compute is forbidden in this research lane"
+  ]
+}
