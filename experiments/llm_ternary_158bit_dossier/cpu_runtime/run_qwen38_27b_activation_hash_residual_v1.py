@@ -6,6 +6,7 @@ import argparse
 from datetime import datetime, timezone
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import subprocess
@@ -185,6 +186,8 @@ def main() -> None:
     selected_name = hash_receipt["gate"]["selected_candidate"]
     parent_prereg_path = runtime / "qwen38_27b_hash_residual_screen_preregistration_v1.json"
     parent_prereg = json.loads(parent_prereg_path.read_text())
+    if hash_receipt.get("preregistration_sha256") != sha256_file(parent_prereg_path):
+        raise ValueError("activation-hash parent preregistration identity changed")
     candidates = {
         item["name"]: item for item in parent_prereg["candidate_family"]["candidates"]
     }
@@ -193,11 +196,18 @@ def main() -> None:
     selected = candidates[selected_name]
 
     cache_receipt = json.loads(args.activation_cache_receipt.read_text())
+    activation_qat_prereg_path = runtime / (
+        "qwen38_27b_layer0_mlp_activation_qat_preregistration_v1.json"
+    )
+    activation_qat_prereg = json.loads(activation_qat_prereg_path.read_text())
+    activation_qat_prereg_sha256 = sha256_file(activation_qat_prereg_path)
     if (
         cache_receipt.get("schema") != "qwen38_27b_layer0_mlp_activation_cache_receipt_v1"
         or cache_receipt.get("model_id") != MODEL_ID
         or cache_receipt.get("model_revision") != REVISION
         or cache_receipt.get("complete") is not True
+        or cache_receipt.get("preregistration", {}).get("sha256")
+        != activation_qat_prereg_sha256
         or cache_receipt.get("cache", {}).get("sha256") != sha256_file(args.activation_cache)
     ):
         raise ValueError("activation-hash cache receipt is invalid")
@@ -212,6 +222,11 @@ def main() -> None:
         cache.get("schema") != "qwen38_27b_layer0_mlp_activation_cache_v1"
         or cache.get("model_id") != MODEL_ID
         or cache.get("model_revision") != REVISION
+        or cache.get("preregistration_sha256") != activation_qat_prereg_sha256
+        or cache.get("calibration_texts")
+        != activation_qat_prereg["activation_cache"]["calibration_texts"]
+        or cache.get("validation_texts")
+        != activation_qat_prereg["activation_cache"]["validation_texts"]
         or not required_cache.issubset(cache)
     ):
         raise ValueError("activation-hash cache payload is invalid")
@@ -219,6 +234,10 @@ def main() -> None:
     family = parent_prereg["candidate_family"]
     training = prereg["training"]
     records: list[dict[str, Any]] = []
+    parent_records = {
+        (record["tensor"], record["row_start"], record["row_stop"]): record
+        for record in hash_receipt["records"]
+    }
     for tensor_index, tensor_spec in enumerate(parent_prereg["scope"]["tensors"]):
         name = tensor_spec["name"]
         shard = weight_map.get(name)
@@ -246,6 +265,17 @@ def main() -> None:
             nonzero_per_group=int(selected["nonzero_per_group"]),
             iterations=int(family["alternating_iterations"]),
         )
+        parent_record = parent_records.get((name, start, stop))
+        if parent_record is None:
+            raise ValueError("activation-hash parent row record is absent")
+        parent_candidate = parent_record.get("candidates", {}).get(selected_name)
+        if parent_candidate is None or not math.isclose(
+            fit.exported_squared_error,
+            float(parent_candidate["squared_error"]),
+            rel_tol=2e-6,
+            abs_tol=1e-7,
+        ):
+            raise ValueError("activation-hash parent candidate replay changed")
         group = int(family["group_size"])
         frozen_scales = fit.ternary_scales.to(torch.float16).to(torch.float32)
         ternary = (
@@ -370,8 +400,11 @@ def main() -> None:
         / max(summary["symmetric_validation"]["squared_error"], 1e-30)
     )
     maximum_tensor_regression = max(
-        -float(record["relative_validation_error_reduction_vs_data_free"])
-        for record in records
+        0.0,
+        max(
+            -float(record["relative_validation_error_reduction_vs_data_free"])
+            for record in records
+        ),
     )
     maximum_rate = max(float(record["projected_component_bits_per_weight"]) for record in records)
     gate_spec = prereg["gate"]
