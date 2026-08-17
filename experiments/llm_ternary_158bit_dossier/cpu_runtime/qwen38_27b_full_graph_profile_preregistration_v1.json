@@ -1,0 +1,129 @@
+{
+  "schema": "qwen38_27b_full_graph_profile_preregistration_v1",
+  "receipt_schema": "qwen38_27b_full_graph_profile_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T18:07:05Z",
+  "objective": "Measure where one exact Qwen3.8-27B aligned2 CPU token spends projection time so subsequent kernel work targets observed full-graph bottlenecks",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "decoder_layers": 64,
+    "linear_attention_layers": 48,
+    "full_attention_layers": 16,
+    "aligned_weight_tensors_authenticated": 666,
+    "batch": 1,
+    "tokens": 1,
+    "context_capacity": 1,
+    "instrumentation": "Python wall-clock interval around every native aligned2 GEMV call",
+    "weight_representation": "group128 aligned 2-bit plus row-scale4"
+  },
+  "input": {
+    "token_id": 248045,
+    "token": "<|im_start|>",
+    "position": 0,
+    "state": "fresh zeros for each arm",
+    "streaming_topk_count": 64,
+    "streaming_row_chunk": 4096
+  },
+  "parent": {
+    "receipt": "/workspace/quant-state/qwen38-27b-aligned2-full-text-v1.json",
+    "required_schema": "qwen38_27b_aligned2_full_text_receipt_v1",
+    "must_pass": true,
+    "source_container_cache_and_manifest_must_match": true
+  },
+  "control": {
+    "graph": "unmodified full 64-layer streaming-topk path",
+    "worker_policy": "four persistent workers each pinned once",
+    "purpose": "warm mapped weights and produce exact output and state reference"
+  },
+  "profile": {
+    "graph": "identical full 64-layer streaming-topk path",
+    "worker_policy": "the same four persistent pinned workers",
+    "timed_calls": "all aligned2 GEMVs including 61 streamed LM-head row chunks",
+    "reported_aggregates": "call count, wall seconds, bytes, and effective GiB/s by projection role"
+  },
+  "measurement": {
+    "physical_threads": 4,
+    "control_first": true,
+    "profile_major_faults_measured_after_control": true,
+    "state_and_topk_comparison_outside_timed_region": true,
+    "runtime_construction_and_tensor_authentication_excluded": true
+  },
+  "gate": {
+    "require_exact_topk_values": true,
+    "require_exact_topk_indices": true,
+    "require_exact_full_state": true,
+    "required_projection_calls": 557,
+    "required_projection_role_call_counts": {
+      "attention_k": 16,
+      "attention_out": 16,
+      "attention_q": 16,
+      "attention_v": 16,
+      "linear_a": 48,
+      "linear_b": 48,
+      "linear_out": 48,
+      "linear_qkv": 48,
+      "linear_z": 48,
+      "lm_head": 61,
+      "mlp_down": 64,
+      "mlp_gate": 64,
+      "mlp_up": 64
+    },
+    "required_authenticated_aligned_tensor_count": 666,
+    "maximum_timer_accounting_slack_seconds": 0.01,
+    "maximum_process_peak_rss_bytes": 10737418240,
+    "require_zero_major_page_faults": true,
+    "require_all_outputs_states_and_timings_finite": true,
+    "performance_is_diagnostic_not_a_promotion_condition": true
+  },
+  "frozen_inputs": {
+    "profile": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/profile_qwen38_27b_full_graph_v1.py",
+      "sha256": "49df8b7a200c0db177d42072f8fc55ceba88e87494a2bac2b34ef2d3c06efaab"
+    },
+    "full_text_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_aligned2_full_text_preregistration_v1.json",
+      "sha256": "f44f32a496cdf65e2c21e67c6aa3272a59fae2f5932ddc2d98257ed097a0839d"
+    },
+    "full_text_helpers": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_aligned2_full_text_v1.py",
+      "sha256": "d15e5a44f8eb9bf02866393bbf13e0874322ad6daba86549ddbac6cb9ab23533"
+    },
+    "persistent_affinity_helper": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_persistent_affinity_v1.py",
+      "sha256": "6a5e2163dcc8f7a5798464dc3449e00678fb3975a92e1ccff013de49730dda14"
+    },
+    "aligned_cache_runtime": {
+      "path": "clark_quantize/qwen38_aligned2_cache.py",
+      "sha256": "714d0c6ef3e1d3fe53036651f2d733cbd848e5811e61b1c6989501a1a6042ef4"
+    },
+    "model_runtime": {
+      "path": "clark_quantize/qwen38_cq3_runtime.py",
+      "sha256": "652412365666430108e4642db2e871632f6ab34957d718e195bec4d1e7693ec6"
+    },
+    "native_wrapper": {
+      "path": "clark_quantize/ternary_cpu.py",
+      "sha256": "ce706e66ac61d2919a80f0c838432b9df31ff469412ce95a3d61c56c15bed7a9"
+    },
+    "native_source": {
+      "path": "clark_quantize/ternary_cpu.c",
+      "sha256": "00acb5674e1ae2de188d7d7dfefcf5cf33776ca634c597469dc5e3b168248488"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 12,
+    "swap_must_remain_zero": true,
+    "new_persistent_artifact_bytes": 0,
+    "run_only_after_all_existing_Qwen3.8_27B_jobs": true
+  },
+  "promotion_rules": [
+    "a pass proves only exact instrumentation parity and complete projection attribution for one Qwen3.8-27B token",
+    "the highest measured role is the first kernel family eligible for the next optimization experiment",
+    "no throughput improvement is claimed by this diagnostic run",
+    "capability remains inherited from the separately completed CUTE and MMLU-type or MATH gates",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "no scientific breakthrough claim can come from this profile",
+    "Qwen 4B compute is forbidden in this research lane"
+  ]
+}

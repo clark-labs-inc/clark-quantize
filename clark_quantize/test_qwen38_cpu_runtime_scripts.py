@@ -50,6 +50,21 @@ def load_persistent_affinity_module():
     return module
 
 
+def load_full_graph_profile_module():
+    name = "qwen38_full_graph_profile_test_module"
+    if name in sys.modules:
+        return sys.modules[name]
+    sys.path.insert(0, str(RUNTIME))
+    spec = importlib.util.spec_from_file_location(
+        name, RUNTIME / "profile_qwen38_27b_full_graph_v1.py"
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 def test_qwen38_python_runners_do_not_use_json_literals_as_names() -> None:
     invalid: list[str] = []
     for path in sorted(RUNTIME.glob("*qwen38_27b*.py")):
@@ -162,6 +177,36 @@ def test_qwen38_persistent_affinity_gate_matches_cpu_policy() -> None:
     assert preregistration["gate"]["require_exact_topk_values"] is True
     assert preregistration["gate"]["require_exact_topk_indices"] is True
     assert preregistration["gate"]["require_exact_full_state"] is True
+
+
+def test_qwen38_full_graph_profile_covers_every_projection_call() -> None:
+    module = load_full_graph_profile_module()
+    preregistration = json.loads(
+        (
+            RUNTIME
+            / "qwen38_27b_full_graph_profile_preregistration_v1.json"
+        ).read_text()
+    )
+    counts = preregistration["gate"]["required_projection_role_call_counts"]
+    assert preregistration["scope"]["active_model_only"] == "Qwen/Qwen3.8-27B"
+    assert sum(counts.values()) == 557
+    assert counts["lm_head"] == 61
+    assert preregistration["gate"]["required_projection_calls"] == 557
+    names = {
+        "model.language_model.layers.0.mlp.gate_proj.weight": "mlp_gate",
+        "model.language_model.layers.1.linear_attn.in_proj_qkv.weight": "linear_qkv",
+        "model.language_model.layers.2.self_attn.o_proj.weight": "attention_out",
+        "lm_head.weight[245760:248320]": "lm_head",
+    }
+    assert {
+        name: module.projection_role(name) for name in names
+    } == names
+    with mock.patch.object(module.time, "perf_counter_ns", side_effect=(10, 20)):
+        original = module.Qwen38CQ3AlignedTensor.gemv_q8
+        records: list[dict] = []
+        with module.profile_aligned_gemv(records):
+            assert module.Qwen38CQ3AlignedTensor.gemv_q8 is not original
+        assert module.Qwen38CQ3AlignedTensor.gemv_q8 is original
 
 
 def test_qwen38_service_commit_chain_is_monotonic() -> None:
