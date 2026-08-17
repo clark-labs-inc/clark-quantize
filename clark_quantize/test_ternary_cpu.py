@@ -5,7 +5,14 @@ import unittest
 import numpy as np
 
 from clark_quantize import ternary_cpu
-from clark_quantize.base3_block203 import pack_row, row_payload_bits, row_payload_bytes
+from clark_quantize.base3_block203 import (
+    matrix_payload_bits,
+    matrix_payload_bytes,
+    pack_row,
+    pack_rows,
+    row_payload_bits,
+    row_payload_bytes,
+)
 
 
 class TernaryCpuPackingTests(unittest.TestCase):
@@ -47,6 +54,39 @@ class TernaryCpuPackingTests(unittest.TestCase):
         padding[-1] |= np.uint8(0x80)
         with self.assertRaisesRegex(ValueError, "canonical|code|padding"):
             ternary_cpu.unpack_block203(padding, 1)
+
+    def test_block203_matrix_is_byte_identical_with_per_row_group_resets(self) -> None:
+        generator = np.random.default_rng(20260817)
+        for rows, columns in ((3, 1), (5, 2), (3, 5), (2, 127), (3, 128),
+                              (4, 129), (2, 255), (3, 256), (2, 4097)):
+            codes = generator.integers(-1, 2, size=(rows, columns), dtype=np.int8)
+            packed = ternary_cpu.pack_block203_rows(codes)
+            self.assertEqual(packed.tobytes(), pack_rows(codes))
+            self.assertEqual(
+                ternary_cpu.block203_matrix_size(rows, columns),
+                (matrix_payload_bits(rows, columns), matrix_payload_bytes(rows, columns)),
+            )
+            np.testing.assert_array_equal(
+                ternary_cpu.unpack_block203_rows(packed, rows, columns), codes,
+            )
+        self.assertEqual(ternary_cpu.pack_block203_rows(
+            np.zeros((3, 1), dtype=np.int8)
+        ).size, 1)
+
+    def test_block203_matrix_rejects_padding_and_bad_shapes(self) -> None:
+        packed = ternary_cpu.pack_block203_rows(np.zeros((3, 1), dtype=np.int8))
+        packed[0] |= np.uint8(0x80)
+        with self.assertRaisesRegex(ValueError, "canonical|code|padding"):
+            ternary_cpu.unpack_block203_rows(packed, 3, 1)
+        with self.assertRaises(ValueError):
+            ternary_cpu.pack_block203_rows(np.zeros(3, dtype=np.int8))
+        noncanonical_value = (3**128) << row_payload_bits(128)
+        noncanonical = np.frombuffer(
+            noncanonical_value.to_bytes(matrix_payload_bytes(2, 128), "little"),
+            dtype=np.uint8,
+        ).copy()
+        with self.assertRaisesRegex(ValueError, "canonical|code"):
+            ternary_cpu.unpack_block203_rows(noncanonical, 2, 128)
 
     def test_aligned2_roundtrip_including_partial_bytes(self) -> None:
         generator = np.random.default_rng(20260817)

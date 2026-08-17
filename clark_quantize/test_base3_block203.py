@@ -10,10 +10,14 @@ from clark_quantize.base3_block203 import (
     GROUP_TRITS,
     bits_for_trits,
     metadata,
+    matrix_payload_bits,
+    matrix_payload_bytes,
     pack_row,
+    pack_rows,
     row_payload_bits,
     row_payload_bytes,
     unpack_row,
+    unpack_rows,
 )
 
 
@@ -76,6 +80,29 @@ class Base3Block203Tests(unittest.TestCase):
         self.assertEqual(result["payload_bits"], 8120)
         self.assertEqual(result["payload_bytes"], 1015)
         self.assertEqual(result["payload_bits_per_trit"], 203 / 128)
+
+    def test_matrix_rows_reset_groups_without_interrow_byte_padding(self) -> None:
+        generator = np.random.default_rng(20260817)
+        for rows, columns in ((3, 1), (5, 2), (3, 5), (2, 127), (3, 128),
+                              (4, 129), (2, 255), (3, 256), (2, 4097)):
+            codes = generator.integers(-1, 2, size=(rows, columns), dtype=np.int8)
+            payload = pack_rows(codes)
+            self.assertEqual(len(payload), matrix_payload_bytes(rows, columns))
+            self.assertEqual(
+                matrix_payload_bits(rows, columns), rows * row_payload_bits(columns),
+            )
+            np.testing.assert_array_equal(unpack_rows(payload, rows, columns), codes)
+        self.assertEqual(len(pack_rows(np.zeros((3, 1), dtype=np.int8))), 1)
+
+    def test_matrix_padding_and_dimensions_are_canonical(self) -> None:
+        payload = bytearray(pack_rows(np.zeros((3, 1), dtype=np.int8)))
+        payload[0] |= 0x80
+        with self.assertRaisesRegex(ValueError, "padding"):
+            unpack_rows(payload, 3, 1)
+        with self.assertRaises(ValueError):
+            pack_rows(np.zeros(3, dtype=np.int8))
+        with self.assertRaises(ValueError):
+            matrix_payload_bits(1, 0)
 
 
 if __name__ == "__main__":

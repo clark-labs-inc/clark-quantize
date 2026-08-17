@@ -39,6 +39,18 @@ def row_payload_bytes(count: int) -> int:
     return math.ceil(row_payload_bits(count) / 8)
 
 
+def matrix_payload_bits(rows: int, columns: int) -> int:
+    if rows < 0 or columns < 0:
+        raise ValueError("matrix dimensions must be non-negative")
+    if (rows == 0) != (columns == 0):
+        raise ValueError("matrix dimensions must both be zero or both be positive")
+    return rows * row_payload_bits(columns)
+
+
+def matrix_payload_bytes(rows: int, columns: int) -> int:
+    return math.ceil(matrix_payload_bits(rows, columns) / 8)
+
+
 def _codes(codes: np.ndarray | Iterable[int]) -> np.ndarray:
     source = np.asarray(codes).reshape(-1)
     if source.size and not np.all((source == -1) | (source == 0) | (source == 1)):
@@ -124,6 +136,86 @@ def unpack_row(payload: bytes | bytearray | memoryview, count: int) -> np.ndarra
         output_cursor += group_count
     if accumulator or cursor != len(content):
         raise ValueError("base-3 row has trailing non-canonical data")
+    return output
+
+
+def _copy_bits(
+    source: bytes | bytearray | memoryview,
+    source_bits: int,
+    destination: bytearray,
+    destination_cursor: int,
+) -> int:
+    source_cursor = 0
+    while source_cursor < source_bits:
+        source_shift = source_cursor % 8
+        destination_shift = destination_cursor % 8
+        take = min(
+            source_bits - source_cursor,
+            8 - source_shift,
+            8 - destination_shift,
+        )
+        mask = (1 << take) - 1
+        value = (source[source_cursor // 8] >> source_shift) & mask
+        destination[destination_cursor // 8] |= value << destination_shift
+        source_cursor += take
+        destination_cursor += take
+    return destination_cursor
+
+
+def pack_rows(codes: np.ndarray | Iterable[Iterable[int]]) -> bytes:
+    """Pack a matrix with per-row group resets and no padding between rows."""
+    values = np.asarray(codes)
+    if values.ndim != 2:
+        raise ValueError("base-3 matrix codes must be two-dimensional")
+    rows, columns = values.shape
+    if rows == 0 or columns == 0:
+        raise ValueError("base-3 matrix dimensions must be positive")
+    output = bytearray(matrix_payload_bytes(rows, columns))
+    cursor = 0
+    row_bits = row_payload_bits(columns)
+    for row in values:
+        cursor = _copy_bits(pack_row(row), row_bits, output, cursor)
+    if cursor != matrix_payload_bits(rows, columns):
+        raise AssertionError("base-3 matrix encoder emitted an unexpected bit count")
+    return bytes(output)
+
+
+def unpack_rows(
+    payload: bytes | bytearray | memoryview,
+    rows: int,
+    columns: int,
+) -> np.ndarray:
+    """Decode a bit-contiguous matrix whose base-3 groups reset every row."""
+    expected = matrix_payload_bytes(rows, columns)
+    content = bytes(payload)
+    if rows <= 0 or columns <= 0 or len(content) != expected:
+        raise ValueError("base-3 matrix dimensions or payload length do not match")
+    meaningful_bits = matrix_payload_bits(rows, columns)
+    unused_bits = len(content) * 8 - meaningful_bits
+    if unused_bits and content[-1] >> (8 - unused_bits):
+        raise ValueError("non-zero padding bits in base-3 matrix")
+    output = np.empty((rows, columns), dtype=np.int8)
+    row_bits = row_payload_bits(columns)
+    source_cursor = 0
+    for row in range(rows):
+        row_payload = bytearray(row_payload_bytes(columns))
+        destination_cursor = 0
+        while destination_cursor < row_bits:
+            source_shift = source_cursor % 8
+            destination_shift = destination_cursor % 8
+            take = min(
+                row_bits - destination_cursor,
+                8 - source_shift,
+                8 - destination_shift,
+            )
+            mask = (1 << take) - 1
+            value = (content[source_cursor // 8] >> source_shift) & mask
+            row_payload[destination_cursor // 8] |= value << destination_shift
+            source_cursor += take
+            destination_cursor += take
+        output[row] = unpack_row(row_payload, columns)
+    if source_cursor != meaningful_bits:
+        raise AssertionError("base-3 matrix decoder consumed an unexpected bit count")
     return output
 
 

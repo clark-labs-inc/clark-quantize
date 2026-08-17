@@ -43,6 +43,9 @@ def _load_library() -> ctypes.CDLL | None:
             library.cq3_block203_size
             library.cq3_pack_block203
             library.cq3_unpack_block203
+            library.cq3_block203_matrix_size
+            library.cq3_pack_block203_rows
+            library.cq3_unpack_block203_rows
         except AttributeError:
             # A stale library must not make the Python module unimportable.
             # The exact storage codec is part of this ABI revision, so use the
@@ -69,6 +72,21 @@ def _load_library() -> ctypes.CDLL | None:
             u8p, ctypes.c_uint64, ctypes.c_uint64, i8p,
         )
         library.cq3_unpack_block203.restype = ctypes.c_int
+        library.cq3_block203_matrix_size.argtypes = (
+            ctypes.c_uint64,
+            ctypes.c_uint64,
+            ctypes.POINTER(ctypes.c_uint64),
+            ctypes.POINTER(ctypes.c_uint64),
+        )
+        library.cq3_block203_matrix_size.restype = ctypes.c_int
+        library.cq3_pack_block203_rows.argtypes = (
+            i8p, ctypes.c_uint64, ctypes.c_uint64, u8p, ctypes.c_uint64,
+        )
+        library.cq3_pack_block203_rows.restype = ctypes.c_int
+        library.cq3_unpack_block203_rows.argtypes = (
+            u8p, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, i8p,
+        )
+        library.cq3_unpack_block203_rows.restype = ctypes.c_int
         library.cq3_pack_aligned2.argtypes = (i8p, ctypes.c_uint64, u8p)
         library.cq3_pack_aligned2.restype = ctypes.c_int
         library.cq3_unpack_aligned2.argtypes = (u8p, ctypes.c_uint64, i8p)
@@ -216,6 +234,73 @@ def unpack_block203(packed: np.ndarray, count: int) -> np.ndarray:
         output.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
     )
     _check(status, "block-203 unpack")
+    return output
+
+
+def block203_matrix_size(rows: int, columns: int) -> tuple[int, int]:
+    """Return exact bits/bytes for per-row groups in one bit-contiguous matrix."""
+    if rows <= 0 or columns <= 0:
+        raise ValueError("block-203 matrix dimensions must be positive")
+    if _LIBRARY is None:
+        from .base3_block203 import matrix_payload_bits, matrix_payload_bytes
+
+        return matrix_payload_bits(rows, columns), matrix_payload_bytes(rows, columns)
+    bits = ctypes.c_uint64()
+    size = ctypes.c_uint64()
+    status = _LIBRARY.cq3_block203_matrix_size(
+        rows, columns, ctypes.byref(bits), ctypes.byref(size)
+    )
+    _check(status, "block-203 matrix size")
+    return int(bits.value), int(size.value)
+
+
+def pack_block203_rows(codes: np.ndarray) -> np.ndarray:
+    """Pack a matrix with group boundaries reset per row and no row padding."""
+    values = np.asarray(codes)
+    if values.ndim != 2 or values.shape[0] == 0 or values.shape[1] == 0:
+        raise ValueError("block-203 matrix codes must have two positive dimensions")
+    if not np.all((values == -1) | (values == 0) | (values == 1)):
+        raise ValueError("ternary codes must be in {-1, 0, +1}")
+    source = np.ascontiguousarray(values, dtype=np.int8)
+    rows, columns = source.shape
+    _, output_bytes = block203_matrix_size(rows, columns)
+    if _LIBRARY is None:
+        from .base3_block203 import pack_rows
+
+        return np.frombuffer(pack_rows(source), dtype=np.uint8).copy()
+    output = np.empty(output_bytes, dtype=np.uint8)
+    status = _LIBRARY.cq3_pack_block203_rows(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+        rows,
+        columns,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        output.size,
+    )
+    _check(status, "block-203 matrix pack")
+    return output
+
+
+def unpack_block203_rows(
+    packed: np.ndarray, rows: int, columns: int
+) -> np.ndarray:
+    """Decode a bit-contiguous matrix whose group boundaries reset per row."""
+    source = _array(packed, np.uint8).reshape(-1)
+    _, expected_bytes = block203_matrix_size(rows, columns)
+    if source.size != expected_bytes:
+        raise ValueError("block-203 matrix dimensions do not match")
+    if _LIBRARY is None:
+        from .base3_block203 import unpack_rows
+
+        return unpack_rows(source.tobytes(), rows, columns)
+    output = np.empty((rows, columns), dtype=np.int8)
+    status = _LIBRARY.cq3_unpack_block203_rows(
+        source.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8)),
+        source.size,
+        rows,
+        columns,
+        output.ctypes.data_as(ctypes.POINTER(ctypes.c_int8)),
+    )
+    _check(status, "block-203 matrix unpack")
     return output
 
 

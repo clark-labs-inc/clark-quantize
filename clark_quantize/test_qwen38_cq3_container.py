@@ -6,7 +6,7 @@ import unittest
 
 import numpy as np
 
-from clark_quantize.base3_block203 import pack_row, unpack_row
+from clark_quantize.base3_block203 import pack_rows, unpack_rows
 from clark_quantize.qwen38_cq3_container import (
     CQ3ContainerError,
     HEADER_BYTES,
@@ -34,7 +34,7 @@ class Qwen38CQ3ContainerTests(unittest.TestCase):
             parameter_count=258,
         ) as writer:
             writer.add_section(
-                "matrix.codes", "ternary_block203", pack_row(codes),
+                "matrix.codes", "ternary_block203", pack_rows(codes.reshape(2, 128)),
                 metadata={"trits": 256, "group_bits": 203},
             )
             writer.add_section(
@@ -92,7 +92,8 @@ class Qwen38CQ3ContainerTests(unittest.TestCase):
                 self.assertEqual(reader.header["parameter_count"], 258)
                 self.assertEqual(len(reader.directory["tensors"]), 2)
                 np.testing.assert_array_equal(
-                    unpack_row(reader.read_section("matrix.codes"), 256), codes,
+                    unpack_rows(reader.read_section("matrix.codes"), 2, 128).reshape(-1),
+                    codes,
                 )
                 np.testing.assert_array_equal(
                     unpack_nibbles(

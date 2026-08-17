@@ -121,6 +121,31 @@ int cq3_block203_size(
     return CQ3_OK;
 }
 
+int cq3_block203_matrix_size(
+    uint64_t rows,
+    uint64_t columns,
+    uint64_t *payload_bits,
+    uint64_t *payload_bytes
+) {
+    if (payload_bits == NULL || payload_bytes == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    if (rows == 0U || columns == 0U || rows > UINT64_MAX / columns) {
+        return CQ3_ERROR_SHAPE;
+    }
+    uint64_t row_bits = 0U;
+    uint64_t row_bytes = 0U;
+    const int status = cq3_block203_size(columns, &row_bits, &row_bytes);
+    (void)row_bytes;
+    if (status != CQ3_OK || rows > UINT64_MAX / row_bits) {
+        return CQ3_ERROR_SHAPE;
+    }
+    const uint64_t bits = rows * row_bits;
+    *payload_bits = bits;
+    *payload_bytes = bits / 8U + (bits % 8U != 0U ? 1U : 0U);
+    return CQ3_OK;
+}
+
 static const uint16_t cq3_block203_powers3[6] = {1U, 3U, 9U, 27U, 81U, 243U};
 
 static int cq3_block203_mul_small_add(
@@ -155,6 +180,60 @@ static uint32_t cq3_block203_divmod_small(
 
 static int cq3_block203_is_zero(const uint64_t limbs[4]) {
     return (limbs[0] | limbs[1] | limbs[2] | limbs[3]) == 0U;
+}
+
+static int cq3_block203_encode_group(
+    const int8_t *codes,
+    uint32_t count,
+    uint64_t limbs[4]
+) {
+    uint32_t chunk_count = count % 5U;
+    if (chunk_count == 0U) {
+        chunk_count = 5U;
+    }
+    uint32_t chunk_start = count - chunk_count;
+    while (1) {
+        uint32_t chunk_value = 0U;
+        for (uint32_t lane = 0U; lane < chunk_count; ++lane) {
+            const int code = (int)codes[chunk_start + lane];
+            if (code < -1 || code > 1) {
+                return CQ3_ERROR_CODE;
+            }
+            chunk_value += (uint32_t)(code + 1) * cq3_block203_powers3[lane];
+        }
+        const int status = cq3_block203_mul_small_add(
+            limbs, cq3_block203_powers3[chunk_count], chunk_value
+        );
+        if (status != CQ3_OK) {
+            return status;
+        }
+        if (chunk_start == 0U) {
+            return CQ3_OK;
+        }
+        chunk_count = 5U;
+        chunk_start -= chunk_count;
+    }
+}
+
+static int cq3_block203_decode_group(
+    uint64_t limbs[4],
+    uint32_t count,
+    int8_t *codes
+) {
+    for (uint32_t index = 0U; index < count; index += 5U) {
+        const uint32_t chunk_count = count - index < 5U ? count - index : 5U;
+        uint32_t chunk_value = cq3_block203_divmod_small(
+            limbs, cq3_block203_powers3[chunk_count]
+        );
+        for (uint32_t lane = 0U; lane < chunk_count; ++lane) {
+            codes[index + lane] = (int8_t)(chunk_value % 3U) - 1;
+            chunk_value /= 3U;
+        }
+        if (chunk_value != 0U) {
+            return CQ3_ERROR_CODE;
+        }
+    }
+    return cq3_block203_is_zero(limbs) ? CQ3_OK : CQ3_ERROR_CODE;
 }
 
 static void cq3_block203_write_bits(
@@ -244,31 +323,9 @@ int cq3_pack_block203(
                 : CQ3_BLOCK203_TRITS_PER_GROUP
         );
         uint64_t limbs[4] = {0U, 0U, 0U, 0U};
-        uint32_t chunk_count = group_count % 5U;
-        if (chunk_count == 0U) {
-            chunk_count = 5U;
-        }
-        uint32_t chunk_start = group_count - chunk_count;
-        while (1) {
-            uint32_t chunk_value = 0U;
-            for (uint32_t lane = 0U; lane < chunk_count; ++lane) {
-                const int code = (int)codes[start + chunk_start + lane];
-                if (code < -1 || code > 1) {
-                    return CQ3_ERROR_CODE;
-                }
-                chunk_value += (uint32_t)(code + 1) * cq3_block203_powers3[lane];
-            }
-            status = cq3_block203_mul_small_add(
-                limbs, cq3_block203_powers3[chunk_count], chunk_value
-            );
-            if (status != CQ3_OK) {
-                return status;
-            }
-            if (chunk_start == 0U) {
-                break;
-            }
-            chunk_count = 5U;
-            chunk_start -= chunk_count;
+        status = cq3_block203_encode_group(codes + start, group_count, limbs);
+        if (status != CQ3_OK) {
+            return status;
         }
         cq3_block203_write_bits(
             limbs,
@@ -318,22 +375,113 @@ int cq3_unpack_block203(
             &payload_cursor,
             limbs
         );
-        for (uint32_t index = 0U; index < group_count; index += 5U) {
-            const uint32_t chunk_count =
-                group_count - index < 5U ? group_count - index : 5U;
-            uint32_t chunk_value = cq3_block203_divmod_small(
-                limbs, cq3_block203_powers3[chunk_count]
-            );
-            for (uint32_t lane = 0U; lane < chunk_count; ++lane) {
-                codes[start + index + lane] = (int8_t)(chunk_value % 3U) - 1;
-                chunk_value /= 3U;
-            }
-            if (chunk_value != 0U) {
-                return CQ3_ERROR_CODE;
-            }
+        status = cq3_block203_decode_group(limbs, group_count, codes + start);
+        if (status != CQ3_OK) {
+            return status;
         }
-        if (!cq3_block203_is_zero(limbs)) {
-            return CQ3_ERROR_CODE;
+    }
+    return payload_cursor == payload_bits ? CQ3_OK : CQ3_ERROR_SHAPE;
+}
+
+int cq3_pack_block203_rows(
+    const int8_t *codes,
+    uint64_t rows,
+    uint64_t columns,
+    uint8_t *packed,
+    uint64_t packed_bytes
+) {
+    uint64_t payload_bits = 0U;
+    uint64_t expected_bytes = 0U;
+    int status = cq3_block203_matrix_size(
+        rows, columns, &payload_bits, &expected_bytes
+    );
+    if (status != CQ3_OK) {
+        return status;
+    }
+    if (packed_bytes != expected_bytes) {
+        return CQ3_ERROR_SHAPE;
+    }
+    if (codes == NULL || packed == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    memset(packed, 0, packed_bytes);
+    uint64_t payload_cursor = 0U;
+    for (uint64_t row = 0U; row < rows; ++row) {
+        const uint64_t row_offset = row * columns;
+        for (uint64_t column = 0U; column < columns;
+                column += CQ3_BLOCK203_TRITS_PER_GROUP) {
+            const uint32_t group_count = (uint32_t)(
+                columns - column < CQ3_BLOCK203_TRITS_PER_GROUP
+                    ? columns - column
+                    : CQ3_BLOCK203_TRITS_PER_GROUP
+            );
+            uint64_t limbs[4] = {0U, 0U, 0U, 0U};
+            status = cq3_block203_encode_group(
+                codes + row_offset + column, group_count, limbs
+            );
+            if (status != CQ3_OK) {
+                return status;
+            }
+            cq3_block203_write_bits(
+                limbs,
+                cq3_block203_tail_bits[group_count],
+                packed,
+                &payload_cursor
+            );
+        }
+    }
+    return payload_cursor == payload_bits ? CQ3_OK : CQ3_ERROR_SHAPE;
+}
+
+int cq3_unpack_block203_rows(
+    const uint8_t *packed,
+    uint64_t packed_bytes,
+    uint64_t rows,
+    uint64_t columns,
+    int8_t *codes
+) {
+    uint64_t payload_bits = 0U;
+    uint64_t expected_bytes = 0U;
+    int status = cq3_block203_matrix_size(
+        rows, columns, &payload_bits, &expected_bytes
+    );
+    if (status != CQ3_OK) {
+        return status;
+    }
+    if (packed_bytes != expected_bytes) {
+        return CQ3_ERROR_SHAPE;
+    }
+    if (packed == NULL || codes == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    const uint32_t unused_bits = (uint32_t)(expected_bytes * 8U - payload_bits);
+    if (unused_bits != 0U &&
+            (packed[expected_bytes - 1U] >> (8U - unused_bits)) != 0U) {
+        return CQ3_ERROR_CODE;
+    }
+    uint64_t payload_cursor = 0U;
+    for (uint64_t row = 0U; row < rows; ++row) {
+        const uint64_t row_offset = row * columns;
+        for (uint64_t column = 0U; column < columns;
+                column += CQ3_BLOCK203_TRITS_PER_GROUP) {
+            const uint32_t group_count = (uint32_t)(
+                columns - column < CQ3_BLOCK203_TRITS_PER_GROUP
+                    ? columns - column
+                    : CQ3_BLOCK203_TRITS_PER_GROUP
+            );
+            uint64_t limbs[4] = {0U, 0U, 0U, 0U};
+            cq3_block203_read_bits(
+                packed,
+                cq3_block203_tail_bits[group_count],
+                &payload_cursor,
+                limbs
+            );
+            status = cq3_block203_decode_group(
+                limbs, group_count, codes + row_offset + column
+            );
+            if (status != CQ3_OK) {
+                return status;
+            }
         }
     }
     return payload_cursor == payload_bits ? CQ3_OK : CQ3_ERROR_SHAPE;
