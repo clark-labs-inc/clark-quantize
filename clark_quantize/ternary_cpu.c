@@ -10,6 +10,23 @@
 #define CQ3_X86 0
 #endif
 
+#if defined(__aarch64__) || defined(_M_ARM64)
+#define CQ3_ARM64 1
+#include <arm_neon.h>
+#if defined(__APPLE__)
+#include <sys/sysctl.h>
+#elif defined(__linux__)
+#include <sys/auxv.h>
+#if defined(__has_include)
+#if __has_include(<asm/hwcap.h>)
+#include <asm/hwcap.h>
+#endif
+#endif
+#endif
+#else
+#define CQ3_ARM64 0
+#endif
+
 #define CQ3_MAX_GROUPS_PER_ROW 256U
 #define CQ3_RADIX5_BYTES_PER_GROUP 26U
 #define CQ3_RADIX5_SEGMENTS_PADDED 28U
@@ -71,7 +88,30 @@ enum {
     CQ3_FEATURE_AVX2 = 1,
     CQ3_FEATURE_F16C = 2,
     CQ3_FEATURE_FMA = 4,
+    CQ3_FEATURE_NEON = 8,
+    CQ3_FEATURE_DOTPROD = 16,
 };
+
+#if CQ3_ARM64
+static int cq3_arm_dotprod_available(void) {
+#if defined(__APPLE__)
+    int available = 0;
+    size_t size = sizeof(available);
+    if (sysctlbyname(
+            "hw.optional.arm.FEAT_DotProd", &available, &size, NULL, 0
+        ) == 0) {
+        return available != 0;
+    }
+    return 0;
+#elif defined(__linux__) && defined(AT_HWCAP) && defined(HWCAP_ASIMDDP)
+    return (getauxval(AT_HWCAP) & HWCAP_ASIMDDP) != 0UL;
+#elif defined(__ARM_FEATURE_DOTPROD)
+    return 1;
+#else
+    return 0;
+#endif
+}
+#endif
 
 uint32_t cq3_cpu_features(void) {
 #if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
@@ -80,6 +120,10 @@ uint32_t cq3_cpu_features(void) {
     features |= __builtin_cpu_supports("avx2") ? CQ3_FEATURE_AVX2 : 0U;
     features |= __builtin_cpu_supports("f16c") ? CQ3_FEATURE_F16C : 0U;
     features |= __builtin_cpu_supports("fma") ? CQ3_FEATURE_FMA : 0U;
+    return features;
+#elif CQ3_ARM64
+    uint32_t features = CQ3_FEATURE_NEON;
+    features |= cq3_arm_dotprod_available() ? CQ3_FEATURE_DOTPROD : 0U;
     return features;
 #else
     return 0U;
@@ -113,6 +157,14 @@ static float cq3_half_to_float(uint16_t value) {
     memcpy(&output, &bits, sizeof(output));
     return output;
 }
+
+#if CQ3_ARM64 && defined(__ARM_FEATURE_FP16_SCALAR_ARITHMETIC)
+static inline float cq3_half_to_float_arm(uint16_t value) {
+    float16_t half;
+    memcpy(&half, &value, sizeof(half));
+    return (float)half;
+}
+#endif
 
 int cq3_pack_aligned2(
     const int8_t *codes,
@@ -558,6 +610,437 @@ int cq3_gemv_q8_group128_2bit_avx2(
     return cq3_gemv_q8_group128_2bit_avx2_impl(
         weights, weight_scales, activation, activation_scales,
         activation_sums, rows, columns, group_size, output
+    );
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
+#if CQ3_ARM64 && defined(__ARM_FEATURE_DOTPROD)
+static inline int32x4_t cq3_arm_dot_group128(
+    const uint8_t *packed_group,
+    uint8x16_t mask,
+    int8x16_t x0,
+    int8x16_t x1,
+    int8x16_t x2,
+    int8x16_t x3,
+    int8x16_t x4,
+    int8x16_t x5,
+    int8x16_t x6,
+    int8x16_t x7
+) {
+    const uint8x16_t packed0 = vld1q_u8(packed_group);
+    const uint8x16_t packed1 = vld1q_u8(packed_group + 16U);
+    int32x4_t dot = vdupq_n_s32(0);
+    dot = vdotq_s32(
+        dot, vreinterpretq_s8_u8(vandq_u8(packed0, mask)), x0
+    );
+    dot = vdotq_s32(
+        dot, vreinterpretq_s8_u8(vandq_u8(packed1, mask)), x1
+    );
+    dot = vdotq_s32(
+        dot,
+        vreinterpretq_s8_u8(vandq_u8(vshrq_n_u8(packed0, 2), mask)),
+        x2
+    );
+    dot = vdotq_s32(
+        dot,
+        vreinterpretq_s8_u8(vandq_u8(vshrq_n_u8(packed1, 2), mask)),
+        x3
+    );
+    dot = vdotq_s32(
+        dot,
+        vreinterpretq_s8_u8(vandq_u8(vshrq_n_u8(packed0, 4), mask)),
+        x4
+    );
+    dot = vdotq_s32(
+        dot,
+        vreinterpretq_s8_u8(vandq_u8(vshrq_n_u8(packed1, 4), mask)),
+        x5
+    );
+    dot = vdotq_s32(
+        dot,
+        vreinterpretq_s8_u8(vandq_u8(vshrq_n_u8(packed0, 6), mask)),
+        x6
+    );
+    return vdotq_s32(
+        dot,
+        vreinterpretq_s8_u8(vandq_u8(vshrq_n_u8(packed1, 6), mask)),
+        x7
+    );
+}
+
+static inline float cq3_arm_reduce_f32(float32x4_t value) {
+    float32x2_t horizontal = vadd_f32(
+        vget_low_f32(value), vget_high_f32(value)
+    );
+    horizontal = vpadd_f32(horizontal, horizontal);
+    return vget_lane_f32(horizontal, 0);
+}
+
+static int cq3_gemv_q8_group128_2bit_arm_dotprod_impl(
+    const uint8_t *CQ3_RESTRICT weights,
+    const uint16_t *CQ3_RESTRICT weight_scales,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    uint32_t group_size,
+    float *CQ3_RESTRICT output
+) {
+    (void)group_size;
+    const uint64_t groups = columns / 128U;
+    const uint64_t row_bytes = columns / 4U;
+    const uint8x16_t mask = vdupq_n_u8(3U);
+    uint64_t row = 0U;
+    for (; row + 4U <= rows; row += 4U) {
+        float32x4_t total0 = vdupq_n_f32(0.0f);
+        float32x4_t total1 = vdupq_n_f32(0.0f);
+        float32x4_t total2 = vdupq_n_f32(0.0f);
+        float32x4_t total3 = vdupq_n_f32(0.0f);
+        for (uint64_t group = 0U; group < groups; ++group) {
+            const int8_t *x = activation + group * 128U;
+            const int8x16_t x0 = vld1q_s8(x);
+            const int8x16_t x1 = vld1q_s8(x + 16U);
+            const int8x16_t x2 = vld1q_s8(x + 32U);
+            const int8x16_t x3 = vld1q_s8(x + 48U);
+            const int8x16_t x4 = vld1q_s8(x + 64U);
+            const int8x16_t x5 = vld1q_s8(x + 80U);
+            const int8x16_t x6 = vld1q_s8(x + 96U);
+            const int8x16_t x7 = vld1q_s8(x + 112U);
+            int32x4_t dot0 = cq3_arm_dot_group128(
+                weights + (row + 0U) * row_bytes + group * 32U,
+                mask, x0, x1, x2, x3, x4, x5, x6, x7
+            );
+            int32x4_t dot1 = cq3_arm_dot_group128(
+                weights + (row + 1U) * row_bytes + group * 32U,
+                mask, x0, x1, x2, x3, x4, x5, x6, x7
+            );
+            int32x4_t dot2 = cq3_arm_dot_group128(
+                weights + (row + 2U) * row_bytes + group * 32U,
+                mask, x0, x1, x2, x3, x4, x5, x6, x7
+            );
+            int32x4_t dot3 = cq3_arm_dot_group128(
+                weights + (row + 3U) * row_bytes + group * 32U,
+                mask, x0, x1, x2, x3, x4, x5, x6, x7
+            );
+            const int32_t activation_sum = activation_sums[group];
+            dot0 = vsetq_lane_s32(vgetq_lane_s32(dot0, 0) - activation_sum, dot0, 0);
+            dot1 = vsetq_lane_s32(vgetq_lane_s32(dot1, 0) - activation_sum, dot1, 0);
+            dot2 = vsetq_lane_s32(vgetq_lane_s32(dot2, 0) - activation_sum, dot2, 0);
+            dot3 = vsetq_lane_s32(vgetq_lane_s32(dot3, 0) - activation_sum, dot3, 0);
+            const float activation_scale = activation_scales[group];
+            total0 = vfmaq_n_f32(
+                total0, vcvtq_f32_s32(dot0),
+                cq3_half_to_float_arm(weight_scales[(row + 0U) * groups + group])
+                    * activation_scale
+            );
+            total1 = vfmaq_n_f32(
+                total1, vcvtq_f32_s32(dot1),
+                cq3_half_to_float_arm(weight_scales[(row + 1U) * groups + group])
+                    * activation_scale
+            );
+            total2 = vfmaq_n_f32(
+                total2, vcvtq_f32_s32(dot2),
+                cq3_half_to_float_arm(weight_scales[(row + 2U) * groups + group])
+                    * activation_scale
+            );
+            total3 = vfmaq_n_f32(
+                total3, vcvtq_f32_s32(dot3),
+                cq3_half_to_float_arm(weight_scales[(row + 3U) * groups + group])
+                    * activation_scale
+            );
+        }
+        output[row + 0U] = cq3_arm_reduce_f32(total0);
+        output[row + 1U] = cq3_arm_reduce_f32(total1);
+        output[row + 2U] = cq3_arm_reduce_f32(total2);
+        output[row + 3U] = cq3_arm_reduce_f32(total3);
+    }
+    for (; row < rows; ++row) {
+        float32x4_t total = vdupq_n_f32(0.0f);
+        for (uint64_t group = 0U; group < groups; ++group) {
+            const int8_t *x = activation + group * 128U;
+            int32x4_t dot = cq3_arm_dot_group128(
+                weights + row * row_bytes + group * 32U,
+                mask,
+                vld1q_s8(x), vld1q_s8(x + 16U),
+                vld1q_s8(x + 32U), vld1q_s8(x + 48U),
+                vld1q_s8(x + 64U), vld1q_s8(x + 80U),
+                vld1q_s8(x + 96U), vld1q_s8(x + 112U)
+            );
+            dot = vsetq_lane_s32(
+                vgetq_lane_s32(dot, 0) - activation_sums[group], dot, 0
+            );
+            total = vfmaq_n_f32(
+                total, vcvtq_f32_s32(dot),
+                cq3_half_to_float_arm(weight_scales[row * groups + group])
+                    * activation_scales[group]
+            );
+        }
+        output[row] = cq3_arm_reduce_f32(total);
+    }
+    return CQ3_OK;
+}
+#endif
+
+int cq3_gemv_q8_group128_2bit_arm_dotprod(
+    const uint8_t *CQ3_RESTRICT weights,
+    const uint16_t *CQ3_RESTRICT weight_scales,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    uint32_t group_size,
+    float *CQ3_RESTRICT output
+) {
+    if (activation_sums == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    const int validation = cq3_validate_gemv(
+        weights, weight_scales, activation, activation_scales,
+        output, rows, columns, group_size
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_ARM64 && defined(__ARM_FEATURE_DOTPROD)
+    if (!cq3_arm_dotprod_available()) {
+        return CQ3_ERROR_ISA;
+    }
+    return cq3_gemv_q8_group128_2bit_arm_dotprod_impl(
+        weights, weight_scales, activation, activation_scales,
+        activation_sums, rows, columns, group_size, output
+    );
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
+int cq3_swiglu_f32(
+    const float *gate,
+    const float *up,
+    uint64_t count,
+    float *output
+) {
+    if (gate == NULL || up == NULL || output == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    for (uint64_t index = 0U; index < count; ++index) {
+        if (!isfinite(gate[index]) || !isfinite(up[index])) {
+            return CQ3_ERROR_NONFINITE;
+        }
+        output[index] =
+            (gate[index] / (1.0f + expf(-gate[index]))) * up[index];
+    }
+    return CQ3_OK;
+}
+
+#if CQ3_ARM64 && defined(__ARM_FEATURE_DOTPROD)
+static inline float32x4_t cq3_arm_accumulate_group128(
+    float32x4_t total,
+    const uint8_t *packed_group,
+    uint16_t weight_scale,
+    float activation_scale,
+    int32_t activation_sum,
+    uint8x16_t mask,
+    int8x16_t x0,
+    int8x16_t x1,
+    int8x16_t x2,
+    int8x16_t x3,
+    int8x16_t x4,
+    int8x16_t x5,
+    int8x16_t x6,
+    int8x16_t x7
+) {
+    int32x4_t dot = cq3_arm_dot_group128(
+        packed_group, mask, x0, x1, x2, x3, x4, x5, x6, x7
+    );
+    dot = vsetq_lane_s32(
+        vgetq_lane_s32(dot, 0) - activation_sum, dot, 0
+    );
+    return vfmaq_n_f32(
+        total, vcvtq_f32_s32(dot),
+        cq3_half_to_float_arm(weight_scale) * activation_scale
+    );
+}
+
+static int cq3_gemv_q8_group128_2bit_swiglu_arm_dotprod_impl(
+    const uint8_t *CQ3_RESTRICT gate_weights,
+    const uint16_t *CQ3_RESTRICT gate_scales,
+    const uint8_t *CQ3_RESTRICT up_weights,
+    const uint16_t *CQ3_RESTRICT up_scales,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    float *CQ3_RESTRICT output
+) {
+    const uint64_t groups = columns / 128U;
+    const uint64_t row_bytes = columns / 4U;
+    const uint8x16_t mask = vdupq_n_u8(3U);
+    uint64_t row = 0U;
+    for (; row + 4U <= rows; row += 4U) {
+        float32x4_t gate0 = vdupq_n_f32(0.0f);
+        float32x4_t gate1 = vdupq_n_f32(0.0f);
+        float32x4_t gate2 = vdupq_n_f32(0.0f);
+        float32x4_t gate3 = vdupq_n_f32(0.0f);
+        float32x4_t up0 = vdupq_n_f32(0.0f);
+        float32x4_t up1 = vdupq_n_f32(0.0f);
+        float32x4_t up2 = vdupq_n_f32(0.0f);
+        float32x4_t up3 = vdupq_n_f32(0.0f);
+        for (uint64_t group = 0U; group < groups; ++group) {
+            const int8_t *x = activation + group * 128U;
+            const int8x16_t x0 = vld1q_s8(x);
+            const int8x16_t x1 = vld1q_s8(x + 16U);
+            const int8x16_t x2 = vld1q_s8(x + 32U);
+            const int8x16_t x3 = vld1q_s8(x + 48U);
+            const int8x16_t x4 = vld1q_s8(x + 64U);
+            const int8x16_t x5 = vld1q_s8(x + 80U);
+            const int8x16_t x6 = vld1q_s8(x + 96U);
+            const int8x16_t x7 = vld1q_s8(x + 112U);
+            const float activation_scale = activation_scales[group];
+            const int32_t activation_sum = activation_sums[group];
+            gate0 = cq3_arm_accumulate_group128(
+                gate0, gate_weights + (row + 0U) * row_bytes + group * 32U,
+                gate_scales[(row + 0U) * groups + group],
+                activation_scale, activation_sum, mask,
+                x0, x1, x2, x3, x4, x5, x6, x7
+            );
+            up0 = cq3_arm_accumulate_group128(
+                up0, up_weights + (row + 0U) * row_bytes + group * 32U,
+                up_scales[(row + 0U) * groups + group],
+                activation_scale, activation_sum, mask,
+                x0, x1, x2, x3, x4, x5, x6, x7
+            );
+            gate1 = cq3_arm_accumulate_group128(
+                gate1, gate_weights + (row + 1U) * row_bytes + group * 32U,
+                gate_scales[(row + 1U) * groups + group],
+                activation_scale, activation_sum, mask,
+                x0, x1, x2, x3, x4, x5, x6, x7
+            );
+            up1 = cq3_arm_accumulate_group128(
+                up1, up_weights + (row + 1U) * row_bytes + group * 32U,
+                up_scales[(row + 1U) * groups + group],
+                activation_scale, activation_sum, mask,
+                x0, x1, x2, x3, x4, x5, x6, x7
+            );
+            gate2 = cq3_arm_accumulate_group128(
+                gate2, gate_weights + (row + 2U) * row_bytes + group * 32U,
+                gate_scales[(row + 2U) * groups + group],
+                activation_scale, activation_sum, mask,
+                x0, x1, x2, x3, x4, x5, x6, x7
+            );
+            up2 = cq3_arm_accumulate_group128(
+                up2, up_weights + (row + 2U) * row_bytes + group * 32U,
+                up_scales[(row + 2U) * groups + group],
+                activation_scale, activation_sum, mask,
+                x0, x1, x2, x3, x4, x5, x6, x7
+            );
+            gate3 = cq3_arm_accumulate_group128(
+                gate3, gate_weights + (row + 3U) * row_bytes + group * 32U,
+                gate_scales[(row + 3U) * groups + group],
+                activation_scale, activation_sum, mask,
+                x0, x1, x2, x3, x4, x5, x6, x7
+            );
+            up3 = cq3_arm_accumulate_group128(
+                up3, up_weights + (row + 3U) * row_bytes + group * 32U,
+                up_scales[(row + 3U) * groups + group],
+                activation_scale, activation_sum, mask,
+                x0, x1, x2, x3, x4, x5, x6, x7
+            );
+        }
+        float gate_value = cq3_arm_reduce_f32(gate0);
+        output[row + 0U] =
+            (gate_value / (1.0f + expf(-gate_value)))
+            * cq3_arm_reduce_f32(up0);
+        gate_value = cq3_arm_reduce_f32(gate1);
+        output[row + 1U] =
+            (gate_value / (1.0f + expf(-gate_value)))
+            * cq3_arm_reduce_f32(up1);
+        gate_value = cq3_arm_reduce_f32(gate2);
+        output[row + 2U] =
+            (gate_value / (1.0f + expf(-gate_value)))
+            * cq3_arm_reduce_f32(up2);
+        gate_value = cq3_arm_reduce_f32(gate3);
+        output[row + 3U] =
+            (gate_value / (1.0f + expf(-gate_value)))
+            * cq3_arm_reduce_f32(up3);
+    }
+    for (; row < rows; ++row) {
+        float32x4_t gate_total = vdupq_n_f32(0.0f);
+        float32x4_t up_total = vdupq_n_f32(0.0f);
+        for (uint64_t group = 0U; group < groups; ++group) {
+            const int8_t *x = activation + group * 128U;
+            const int8x16_t x0 = vld1q_s8(x);
+            const int8x16_t x1 = vld1q_s8(x + 16U);
+            const int8x16_t x2 = vld1q_s8(x + 32U);
+            const int8x16_t x3 = vld1q_s8(x + 48U);
+            const int8x16_t x4 = vld1q_s8(x + 64U);
+            const int8x16_t x5 = vld1q_s8(x + 80U);
+            const int8x16_t x6 = vld1q_s8(x + 96U);
+            const int8x16_t x7 = vld1q_s8(x + 112U);
+            gate_total = cq3_arm_accumulate_group128(
+                gate_total, gate_weights + row * row_bytes + group * 32U,
+                gate_scales[row * groups + group], activation_scales[group],
+                activation_sums[group], mask,
+                x0, x1, x2, x3, x4, x5, x6, x7
+            );
+            up_total = cq3_arm_accumulate_group128(
+                up_total, up_weights + row * row_bytes + group * 32U,
+                up_scales[row * groups + group], activation_scales[group],
+                activation_sums[group], mask,
+                x0, x1, x2, x3, x4, x5, x6, x7
+            );
+        }
+        const float gate_value = cq3_arm_reduce_f32(gate_total);
+        output[row] =
+            (gate_value / (1.0f + expf(-gate_value)))
+            * cq3_arm_reduce_f32(up_total);
+    }
+    return CQ3_OK;
+}
+#endif
+
+int cq3_gemv_q8_group128_2bit_swiglu_arm_dotprod(
+    const uint8_t *CQ3_RESTRICT gate_weights,
+    const uint16_t *CQ3_RESTRICT gate_scales,
+    const uint8_t *CQ3_RESTRICT up_weights,
+    const uint16_t *CQ3_RESTRICT up_scales,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    uint32_t group_size,
+    float *CQ3_RESTRICT output
+) {
+    if (activation_sums == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    int validation = cq3_validate_gemv(
+        gate_weights, gate_scales, activation, activation_scales,
+        output, rows, columns, group_size
+    );
+    if (validation == CQ3_OK) {
+        validation = cq3_validate_gemv(
+            up_weights, up_scales, activation, activation_scales,
+            output, rows, columns, group_size
+        );
+    }
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_ARM64 && defined(__ARM_FEATURE_DOTPROD)
+    if (!cq3_arm_dotprod_available()) {
+        return CQ3_ERROR_ISA;
+    }
+    return cq3_gemv_q8_group128_2bit_swiglu_arm_dotprod_impl(
+        gate_weights, gate_scales, up_weights, up_scales,
+        activation, activation_scales, activation_sums,
+        rows, columns, output
     );
 #else
     return CQ3_ERROR_ISA;
@@ -1244,6 +1727,40 @@ int cq3_sum_u8_avx2(const uint8_t *input, uint64_t count, uint64_t *sum) {
         return CQ3_ERROR_ISA;
     }
     *sum = cq3_sum_u8_avx2_impl(input, count);
+    return CQ3_OK;
+#else
+    (void)count;
+    return CQ3_ERROR_ISA;
+#endif
+}
+
+#if CQ3_ARM64
+static uint64_t cq3_sum_u8_neon_impl(const uint8_t *input, uint64_t count) {
+    uint64_t total = 0U;
+    uint64_t index = 0U;
+    while (index + 16U <= count) {
+        const uint64_t chunk_stop =
+            count - index > (1U << 20U) ? index + (1U << 20U) : count;
+        uint32x4_t accumulator = vdupq_n_u32(0U);
+        for (; index + 16U <= chunk_stop; index += 16U) {
+            const uint8x16_t values = vld1q_u8(input + index);
+            accumulator = vpadalq_u16(accumulator, vpaddlq_u8(values));
+        }
+        total += (uint64_t)vaddvq_u32(accumulator);
+    }
+    for (; index < count; ++index) {
+        total += input[index];
+    }
+    return total;
+}
+#endif
+
+int cq3_sum_u8_neon(const uint8_t *input, uint64_t count, uint64_t *sum) {
+    if (input == NULL || sum == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+#if CQ3_ARM64
+    *sum = cq3_sum_u8_neon_impl(input, count);
     return CQ3_OK;
 #else
     (void)count;

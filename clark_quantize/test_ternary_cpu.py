@@ -87,6 +87,18 @@ class TernaryCpuNativeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "non-finite"):
             ternary_cpu.quantize_q8(activation)
 
+    def test_native_swiglu_contract(self) -> None:
+        gate = np.asarray([-4.0, -0.5, 0.0, 0.5, 4.0], dtype=np.float32)
+        up = np.asarray([2.0, -3.0, 1.0, 0.25, -0.5], dtype=np.float32)
+        expected = (gate / (np.float32(1.0) + np.exp(-gate))) * up
+        np.testing.assert_allclose(
+            ternary_cpu.swiglu_f32(gate, up), expected,
+            rtol=1e-6, atol=1e-7,
+        )
+        gate[0] = np.nan
+        with self.assertRaisesRegex(ValueError, "non-finite"):
+            ternary_cpu.swiglu_f32(gate, up)
+
     def test_scalar_matches_groupwise_integer_oracle(self) -> None:
         codes, scales, quantized, activation_scales, sums, packed = self.fixture()
         actual = ternary_cpu.gemv_q8_group128_2bit(
@@ -134,6 +146,11 @@ class TernaryCpuNativeTests(unittest.TestCase):
         if ternary_cpu.cpu_features()["avx2"]:
             self.assertEqual(
                 ternary_cpu.memory_read_sum(values, implementation="avx2", threads=4),
+                expected,
+            )
+        if ternary_cpu.cpu_features()["neon"]:
+            self.assertEqual(
+                ternary_cpu.memory_read_sum(values, implementation="neon", threads=4),
                 expected,
             )
 
@@ -223,6 +240,58 @@ class TernaryCpuNativeTests(unittest.TestCase):
         np.testing.assert_array_equal(radix5_planes_threaded, radix5_planes)
         np.testing.assert_array_equal(radix5_pair, radix5)
         np.testing.assert_array_equal(radix5_pair_threaded, radix5_pair)
+
+    @unittest.skipUnless(
+        ternary_cpu.cpu_features()["dotprod"], "ARM dot-product is unavailable"
+    )
+    def test_arm_dotprod_matches_scalar_and_is_thread_deterministic(self) -> None:
+        codes, scales, quantized, activation_scales, sums, packed = self.fixture(
+            rows=31, columns=512
+        )
+        scalar = ternary_cpu.gemv_q8_group128_2bit(
+            packed, scales, quantized, activation_scales, sums,
+            implementation="scalar",
+        )
+        arm = ternary_cpu.gemv_q8_group128_2bit(
+            packed, scales, quantized, activation_scales, sums,
+            implementation="arm_dotprod",
+        )
+        threaded = ternary_cpu.gemv_q8_group128_2bit(
+            packed, scales, quantized, activation_scales, sums,
+            implementation="arm_dotprod", threads=4,
+        )
+        np.testing.assert_allclose(arm, scalar, rtol=1e-5, atol=5e-5)
+        np.testing.assert_array_equal(threaded, arm)
+
+    @unittest.skipUnless(
+        ternary_cpu.cpu_features()["dotprod"], "ARM dot-product is unavailable"
+    )
+    def test_arm_fused_swiglu_matches_two_projection_contract(self) -> None:
+        _, gate_scales, quantized, activation_scales, sums, gate_packed = (
+            self.fixture(rows=32, columns=512)
+        )
+        _, up_scales, _, _, _, up_packed = self.fixture(rows=32, columns=512)
+        gate = ternary_cpu.gemv_q8_group128_2bit(
+            gate_packed, gate_scales, quantized, activation_scales, sums,
+            implementation="arm_dotprod",
+        )
+        up = ternary_cpu.gemv_q8_group128_2bit(
+            up_packed, up_scales, quantized, activation_scales, sums,
+            implementation="arm_dotprod",
+        )
+        expected = ternary_cpu.swiglu_f32(gate, up)
+        fused = ternary_cpu.gemv_q8_group128_2bit_swiglu(
+            gate_packed, gate_scales, up_packed, up_scales,
+            quantized, activation_scales, sums,
+            implementation="arm_dotprod",
+        )
+        threaded = ternary_cpu.gemv_q8_group128_2bit_swiglu(
+            gate_packed, gate_scales, up_packed, up_scales,
+            quantized, activation_scales, sums,
+            implementation="arm_dotprod", threads=4,
+        )
+        np.testing.assert_array_equal(fused, expected)
+        np.testing.assert_array_equal(threaded, fused)
 
 
 if __name__ == "__main__":

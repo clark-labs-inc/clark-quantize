@@ -218,7 +218,11 @@ all three ISA lanes, with reproducible build and benchmark receipts.
 
 ### Phase 1: 4B decode engine
 
-1. Implement ARM64 GEMV first on the available M5 Max.
+1. Implement ARM64 GEMV first on the available M5 Max. The aligned-2 DOTPROD
+   v1 milestone is complete at 60.39 GB/s on four workers and 67.20% of its
+   measured read roofline. The native gate/up plus SwiGLU operator is also
+   complete: it is bit-exact and improves the real layer-0 pair by 8.1% at four
+   workers and 27.6% at eight. GGML graph dispatch is still required.
 2. Bring up one DeltaNet layer, one full-attention layer, and one MLP block.
 3. Execute all text layers with scalar fallbacks for unfinished operators.
 4. Remove fallbacks in profile order until the full graph is useful.
@@ -271,11 +275,14 @@ and will be revised only from measured rooflines and end-to-end profiles.
 3. Build a shape-driven ternary GEMV benchmark for the exact Qwen matrices.
 4. Benchmark three compute layouts on M5 Max: radix-5 LUT, aligned 2-bit, and
    dual bitplanes.
-5. Implement ARM64 A16 correctness, then A8 DOTPROD.
-6. Profile and optimize the upstream single-token DeltaNet state update.
-7. Load the 4B packed checkpoint through the GGML graph.
+5. Fuse ARM64 gate/up DOTPROD dispatch and SwiGLU to remove the observed
+   sub-millisecond worker-boundary bottleneck.
+6. Implement ARM64 A16 correctness for graph parity around the promoted A8
+   DOTPROD kernel.
+7. Profile and optimize the upstream single-token DeltaNet state update.
+8. Load the 4B packed checkpoint through the GGML graph.
 
-No 27B training spend is justified before items 1-7 produce a reproducible
+No 27B training spend is justified before these items produce a reproducible
 full-graph receipt.
 
 ## External technical references

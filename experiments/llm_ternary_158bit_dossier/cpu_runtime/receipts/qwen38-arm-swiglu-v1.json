@@ -1,0 +1,345 @@
+{
+  "activation": {
+    "q8_sha256": "0ade6ef1113d2497d511dc7908de0b487d7918c9002e277887495bf1a5482276",
+    "scale_sha256": "23e0c25244158e93108d58785c758b160fee6ba17d022caa31a9877d3609fa01",
+    "sum_sha256": "5435a00c6604143a84c6492a3e83cee889ca00040e7695d17db311bd4a991ffe"
+  },
+  "compute_image": {
+    "bits_per_weight_including_fp16_scales": 2.125,
+    "exact_gate_pack_roundtrip": true,
+    "exact_up_pack_roundtrip": true,
+    "two_projection_weight_bytes": 47349760
+  },
+  "controls": {
+    "cache_eviction_bytes": 536870912,
+    "cache_eviction_checksum": 68451041280,
+    "paired_order": "alternate_control_first_and_candidate_first"
+  },
+  "correctness": {
+    "exact_across_thread_counts": true
+  },
+  "fixtures": {
+    "gate": {
+      "parent_artifact": {
+        "manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4",
+        "pack_receipt": "/workspace/quant-state/qwen38-base3-full.json",
+        "pack_receipt_sha256": "ef6b8608411ba48abc85b0da390e3e8dec2b8cfad8290739c0c17557bf14cef5",
+        "root": "/workspace/quant-runs/qwen38-base3-full/artifacts/qwen38-optimal.cq3q"
+      },
+      "path": "/Users/stan/.cache/clark-quantize/qwen38/qwen38-layer0-gate-proj-fixture-v1.npz",
+      "receipt": "/Users/stan/Documents/git/clark-quantize/experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38-layer0-gate-proj-fixture-v1.json",
+      "receipt_sha256": "2139ad567f571872b3f5d022dec8b029563e88a056875358fbc7e2efe810b8a2",
+      "sha256": "681b501509a986f5f8bda2982d68f34397ef42e532b08a98b452fa9b0f8056e2"
+    },
+    "up": {
+      "parent_artifact": {
+        "manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4",
+        "pack_receipt": "/workspace/quant-state/qwen38-base3-full.json",
+        "pack_receipt_sha256": "ef6b8608411ba48abc85b0da390e3e8dec2b8cfad8290739c0c17557bf14cef5",
+        "root": "/workspace/quant-runs/qwen38-base3-full/artifacts/qwen38-optimal.cq3q"
+      },
+      "path": "/Users/stan/.cache/clark-quantize/qwen38/qwen38-layer0-up-proj-fixture-v1.npz",
+      "receipt": "/Users/stan/Documents/git/clark-quantize/experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38-layer0-up-proj-fixture-v1.json",
+      "receipt_sha256": "56f397dd6e1ae87628504f3bddf00579faa10239f08b57ada1b8c67eb428ba3c",
+      "sha256": "5bf99e73ca40e49fb08136edf9b446886a7f54e254c3e6e133f9ed4d7f72e22a"
+    }
+  },
+  "host": {
+    "cpu_features": {
+      "avx2": false,
+      "dotprod": true,
+      "f16c": false,
+      "fma": false,
+      "neon": true
+    },
+    "hardware": {
+      "cpu_brand": "Apple M5 Max",
+      "efficiency_cpus": "12",
+      "memory_bytes": "68719476736",
+      "model": "Mac17,6",
+      "performance_cpus": "6",
+      "physical_cpus": "18"
+    },
+    "logical_cpus": 18,
+    "machine": "arm64",
+    "node": "stans-MacBook-Pro.local",
+    "platform": "macOS-26.4.1-arm64-arm-64bit",
+    "python": "3.9.6"
+  },
+  "hypothesis": "Fusing real Qwen ternary gate/up projections with SwiGLU preserves exact output and improves the eight-thread median by at least 15 percent without materially regressing one thread.",
+  "implementation": {
+    "benchmark_sha256": "51229da5c64803f98f0ed1bb9b0c2eda582ef0a8f2b750967817ce119d9ef813",
+    "build_script_sha256": "273db81adcefce5525288927cbcdde5f4beff65b136e35235ba8c4909c22e75b",
+    "c_source_sha256": "03f59f8cfea5494fd99e291db4a835cd4f690539e8f84f465a5d2d78cea784eb",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+    "native_library_sha256": "226692acb3dd69d78d799a18b9bd1a19f62fca93078f113ff93a1e88fe23972d",
+    "python_wrapper_sha256": "bd88bdd67cfa0145eaed2092165b846185812d9a837171b3e79ebe6bab8567e9"
+  },
+  "preregistration": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/llm_ternary_158bit_dossier/cpu_runtime/gemv_swiglu_arm_preregistration_v1.json",
+    "rules": {
+      "activation": {
+        "clip": [
+          -127,
+          127
+        ],
+        "dtype": "float32_to_group128_int8",
+        "rounding": "C lrintf under default round-to-nearest mode",
+        "seed": 20260817
+      },
+      "candidate": {
+        "accumulation": "four rows from both projections interleaved with fixed SIMD-lane reductions",
+        "activation_isa": "AArch64 NEON signed dot product",
+        "implementation": "arm_dotprod",
+        "operation": "two aligned-2 A8 ternary projections fused with native FP32 SiLU(gate) times up",
+        "weight_layout": "group128-transposed aligned 2-bit"
+      },
+      "control": {
+        "operation": "two separate arm_dotprod projections followed by the same native FP32 SwiGLU function",
+        "same_activation_and_executor": true
+      },
+      "correctness": {
+        "require_exact_control_candidate_output": true,
+        "require_exact_pack_roundtrip": true,
+        "require_exact_thread_determinism": true
+      },
+      "exploratory_basis": {
+        "cache_eviction_bytes": 134217728,
+        "data": "seeded synthetic ternary codes and FP16 scales at the exact Qwen layer shape; no real gate/up performance was observed",
+        "median_speedup": {
+          "1": 0.9485,
+          "2": 1.0153,
+          "4": 1.0877,
+          "8": 1.2936
+        }
+      },
+      "fixtures": {
+        "gate": {
+          "codes_sha256": "d660e496eda4884dbca3d2479f0c1dd2124b9af79b8c787c8796b413f53b41ac",
+          "file_sha256": "681b501509a986f5f8bda2982d68f34397ef42e532b08a98b452fa9b0f8056e2",
+          "receipt_file_sha256": "2139ad567f571872b3f5d022dec8b029563e88a056875358fbc7e2efe810b8a2",
+          "scales_sha256": "55fdcd7f4aa4b33d8fd5f1fd421ba440bc63cadb2be71a539d15f37013f731d1",
+          "schema": "clark_qwen_ternary_tensor_fixture_v1"
+        },
+        "up": {
+          "codes_sha256": "940141c73018af8ec99f61ec4f141168aa6b9faa6986cdd134672eb109dba332",
+          "file_sha256": "5bf99e73ca40e49fb08136edf9b446886a7f54e254c3e6e133f9ed4d7f72e22a",
+          "receipt_file_sha256": "56f397dd6e1ae87628504f3bddf00579faa10239f08b57ada1b8c67eb428ba3c",
+          "scales_sha256": "356615161cacbaeab272b03413964c7548056da83476493ec9a711bd8a601f7f",
+          "schema": "clark_qwen_ternary_tensor_fixture_v1"
+        }
+      },
+      "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "performance": {
+        "cache_eviction_bytes": 536870912,
+        "paired_order": "alternate_control_first_and_candidate_first",
+        "repetitions": 11,
+        "thread_placement": "persistent_workers_macos_scheduler_no_affinity_api",
+        "threads": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "warmups": 3
+      },
+      "promotion": {
+        "does_not_satisfy_full_graph_quality_energy_or_breakthrough_gates": true,
+        "maximum_compute_image_bits_per_weight_including_fp16_scales": 2.125,
+        "minimum_eight_thread_speedup": 1.15,
+        "minimum_four_thread_speedup": 1.02,
+        "minimum_one_thread_speedup": 0.9,
+        "scope": "K4 fused gate/up plus SwiGLU native operator on one real Qwen MLP layer"
+      },
+      "schema": "clark_ternary_cpu_swiglu_arm_preregistration_v1",
+      "status": "frozen_before_authoritative_real-matrix_run",
+      "tensors": {
+        "columns": 5120,
+        "gate": "model.language_model.layers.0.mlp.gate_proj.weight",
+        "group_size": 128,
+        "rows": 17408,
+        "up": "model.language_model.layers.0.mlp.up_proj.weight"
+      }
+    },
+    "sha256": "9fb73d8345651eb7bda96921a023a9404b50646293309c317d13ea8f9a149384"
+  },
+  "promotion": {
+    "passed": true,
+    "scope": "K4 fused M5 Max gate/up plus SwiGLU operator only; full-graph quality, token speed, energy, and breakthrough gates remain open"
+  },
+  "schema": "clark_qwen38_ternary_swiglu_arm_v1",
+  "threads": {
+    "1": {
+      "candidate": {
+        "effective_weight_gbytes_per_second": 20.807749047168546,
+        "maximum_seconds": 0.002546750000000042,
+        "median_seconds": 0.002275582999999859,
+        "minimum_seconds": 0.0021884580000000042,
+        "samples_seconds": [
+          0.002546750000000042,
+          0.0025269590000001063,
+          0.002266582999999933,
+          0.0022548749999999895,
+          0.0023097499999999993,
+          0.0022576670000000743,
+          0.0024009169999998914,
+          0.0022928340000001324,
+          0.002275582999999859,
+          0.0022057499999998953,
+          0.0021884580000000042
+        ]
+      },
+      "candidate_speedup": 0.9859381090472414,
+      "control": {
+        "effective_weight_gbytes_per_second": 21.10451848471103,
+        "maximum_seconds": 0.002477124999999969,
+        "median_seconds": 0.0022435839999999097,
+        "minimum_seconds": 0.002163582999999969,
+        "samples_seconds": [
+          0.0022540419999999006,
+          0.002477124999999969,
+          0.0022242079999998943,
+          0.002187833000000028,
+          0.0023505420000000665,
+          0.0021706249999999816,
+          0.0022435839999999097,
+          0.002222834000000118,
+          0.002266749999999984,
+          0.002163582999999969,
+          0.0022482500000000627
+        ]
+      },
+      "exact_control_candidate_output": true,
+      "output_sha256": "aebbda32f03c0213f4478f816f67601e7ccff4d191b3d78ed6842761ca130e62"
+    },
+    "2": {
+      "candidate": {
+        "effective_weight_gbytes_per_second": 38.92028739510069,
+        "maximum_seconds": 0.0015335419999999989,
+        "median_seconds": 0.0012165830000001598,
+        "minimum_seconds": 0.0011940830000001235,
+        "samples_seconds": [
+          0.0012877079999999985,
+          0.0015335419999999989,
+          0.0012027080000001078,
+          0.0012066660000000784,
+          0.0012112079999999636,
+          0.0012278339999998167,
+          0.001207167000000009,
+          0.0012202499999998118,
+          0.0012803750000001113,
+          0.0012165830000001598,
+          0.0011940830000001235
+        ]
+      },
+      "candidate_speedup": 1.030824859462748,
+      "control": {
+        "effective_weight_gbytes_per_second": 37.756450126149865,
+        "maximum_seconds": 0.001295166999999875,
+        "median_seconds": 0.0012540839999999331,
+        "minimum_seconds": 0.001227249999999902,
+        "samples_seconds": [
+          0.001257375000000005,
+          0.001295166999999875,
+          0.0012796669999999288,
+          0.001229707999999885,
+          0.0012309590000001425,
+          0.001236708999999836,
+          0.0012795840000001668,
+          0.0012540839999999331,
+          0.0012716249999999985,
+          0.0012471250000001266,
+          0.001227249999999902
+        ]
+      },
+      "exact_control_candidate_output": true,
+      "output_sha256": "aebbda32f03c0213f4478f816f67601e7ccff4d191b3d78ed6842761ca130e62"
+    },
+    "4": {
+      "candidate": {
+        "effective_weight_gbytes_per_second": 61.4499404315283,
+        "maximum_seconds": 0.0008924580000000404,
+        "median_seconds": 0.0007705420000001517,
+        "minimum_seconds": 0.0007175419999998489,
+        "samples_seconds": [
+          0.0007316660000000752,
+          0.0007194580000000617,
+          0.0008369999999999767,
+          0.0008682079999999814,
+          0.0007844579999995993,
+          0.0008924580000000404,
+          0.0007175419999998489,
+          0.000728958999999918,
+          0.0007932500000000786,
+          0.000729624999999956,
+          0.0007705420000001517
+        ]
+      },
+      "candidate_speedup": 1.0810572298459002,
+      "control": {
+        "effective_weight_gbytes_per_second": 56.84244897958613,
+        "maximum_seconds": 0.0008820419999997497,
+        "median_seconds": 0.0008330000000000837,
+        "minimum_seconds": 0.0008082499999999548,
+        "samples_seconds": [
+          0.0008082499999999548,
+          0.0008818749999999209,
+          0.0008521669999999038,
+          0.0008734999999999715,
+          0.0008330000000000837,
+          0.0008152909999998847,
+          0.0008157909999999546,
+          0.0008091660000002499,
+          0.000815166999999839,
+          0.0008630409999996758,
+          0.0008820419999997497
+        ]
+      },
+      "exact_control_candidate_output": true,
+      "output_sha256": "aebbda32f03c0213f4478f816f67601e7ccff4d191b3d78ed6842761ca130e62"
+    },
+    "8": {
+      "candidate": {
+        "effective_weight_gbytes_per_second": 77.42695910821388,
+        "maximum_seconds": 0.0007534159999997847,
+        "median_seconds": 0.0006115410000000487,
+        "minimum_seconds": 0.0005882080000003675,
+        "samples_seconds": [
+          0.0006007499999998167,
+          0.000655749999999955,
+          0.0007534159999997847,
+          0.0006170420000000121,
+          0.0005939999999999834,
+          0.0005882499999998458,
+          0.0006115410000000487,
+          0.0006119159999999901,
+          0.0005971249999996431,
+          0.0005882080000003675,
+          0.0006128750000002903
+        ]
+      },
+      "candidate_speedup": 1.275875207058849,
+      "control": {
+        "effective_weight_gbytes_per_second": 60.68537007369138,
+        "maximum_seconds": 0.0008932499999998456,
+        "median_seconds": 0.0007802500000000379,
+        "minimum_seconds": 0.0007386670000002482,
+        "samples_seconds": [
+          0.0007965410000001505,
+          0.000780082999999987,
+          0.0007604579999997974,
+          0.0007711660000002674,
+          0.0008428750000000207,
+          0.0007386670000002482,
+          0.0008932499999998456,
+          0.0008700419999998488,
+          0.0007802500000000379,
+          0.0007899170000000844,
+          0.0007613750000001751
+        ]
+      },
+      "exact_control_candidate_output": true,
+      "output_sha256": "aebbda32f03c0213f4478f816f67601e7ccff4d191b3d78ed6842761ca130e62"
+    }
+  }
+}

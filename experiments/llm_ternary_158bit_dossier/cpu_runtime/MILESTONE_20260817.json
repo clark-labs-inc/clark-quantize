@@ -54,8 +54,55 @@
     ],
     "decision": "closed_without_promotion; retain canonical radix5 for storage and aligned2 for AVX2 compute"
   },
+  "arm_dotprod_gemv": {
+    "host": {
+      "cpu": "Apple M5 Max",
+      "physical_cores": 18,
+      "memory_bytes": 68719476736,
+      "isa": ["AArch64", "NEON", "DOTPROD"]
+    },
+    "tensor": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "shape": [17408, 5120],
+    "fixture_receipt_sha256": "2139ad567f571872b3f5d022dec8b029563e88a056875358fbc7e2efe810b8a2",
+    "benchmark_receipt_sha256": "4c8d4d04c1fb757f6899118a35c27e61280ffc8a70bce59fa9516e3f7c98ac1f",
+    "compute_image_bits_per_weight_including_fp16_scales": 2.125,
+    "scalar_speedup": 28.375785259198462,
+    "four_worker_gbytes_per_second": 60.38878586681706,
+    "four_worker_roofline_fraction": 0.6720055645217085,
+    "eight_worker_gbytes_per_second": 59.81646925658671,
+    "maximum_absolute_error": 7.152557373046875e-7,
+    "exact_across_thread_counts": true,
+    "v1_promotion_passed": true,
+    "full_k2_70_percent_exit_gate_passed": false
+  },
+  "arm_fused_swiglu": {
+    "host": "Apple M5 Max",
+    "tensors": [
+      "model.language_model.layers.0.mlp.gate_proj.weight",
+      "model.language_model.layers.0.mlp.up_proj.weight"
+    ],
+    "shape_each": [
+      17408,
+      5120
+    ],
+    "preregistration_sha256": "9fb73d8345651eb7bda96921a023a9404b50646293309c317d13ea8f9a149384",
+    "benchmark_receipt_sha256": "7a069eedf3cef9ed981f0a8575d71740ff9c0de67bf5d0b5f53560e99b01732c",
+    "compute_image_bits_per_weight_including_fp16_scales": 2.125,
+    "one_worker_speedup": 0.9859381090472414,
+    "four_worker_speedup": 1.0810572298459002,
+    "eight_worker_speedup": 1.275875207058849,
+    "eight_worker_candidate_median_seconds": 0.0006115410000000487,
+    "exact_control_candidate_output": true,
+    "exact_across_thread_counts": true,
+    "k4_operator_promotion_passed": true,
+    "graph_integration_gate_passed": false
+  },
   "claim_boundary": {
-    "promoted": "K2 group-128 aligned-2 AVX2 microkernel",
+    "promoted": [
+      "K2 group-128 aligned-2 AVX2 microkernel",
+      "K2 group-128 aligned-2 ARM DOTPROD v1 microkernel",
+      "K4 ARM fused gate/up plus SwiGLU native operator"
+    ],
     "not_proven": [
       "whole-model 1.58-bit storage",
       "full-layer or full-graph parity",
@@ -65,5 +112,5 @@
       "scientific breakthrough"
     ]
   },
-  "next_gate": "Rebuild the promising 4B hard-ternary QAT recipe from scratch, then require the frozen WikiText, MATH-500, and CUTE/MMLU tripwire before longer continuation, depth expansion, or 27B scale-up; keep aligned2 as the AVX2 compute image until a denser format passes its own preregistered kernel gate"
+  "next_gate": "Dispatch the fused ARM gate/up plus SwiGLU operator from the packed GGML graph, prove token parity, and run the frozen WikiText, MATH-500, and CUTE/MMLU tripwire; in parallel, run the preregistered restartable 4B QAT stage only on an admitted 80 GB GPU"
 }

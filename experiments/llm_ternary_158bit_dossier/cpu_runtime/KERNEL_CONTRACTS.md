@@ -74,6 +74,14 @@ microkernel result. The same code/scale contract is now integrated as GGML
 full Qwen3.5-4B graph. That runtime milestone does not promote the PTQ model:
 the frozen perplexity, MATH-500, code, and CUTE tripwire rejected its quality.
 QAT-to-runtime numerical agreement remains a separate gate.
+The first ARM64 implementation uses the identical aligned-2 compute image and
+NEON signed DOTPROD. On the real Qwen3.8-27B `17408 x 5120` gate projection it
+is 28.38x faster than the scalar oracle, sustains 60.39 GB/s with four M5 Max
+workers, and reaches 67.20% of the paired NEON read roofline with maximum
+absolute error `7.15e-7`. The preregistered ARM v1 milestone passed, but the
+70% K2 exit gate and full-graph gate remain open. Eight workers add no
+throughput, motivating native fused gate/up dispatch rather than more Python
+worker fan-out.
 The benchmark matrix families are the exact Qwen shapes:
 
 - `5120 -> 17408` and `17408 -> 5120` for the MLP;
@@ -91,6 +99,12 @@ The gate and up weights are physically adjacent or interleaved so one scheduled
 operation produces both projections. Apply SiLU to the gate, multiply by the up
 activation, and write only the final 17,408-wide intermediate. Do not duplicate
 activation quantization or store two avoidable full-width temporary buffers.
+The first ARM64 native operator now executes both real Qwen3.8-27B layer-0
+projections and SwiGLU with bit-exact agreement against two separate DOTPROD
+projections plus the same native SwiGLU control. It improves median latency by
+8.1% with four M5 Max workers and 27.6% with eight, while the one-worker result
+is 1.4% slower. This passes the frozen K4 operator gate; graph dispatch, token
+parity, capability, and end-to-end performance remain open.
 
 ## K5-K7: Gated DeltaNet
 

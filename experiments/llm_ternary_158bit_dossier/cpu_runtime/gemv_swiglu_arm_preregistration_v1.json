@@ -1,0 +1,76 @@
+{
+  "schema": "clark_ternary_cpu_swiglu_arm_preregistration_v1",
+  "status": "frozen_before_authoritative_real-matrix_run",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "fixtures": {
+    "gate": {
+      "schema": "clark_qwen_ternary_tensor_fixture_v1",
+      "file_sha256": "681b501509a986f5f8bda2982d68f34397ef42e532b08a98b452fa9b0f8056e2",
+      "receipt_file_sha256": "2139ad567f571872b3f5d022dec8b029563e88a056875358fbc7e2efe810b8a2",
+      "codes_sha256": "d660e496eda4884dbca3d2479f0c1dd2124b9af79b8c787c8796b413f53b41ac",
+      "scales_sha256": "55fdcd7f4aa4b33d8fd5f1fd421ba440bc63cadb2be71a539d15f37013f731d1"
+    },
+    "up": {
+      "schema": "clark_qwen_ternary_tensor_fixture_v1",
+      "file_sha256": "5bf99e73ca40e49fb08136edf9b446886a7f54e254c3e6e133f9ed4d7f72e22a",
+      "receipt_file_sha256": "56f397dd6e1ae87628504f3bddf00579faa10239f08b57ada1b8c67eb428ba3c",
+      "codes_sha256": "940141c73018af8ec99f61ec4f141168aa6b9faa6986cdd134672eb109dba332",
+      "scales_sha256": "356615161cacbaeab272b03413964c7548056da83476493ec9a711bd8a601f7f"
+    }
+  },
+  "tensors": {
+    "gate": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "up": "model.language_model.layers.0.mlp.up_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "group_size": 128
+  },
+  "activation": {
+    "dtype": "float32_to_group128_int8",
+    "seed": 20260817,
+    "rounding": "C lrintf under default round-to-nearest mode",
+    "clip": [-127, 127]
+  },
+  "candidate": {
+    "operation": "two aligned-2 A8 ternary projections fused with native FP32 SiLU(gate) times up",
+    "implementation": "arm_dotprod",
+    "weight_layout": "group128-transposed aligned 2-bit",
+    "activation_isa": "AArch64 NEON signed dot product",
+    "accumulation": "four rows from both projections interleaved with fixed SIMD-lane reductions"
+  },
+  "control": {
+    "operation": "two separate arm_dotprod projections followed by the same native FP32 SwiGLU function",
+    "same_activation_and_executor": true
+  },
+  "correctness": {
+    "require_exact_control_candidate_output": true,
+    "require_exact_thread_determinism": true,
+    "require_exact_pack_roundtrip": true
+  },
+  "performance": {
+    "warmups": 3,
+    "repetitions": 11,
+    "threads": [1, 2, 4, 8],
+    "thread_placement": "persistent_workers_macos_scheduler_no_affinity_api",
+    "paired_order": "alternate_control_first_and_candidate_first",
+    "cache_eviction_bytes": 536870912
+  },
+  "promotion": {
+    "minimum_four_thread_speedup": 1.02,
+    "minimum_eight_thread_speedup": 1.15,
+    "minimum_one_thread_speedup": 0.9,
+    "maximum_compute_image_bits_per_weight_including_fp16_scales": 2.125,
+    "scope": "K4 fused gate/up plus SwiGLU native operator on one real Qwen MLP layer",
+    "does_not_satisfy_full_graph_quality_energy_or_breakthrough_gates": true
+  },
+  "exploratory_basis": {
+    "data": "seeded synthetic ternary codes and FP16 scales at the exact Qwen layer shape; no real gate/up performance was observed",
+    "cache_eviction_bytes": 134217728,
+    "median_speedup": {
+      "1": 0.9485,
+      "2": 1.0153,
+      "4": 1.0877,
+      "8": 1.2936
+    }
+  }
+}
