@@ -1,0 +1,21 @@
+[Unit]
+Description=Train Qwen3.8-27B gain-routed Clark Hash correction on real activations
+After=network-online.target quant-qwen38-27b-gain-hash-routing-v1.service quant-qwen38-27b-activation-hash-residual-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-activation-gain-hash.bundle
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/tmp/watch_qwen38_27b_activation_gain_hash_residual_v1.sh
+CPUQuota=400%
+MemoryMax=10G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

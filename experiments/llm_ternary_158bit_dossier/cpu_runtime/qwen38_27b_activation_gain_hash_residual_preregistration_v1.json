@@ -1,0 +1,183 @@
+{
+  "schema": "qwen38_27b_activation_gain_hash_residual_preregistration_v1",
+  "receipt_schema": "qwen38_27b_activation_gain_hash_residual_receipt_v1",
+  "status": "frozen_before_authoritative_real_activation_run",
+  "frozen_at_utc": "2026-08-17T22:56:02Z",
+  "hypothesis": "Conditioned on the heldout real-weight gain-route gate passing, twelve hard-INT4 coefficient steps selected only on calibration activations will reduce disjoint-validation output error by at least one percent versus the exported data-free gain correction and by at least 0.5 percent versus an identically activation-trained sign-only route, without regressing the exact-half-support ternary output baseline or exceeding 1.57 component bits per weight",
+  "clark_hash_source": {
+    "repository": "clark-labs-inc/clark-hash",
+    "paper_path": "arxiv_submission/main.tex",
+    "paper_blob_sha": "4a7c7ffa06ac9c650c6b822cd0bc111d501c3818",
+    "publication_commit": "de609c2c55dcbf727deea8bdf7bcc657743ce120",
+    "method_reused": "asymmetric sparse signed sketching: stored residual rows are compressed while live layer activations remain the uncompressed query",
+    "trained_extension": "freeze a learned one-sparse bucket sign and three-bit gain route, then fit only the small signed-INT4 output coefficient matrix against calibration activations"
+  },
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "qwen_4b_compute_forbidden": true,
+    "target_layer": 0,
+    "sampled_rows_only": true,
+    "calibration_and_validation_activations_disjoint": true,
+    "route_training_and_evaluation_rows_disjoint": true,
+    "tensors": [
+      {
+        "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+        "shape": [17408, 5120],
+        "route_train_row_span": [8640, 8704],
+        "activation_fit_row_span": [8704, 8720]
+      },
+      {
+        "name": "model.language_model.layers.0.mlp.up_proj.weight",
+        "shape": [17408, 5120],
+        "route_train_row_span": [8640, 8704],
+        "activation_fit_row_span": [8704, 8720]
+      },
+      {
+        "name": "model.language_model.layers.0.mlp.down_proj.weight",
+        "shape": [5120, 17408],
+        "route_train_row_span": [2496, 2560],
+        "activation_fit_row_span": [2560, 2576]
+      }
+    ],
+    "claim_boundary": "sampled Qwen3.8-27B projection-output screen only; not a complete layer, model, capability, runtime, semi-lossless, or breakthrough result"
+  },
+  "parents": {
+    "gain_route_preregistration": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_gain_hash_routing_preregistration_v1.json",
+    "required_gain_receipt": "/workspace/quant-state/qwen38-27b-gain-hash-routing-v1.json",
+    "required_gain_gate": "passed true",
+    "route_replay": "recompute the frozen parent route from the same authenticated BF16 spans and require byte-exact route digest equality before using activations",
+    "activation_preregistration": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_layer0_mlp_activation_qat_preregistration_v1.json",
+    "activation_cache": "/workspace/quant-runs/qwen38-27b-layer0-mlp-activation-qat-v1/activations.pt",
+    "activation_cache_receipt": "/workspace/quant-state/qwen38-27b-layer0-mlp-activation-cache-v1.json"
+  },
+  "activation_data": {
+    "calibration_and_validation_texts": "exactly the disjoint pre-evaluation splits frozen by the activation-QAT preregistration",
+    "gate_up_inputs": "exact BF16 layer-0 prefix post-attention normalized states",
+    "down_inputs": "exact BF16 gate/up-derived SwiGLU states",
+    "evaluation_data_exclusion": "CUTE MATH-500 code trace MMLU and WikiText items are forbidden from both activation splits",
+    "validation_use": "heldout validation activations are used only for the frozen promotion decision and never coefficient fitting or checkpoint selection"
+  },
+  "representation": {
+    "formula": "W approximately equals T plus A R_gain",
+    "ternary_matrix": "exact-half-support group-128 codes with exported FP16 group scales",
+    "gain_route": "one learned bucket sign and three-bit positive gain index per input coordinate with an eight-entry FP16 gain codebook",
+    "coefficient_matrix": "signed per-output-row INT4 levels -7 through 7 plus one FP16 scale",
+    "runtime_algebra": "T x plus A times R_gain x",
+    "gate_up_reuse": "one R_gain x sketch may be shared by gate and up",
+    "route_and_gain_bytes_counted": true,
+    "route_sharing_savings_assumed": false
+  },
+  "training": {
+    "candidate_and_control_training": "identical",
+    "closed_form": "solve calibration-output least squares for A with ridge centered on the data-free coefficients",
+    "relative_ridge": 0.001,
+    "hard_forward": "signed per-row INT4 with an FP16 export scale and straight-through coefficient gradients",
+    "steps": 12,
+    "learning_rate": 0.0003,
+    "optimizer": "AdamW",
+    "weight_decay": 0.0,
+    "data_free_anchor_weight": 0.001,
+    "gradient_clip_norm": 1.0,
+    "checkpoint_selection": "retain the lowest calibration NMSE exported INT4 coefficient step including closed-form step zero; validation is never used for selection",
+    "ternary_codes_and_scales_trainable": false,
+    "routing_trainable": false,
+    "gain_indices_and_codebook_trainable": false
+  },
+  "control": {
+    "route": "the parent learned one-sparse bucket-and-sign route with every gain fixed exactly to one",
+    "ternary_support_sketch_dimension_coordinate_iterations": "identical to the gain candidate",
+    "activation_split_optimizer_steps_learning_rate_anchor_and_export": "identical to the gain candidate",
+    "comparison_purpose": "test whether the gain side channel still contributes after both routes receive the same activation-aware coefficient fit"
+  },
+  "gate": {
+    "required_tensor_spans": 3,
+    "minimum_relative_validation_error_reduction_vs_data_free_gain": 0.01,
+    "minimum_relative_validation_error_reduction_vs_trained_sign_only": 0.005,
+    "require_nonnegative_relative_validation_error_reduction_vs_half_support": true,
+    "maximum_tensor_relative_validation_regression_vs_data_free_gain": 0.005,
+    "maximum_component_bits_per_weight": 1.57,
+    "maximum_kernel_identity_error": 0.0005
+  },
+  "resources": {
+    "cpu_threads": 4,
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 10,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 10,
+    "persistent_output_bytes": "less than 4 MiB excluding the separately authenticated shared activation cache",
+    "concurrent_llama_or_training_processes": 0,
+    "run_after_gain_route_and_existing_activation_hash_services": true
+  },
+  "promotion_rules": [
+    "a parent gain-route rejection produces a valid nonpromotion skip and does not collect activations or train coefficients",
+    "candidate and sign-only control must receive identical source rows activation splits support dimensions optimizer steps and export quantizers",
+    "the parent gain route digest and both parent exported weight errors must replay before activation fitting",
+    "a pass advances only to complete layer materialization and a native fused gain-route kernel screen",
+    "a failed gate is a valid negative result and does not authorize gain-bit threshold row-span activation-text or validation tuning",
+    "CUTE MMLU-type MATH WikiText code and paired CPU throughput remain mandatory before any model-quality claim",
+    "complete-model scales retained tensors layout metadata and native runtime bytes remain separately required",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "this sampled screen cannot establish semi-lossless compression or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "activation_gain_hash_module": {
+      "path": "clark_quantize/qwen38_activation_gain_hash_residual.py",
+      "sha256": "5f4aa01d1439a02a71fdae489fc8f2e57965e2f7061d0f2ab03ddd592793a11b"
+    },
+    "activation_gain_hash_tests": {
+      "path": "clark_quantize/test_qwen38_activation_gain_hash_residual.py",
+      "sha256": "14356cf003e047d09784371ddffda7d71d18335b6e1644577cff6d1d7711581c"
+    },
+    "preregistration_tests": {
+      "path": "clark_quantize/test_qwen38_activation_gain_hash_preregistration.py",
+      "sha256": "58fafbe477af45a519421920fcb008364c828411e871af9b821bee4c410a614f"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_activation_gain_hash_residual_v1.py",
+      "sha256": "c8c2cc6e62f98247ba46b438d3e7388aa00bc93f7eff41c1df570fc7940be76f"
+    },
+    "watcher": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/watch_qwen38_27b_activation_gain_hash_residual_v1.sh",
+      "sha256": "202d7d9366f1acdd6e888bdf0b58473415d678e6e619b4f2d96c862564233b83"
+    },
+    "service": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/quant-qwen38-27b-activation-gain-hash-residual-v1.service",
+      "sha256": "f443fbdf4cd5cc1c68fb1bd28624d63f5948e3f99b449d78a85a58c694589ad5"
+    },
+    "activation_collector": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/collect_qwen38_27b_layer0_mlp_activations_v1.py",
+      "sha256": "628ab835ce69bdc84c917412953b390053a474e782deaf326e4f81c8ca1d0933"
+    },
+    "terminal_wait_helper": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/wait_for_qwen38_terminal_receipt.sh",
+      "sha256": "b874a8ed05100d01d8b71449b7c9b4951495728d76173fab9fc02a57ef2ecbb7"
+    },
+    "parent_gain_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_gain_hash_routing_preregistration_v1.json",
+      "sha256": "95d96d849a7307ef4bb054e01244337b9d9460b353cb3c63562dd99b5139bb3a"
+    },
+    "activation_qat_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_layer0_mlp_activation_qat_preregistration_v1.json",
+      "sha256": "d7f8495d9cc3f7400b4d2933b183d3ea714e057f57101182703b17f8b9cae63d"
+    },
+    "gain_hash_module": {
+      "path": "clark_quantize/qwen38_gain_hash_residual.py",
+      "sha256": "b76d2c7baf823ad42548dab59b0e851e05ce1568c8b1901d779d365045818561"
+    },
+    "sign_only_control_module": {
+      "path": "clark_quantize/qwen38_learned_hash_residual.py",
+      "sha256": "7e0a51f7596fbd9e6a4dd4483a67f8ee0324f69f7d30490bedb081fc7a658762"
+    },
+    "ternary_and_int4_helpers": {
+      "path": "clark_quantize/qwen38_hash_residual.py",
+      "sha256": "896583e383b2b94128934903ff2015ee40bbfdfcd48b35e3540121ef7bca62cf"
+    },
+    "fixed_support_storage": {
+      "path": "clark_quantize/qwen38_fixed_support_codec.py",
+      "sha256": "e5e1f17bceed2334e3a57087c3c2e9ff090123b964012d18038545fcc14d6678"
+    }
+  }
+}
