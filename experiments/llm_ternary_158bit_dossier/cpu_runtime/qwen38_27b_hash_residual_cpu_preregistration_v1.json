@@ -1,0 +1,115 @@
+{
+  "schema": "qwen38_27b_hash_residual_cpu_preregistration_v1",
+  "receipt_schema": "qwen38_27b_hash_residual_cpu_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T20:43:00Z",
+  "hypothesis": "For the exact Clark-Hash candidate selected by the frozen Qwen3.8-27B real-weight gate, a separately versioned native AVX2 kernel can execute the packed INT4 A(Rx) correction on every layer-0 MLP projection shape with no more than 5e-4 arithmetic disagreement and at least 1.10x median coefficient-GEMV speedup over its scalar C oracle while retaining the parent's at-most-1.57 projected component bits per weight",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "qwen_4b_compute_forbidden": true,
+    "target_layer": 0,
+    "claim_boundary": "native correction microkernel only; not a complete layer, model, quality, storage, throughput, semi-lossless, or breakthrough result"
+  },
+  "parent": {
+    "preregistration": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_hash_residual_screen_preregistration_v1.json",
+    "required_receipt": "/workspace/quant-state/qwen38-27b-hash-residual-screen-v1.json",
+    "required_gate": "passed true",
+    "candidate_selection": "use exactly gate.selected_candidate from the authenticated parent; no alternate candidate or dimension may be timed"
+  },
+  "representation": {
+    "formula": "W approximately equals T plus A R",
+    "runtime": "compute R x once then add packed INT4 A times R x directly to the ternary output",
+    "projection_seed": 6840346601621575288,
+    "hashes_per_input": 4,
+    "projection_mapping": "uint16 buckets and signed int8 signs regenerated at load time from the parent seed; excluded from canonical model storage and counted as active compute metadata",
+    "coefficient_codes": "signed two's-complement INT4 -7 through 7, two row-aligned nibbles per byte; nibble 8 and a nonzero odd tail nibble are invalid",
+    "coefficient_scales": "one little-endian FP16 scale per output row",
+    "accumulation": "FP32; AVX2/FMA accumulates two eight-lane vectors, reduces each with the frozen pairwise horizontal order, then handles the scalar tail",
+    "gate_up_reuse": "one projected activation must be reused for both gate and up coefficient GEMVs"
+  },
+  "cases": [
+    {
+      "name": "gate",
+      "input_dim": 5120,
+      "output_rows": 17408
+    },
+    {
+      "name": "up",
+      "input_dim": 5120,
+      "output_rows": 17408
+    },
+    {
+      "name": "down",
+      "input_dim": 17408,
+      "output_rows": 5120
+    }
+  ],
+  "measurement": {
+    "seed": 158027,
+    "full_shape_coefficients": "deterministic synthetic signed INT4 values and FP16 scales; dimensions come exclusively from the selected real-weight parent candidate",
+    "warmups": 5,
+    "repetitions": 31,
+    "statistic": "median wall-clock monotonic nanoseconds",
+    "compiler": "system C compiler with C11 O3 Wall Wextra Werror shared PIC and mtune=native",
+    "isa": "AVX2 plus FMA required and authenticated by the native library",
+    "threading": "single process and one pinned physical CPU; kernel itself is single-threaded",
+    "correctness": [
+      "safe scalar projection equals the deterministic Clark Hash algebra",
+      "safe AVX2 coefficient GEMV is compared with the scalar C oracle",
+      "combined projection-plus-GEMV equals separate native calls",
+      "in-place correction addition equals base output plus the separate correction",
+      "gate and up projection metadata are byte-identical and a shared-projection timing is recorded"
+    ]
+  },
+  "gate": {
+    "required_qwen_projection_cases": 3,
+    "maximum_absolute_error": 0.0005,
+    "minimum_avx2_gemv_speedup_vs_scalar": 1.1,
+    "maximum_projected_component_bits_per_weight": 1.57
+  },
+  "resources": {
+    "cpu_quota_percent": 100,
+    "memory_max_mib": 1024,
+    "minimum_free_disk_gib": 10,
+    "swap_must_remain_zero": true,
+    "concurrent_llama_or_training_processes": 0,
+    "persistent_output_bytes": "less than 1 MiB"
+  },
+  "promotion_rules": [
+    "a parent rejection produces a valid nonpromotion skip and does not run this benchmark",
+    "a native pass advances only the A(Rx) correction arithmetic toward integration with the existing ternary K2 output path",
+    "synthetic full-shape coefficients are a performance workload and cannot establish real trained-coefficient quality",
+    "active load-time projection metadata and scratch bytes must be reported separately from canonical model storage",
+    "complete-model scales retained tensors layout metadata and native runtime bytes remain separately required",
+    "CUTE MMLU-type MATH WikiText code and paired CPU throughput remain mandatory before any model-quality claim",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "this microkernel gate cannot establish semi-lossless compression or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "native_c": {
+      "path": "clark_quantize/qwen38_hash_residual_cpu.c",
+      "sha256": "6292674dc99a94c1563d073facc9d01c4fa24df77b90f3db745e21f05c21719e"
+    },
+    "python_binding": {
+      "path": "clark_quantize/qwen38_hash_residual_cpu.py",
+      "sha256": "ed2d8b44491d3483ef0ae59e342db69c541b5e87837bf77b1385481aa403f6ca"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_qwen38_hash_residual_cpu.py",
+      "sha256": "90d972d687d4dacac7868b83657b292c50d367042fdc9950e8b6946cd657f474"
+    },
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_hash_residual_cpu_v1.py",
+      "sha256": "bf981ec6c2c64cdb7d3bb00d29f5a918a09e13b3fab892008d6135398c725aeb"
+    },
+    "build_script": {
+      "path": "scripts/cpu/build_qwen38_hash_residual_cpu.sh",
+      "sha256": "30dde30ddb6b511cc10012eb68b80db49d5aa4332d1deaaa42e9931277ef5bb3"
+    },
+    "parent_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_hash_residual_screen_preregistration_v1.json",
+      "sha256": "e0d9a613f4286004aa4c2339d8f97fd248d4c4dc5ba0bf70036e75d768261605"
+    }
+  }
+}
