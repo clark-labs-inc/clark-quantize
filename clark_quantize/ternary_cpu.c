@@ -15,6 +15,39 @@
 #define CQ3_RADIX5_SEGMENTS_PADDED 28U
 #define CQ3_RADIX5_ACTIVATION_STRIDE (CQ3_RADIX5_SEGMENTS_PADDED * 8U)
 
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+#define CQ3_RADIX5_DIGITS(value) ( \
+    ((uint64_t)(((value) / 1U) % 3U) << 0U) | \
+    ((uint64_t)(((value) / 3U) % 3U) << 8U) | \
+    ((uint64_t)(((value) / 9U) % 3U) << 16U) | \
+    ((uint64_t)(((value) / 27U) % 3U) << 24U) | \
+    ((uint64_t)(((value) / 81U) % 3U) << 32U) \
+)
+#define CQ3_RADIX5_ROW16(base) \
+    CQ3_RADIX5_DIGITS((base) + 0U), CQ3_RADIX5_DIGITS((base) + 1U), \
+    CQ3_RADIX5_DIGITS((base) + 2U), CQ3_RADIX5_DIGITS((base) + 3U), \
+    CQ3_RADIX5_DIGITS((base) + 4U), CQ3_RADIX5_DIGITS((base) + 5U), \
+    CQ3_RADIX5_DIGITS((base) + 6U), CQ3_RADIX5_DIGITS((base) + 7U), \
+    CQ3_RADIX5_DIGITS((base) + 8U), CQ3_RADIX5_DIGITS((base) + 9U), \
+    CQ3_RADIX5_DIGITS((base) + 10U), CQ3_RADIX5_DIGITS((base) + 11U), \
+    CQ3_RADIX5_DIGITS((base) + 12U), CQ3_RADIX5_DIGITS((base) + 13U), \
+    CQ3_RADIX5_DIGITS((base) + 14U), CQ3_RADIX5_DIGITS((base) + 15U)
+
+static const uint64_t cq3_radix5_digit_lookup_static[256] = {
+    CQ3_RADIX5_ROW16(0U), CQ3_RADIX5_ROW16(16U),
+    CQ3_RADIX5_ROW16(32U), CQ3_RADIX5_ROW16(48U),
+    CQ3_RADIX5_ROW16(64U), CQ3_RADIX5_ROW16(80U),
+    CQ3_RADIX5_ROW16(96U), CQ3_RADIX5_ROW16(112U),
+    CQ3_RADIX5_ROW16(128U), CQ3_RADIX5_ROW16(144U),
+    CQ3_RADIX5_ROW16(160U), CQ3_RADIX5_ROW16(176U),
+    CQ3_RADIX5_ROW16(192U), CQ3_RADIX5_ROW16(208U),
+    CQ3_RADIX5_ROW16(224U), CQ3_RADIX5_ROW16(240U),
+};
+
+#undef CQ3_RADIX5_ROW16
+#undef CQ3_RADIX5_DIGITS
+#endif
+
 #if defined(__GNUC__) || defined(__clang__)
 #define CQ3_RESTRICT __restrict__
 #else
@@ -560,18 +593,23 @@ static int cq3_gemv_q8_group128_radix5_avx2_impl(
     uint64_t columns,
     uint32_t group_size,
     float *CQ3_RESTRICT output,
-    int use_gather
+    int lookup_mode
 ) {
-    uint64_t digit_lookup[256];
-    for (uint32_t value = 0U; value < 256U; ++value) {
-        uint32_t remaining = value;
-        uint64_t digits = 0U;
-        for (uint32_t lane = 0U; lane < 5U; ++lane) {
-            digits |= (uint64_t)(remaining % 3U) << (lane * 8U);
-            remaining /= 3U;
+    uint64_t digit_lookup_local[256];
+    const uint64_t *digit_lookup = cq3_radix5_digit_lookup_static;
+    if (lookup_mode != 2) {
+        for (uint32_t value = 0U; value < 256U; ++value) {
+            uint32_t remaining = value;
+            uint64_t digits = 0U;
+            for (uint32_t lane = 0U; lane < 5U; ++lane) {
+                digits |= (uint64_t)(remaining % 3U) << (lane * 8U);
+                remaining /= 3U;
+            }
+            digit_lookup_local[value] = digits;
         }
-        digit_lookup[value] = digits;
+        digit_lookup = digit_lookup_local;
     }
+    const int use_gather = lookup_mode == 1;
 
     const uint64_t groups = columns / group_size;
     const uint64_t row_bytes = groups * CQ3_RADIX5_BYTES_PER_GROUP;
@@ -734,6 +772,41 @@ int cq3_gemv_q8_group128_radix5_avx2_nogather(
     return cq3_gemv_q8_group128_radix5_avx2_impl(
         weights, weight_scales, activation, activation_scales,
         activation_sums, rows, columns, group_size, output, 0
+    );
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
+int cq3_gemv_q8_group128_radix5_avx2_nogather_static(
+    const uint8_t *CQ3_RESTRICT weights,
+    const uint16_t *CQ3_RESTRICT weight_scales,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    uint32_t group_size,
+    float *CQ3_RESTRICT output
+) {
+    if (activation_sums == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    const int validation = cq3_validate_gemv(
+        weights, weight_scales, activation, activation_scales,
+        output, rows, columns, group_size
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    const uint32_t required = CQ3_FEATURE_AVX2 | CQ3_FEATURE_F16C | CQ3_FEATURE_FMA;
+    if ((cq3_cpu_features() & required) != required) {
+        return CQ3_ERROR_ISA;
+    }
+    return cq3_gemv_q8_group128_radix5_avx2_impl(
+        weights, weight_scales, activation, activation_scales,
+        activation_sums, rows, columns, group_size, output, 2
     );
 #else
     return CQ3_ERROR_ISA;

@@ -177,10 +177,20 @@ class TernaryCpuNativeTests(unittest.TestCase):
             packed_radix5, scales, expanded, activation_scales, sums,
             implementation="avx2_nogather", threads=4,
         )
+        radix5_static = ternary_cpu.gemv_q8_group128_radix5(
+            packed_radix5, scales, expanded, activation_scales, sums,
+            implementation="avx2_nogather_static",
+        )
+        radix5_static_threaded = ternary_cpu.gemv_q8_group128_radix5(
+            packed_radix5, scales, expanded, activation_scales, sums,
+            implementation="avx2_nogather_static", threads=4,
+        )
         np.testing.assert_allclose(radix5, scalar, rtol=1e-5, atol=5e-5)
         np.testing.assert_array_equal(radix5_threaded, radix5)
         np.testing.assert_array_equal(radix5_nogather, radix5)
         np.testing.assert_array_equal(radix5_nogather_threaded, radix5_nogather)
+        np.testing.assert_array_equal(radix5_static, radix5)
+        np.testing.assert_array_equal(radix5_static_threaded, radix5_static)
 
 
 if __name__ == "__main__":
