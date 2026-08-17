@@ -74,6 +74,8 @@ def _load_library() -> ctypes.CDLL | None:
         library.cq3_gemv_q8_group128_radix5_scalar.restype = ctypes.c_int
         library.cq3_gemv_q8_group128_radix5_avx2.argtypes = gemv_args
         library.cq3_gemv_q8_group128_radix5_avx2.restype = ctypes.c_int
+        library.cq3_gemv_q8_group128_radix5_avx2_nogather.argtypes = gemv_args
+        library.cq3_gemv_q8_group128_radix5_avx2_nogather.restype = ctypes.c_int
         library.cq3_sum_u8_scalar.argtypes = (u8p, ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64))
         library.cq3_sum_u8_scalar.restype = ctypes.c_int
         library.cq3_sum_u8_avx2.argtypes = (u8p, ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64))
@@ -432,6 +434,7 @@ def gemv_q8_group128_radix5(
     functions = {
         "scalar": _LIBRARY.cq3_gemv_q8_group128_radix5_scalar,
         "avx2": _LIBRARY.cq3_gemv_q8_group128_radix5_avx2,
+        "avx2_nogather": _LIBRARY.cq3_gemv_q8_group128_radix5_avx2_nogather,
     }
     if implementation not in functions:
         raise ValueError(f"unknown radix-5 GEMV implementation {implementation!r}")

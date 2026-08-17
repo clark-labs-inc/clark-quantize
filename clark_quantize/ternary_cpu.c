@@ -559,7 +559,8 @@ static int cq3_gemv_q8_group128_radix5_avx2_impl(
     uint64_t rows,
     uint64_t columns,
     uint32_t group_size,
-    float *CQ3_RESTRICT output
+    float *CQ3_RESTRICT output,
+    int use_gather
 ) {
     uint64_t digit_lookup[256];
     for (uint32_t value = 0U; value < 256U; ++value) {
@@ -602,11 +603,18 @@ static int cq3_gemv_q8_group128_radix5_avx2_impl(
             for (uint32_t segment = 0U; segment < 24U; segment += 4U) {
                 uint32_t indices;
                 memcpy(&indices, codes + segment, sizeof(indices));
-                const __m256i digits = _mm256_i32gather_epi64(
-                    (const long long int *)digit_lookup,
-                    _mm_cvtepu8_epi32(_mm_cvtsi32_si128((int)indices)),
-                    8
-                );
+                const __m256i digits = use_gather
+                    ? _mm256_i32gather_epi64(
+                        (const long long int *)digit_lookup,
+                        _mm_cvtepu8_epi32(_mm_cvtsi32_si128((int)indices)),
+                        8
+                    )
+                    : _mm256_set_epi64x(
+                        (long long int)digit_lookup[(indices >> 24U) & 0xffU],
+                        (long long int)digit_lookup[(indices >> 16U) & 0xffU],
+                        (long long int)digit_lookup[(indices >> 8U) & 0xffU],
+                        (long long int)digit_lookup[indices & 0xffU]
+                    );
                 const __m256i activations = _mm256_loadu_si256(
                     (const __m256i *)(values + segment * 8U)
                 );
@@ -618,12 +626,18 @@ static int cq3_gemv_q8_group128_radix5_avx2_impl(
                     )
                 );
             }
-            const __m128i tail_indices = _mm_set_epi32(0, 0, codes[25], codes[24]);
-            const __m256i tail_digits = _mm256_i32gather_epi64(
-                (const long long int *)digit_lookup,
-                tail_indices,
-                8
-            );
+            const __m256i tail_digits = use_gather
+                ? _mm256_i32gather_epi64(
+                    (const long long int *)digit_lookup,
+                    _mm_set_epi32(0, 0, codes[25], codes[24]),
+                    8
+                )
+                : _mm256_set_epi64x(
+                    0,
+                    0,
+                    (long long int)digit_lookup[codes[25]],
+                    (long long int)digit_lookup[codes[24]]
+                );
             const __m256i tail_activations = _mm256_loadu_si256(
                 (const __m256i *)(values + 24U * 8U)
             );
@@ -684,7 +698,42 @@ int cq3_gemv_q8_group128_radix5_avx2(
     }
     return cq3_gemv_q8_group128_radix5_avx2_impl(
         weights, weight_scales, activation, activation_scales,
-        activation_sums, rows, columns, group_size, output
+        activation_sums, rows, columns, group_size, output, 1
+    );
+#else
+    return CQ3_ERROR_ISA;
+#endif
+}
+
+int cq3_gemv_q8_group128_radix5_avx2_nogather(
+    const uint8_t *CQ3_RESTRICT weights,
+    const uint16_t *CQ3_RESTRICT weight_scales,
+    const int8_t *CQ3_RESTRICT activation,
+    const float *CQ3_RESTRICT activation_scales,
+    const int32_t *CQ3_RESTRICT activation_sums,
+    uint64_t rows,
+    uint64_t columns,
+    uint32_t group_size,
+    float *CQ3_RESTRICT output
+) {
+    if (activation_sums == NULL) {
+        return CQ3_ERROR_ARGUMENT;
+    }
+    const int validation = cq3_validate_gemv(
+        weights, weight_scales, activation, activation_scales,
+        output, rows, columns, group_size
+    );
+    if (validation != CQ3_OK) {
+        return validation;
+    }
+#if CQ3_X86 && (defined(__GNUC__) || defined(__clang__))
+    const uint32_t required = CQ3_FEATURE_AVX2 | CQ3_FEATURE_F16C | CQ3_FEATURE_FMA;
+    if ((cq3_cpu_features() & required) != required) {
+        return CQ3_ERROR_ISA;
+    }
+    return cq3_gemv_q8_group128_radix5_avx2_impl(
+        weights, weight_scales, activation, activation_scales,
+        activation_sums, rows, columns, group_size, output, 0
     );
 #else
     return CQ3_ERROR_ISA;

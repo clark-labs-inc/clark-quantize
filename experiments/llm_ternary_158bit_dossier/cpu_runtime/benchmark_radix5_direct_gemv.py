@@ -50,7 +50,10 @@ def validate_preregistration(value: dict, args: argparse.Namespace) -> None:
     tensor = value.get("tensor", {})
     performance = value.get("performance", {})
     if (
-        value.get("schema") != "clark_radix5_direct_gemv_preregistration_v1"
+        value.get("schema") not in {
+            "clark_radix5_direct_gemv_preregistration_v1",
+            "clark_radix5_direct_gemv_preregistration_v2",
+        }
         or tensor.get("name") != args.tensor
         or tensor.get("rows") != args.rows
         or tensor.get("columns") != args.columns
@@ -93,6 +96,9 @@ def main() -> None:
     preregistration_content = args.preregistration.read_bytes()
     preregistration = json.loads(preregistration_content)
     validate_preregistration(preregistration, args)
+    radix5_implementation = preregistration.get("kernel", {}).get(
+        "implementation", "avx2"
+    )
     features = cpu_features()
     if not native_available() or not all(features[name] for name in ("avx2", "f16c", "fma")):
         raise RuntimeError("the preregistered run requires native AVX2, F16C, and FMA")
@@ -137,7 +143,7 @@ def main() -> None:
     radix5_avx2 = gemv_q8_group128_radix5(
         packed_radix5[:check_rows], weight_scales[:check_rows],
         activation_radix5, activation_scales, activation_sums,
-        implementation="avx2", validated=True,
+        implementation=radix5_implementation, validated=True,
     )
     scalar_max_abs = float(np.max(np.abs(radix5_scalar - aligned_scalar)))
     avx2_max_abs = float(np.max(np.abs(radix5_avx2 - aligned_scalar)))
@@ -181,7 +187,7 @@ def main() -> None:
             "radix5": lambda threads=threads: gemv_q8_group128_radix5(
                 packed_radix5, weight_scales, activation_radix5,
                 activation_scales, activation_sums,
-                implementation="avx2", threads=threads,
+                implementation=radix5_implementation, threads=threads,
                 executor=executors.get(threads),
                 cpu_ids=None if threads > 1 else physical_cpus[:1],
                 validated=True,
@@ -244,7 +250,9 @@ def main() -> None:
         if path.exists()
     )
     report = {
-        "schema": "clark_qwen38_radix5_direct_gemv_v1",
+        "schema": preregistration["schema"].replace(
+            "preregistration", "receipt"
+        ),
         "created_at": time.time(),
         "preregistration": {
             "path": str(args.preregistration),
@@ -261,6 +269,7 @@ def main() -> None:
             "codes_sha256": hashlib.sha256(codes.tobytes()).hexdigest(),
         },
         "build": {
+            "radix5_implementation": radix5_implementation,
             "native_library": str(native_library),
             "native_library_sha256": file_sha256(native_library),
             "c_source_sha256": file_sha256(REPO / "clark_quantize/ternary_cpu.c"),

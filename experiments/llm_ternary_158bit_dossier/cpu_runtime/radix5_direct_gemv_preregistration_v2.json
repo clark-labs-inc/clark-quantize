@@ -1,0 +1,51 @@
+{
+  "schema": "clark_radix5_direct_gemv_preregistration_v2",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "artifact_schema": "clark_chunked_base3_v1",
+  "predecessor": {
+    "receipt": "receipts/radix5-direct-gemv-v1.json",
+    "receipt_sha256": "8da4c6dae189aa4eeabc8b8d1ff316c3bceb9424a482e250c8a5a1b0dcfc72d3",
+    "four_core_throughput_fraction_of_aligned2": 0.3699222540351195,
+    "promotion_passed": false
+  },
+  "hypothesis": "Replacing AVX2 gather with four independent scalar L1 digit-table loads per vector will retain the exact 1.75-bit group-128 radix-5 compute image while raising four-core throughput from 36.99% to at least 70% of the aligned-two-bit control.",
+  "kernel": {
+    "implementation": "avx2_nogather",
+    "only_registered_change": "replace each four-index AVX2 gather with four ordinary digit-table loads assembled into one AVX2 vector"
+  },
+  "tensor": {
+    "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "group_size": 128
+  },
+  "formats": {
+    "aligned2": {"code_bytes_per_group": 32, "fp16_scale_bytes_per_group": 2, "bits_per_weight": 2.125},
+    "radix5_group128": {"code_bytes_per_group": 26, "fp16_scale_bytes_per_group": 2, "bits_per_weight": 1.75, "padding_trits_per_group": 2}
+  },
+  "activation": {
+    "dtype": "float32_to_group128_int8",
+    "seed": 20260817,
+    "radix5_layout": "28 eight-byte segments per group; five live A8 values and three zero lanes per segment"
+  },
+  "correctness": {
+    "rows": 128,
+    "maximum_absolute_error_vs_aligned2": 0.00005,
+    "require_exact_radix5_roundtrip": true,
+    "require_exact_thread_determinism": true
+  },
+  "performance": {
+    "warmups": 2,
+    "repetitions": 7,
+    "threads": [1, 2, 4],
+    "thread_placement": "persistent_workers_pinned_once_to_distinct_physical_cores",
+    "cache_eviction_bytes": 268435456,
+    "comparison_order": "alternate which format runs first on every repetition"
+  },
+  "promotion": {
+    "maximum_radix5_compute_image_bits_per_weight_including_fp16_scales": 1.75,
+    "minimum_radix5_throughput_fraction_of_aligned2": 0.70,
+    "pareto_speed_threshold": 1.0,
+    "does_not_authorize_model_quality_or_breakthrough_claim": true
+  }
+}
