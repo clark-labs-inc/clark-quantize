@@ -57,10 +57,15 @@ EXPECTED_RETAINED_PARAMETERS = 1_114_864
 EXPECTED_SCALES = 217_521_520
 EXPECTED_CODE_BYTES = 5_507_270_842
 EXPECTED_SCALE_BYTES = 108_782_072
+EXPECTED_ROW_SCALE_INDEX_BYTES = 108_760_760
+EXPECTED_ROW_SCALE_ANCHOR_BYTES = 10_483_168
+EXPECTED_ROW_SCALE_CODEBOOK_BYTES = 21_312
+EXPECTED_ROW_SCALE_BYTES = 119_265_240
 EXPECTED_RETAINED_BYTES = 2_229_728
 EXPECTED_AUXILIARY_BYTES = 23_108_348
 EXPECTED_PROJECTED_BYTES = 5_641_581_820
 MAXIMUM_COMPLETE_BPW = 1.63
+MAXIMUM_ROW_NORMALIZED_COMPLETE_BPW = 1.64
 ROW_BATCH = 128
 
 
@@ -74,6 +79,15 @@ def resource_guard(workspace: Path, *, assembly: bool = False) -> None:
         "quant-qwen38-27b-block203-codec-watch-v2.service",
         "quant-qwen38-27b-block203-radix243-watch-v1.service",
         "quant-qwen38-27b-full-scale-codebook4-watch-v1.service",
+        "quant-qwen38-27b-infrastructure-retry-v1.service",
+        "quant-qwen38-27b-layer0-mlp-activation-qat-watch-v1.service",
+        "quant-qwen38-27b-layer0-mlp-activation-qat-paired-watch-v1.service",
+        "quant-qwen38-27b-row-normalized-scale-codebook4-watch-v1.service",
+        "quant-qwen38-27b-full-row-normalized-scale-codebook4-watch-v1.service",
+        "quant-qwen38-27b-row-scale4-kernel-watch-v1.service",
+        "quant-qwen38-27b-block203-row-scale4-direct-gemv-watch-v1.service",
+        "quant-qwen38-27b-block203-row-scale4-constdiv-watch-v1.service",
+        "quant-qwen38-27b-block203-row-scale4-chunk16-watch-v1.service",
     )
     for unit in competitors:
         if subprocess.run(
@@ -110,7 +124,10 @@ def validate_descriptor(root: Path, descriptor: dict) -> Path:
 
 
 def validate_spool_record(root: Path, record: dict) -> None:
-    if record["encoding"] == "base3_group128_codebook4":
+    if record["encoding"] in {
+        "base3_group128_codebook4",
+        "base3_group128_row_normalized_codebook4",
+    }:
         validate_descriptor(root, record["codes"])
     elif record["encoding"].startswith("retained_exact_"):
         validate_descriptor(root, record["retained"])
@@ -124,7 +141,9 @@ def scale_sources(
     supplemental: dict[str, dict],
     mapped_root: Path,
     full_root: Path,
-) -> tuple[dict, Path, Path]:
+    *,
+    row_normalized: bool,
+) -> tuple[dict, tuple[Path, ...]]:
     if name in mapped:
         record = mapped[name]
         root = mapped_root
@@ -139,13 +158,22 @@ def scale_sources(
     codebook = validate_descriptor(root, record["codebook"])
     if record["codebook"]["bytes"] != 32:
         raise RuntimeError(f"Qwen3.8 scale codebook for {name} is not 16 FP16 values")
-    return {
+    result = {
         "source": source,
         "scale_count": record["scale_count"],
         "source_scale_sha256": record["source_scale_sha256"],
         "indices": record["indices"],
         "codebook": record["codebook"],
-    }, indices, codebook
+    }
+    paths = [indices]
+    if row_normalized:
+        anchors = validate_descriptor(root, record["anchors"])
+        if record["anchors"]["bytes"] != int(record["rows"]) * 2:
+            raise RuntimeError(f"Qwen3.8 row anchors for {name} have the wrong size")
+        result["anchors"] = record["anchors"]
+        paths.append(anchors)
+    paths.append(codebook)
+    return result, tuple(paths)
 
 
 def main() -> None:
@@ -183,6 +211,11 @@ def main() -> None:
     )
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--threads", type=int, default=4)
+    parser.add_argument(
+        "--row-normalized",
+        action="store_true",
+        help="export one FP16 row anchor plus per-tensor FP16 ratio codebook",
+    )
     args = parser.parse_args()
     if args.workers <= 0 or args.threads <= 0:
         raise ValueError("worker and thread counts must be positive")
@@ -192,7 +225,12 @@ def main() -> None:
     torch.set_num_threads(args.threads)
 
     runtime_dir = Path(__file__).resolve().parent
-    prereg_path = runtime_dir / "qwen38_27b_cq3_export_preregistration_v1.json"
+    row_normalized = bool(args.row_normalized)
+    prereg_path = runtime_dir / (
+        "qwen38_27b_cq3_row_normalized_export_preregistration_v1.json"
+        if row_normalized
+        else "qwen38_27b_cq3_export_preregistration_v1.json"
+    )
     prereg = json.loads(prereg_path.read_text())
     for item in prereg["frozen_inputs"].values():
         path = REPO / item["path"]
@@ -236,8 +274,13 @@ def main() -> None:
 
     mapped_manifest_path = args.mapped_codebooks / "manifest.json"
     mapped_manifest = json.loads(mapped_manifest_path.read_text())
+    expected_mapped_schema = (
+        "qwen38_27b_row_normalized_scale_codebook4_receipt_v1"
+        if row_normalized
+        else "qwen38_27b_scale_codebook4_receipt_v1"
+    )
     if (
-        mapped_manifest.get("schema") != "qwen38_27b_scale_codebook4_receipt_v1"
+        mapped_manifest.get("schema") != expected_mapped_schema
         or mapped_manifest.get("complete") is not True
         or mapped_manifest.get("gate", {}).get("passed") is not True
     ):
@@ -246,8 +289,13 @@ def main() -> None:
 
     full_manifest_path = args.full_codebooks / "manifest.json"
     full_manifest = json.loads(full_manifest_path.read_text())
+    expected_full_schema = (
+        "qwen38_27b_full_row_normalized_scale_codebook4_receipt_v1"
+        if row_normalized
+        else "qwen38_27b_full_scale_codebook4_receipt_v1"
+    )
     if (
-        full_manifest.get("schema") != "qwen38_27b_full_scale_codebook4_receipt_v1"
+        full_manifest.get("schema") != expected_full_schema
         or full_manifest.get("complete") is not True
         or full_manifest.get("gate", {}).get("passed") is not True
         or full_manifest.get("summary", {}).get("tensors") != EXPECTED_QUANTIZED_TENSORS
@@ -259,6 +307,32 @@ def main() -> None:
     supplemental_scale = {
         record["tensor"]: record for record in full_manifest["supplemental_records"]
     }
+    if row_normalized:
+        row_storage = full_manifest.get("storage_ledger", {})
+        if (
+            row_storage.get("strategy", {}).get("name")
+            != "base3_group128_row_normalized_codebook4"
+            or row_storage.get("scales", {}).get("index_bytes")
+            != EXPECTED_ROW_SCALE_INDEX_BYTES
+            or row_storage.get("scales", {}).get("fp16_row_anchor_bytes")
+            != EXPECTED_ROW_SCALE_ANCHOR_BYTES
+            or row_storage.get("scales", {}).get("fp16_codebook_bytes")
+            != EXPECTED_ROW_SCALE_CODEBOOK_BYTES
+            or row_storage.get("bytes", {}).get("scale_payload_anchors_and_codebooks")
+            != EXPECTED_ROW_SCALE_BYTES
+            or float(row_storage.get("effective_bits_per_total_parameter", math.inf))
+            > MAXIMUM_ROW_NORMALIZED_COMPLETE_BPW
+        ):
+            raise RuntimeError("complete row-normalized storage ledger changed")
+        projected_bytes = int(row_storage["bytes"]["complete_bundle"])
+        expected_scale_bytes = EXPECTED_ROW_SCALE_BYTES
+        maximum_complete_bpw = MAXIMUM_ROW_NORMALIZED_COMPLETE_BPW
+        quantized_encoding = "base3_group128_row_normalized_codebook4"
+    else:
+        projected_bytes = EXPECTED_PROJECTED_BYTES
+        expected_scale_bytes = EXPECTED_SCALE_BYTES
+        maximum_complete_bpw = MAXIMUM_COMPLETE_BPW
+        quantized_encoding = "base3_group128_codebook4"
 
     tensors, source = inventory_from_safetensors(args.model_dir)
     if source["index_sha256"] != EXPECTED_INDEX_SHA256 or source["inventory_sha256"] != EXPECTED_INVENTORY_SHA256:
@@ -298,12 +372,21 @@ def main() -> None:
         "storage_projection_receipt_sha256": EXPECTED_STORAGE_RECEIPT_SHA256,
         "preregistration_sha256": sha256_file(prereg_path),
         "codec": {
-            "name": "base3_group128_block203_codebook4",
+            "name": (
+                "base3_group128_block203_row_normalized_codebook4"
+                if row_normalized
+                else "base3_group128_block203_codebook4"
+            ),
             "group_size": 128,
             "full_group_bits": 203,
             "group_boundaries": "reset at every flattened first-dimension row",
             "tensor_stream": "bit-contiguous with canonical zero padding only at tensor end",
             "scale_indices": "u4 low nibble first",
+            "row_anchor": (
+                "one little-endian FP16 value per flattened output row"
+                if row_normalized
+                else None
+            ),
             "scale_codebook": "16 little-endian FP16 values per tensor",
         },
     }
@@ -414,19 +497,20 @@ def main() -> None:
                         raise RuntimeError(f"supplemental Qwen3.8 quantizer replay changed for {name}")
                     code_source = "replayed_pinned_safetensors_optimal_group128"
                 code_receipt["path"] = str(code_path.relative_to(args.out_dir))
-                scale, _, _ = scale_sources(
+                scale, _ = scale_sources(
                     name,
                     mapped_scale,
                     supplemental_scale,
                     args.mapped_codebooks,
                     args.full_codebooks,
+                    row_normalized=row_normalized,
                 )
                 expected_scale_count = tensor.rows * math.ceil(tensor.columns / 128)
                 if scale["scale_count"] != expected_scale_count:
                     raise RuntimeError(f"Qwen3.8 scale count changed for {name}")
                 record = {
                     **base,
-                    "encoding": "base3_group128_codebook4",
+                    "encoding": quantized_encoding,
                     "code_source": code_source,
                     "codes": code_receipt,
                     "scales": scale,
@@ -458,7 +542,7 @@ def main() -> None:
     code_bytes = sum(
         record["codes"]["bytes"]
         for record in spool["tensors"]
-        if record["encoding"] == "base3_group128_codebook4"
+        if record["encoding"] == quantized_encoding
     )
     retained_bytes = sum(
         record["retained"]["bytes"]
@@ -491,10 +575,11 @@ def main() -> None:
             "inventory_sha256": EXPECTED_INVENTORY_SHA256,
         },
         strategy={
-            "name": "base3_group128_codebook4",
+            "name": quantized_encoding,
             "codec": "block203",
             "group_size": 128,
             "scale_bits": 4,
+            "row_anchor_dtype": "F16" if row_normalized else None,
             "scale_codebook_entries": 16,
             "scale_codebook_dtype": "F16",
         },
@@ -503,7 +588,7 @@ def main() -> None:
         for record in spool["tensors"]:
             prefix = f"tensor.{record['index']:04d}"
             sections = []
-            if record["encoding"] == "base3_group128_codebook4":
+            if record["encoding"] == quantized_encoding:
                 code = writer.add_section(
                     prefix + ".codes",
                     "ternary_block203",
@@ -519,26 +604,47 @@ def main() -> None:
                 )
                 if code["bytes"] != record["codes"]["bytes"] or code["sha256"] != record["codes"]["sha256"]:
                     raise RuntimeError(f"container code section changed for {record['name']}")
-                scale, indices_path, codebook_path = scale_sources(
+                scale, scale_paths = scale_sources(
                     record["name"],
                     mapped_scale,
                     supplemental_scale,
                     args.mapped_codebooks,
                     args.full_codebooks,
+                    row_normalized=row_normalized,
                 )
+                scale_kind = (
+                    "scale_indices_u4_anchors_f16_and_codebook_f16"
+                    if row_normalized
+                    else "scale_indices_u4_and_codebook_f16"
+                )
+                scale_metadata = {
+                    "scale_count": scale["scale_count"],
+                    "index_bytes": scale["indices"]["bytes"],
+                    "codebook_bytes": scale["codebook"]["bytes"],
+                    "codebook_entries": 16,
+                    "index_order": "low_nibble_first",
+                }
+                if row_normalized:
+                    scale_metadata.update(
+                        {
+                            "row_count": int(record["shape"][0]),
+                            "anchor_bytes": scale["anchors"]["bytes"],
+                            "factor_order": "indices_then_row_anchors_then_codebook",
+                            "decode": "float32(fp16_anchor) * float32(fp16_ratio)",
+                        }
+                    )
                 scales = writer.add_section_parts(
                     prefix + ".scales",
-                    "scale_indices_u4_and_codebook_f16",
-                    (indices_path, codebook_path),
-                    metadata={
-                        "scale_count": scale["scale_count"],
-                        "index_bytes": scale["indices"]["bytes"],
-                        "codebook_bytes": scale["codebook"]["bytes"],
-                        "codebook_entries": 16,
-                        "index_order": "low_nibble_first",
-                    },
+                    scale_kind,
+                    scale_paths,
+                    metadata=scale_metadata,
                 )
-                if scales["bytes"] != scale["indices"]["bytes"] + scale["codebook"]["bytes"]:
+                expected_tensor_scale_bytes = (
+                    scale["indices"]["bytes"]
+                    + scale["codebook"]["bytes"]
+                    + (scale["anchors"]["bytes"] if row_normalized else 0)
+                )
+                if scales["bytes"] != expected_tensor_scale_bytes:
                     raise RuntimeError(f"container scale section changed for {record['name']}")
                 sections.extend((code["id"], scales["id"]))
             else:
@@ -593,9 +699,14 @@ def main() -> None:
     section_totals: dict[str, int] = {}
     for section in directory["sections"]:
         section_totals[section["kind"]] = section_totals.get(section["kind"], 0) + section["bytes"]
+    scale_kind = (
+        "scale_indices_u4_anchors_f16_and_codebook_f16"
+        if row_normalized
+        else "scale_indices_u4_and_codebook_f16"
+    )
     if (
         section_totals.get("ternary_block203") != EXPECTED_CODE_BYTES
-        or section_totals.get("scale_indices_u4_and_codebook_f16") != EXPECTED_SCALE_BYTES
+        or section_totals.get(scale_kind) != expected_scale_bytes
         or sum(
             size for kind, size in section_totals.items() if kind.startswith("retained_exact_")
         )
@@ -606,15 +717,19 @@ def main() -> None:
     output_bytes = args.output.stat().st_size
     complete_bpw = output_bytes * 8 / EXPECTED_PARAMETERS
     gate = {
-        "maximum_complete_container_bpw": MAXIMUM_COMPLETE_BPW,
+        "maximum_complete_container_bpw": maximum_complete_bpw,
         "observed_complete_container_bpw": complete_bpw,
-        "projected_bytes": EXPECTED_PROJECTED_BYTES,
+        "projected_bytes": projected_bytes,
         "observed_bytes": output_bytes,
-        "observed_minus_projected_bytes": output_bytes - EXPECTED_PROJECTED_BYTES,
-        "passed": complete_bpw <= MAXIMUM_COMPLETE_BPW,
+        "observed_minus_projected_bytes": output_bytes - projected_bytes,
+        "passed": complete_bpw <= maximum_complete_bpw,
     }
     receipt = {
-        "schema": "qwen38_27b_cq3_export_receipt_v1",
+        "schema": (
+            "qwen38_27b_cq3_row_normalized_export_receipt_v1"
+            if row_normalized
+            else "qwen38_27b_cq3_export_receipt_v1"
+        ),
         "created_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "model": {
             "id": MODEL_ID,
@@ -632,6 +747,9 @@ def main() -> None:
             "mapped_codebook_manifest_sha256": sha256_file(mapped_manifest_path),
             "full_codebook_manifest_sha256": sha256_file(full_manifest_path),
             "storage_projection_receipt_sha256": EXPECTED_STORAGE_RECEIPT_SHA256,
+            "row_normalized_storage_ledger": (
+                full_manifest["storage_ledger"] if row_normalized else None
+            ),
             "spool_manifest_sha256": sha256_file(complete_path),
         },
         "artifact": {
