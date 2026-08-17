@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import tempfile
 import unittest
@@ -185,13 +186,15 @@ class Qwen38CQ3RuntimeTests(unittest.TestCase):
                     activation_sums,
                     implementation="scalar_chunk16",
                 )
-                four_threads = view.gemv_q8(
-                    activation_q8,
-                    activation_scales,
-                    activation_sums,
-                    implementation="scalar_chunk16",
-                    threads=4,
-                )
+                with ThreadPoolExecutor(max_workers=4) as executor:
+                    four_threads = view.gemv_q8(
+                        activation_q8,
+                        activation_scales,
+                        activation_sums,
+                        implementation="scalar_chunk16",
+                        threads=4,
+                        executor=executor,
+                    )
                 groups = self.columns // 128
                 dots = np.sum(
                     codes.reshape(self.rows, groups, 128).astype(np.int32)

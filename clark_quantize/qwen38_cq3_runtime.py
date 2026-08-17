@@ -6,6 +6,7 @@ kernel without expanding the ternary weights into a larger compute image.
 """
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from math import prod
 from pathlib import Path
@@ -54,6 +55,7 @@ class Qwen38CQ3TernaryTensorView:
         *,
         implementation: str = "scalar",
         threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
         cpu_ids: list[int] | None = None,
     ) -> np.ndarray:
         """Run the native direct-storage GEMV without expanding the weights."""
@@ -67,6 +69,7 @@ class Qwen38CQ3TernaryTensorView:
             activation_sums,
             implementation=implementation,
             threads=threads,
+            executor=executor,
             cpu_ids=cpu_ids,
             group_size=GROUP_SIZE,
             # The native ABI still validates finite scales, nibble padding,
@@ -81,6 +84,7 @@ class Qwen38CQ3TernaryTensorView:
         *,
         implementation: str = "scalar",
         threads: int = 1,
+        executor: ThreadPoolExecutor | None = None,
         cpu_ids: list[int] | None = None,
     ) -> np.ndarray:
         """Quantize one activation vector to A8 and run direct-storage GEMV."""
@@ -99,6 +103,7 @@ class Qwen38CQ3TernaryTensorView:
             activation_sums,
             implementation=implementation,
             threads=threads,
+            executor=executor,
             cpu_ids=cpu_ids,
         )
 

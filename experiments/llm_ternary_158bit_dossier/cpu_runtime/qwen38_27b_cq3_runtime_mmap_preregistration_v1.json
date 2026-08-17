@@ -1,0 +1,110 @@
+{
+  "schema": "qwen38_27b_cq3_runtime_mmap_preregistration_v1",
+  "status": "frozen_before_authoritative_container_run",
+  "frozen_at_utc": "2026-08-17T15:00:05Z",
+  "objective": "Prove that an authenticated tensor in the complete Qwen3.8-27B row-normalized CQ3 container can execute directly from mmap with exact four-core row sharding and without a larger weight image",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "tensor": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "shape": [17408, 5120],
+    "rows": 17408,
+    "columns": 5120,
+    "groups_per_row": 40,
+    "group_size": 128,
+    "block203_payload_bytes": 17669120,
+    "scale_index_bytes": 348160,
+    "row_anchor_bytes": 34816,
+    "ratio_codebook_bytes": 32
+  },
+  "candidate": {
+    "implementation": "avx2_chunk16",
+    "seed": 20260817,
+    "storage_access": "read-only mmap views of authenticated container sections",
+    "weight_expansion": "none",
+    "activation_contract": "one FP32 activation vector quantized to group-128 A8",
+    "threading": "byte-aligned row shards on four distinct physical cores with one persistent worker pool",
+    "numeric_contract": "native code validates row factors and every decoded block203 codeword; one-thread and four-thread outputs must be bit-identical"
+  },
+  "parents": {
+    "complete_row_normalized_export_receipt": "/workspace/quant-state/qwen38-27b-cq3-row-normalized-export-v1.json",
+    "chunk16_kernel_receipt": "/workspace/quant-state/qwen38-27b-block203-row-scale4-chunk16-v1.json",
+    "both_parent_gates_must_pass": true,
+    "container_sha256_must_match_export_receipt": true
+  },
+  "correctness": {
+    "rows": 8,
+    "compare_actual_mmap_payload_with_copied_compressed_payload": true,
+    "compare_scalar_chunk16_with_generic_scalar": true,
+    "compare_avx2_chunk16_with_generic_scalar": true,
+    "compare_one_thread_with_four_threads": true
+  },
+  "measurement": {
+    "warmups_each": 1,
+    "paired_repetitions": 7,
+    "physical_threads": 4,
+    "select_one_logical_cpu_per_unique_package_and_core": true,
+    "reuse_thread_pool": true,
+    "include_python_to_native_dispatch_in_timing": true,
+    "exclude_container_hash_and_tensor_section_authentication_from_timing": true
+  },
+  "gate": {
+    "require_zero_copy_all_runtime_arrays": true,
+    "require_exact_scalar_chunk16_vs_generic": true,
+    "require_exact_mmap_vs_copied_compressed_payload": true,
+    "maximum_avx2_vs_generic_scalar_absolute_error": 0.00005,
+    "require_exact_one_vs_four_thread_output": true,
+    "minimum_four_thread_speedup": 2.5,
+    "maximum_peak_rss_growth_bytes": 536870912,
+    "all_outputs_and_samples_must_be_finite": true
+  },
+  "frozen_inputs": {
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_cq3_runtime_mmap_v1.py",
+      "sha256": "dc889feba77a015bafb89a7ab1cc8f097450790bf0acf010917e9b4ac9c5de81"
+    },
+    "runtime": {
+      "path": "clark_quantize/qwen38_cq3_runtime.py",
+      "sha256": "2f9ad5a3b332d86d32ee3d901b4a4be8116cacc5bdef880dca04afddd329c8af"
+    },
+    "runtime_tests": {
+      "path": "clark_quantize/test_qwen38_cq3_runtime.py",
+      "sha256": "83cbfca72bb132986dfbcc5820137ecd6d5bd87dee290a878018d16e3cd0691e"
+    },
+    "native_wrapper": {
+      "path": "clark_quantize/ternary_cpu.py",
+      "sha256": "1a72a4ecff15d08c6f5b1705da4e840f90b0cbdaad9f61e3695a1797564601e0"
+    },
+    "native_source": {
+      "path": "clark_quantize/ternary_cpu.c",
+      "sha256": "fc89e77d6a55c319ebc727b372360f9d87e7a2caf5c10f85a29b8c21cc03a24d"
+    },
+    "container": {
+      "path": "clark_quantize/qwen38_cq3_container.py",
+      "sha256": "f889bc12f0c152d2229249169cad594a568e7365597897f7e022c123c3d3ea7b"
+    },
+    "native_build": {
+      "path": "scripts/cpu/build_ternary_cpu.sh",
+      "sha256": "273db81adcefce5525288927cbcdde5f4beff65b136e35235ba8c4909c22e75b"
+    },
+    "export_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_cq3_row_normalized_export_preregistration_v1.json",
+      "sha256": "bc3fc10530d9ffdd6b57190a479e6477f47ad8e16a6322ed245b00ea7f42f235"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 4,
+    "swap_must_remain_zero": true,
+    "run_only_after_row_normalized_export_is_terminal": true,
+    "no_new_large_artifact": true
+  },
+  "promotion_rules": [
+    "a valid speed threshold miss is retained as a negative result",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "this gate proves one real container tensor path, not a runnable whole-model graph",
+    "CUTE, MATH, code, MMLU-type, WikiText, and paired end-to-end token throughput remain mandatory before model promotion",
+    "no scientific breakthrough claim can come from this integration gate alone",
+    "Qwen 4B compute is forbidden in this research lane"
+  ]
+}
