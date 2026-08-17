@@ -286,6 +286,13 @@ def main() -> None:
     control_median = statistics.median(samples["control"])
     candidate_median = statistics.median(samples["candidate"])
     speedup = control_median / candidate_median
+    if len(samples["control"]) != len(samples["candidate"]):
+        raise RuntimeError("Qwen3.8 paired-affinity sample counts differ")
+    paired_speedups = [
+        control / candidate
+        for control, candidate in zip(samples["control"], samples["candidate"])
+    ]
+    minimum_paired_speedup = min(paired_speedups)
     major_faults = int(faults_after.ru_majflt - faults_before.ru_majflt)
     minor_faults = int(faults_after.ru_minflt - faults_before.ru_minflt)
     peak_rss = peak_rss_bytes()
@@ -309,6 +316,8 @@ def main() -> None:
         "observed_exact_topk_indices": exact_indices,
         "observed_exact_full_state": exact_state,
         "observed_speedup": speedup,
+        "observed_paired_speedups": paired_speedups,
+        "observed_minimum_paired_speedup": minimum_paired_speedup,
         "observed_candidate_tokens_per_second": 1.0 / candidate_median,
         "observed_authenticated_aligned_tensor_count": verified_tensors,
         "observed_process_peak_rss_bytes": peak_rss,
@@ -320,6 +329,8 @@ def main() -> None:
         and exact_indices
         and exact_state
         and speedup >= float(gate_spec["minimum_speedup"])
+        and minimum_paired_speedup
+        >= float(gate_spec["minimum_each_paired_speedup"])
         and verified_tensors
         == int(gate_spec["required_authenticated_aligned_tensor_count"])
         and peak_rss <= int(gate_spec["maximum_process_peak_rss_bytes"])
@@ -380,6 +391,8 @@ def main() -> None:
         },
         "measurement": {
             "speedup": speedup,
+            "paired_speedups": paired_speedups,
+            "minimum_paired_speedup": minimum_paired_speedup,
             "minor_page_faults": minor_faults,
             "major_page_faults": major_faults,
             "process_peak_rss_bytes": peak_rss,

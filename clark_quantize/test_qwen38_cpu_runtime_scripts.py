@@ -158,6 +158,7 @@ def test_qwen38_persistent_affinity_gate_matches_cpu_policy() -> None:
     )
     assert preregistration["scope"]["active_model_only"] == "Qwen/Qwen3.8-27B"
     assert preregistration["gate"]["minimum_speedup"] == 1.05
+    assert preregistration["gate"]["minimum_each_paired_speedup"] == 1.0
     assert preregistration["gate"]["require_exact_topk_values"] is True
     assert preregistration["gate"]["require_exact_topk_indices"] is True
     assert preregistration["gate"]["require_exact_full_state"] is True
