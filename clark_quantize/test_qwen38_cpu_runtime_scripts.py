@@ -4,6 +4,8 @@ from __future__ import annotations
 import ast
 import importlib.util
 from pathlib import Path
+import re
+import subprocess
 import sys
 
 import numpy as np
@@ -86,3 +88,44 @@ def test_qwen38_cute_generation_advances_prompt_and_stops_on_eos() -> None:
     assert result["forward_tokens"] == 3
     assert result["final_state_position"] == 3
     assert result["finish_reason"] == "stop"
+
+
+def test_qwen38_service_commit_chain_is_monotonic() -> None:
+    if not (REPO / ".git").exists():
+        return
+    units = (
+        "quant-qwen38-27b-layer0-mlp-activation-qat-watch-v1.service",
+        "quant-qwen38-27b-layer0-mlp-activation-qat-paired-watch-v1.service",
+        "quant-qwen38-27b-row-normalized-scale-codebook4-watch-v1.service",
+        "quant-qwen38-27b-full-row-normalized-scale-codebook4-watch-v1.service",
+        "quant-qwen38-27b-row-scale4-kernel-watch-v1.service",
+        "quant-qwen38-27b-block203-row-scale4-direct-gemv-watch-v1.service",
+        "quant-qwen38-27b-block203-row-scale4-constdiv-watch-v1.service",
+        "quant-qwen38-27b-block203-row-scale4-chunk16-watch-v1.service",
+        "quant-qwen38-27b-cq3-row-normalized-export-watch-v1.service",
+        "quant-qwen38-27b-cq3-runtime-mmap-watch-v1.service",
+        "quant-qwen38-27b-cq3-layer0-mlp-watch-v1.service",
+        "quant-qwen38-27b-aligned2-cache-watch-v1.service",
+        "quant-qwen38-27b-aligned2-full-cache-watch-v1.service",
+        "quant-qwen38-27b-recurrent-delta-avx2-watch-v2.service",
+        "quant-qwen38-27b-aligned2-real-layers-watch-v1.service",
+        "quant-qwen38-27b-aligned2-full-text-watch-v1.service",
+        "quant-qwen38-27b-aligned2-cute-watch-v1.service",
+        "quant-qwen38-27b-aligned2-math500-watch-v1.service",
+        "quant-qwen38-27b-aligned2-prefill-skip-lm-head-watch-v1.service",
+    )
+    commits = []
+    for unit in units:
+        content = (RUNTIME / unit).read_text()
+        match = re.search(r"^Environment=EXPECTED_COMMIT=([0-9a-f]{40})$", content, re.M)
+        assert match is not None, f"{unit} does not pin a full commit"
+        commits.append(match.group(1))
+    for parent, child, unit in zip(commits, commits[1:], units[1:]):
+        result = subprocess.run(
+            ["git", "merge-base", "--is-ancestor", parent, child],
+            cwd=REPO,
+            check=False,
+        )
+        assert result.returncode == 0, (
+            f"{unit} moves Qwen3.8 service checkout backward: {parent} -> {child}"
+        )
