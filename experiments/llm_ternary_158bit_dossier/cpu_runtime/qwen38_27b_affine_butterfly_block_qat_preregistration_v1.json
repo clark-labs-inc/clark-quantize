@@ -1,0 +1,97 @@
+{
+  "schema": "qwen38_27b_affine_butterfly_block_qat_preregistration_v1",
+  "status": "frozen_before_parent_ptq_terminal_result",
+  "frozen_at_utc": "2026-08-18T06:37:18Z",
+  "reason_for_new_stage": "User steering explicitly requires a little post-training and sensitivity-aware treatment; the earlier affine-butterfly rejection rule is therefore interpreted as terminating the no-post-training PTQ hypothesis only, not this separately preregistered trained representation",
+  "objective": "Test whether complete-block teacher distillation of only deployable affine-base3 degrees of freedom can recover Qwen3.8-27B quality without changing the 1.6674-bpw representation",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "parent_ptq_runner_commit": "1e524a9eb48e223b259a4d3714afc765bb107dcd",
+    "pilot_layers": [
+      0,
+      32,
+      63
+    ],
+    "pilot_layer_types": [
+      "linear_attention",
+      "linear_attention",
+      "full_attention"
+    ],
+    "coverage": "Every rank-2-or-higher weight in each selected complete block; all PTQ sites remain quantized during distillation and no sensitive site may silently fall back to BF16",
+    "qwen_4b_compute_forbidden": true,
+    "claim_boundary": "A trained three-complete-block representation gate, not a whole-model artifact, capability result, CPU runtime result, or breakthrough"
+  },
+  "data": {
+    "parent": "The authenticated exact BF16 block cache created by qwen38_27b_affine_butterfly_block_cache_receipt_v1",
+    "calibration_rows": 64,
+    "validation_rows": 32,
+    "separation": "The same frozen disjoint calibration and validation texts are reused; validation rows never select sites, steps, learning rates, checkpoints, or exceptions",
+    "evaluation_contamination_forbidden": "CUTE, MATH-500, sealed code, WikiText, and MMLU items remain excluded from both splits"
+  },
+  "sensitivity_protocol": {
+    "sites_linear_attention": [
+      "attention_input_fanout",
+      "attention_output",
+      "depthwise_convolution",
+      "mlp_input_fanout",
+      "mlp_down"
+    ],
+    "sites_full_attention": [
+      "attention_input_fanout",
+      "attention_output",
+      "mlp_input_fanout",
+      "mlp_down"
+    ],
+    "measurement": "For each site independently, replay the complete block with only that site decoded from the packed PTQ representation and all other rank-2-or-higher weights exact; report calibration and held-out validation complete-block NMSE plus the all-sites interaction result",
+    "selection_rule": "Calibration single-site NMSE ranks sensitivity for reporting only; all sites receive the frozen training stage, and validation sensitivity cannot alter training",
+    "mixed_mode_boundary": "No higher-precision exception is authorized by this preregistration. Any later mixed-mode design must be separately frozen from calibration-only sensitivity and must count every exception in complete-model bpw"
+  },
+  "trained_representation": {
+    "unchanged_storage": "Canonical 203-bit-per-128-trit base-3 codes; packed 4-bit alpha and mu indices; one FP16 alpha row anchor and one FP16 mu row anchor per output row; one 16-entry FP16 alpha codebook and one 16-entry FP16 signed-mu codebook per tensor; six FP16 Givens stages per activation site",
+    "runtime_equation": "Apply each stored shared Givens transform once, then accumulate alpha times ternary dot plus mu times activation group sum without materializing dense weights",
+    "trainable_continuous_state": "Decoded alpha and mu row anchors, their per-tensor 16-entry codebooks, and stored Givens angles, all optimized through hard-forward straight-through copies and frozen back to their declared FP16 storage after every optimizer step",
+    "trainable_discrete_state": "Ternary assignments and 4-bit alpha/mu indices receive one deterministic projected coordinate update after each continuous optimizer step using calibration block-output gradients; the hard packed state is the next forward state",
+    "forbidden_state": "No LoRA, dense residual, latent shadow weight, optimizer state, calibration cache, or teacher tensor is retained in the deployable artifact"
+  },
+  "training": {
+    "loss": "Sum squared trained-candidate-minus-parent complete-block output divided by parent complete-block output energy over all 64 calibration rows",
+    "optimizer": "Adam over continuous deployable parameters only",
+    "steps": 8,
+    "continuous_learning_rate": 0.001,
+    "gradient_clip_norm": 1.0,
+    "discrete_projection_frequency_steps": 1,
+    "checkpoint_selection": "The eighth and final hard-packed state is scored; no best-of-step or validation checkpoint selection",
+    "seed": 20260818,
+    "resource_rule": "Train one complete block at a time with restart only at a fully packed and authenticated block checkpoint; retain at most the current and immediately previous block payload",
+    "no_sweep": "One optimizer, one learning rate, one step count, one projection frequency, one layer set, and one data split are frozen"
+  },
+  "falsification_gate": {
+    "metric": "Held-out complete-block output NMSE on the 32 validation rows",
+    "minimum_relative_validation_nmse_reduction_vs_direct_ternary": 0.3,
+    "requires_reduction_on_every_selected_block": true,
+    "maximum_regression_vs_parent_ptq_candidate": 0.0,
+    "maximum_projected_complete_text_file_bpw": 1.7,
+    "all_continuous_values_roundtrip_through_fp16": true,
+    "all_discrete_payloads_pack_unpack_exactly": true,
+    "all_values_finite": true,
+    "pass_action": "Run one restartable 64-layer trained conversion and then whole-model CUTE, MATH-500, sealed code, WikiText, MMLU-type, and paired CPU runtime gates",
+    "reject_action": "Use the frozen calibration sensitivity report to preregister at most one honestly budgeted mixed-mode representation; do not tune this QAT protocol on validation"
+  },
+  "whole_model_budget": {
+    "base_projected_complete_bundle_bytes": 5605644762,
+    "base_projected_complete_bundle_bpw": 1.6673542778500956,
+    "absolute_ceiling_bpw": 1.7,
+    "remaining_bytes_below_ceiling": 109754911,
+    "accounting": "All codes, anchors, indices, codebooks, rotations, exact tensors, mixed-mode exceptions, descriptors, alignment, metadata, and auxiliary model files count"
+  },
+  "stop_conditions": [
+    "Any selected block fails to beat direct ternary by 30 percent on held-out validation after the frozen final step",
+    "Any selected block regresses relative to its packed PTQ parent",
+    "Any site or rank-2-or-higher tensor is omitted",
+    "Any validation value influences training, site allocation, checkpoint choice, or a mixed-mode exception",
+    "Any packed state, FP16 state, source, cache, denominator, or repository identity is unauthenticated",
+    "Projected complete-model storage exceeds 1.70 bits per total text parameter",
+    "Infrastructure-invalid execution is recorded and retried without being scored as a scientific rejection"
+  ]
+}
