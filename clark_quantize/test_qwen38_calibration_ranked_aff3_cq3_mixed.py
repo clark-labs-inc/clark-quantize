@@ -10,6 +10,11 @@ PREREG = (
     / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
     / "qwen38_27b_calibration_ranked_aff3_cq3_mixed_v1.json"
 )
+AMENDMENT = (
+    REPO
+    / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
+    / "qwen38_27b_calibration_ranked_aff3_cq3_mixed_pre_execution_amendment_v1.json"
+)
 
 
 def payload() -> dict[str, object]:
@@ -111,3 +116,25 @@ def test_mixed_v1_cannot_promote_partial_evidence() -> None:
     assert any("Do not infer an unrun score" in rule for rule in rules)
     assert any("Infrastructure-invalid" in rule for rule in rules)
     assert any("silently fall back" in rule for rule in rules)
+
+
+def test_mixed_v1_pre_execution_amendment_resolves_only_protocol_conflicts() -> None:
+    amendment = json.loads(AMENDMENT.read_text())
+    assert amendment["status"] == "frozen_before_any_mixed_training_or_confirmation_score"
+    state = amendment["execution_state_at_freeze"]
+    assert state["mixed_training_started"] is False
+    assert state["mixed_payload_created"] is False
+    assert state["fresh_confirmation_scored"] is False
+    assert state["fresh_confirmation_receipt_existed"] is False
+    assert amendment["parent_preregistration_sha256"] == (
+        "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c"
+    )
+    replacements = {item["field"]: item["replacement"] for item in amendment["corrections"]}
+    assert "exactly two candidates" in replacements[
+        "data.fresh_confirmation.may_score_only_the_final_frozen_candidate"
+    ]
+    assert "all three authenticated terminal pilot payloads" in replacements[
+        "training.retain_completed_payloads"
+    ]
+    assert len(amendment["unchanged"]) == 6
+    assert amendment["claim_boundary"].startswith("Protocol-consistency amendment only")
