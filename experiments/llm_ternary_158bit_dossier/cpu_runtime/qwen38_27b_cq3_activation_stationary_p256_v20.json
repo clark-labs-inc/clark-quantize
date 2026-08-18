@@ -1,0 +1,125 @@
+{
+  "schema": "qwen38_27b_cq3_activation_stationary_p256_preregistration_v20",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_cq3_activation_stationary_p256_v20",
+  "frozen_at": "2026-08-18T21:07:37Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "microbenchmark_cores": 1,
+    "pinned_logical_cpu": 0,
+    "qwen_4b_compute_forbidden": true,
+    "source_weight_type": "CQ3_0",
+    "control_runtime_layout": "CQ3_0x8 row-tile-major",
+    "candidate_runtime_layout": "CQ3_0P256 block-group-panel-major",
+    "activation_type": "CQ8_0",
+    "weight_bits_per_weight": 2.125,
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "evidence_anchors": {
+    "positive": {
+      "receipt": "receipts/qwen38_27b_cq3_avx2_x8_repack_v15/terminal-decision.json",
+      "finding": "Storage-neutral CQ3_0x8 was bit-correct and accelerated the frozen two-matrix primitive by 1.3018x over ordinary CQ3."
+    },
+    "negative": {
+      "receipt": "receipts/qwen38_27b_cq3_avx2_x16_paired_confirmation_v19/terminal-decision.json",
+      "finding": "CQ3_0x16 was stable but reached only 1.0667x over x8 and 1.3865x over ordinary CQ3, missing both frozen speed gates. More row widening is not the selected lane."
+    }
+  },
+  "hypothesis": "The x8 kernel repeats construction of the same four activation broadcasts for every eight output rows. Repacking weights block-group-panel-major lets a 256-row panel keep only a 1,024-byte INT32 accumulator in L1 while each activation quartet is broadcast once per panel and each 1,024-byte weight chunk is streamed contiguously. This removes most redundant activation setup without widening the live AVX2 accumulator set or changing arithmetic.",
+  "runtime_layout": {
+    "rows_per_panel": 256,
+    "row_vector_width": 8,
+    "panels_at_17408_rows": 68,
+    "blocks_per_row_at_5120_columns": 20,
+    "groups_per_block": 2,
+    "chunks_per_group": 8,
+    "scale_bytes_per_panel_group": 512,
+    "code_bytes_per_chunk_panel_group": 1024,
+    "code_bytes_per_panel_group": 8192,
+    "total_bytes_per_panel_group": 8704,
+    "source_bytes_per_matrix": 23674880,
+    "candidate_bytes_per_matrix": 23674880,
+    "storage_expansion_fraction": 0.0,
+    "order": "block, group, 256-row panel, FP16 scale plane, then eight contiguous four-byte-per-row code planes",
+    "repack_is_lossless": true,
+    "repack_time_excluded": true,
+    "aligned_scope": "The native candidate handles row counts divisible by 256. A later graph integration must retain CQ3_0x8 for smaller or ragged tails."
+  },
+  "static_cost_model": {
+    "x8_activation_broadcasts_per_matrix": 11141120,
+    "candidate_activation_broadcasts_per_matrix": 69632,
+    "broadcast_construction_reduction": 160.0,
+    "candidate_int32_scratch_bytes": 1024,
+    "candidate_chunk_stream_bytes": 1024,
+    "candidate_panel_working_set_note": "The hot scratch, one code chunk, scales, and one output panel remain small relative to the 32 KiB L1 data cache; packed weights are consumed exactly once.",
+    "not_a_speed_claim": true
+  },
+  "arithmetic_contract": {
+    "integer_chunk_order": "0 through 7, identical to x8",
+    "block_group_order": "block 0 group 0, block 0 group 1, then increasing blocks, identical to x8",
+    "fp_accumulation_order": "one FMA per block-group in the identical x8 order, with FP32 output reloaded from the panel between block-groups",
+    "candidate_output_must_match_x8_bits": true,
+    "maximum_scaled_float_error_vs_ordinary_cq3": 0.00005,
+    "high_precision_weights_materialized": false
+  },
+  "measurement": {
+    "matrices": 2,
+    "rows_per_matrix": 17408,
+    "columns": 5120,
+    "warmup_pairs": 2,
+    "measured_pairs_per_comparison": 21,
+    "cache_eviction_bytes_before_each_timed_call": 268435456,
+    "repack_time_excluded": true,
+    "comparisons": [
+      "CQ3_0x8 versus CQ3_0P256",
+      "ordinary CQ3_0 versus CQ3_0P256"
+    ],
+    "schedule": "Adjacent AB/BA pairs; even indices run control then candidate and odd indices run candidate then control. Comparison-family order alternates every two indices.",
+    "frequency_telemetry": "Sample processor-0 MHz before and after every adjacent pair, using sysfs when present and /proc/cpuinfo on this KVM host.",
+    "raw_time_medians_are_diagnostic_only": true
+  },
+  "sequential_gates": {
+    "gate_0_repack_and_native_correctness": {
+      "test_shapes": [
+        {"rows": 256, "columns": 512},
+        {"rows": 512, "columns": 5120},
+        {"rows": 17408, "columns": 5120}
+      ],
+      "runtime_bytes_must_equal_source_bytes": true,
+      "byte_for_byte_inverse_to_source_blocks": true,
+      "integer_group_dots_must_match_scalar_exactly": true,
+      "candidate_output_must_match_x8_bits": true,
+      "maximum_scaled_float_error_vs_ordinary_cq3": 0.00005,
+      "all_outputs_finite": true,
+      "stop_before_timing_on_failure": true
+    },
+    "gate_1_exact_shape_paired_microbenchmark": {
+      "minimum_median_x8_over_candidate_pairwise_ratio": 1.1,
+      "minimum_median_ordinary_over_candidate_pairwise_ratio": 1.43,
+      "maximum_x8_over_candidate_pairwise_ratio_mad_fraction": 0.03,
+      "maximum_ordinary_over_candidate_pairwise_ratio_mad_fraction": 0.03,
+      "all_84_frequency_samples_must_be_positive": true
+    },
+    "gate_2_graph_integration": {
+      "run_in_this_experiment": false,
+      "admit_only_on_gate_1_pass": true,
+      "required_future_scope": "Integrate only tensors with row counts divisible by 256, preserve x8 tails, and measure paired single-token decode before multi-column work."
+    },
+    "gate_3_quality": {
+      "run_in_this_experiment": false,
+      "reason": "The candidate is a lossless repack with bit-identical x8 arithmetic. Capability gates attach to a separately admitted whole-model representation."
+    }
+  },
+  "stop_rules": [
+    "Stop before timing on any byte mapping, storage, integer-dot, x8 bit identity, finiteness, or numerical-bound failure.",
+    "Classify CPU affinity, host-idle, telemetry, execution, or receipt-capture faults as infrastructure invalid rather than zero performance.",
+    "Reject if either paired median misses its frozen threshold or either paired-ratio MAD fraction exceeds 0.03.",
+    "Do not tune the 256-row panel, layout order, thresholds, pair count, cache eviction, or arithmetic after observing candidate timing.",
+    "Do not run model or capability evaluation in this primitive experiment, and do not infer scores for unrun gates."
+  ],
+  "claim_boundary": "A pass would establish a faster storage-neutral activation-stationary CQ3 single-token primitive and admit separate graph integration. It would not establish complete-model throughput, target-floor performance, quality, energy, novelty, 100 accepted tokens per second, or a scientific breakthrough."
+}
