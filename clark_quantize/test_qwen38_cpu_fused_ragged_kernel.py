@@ -82,6 +82,13 @@ Q8_N4_ORIENTATION_PATCH = (
 Q8_N4_EXACT_HARNESS = (
     RUNTIME / "verify_qwen38_27b_q8_q8_n4_exact_v1.cpp"
 )
+Q8_N4_ORIENTATION_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_q8_q8_n4_orientation_avx2_v1/terminal-decision.json"
+)
+Q8_FAMILY_Q4_PREREG = (
+    RUNTIME / "qwen38_27b_q8_family_q4_k_transcode_v1.json"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -178,6 +185,41 @@ def test_q8_n4_exact_harness_covers_all_profiled_weight_shapes() -> None:
     assert "constexpr int nth = 4" in source
     assert "GGML_TYPE_Q8_0, GGML_TYPE_Q8_0, GGML_TYPE_F32" in source
     assert "write_all(output, result.data()" in source
+
+
+def test_q8_n4_orientation_is_terminal_exact_negative() -> None:
+    receipt = json.loads(Q8_N4_ORIENTATION_RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["passed"] is False
+    assert receipt["exactness"]["byte_identical"] is True
+    assert receipt["real_model_four_token_graph"]["control_over_candidate"] < 1.08
+    assert receipt["checks"]["graph_speedup_at_least_1_08"] is False
+    assert receipt["terminal_generation"]["ran"] is False
+    assert receipt["cute"]["ran"] is False
+    assert receipt["q8_tensor_inventory"]["tensor_count"] == 288
+    assert receipt["q8_tensor_inventory"]["weight_count"] == 6734479360
+
+
+def test_q8_family_q4_screen_is_material_disk_bounded_and_quality_gated() -> None:
+    prereg = json.loads(Q8_FAMILY_Q4_PREREG.read_text())
+    assert prereg["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert prereg["scope"]["qwen_4b_compute_forbidden"] is True
+    artifact = prereg["artifact_contract"]
+    assert artifact["selected_tensor_count"] == 288
+    assert artifact["selected_weight_count"] == 6734479360
+    assert artifact["minimum_artifact_bytes_saved"] >= 3_300_000_000
+    assert artifact["maximum_retained_candidates"] == 1
+    gates = prereg["sequential_gates"]
+    assert gates["gate_3_real_model_four_token_graph"][
+        "minimum_candidate_over_control_speedup"
+    ] >= 1.08
+    quality = gates["gate_5_quality"]
+    assert quality["cute_quick_denominator"] == 20
+    assert quality["maximum_wikitext_ppl_ratio"] <= 1.05
+    assert quality["mmlu_denominator"] == 64
+    assert quality["paired_frozen_math500_subset_required"] is True
+    assert "QAT" in " ".join(prereg["recovery_if_quality_fails"])
 
 
 def test_fused_patch_shares_q4_decode_and_preserves_row_accumulators() -> None:

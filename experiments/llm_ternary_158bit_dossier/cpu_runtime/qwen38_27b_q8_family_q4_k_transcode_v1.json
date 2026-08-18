@@ -1,0 +1,97 @@
+{
+  "schema": "qwen38_27b_q8_family_q4_k_transcode_preregistration_v1",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q8_family_q4_k_transcode_v1",
+  "frozen_at": "2026-08-18T12:48:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "control": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "candidate": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-q8-family-Q4_K-v1.gguf",
+    "runtime": "promoted fused-ragged AVX2 v2",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true
+  },
+  "negative_anchor": "receipts/qwen38_27b_q8_q8_n4_orientation_avx2_v1/terminal-decision.json",
+  "hypothesis": "The target contains 288 Q8_0 matrices totaling 6,734,479,360 weights, and their Q8_0 x Q8_0 kernel consumes 23.99% of MTP3 cycles. Selectively transcoding only those matrices to Q4_K halves their packed payload and routes them through the already optimized fused Q4_K CPU path. This aggressive PTQ artifact is a speed-and-quality ceiling screen; if performance passes but quality fails, QAT, residual correction, or sensitivity-selected Q5/Q8 retention is mandatory.",
+  "artifact_contract": {
+    "input_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "transcoder_mode": "COPY plus --allow-requantize and manual regex override",
+    "selected_source_type": "Q8_0",
+    "selected_target_type": "Q4_K",
+    "selected_tensor_count": 288,
+    "selected_weight_count": 6734479360,
+    "expected_payload_bytes_saved": 3367239680,
+    "minimum_artifact_bytes_saved": 3300000000,
+    "all_nonselected_tensor_payloads_must_be_byte_identical": true,
+    "maximum_retained_candidates": 1
+  },
+  "selected_families": [
+    "attn_qkv.weight",
+    "attn_gate.weight",
+    "ssm_out.weight",
+    "ssm_alpha.weight",
+    "ssm_beta.weight",
+    "full-attention attn_q.weight, attn_k.weight, and attn_v.weight"
+  ],
+  "sequential_gates": {
+    "gate_1_artifact": {
+      "load_smoke_required": true,
+      "exact_selected_tensor_count": 288,
+      "q8_tensor_count_after_transcode": 0,
+      "q4_k_tensor_count_increase": 288,
+      "nonselected_payload_hash_parity": true
+    },
+    "gate_2_free_generation_canary": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "greedy": true,
+      "finite_logits_required": true,
+      "no_all_zero_or_single_token_collapse": true,
+      "minimum_unique_token_ids_across_prompts": 32
+    },
+    "gate_3_real_model_four_token_graph": {
+      "warmup_processes_per_runtime": 1,
+      "measured_processes_per_runtime": 4,
+      "samples_per_process": 7,
+      "include_all_28_measured_samples": true,
+      "minimum_candidate_over_control_speedup": 1.08,
+      "maximum_candidate_process_median_range_fraction": 0.05
+    },
+    "gate_4_target_and_mtp3": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "minimum_candidate_over_control_mtp3_accepted_tps": 1.08,
+      "maximum_target_only_tps_regression_fraction": 0.02,
+      "draft_counts_are_behavioral_evidence_not_an_exactness_gate": true
+    },
+    "gate_5_quality": {
+      "cute_quick_candidate_correct_minimum": 9,
+      "cute_quick_denominator": 20,
+      "wikitext_chunks": 4,
+      "wikitext_control_ppl": 5.7847,
+      "maximum_wikitext_ppl_ratio": 1.05,
+      "mmlu_candidate_correct_minimum": 50,
+      "mmlu_denominator": 64,
+      "mmlu_control_correct": 52,
+      "paired_frozen_math500_subset_required": true,
+      "math500_candidate_may_not_score_below_control": true
+    }
+  },
+  "recovery_if_quality_fails": [
+    "rank families and layers by paired logit/KL sensitivity on frozen calibration tokens",
+    "restore sensitive families to Q5_K or Q8_0 while keeping the measured speed gate",
+    "train per-channel scales plus low-rank residuals or QAT on the selected Q8 families",
+    "re-run every capability denominator; PTQ failure is not a zero and is not promotable"
+  ],
+  "stop_rules": [
+    "Reject an invalid artifact before generation.",
+    "Reject catastrophic free-generation collapse before timing.",
+    "Reject before long quality runs if graph speedup is below eight percent.",
+    "Reject promotion if any CUTE, WikiText, MMLU, or paired MATH gate fails.",
+    "Do not retain more than one derived full-model candidate on the 225 GB node."
+  ],
+  "claim_boundary": "This experiment can establish whether replacing the Q8 hotspot with the optimized Q4 path has material system ceiling. PTQ alone cannot establish near-lossless quality, scientific novelty, a trained approximation, final-node behavior, energy gains, 100 accepted tok/s, or a breakthrough."
+}
