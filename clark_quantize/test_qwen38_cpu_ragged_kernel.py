@@ -8,6 +8,8 @@ REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREREG = RUNTIME / "qwen38_27b_q4_k_ragged_rows_kernel_v1.json"
 PATCH = RUNTIME / "kernels/llama_cpp_q4_k_ragged_rows_v1.patch"
+RUNNER = RUNTIME / "run_qwen38_27b_q4_k_ragged_kernel_v1.sh"
+SUMMARIZER = RUNTIME / "summarize_qwen38_27b_q4_k_ragged_kernel_v1.py"
 
 
 def test_ragged_kernel_is_qwen38_only_and_source_pinned() -> None:
@@ -42,3 +44,25 @@ def test_patch_fuses_ragged_dispatch_and_uses_output_stride() -> None:
     assert "y * bs + x * 8" in source
     assert "y * nr + x * 8" in source
     assert "block_q4_K" in source
+
+
+def test_runner_is_paired_pinned_and_restartable() -> None:
+    source = RUNNER.read_text()
+    assert "4df29be4f4c3673f428170fda944a5b19f743bb8" in source
+    assert "7ed408aaa908f070f95ba2a567175b196c0e1619fb0b987fc1faded282e211d3" in source
+    assert "q4_K.*m=4096,n=(1|2|3|4|5|8),k=14336" in source
+    assert "run_perf control" in source
+    assert "run_perf candidate" in source
+    assert "--widths 0,3" in source
+    assert "--n-predict 96" in source
+    assert 'if [[ -e "$state_dir/KERNEL_COMPLETE" ]]' in source
+
+
+def test_summarizer_enforces_micro_whole_model_and_parity_gates() -> None:
+    source = SUMMARIZER.read_text()
+    assert 'micro["2"]["speedup"] >= 1.25' in source
+    assert 'micro["3"]["speedup"] >= 1.50' in source
+    assert "width3_ratio >= 1.15" in source
+    assert "target_ratio >= 0.98" in source
+    assert "cross_runtime_target_parity" in source
+    assert '"passed": all(checks.values())' in source
