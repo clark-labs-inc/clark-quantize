@@ -69,6 +69,13 @@ Q8_TINYBLAS_PROFILE_PREREG = (
 Q8_TINYBLAS_PROFILE_PATCH = (
     RUNTIME / "kernels/llama_cpp_q8_q8_shape_profile_v1.patch"
 )
+Q8_TINYBLAS_PROFILE_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_q8_q8_tinyblas_shape_profile_v1/terminal-decision.json"
+)
+Q8_N4_ORIENTATION_PREREG = (
+    RUNTIME / "qwen38_27b_q8_q8_n4_orientation_avx2_v1.json"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -102,6 +109,40 @@ def test_q8_shape_profiler_is_bounded_thread_deduplicated_and_non_scoreable() ->
     assert prereg["correctness_boundary"].startswith(
         "The profile build is not a candidate runtime"
     )
+
+
+def test_q8_shape_profile_selects_material_n4_family_without_scoring_timing() -> None:
+    receipt = json.loads(Q8_TINYBLAS_PROFILE_RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["counter_receipt"]["overflow"] == 0
+    assert receipt["counter_receipt"]["logical_dispatches"] == 8352
+    n4 = next(family for family in receipt["shape_families"] if family["n"] == 4)
+    assert n4["calls"] == 7488
+    assert n4["call_fraction"] >= 0.70
+    assert n4["tile_fraction"] >= 0.90
+    assert receipt["amdahl"]["n4_zero_cost_ceiling_from_tile_fraction"] > 1.10
+    assert any("not_scoreable" in key for key in receipt["workload"])
+    assert receipt["decision"] == "select_q8_q8_n4_orientation_kernel"
+
+
+def test_q8_n4_orientation_candidate_is_material_and_exactness_gated() -> None:
+    prereg = json.loads(Q8_N4_ORIENTATION_PREREG.read_text())
+    assert prereg["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert prereg["scope"]["qwen_4b_compute_forbidden"] is True
+    assert prereg["profile_anchor"]["n4_call_fraction"] >= 0.70
+    assert prereg["profile_anchor"]["n4_zero_cost_whole_request_ceiling"] > 1.10
+    required = prereg["candidate"]["required_scope"]
+    assert any("TA=block_q8_0" in item for item in required)
+    assert any("exact remaining n == 4" in item for item in required)
+    gates = prereg["sequential_gates"]
+    assert gates["gate_2_real_model_four_token_graph"][
+        "minimum_candidate_over_control_speedup"
+    ] >= 1.08
+    assert gates["gate_3_terminal_generation"][
+        "minimum_candidate_over_control_mtp3_accepted_tps"
+    ] >= 1.08
+    assert gates["gate_4_quality"]["math_or_mmlu_style_gate_required_before_promotion"]
 
 
 def test_fused_patch_shares_q4_decode_and_preserves_row_accumulators() -> None:
