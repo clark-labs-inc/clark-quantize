@@ -1,0 +1,43 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_dual_chain_result_v11",
+  "completed_at": "2026-08-18T16:24:56Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": false,
+  "kernel_promoted": false,
+  "decision": "reject_before_timing_on_legacy_pair_bit_exactness_contract",
+  "classification": "numerical_contract_failure_not_a_performance_score",
+  "checks": {
+    "build_succeeded": true,
+    "native_vs_generic_tolerance_reached_and_passed": true,
+    "existing_pair_bit_exactness_passed": false,
+    "exact_shape_microbenchmark_required": false,
+    "selective_27b_integration_required": false,
+    "cute_required": false,
+    "mmlu_required": false
+  },
+  "failure": {
+    "exit_code": 134,
+    "assertion": "tests/test-cq3.cpp:170: actual_up[row] == expected_up[row]",
+    "location": "test_x86_paired_gemv",
+    "interpretation": "The dual-chain standard kernel accumulates group 0 and group 1 independently and combines them once. The already rejected pair kernel retains the original group-interleaved floating-point order. Their exact FP32 bits can therefore differ even when both remain inside the native-vs-generic numerical tolerance. The frozen v11 gate nevertheless required all legacy pair exactness assertions, so timing was prohibited."
+  },
+  "execution": {
+    "candidate_binary": "/workspace/build/qwen38-cq3-dual-chain-avx2-v11/bin/test-cq3",
+    "candidate_binary_sha256": "18225679c264cbbef31e20e31931b3343eab2d8dac75c59dd047f4ab1d035437",
+    "repository_patch_sha256": "868c95a2ab33f980c2f0e2d3f9811cb6b9350b1eae5adc0f67ce9a0dcbfdaaaf",
+    "source_tree_cumulative_diff_sha256": "d640b70202c61ea07c6f5aad30692b086978fa1fbd734de7f62fe6fbebea8439",
+    "correctness_stderr_sha256": "c6d682c50146714e0d8449b932a33cea8d864e41e70b9ecc4466b6070d665c68"
+  },
+  "performance": {
+    "ran": false,
+    "reason": "The sequential correctness gate failed before timing. No zero or inferred speed score is assigned."
+  },
+  "quality": {
+    "ran": false,
+    "reason": "No production runtime or model candidate was created after the correctness-gate failure."
+  },
+  "next_lane": "Preregister a numerically tolerant v12 harness that keeps the native-vs-generic error bound, reports the pair-kernel delta instead of requiring bit identity, and retains frozen CUTE and MMLU gates before any model claim. The v11 performance hypothesis remains unobserved.",
+  "claim_boundary": "v11 establishes only that reassociating CQ3 group accumulators changes at least one legacy pair-kernel FP32 bit pattern. It contains no candidate timing, model quality, storage, energy, 100 accepted tok/s, novelty, or breakthrough result."
+}

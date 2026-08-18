@@ -8,6 +8,10 @@ REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREREG = RUNTIME / "qwen38_27b_cq3_avx2_dual_chain_v11.json"
 PATCH = RUNTIME / "kernels/llama_cpp_cq3_avx2_dual_chain_v11.patch"
+RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_cq3_avx2_dual_chain_v11/terminal-decision.json"
+)
 
 
 def test_dual_chain_prereg_targets_only_qwen38_27b_cq3() -> None:
@@ -32,3 +36,16 @@ def test_dual_chain_patch_preserves_integer_dot_and_splits_fp_dependencies() -> 
     assert "activation->sum" in source
     assert "weight->d[group]" in source
     assert "_mm256_add_ps(sumf_group0, sumf_group1)" in source
+
+
+def test_v11_stops_before_timing_on_frozen_pair_exactness_gate() -> None:
+    receipt = json.loads(RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["passed"] is False
+    assert receipt["classification"] == (
+        "numerical_contract_failure_not_a_performance_score"
+    )
+    assert receipt["checks"]["existing_pair_bit_exactness_passed"] is False
+    assert receipt["performance"]["ran"] is False
+    assert "No zero" in receipt["performance"]["reason"]
