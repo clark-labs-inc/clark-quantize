@@ -7,6 +7,7 @@ from clark_quantize.qwen38_affine_butterfly import (
     affine_ternary_linear,
     apply_givens_product,
     deterministic_givens_pairings,
+    fit_shared_affine_rotation,
     initialize_affine_ternary,
 )
 from clark_quantize.ternary import ternary_codes_scales
@@ -67,3 +68,33 @@ def test_affine_group_sum_runtime_matches_reconstructed_linear_for_partial_group
     observed = affine_ternary_linear(inputs, candidate)
     expected = functional.linear(inputs, candidate.reconstruct())
     torch.testing.assert_close(observed, expected, atol=2e-5, rtol=2e-5)
+
+
+def test_shared_rotation_fit_covers_every_consumer_row_and_keeps_validation_disjoint() -> None:
+    torch.manual_seed(8)
+    weights = {
+        "q_proj": torch.randn(4, 128) * 0.2 + 0.1,
+        "k_proj": torch.randn(3, 128) * 0.3 - 0.2,
+    }
+    calibration = torch.randn(6, 128)
+    validation = torch.randn(5, 128)
+    pairings = deterministic_givens_pairings(128, stages=2, seed=8)
+    fitted = fit_shared_affine_rotation(
+        weights,
+        calibration,
+        validation,
+        pairings=pairings,
+        steps=2,
+        learning_rate=2e-3,
+        row_shard=2,
+        group_size=128,
+    )
+    assert fitted.metrics["consumer_count"] == 2
+    assert fitted.metrics["rows"] == 7
+    assert fitted.metrics["parameters"] == 7 * 128
+    assert fitted.metrics["calibration_rows"] == 6
+    assert fitted.metrics["validation_rows"] == 5
+    assert all(row["processed_rows"] == 7 for row in fitted.metrics["history"])
+    assert any(row["gradient_norm_before_clip"] > 1e-8 for row in fitted.metrics["history"])
+    assert fitted.metrics["finite"] is True
+    assert set(fitted.quantized) == set(weights)

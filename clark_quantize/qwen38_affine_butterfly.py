@@ -12,6 +12,7 @@ complete-block experiment.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any, Mapping
 
 import torch
 
@@ -40,6 +41,14 @@ class AffineTernary:
             rows, groups, self.group_size
         )
         return rebuilt.reshape(rows, -1)[:, :columns].contiguous()
+
+
+@dataclass(frozen=True)
+class SharedAffineRotationFit:
+    angles: torch.Tensor
+    pairings: torch.Tensor
+    quantized: dict[str, AffineTernary]
+    metrics: dict[str, Any]
 
 
 def deterministic_givens_pairings(
@@ -194,3 +203,202 @@ def affine_ternary_linear(inputs: torch.Tensor, quantized: AffineTernary) -> tor
     return (
         quantized.alpha.float() * trit_dot + quantized.mu.float() * group_sum
     ).sum(-1)
+
+
+def _direct_symmetric(weight: torch.Tensor, group_size: int) -> torch.Tensor:
+    codes, scales = ternary_codes_scales(weight, group=group_size, method="optimal")
+    rows, columns = codes.shape
+    groups = (columns + group_size - 1) // group_size
+    pad = groups * group_size - columns
+    values = torch.nn.functional.pad(codes.float(), (0, pad)) if pad else codes.float()
+    return (values.reshape(rows, groups, group_size) * scales.float().unsqueeze(-1)).reshape(
+        rows, -1
+    )[:, :columns]
+
+
+def _consumer_error(
+    inputs: torch.Tensor,
+    weights: Mapping[str, torch.Tensor],
+    candidates: Mapping[str, torch.Tensor],
+) -> tuple[float, float]:
+    squared_error = 0.0
+    target_energy = 0.0
+    with torch.no_grad():
+        for name, weight in weights.items():
+            target = torch.nn.functional.linear(inputs.float(), weight.float())
+            observed = torch.nn.functional.linear(inputs.float(), candidates[name].float())
+            squared_error += float((observed - target).square().sum())
+            target_energy += float(target.square().sum())
+    return squared_error, target_energy
+
+
+def fit_shared_affine_rotation(
+    consumer_weights: Mapping[str, torch.Tensor],
+    calibration_inputs: torch.Tensor,
+    validation_inputs: torch.Tensor,
+    *,
+    pairings: torch.Tensor,
+    steps: int = 8,
+    learning_rate: float = 2e-3,
+    row_shard: int = 128,
+    group_size: int = 128,
+) -> SharedAffineRotationFit:
+    """Fit one shared hard-forward rotation over every row of every consumer.
+
+    Every supplied consumer row enters every angle step. Calibration drives the
+    update; disjoint validation inputs are evaluated only after the frozen steps.
+    """
+    if not consumer_weights or steps <= 0 or learning_rate <= 0 or row_shard <= 0:
+        raise ValueError("invalid shared affine-rotation fit")
+    names = sorted(consumer_weights)
+    first = consumer_weights[names[0]]
+    if first.ndim != 2:
+        raise ValueError("shared affine-rotation consumers must be matrices")
+    dimension = first.shape[1]
+    if (
+        calibration_inputs.ndim != 2
+        or validation_inputs.ndim != 2
+        or calibration_inputs.shape[1] != dimension
+        or validation_inputs.shape[1] != dimension
+        or calibration_inputs.shape[0] == 0
+        or validation_inputs.shape[0] == 0
+    ):
+        raise ValueError("shared affine-rotation activation dimensions changed")
+    if any(
+        weight.ndim != 2 or weight.shape[1] != dimension
+        for weight in consumer_weights.values()
+    ):
+        raise ValueError("all shared affine-rotation consumers need one input width")
+    if pairings.ndim != 3 or pairings.shape[1:] != (dimension // 2, 2):
+        raise ValueError("shared affine-rotation pairings changed")
+    device = first.device
+    if any(weight.device != device for weight in consumer_weights.values()):
+        raise ValueError("all shared affine-rotation consumers need one device")
+    train_x = calibration_inputs.detach().to(device=device, dtype=torch.float32).contiguous()
+    valid_x = validation_inputs.detach().to(device=device, dtype=torch.float32).contiguous()
+    frozen_weights = {
+        name: consumer_weights[name].detach().float().contiguous() for name in names
+    }
+    pairings = pairings.to(device=device)
+    angles = torch.nn.Parameter(
+        torch.zeros(pairings.shape[:2], device=device, dtype=torch.float32)
+    )
+    optimizer = torch.optim.Adam([angles], lr=learning_rate)
+
+    direct_candidates = {
+        name: _direct_symmetric(weight, group_size) for name, weight in frozen_weights.items()
+    }
+    direct_calibration_sse, calibration_energy = _consumer_error(
+        train_x, frozen_weights, direct_candidates
+    )
+    direct_validation_sse, validation_energy = _consumer_error(
+        valid_x, frozen_weights, direct_candidates
+    )
+    if calibration_energy <= 0 or validation_energy <= 0:
+        raise ValueError("shared affine-rotation teacher energy is zero")
+
+    history: list[dict[str, float | int]] = []
+    total_rows = sum(weight.shape[0] for weight in frozen_weights.values())
+    total_parameters = sum(weight.numel() for weight in frozen_weights.values())
+    for step in range(1, steps + 1):
+        optimizer.zero_grad(set_to_none=True)
+        step_loss = 0.0
+        processed_rows = 0
+        for name in names:
+            weight = frozen_weights[name]
+            for start in range(0, weight.shape[0], row_shard):
+                stop = min(start + row_shard, weight.shape[0])
+                source_shard = weight[start:stop]
+                rotated_inputs = apply_givens_product(train_x, angles, pairings)
+                rotated_weight = apply_givens_product(source_shard, angles, pairings)
+                hard = initialize_affine_ternary(
+                    rotated_weight.detach(), group_size=group_size
+                ).reconstruct()
+                straight_through = rotated_weight + (hard - rotated_weight).detach()
+                target = torch.nn.functional.linear(train_x, source_shard)
+                # Detach the activation-side copy in the surrogate gradient.
+                # Letting both exact orthogonal paths differentiate would cancel
+                # identically (W R^T)(R x) = W x and produce zero angle signal.
+                observed = torch.nn.functional.linear(
+                    rotated_inputs.detach(), straight_through
+                )
+                loss = (observed - target).square().sum() / calibration_energy
+                if not bool(torch.isfinite(loss)):
+                    raise RuntimeError(f"non-finite shared rotation loss for {name}")
+                loss.backward()
+                step_loss += float(loss.detach())
+                processed_rows += stop - start
+        if processed_rows != total_rows:
+            raise AssertionError("shared affine-rotation step omitted consumer rows")
+        gradient_norm = float(torch.nn.utils.clip_grad_norm_([angles], 1.0))
+        if not torch.isfinite(torch.tensor(gradient_norm)):
+            raise RuntimeError("non-finite shared rotation gradient")
+        optimizer.step()
+        history.append(
+            {
+                "step": step,
+                "calibration_nmse_before_update": step_loss,
+                "gradient_norm_before_clip": gradient_norm,
+                "processed_rows": processed_rows,
+            }
+        )
+
+    final_angles = angles.detach().contiguous()
+    rotated_train_x = apply_givens_product(train_x, final_angles, pairings)
+    rotated_valid_x = apply_givens_product(valid_x, final_angles, pairings)
+    quantized: dict[str, AffineTernary] = {}
+    final_calibration_sse = 0.0
+    final_validation_sse = 0.0
+    for name in names:
+        weight = frozen_weights[name]
+        payload = initialize_affine_ternary(
+            apply_givens_product(weight, final_angles, pairings), group_size=group_size
+        )
+        quantized[name] = payload
+        with torch.no_grad():
+            target_train = torch.nn.functional.linear(train_x, weight)
+            target_valid = torch.nn.functional.linear(valid_x, weight)
+            final_calibration_sse += float(
+                (affine_ternary_linear(rotated_train_x, payload) - target_train)
+                .square()
+                .sum()
+            )
+            final_validation_sse += float(
+                (affine_ternary_linear(rotated_valid_x, payload) - target_valid)
+                .square()
+                .sum()
+            )
+    covered_rows = sum(payload.codes.shape[0] for payload in quantized.values())
+    covered_parameters = sum(payload.codes.numel() for payload in quantized.values())
+    if covered_rows != total_rows or covered_parameters != total_parameters:
+        raise AssertionError("final shared affine-rotation payload is incomplete")
+
+    metrics: dict[str, Any] = {
+        "consumers": names,
+        "consumer_count": len(names),
+        "rows": total_rows,
+        "parameters": total_parameters,
+        "calibration_rows": train_x.shape[0],
+        "validation_rows": valid_x.shape[0],
+        "direct_calibration_nmse": direct_calibration_sse / calibration_energy,
+        "direct_validation_nmse": direct_validation_sse / validation_energy,
+        "final_calibration_nmse": final_calibration_sse / calibration_energy,
+        "final_validation_nmse": final_validation_sse / validation_energy,
+        "relative_validation_improvement_vs_direct": (
+            direct_validation_sse - final_validation_sse
+        )
+        / max(direct_validation_sse, 1e-12),
+        "finite": all(
+            bool(torch.isfinite(value).all())
+            for value in [final_angles]
+            + [payload.mu for payload in quantized.values()]
+            + [payload.alpha for payload in quantized.values()]
+        ),
+        "history": history,
+    }
+    return SharedAffineRotationFit(
+        angles=final_angles,
+        pairings=pairings.detach().contiguous(),
+        quantized=quantized,
+        metrics=metrics,
+    )
