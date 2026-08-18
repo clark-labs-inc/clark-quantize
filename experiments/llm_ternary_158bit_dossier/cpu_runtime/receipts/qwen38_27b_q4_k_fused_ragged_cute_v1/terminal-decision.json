@@ -1,0 +1,48 @@
+{
+  "schema": "qwen38_27b_q4_k_fused_ragged_cute_terminal_decision_v1",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "decision": "pass_quick_capability_tripwire",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+  "benchmark": {
+    "name": "CUTE-Quick-20",
+    "leaderboard_comparable": false,
+    "candidate_correct": 9,
+    "candidate_denominator": 20,
+    "control_correct": 9,
+    "control_denominator": 20,
+    "candidate_report_content_sha256": "1a4ba58de23b98ac059bd93a9bf4af985cbf24fe68ef8504c1af7b783b0bb36c",
+    "candidate_file_sha256": "695c2cb79a533eedff4c5d506ed4a1c933ffc315210bf2030fa3e1ddf1233659",
+    "control_file_sha256": "b67b4237ab9d5428aeb295794bdaeadc873f7b8c2474ea5ce9005e2d548fae68",
+    "exact_control_candidate_fields": [
+      "id",
+      "correct",
+      "prediction",
+      "gold",
+      "output",
+      "finish_reason"
+    ]
+  },
+  "runtime": {
+    "candidate_server_sha256": "fae5927f440f6342e3de14f17ecc1ddb73e1b13def31aca5fa714dbf6bea129d",
+    "threads": 4,
+    "cpu_list": "0,2,4,6",
+    "context": 4096,
+    "service": "quant-qwen38-q4-k-fused-ragged-cute-v2.service",
+    "service_restarts": 0,
+    "service_result": "success"
+  },
+  "prior_attempt": {
+    "classification": "infrastructure-invalid",
+    "scored": false,
+    "reason": "Nested shell quoting expanded the health-check port to an empty string. Zero evaluation requests executed before the wrapper was stopped."
+  },
+  "gates": {
+    "frozen_denominator_complete": true,
+    "score_non_regression": true,
+    "item_level_output_parity": true,
+    "passed": true
+  },
+  "claim_boundary": "Frozen 20-item character-level catastrophic-forgetting tripwire only; not a full CUTE or broad capability result."
+}

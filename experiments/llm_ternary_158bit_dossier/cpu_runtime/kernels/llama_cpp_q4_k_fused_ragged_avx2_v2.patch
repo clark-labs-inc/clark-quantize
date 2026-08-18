@@ -1,0 +1,129 @@
+diff --git a/ggml/src/ggml-cpu/arch/x86/repack.cpp b/ggml/src/ggml-cpu/arch/x86/repack.cpp
+index 0e2e2b9d9..6cbb21481 100644
+--- a/ggml/src/ggml-cpu/arch/x86/repack.cpp
++++ b/ggml/src/ggml-cpu/arch/x86/repack.cpp
+@@ -1501,35 +1501,44 @@ void ggml_gemv_q4_K_8x8_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const vo
+     const block_q4_Kx8 * b_ptr_start = (const block_q4_Kx8 *)vx;
+     const block_q8_K * a_ptr_start = (const block_q8_K *)vy;
+
+-    // Keep each repacked weight tile cache-resident across the 1--3 ragged
+-    // verification rows.  This changes the traffic order from token-major
+-    // (one full matrix stream per token) to weight-tile-major.
++    assert(nr > 0 && nr <= 3);
++
++    // Decode each Q4_K weight block once and reuse it across all ragged
++    // verification rows.  The row-dependent Q8 loads and dot products remain
++    // separate; the expensive nibble/scale unpack is shared.
+     for (int64_t x = 0; x < nc / 8; x++) {
+         const block_q4_Kx8 * b_ptr = b_ptr_start + (x * b_nb);
+
+-        for (int64_t y = 0; y < nr; y++) {
+-            const block_q8_K * a_ptr = a_ptr_start + (y * nb);
+-
+-            // Master FP accumulators
+-            __m256 acc_row = _mm256_setzero_ps();
+-            __m256 acc_min_rows = _mm256_setzero_ps();
+-
+-            for (int64_t b = 0; b < nb; b++) {
+-
+-                // Load and convert to FP32 scale from block_q8_K
+-                const __m256 row_scale_f32 = _mm256_set1_ps((a_ptr[b].d));
++        __m256 acc_rows[3] = {
++            _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(),
++        };
++        __m256 acc_min_rows[3] = {
++            _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(),
++        };
++
++        for (int64_t b = 0; b < nb; b++) {
+
+                 // Load the scale values for the 8 blocks interleaved in block_q4_Kx8
+                 // col_scale_f32 rearranged so as to multiply with appropriate quants
+                 const __m256 col_scale_f32 = GGML_F32Cx8_REARRANGE_LOAD(b_ptr[b].d, deltamask);
+                 const __m256 col_dmin_f32 = GGML_F32Cx8_LOAD(b_ptr[b].dmin);
+
+-                __m256i iacc_b = _mm256_setzero_si256();
+-                __m256i iacc_min_b = _mm256_setzero_si256();
+-
+-                const __m256i q8sums = _mm256_loadu_si256((const __m256i * )(a_ptr[b].bsums));
+-                __m256i q8s = _mm256_castsi128_si256(_mm_hadd_epi16(_mm256_castsi256_si128(q8sums), _mm256_extracti128_si256(q8sums, 1)));
+-                q8s = _mm256_permute2f128_si256(q8s, q8s, 0);
++                __m256i iacc_b[3] = {
++                    _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(),
++                };
++                __m256i iacc_min_b[3] = {
++                    _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(),
++                };
++                __m256i q8s[3];
++                for (int64_t y = 0; y < nr; ++y) {
++                    const block_q8_K * a_ptr = a_ptr_start + y * nb;
++                    const __m256i q8sums =
++                        _mm256_loadu_si256((const __m256i *) a_ptr[b].bsums);
++                    q8s[y] = _mm256_castsi128_si256(_mm_hadd_epi16(
++                        _mm256_castsi256_si128(q8sums),
++                        _mm256_extracti128_si256(q8sums, 1)));
++                    q8s[y] = _mm256_permute2f128_si256(q8s[y], q8s[y], 0);
++                }
+
+                 // Processes two sub blocks from each Q4_K in each iteration
+                 for (int sb = 0; sb < QK_K / 64; sb++) {
+@@ -1597,6 +1606,11 @@ void ggml_gemv_q4_K_8x8_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const vo
+                     // Mins of first and second sub block of Q4_K block are arranged side by side
+                     __m256i mins_01 = _mm256_cvtepu8_epi16(_mm_unpacklo_epi8(_mm_shuffle_epi32(mins_and_scales_0, 78), _mm_shuffle_epi32(mins_and_scales_1, 78)));
+
++                    // The Q4_K decode above is shared.  Only the Q8_K loads and
++                    // dot products below are repeated for each verification row.
++                    for (int64_t y = 0; y < nr; ++y) {
++                    const block_q8_K * a_ptr = a_ptr_start + y * nb;
++
+                     // Load the two sub block values corresponding to sb in block_q8_K in batches of 16 bytes and replicate the same across 256 bit vector
+                     __m256i lhs_vec_00 = _mm256_castsi128_si256(_mm_loadu_si128((const __m128i *)(a_ptr[b].qs + sb * 64)));
+                     __m256i lhs_vec_01 = _mm256_castsi128_si256(_mm_loadu_si128((const __m128i *)(a_ptr[b].qs + 16 + sb * 64)));
+@@ -1652,26 +1666,38 @@ void ggml_gemv_q4_K_8x8_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const vo
+
+                     // Broadcast the bsums of the two sub blocks  of the iteration of Q8_K across the vector
+                     // Multiply-Add with corresponding mins of Q4_Kx8 with bsums
+-                    __m256i q8s_sb = _mm256_shuffle_epi32(q8s, 0);
++                    __m256i q8s_sb = _mm256_shuffle_epi32(q8s[y], 0);
+                     __m256i iacc_min_sb = _mm256_madd_epi16(q8s_sb, mins_01);
+-                    q8s = _mm256_bsrli_epi128(q8s, 4);
++                    q8s[y] = _mm256_bsrli_epi128(q8s[y], 4);
+
+                     // Accumulate for the complete block
+-                    iacc_b = _mm256_add_epi32(iacc_b, iacc_sb);
+-                    iacc_min_b = _mm256_add_epi32(iacc_min_b, iacc_min_sb);
++                    iacc_b[y] = _mm256_add_epi32(iacc_b[y], iacc_sb);
++                    iacc_min_b[y] = _mm256_add_epi32(iacc_min_b[y], iacc_min_sb);
++                    }
+                 }
+
+                 // Multiply-Add with scale values for the complete super block
+-                acc_row = _mm256_fmadd_ps(_mm256_cvtepi32_ps(iacc_b), _mm256_mul_ps(col_scale_f32, row_scale_f32), acc_row);
+-                acc_min_rows = _mm256_fmadd_ps(_mm256_cvtepi32_ps(iacc_min_b), _mm256_mul_ps(col_dmin_f32, row_scale_f32), acc_min_rows);
++                for (int64_t y = 0; y < nr; ++y) {
++                    const block_q8_K * a_ptr = a_ptr_start + y * nb;
++                    const __m256 row_scale_f32 = _mm256_set1_ps(a_ptr[b].d);
++                    acc_rows[y] = _mm256_fmadd_ps(
++                        _mm256_cvtepi32_ps(iacc_b[y]),
++                        _mm256_mul_ps(col_scale_f32, row_scale_f32), acc_rows[y]);
++                    acc_min_rows[y] = _mm256_fmadd_ps(
++                        _mm256_cvtepi32_ps(iacc_min_b[y]),
++                        _mm256_mul_ps(col_dmin_f32, row_scale_f32), acc_min_rows[y]);
++                }
+
+             }
+
+             // Accumulated output values permuted so as to be stored in appropriate order post accumulation
+-            acc_row = _mm256_permutevar8x32_ps(acc_row, finalpermutemask);
+-            _mm256_storeu_ps(s + (y * bs + x * 8), _mm256_sub_ps(acc_row, acc_min_rows));
++            for (int64_t y = 0; y < nr; ++y) {
++                acc_rows[y] = _mm256_permutevar8x32_ps(acc_rows[y], finalpermutemask);
++                _mm256_storeu_ps(
++                    s + y * bs + x * 8,
++                    _mm256_sub_ps(acc_rows[y], acc_min_rows[y]));
++            }
+         }
+-    }
+
+ #else
+     UNUSED(kmask1);

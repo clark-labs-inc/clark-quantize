@@ -1,0 +1,44 @@
+{
+  "schema": "qwen38_27b_q4_k_ragged3_gemm4_terminal_decision_v1",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "decision": "reject_padded_gemm4",
+  "reason": "Padding three activation rows with a zero fourth row correctly reached the existing GEMM4 path, but the dummy-row computation erased the reuse benefit. The paired real-model Qwen3.8-27B prompt graph was 0.998x by pooled median and 0.995x by pooled mean versus control.",
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "target_quantization": "Q4_K_M",
+    "target_bytes": 18973870432,
+    "target_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34"
+  },
+  "provenance": {
+    "llama_cpp_commit": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "patch_sha256": "7e99804cf2c27ce676b4b36b051f0a7aa09ad09b8034f5fe850bbfd1c4b30af4",
+    "control_llama_bench_sha256": "f6c04e5017869ccce65800fc52d77cc871cb6ba9b07ca07f9151c12aae474146",
+    "instrumented_candidate_llama_bench_sha256": "70acf722734beece8115c9e7557902b1b202dbfe624ea6b89ce180de76ec0dfc",
+    "instrumentation": "A temporary one-shot stderr marker was layered on the candidate solely to prove dispatch. It printed Q4_K_RAGGED3_GEMM4_ACTIVE for the real-model graph and did not print in test-backend-ops."
+  },
+  "invalid_diagnostic": {
+    "benchmark": "test-backend-ops Q4_K synthetic MUL_MAT",
+    "classification": "not a score for this candidate",
+    "reason": "The synthetic test did not exercise model-load repacking, proven by absence of the one-shot candidate dispatch marker. Its apparent timing is excluded from the decision."
+  },
+  "paired_real_model_graph": {
+    "shape": "Qwen3.8-27B Q4_K_M prompt-only graph, n_prompt=3, n_batch=3, n_ubatch=3",
+    "host": "four physical AMD EPYC Milan cores",
+    "paired_order": "control,candidate,candidate,control",
+    "samples_per_runtime": 14,
+    "control_median_nanoseconds": 947463099.5,
+    "candidate_median_nanoseconds": 949001260.5,
+    "median_speedup": 0.9983791791812905,
+    "control_mean_nanoseconds": 947748106.9285715,
+    "candidate_mean_nanoseconds": 952393265.5714285,
+    "mean_speedup": 0.9951226464835721
+  },
+  "gates": {
+    "candidate_dispatch_proven": true,
+    "material_speedup_passed": false,
+    "promotion_passed": false
+  },
+  "next_kernel": "Remove dummy-row work. Decode each Q4_K nibble and scale block once while maintaining independent Q8_K accumulators for the two or three real verification rows.",
+  "claim_boundary": "Terminal negative paired result on four physical Milan cores. It rejects padded GEMM4 for the three-row path only."
+}

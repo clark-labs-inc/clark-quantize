@@ -1,0 +1,186 @@
+{
+  "checks": {
+    "cross_runtime_mtp3_exact_token_parity": true,
+    "cross_runtime_target_exact_token_parity": true,
+    "graph_width_1_regression_at_most_0_02": true,
+    "graph_width_2_speedup_at_least_1_08": true,
+    "graph_width_3_speedup_at_least_1_10": true,
+    "internal_parity_pattern_unchanged": true,
+    "target_only_regression_at_most_0_02": true,
+    "whole_model_mtp3_speedup_at_least_1_05": false
+  },
+  "claim_boundary": "Paired Qwen3.8-27B Q4_K_M result on four Milan cores only; not a final-node, capability, quality, or 100 accepted tok/s result.",
+  "host_scope": "four physical AMD EPYC Milan cores",
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": false,
+  "provenance": {
+    "base_patch_sha256": "7ed408aaa908f070f95ba2a567175b196c0e1619fb0b987fc1faded282e211d3",
+    "candidate_server_sha256": "fae5927f440f6342e3de14f17ecc1ddb73e1b13def31aca5fa714dbf6bea129d",
+    "control_server_sha256": "f46979f9a3ebea22f8e2451eb4309cbd3287e224e7e345f800837aaf0226d3a8",
+    "fused_patch_sha256": "812808ef940975de9f0f6fc45e64073c3ec452da3f8293f64de9cde839034cd7"
+  },
+  "real_model_prompt_graph": {
+    "1": {
+      "candidate": {
+        "mean_ns": 558955453.5,
+        "median_ns": 559006996.5,
+        "sample_count": 14,
+        "samples_ns": [
+          555220711,
+          558382271,
+          565656353,
+          563008871,
+          554093551,
+          562479802,
+          554839941,
+          558886622,
+          561223902,
+          554114750,
+          560930102,
+          562851082,
+          554561020,
+          559127371
+        ]
+      },
+      "control": {
+        "mean_ns": 555892513.5714285,
+        "median_ns": 555112925.5,
+        "sample_count": 14,
+        "samples_ns": [
+          553645620,
+          554773871,
+          550184579,
+          553634801,
+          554391190,
+          555451980,
+          552073121,
+          555689351,
+          560150732,
+          560822071,
+          551913770,
+          563358872,
+          560886262,
+          555518970
+        ]
+      },
+      "speedup": 0.9930339494418117
+    },
+    "2": {
+      "candidate": {
+        "mean_ns": 585803668.5,
+        "median_ns": 585755025.0,
+        "sample_count": 14,
+        "samples_ns": [
+          588688355,
+          582326556,
+          584973265,
+          589081237,
+          586536785,
+          579453835,
+          587022806,
+          592632137,
+          588370916,
+          583415915,
+          584141626,
+          587118446,
+          583972785,
+          583516695
+        ]
+      },
+      "control": {
+        "mean_ns": 656452532.8571428,
+        "median_ns": 656792872.5,
+        "sample_count": 14,
+        "samples_ns": [
+          655352827,
+          659845218,
+          659502587,
+          653230387,
+          657086118,
+          656499627,
+          663335808,
+          658450957,
+          659078338,
+          657644117,
+          655342517,
+          653022627,
+          652546946,
+          649397386
+        ]
+      },
+      "speedup": 1.1212756945619033
+    },
+    "3": {
+      "candidate": {
+        "mean_ns": 819511365.9285715,
+        "median_ns": 819809434.0,
+        "sample_count": 14,
+        "samples_ns": [
+          818939214,
+          815072712,
+          821046315,
+          815586473,
+          814408623,
+          815141993,
+          824814295,
+          820679654,
+          824218355,
+          826709184,
+          828095725,
+          822787046,
+          814969232,
+          810690302
+        ]
+      },
+      "control": {
+        "mean_ns": 946684321.7857143,
+        "median_ns": 947508875.0,
+        "sample_count": 14,
+        "samples_ns": [
+          944313734,
+          948797065,
+          947382275,
+          957704416,
+          949125586,
+          947799454,
+          947635475,
+          948836725,
+          942027454,
+          956319116,
+          938928294,
+          946528354,
+          941107373,
+          937075184
+        ]
+      },
+      "speedup": 1.15576722553305
+    }
+  },
+  "schema": "qwen38_27b_q4_k_fused_ragged_avx2_result_v2",
+  "terminal": true,
+  "whole_model": {
+    "candidate_internal_target_vs_mtp3_prompt_parity": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "candidate_mtp3_accepted_tokens_per_second": 3.061930822312625,
+    "candidate_target_accepted_tokens_per_second": 1.7891554083317116,
+    "control_internal_target_vs_mtp3_prompt_parity": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "control_mtp3_accepted_tokens_per_second": 3.059713612416253,
+    "control_target_accepted_tokens_per_second": 1.7943114575555081,
+    "cross_runtime_mtp3_exact_token_parity": true,
+    "cross_runtime_target_exact_token_parity": true,
+    "mtp3_candidate_over_control": 1.0007246462176638,
+    "prompt_count": 4,
+    "target_only_candidate_over_control": 0.9971264469152858,
+    "tokens_per_prompt": 96
+  }
+}

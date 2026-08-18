@@ -56,6 +56,16 @@ parity is the first gate. For stochastic sampling, the deployed algorithm must
 use target-probability rejection sampling and pass a separate audited trace
 contract before any distribution-preservation claim.
 
+The first implementation result is now terminal. The official MTP sidecar at
+draft width three reaches 3.0597 accepted tok/s on four physical Milan cores,
+accepts 250 of 384 drafts, and commits 2.923 tokens per target call. A new AVX2
+Q4_K kernel that shares weight decode across three real target rows improves a
+shape-matched MTP2 run from 2.3341 to 2.6802 accepted tok/s (1.148x) with exact
+control/candidate token parity. It does not improve MTP3 because three drafts
+produce four target rows and use the existing GEMM4 path. MTP3 therefore
+remains the local serving winner, while the three-row kernel is promoted as a
+real end-to-end optimization. See `QWEN38_Q4_K_FUSED_RAGGED_AVX2_V2.md`.
+
 ## Target-model lane
 
 Q3_K_M is the immediate practical baseline. Post-trained aligned two-bit or

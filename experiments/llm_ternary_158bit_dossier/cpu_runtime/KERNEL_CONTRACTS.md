@@ -248,6 +248,16 @@ and its context-level throughput gate remain open.
 - expose prompt ingestion, token streaming, cancellation, and signal-safe state;
 - emit per-operator time, bytes read, and selected kernel implementation.
 
+The first promoted speculative-verification optimization is the AVX2 Q4_K
+ragged-row kernel in `llama_cpp_q4_k_fused_ragged_avx2_v2.patch`. For two or
+three target rows it decodes each repacked Q4 block once and maintains one Q8
+accumulator per row. On the complete Qwen3.8-27B Q4_K_M graph it improves
+three-row latency by 1.156x and shape-matched MTP2 accepted throughput by
+1.148x with exact cross-runtime token parity. It does not alter the four-row
+GEMM path used by MTP3, which remains the measured serving winner. Synthetic
+`test-backend-ops` results are not valid evidence for this repack path; the
+kernel contract requires real-model repacking and whole-server measurement.
+
 ## Required tests for every optimized kernel
 
 1. scalar-versus-optimized randomized property tests;
