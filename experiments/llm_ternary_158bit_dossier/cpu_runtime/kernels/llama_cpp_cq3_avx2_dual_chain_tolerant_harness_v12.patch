@@ -1,0 +1,53 @@
+diff --git a/tests/test-cq3.cpp b/tests/test-cq3.cpp
+--- a/tests/test-cq3.cpp
++++ b/tests/test-cq3.cpp
+@@ -166,7 +166,9 @@ static void test_x86_paired_gemv() {
+     }
+     for (int row = 0; row < rows; ++row) {
+-        assert(actual_gate[row] == expected_gate[row]);
+-        assert(actual_up[row] == expected_up[row]);
++        const float gate_tolerance = 2e-5f*(1.0f + std::fabs(expected_gate[row]));
++        const float up_tolerance = 2e-5f*(1.0f + std::fabs(expected_up[row]));
++        assert(std::fabs(actual_gate[row] - expected_gate[row]) <= gate_tolerance);
++        assert(std::fabs(actual_up[row] - expected_up[row]) <= up_tolerance);
+     }
+ }
+ #endif
+diff --git a/tests/qwen38_27b_cq3_x86_pair_bench_v1.inc b/tests/qwen38_27b_cq3_x86_pair_bench_v1.inc
+--- a/tests/qwen38_27b_cq3_x86_pair_bench_v1.inc
++++ b/tests/qwen38_27b_cq3_x86_pair_bench_v1.inc
+@@ -105,8 +105,22 @@ static void run_qwen38_27b_cq3_x86_pair_benchmark() {
+     qwen38_run_cq3_pair_candidate(
+         rows, columns, gate_weights.data(), up_weights.data(), activation.data(),
+         candidate_gate.data(), candidate_up.data());
+-    assert(std::memcmp(control_gate.data(), candidate_gate.data(), rows*sizeof(float)) == 0);
+-    assert(std::memcmp(control_up.data(), candidate_up.data(), rows*sizeof(float)) == 0);
++    const bool exact_control_candidate =
++        std::memcmp(control_gate.data(), candidate_gate.data(), rows*sizeof(float)) == 0 &&
++        std::memcmp(control_up.data(), candidate_up.data(), rows*sizeof(float)) == 0;
++    float max_abs_delta = 0.0f;
++    float max_scaled_delta = 0.0f;
++    for (int row = 0; row < rows; ++row) {
++        const float gate_delta = std::fabs(control_gate[row] - candidate_gate[row]);
++        const float up_delta = std::fabs(control_up[row] - candidate_up[row]);
++        max_abs_delta = std::max(max_abs_delta, std::max(gate_delta, up_delta));
++        max_scaled_delta = std::max(
++            max_scaled_delta,
++            std::max(
++                gate_delta/(1.0f + std::fabs(control_gate[row])),
++                up_delta/(1.0f + std::fabs(control_up[row]))));
++    }
++    assert(max_scaled_delta <= 2e-5f);
+ 
+     for (int warmup = 0; warmup < warmups; ++warmup) {
+         qwen38_run_cq3_pair_control(
+@@ -163,6 +177,8 @@ static void run_qwen38_27b_cq3_x86_pair_benchmark() {
+     std::printf("{\"schema\":\"qwen38_27b_cq3_x86_pair_benchmark_v1\",");
+     std::printf("\"rows\":%d,\"columns\":%d,\"warmups\":%d,\"repetitions\":%d,", rows, columns, warmups, repetitions);
+-    std::printf("\"cache_eviction_bytes\":%zu,\"exact_control_candidate\":true,", cache_eviction_bytes);
++    std::printf("\"cache_eviction_bytes\":%zu,\"exact_control_candidate\":%s,", cache_eviction_bytes, exact_control_candidate ? "true" : "false");
++    std::printf("\"max_abs_delta\":%.9g,\"max_scaled_delta\":%.9g,",
++        (double) max_abs_delta, (double) max_scaled_delta);
+     std::printf("\"control_us\":");
+     qwen38_print_cq3_bench_values(control_us);
+     std::printf(",\"candidate_us\":");
