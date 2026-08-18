@@ -1,0 +1,93 @@
+{
+  "build": {
+    "command": [
+      "/usr/bin/cc",
+      "-std=c11",
+      "-O3",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-dynamiclib",
+      "qwen38_gain_hash_layer_transcode.c",
+      "qwen38_fixed_support_mask64_cpu.c"
+    ],
+    "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)"
+  },
+  "claim_boundary": {
+    "direct_native_transcode_correctness_proven": true,
+    "full_Qwen_layer_dense_intermediate_avoided_by_API": true,
+    "full_shape_runtime_or_peak_RSS_measured": false,
+    "quality_or_capability_proven": false,
+    "real_model_weights_transcoded": false,
+    "semi_lossless_or_breakthrough_proven": false,
+    "token_throughput_proven": false
+  },
+  "complete": true,
+  "correctness": {
+    "byte_identical_cases": 100,
+    "control": "dense INT8 codes packed by the frozen native mask64 packer",
+    "distinct_output_hashes": 100,
+    "randomized_cases": 100
+  },
+  "created_at_utc": "2026-08-18T01:41:47Z",
+  "gate": {
+    "passed": true,
+    "require_100_byte_identical_randomized_cases": true,
+    "require_100_distinct_outputs": true,
+    "require_exact_Qwen_shape_sizes": true
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "qwen_shape_records": [
+    {
+      "canonical_enumerative_bytes": 16450560,
+      "columns": 5120,
+      "compute_expansion_bytes": 261120,
+      "compute_expansion_ratio": 1.0158730158730158,
+      "dense_INT8_intermediate_bytes_avoided": 89128960,
+      "groups": 696320,
+      "mask64_compute_bytes": 16711680,
+      "name": "gate_or_up_projection",
+      "parameters": 89128960,
+      "rows": 17408,
+      "size_contract_passed": true
+    },
+    {
+      "canonical_enumerative_bytes": 16450560,
+      "columns": 17408,
+      "compute_expansion_bytes": 261120,
+      "compute_expansion_ratio": 1.0158730158730158,
+      "dense_INT8_intermediate_bytes_avoided": 89128960,
+      "groups": 696320,
+      "mask64_compute_bytes": 16711680,
+      "name": "down_projection",
+      "parameters": 89128960,
+      "rows": 5120,
+      "size_contract_passed": true
+    }
+  ],
+  "repository_commit": "536850170101e8969bc30cec58cdd333ade59760",
+  "schema": "qwen38_27b_gain_hash_layer_transcode_receipt_v1",
+  "sources": {
+    "binding": {
+      "path": "clark_quantize/qwen38_gain_hash_layer_transcode.py",
+      "sha256": "83c427179653440cbb3b90439cdf89c0c55e8599eacdd515cedfcd4db06b5ef3"
+    },
+    "mask64_control": {
+      "path": "clark_quantize/qwen38_fixed_support_mask64_cpu.c",
+      "sha256": "af12f49bfb975541ff5030ec50ffe6abb7df96a203dbdd9a014e170bfce85644"
+    },
+    "native_transcode": {
+      "path": "clark_quantize/qwen38_gain_hash_layer_transcode.c",
+      "sha256": "fb12239a713354ad01846a204f6724b326ef56e8a816c8c7cc5f35bf39433627"
+    },
+    "tests": {
+      "path": "clark_quantize/test_qwen38_gain_hash_layer_transcode.py",
+      "sha256": "3a705b90005823f0c81463e18401ffd2775179cce82eb95fc86f545a49e67319"
+    },
+    "verifier": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/verify_qwen38_27b_gain_hash_layer_transcode_v1.py",
+      "sha256": "364ff5e0ddbc819db9a176830d279c41535ed3bfac2fb748bfa7d993cedf4658"
+    }
+  },
+  "terminal": true
+}
