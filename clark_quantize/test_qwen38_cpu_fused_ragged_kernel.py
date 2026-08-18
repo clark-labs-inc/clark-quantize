@@ -130,6 +130,10 @@ IMATRIX_Q4_K_ROWMAJOR_V10_PREREG = (
 IMATRIX_Q4_K_ROWMAJOR_V10_HEADER_AMENDMENT = (
     RUNTIME / "qwen38_27b_imatrix_q4_k_rowmajor_v10_header_amendment.json"
 )
+IMATRIX_Q4_K_ROWMAJOR_V10_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_imatrix_q4_k_rowmajor_v10/terminal-decision.json"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -455,6 +459,25 @@ def test_v10_header_amendment_changes_only_imatrix_metadata_overhead() -> None:
         "remaining_q8_tensor_count"
     ]
     assert corrected["all_other_frozen_gates_unchanged"] is True
+
+
+def test_v10_recovers_control_cute_but_fails_both_graph_gates() -> None:
+    receipt = json.loads(IMATRIX_Q4_K_ROWMAJOR_V10_RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["passed"] is False
+    assert receipt["calibration"]["selected_tensor_imatrix_coverage"] == 288
+    assert receipt["calibration"]["selected_tensor_imatrix_missing"] == 0
+    assert receipt["artifact"]["nonselected_payloads_byte_identical"] is True
+    assert receipt["artifact"]["tensor_payload_bytes_saved"] == 3_367_239_680
+    graph = receipt["real_model_four_token_graph"]
+    assert graph["candidate_over_control_speedup"] < 1.25
+    assert graph["candidate_over_unweighted_q4_k_v7_speed_fraction"] < 0.98
+    assert graph["candidate_process_median_range_fraction"] < 0.05
+    cute = receipt["quick_quality_diagnostic"]["cute_quick"]
+    assert cute["candidate_correct"] == 9
+    assert cute["candidate_denominator"] == 20
+    assert cute["candidate_correct"] == cute["control_correct"]
 
 
 def test_v9_recovers_control_cute_but_loses_too_much_kernel_speed() -> None:

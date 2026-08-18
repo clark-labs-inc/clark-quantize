@@ -1,0 +1,138 @@
+{
+  "schema": "qwen38_27b_imatrix_q4_k_rowmajor_result_v10",
+  "completed_at": "2026-08-18T16:08:21Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": false,
+  "candidate_promoted": false,
+  "decision": "reject_graph_gate_but_retain_activation_calibration_quality_signal",
+  "checks": {
+    "calibration_terminal_and_nonempty": true,
+    "selected_imatrix_coverage_288_of_288": true,
+    "artifact_payload_valid_under_header_amendment": true,
+    "free_generation_noncollapsed_and_coherent": true,
+    "graph_speedup_over_control_at_least_1_25": false,
+    "graph_retains_at_least_0_98_of_unweighted_v7_speed": false,
+    "candidate_process_median_range_at_most_0_05": true,
+    "paired_serving_required": false,
+    "cute_quick_at_least_9_of_20": true,
+    "wikitext_required": false,
+    "mmlu_required": false,
+    "math500_required": false
+  },
+  "calibration": {
+    "source": "WikiText-2 train only",
+    "source_sha256": "6707892fa3788b5ab9ed78ab5ff37d9fe825f6011a2ad4fcd6a6d467f0e7da57",
+    "held_out_wikitext_sha256": "173c87a53759e0201f33e0ccf978e510c2042d7f2cb78229d9a50d79b9e7dd08",
+    "chunks": 8,
+    "tokens": 4096,
+    "context": 512,
+    "elapsed_seconds": 610,
+    "imatrix_bytes": 13642688,
+    "imatrix_sha256": "ce6d09c077b22189846861735fd65bb9738a27e947576e23baf887d6c1da4209",
+    "imatrix_entry_count": 496,
+    "selected_tensor_count": 288,
+    "selected_tensor_imatrix_coverage": 288,
+    "selected_tensor_imatrix_missing": 0
+  },
+  "artifact": {
+    "candidate_sha256": "6176472b7d039a6d911b34eea78dd4507256b4a22b3003d40b8587b711014f2a",
+    "candidate_bytes": 15606631072,
+    "tensor_payload_bytes_saved": 3367239680,
+    "container_bytes_saved": 3367239360,
+    "imatrix_provenance_header_bytes": 320,
+    "selected_tensor_count": 288,
+    "selected_weight_count": 6734479360,
+    "remaining_q8_tensor_count": 0,
+    "candidate_type_counts": {
+      "F32": 353,
+      "Q4_K": 481,
+      "Q6_K": 17
+    },
+    "nonselected_payloads_byte_identical": true,
+    "nonselected_payload_sha256": "24bc0d8af954e0a004e698226e61cc66cb42def2c4a2580eb047b04480241a38",
+    "header_amendment": "qwen38_27b_imatrix_q4_k_rowmajor_v10_header_amendment.json"
+  },
+  "transcode": {
+    "elapsed_seconds": 183,
+    "dry_run_selected_tensor_count": 288,
+    "dry_run_imatrix_entries": 496,
+    "dry_run_stdout_sha256": "c6b40c693209e93d6fe3d8d7b2cfc5fe63398e042b0dff91250b434434af336b",
+    "dry_run_stderr_sha256": "44f340dacfb93e67e52ebbabaec5e2d073f94b0978b7aea6d369087b1d71c898",
+    "stdout_sha256": "e42c6447aab1cb7a86d11d90e1586be963be91d3f7f34a35061723aeb2b84b92",
+    "stderr_sha256": "30fb735b8d46a839aafde01df124334d7f1e5431523a4c67f3b45e790c873351"
+  },
+  "free_generation": {
+    "prompts": 4,
+    "tokens_per_prompt": 96,
+    "total_tokens": 384,
+    "unique_token_ids": 197,
+    "zero_token_count": 0,
+    "coherent_outputs": true,
+    "target_tps_diagnostic": 2.1737250063168165
+  },
+  "real_model_four_token_graph": {
+    "unscored_warmup_processes_per_system": 1,
+    "measured_processes_per_system": 4,
+    "samples_per_process": 7,
+    "control_median_ns": 729561879.5,
+    "candidate_median_ns": 615692260.0,
+    "candidate_over_control_speedup": 1.1849456731841976,
+    "prior_unweighted_q4_k_v7_median_ns": 598993944,
+    "candidate_over_unweighted_q4_k_v7_speed_fraction": 0.9728787950006063,
+    "control_process_medians_ns": [726914739, 730598779, 728524980, 731675859],
+    "candidate_process_medians_ns": [613809700, 616696680, 621501891, 614687840],
+    "candidate_process_median_range_fraction": 0.012493564560970769
+  },
+  "paired_serving": {
+    "ran": false,
+    "reason": "The sequential graph gate failed both the 1.25x control threshold and the 0.98 unweighted-Q4_K speed-retention threshold."
+  },
+  "quick_quality_diagnostic": {
+    "classification": "standing post-rejection CUTE diagnostic; it does not override the graph rejection",
+    "cute_quick": {
+      "candidate_correct": 9,
+      "candidate_denominator": 20,
+      "control_correct": 9,
+      "unweighted_q4_k_correct": 8,
+      "full_attention_q8_v8_correct": 10,
+      "task_correct": {
+        "contains_char": 4,
+        "ins_char": 1,
+        "del_char": 2,
+        "swap_char": 0,
+        "sub_char": 2
+      },
+      "candidate_sha256": "f29714b824448b8fb410c5ab6337292fb7ce22a5861a3ed354ae5e431485b334"
+    },
+    "wikitext": {
+      "ran": false,
+      "reason": "The graph gate had already failed."
+    },
+    "mmlu": {
+      "ran": false,
+      "reason": "The graph gate had already failed."
+    },
+    "math500": {
+      "ran": false,
+      "reason": "The graph gate had already failed."
+    }
+  },
+  "runtime": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "server_sha256": "b516eea709e917b504fdc34154c1e62ef67d6182f9ce3bb9d97242538a1c71bd",
+    "bench_sha256": "645ef27f4bfe4e030e40c258d21dbecc2d587e4583b0cfdb47b18ddf1b3dcc90",
+    "quantize_sha256": "30c8e7234e1e3486077f238901df5f83accd49248e928b80586f93e84bb87b7d",
+    "imatrix_binary_sha256": "f2db9e934e383954fe6d840e0a6429bbeb24e1f10ce79126ac9c664c7fa94aa1"
+  },
+  "provenance": {
+    "imatrix_statistics_sha256": "ce5aa26702ddeb3f78d45f1d8d9eb5355567676c775a0b1357f190dc982c2278",
+    "artifact_verification_sha256": "5de037194c9ac2a487f5f85fcb50557837ed79d55a634dc67d37924b89b1a301",
+    "canary_summary_sha256": "ab71653a53dfcb0b51222caaa374ae92e47496eec5e8d125b3e5dd53870f7a58",
+    "graph_gate_sha256": "b7ff12c3a37d9676c9a4b1b032adebdc64759dfb1ee1fbbc241536430592dae2",
+    "cute_sha256": "f29714b824448b8fb410c5ab6337292fb7ce22a5861a3ed354ae5e431485b334"
+  },
+  "next_lane": "Keep the activation-calibration result as a quality signal, remove the rejected full-model artifact, and build an exact AVX2 four-row Q4_K microkernel that consumes native interleaved block_q8_Kx4 activations directly. This should preserve shared weight decode while eliminating the row-major repack detour.",
+  "claim_boundary": "Activation calibration recovered one CUTE item and reached control-level 9/20, but the candidate failed both frozen graph thresholds. It is not promoted and does not establish held-out perplexity, broad near-lossless quality, final-node behavior, energy gains, 100 accepted tok/s, novelty, or a breakthrough."
+}
