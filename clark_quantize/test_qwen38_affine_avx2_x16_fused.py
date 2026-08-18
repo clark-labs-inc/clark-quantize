@@ -20,6 +20,11 @@ RUNNER = (
     / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
     / "run_qwen38_27b_affine_avx2_x16_fused_v17.py"
 )
+CORRECTNESS_RECEIPT = (
+    REPO
+    / "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts"
+    / "qwen38_27b_affine_avx2_x16_fused_v17/native-correctness.json"
+)
 
 
 def load_preregistration() -> dict[str, object]:
@@ -125,3 +130,20 @@ def test_v17_runner_enforces_correctness_stability_and_host_isolation() -> None:
     assert "TIMED_BATCHES = 11" in source
     assert "median_absolute_deviation_fraction" in source
     assert "p90_over_p10_ratio" in source
+
+
+def test_v17_native_correctness_receipt_passes_without_a_speed_claim() -> None:
+    receipt = json.loads(CORRECTNESS_RECEIPT.read_text())
+    assert receipt["model"] == "Qwen/Qwen3.8-27B"
+    assert receipt["execution"]["infrastructure_valid"] is True
+    assert receipt["execution"]["timing_used_for_claim"] is False
+    assert receipt["measurement"]["runtime_compute_image_bpw_at_5120_columns"] <= 2.06875
+    assert receipt["checks"]["native_correctness_gate_passed"] is True
+    assert max(
+        shape["maximum_scaled_float_error"] for shape in receipt["measurement"]["shapes"]
+    ) <= 0.0001
+    assert receipt["performance"]["ran"] is False
+    assert receipt["model_integration"]["ran"] is False
+    assert receipt["quality"]["ran"] is False
+    assert receipt["passed"] is True
+    assert receipt["terminal"] is True
