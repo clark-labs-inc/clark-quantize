@@ -56,6 +56,16 @@ FOUR_ROW_V5_RECEIPT = (
 Q4_K_GEMM_V6_PREREG = (
     RUNTIME / "qwen38_27b_q4_k_gemm_half_permute_avx2_v6.json"
 )
+Q4_K_GEMM_V6_PATCH = (
+    RUNTIME / "kernels/llama_cpp_q4_k_gemm_half_permute_avx2_v6.patch"
+)
+Q4_K_GEMM_V6_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_q4_k_gemm_half_permute_avx2_v6/terminal-decision.json"
+)
+Q8_TINYBLAS_PROFILE_PREREG = (
+    RUNTIME / "qwen38_27b_q8_q8_tinyblas_shape_profile_v1.json"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -313,3 +323,51 @@ def test_q4_k_gemm_v6_prereg_preserves_algebra_and_gates_stability() -> None:
     assert gates["gate_3_terminal_generation"][
         "target_and_mtp3_exact_control_parity"
     ] is True
+
+
+def test_q4_k_gemm_v6_half_permute_is_exhaustively_lane_equivalent() -> None:
+    source = Q4_K_GEMM_V6_PATCH.read_text()
+    assert source.count("_mm256_permute2x128_si256") == 8
+    assert source.count("0x20") == 4
+    assert source.count("0x31") == 4
+    assert source.count("-_mm256_blend_epi32") == 0
+    for active_source_lane in range(16):
+        a = [int(index == active_source_lane) for index in range(8)]
+        b = [int(index + 8 == active_source_lane) for index in range(8)]
+        swap_a = a[4:] + a[:4]
+        swap_b = b[4:] + b[:4]
+        old_0145 = a[:4] + swap_b[4:]
+        old_2367 = swap_a[:4] + b[4:]
+        new_0145 = a[:4] + b[:4]
+        new_2367 = a[4:] + b[4:]
+        assert old_0145 == new_0145
+        assert old_2367 == new_2367
+
+
+def test_q4_k_gemm_v6_is_stable_but_below_speed_gate() -> None:
+    payload = json.loads(Q4_K_GEMM_V6_RECEIPT.read_text())
+    assert payload["terminal"] is True
+    assert payload["infrastructure_valid"] is True
+    assert payload["passed"] is False
+    assert payload["checks"]["byte_permutation_equivalence_exhaustive"] is True
+    assert payload["checks"]["graph_speedup_at_least_1_03"] is False
+    assert payload["checks"][
+        "candidate_process_median_range_at_most_0_05"
+    ] is True
+    graph = payload["real_model_four_row_graph"]
+    assert graph["control_sample_count"] == 28
+    assert graph["candidate_sample_count"] == 28
+    assert 1.02 < graph["control_over_candidate"] < 1.03
+    assert payload["terminal_generation"]["ran"] is False
+    assert payload["cute"]["ran"] is False
+
+
+def test_q8_tinyblas_profile_is_large_share_and_shape_gated() -> None:
+    payload = json.loads(Q8_TINYBLAS_PROFILE_PREREG.read_text())
+    assert payload["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert payload["scope"]["qwen_4b_compute_forbidden"] is True
+    assert payload["profile_anchor"]["mtp3_exclusive_cycle_fraction"] > 0.23
+    assert "gemm4xN<2>" in payload["profile_anchor"]["symbol"]
+    assert "m, n, k, lda, ldb, ldc" in payload["method"]["required_fields"]
+    assert payload["method"]["maximum_distinct_shapes"] == 128
+    assert "70%" in payload["selection_rule"]

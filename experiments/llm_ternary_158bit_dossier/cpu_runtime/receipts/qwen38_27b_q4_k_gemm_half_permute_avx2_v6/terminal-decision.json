@@ -1,0 +1,65 @@
+{
+  "schema": "qwen38_27b_q4_k_gemm_half_permute_avx2_result_v6",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "host_scope": "four physical AMD EPYC Milan cores",
+  "passed": false,
+  "kernel_promoted": false,
+  "decision": "reject_below_predeclared_speed_gate",
+  "checks": {
+    "byte_permutation_equivalence_exhaustive": true,
+    "backend_reference_cases_pass": true,
+    "graph_speedup_at_least_1_03": false,
+    "candidate_process_median_range_at_most_0_05": true,
+    "terminal_generation_required": false,
+    "cute_required": false
+  },
+  "provenance": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "base_patch_sha256": "7ed408aaa908f070f95ba2a567175b196c0e1619fb0b987fc1faded282e211d3",
+    "fused_patch_sha256": "4fab46f823b5980f7292c101d3051719a633b9dda2db304c10c8836d4b156b2e",
+    "candidate_patch_sha256": "5e7c2056f967c42b96aed6c885abb1ab4216e2224fd8f48f6efc528256602a20",
+    "executed_candidate_patch_sha256": "5e7c2056f967c42b96aed6c885abb1ab4216e2224fd8f48f6efc528256602a20",
+    "repository_normalized_candidate_patch_sha256": "744f8819d027c4d7472e86852f4707bdb7eb87e73bfce7d91a3c22986fe4e7d6",
+    "patch_normalization": "Repository copy removes whitespace-only added lines; executable C++ tokens are unchanged.",
+    "candidate_bench_sha256": "65c0da08ad49ff2330cf057fbb5c1b51739b4a3cc6501509e294d51c138278a6",
+    "candidate_server_sha256": "979a9183bcdcbc9d143d1496fb07e056d4a466f82650502d6e4fbd7fb0cf0dc6",
+    "backend_log_sha256": "578b1ab4d8f6dc29d32764ab0cf3f7de859388d5d7cade76debcd21ad249cf83",
+    "control_graph_file_sha256": [
+      "e1b26f4d6be6ff9799b1c956edb4b0e8477367ea4a733af66ade24725d460710",
+      "289d863ff0af7b912d17911f83bf28927733698a50be1464919b41d283bfa9bd",
+      "48664e01fb4c6ecd7925f16917c2f2b0d710cd033c415131469906b479082c56",
+      "4b998943b93fff4a4b7d328e7b4b26cd7ca7ba7279cd22e0f04358b1a51d398b"
+    ],
+    "candidate_graph_file_sha256": [
+      "02c6aa3fd4548813a3ec104cc643d5cb6c3dfc84d0571c89380060229d2871b2",
+      "b7c82f001d067132e496542ce98854141d8fe577055e4f82fca4c77e9027bac2",
+      "281acc49c0be81e45632ce27412f7d9993f941f238311d65deb51b7d23478d95",
+      "57f914831f6e4ed250813210e569c14072eba645ebf44a03dd1e63884cf42c26"
+    ]
+  },
+  "real_model_four_row_graph": {
+    "unscored_warmup_processes_per_runtime": 1,
+    "measured_processes_per_runtime": 4,
+    "samples_per_process": 7,
+    "control_sample_count": 28,
+    "candidate_sample_count": 28,
+    "control_median_ns": 792201458.0,
+    "candidate_median_ns": 774311628.5,
+    "control_over_candidate": 1.023104172585728,
+    "control_process_medians_ns": [796700849, 789368137, 783479117, 794480709],
+    "candidate_process_medians_ns": [769497892, 774983653, 772971673, 776018345],
+    "candidate_process_median_range_fraction": 0.008424601008155968
+  },
+  "terminal_generation": {
+    "ran": false,
+    "reason": "The sequential graph-speed gate failed."
+  },
+  "cute": {
+    "ran": false,
+    "reason": "The sequential graph-speed gate failed."
+  },
+  "next_lane": "Profile and optimize the 23.99% Q8_0 x Q8_0 tinyBLAS hotspot rather than stacking sub-three-percent Q4_K edits.",
+  "claim_boundary": "This algebra-preserving data-motion rewrite is a stable 2.31% four-row graph diagnostic, below its predeclared 3% gate. It is not promoted and has no whole-model speed or quality claim."
+}

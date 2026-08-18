@@ -87,6 +87,13 @@ predeclared first-14 graph gate despite a faster expanded diagnostic. The next
 experiment therefore optimizes the correct interleaved GEMM directly and is
 forbidden from changing activation layout or arithmetic order.
 
+The first such algebra-preserving rewrite was stable but only improved the
+four-row graph by 1.0231x, below its frozen 1.03x gate, so generation was not
+run. Rather than accumulate marginal substitutions, the next selected lane is
+the Q8_0 x Q8_0 tinyBLAS kernel responsible for 23.99% of MTP3 cycles. Its
+shape distribution must be counted before a kernel or activation approximation
+is designed.
+
 ## Target-model lane
 
 Q3_K_M is the immediate practical baseline. Post-trained aligned two-bit or

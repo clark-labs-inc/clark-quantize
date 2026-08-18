@@ -281,6 +281,12 @@ draft counts changed, and the predeclared first 14 graph samples reached only
 operation intact. It replaces a variable half-swap plus blend pair with the
 equivalent immediate `vperm2i128` concatenation inside native Q4_K GEMM.
 
+That exact byte-lane rewrite was stable but stopped at its graph gate: 28
+control and 28 candidate samples measured 1.0231x, below the predeclared
+1.03x threshold, with only 0.84% candidate process-median spread. It was not
+run through generation or CUTE. The program now moves to the independent Q8_0
+x Q8_0 tinyBLAS hotspot, which accounts for 23.99% of profiled MTP3 cycles.
+
 ## Required tests for every optimized kernel
 
 1. scalar-versus-optimized randomized property tests;
