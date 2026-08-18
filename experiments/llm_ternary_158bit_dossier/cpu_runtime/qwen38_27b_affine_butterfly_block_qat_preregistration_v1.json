@@ -2,6 +2,12 @@
   "schema": "qwen38_27b_affine_butterfly_block_qat_preregistration_v1",
   "status": "frozen_before_parent_ptq_terminal_result",
   "frozen_at_utc": "2026-08-18T06:37:18Z",
+  "pre_execution_correction": {
+    "corrected_at_utc": "2026-08-18T06:40:12Z",
+    "qat_execution_had_started": false,
+    "change": "Specified the previously textual discrete projected update as hard-forward straight-through code and index shadows with frozen Adam learning rates; shadows and optimizer state remain training-only and never enter the artifact",
+    "unchanged": "Model, parent, layers, data, sites, representation bytes, eight-step budget, held-out gates, storage ceiling, and no-sweep rule"
+  },
   "reason_for_new_stage": "User steering explicitly requires a little post-training and sensitivity-aware treatment; the earlier affine-butterfly rejection rule is therefore interpreted as terminating the no-post-training PTQ hypothesis only, not this separately preregistered trained representation",
   "objective": "Test whether complete-block teacher distillation of only deployable affine-base3 degrees of freedom can recover Qwen3.8-27B quality without changing the 1.6674-bpw representation",
   "scope": {
@@ -51,16 +57,19 @@
     "unchanged_storage": "Canonical 203-bit-per-128-trit base-3 codes; packed 4-bit alpha and mu indices; one FP16 alpha row anchor and one FP16 mu row anchor per output row; one 16-entry FP16 alpha codebook and one 16-entry FP16 signed-mu codebook per tensor; six FP16 Givens stages per activation site",
     "runtime_equation": "Apply each stored shared Givens transform once, then accumulate alpha times ternary dot plus mu times activation group sum without materializing dense weights",
     "trainable_continuous_state": "Decoded alpha and mu row anchors, their per-tensor 16-entry codebooks, and stored Givens angles, all optimized through hard-forward straight-through copies and frozen back to their declared FP16 storage after every optimizer step",
-    "trainable_discrete_state": "Ternary assignments and 4-bit alpha/mu indices receive one deterministic projected coordinate update after each continuous optimizer step using calibration block-output gradients; the hard packed state is the next forward state",
-    "forbidden_state": "No LoRA, dense residual, latent shadow weight, optimizer state, calibration cache, or teacher tensor is retained in the deployable artifact"
+    "trainable_discrete_state": "Training-only FP32 shadows for ternary assignments and scalar 4-bit alpha/mu indices use hard round-and-clamp forward values with straight-through gradients; shadows are clamped after each step and only the final {-1,0,+1} codes and integer [0,15] indices are packed",
+    "forbidden_state": "No LoRA, dense residual, latent shadow weight matrix, code or index shadow, optimizer state, calibration cache, or teacher tensor is retained in the deployable artifact"
   },
   "training": {
     "loss": "Sum squared trained-candidate-minus-parent complete-block output divided by parent complete-block output energy over all 64 calibration rows",
-    "optimizer": "Adam over continuous deployable parameters only",
+    "optimizer": "Adam with frozen parameter groups for continuous deployable values and training-only discrete shadows",
     "steps": 8,
     "continuous_learning_rate": 0.001,
+    "ternary_shadow_learning_rate": 0.1,
+    "four_bit_index_shadow_learning_rate": 0.25,
     "gradient_clip_norm": 1.0,
     "discrete_projection_frequency_steps": 1,
+    "discrete_projection": "Every forward rounds and clamps ternary shadows to {-1,0,+1} and index shadows to integers [0,15] with a straight-through backward copy; after every Adam step ternary shadows clamp to [-1,1] and index shadows clamp to [0,15]",
     "checkpoint_selection": "The eighth and final hard-packed state is scored; no best-of-step or validation checkpoint selection",
     "seed": 20260818,
     "resource_rule": "Train one complete block at a time with restart only at a fully packed and authenticated block checkpoint; retain at most the current and immediately previous block payload",

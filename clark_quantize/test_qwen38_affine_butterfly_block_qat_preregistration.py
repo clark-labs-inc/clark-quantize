@@ -17,6 +17,7 @@ def test_qat_prereg_is_qwen27b_only_and_frozen_before_parent_terminal() -> None:
     assert data["scope"]["qwen_4b_compute_forbidden"] is True
     assert data["scope"]["pilot_layers"] == [0, 32, 63]
     assert data["training"]["steps"] == 8
+    assert data["pre_execution_correction"]["qat_execution_had_started"] is False
     assert data["training"]["checkpoint_selection"].startswith("The eighth")
     assert "no_sweep" in data["training"]
 
@@ -26,10 +27,13 @@ def test_qat_only_trains_state_that_survives_into_the_file() -> None:
     representation = data["trained_representation"]
     for required in ("row anchors", "codebooks", "Givens angles"):
         assert required in representation["trainable_continuous_state"]
-    for required in ("Ternary assignments", "4-bit alpha/mu indices"):
+    for required in ("ternary assignments", "4-bit alpha/mu indices"):
         assert required in representation["trainable_discrete_state"]
     for forbidden in ("LoRA", "dense residual", "latent shadow weight"):
         assert forbidden in representation["forbidden_state"]
+    assert data["training"]["ternary_shadow_learning_rate"] == 0.1
+    assert data["training"]["four_bit_index_shadow_learning_rate"] == 0.25
+    assert "straight-through" in data["training"]["discrete_projection"]
 
 
 def test_qat_gate_is_heldout_storage_honest_and_sensitive_site_complete() -> None:
