@@ -1,0 +1,85 @@
+{
+  "schema": "qwen38_27b_llamacpp_ternary_controls_preregistration_v1",
+  "status": "frozen_before_conversion_or_evaluation",
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "objective": "Create and characterize complete llama.cpp TQ1_0 and TQ2_0 Qwen3.8-27B controls from the authenticated BF16 parent so Clark's near-1.58-bit candidate is compared with strong existing whole-model ternary formats",
+  "source": {
+    "model_index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "downloaded_bytes": 55563006776,
+    "shards": 18,
+    "llama_cpp_commit": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "converter_sha256": "e38975e1c68d98ac1664dfd530616eb35c72294382a4dd873d4746b23f27779f",
+    "llama_bench_sha256": "155eb2f52f2b55429885d93bcb5cedae6ab68285d694d2f91ac8c3fd789e51f3"
+  },
+  "formats": [
+    {
+      "name": "TQ1_0",
+      "llama_cpp_nominal_bpw": 1.69,
+      "artifact": "/workspace/models/controls/Qwen3.8-27B-TQ1_0.gguf"
+    },
+    {
+      "name": "TQ2_0",
+      "llama_cpp_nominal_bpw": 2.06,
+      "artifact": "/workspace/models/controls/Qwen3.8-27B-TQ2_0.gguf"
+    }
+  ],
+  "evaluation": {
+    "quick_suite": ["CUTE-Quick-20", "MATH-500-8", "code-trace-6", "WikiText-2 four-chunk perplexity"],
+    "mmlu": "run the frozen 64-item MMLU slice only when the preregistered quick gate passes",
+    "early_rejection_is_valid": true,
+    "quick_gate": {
+      "minimum_cute_correct": 7,
+      "minimum_math500_correct": 4,
+      "minimum_code_trace_correct": 4,
+      "maximum_wikitext_ppl_ratio_vs_Q4": 1.25
+    },
+    "descriptive_throughput": "three repetitions of 512-token prefill and 32-token decode at four threads; not paired or promotion-authoritative"
+  },
+  "resource_contract": {
+    "serial_formats": true,
+    "minimum_free_disk_GiB": 30,
+    "minimum_available_memory_GiB": 12,
+    "swap_forbidden": true,
+    "partial_outputs_never_treated_as_artifacts": true,
+    "final_artifacts_retained": 2
+  },
+  "decision_policy": [
+    "TQ1_0 and TQ2_0 remain controls regardless of whether their quality gate passes",
+    "a quick-gate rejection skips MMLU but still records complete artifact bytes, hashes, CUTE, MATH, code, WikiText, and descriptive throughput",
+    "Clark must beat a quality-qualified control on an honest quality-adjusted CPU Pareto axis before a breakthrough claim",
+    "file bpw counts all GGUF tensors and metadata against exactly 26895998464 model parameters",
+    "no result from these controls changes or tunes the frozen Clark candidate"
+  ],
+  "frozen_inputs": {
+    "conversion_runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_llamacpp_ternary_controls_v1.sh",
+      "sha256": "5316379b1e2410a0662c950be15dbae22bfc53fc046ad9a5265e7c924ea98551"
+    },
+    "evaluation_runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_qwen38_27b_llamacpp_ternary_control_v1.sh",
+      "sha256": "63053ea5622ff3fa37b3a0c15db2af49850ab7335234a97ded16d24180c00fba"
+    },
+    "cute_evaluator": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_cute_quick.py",
+      "sha256": "9c40a48a0c3f0544156a20ccccdc12f7e90bbae8afd391bf640ead1ff234c8ab"
+    },
+    "math_code_evaluator": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_math_code_canary.py",
+      "sha256": "fa3d0f870b3b0ed1d7d907cc8d146854b164e6d75cfa9d2bd20743979af74677"
+    },
+    "mmlu_evaluator": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_mmlu.py",
+      "sha256": "a604ca9a528231fa17de78ab2a7ffed7c1b9a0b9a9ca74459c2d894f1f3612d3"
+    },
+    "wikitext_evaluator": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_wikitext_quick.py",
+      "sha256": "54458dc377a1d07aaf26df90823f65f973b625f55a6ac73895d0c6ec9a666b07"
+    },
+    "server_launcher": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/launch_llama_cpu_eval_server.sh",
+      "sha256": "c972d6528779bf7630fb39a48d248239788a657c2f8530e6ff3a9e9cd2f19b57"
+    }
+  },
+  "claim_boundary": "whole-model existing-format controls only; no Clark candidate quality, paired throughput, energy, novelty, or breakthrough result"
+}
