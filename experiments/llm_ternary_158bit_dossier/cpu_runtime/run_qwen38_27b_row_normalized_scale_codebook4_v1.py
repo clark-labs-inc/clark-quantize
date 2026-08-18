@@ -345,7 +345,8 @@ def main() -> None:
             "gate": gate,
             "claim_boundary": {
                 "mapped_27b_scale_reconstruction_only": True,
-                "remaining_264_tensors_fitted": False,
+                "remaining_144_text_tensors_fitted": False,
+                "scope_matches_llamacpp_text_graph_only_after_supplemental_fit": False,
                 "model_quality_proven": False,
                 "artifact_exported": False,
                 "scientific_breakthrough_proven": False,

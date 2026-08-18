@@ -33,7 +33,7 @@
     "count_all_row_anchor_bytes": true,
     "count_all_codebook_bytes": true,
     "maximum_combined_bytes_for_mapped_402_tensors": 125000000,
-    "future_complete_bundle_rule": "if static reconstruction passes, inventory all remaining 264 rank-2+ tensors and require a separately measured complete-bundle projection no greater than 1.64 bpw before export"
+    "future_complete_bundle_rule": "if static reconstruction passes, fit the remaining 144 rank-2+ tensors in the exact 26895998464-parameter llama.cpp text graph and require a separately measured complete-text-bundle projection no greater than 1.64 bpw before export"
   },
   "reconstruction_gate": {
     "maximum_global_normalized_rmse": 0.02,

@@ -7,11 +7,12 @@ bundle_branch=${BUNDLE_BRANCH:-refs/heads/codex/qwen38-base3-research}
 python_bin=${PYTHON_BIN:-/workspace/venvs/quant-cpu/bin/python}
 parent_unit=${PARENT_UNIT:-quant-qwen38-27b-llamacpp-ternary-controls-v1.service}
 parent_receipt=${PARENT_RECEIPT:-/workspace/quant-state/qwen38-27b-llamacpp-ternary-controls-watch-v1/receipt.json}
-state=${STATE_DIR:-/workspace/quant-state/qwen38-27b-row-scale-pipeline-v2}
+state=${STATE_DIR:-/workspace/quant-state/qwen38-27b-text-row-scale-pipeline-v1}
 mapped_result=${MAPPED_RESULT:-/workspace/quant-state/qwen38-27b-row-normalized-scale-codebook4-v1.json}
 mapped_manifest=${MAPPED_MANIFEST:-/workspace/quant-runs/qwen38-row-normalized-scale-codebook4-v1/manifest.json}
-mapped_watch=${MAPPED_WATCH:-/workspace/quant-state/qwen38-27b-row-scale-pipeline-v2/mapped-watch-receipt.json}
-full_result=${FULL_RESULT:-/workspace/quant-state/qwen38-27b-full-row-normalized-scale-codebook4-v1.json}
+mapped_watch=${MAPPED_WATCH:-$state/mapped-watch-receipt.json}
+full_result=${FULL_RESULT:-/workspace/quant-state/qwen38-27b-text-row-normalized-scale-codebook4-v1.json}
+scope_result=${SCOPE_RECEIPT:-/workspace/quant-state/qwen38-27b-text-graph-scope-v1.json}
 runtime=experiments/llm_ternary_158bit_dossier/cpu_runtime
 
 # shellcheck source=wait_for_qwen38_terminal_receipt.sh
@@ -44,20 +45,25 @@ fi
 git rev-parse HEAD > "$state/repository.commit"
 date -u +%FT%TZ > "$state/started-at.txt"
 sha256sum \
-  "$runtime/qwen38_27b_materiality_priority_amendment_v1.json" \
+  "$runtime/qwen38_27b_materiality_priority_amendment_v3.json" \
   "$runtime/qwen38_27b_row_scale_orchestration_amendment_v2.json" \
+  "$runtime/qwen38_27b_text_graph_scope_amendment_v1.json" \
   "$runtime/qwen38_27b_row_normalized_scale_codebook4_preregistration_v1.json" \
-  "$runtime/qwen38_27b_full_row_normalized_scale_codebook4_preregistration_v1.json" \
+  "$runtime/qwen38_27b_text_row_normalized_scale_codebook4_preregistration_v1.json" \
   "$runtime/watch_qwen38_27b_row_scale_pipeline_v2.sh" \
   "$runtime/run_qwen38_27b_row_normalized_scale_codebook4_v1.py" \
-  "$runtime/run_qwen38_27b_full_row_normalized_scale_codebook4_v1.py" \
+  "$runtime/run_qwen38_27b_text_row_normalized_scale_codebook4_v1.py" \
+  "$runtime/run_qwen38_27b_text_graph_scope_v1.py" \
   clark_quantize/qwen38_row_scale_codebook.py \
   clark_quantize/qwen38_row_scale_storage.py \
+  clark_quantize/qwen38_text_scope.py \
+  clark_quantize/test_qwen38_text_scope.py \
   > "$state/source.sha256"
 
 "$python_bin" -m pytest -q \
   clark_quantize/test_qwen38_row_scale_codebook.py \
   clark_quantize/test_qwen38_row_scale_storage.py \
+  clark_quantize/test_qwen38_text_scope.py \
   > "$state/tests.stdout" 2> "$state/tests.stderr"
 
 llama_conflicts=$(ps -eo pid=,comm=,args= | awk \
@@ -88,6 +94,23 @@ if [[ $(df -Pk /workspace | awk 'NR == 2 {print $4}') -lt $((10 * 1024 * 1024)) 
 fi
 free -b > "$state/memory-before.txt"
 df -B1 /workspace > "$state/disk-before.txt"
+
+PYTHONPATH="$repo" "$python_bin" \
+  "$runtime/run_qwen38_27b_text_graph_scope_v1.py" \
+  --out "$scope_result" \
+  > "$state/text-scope.stdout" 2> "$state/text-scope.stderr"
+"$python_bin" - "$scope_result" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1]))
+if (
+    payload.get("schema") != "qwen38_27b_text_graph_scope_receipt_v1"
+    or payload.get("valid") is not True
+    or payload.get("complete") is not True
+    or payload.get("terminal") is not True
+):
+    raise SystemExit("Qwen3.8 text-graph scope receipt is invalid")
+PY
+printf 'terminal\n' > "$state/TEXT_SCOPE_TERMINAL"
 
 set +e
 PYTHONPATH="$repo" "$python_bin" \
@@ -143,7 +166,7 @@ printf 'terminal\n' > "$state/MAPPED_TERMINAL"
 if (( mapped_status == 0 )); then
   set +e
   PYTHONPATH="$repo" "$python_bin" \
-    "$runtime/run_qwen38_27b_full_row_normalized_scale_codebook4_v1.py" \
+    "$runtime/run_qwen38_27b_text_row_normalized_scale_codebook4_v1.py" \
     --mapped-watch-receipt "$mapped_watch" \
     --receipt "$full_result" \
     > "$state/full.stdout" 2> "$state/full.stderr"
@@ -172,7 +195,7 @@ from pathlib import Path
 parent, result = map(Path, sys.argv[1:])
 content = parent.read_bytes()
 receipt = {
-    "schema": "qwen38_27b_full_row_scale_parent_rejection_skip_v1",
+    "schema": "qwen38_27b_text_row_scale_parent_rejection_skip_v1",
     "created_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     "parent_receipt": str(parent),
     "parent_receipt_sha256": hashlib.sha256(content).hexdigest(),
@@ -180,7 +203,7 @@ receipt = {
     "complete": True,
     "valid_nonpromotion": True,
     "full_fit_launched": False,
-    "reason": "mapped 402-tensor row-normalized reconstruction gate rejected",
+    "reason": "mapped 402-tensor text-parent row-normalized reconstruction gate rejected",
     "gate": {"passed": False},
 }
 temporary = result.with_suffix(result.suffix + ".tmp")
@@ -211,7 +234,7 @@ for path in sorted(state.iterdir()):
             "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         }
 receipt = {
-    "schema": "qwen38_27b_row_scale_pipeline_receipt_v2",
+    "schema": "qwen38_27b_text_row_scale_pipeline_receipt_v1",
     "completed_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     "model": "Qwen/Qwen3.8-27B",
     "terminal": True,
@@ -226,7 +249,7 @@ receipt = {
     "valid_nonpromotion": full_payload.get("gate", {}).get("passed") is not True,
     "gate": {"passed": full_payload.get("gate", {}).get("passed") is True},
     "artifacts": files,
-    "claim_boundary": "static scale reconstruction and complete storage only; no capability or breakthrough claim",
+    "claim_boundary": "static scale reconstruction and complete llama.cpp-matched text-graph storage only; no capability or breakthrough claim",
 }
 (state / "receipt.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
 (state / "PIPELINE_TERMINAL").write_text("terminal\n")

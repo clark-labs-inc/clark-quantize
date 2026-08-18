@@ -301,7 +301,7 @@ def test_qwen38_materiality_priority_runs_whole_model_gates_before_hash_side_lan
     service = (RUNTIME / "quant-qwen38-27b-row-scale-pipeline-v2.service").read_text()
     watcher = (RUNTIME / "watch_qwen38_27b_row_scale_pipeline_v2.sh").read_text()
     amendment = json.loads(
-        (RUNTIME / "qwen38_27b_materiality_priority_amendment_v1.json").read_text()
+        (RUNTIME / "qwen38_27b_materiality_priority_amendment_v3.json").read_text()
     )
     assert (
         "After=network-online.target "
@@ -317,8 +317,10 @@ def test_qwen38_materiality_priority_runs_whole_model_gates_before_hash_side_lan
         "qwen38-27b-llamacpp-ternary-controls-watch-v1/receipt.json}"
         in watcher
     )
-    assert amendment["science_changed"] is False
-    assert amendment["priority_sequence"][-1] == "complete 666-tensor row-scale gate"
+    assert amendment["selected_text_graph"]["parameters"] == 26_895_998_464
+    assert amendment["priority_sequence"][-1] == (
+        "complete 851-tensor 26895998464-parameter text-graph row-scale gate"
+    )
 
 
 def test_qwen38_activation_binary_mlp_is_between_weight_screen_and_tq_controls() -> None:

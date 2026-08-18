@@ -51,7 +51,8 @@ fi
 git rev-parse HEAD > "$state/repository.commit"
 date -u +%FT%TZ > "$state/started-at.txt"
 sha256sum \
-  "$runtime/qwen38_27b_materiality_priority_amendment_v2.json" \
+  "$runtime/qwen38_27b_materiality_priority_amendment_v3.json" \
+  "$runtime/qwen38_27b_text_graph_scope_amendment_v1.json" \
   "$runtime/qwen38_27b_llamacpp_ternary_controls_preregistration_v1.json" \
   "$runtime/run_qwen38_27b_llamacpp_ternary_controls_v1.sh" \
   "$runtime/eval_qwen38_27b_llamacpp_ternary_control_v1.sh" \

@@ -246,6 +246,8 @@ if mmlu is not None:
 summary = {
     "schema": "qwen38_27b_llamacpp_ternary_control_summary_v1",
     "format": fmt,
+    "logical_scope": "Qwen3.8-27B text graph; vision and MTP/NextN excluded",
+    "logical_parameters": 26895998464,
     "model": model,
     "model_sha256": model_sha,
     "model_bytes": int(model_bytes),
@@ -263,7 +265,7 @@ summary = {
     },
     "complete": True,
     "terminal": True,
-    "claim_boundary": "whole-model llama.cpp control characterization; descriptive throughput is not a paired performance claim",
+    "claim_boundary": "whole-text-model llama.cpp control characterization; descriptive throughput is not a paired performance claim",
 }
 temporary = root / "summary.json.tmp"
 temporary.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")

@@ -94,6 +94,9 @@ payload = {
     "model": "Qwen/Qwen3.8-27B",
     "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
     "format": fmt,
+    "logical_scope": "Qwen3.8-27B text graph; vision and MTP/NextN excluded",
+    "logical_parameters": 26895998464,
+    "converter_scope_flag": "--no-nextn",
     "artifact": model,
     "artifact_bytes": int(size),
     "artifact_sha256": digest,
@@ -141,10 +144,11 @@ payload = {
     "schema": "qwen38_27b_llamacpp_ternary_controls_receipt_v1",
     "created_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     "model": "Qwen/Qwen3.8-27B",
+    "logical_scope": "26895998464-parameter llama.cpp text graph",
     "controls": controls,
     "complete": True,
     "terminal": True,
-    "claim_boundary": "whole-model upstream ternary controls; descriptive throughput is not an authoritative paired comparison",
+    "claim_boundary": "whole-text-model upstream ternary controls; descriptive throughput is not an authoritative paired comparison",
 }
 out = state / "receipt.json"
 temporary = state / "receipt.json.tmp"

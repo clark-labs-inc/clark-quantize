@@ -24,6 +24,11 @@ def test_llamacpp_ternary_controls_are_frozen_and_qwen38_only() -> None:
     assert source["shards"] == 18
     assert source["safetensors_bytes"] == 55_563_006_776
     assert "every BF16 shard" in source["method"]
+    text_scope = payload["text_graph_scope"]
+    assert text_scope["parameters"] == 26_895_998_464
+    assert text_scope["excluded_vision_parameters"] + text_scope[
+        "excluded_mtp_nextn_parameters"
+    ] + text_scope["parameters"] == text_scope["full_hf_checkpoint_parameters"]
 
 
 def test_llamacpp_ternary_control_sources_are_byte_frozen() -> None:
