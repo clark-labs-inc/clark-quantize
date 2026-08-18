@@ -10,6 +10,9 @@ llama_build=${LLAMA_BUILD:-/workspace/build/llama.cpp-qwen38-selective-v1}
 state=${STATE_DIR:-/workspace/quant-state/qwen38-27b-llamacpp-ternary-controls-v1}
 runtime=experiments/llm_ternary_158bit_dossier/cpu_runtime
 prereg="$runtime/qwen38_27b_llamacpp_ternary_controls_preregistration_v1.json"
+parent_receipt=${PARENT_MODEL_RECEIPT:-/workspace/quant-state/qwen_parent_models.json}
+download_receipt=${DOWNLOAD_RECEIPT:-$model_dir/CLARK_DOWNLOAD_RECEIPT.json}
+tree_manifest=${HF_TREE_MANIFEST:-$model_dir/.cache/huggingface/trees/1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0.json}
 
 mkdir -p "$state" "$controls_dir"
 cd "$repo"
@@ -40,7 +43,17 @@ if [[ $(awk '/MemAvailable:/ {print $2}' /proc/meminfo) -lt $((12 * 1024 * 1024)
   echo "less than 12 GiB memory is available for TQ controls" >&2
   exit 72
 fi
+"$python_bin" "$runtime/verify_qwen38_27b_hf_source_v1.py" \
+  --model-dir "$model_dir" \
+  --parent-receipt "$parent_receipt" \
+  --download-receipt "$download_receipt" \
+  --tree-manifest "$tree_manifest" \
+  --preregistration "$prereg" \
+  --out "$state/source-authentication.json"
 sha256sum "$prereg" "$llama_source/convert_hf_to_gguf.py" \
+  "$runtime/verify_qwen38_27b_hf_source_v1.py" \
+  "$parent_receipt" "$download_receipt" "$tree_manifest" \
+  "$state/source-authentication.json" \
   "$llama_build/bin/llama-cli" "$llama_build/bin/llama-server" \
   "$llama_build/bin/llama-perplexity" "$llama_build/bin/llama-bench" \
   > "$state/source.sha256"

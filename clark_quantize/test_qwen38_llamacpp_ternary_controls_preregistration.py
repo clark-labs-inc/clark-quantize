@@ -20,6 +20,10 @@ def test_llamacpp_ternary_controls_are_frozen_and_qwen38_only() -> None:
     assert payload["resource_contract"]["serial_formats"] is True
     assert payload["resource_contract"]["final_artifacts_retained"] == 2
     assert payload["evaluation"]["early_rejection_is_valid"] is True
+    source = payload["source_authentication"]
+    assert source["shards"] == 18
+    assert source["safetensors_bytes"] == 55_563_006_776
+    assert "every BF16 shard" in source["method"]
 
 
 def test_llamacpp_ternary_control_sources_are_byte_frozen() -> None:

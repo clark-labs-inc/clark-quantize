@@ -12,6 +12,17 @@
     "converter_sha256": "e38975e1c68d98ac1664dfd530616eb35c72294382a4dd873d4746b23f27779f",
     "llama_bench_sha256": "155eb2f52f2b55429885d93bcb5cedae6ab68285d694d2f91ac8c3fd789e51f3"
   },
+  "source_authentication": {
+    "method": "Hash every BF16 shard against the LFS SHA-256 values in the byte-pinned Hugging Face revision tree before either whole-model conversion starts",
+    "parent_receipt_sha256": "33e33934a1e32c1c2f42827d2ebd9f3ede38744b5c5f34f9f2d837741156669d",
+    "download_receipt_sha256": "379cb8199efbb805578efcf88d006b5395ed19e559d950d36a3b492271ad5492",
+    "hf_tree_manifest_sha256": "5b8b30bdf9a39e0da8a5c9a4adca5385e0e1f4afd73e21a5f39b2dab443285be",
+    "config_sha256": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+    "model_index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "safetensors_bytes": 55563006776,
+    "shards": 18,
+    "receipt": "/workspace/quant-state/qwen38-27b-llamacpp-ternary-controls-v1/source-authentication.json"
+  },
   "formats": [
     {
       "name": "TQ1_0",
@@ -54,7 +65,11 @@
   "frozen_inputs": {
     "conversion_runner": {
       "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_llamacpp_ternary_controls_v1.sh",
-      "sha256": "5316379b1e2410a0662c950be15dbae22bfc53fc046ad9a5265e7c924ea98551"
+      "sha256": "7d0a921ae92399f88d352701462e76996f9771bc30a0e6630743dbf140473fe2"
+    },
+    "source_authenticator": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/verify_qwen38_27b_hf_source_v1.py",
+      "sha256": "7b08eb46d97c33d5a2029052ed626084a73c2ddc4082770a96d990ffc500db60"
     },
     "evaluation_runner": {
       "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_qwen38_27b_llamacpp_ternary_control_v1.sh",
