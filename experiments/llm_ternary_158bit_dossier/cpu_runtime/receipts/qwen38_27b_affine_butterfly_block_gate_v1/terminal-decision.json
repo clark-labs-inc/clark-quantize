@@ -1,0 +1,82 @@
+{
+  "actual_selected_block_tensor_and_rotation_bytes": 236092032,
+  "cache_receipt_sha256": "f07e1e9634a1a5282ecc40b6f7bf4c46be5927f2d9378ed3c4a10181bdd5eebb",
+  "cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+  "claim_boundary": "terminal three-complete-block falsification result only; not a whole-model artifact, capability evaluation, CPU runtime result, or breakthrough",
+  "complete": true,
+  "elapsed_seconds": 4907.250935221993,
+  "gate": {
+    "all_payload_pack_unpack_roundtrips_exact": true,
+    "all_selected_blocks_passed": false,
+    "all_values_finite": true,
+    "maximum_projected_complete_text_file_bpw": 1.7,
+    "minimum_relative_validation_nmse_reduction_vs_direct_ternary": 0.3,
+    "observed_projected_complete_text_file_bpw": 1.6673542778500956,
+    "passed": false
+  },
+  "layers": [
+    {
+      "actual_packed_tensor_and_rotation_bytes": 79474272,
+      "candidate_complete_block_validation_nmse": 0.02722328033356917,
+      "direct_complete_block_validation_nmse": 0.1384394376807489,
+      "elapsed_seconds": 87.5886677110102,
+      "layer": 0,
+      "minimum_required_reduction": 0.3,
+      "passed": true,
+      "rank2_or_higher_parameter_count": 383262720,
+      "rank2_or_higher_tensor_count": 9,
+      "relative_validation_nmse_reduction_vs_direct": 0.803356032142026,
+      "type": "linear_attention"
+    },
+    {
+      "actual_packed_tensor_and_rotation_bytes": 79474272,
+      "candidate_complete_block_validation_nmse": 0.018165784373972645,
+      "direct_complete_block_validation_nmse": 0.013325089759614505,
+      "elapsed_seconds": 2443.8111784399953,
+      "layer": 32,
+      "minimum_required_reduction": 0.3,
+      "passed": false,
+      "rank2_or_higher_parameter_count": 383262720,
+      "rank2_or_higher_tensor_count": 9,
+      "relative_validation_nmse_reduction_vs_direct": -0.3632766984451579,
+      "type": "linear_attention"
+    },
+    {
+      "actual_packed_tensor_and_rotation_bytes": 77143488,
+      "candidate_complete_block_validation_nmse": 0.068709022376544,
+      "direct_complete_block_validation_nmse": 0.13613106952633344,
+      "elapsed_seconds": 2375.340280044009,
+      "layer": 63,
+      "minimum_required_reduction": 0.3,
+      "passed": true,
+      "rank2_or_higher_parameter_count": 372244480,
+      "rank2_or_higher_tensor_count": 7,
+      "relative_validation_nmse_reduction_vs_direct": 0.4952730290328557,
+      "type": "full_attention"
+    }
+  ],
+  "model": "Qwen/Qwen3.8-27B",
+  "preregistration_sha256": "8fa0b3159a0b6b7bdea1b00a0373b946a73e4ce0cd860bb303d1eb8ad3d63b09",
+  "projected_complete_text_bundle": {
+    "accounting_rule": "Codes, alpha and mu indices, anchors, codebooks, rotations, descriptors, exact retained tensors, headers, alignment, metadata, and auxiliary model files all count",
+    "additional_mu_codebook_bytes": 17472,
+    "additional_mu_index_bytes": 105297920,
+    "additional_mu_row_anchor_bytes": 9784320,
+    "base_row_normalized_bundle_bpw": 1.6274634968688255,
+    "base_row_normalized_bundle_bytes": 5471531964,
+    "maximum_mu_section_alignment_bytes": 2235870,
+    "maximum_projected_complete_bundle_bpw": 1.6673542778500956,
+    "maximum_projected_complete_bundle_bytes": 5605644762,
+    "maximum_rotation_and_auxiliary_bpw": 0.0055,
+    "maximum_rotation_and_descriptor_bytes": 16777216
+  },
+  "replay_arithmetic": {
+    "depthwise_convolution": "decode stored affine weight to parent BF16 because the Qwen causal convolution function consumes the weight directly",
+    "forbidden_extra_codec": "no derived effective linear matrix is rounded to BF16 before replay",
+    "rank2_weights": "decode base3, FP16 anchors, FP16 codebooks, 4-bit indices, and FP16 angles into FP32 algebra; cast each linear output to the parent BF16 activation dtype"
+  },
+  "repository_commit": "1e524a9eb48e223b259a4d3714afc765bb107dcd",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_affine_butterfly_block_gate_receipt_v1",
+  "terminal": true
+}

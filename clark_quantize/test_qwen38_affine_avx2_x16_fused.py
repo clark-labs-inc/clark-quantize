@@ -25,6 +25,11 @@ CORRECTNESS_RECEIPT = (
     / "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts"
     / "qwen38_27b_affine_avx2_x16_fused_v17/native-correctness.json"
 )
+BENCHMARK_RECEIPT = (
+    REPO
+    / "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts"
+    / "qwen38_27b_affine_avx2_x16_fused_v17/exact-shape-benchmark.json"
+)
 
 
 def load_preregistration() -> dict[str, object]:
@@ -162,4 +167,23 @@ def test_v17_native_correctness_receipt_passes_without_a_speed_claim() -> None:
     assert receipt["model_integration"]["ran"] is False
     assert receipt["quality"]["ran"] is False
     assert receipt["passed"] is True
+    assert receipt["terminal"] is True
+
+
+def test_v17_exact_shape_kernel_passes_every_frozen_speed_and_stability_gate() -> None:
+    receipt = json.loads(BENCHMARK_RECEIPT.read_text())
+    assert receipt["model"] == "Qwen/Qwen3.8-27B"
+    assert receipt["rows_per_matrix"] == 17_408
+    assert receipt["columns"] == 5_120
+    assert receipt["matrices"] == 2
+    assert receipt["timed_batches"] == 11
+    assert receipt["inner_iterations_per_timed_batch"] == 8
+    assert receipt["x8_x16_bit_exact"] is True
+    assert receipt["ordinary_over_x16_speedup"] >= 1.35
+    assert receipt["x8_over_x16_speedup"] >= 1.06
+    assert receipt["samples"]["x16"]["median_absolute_deviation_fraction"] <= 0.03
+    assert receipt["samples"]["x16"]["p90_over_p10_ratio"] <= 1.08
+    assert all(receipt["checks"].values())
+    assert receipt["passed"] is True
+    assert receipt["complete"] is True
     assert receipt["terminal"] is True
