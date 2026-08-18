@@ -8,6 +8,10 @@ REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREREG = RUNTIME / "qwen38_27b_cq3_avx2_x16_repack_v16.json"
 PATCH = RUNTIME / "kernels/llama_cpp_cq3_avx2_x16_repack_v16.patch"
+RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_cq3_avx2_x16_repack_v16/terminal-decision.json"
+)
 
 
 def test_v16_is_storage_neutral_and_qwen38_27b_only() -> None:
@@ -54,3 +58,19 @@ def test_v16_patch_shares_activation_broadcasts_across_two_outputs() -> None:
     assert source.count("_mm256_set1_epi32(values_word0)") == 1
     assert "accumulator0" in source
     assert "accumulator1" in source
+
+
+def test_v16_rejects_encouraging_medians_on_frozen_stability_gate() -> None:
+    receipt = json.loads(RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["passed"] is False
+    assert receipt["kernel_promoted"] is False
+    measurement = receipt["measurement"]
+    assert measurement["x8_x16_bit_exact"] is True
+    assert measurement["ordinary_over_x16_speedup"] >= 1.4
+    assert measurement["x8_over_x16_speedup"] >= 1.08
+    assert measurement["x16_sample_range_fraction"] > 0.05
+    assert receipt["checks"]["maximum_x16_sample_range_fraction_0_05_met"] is False
+    assert receipt["model_deployment"]["ran"] is False
+    assert receipt["quality"]["ran"] is False
