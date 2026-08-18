@@ -1,0 +1,141 @@
+{
+  "schema": "qwen38_27b_q4_k_dual_layout_q8_producer_avx2_preregistration_v24",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_dual_layout_q8_producer_avx2_v24",
+  "frozen_at": "2026-08-18T23:07:41Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "target_quantization": "Q4_K_M",
+    "official_mtp_draft_quantization": "Q4_0",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "isa": "AVX2/FMA/F16C",
+    "qwen_4b_compute_forbidden": true
+  },
+  "parent": {
+    "experiment": "qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_v21",
+    "patch": "kernels/llama_cpp_q4_k_native_x4_deinterleave_fused_avx2_v21.patch",
+    "graph_receipt": "receipts/qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_v21/graph-decision.json",
+    "system_receipt": "receipts/qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_v21/system-decision.json",
+    "observed_four_row_graph_speedup": 1.137261437618061,
+    "observed_mtp3_accepted_tps": 3.444551858126723,
+    "observed_mtp3_speedup_over_promoted_control": 1.146571122485334,
+    "status": "performance-positive but system-rejected because target-only generation diverged; v24 does not alter or supersede that decision"
+  },
+  "diagnosis": {
+    "current_pipeline": [
+      "Quantize four F32 rows into native block_q8_Kx4.",
+      "Synchronize all workers.",
+      "Traverse the complete native Q8_K buffer a second time and copy scales, codes, and sums into a row-major Q8_K workspace.",
+      "Synchronize again at the ordinary work-chunk barrier, then execute the four-accumulator Q4_K kernel."
+    ],
+    "redundancy": "The native quantizer already holds every row's scale and every 32-byte group of quant codes in registers. The row-major bytes can be emitted from those same registers; the post-pass reads and its dedicated barrier are not algebraically necessary.",
+    "performance_anchor": "The arithmetic-changing direct-row producer in v5 reached a 1.216x four-row graph speedup, while the exact v21 bridge reached 1.137x. This experiment tests whether producer fusion recovers a material part of that gap without changing a single Q8 code, scale, sum, or downstream accumulation."
+  },
+  "hypothesis": "An AVX2 dual-layout Q8_K producer that writes native block_q8_Kx4 and four ordinary block_q8_K rows directly from the same quantization registers will remove the complete deinterleave traversal and one threadpool barrier, preserve both output layouts byte-for-byte relative to v21, and improve the real Qwen3.8-27B exact-four-row graph by at least five percent over v21.",
+  "single_independent_change": {
+    "allowed": [
+      "Add one exact AVX2 dual-output variant of ggml_quantize_mat_q8_K_4x8.",
+      "For exact-four-row Q4_K 8x8 operations only, call the dual-output producer instead of native production followed by ggml_repack_q8_K_4x8_to_q8_K_rows.",
+      "Remove the now-redundant dedicated post-quantization barrier; retain the existing work-chunk barrier before any consumer reads the workspace."
+    ],
+    "forbidden": [
+      "No quantization scale, rounding instruction, saturation, Q8 code, bsum, Q4 weight decode, accumulation order, model, tokenizer, sampler, cache, or draft model may change.",
+      "No path outside exact-four-row Q4_K 8x8 matrix multiplication may change.",
+      "No high-precision activation or weight materialization may be introduced.",
+      "The v21 and v22 decisions remain immutable regardless of this result."
+    ],
+    "candidate_patch": "kernels/llama_cpp_q4_k_dual_layout_q8_producer_avx2_v24.patch",
+    "property_test": "tests/test_q8_k_dual_layout_producer_v24.cpp"
+  },
+  "layout_contract": {
+    "native_output": "byte-identical to ggml_quantize_mat_q8_K_4x8 for the same F32 input",
+    "row_major_output": "byte-identical to applying ggml_repack_q8_K_4x8_to_q8_K_rows to that native output",
+    "row_major_scale": "rows[row * nb + block].d = native[block].d[row]",
+    "row_major_codes": "rows[row * nb + block].qs[group8 * 8 + lane] = native[block].qs[group8 * 32 + row * 8 + lane]",
+    "row_major_bsums": "rows[row * nb + block].bsums[group16] = native[block].bsums[(group16 / 4) * 16 + row * 4 + (group16 % 4)]",
+    "workspace_bytes": "unchanged from v21: one native and one row-major Q8_K image"
+  },
+  "controls": {
+    "promoted_runtime": "/workspace/build/llama.cpp-q4k-fused-ragged-avx2-v2",
+    "exact_parent_runtime": "/workspace/build/llama.cpp-q4k-native-x4-deinterleave-v21",
+    "candidate_runtime": "/workspace/build/llama.cpp-q4k-dual-layout-producer-v24",
+    "cpu_affinity": "0,2,4,6",
+    "threads": 4,
+    "context": 512,
+    "batch": 128,
+    "ubatch": 64,
+    "paired_process_order": "AB,BA repeated three times",
+    "graph_repetitions_per_process": 7,
+    "target_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "draft_sha256": "051a1764cff8c4f3ee6ae8b00593a0364c7539c67fa50ffc58f3f96509fca38e",
+    "frequency_monitor_required": true,
+    "service_unit_required": true,
+    "service_restart_policy": "no"
+  },
+  "sequential_gates": {
+    "gate_1_byte_exact_producer": {
+      "seeded_blocks": 1024,
+      "required_special_cases": [
+        "all-zero",
+        "signed extrema",
+        "alternating signs",
+        "repeated absolute maxima with opposite signs",
+        "distinct per-row scales",
+        "non-finite inputs handled identically to the parent producer"
+      ],
+      "native_output_matches_parent_bit_exact": true,
+      "row_major_output_matches_parent_plus_repack_bit_exact": true,
+      "source_f32_bytes_unchanged": true,
+      "row_major_bsums_match_codes": true,
+      "backend_reference_cases": 3,
+      "backend_all_must_pass": true
+    },
+    "gate_2_quantize_and_layout_microbenchmark": {
+      "widths": [2048, 4096, 8192, 16384],
+      "minimum_paired_v21_over_v24_latency_ratio_geomean": 1.1,
+      "maximum_candidate_median_mad_fraction": 0.03
+    },
+    "gate_3_real_model_four_row_graph": {
+      "paired_processes_per_runtime": 6,
+      "samples_per_process": 7,
+      "minimum_v21_over_v24_latency_ratio": 1.05,
+      "minimum_promoted_control_over_v24_latency_ratio": 1.18,
+      "maximum_candidate_process_median_mad_fraction": 0.03,
+      "maximum_frequency_range_mhz": 100
+    },
+    "gate_4_unchanged_target_and_mtp3": {
+      "target_prompts": 4,
+      "mtp3_prompts": 4,
+      "tokens_per_prompt": 96,
+      "v21_vs_v24_target_tokens_exact": true,
+      "v21_vs_v24_mtp3_committed_tokens_exact": true,
+      "v21_vs_v24_draft_acceptance_counts_exact": true,
+      "minimum_v24_over_v21_mtp3_accepted_tps": 1.04,
+      "minimum_v24_mtp3_accepted_tps": 3.55
+    },
+    "gate_5_quick_capability": {
+      "run_even_if_gate_4_performance_rejects_after_correct_execution": true,
+      "cute_correct_minimum": "9/20",
+      "math500_correct_minimum": "5/8",
+      "code_trace_correct_minimum": "5/6",
+      "v21_or_v22_item_outputs_must_match_exactly": true
+    },
+    "gate_6_wikitext": {
+      "required_only_after_gates_1_through_5_pass": true,
+      "maximum_v24_over_pinned_q4_baseline_perplexity_ratio": 1.005,
+      "maximum_v24_over_v22_perplexity_absolute_difference": 0.000001
+    }
+  },
+  "stop_rules": [
+    "Reject before timing if either output layout differs by one bit, any source F32 byte changes, or any backend case fails.",
+    "Reject the speed hypothesis if either the microbenchmark or paired real-model graph threshold fails; do not retune thresholds after observation.",
+    "Run the frozen quick capability suite after any correct system execution, even if the MTP3 speed gate rejects.",
+    "Reject if v24 changes any v21 target token, committed MTP3 token, draft acceptance count, or quick-eval item output.",
+    "Record infrastructure-invalid separately from a scientific zero or rejection."
+  ],
+  "promotion_boundary": "A pass promotes a byte-exact producer optimization for the Qwen3.8-27B four-row speculative-verification path on four Milan cores. It does not rehabilitate v21's rejected target-only parity result, establish the 2.75 tok/s conventional-decode breakthrough gate, validate the v23 calibrated model composition, prove final-node or energy scaling, approach 100 tok/s, or establish scientific novelty."
+}
