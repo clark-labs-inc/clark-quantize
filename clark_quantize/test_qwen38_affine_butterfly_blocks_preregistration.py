@@ -36,7 +36,9 @@ def test_affine_base3_has_honest_whole_model_storage_and_cpu_algebra() -> None:
     representation = payload["representation"]
     projection = representation["complete_text_projection"]
     assert "exactly three reconstructed values" in representation["weight_equation"]
-    assert "Five trits per byte" in representation["ternary_packing"]
+    assert "203-bit base-3 integer" in representation["ternary_packing"]
+    assert "five-trits-per-byte radix-5" in payload["pre_execution_correction"]["change"]
+    assert payload["pre_execution_correction"]["execution_had_started"] is False
     assert "sum(x[g])" in representation["runtime_equation"]
     assert projection["maximum_projected_complete_bundle_bpw"] <= 1.70
     assert projection["maximum_rotation_and_auxiliary_bpw"] <= 0.10

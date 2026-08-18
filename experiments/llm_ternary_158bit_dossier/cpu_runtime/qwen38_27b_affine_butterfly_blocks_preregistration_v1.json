@@ -2,6 +2,11 @@
   "schema": "qwen38_27b_affine_butterfly_blocks_preregistration_v1",
   "status": "frozen_before_activation_collection_or_fit",
   "frozen_at_utc": "2026-08-18T05:35:00Z",
+  "pre_execution_correction": {
+    "corrected_at_utc": "2026-08-18T05:42:00Z",
+    "execution_had_started": false,
+    "change": "Corrected the textual packing description from five-trits-per-byte radix-5 to the 203-bit-per-128-trit base-3 layout used by the already-frozen byte projection; no numeric gate, byte count, model scope, data, or fit setting changed"
+  },
   "objective": "Falsify or promote one CPU-runnable whole-model representation by quantizing every rank-2-or-higher weight in complete early, middle, and late Qwen3.8-27B transformer blocks and measuring disjoint held-out block-output error",
   "scope": {
     "active_model_only": "Qwen/Qwen3.8-27B",
@@ -28,10 +33,10 @@
     "rotation_equation": "For a shared activation site with orthogonal R, replace each consumer W by Q_affine(W * R^T) and evaluate it on R * x; R is a product of six disjoint-pair Givens stages and is never materialized as a dense matrix",
     "fanout_sharing": "One rotation is shared by every projection consuming the same normalized activation, including q/k/v-style fanout and gate/up fanout",
     "convolution_rule": "Small linear-attention convolution kernels use the same affine base-3 group algebra after row flattening but no activation rotation",
-    "ternary_packing": "Five trits per byte with digits 0,1,2; reserved byte values 243 through 255 are forbidden",
+    "ternary_packing": "Each complete 128-trit group is one canonical 203-bit base-3 integer with digits 0,1,2; groups reset at rows and no padding is counted between rows",
     "alpha_storage": "One FP16 row anchor and one per-tensor 16-entry FP16 log-ratio codebook with packed 4-bit group indices",
     "mu_storage": "One signed FP16 row anchor and one per-tensor 16-entry FP16 signed-ratio codebook with packed 4-bit group indices",
-    "rotation_storage": "Six FP16 angles per activation dimension, because each of six stages contains dimension/2 angles; deterministic pairings and signs are regenerated from model revision, layer, site, and stage",
+    "rotation_storage": "Three FP16 angle equivalents, or six bytes, per activation dimension because each of six stages contains dimension/2 angles; deterministic pairings and signs are regenerated from model revision, layer, site, and stage",
     "runtime_equation": "For each group, accumulate alpha[g] * dot(t[g], x[g]) + mu[g] * sum(x[g]); apply each shared Givens product once per activation site and never reconstruct BF16 or FP16 weights",
     "complete_text_projection": {
       "base_row_normalized_bundle_bytes": 5471531964,
