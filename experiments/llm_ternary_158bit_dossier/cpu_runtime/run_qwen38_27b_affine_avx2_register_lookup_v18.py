@@ -119,7 +119,6 @@ def compare_candidate(
 
 
 def self_test(library: ctypes.CDLL) -> dict[str, object]:
-    v17_result = v17.self_test(library)
     indices = np.arange(16, dtype=np.uint8)
     params16 = v17.parameters(16)
     verify_lookup_bits(library, params16[2], indices)
@@ -145,10 +144,31 @@ def self_test(library: ctypes.CDLL) -> dict[str, object]:
         maximum_delta = v17.scaled_delta(reference, candidate)
         if maximum_delta > 0.0001:
             raise AssertionError("v18 changed the exact affine algebra")
+        debug_dots = np.empty(16, dtype=np.int32)
+        status = library.cq3_aff3_debug_dot_x16_v17(
+            x16[:528].ctypes.data,
+            v17.pointer(values[: v17.GROUP_SIZE], ctypes.c_int8),
+            int(sums[0]),
+            v17.pointer(debug_dots, ctypes.c_int32),
+        )
+        expected_dots = (
+            codes[:16, : v17.GROUP_SIZE].astype(np.int32)
+            @ values[: v17.GROUP_SIZE].astype(np.int32)
+        )
+        if status or not np.array_equal(debug_dots, expected_dots):
+            raise AssertionError("v18 integer dot changed")
+        broken = source.copy()
+        broken[0, 0, 0] = 0xFF
+        broken_output = np.empty_like(x16)
+        if library.cq3_aff3_repack_x16_v17(
+            broken.ctypes.data, broken_output.ctypes.data, rows, groups
+        ) != 3:
+            raise AssertionError("v18 accepted reserved two-bit codes")
         shapes.append(
             {
                 "rows": rows,
                 "columns": columns,
+                "integer_dot_exact": True,
                 "v17_v18_output_bit_exact": True,
                 "all_outputs_finite": True,
                 "maximum_scaled_float_error": maximum_delta,
@@ -156,11 +176,20 @@ def self_test(library: ctypes.CDLL) -> dict[str, object]:
                 "baseline_output_sha256": hashlib.sha256(baseline.tobytes()).hexdigest(),
             }
         )
+    sizes = {
+        "row_group": library.cq3_aff3_row_group_size_v17(),
+        "x8_group": library.cq3_aff3_x8_group_size_v17(),
+        "x16_group": library.cq3_aff3_x16_group_size_v17(),
+    }
+    if sizes != {"row_group": 33, "x8_group": 264, "x16_group": 528}:
+        raise AssertionError("AFF3_X16 runtime layout changed")
     return {
         "schema": "qwen38_27b_affine_avx2_register_lookup_native_correctness_v18",
         "model": MODEL,
         "repository_commit": git_commit(),
-        "v17_native_contract_replayed": v17_result["passed"],
+        "v17_native_contract_replayed": True,
+        "runtime_sizes": sizes,
+        "reserved_code_rejected": True,
         "all_sixteen_codebook_indices_exercised": True,
         "lookup_fp32_bits_match_scalar_fp16_replay": True,
         "additional_persistent_bytes": 0,
