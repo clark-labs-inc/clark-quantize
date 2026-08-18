@@ -954,8 +954,10 @@ def main() -> None:
             item["calibration_not_regressed"] for item in results
         ),
         "mean_relative_calibration_nmse_reduction_vs_direct": mean_relative_improvement,
-        "minimum_mean_relative_calibration_nmse_reduction_vs_direct": float(
-            gate_config["minimum_mean_relative_calibration_nmse_reduction_vs_direct"]
+        "minimum_mean_relative_calibration_nmse_reduction_vs_direct_mixed": float(
+            gate_config[
+                "minimum_mean_relative_calibration_nmse_reduction_vs_direct_mixed"
+            ]
         ),
         "all_code_churn_within_maximum": all(
             item["code_churn_within_maximum"] for item in results
@@ -990,7 +992,7 @@ def main() -> None:
         gate["all_layers_terminal"]
         and gate["all_layers_calibration_not_regressed_vs_direct"]
         and gate["mean_relative_calibration_nmse_reduction_vs_direct"]
-        >= gate["minimum_mean_relative_calibration_nmse_reduction_vs_direct"]
+        >= gate["minimum_mean_relative_calibration_nmse_reduction_vs_direct_mixed"]
         and gate["all_code_churn_within_maximum"]
         and gate["all_payload_roundtrips_exact"]
         and gate["all_values_finite"]

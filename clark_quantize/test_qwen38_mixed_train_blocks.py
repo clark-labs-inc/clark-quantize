@@ -94,7 +94,7 @@ def test_mixed_training_runner_has_frozen_sequence_and_terminal_gate() -> None:
     confirmation_boundary = source.index("fresh confirmation remains sealed")
     assert gate_position < down_position < aff3_position < confirmation_boundary
     assert 'raise SystemExit(0 if gate["passed"] else 2)' in source
-    assert "minimum_mean_relative_calibration_nmse_reduction_vs_direct" in source
+    assert "minimum_mean_relative_calibration_nmse_reduction_vs_direct_mixed" in source
     assert "maximum_weighted_code_churn_fraction" in source
     assert "storage_projection_within_maximum" in source
     assert "expected_source_sha256" in source
