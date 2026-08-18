@@ -1,0 +1,28 @@
+{
+  "schema": "qwen38_27b_q4_k_native_x4_quality_adjudication_manifest_resolution_amendment_v22",
+  "experiment_id": "qwen38_27b_q4_k_native_x4_quality_adjudication_v22",
+  "frozen_at": "2026-08-18T22:23:33Z",
+  "reason": "The preregistration used the logical name mmlu_quick64_v1.json, but the already-frozen 64-question MMLU manifest is stored under a historical filename. This amendment resolves only that path before candidate quality scores are observed.",
+  "logical_manifest": "mmlu_quick64_v1.json",
+  "resolved_manifest": "qwen35_4b_cpu_layer30_mmlu_v1.json",
+  "resolved_manifest_sha256": "e3e38ccb1bf35c56b600f1cf39bbd0ea38072f2b4bdd5fc36146c143fb658dba",
+  "frozen_contract": {
+    "schema_version": 1,
+    "seed": 20260816,
+    "task": "mmlu",
+    "samples": 64,
+    "content_sha256": "16a5adedb84a9bd7463b65eedf7eb0bf21d688a762ceda49310b0434f795b198",
+    "prompt_contract_sha256": "bb8ccea9dc88cf7e123db9683ba1975d98d31a7b35166ffe74d85c8e3c4a7ecf"
+  },
+  "baseline_compatibility": "The pinned Qwen3.8-27B Q4_K_M baseline receipt used this same exact manifest.",
+  "scope_guard": "The historical filename does not authorize or run a Qwen 4B model. Candidate and baseline compute remain exclusively Qwen/Qwen3.8-27B.",
+  "unchanged": [
+    "questions",
+    "few-shot support",
+    "prompt contract",
+    "scoring",
+    "denominator",
+    "thresholds",
+    "candidate runtime"
+  ]
+}
