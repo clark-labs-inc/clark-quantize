@@ -265,9 +265,13 @@ also collapsed every candidate target token to ID zero. MTP3 accepted 0 of
 1,116 draft proposals and fell to 1.136 accepted tok/s. Three small backend
 reference cases passed, demonstrating that synthetic tolerance tests did not
 cover the real model-load/repack failure. The speed number is invalid for
-promotion. Follow-up work must keep the qualified one-to-three-row binary path
-separate and compile an exact-four-row specialization, with a free-generation
-canary before any throughput run.
+promotion. Source-level follow-up found the contract violation: groups of four
+activations are quantized into interleaved `block_q8_Kx4`, while v3 routed that
+buffer into a kernel that casts it as contiguous `block_q8_K` rows. An
+accumulator-only specialization cannot fix the layout, so v4 was cancelled
+before build. The next isolated experiment changes only exact-four-row
+activation packing to ordinary row-major Q8_K and retains a free-generation
+canary before any throughput claim.
 
 ## Required tests for every optimized kernel
 

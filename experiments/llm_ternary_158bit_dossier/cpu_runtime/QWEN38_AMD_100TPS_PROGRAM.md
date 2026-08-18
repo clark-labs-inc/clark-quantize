@@ -73,8 +73,12 @@ The first direct extension was rejected: although its graph timing improved by
 1.113x, all 4 x 96 target and MTP outputs collapsed to token ID zero, draft
 acceptance became 0/1,116, and MTP3 fell from 3.0585 to 1.1360 accepted tok/s.
 The result tightens the contract: graph timing is never a score until a
-real-model free-generation canary passes, and the next candidate uses separate
-compile-time three- and four-row specializations.
+real-model free-generation canary passes. Static tracing then identified the
+specific incompatibility: the four-row producer writes interleaved
+`block_q8_Kx4`, but v3's consumer reads row-major `block_q8_K`. The planned
+accumulator-only v4 was therefore stopped without a build. The next candidate
+isolates the causal repair by producing row-major Q8_K only for exact-four-row
+Q4_K 8x8 verification; all other layouts remain unchanged.
 
 ## Target-model lane
 

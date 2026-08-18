@@ -1,0 +1,38 @@
+{
+  "schema": "qwen38_27b_q4_k_fused_four_row_specialized_avx2_result_v4",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "build_attempted": false,
+  "benchmark_attempted": false,
+  "passed": false,
+  "decision": "cancel_before_build_layout_contract_falsifies_hypothesis",
+  "classification": "static numerical-contract diagnosis; not a performance score",
+  "finding": "The exact-four-row activation buffer is produced by ggml_quantize_mat_t<8, GGML_TYPE_Q8_K> as interleaved block_q8_Kx4. The rejected v3 dispatch passed that same buffer to a GEMV that casts it to four contiguous block_q8_K rows. Separate accumulator specializations do not repair this incompatible memory layout, so v4 was stopped before compilation.",
+  "evidence": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "v3_repack_cpp_sha256": "47d3d18b3248bf19572e204a3c0dd54d52afd72be3a4667acae20a3ee45246b6",
+    "v3_x86_repack_cpp_sha256": "c171a06d5a5d5d5221a6167c7039b759e38efd073dca7ba33a46afa8ed6b1ec2",
+    "v3_repack_h_sha256": "fe472315b4106400d7890fca308659c74bcdedad1b011a9ba60c02dcd5bef57b",
+    "producer": {
+      "file": "ggml/src/ggml-cpu/repack.cpp",
+      "lines": "4319-4321",
+      "operation": "ggml_quantize_mat_t<INTER_SIZE, PARAM_TYPE>(..., 4, ne10)"
+    },
+    "produced_type": {
+      "file": "ggml/src/ggml-cpu/repack.h",
+      "lines": "96-102",
+      "type": "block_q8_Kx4",
+      "layout": "four deltas followed by interleaved quants and interleaved bsums"
+    },
+    "incorrect_consumer": {
+      "file": "ggml/src/ggml-cpu/arch/x86/repack.cpp",
+      "lines": "1501-1504",
+      "cast": "const block_q8_K *",
+      "accepted_rows": 4
+    }
+  },
+  "negative_anchor": "../qwen38_27b_q4_k_fused_four_row_avx2_v3/terminal-decision.json",
+  "next_experiment": "qwen38_27b_q4_k_fused_four_row_rowmajor_avx2_v5",
+  "claim_boundary": "This source-level diagnosis explains the v3 failure and rejects v4's accumulator-only remedy. It is not runtime correctness, speed, quality, or novelty evidence."
+}

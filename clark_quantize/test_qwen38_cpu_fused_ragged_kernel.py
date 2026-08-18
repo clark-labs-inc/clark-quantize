@@ -39,6 +39,13 @@ FOUR_ROW_RECEIPT = (
 FOUR_ROW_V4_PREREG = (
     RUNTIME / "qwen38_27b_q4_k_fused_four_row_specialized_avx2_v4.json"
 )
+FOUR_ROW_V4_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_q4_k_fused_four_row_specialized_avx2_v4/terminal-decision.json"
+)
+FOUR_ROW_V5_PREREG = (
+    RUNTIME / "qwen38_27b_q4_k_fused_four_row_rowmajor_avx2_v5.json"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -217,3 +224,36 @@ def test_four_row_v4_prereg_requires_separate_specialization_and_canaries() -> N
     assert gates["gate_3_mtp3_canary"][
         "candidate_draft_acceptance_must_equal_control"
     ] is True
+
+
+def test_four_row_v4_is_cancelled_on_proven_layout_mismatch() -> None:
+    payload = json.loads(FOUR_ROW_V4_RECEIPT.read_text())
+    assert payload["terminal"] is True
+    assert payload["build_attempted"] is False
+    assert payload["benchmark_attempted"] is False
+    assert payload["passed"] is False
+    assert payload["evidence"]["produced_type"]["type"] == "block_q8_Kx4"
+    assert payload["evidence"]["incorrect_consumer"]["cast"] == (
+        "const block_q8_K *"
+    )
+    assert payload["classification"].endswith("not a performance score")
+
+
+def test_four_row_v5_prereg_is_single_change_and_sequentially_gated() -> None:
+    payload = json.loads(FOUR_ROW_V5_PREREG.read_text())
+    assert payload["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert payload["scope"]["qwen_4b_compute_forbidden"] is True
+    assert "ne11 == 4" in payload["implementation"]["single_independent_change"]
+    assert "v3 exact-four-row GEMV arithmetic" in payload["implementation"][
+        "unchanged"
+    ]
+    gates = payload["sequential_gates"]
+    assert gates["gate_2_ordinary_decode_canary"][
+        "control_vs_candidate_exact_tokens"
+    ] is True
+    assert gates["gate_3_real_model_four_row_graph"][
+        "minimum_candidate_over_control_speedup"
+    ] >= 1.10
+    assert gates["gate_5_terminal_mtp3"][
+        "minimum_candidate_over_control_accepted_tps"
+    ] >= 1.05

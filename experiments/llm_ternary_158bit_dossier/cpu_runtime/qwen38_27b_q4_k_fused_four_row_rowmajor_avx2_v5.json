@@ -1,0 +1,71 @@
+{
+  "schema": "qwen38_27b_q4_k_fused_four_row_rowmajor_avx2_preregistration_v5",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_fused_four_row_rowmajor_avx2_v5",
+  "frozen_at": "2026-08-18T11:21:44Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "target_quantization": "Q4_K_M",
+    "official_mtp_draft_quantization": "Q4_0",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true
+  },
+  "diagnosis_anchor": "receipts/qwen38_27b_q4_k_fused_four_row_specialized_avx2_v4/terminal-decision.json",
+  "hypothesis": "The v3 numerical collapse is caused by feeding an interleaved block_q8_Kx4 activation buffer to a row-major block_q8_K GEMV. Quantizing only exact-four-row Q4_K 8x8 operations as four ordinary row-major Q8_K rows should restore exact outputs while retaining the v3 shared-weight-decode speedup.",
+  "implementation": {
+    "base": "Pinned llama.cpp plus cache-order v1, promoted fused one-to-three-row v2, and rejected exact-four-row v3",
+    "candidate_patch": "kernels/llama_cpp_q4_k_fused_four_row_rowmajor_avx2_v5.patch",
+    "single_independent_change": "For Q4_K 8x8 operations with ne11 == 4, bypass ggml_quantize_mat_t and call the ordinary Q8_K from_float converter independently for each row.",
+    "unchanged": [
+      "v3 exact-four-row GEMV arithmetic",
+      "v3 exact-four-row dispatch",
+      "all activation packing for row counts other than four",
+      "all non-Q4_K repack paths"
+    ]
+  },
+  "sequential_gates": {
+    "gate_1_backend": {
+      "reference_cases": 3,
+      "all_must_pass": true
+    },
+    "gate_2_ordinary_decode_canary": {
+      "prompts": 4,
+      "tokens_per_prompt": 32,
+      "control_vs_candidate_exact_tokens": true,
+      "candidate_zero_token_fraction_must_be_less_than": 0.01
+    },
+    "gate_3_real_model_four_row_graph": {
+      "samples_per_runtime": 14,
+      "minimum_candidate_over_control_speedup": 1.10
+    },
+    "gate_4_mtp3_canary": {
+      "prompts": 1,
+      "tokens_per_prompt": 96,
+      "control_vs_candidate_exact_tokens": true,
+      "candidate_draft_acceptance_must_equal_control": true
+    },
+    "gate_5_terminal_mtp3": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "minimum_candidate_over_control_accepted_tps": 1.05,
+      "maximum_target_only_tps_regression_fraction": 0.02,
+      "all_control_vs_candidate_exact_tokens": true
+    },
+    "gate_6_quality": {
+      "cute_quick_required_only_after_all_prior_gates_pass": true,
+      "candidate_must_match_q4_control_score_and_item_outputs": true
+    }
+  },
+  "stop_rules": [
+    "Stop before graph timing if backend or ordinary-decode parity fails.",
+    "Stop before the four-prompt MTP3 run if the first MTP3 prompt changes any committed token or draft acceptance count.",
+    "Reject if the real-model four-row graph speedup is below 1.10.",
+    "Reject if terminal MTP3 throughput improves by less than five percent.",
+    "Do not interpret a faster graph with invalid logits as a performance result."
+  ],
+  "claim_boundary": "A pass promotes one layout-coherent exact-four-row AVX2 verification kernel on four Milan cores. The trained approximation, broad quality, final-node, energy, 100 accepted tok/s, and novelty gates remain open."
+}
