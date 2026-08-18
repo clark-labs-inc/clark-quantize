@@ -316,6 +316,19 @@ def self_test(library: ctypes.CDLL) -> dict[str, object]:
         "x8_group": library.cq3_aff3_x8_group_size_v17(),
         "x16_group": library.cq3_aff3_x16_group_size_v17(),
     }
+    if sizes != {"row_group": 33, "x8_group": 264, "x16_group": 528}:
+        raise AssertionError("AFF3 runtime size contract changed")
+    return {
+        "schema": "qwen38_27b_affine_avx2_x16_native_correctness_v17",
+        "model": MODEL,
+        "runtime_sizes": sizes,
+        "runtime_compute_image_bpw_at_5120_columns": 2.06875,
+        "reserved_code_rejected": True,
+        "shapes": shape_results,
+        "passed": True,
+        "complete": True,
+        "terminal": True,
+    }
 
 
 def artifact_self_test(
@@ -413,21 +426,6 @@ def artifact_self_test(
         "complete": True,
         "terminal": True,
     }
-    if sizes != {"row_group": 33, "x8_group": 264, "x16_group": 528}:
-        raise AssertionError("AFF3 runtime size contract changed")
-    return {
-        "schema": "qwen38_27b_affine_avx2_x16_native_correctness_v17",
-        "model": MODEL,
-        "runtime_sizes": sizes,
-        "runtime_compute_image_bpw_at_5120_columns": 2.06875,
-        "reserved_code_rejected": True,
-        "shapes": shape_results,
-        "passed": True,
-        "complete": True,
-        "terminal": True,
-    }
-
-
 def timed_batch(run: Callable[[], None], inner_iterations: int) -> float:
     started = time.perf_counter_ns()
     for _ in range(inner_iterations):

@@ -124,6 +124,11 @@ def test_v17_x16_shares_activation_broadcasts_across_two_output_vectors() -> Non
 
 def test_v17_runner_enforces_correctness_stability_and_host_isolation() -> None:
     source = RUNNER.read_text()
+    self_test_body = source.split("def self_test(", 1)[1].split(
+        "def artifact_self_test(", 1
+    )[0]
+    assert '"schema": "qwen38_27b_affine_avx2_x16_native_correctness_v17"' in self_test_body
+    assert "return {" in self_test_body
     assert "pack_block203_rows" in source
     assert "unpack_block203_rows" in source
     assert "transcode_block203_rows_to_group128_2bit" in source

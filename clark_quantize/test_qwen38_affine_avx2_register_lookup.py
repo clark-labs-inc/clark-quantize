@@ -114,6 +114,7 @@ def test_v18_native_receipts_are_exact_and_authenticated() -> None:
     assert actual["v17_v18_output_bit_exact"] is True
     assert actual["baseline_output_sha256"] == actual["candidate_output_sha256"]
     assert build["timing_execution"]["infrastructure_valid"] is True
+    assert len(build["sha256"]["v17_runner_dependency"]) == 64
     assert build["claim_boundary"].startswith("Authenticated native primitive")
 
 
