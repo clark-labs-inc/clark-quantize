@@ -9,6 +9,9 @@ llama_build=${LLAMA_BUILD:-/workspace/build/llama.cpp}
 bf16_model=${BF16_MODEL:-/workspace/models/controls/Qwen3.8-27B-BF16.gguf}
 q4_model=${Q4_MODEL:-/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf}
 q3_model=${Q3_MODEL:-/workspace/models/controls/Qwen3.8-27B-Q3_K_M.gguf}
+quant_type=${QUANT_TYPE:-Q3_K_M}
+baseline_variant=${BASELINE_VARIANT:-q3_k_m}
+model_label=${MODEL_LABEL:-qwen38-q3-k-m-baseline-v1}
 run_dir=${RUN_DIR:-/workspace/quant-runs/qwen38-27b-q3-k-m-baseline-v1}
 state_dir=${STATE_DIR:-/workspace/quant-state/qwen38-27b-q3-k-m-baseline-v1}
 q4_quality_dir=${Q4_QUALITY_DIR:-/workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1}
@@ -19,7 +22,7 @@ pivot="$runtime_dir/qwen38_27b_cpu_throughput_pivot_v1.json"
 cute_manifest="$runtime_dir/cute_quick_v1.json"
 math_code_manifest="$runtime_dir/math_code_canary_v1.json"
 mmlu_manifest="$runtime_dir/qwen35_4b_cpu_layer30_mmlu_v1.json"
-server_unit=qwen38-q3-k-m-baseline-v1
+server_unit=$model_label
 
 bf16_bytes=53808281952
 bf16_sha=5a3eedc837bcbd1365cdbf5b71e698df3122e76586ba872f07ce3ed4a9bfa97e
@@ -115,25 +118,27 @@ if [[ ! -s "$q3_model" ]]; then
     exit 2
   fi
   /usr/bin/time -v "$llama_build/bin/llama-quantize" \
-    "$bf16_model" "$q3_model.partial" Q3_K_M 4 \
+    "$bf16_model" "$q3_model.partial" "$quant_type" 4 \
     > "$run_dir/quantize.log" 2>&1
   mv "$q3_model.partial" "$q3_model"
 fi
 q3_sha=$(sha256sum "$q3_model" | awk '{print $1}')
 q3_bytes=$(stat -c %s "$q3_model")
-"$python_bin" - "$state_dir" "$q3_model" "$q3_sha" "$q3_bytes" <<'PY'
+"$python_bin" - "$state_dir" "$q3_model" "$q3_sha" "$q3_bytes" "$quant_type" "$baseline_variant" <<'PY'
 import json
 import sys
 from pathlib import Path
 
-root, model, digest, size = Path(sys.argv[1]), sys.argv[2], sys.argv[3], int(sys.argv[4])
+root, model, digest, size, quant_type, variant = (
+    Path(sys.argv[1]), sys.argv[2], sys.argv[3], int(sys.argv[4]), sys.argv[5], sys.argv[6]
+)
 payload = {
-    "schema": "qwen38_27b_q3_k_m_materialization_v1",
+    "schema": f"qwen38_27b_{variant}_materialization_v1",
     "model": model,
     "model_sha256": digest,
     "model_bytes": size,
     "source_bf16_sha256": "5a3eedc837bcbd1365cdbf5b71e698df3122e76586ba872f07ce3ed4a9bfa97e",
-    "quantization": "Q3_K_M",
+    "quantization": quant_type,
     "threads": 4,
     "terminal": True,
 }
@@ -177,12 +182,12 @@ if [[ ! -e "$state_dir/QUICK_QUALITY_COMPLETE" ]]; then
       --chunks 4 --context 512 --threads 4 \
       --out "$state_dir/wikitext.json" > "$run_dir/wikitext.log" 2>&1
   fi
-  "$python_bin" - "$state_dir" "$q3_sha" "$q4_quality_dir/summary.json" <<'PY'
+  "$python_bin" - "$state_dir" "$q3_sha" "$q4_quality_dir/summary.json" "$baseline_variant" <<'PY'
 import json
 import sys
 from pathlib import Path
 
-root, model_sha, q4_path = Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3])
+root, model_sha, q4_path, variant = Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3]), sys.argv[4]
 cute = json.loads((root / "cute.json").read_text())
 math_code = json.loads((root / "math-code.json").read_text())
 wiki = json.loads((root / "wikitext.json").read_text())
@@ -197,7 +202,7 @@ checks = {
     "wikitext": ppl / q4["wikitext_ppl"] <= 1.10,
 }
 payload = {
-    "schema": "qwen38_27b_q3_k_m_quick_quality_v1",
+    "schema": f"qwen38_27b_{variant}_quick_quality_v1",
     "model_sha256": model_sha,
     "observed": {
         "cute_correct_of_20": cute_correct,
@@ -253,7 +258,7 @@ run_screen_row q4 "$q4_model" prefill
 run_screen_row q3 "$q3_model" prefill
 run_screen_row q3 "$q3_model" decode
 run_screen_row q4 "$q4_model" decode
-"$python_bin" - "$state_dir" "$q4_model" "$q3_model" "$q4_sha" "$q3_sha" <<'PY'
+"$python_bin" - "$state_dir" "$q4_model" "$q3_model" "$q4_sha" "$q3_sha" "$baseline_variant" <<'PY'
 import json
 import statistics
 import sys
@@ -262,6 +267,7 @@ from pathlib import Path
 root = Path(sys.argv[1])
 models = {"q4": str(Path(sys.argv[2]).resolve()), "q3": str(Path(sys.argv[3]).resolve())}
 hashes = {"q4": sys.argv[4], "q3": sys.argv[5]}
+variant = sys.argv[6]
 rows = {}
 for label in ("q4", "q3"):
     rows[label] = {}
@@ -285,7 +291,7 @@ checks = {
     "prefill_fraction_at_least_0_90": prefill_fraction >= 0.90,
 }
 payload = {
-    "schema": "qwen38_27b_q3_k_m_speed_screen_v1",
+    "schema": f"qwen38_27b_{variant}_speed_screen_v1",
     "models": {key: {"path": models[key], "sha256": hashes[key]} for key in models},
     "rows": rows,
     "decode_speedup_vs_q4": decode_speedup,
@@ -327,12 +333,12 @@ if [[ ! -s "$state_dir/mmlu.json" ]]; then
   cleanup
 fi
 
-"$python_bin" - "$state_dir" "$q3_sha" <<'PY'
+"$python_bin" - "$state_dir" "$q3_sha" "$quant_type" "$baseline_variant" <<'PY'
 import json
 import sys
 from pathlib import Path
 
-root, model_sha = Path(sys.argv[1]), sys.argv[2]
+root, model_sha, quant_type, variant = Path(sys.argv[1]), sys.argv[2], sys.argv[3], sys.argv[4]
 quick = json.loads((root / "quick-quality-summary.json").read_text())
 speed = json.loads((root / "speed-screen-summary.json").read_text())
 mmlu = json.loads((root / "mmlu.json").read_text())
@@ -343,7 +349,7 @@ checks = {
     "mmlu": mmlu_correct >= 49,
 }
 payload = {
-    "schema": "qwen38_27b_q3_k_m_baseline_summary_v1",
+    "schema": f"qwen38_27b_{variant}_baseline_summary_v1",
     "model_sha256": model_sha,
     "quick_quality": quick,
     "speed": speed,
@@ -351,7 +357,7 @@ payload = {
     "checks": checks,
     "pass": all(checks.values()),
     "terminal": True,
-    "claim_boundary": "Q3_K_M practical baseline only; not a Clark research breakthrough",
+    "claim_boundary": f"{quant_type} practical baseline only; not a Clark research breakthrough",
 }
 temporary = root / "summary.json.tmp"
 temporary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
