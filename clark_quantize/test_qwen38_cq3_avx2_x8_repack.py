@@ -8,6 +8,9 @@ REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREREG = RUNTIME / "qwen38_27b_cq3_avx2_x8_repack_v15.json"
 PATCH = RUNTIME / "kernels/llama_cpp_cq3_avx2_x8_repack_v15.patch"
+INTEGRATION_PATCH = (
+    RUNTIME / "kernels/llama_cpp_cq3_avx2_x8_repack_integration_v15.patch"
+)
 
 
 def test_v15_is_storage_neutral_and_qwen38_27b_only() -> None:
@@ -55,3 +58,12 @@ def test_v15_maps_vector_lanes_to_outputs_without_dense_weights() -> None:
     assert "ggml_repack_cq3_0_to_cq3_0x8" in source
     assert "_mm256_set1_epi32(values_word0)" in source
     assert "_mm256_storeu_ps(s + row, sumf)" in source
+
+
+def test_v15_integration_uses_persistent_repack_and_decode_gemv() -> None:
+    source = INTEGRATION_PATCH.read_text()
+    assert "repack<block_cq3_0, 8, 8>" in source
+    assert "gemv<block_cq3_0, 8, 8, GGML_TYPE_CQ8_0>" in source
+    assert "gemm<block_cq3_0, 8, 8, GGML_TYPE_CQ8_0>" in source
+    assert "ggml_repack_get_optimal_repack_type" in source
+    assert "ggml_cpu_has_avx2()" in source
