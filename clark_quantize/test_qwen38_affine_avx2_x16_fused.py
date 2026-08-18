@@ -130,6 +130,10 @@ def test_v17_runner_enforces_correctness_stability_and_host_isolation() -> None:
     assert "TIMED_BATCHES = 11" in source
     assert "median_absolute_deviation_fraction" in source
     assert "p90_over_p10_ratio" in source
+    assert '"artifact-self-test"' in source
+    assert "load_compressed_affine_tensor" in source
+    assert "actual affine canonical base-3 bytes changed" in source
+    assert "all_source_blobs_authenticated" in source
 
 
 def test_v17_native_correctness_receipt_passes_without_a_speed_claim() -> None:
@@ -139,6 +143,16 @@ def test_v17_native_correctness_receipt_passes_without_a_speed_claim() -> None:
     assert receipt["execution"]["timing_used_for_claim"] is False
     assert receipt["measurement"]["runtime_compute_image_bpw_at_5120_columns"] <= 2.06875
     assert receipt["checks"]["native_correctness_gate_passed"] is True
+    actual = receipt["actual_qwen_artifact"]
+    assert actual["tensor"].startswith("layers.0.")
+    assert actual["shape"] == [48, 5120]
+    assert actual["all_source_blobs_authenticated"] is True
+    assert actual["rotation_authenticated"] is True
+    assert actual["canonical_base3_reencoded_identically"] is True
+    assert actual["integer_dot_exact"] is True
+    assert actual["x8_x16_output_bit_exact"] is True
+    assert actual["maximum_scaled_float_error"] <= 0.0001
+    assert actual["passed"] is True
     assert max(
         shape["maximum_scaled_float_error"] for shape in receipt["measurement"]["shapes"]
     ) <= 0.0001

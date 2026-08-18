@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import ctypes
+import hashlib
 import json
 import math
 import os
@@ -18,6 +19,10 @@ from clark_quantize.ternary_cpu import (
     pack_block203_rows,
     transcode_block203_rows_to_group128_2bit,
     unpack_block203_rows,
+)
+from clark_quantize.qwen38_affine_artifact import (
+    load_compressed_affine_tensor,
+    verify_descriptor,
 )
 
 
@@ -311,6 +316,103 @@ def self_test(library: ctypes.CDLL) -> dict[str, object]:
         "x8_group": library.cq3_aff3_x8_group_size_v17(),
         "x16_group": library.cq3_aff3_x16_group_size_v17(),
     }
+
+
+def artifact_self_test(
+    library: ctypes.CDLL,
+    artifact_root: Path,
+    manifest_path: Path,
+) -> dict[str, object]:
+    manifest = json.loads(manifest_path.read_text())
+    if (
+        manifest.get("schema") != "qwen38_affine_butterfly_site_v1"
+        or manifest.get("complete") is not True
+        or manifest.get("terminal") is not True
+    ):
+        raise ValueError("actual affine site manifest is not terminal")
+    angles_path = artifact_root / manifest["angles"]["path"]
+    angles = angles_path.read_bytes()
+    if (
+        len(angles) != manifest["angles"]["bytes"]
+        or hashlib.sha256(angles).hexdigest() != manifest["angles"]["sha256"]
+    ):
+        raise ValueError("actual affine rotation failed authentication")
+    eligible = [
+        descriptor
+        for descriptor in manifest["tensors"]
+        if len(descriptor["shape"]) == 2
+        and descriptor["shape"][0] % 16 == 0
+        and descriptor["shape"][1] % GROUP_SIZE == 0
+    ]
+    if not eligible:
+        raise ValueError("actual affine site has no AFF3_X16-compatible tensor")
+    descriptor = min(eligible, key=lambda item: math.prod(item["shape"]))
+    verify_descriptor(artifact_root, descriptor)
+    compressed = load_compressed_affine_tensor(artifact_root, descriptor)
+    codes = np.ascontiguousarray(compressed.payload.codes.numpy(), dtype=np.int8)
+    rows, columns = codes.shape
+    groups = columns // GROUP_SIZE
+    alpha_indices = np.ascontiguousarray(compressed.alpha.indices, dtype=np.uint8)
+    mu_indices = np.ascontiguousarray(compressed.mu.indices, dtype=np.uint8)
+    indices = np.asarray(alpha_indices | (mu_indices << 4), dtype=np.uint8)
+    canonical = pack_block203_rows(codes)
+    if hashlib.sha256(canonical.tobytes()).hexdigest() != descriptor["codes"]["sha256"]:
+        raise AssertionError("actual affine canonical base-3 bytes changed")
+    source = row_major_image(codes, indices)
+    x8, x16 = repack(library, source, rows, groups)
+    params = (
+        np.ascontiguousarray(compressed.alpha.anchors, dtype=np.float16),
+        np.ascontiguousarray(compressed.mu.anchors, dtype=np.float16),
+        np.ascontiguousarray(compressed.alpha.values, dtype=np.float16),
+        np.ascontiguousarray(compressed.mu.values, dtype=np.float16),
+    )
+    values, scales, sums = activation(columns)
+    ordinary = np.empty(rows, dtype=np.float32)
+    output_x8 = np.empty(rows, dtype=np.float32)
+    output_x16 = np.empty(rows, dtype=np.float32)
+    call_gemv(library.cq3_aff3_gemv_ordinary_v17, source, params,
+        values, scales, sums, rows, columns, ordinary)
+    call_gemv(library.cq3_aff3_gemv_x8_v17, x8, params,
+        values, scales, sums, rows, columns, output_x8)
+    call_gemv(library.cq3_aff3_gemv_x16_v17, x16, params,
+        values, scales, sums, rows, columns, output_x16)
+    reference = scalar_reference(codes, indices, params, values, scales, sums)
+    if not np.array_equal(output_x8.view(np.uint32), output_x16.view(np.uint32)):
+        raise AssertionError("actual AFF3 x8/x16 outputs changed bits")
+    maximum_delta = max(scaled_delta(reference, output_x16), scaled_delta(ordinary, output_x16))
+    if maximum_delta > 0.0001 or not np.all(np.isfinite(output_x16)):
+        raise AssertionError("actual AFF3_X16 numerical gate failed")
+    debug_dots = np.empty(16, dtype=np.int32)
+    status = library.cq3_aff3_debug_dot_x16_v17(
+        x16[:528].ctypes.data,
+        pointer(values[:GROUP_SIZE], ctypes.c_int8),
+        int(sums[0]),
+        pointer(debug_dots, ctypes.c_int32),
+    )
+    expected_dots = codes[:16, :GROUP_SIZE].astype(np.int32) @ values[:GROUP_SIZE].astype(np.int32)
+    if status or not np.array_equal(debug_dots, expected_dots):
+        raise AssertionError("actual AFF3_X16 integer dot changed")
+    return {
+        "schema": "qwen38_27b_affine_avx2_x16_actual_artifact_correctness_v17",
+        "model": MODEL,
+        "artifact_root": str(artifact_root),
+        "manifest": str(manifest_path),
+        "manifest_repository_commit": manifest["repository_commit"],
+        "manifest_preregistration_sha256": manifest["preregistration_sha256"],
+        "tensor": descriptor["tensor"],
+        "shape": [rows, columns],
+        "canonical_codes_sha256": descriptor["codes"]["sha256"],
+        "all_source_blobs_authenticated": True,
+        "rotation_authenticated": True,
+        "canonical_base3_reencoded_identically": True,
+        "integer_dot_exact": True,
+        "x8_x16_bit_exact": True,
+        "maximum_scaled_float_error": maximum_delta,
+        "all_outputs_finite": True,
+        "passed": True,
+        "complete": True,
+        "terminal": True,
+    }
     if sizes != {"row_group": 33, "x8_group": 264, "x16_group": 528}:
         raise AssertionError("AFF3 runtime size contract changed")
     return {
@@ -436,10 +538,21 @@ def benchmark(library: ctypes.CDLL) -> dict[str, object]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--library", type=Path, required=True)
-    parser.add_argument("--mode", choices=("self-test", "benchmark"), required=True)
+    parser.add_argument(
+        "--mode", choices=("self-test", "artifact-self-test", "benchmark"), required=True
+    )
+    parser.add_argument("--artifact-root", type=Path)
+    parser.add_argument("--manifest", type=Path)
     args = parser.parse_args()
     library = load_library(args.library)
-    result = self_test(library) if args.mode == "self-test" else benchmark(library)
+    if args.mode == "self-test":
+        result = self_test(library)
+    elif args.mode == "artifact-self-test":
+        if args.artifact_root is None or args.manifest is None:
+            parser.error("artifact-self-test requires --artifact-root and --manifest")
+        result = artifact_self_test(library, args.artifact_root, args.manifest)
+    else:
+        result = benchmark(library)
     if not all(math.isfinite(value) for shape in result.get("shapes", [])
                for key, value in shape.items() if key == "maximum_scaled_float_error"):
         raise RuntimeError("non-finite AFF3 result")

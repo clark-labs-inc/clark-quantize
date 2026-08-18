@@ -21,7 +21,7 @@
   "build": {
     "command": "g++ -std=c++17 -O3 -DNDEBUG -march=znver3 -mavx2 -mf16c -mfma -fPIC -shared -Wall -Wextra -Werror qwen38_affine_avx2_x16_fused_v17.cpp -o libqwen38_affine_avx2_x16_v17.so",
     "source_sha256": "dbdc320d47401a889e3501f70882543e26723020ccdb9f447e20614f443338b3",
-    "runner_sha256": "b1140640ff0f7615c9befac33894e8d903f38bd717a4cfd7e26ccc7529e78672",
+    "runner_sha256": "8c7bb7fcfd82ed2ec6c2c284e65cde5355ea0b23ef7f0c82b416057e8991ed9a",
     "library_sha256": "09bea12c46475dd01867657927676ab6b9d628d071c07e0f2f064f35f9492f13",
     "remote_build_directory": "/workspace/build/qwen38-affine-avx2-x16-v17"
   },
@@ -72,6 +72,27 @@
       }
     ]
   },
+  "actual_qwen_artifact": {
+    "manifest": "/workspace/quant-runs/qwen38-affine-butterfly-blocks-v1/artifact/layers/0/sites/attention_input/manifest.json",
+    "manifest_repository_commit": "1e524a9eb48e223b259a4d3714afc765bb107dcd",
+    "manifest_preregistration_sha256": "8fa0b3159a0b6b7bdea1b00a0373b946a73e4ce0cd860bb303d1eb8ad3d63b09",
+    "tensor": "layers.0.linear_attn.in_proj_a.weight",
+    "shape": [
+      48,
+      5120
+    ],
+    "canonical_codes_sha256": "34581b913e3696f0d2095f4a295c9e05a773afd440b90141bc58f0d0aa954b9e",
+    "all_source_blobs_authenticated": true,
+    "rotation_authenticated": true,
+    "canonical_base3_reencoded_identically": true,
+    "integer_dot_exact": true,
+    "x8_x16_output_bit_exact": true,
+    "maximum_scaled_float_error": 1.2665987014770508e-07,
+    "all_outputs_finite": true,
+    "passed": true,
+    "complete": true,
+    "terminal": true
+  },
   "checks": {
     "artifact_and_repack_contract_met": true,
     "integer_trit_dot_exact": true,
@@ -79,7 +100,8 @@
     "decoded_alpha_and_mu_bit_exact": true,
     "maximum_scaled_float_error_0_0001_met": true,
     "all_outputs_finite": true,
-    "native_correctness_gate_passed": true
+    "native_correctness_gate_passed": true,
+    "actual_qwen_artifact_correctness_passed": true
   },
   "performance": {
     "ran": false,
