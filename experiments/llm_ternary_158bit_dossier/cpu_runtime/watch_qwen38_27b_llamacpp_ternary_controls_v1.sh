@@ -5,8 +5,8 @@ repo=${REPO:-/workspace/clark-quantize-tq-controls-v1}
 bundle=${BUNDLE:?BUNDLE must name the frozen TQ-controls bundle}
 bundle_branch=${BUNDLE_BRANCH:-refs/heads/codex/qwen38-base3-research}
 python_bin=${PYTHON_BIN:-/workspace/venvs/quant-cpu/bin/python}
-parent_unit=${PARENT_UNIT:-quant-qwen38-27b-binary-low-rank-residual-v1.service}
-parent_receipt=${PARENT_RECEIPT:-/workspace/quant-state/qwen38-27b-binary-low-rank-watch-v1/receipt.json}
+parent_unit=${PARENT_UNIT:-quant-qwen38-27b-activation-binary-mlp-v1.service}
+parent_receipt=${PARENT_RECEIPT:-/workspace/quant-state/qwen38-27b-activation-binary-mlp-watch-v1/receipt.json}
 state=${WATCH_STATE_DIR:-/workspace/quant-state/qwen38-27b-llamacpp-ternary-controls-watch-v1}
 result=${RESULT_RECEIPT:-/workspace/quant-state/qwen38-27b-llamacpp-ternary-controls-v1/receipt.json}
 runtime=experiments/llm_ternary_158bit_dossier/cpu_runtime
@@ -51,6 +51,7 @@ fi
 git rev-parse HEAD > "$state/repository.commit"
 date -u +%FT%TZ > "$state/started-at.txt"
 sha256sum \
+  "$runtime/qwen38_27b_materiality_priority_amendment_v2.json" \
   "$runtime/qwen38_27b_llamacpp_ternary_controls_preregistration_v1.json" \
   "$runtime/run_qwen38_27b_llamacpp_ternary_controls_v1.sh" \
   "$runtime/eval_qwen38_27b_llamacpp_ternary_control_v1.sh" \

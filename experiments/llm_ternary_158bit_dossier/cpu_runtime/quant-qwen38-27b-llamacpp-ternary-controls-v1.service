@@ -1,6 +1,6 @@
 [Unit]
 Description=Build and characterize complete Qwen3.8-27B llama.cpp ternary controls
-After=network-online.target quant-qwen38-27b-binary-low-rank-residual-v1.service
+After=network-online.target quant-qwen38-27b-activation-binary-mlp-v1.service
 Wants=network-online.target
 
 [Service]

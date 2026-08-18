@@ -1,0 +1,101 @@
+{
+  "schema": "qwen38_27b_activation_binary_mlp_preregistration_v1",
+  "status": "frozen_before_full_real_activation_run",
+  "frozen_at_utc": "2026-08-18T03:05:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "hypothesis": "A rank-40 binary-right correction with activation-calibrated exported INT4 left factors can materially improve the complete layer-0 gate-up-down MLP over an honest row-normalized fixed-support ternary control while retaining a projected complete component rate below 1.55 bits per weight.",
+  "scope": {
+    "layer": 0,
+    "tensors": [
+      "model.language_model.layers.0.mlp.gate_proj.weight",
+      "model.language_model.layers.0.mlp.up_proj.weight",
+      "model.language_model.layers.0.mlp.down_proj.weight"
+    ],
+    "target_parameters": 267386880,
+    "complete_gate_up_down_required": true,
+    "all_weight_rows_and_columns_required": true,
+    "sampled_weight_rows_forbidden": true,
+    "real_calibration_and_disjoint_validation_activations_required": true,
+    "qwen_4b_compute_forbidden": true
+  },
+  "parents": {
+    "binary_weight_gate_receipt": "/workspace/quant-state/qwen38-27b-binary-low-rank-v1.json",
+    "binary_weight_gate_must_pass": true,
+    "activation_cache_receipt": "/workspace/quant-state/qwen38-27b-layer0-mlp-activation-cache-v1.json",
+    "activation_cache_schema": "qwen38_27b_layer0_mlp_activation_cache_receipt_v1",
+    "activation_cache_contract": "Up to 256 calibration and 96 disjoint validation rows from the exact BF16 layer-0 prefix, with exact observed row counts authenticated by the cache receipt; no evaluation item enters either split"
+  },
+  "candidate": {
+    "representation": "Each matrix is exact-64-of-128 ternary with actual row-normalized 4-bit group-scale indices plus a signed per-row INT4 by binary-right rank-40 residual. Gate and up share one binary-right factor; down has one independent binary-right factor.",
+    "group_size": 128,
+    "nonzero_per_group": 64,
+    "rank": 40,
+    "activation_relative_ridge": 0.0001,
+    "weight_relative_ridge": 0.00001,
+    "down_randomized_pca_iterations": 2,
+    "down_alternating_iterations": 4,
+    "down_seed": 11631183,
+    "activation_training": "Freeze binary-right signs and FP16 scales from weight-space initialization, solve ridge-optimal left factors on calibration outputs, then export signed INT4 coefficients with one FP16 scale per output row.",
+    "down_target": "Fit the final residual against exact-parent MLP outputs while feeding the candidate SwiGLU intermediate, so the down correction must absorb both down-weight and upstream gate-up error.",
+    "projected_complete_mlp_parameters": 267386880,
+    "projected_complete_mlp_bytes": 51467840,
+    "projected_complete_mlp_bits_per_weight": 1.5398763020833333,
+    "storage_contract": "All fixed-support ternary indices, row anchors, four-bit scale indices, FP16 ratio codebooks, INT4 left codes, FP16 left scales, binary right signs, FP16 right scales, and per-component headers are counted."
+  },
+  "controls": {
+    "parent": "exact BF16 layer-0 MLP",
+    "direct": "the same three complete matrices using exact-64-of-128 ternary codes and the same actually decoded row-normalized 4-bit scales, without a residual factor",
+    "weight_space": "the frozen weight-space binary factors before activation recalibration",
+    "separation": "Calibration outputs may fit coefficients; only disjoint validation outputs enter promotion."
+  },
+  "gate": {
+    "required_full_tensors": 3,
+    "minimum_gate_up_validation_error_reduction_vs_direct": 0.02,
+    "minimum_down_weight_error_reduction_vs_direct": 0.03,
+    "minimum_full_mlp_validation_error_reduction_vs_direct": 0.05,
+    "maximum_full_mlp_validation_relative_rmse": 0.35,
+    "maximum_complete_mlp_bits_per_weight": 1.55,
+    "maximum_kernel_identity_error": 0.002
+  },
+  "decision_policy": [
+    "A parent weight-gate rejection creates a terminal skip and ends this exact rank-40 binary-right family.",
+    "A full-MLP activation rejection is terminal for this exact family and does not authorize a seed, rank, ridge, or threshold sweep.",
+    "A pass authorizes factor codec materialization and the frozen CUTE, MATH-500, code, MMLU, WikiText, and paired CPU runtime gates only.",
+    "Neither a weight-space pass nor an activation-space pass is a model-quality, whole-model, novelty, or breakthrough result."
+  ],
+  "resource_contract": {
+    "cpu_threads": 8,
+    "memory_max_bytes": 24000000000,
+    "swap_max_bytes": 0,
+    "minimum_free_disk_bytes": 10737418240,
+    "maximum_factor_artifacts": 1,
+    "no_concurrent_llama_or_qwen_training_process": true
+  },
+  "frozen_inputs": {
+    "module": {
+      "path": "clark_quantize/qwen38_activation_binary_mlp.py",
+      "sha256": "a5cb58519dec1977c8e6198743280416bd5ab780b542882acb91b547e29e96fa"
+    },
+    "module_tests": {
+      "path": "clark_quantize/test_qwen38_activation_binary_mlp.py",
+      "sha256": "fb810e40eb408632089f1dee798a0b26e07886fac83399c4d53500d855470a0b"
+    },
+    "preregistration_tests": {
+      "path": "clark_quantize/test_qwen38_activation_binary_preregistration.py",
+      "sha256": "fff055150fb5e2cea7af33ef8ec78844fde9d2acbd336d312717ccbedeb95455"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_activation_binary_mlp_v1.py",
+      "sha256": "2ccb88654e6531cea4c4caeddcb47776931eaa28d786c106133970be5ef5cdf0"
+    }
+  },
+  "interpretation": {
+    "weight_or_activation_loss_is_not_capability": true,
+    "component_rate_is_not_whole_model_rate": true,
+    "successful_fitting_is_not_promotion": true,
+    "infrastructure_invalid_is_neither_zero_nor_complete": true,
+    "breakthrough_claim_permitted": false
+  },
+  "claim_boundary": "Complete full-shape layer-0 MLP activation screen only; not a whole-model artifact, capability result, CPU throughput result, novelty result, or breakthrough."
+}

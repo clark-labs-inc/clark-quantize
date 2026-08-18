@@ -319,3 +319,24 @@ def test_qwen38_materiality_priority_runs_whole_model_gates_before_hash_side_lan
     )
     assert amendment["science_changed"] is False
     assert amendment["priority_sequence"][-1] == "complete 666-tensor row-scale gate"
+
+
+def test_qwen38_activation_binary_mlp_is_between_weight_screen_and_tq_controls() -> None:
+    activation_service = (
+        RUNTIME / "quant-qwen38-27b-activation-binary-mlp-v1.service"
+    ).read_text()
+    activation_watcher = (
+        RUNTIME / "watch_qwen38_27b_activation_binary_mlp_v1.sh"
+    ).read_text()
+    tq_service = (
+        RUNTIME / "quant-qwen38-27b-llamacpp-ternary-controls-v1.service"
+    ).read_text()
+    tq_watcher = (
+        RUNTIME / "watch_qwen38_27b_llamacpp_ternary_controls_v1.sh"
+    ).read_text()
+    assert "After=network-online.target quant-qwen38-27b-binary-low-rank-residual-v1.service" in activation_service
+    assert "Before=quant-qwen38-27b-llamacpp-ternary-controls-v1.service" in activation_service
+    assert "qwen38_27b_activation_binary_mlp_parent_rejection_skip_v1" in activation_watcher
+    assert "activation_cache_launched\": False" in activation_watcher
+    assert "After=network-online.target quant-qwen38-27b-activation-binary-mlp-v1.service" in tq_service
+    assert "qwen38-27b-activation-binary-mlp-watch-v1/receipt.json" in tq_watcher
