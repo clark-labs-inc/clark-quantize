@@ -1,0 +1,85 @@
+{
+  "schema": "qwen38_27b_attention_kv_q8_q4_k_rowmajor_result_v9",
+  "completed_at": "2026-08-18T15:24:00Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": false,
+  "candidate_promoted": false,
+  "decision": "reject_graph_retention_gate_before_mtp",
+  "checks": {
+    "artifact_valid": true,
+    "free_generation_noncollapsed_and_coherent": true,
+    "graph_speedup_over_control_at_least_1_20": true,
+    "graph_retains_at_least_0_98_of_all_q4_k_v7_speed": false,
+    "candidate_process_median_range_at_most_0_05": true,
+    "paired_serving_required": false,
+    "cute_quick_at_least_9_of_20": true,
+    "wikitext_required": false,
+    "mmlu_required": false,
+    "math500_required": false
+  },
+  "artifact": {
+    "candidate_sha256": "f483f94cf1b9f572aeb0dca48b45aa2fa540b1ba4597884d7658ec9fea71f421",
+    "candidate_bytes": 15690516832,
+    "bytes_saved": 3283353600,
+    "selected_tensor_count": 256,
+    "selected_weight_count": 6566707200,
+    "remaining_q8_tensor_count": 32,
+    "candidate_type_counts": {"F32": 353, "Q4_K": 449, "Q6_K": 17, "Q8_0": 32},
+    "nonselected_payloads_byte_identical": true
+  },
+  "transcode": {
+    "elapsed_seconds": 118,
+    "dry_run_selected_tensor_count": 256,
+    "dry_run_remaining_attention_kv_q8_tensor_count": 32,
+    "dry_run_stdout_sha256": "78cf9cdc8bec67e97d8a02a9e942aff3dac06fc4890eaab56e7d13914c517e9f",
+    "dry_run_stderr_sha256": "50664ab3e789c5b8ca5890a60ad5386f7cc7a45068c9ffa56db94c88a48388ba",
+    "stdout_sha256": "a51cb058ebc66e1f8c4a6f0b34456d177341ba8a70f47608000209b3d5058e73",
+    "stderr_sha256": "785beacaac1ee5087fab6b6d9fdb0ca6466a52d61331e7f82c08b0bbaa343813"
+  },
+  "free_generation": {
+    "prompts": 4,
+    "tokens_per_prompt": 96,
+    "total_tokens": 384,
+    "unique_token_ids": 205,
+    "zero_token_count": 0,
+    "coherent_outputs": true,
+    "target_tps_weighted_diagnostic": 2.1538293731609484
+  },
+  "real_model_four_token_graph": {
+    "unscored_warmup_processes_per_system": 1,
+    "measured_processes_per_system": 4,
+    "samples_per_process": 7,
+    "control_median_ns": 818941253,
+    "candidate_median_ns": 629521620,
+    "candidate_over_control_speedup": 1.3008945633987916,
+    "prior_all_q4_k_v7_median_ns": 598993944,
+    "candidate_over_all_q4_k_v7_speed_fraction": 0.9515065487345772,
+    "control_process_medians_ns": [820977343, 820337452, 817728472, 811042313],
+    "candidate_process_medians_ns": [616085146, 631940906, 630655396, 641174905],
+    "candidate_process_median_range_fraction": 0.039743121313212906
+  },
+  "quick_quality_diagnostic": {
+    "classification": "post-graph-rejection diagnostic required by the standing quick-eval practice; it does not override the graph rejection",
+    "cute_quick": {
+      "candidate_correct": 9,
+      "candidate_denominator": 20,
+      "control_correct": 9,
+      "blanket_q4_k_correct": 8,
+      "full_attention_q8_v8_correct": 10,
+      "task_correct": {"contains_char": 4, "ins_char": 1, "del_char": 2, "swap_char": 0, "sub_char": 2},
+      "candidate_sha256": "21cad29b2e60618b040a518eabf33fe9e32b0dde922c989ae5f8437e48e5fc04"
+    },
+    "wikitext": {"ran": false, "reason": "The graph retention gate had already failed."},
+    "mmlu": {"ran": false, "reason": "The graph retention gate had already failed."},
+    "math500": {"ran": false, "reason": "The graph retention gate had already failed."}
+  },
+  "provenance": {
+    "artifact_verification_sha256": "f2bab512508fd5dc3c72958965ffaf35b3d168a2fbc5a7816698c92f4c52ccd7",
+    "canary_summary_sha256": "07310373f2cb43ec2d455c99031c8306fe408deab2667f0abbc21456933dca80",
+    "graph_gate_sha256": "111b4408081298fec8cfedb06c2e81eb8ee50e9491d78624d0348195db0538c3"
+  },
+  "next_lane": "Use a held-out activation importance matrix to choose Q4_K scales for all 288 tensors, preserving the blanket format and n=4 kernel speed instead of retaining slow Q8 projections.",
+  "claim_boundary": "K/V-only Q8 restores control-level CUTE quality and gives a 30.1% graph gain over control, but retains only 95.2% of blanket-Q4_K graph speed versus the frozen 98% gate. It is rejected and does not establish serving speed, broad near-lossless quality, final-node behavior, energy gains, 100 accepted tok/s, novelty, or a breakthrough."
+}

@@ -120,6 +120,10 @@ RECURRENT_Q4_K_ATTENTION_Q8_V8_RECEIPT = (
 ATTENTION_KV_Q8_Q4_K_V9_PREREG = (
     RUNTIME / "qwen38_27b_attention_kv_q8_q4_k_rowmajor_v9.json"
 )
+ATTENTION_KV_Q8_Q4_K_V9_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_attention_kv_q8_q4_k_rowmajor_v9/terminal-decision.json"
+)
 IMATRIX_Q4_K_ROWMAJOR_V10_PREREG = (
     RUNTIME / "qwen38_27b_imatrix_q4_k_rowmajor_v10.json"
 )
@@ -420,6 +424,19 @@ def test_v10_calibrates_on_train_and_scores_on_held_out_data() -> None:
     assert serving["minimum_candidate_over_control_mtp3_tps"] >= 1.20
     quality = prereg["sequential_gates"]["gate_5_quality"]
     assert quality["minimum_candidate_correct"] >= 9
+
+
+def test_v9_recovers_control_cute_but_loses_too_much_kernel_speed() -> None:
+    receipt = json.loads(ATTENTION_KV_Q8_Q4_K_V9_RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["passed"] is False
+    assert receipt["artifact"]["remaining_q8_tensor_count"] == 32
+    graph = receipt["real_model_four_token_graph"]
+    assert graph["candidate_over_control_speedup"] > 1.30
+    assert graph["candidate_over_all_q4_k_v7_speed_fraction"] < 0.98
+    cute = receipt["quick_quality_diagnostic"]["cute_quick"]
+    assert cute["candidate_correct"] == 9
+    assert cute["candidate_denominator"] == 20
 
 
 def test_fused_patch_shares_q4_decode_and_preserves_row_accumulators() -> None:
