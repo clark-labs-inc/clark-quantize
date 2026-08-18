@@ -1,0 +1,195 @@
+diff --git a/ggml/src/ggml-cpu/quants.h b/ggml/src/ggml-cpu/quants.h
+--- a/ggml/src/ggml-cpu/quants.h
++++ b/ggml/src/ggml-cpu/quants.h
+@@ -65,6 +65,9 @@ void ggml_gemv_cq3_0x8_cq8_0(int n, float * GGML_RESTRICT s, const void * GGML_
+ void ggml_repack_cq3_0_to_cq3_0x16(const block_cq3_0 * GGML_RESTRICT src, block_cq3_0x16 * GGML_RESTRICT dst, int rows, int blocks_per_row);
+ void ggml_gemv_cq3_0x16_cq8_0(int n, float * GGML_RESTRICT s, const void * GGML_RESTRICT vx, const void * GGML_RESTRICT vy, int nr);
++size_t ggml_cq3_0p256_size(int rows, int blocks_per_row);
++void ggml_repack_cq3_0_to_cq3_0p256(const block_cq3_0 * GGML_RESTRICT src, void * GGML_RESTRICT dst, int rows, int blocks_per_row);
++void ggml_gemv_cq3_0p256_cq8_0(int n, float * GGML_RESTRICT s, const void * GGML_RESTRICT vx, const void * GGML_RESTRICT vy, int nr, int32_t * GGML_RESTRICT scratch);
+ 
+ void ggml_vec_dot_iq2_xxs_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const void * GGML_RESTRICT vx, size_t bx, const void * GGML_RESTRICT vy, size_t by, int nrc);
+diff --git a/ggml/src/ggml-cpu/arch/x86/quants.c b/ggml/src/ggml-cpu/arch/x86/quants.c
+--- a/ggml/src/ggml-cpu/arch/x86/quants.c
++++ b/ggml/src/ggml-cpu/arch/x86/quants.c
+@@ -1841,6 +1841,148 @@ void ggml_gemv_cq3_0x16_cq8_0(
+ #endif
+ }
+ 
++#define CQ3_AS_PANEL_ROWS 256
++#define CQ3_AS_SCALE_BYTES (CQ3_AS_PANEL_ROWS*sizeof(ggml_half))
++#define CQ3_AS_CHUNK_BYTES (CQ3_AS_PANEL_ROWS*4)
++#define CQ3_AS_PANEL_BYTES (CQ3_AS_SCALE_BYTES + 8*CQ3_AS_CHUNK_BYTES)
++
++size_t ggml_cq3_0p256_size(int rows, int blocks_per_row) {
++    assert(rows > 0 && rows % CQ3_AS_PANEL_ROWS == 0);
++    assert(blocks_per_row > 0);
++    return (size_t) rows*blocks_per_row*sizeof(block_cq3_0);
++}
++
++void ggml_repack_cq3_0_to_cq3_0p256(
++        const block_cq3_0 * GGML_RESTRICT src,
++        void * GGML_RESTRICT dst,
++        int rows,
++        int blocks_per_row) {
++    assert(rows > 0 && rows % CQ3_AS_PANEL_ROWS == 0);
++    assert(blocks_per_row > 0);
++    const int panels = rows/CQ3_AS_PANEL_ROWS;
++    uint8_t * GGML_RESTRICT output = dst;
++    for (int ib = 0; ib < blocks_per_row; ++ib) {
++        for (int group = 0; group < 2; ++group) {
++            for (int panel = 0; panel < panels; ++panel) {
++                uint8_t * panel_base = output +
++                        ((size_t) (ib*2 + group)*panels + panel)*CQ3_AS_PANEL_BYTES;
++                ggml_half * scales = (ggml_half *) panel_base;
++                uint8_t * codes = panel_base + CQ3_AS_SCALE_BYTES;
++                const int row_base = panel*CQ3_AS_PANEL_ROWS;
++                for (int row = 0; row < CQ3_AS_PANEL_ROWS; ++row) {
++                    scales[row] = src[(size_t) (row_base + row)*blocks_per_row + ib].d[group];
++                }
++                for (int chunk = 0; chunk < 8; ++chunk) {
++                    uint8_t * chunk_codes = codes + (size_t) chunk*CQ3_AS_CHUNK_BYTES;
++                    for (int row = 0; row < CQ3_AS_PANEL_ROWS; ++row) {
++                        const block_cq3_0 * in = src +
++                                (size_t) (row_base + row)*blocks_per_row + ib;
++                        memcpy(chunk_codes + row*4, in->qs + group*32 + chunk*4, 4);
++                    }
++                }
++            }
++        }
++    }
++}
++
++#if defined(__AVX2__)
++static inline __m256i ggml_cq3_p256_chunk_dot_v20(
++        const __m256i packed,
++        const __m256i values0,
++        const __m256i values1,
++        const __m256i values2,
++        const __m256i values3,
++        const __m256i mask,
++        const __m256i ones) {
++    const __m256i digits0 = _mm256_and_si256(packed, mask);
++    const __m256i digits1 = _mm256_and_si256(_mm256_srli_epi16(packed, 2), mask);
++    const __m256i digits2 = _mm256_and_si256(_mm256_srli_epi16(packed, 4), mask);
++    const __m256i digits3 = _mm256_and_si256(_mm256_srli_epi16(packed, 6), mask);
++    const __m256i products01 = _mm256_add_epi16(
++            _mm256_maddubs_epi16(digits0, values0),
++            _mm256_maddubs_epi16(digits1, values1));
++    const __m256i products23 = _mm256_add_epi16(
++            _mm256_maddubs_epi16(digits2, values2),
++            _mm256_maddubs_epi16(digits3, values3));
++    return _mm256_madd_epi16(_mm256_add_epi16(products01, products23), ones);
++}
++#endif
++
++void ggml_gemv_cq3_0p256_cq8_0(
++        int n,
++        float * GGML_RESTRICT s,
++        const void * GGML_RESTRICT vx,
++        const void * GGML_RESTRICT vy,
++        int nr,
++        int32_t * GGML_RESTRICT scratch) {
++    assert(n % QK_CQ3_0 == 0);
++    assert(nr > 0 && nr % CQ3_AS_PANEL_ROWS == 0);
++    assert(scratch != NULL);
++#if defined(__AVX2__)
++    const uint8_t * GGML_RESTRICT x = vx;
++    const block_cq8_0 * GGML_RESTRICT y = vy;
++    const int nb = n/QK_CQ3_0;
++    const int panels = nr/CQ3_AS_PANEL_ROWS;
++    const __m256i mask = _mm256_set1_epi8(3);
++    const __m256i ones = _mm256_set1_epi16(1);
++    memset(s, 0, (size_t) nr*sizeof(float));
++    for (int ib = 0; ib < nb; ++ib) {
++        for (int group = 0; group < 2; ++group) {
++            const block_cq8_0 * activation = y + 2*ib + group;
++            for (int panel = 0; panel < panels; ++panel) {
++                const uint8_t * panel_base = x +
++                        ((size_t) (ib*2 + group)*panels + panel)*CQ3_AS_PANEL_BYTES;
++                const ggml_half * scales = (const ggml_half *) panel_base;
++                const uint8_t * codes = panel_base + CQ3_AS_SCALE_BYTES;
++                memset(scratch, 0, CQ3_AS_PANEL_ROWS*sizeof(int32_t));
++                for (int chunk = 0; chunk < 8; ++chunk) {
++                    int32_t values_word0, values_word1, values_word2, values_word3;
++                    memcpy(&values_word0, activation->qs + chunk*4 +  0, 4);
++                    memcpy(&values_word1, activation->qs + chunk*4 + 32, 4);
++                    memcpy(&values_word2, activation->qs + chunk*4 + 64, 4);
++                    memcpy(&values_word3, activation->qs + chunk*4 + 96, 4);
++                    const __m256i values0 = _mm256_set1_epi32(values_word0);
++                    const __m256i values1 = _mm256_set1_epi32(values_word1);
++                    const __m256i values2 = _mm256_set1_epi32(values_word2);
++                    const __m256i values3 = _mm256_set1_epi32(values_word3);
++                    const uint8_t * chunk_codes = codes + (size_t) chunk*CQ3_AS_CHUNK_BYTES;
++                    for (int row = 0; row < CQ3_AS_PANEL_ROWS; row += 8) {
++                        const __m256i packed = _mm256_loadu_si256(
++                                (const __m256i *) (chunk_codes + row*4));
++                        __m256i accumulator = _mm256_loadu_si256(
++                                (const __m256i *) (scratch + row));
++                        accumulator = _mm256_add_epi32(accumulator,
++                                ggml_cq3_p256_chunk_dot_v20(
++                                        packed, values0, values1, values2, values3, mask, ones));
++                        _mm256_storeu_si256((__m256i *) (scratch + row), accumulator);
++                    }
++                }
++                const __m256i activation_sum = _mm256_set1_epi32(activation->sum);
++                const __m256 activation_scale = _mm256_set1_ps(activation->d);
++                const int output_base = panel*CQ3_AS_PANEL_ROWS;
++                for (int row = 0; row < CQ3_AS_PANEL_ROWS; row += 8) {
++                    const __m256i accumulator = _mm256_sub_epi32(
++                            _mm256_loadu_si256((const __m256i *) (scratch + row)),
++                            activation_sum);
++                    const __m256 block_scales = _mm256_mul_ps(
++                            _mm256_cvtph_ps(_mm_loadu_si128((const __m128i *) (scales + row))),
++                            activation_scale);
++                    __m256 output = _mm256_loadu_ps(s + output_base + row);
++#if defined(__FMA__)
++                    output = _mm256_fmadd_ps(
++                            _mm256_cvtepi32_ps(accumulator), block_scales, output);
++#else
++                    output = _mm256_add_ps(output,
++                            _mm256_mul_ps(_mm256_cvtepi32_ps(accumulator), block_scales));
++#endif
++                    _mm256_storeu_ps(s + output_base + row, output);
++                }
++            }
++        }
++    }
++#else
++    UNUSED(n);
++    UNUSED(s);
++    UNUSED(vx);
++    UNUSED(vy);
++    UNUSED(nr);
++    UNUSED(scratch);
++    GGML_ABORT("CQ3_0P256 requires AVX2");
++#endif
++}
++
+ #if defined(__AVX2__)
+ static inline __m256i ggml_cq3_dot_group_x86(
+diff --git a/tests/test-cq3.cpp b/tests/test-cq3.cpp
+--- a/tests/test-cq3.cpp
++++ b/tests/test-cq3.cpp
+@@ -176,6 +176,7 @@ static void test_x86_paired_gemv() {
+ #include "qwen38_27b_cq3_x8_repack_bench_v15.inc"
+ #include "qwen38_27b_cq3_x16_repack_bench_v16.inc"
+ #include "qwen38_27b_cq3_x16_paired_bench_v19.inc"
++#include "qwen38_27b_cq3_activation_stationary_p256_bench_v20.inc"
+ 
+ int main() {
+@@ -187,6 +188,7 @@ int main() {
+     test_x86_paired_gemv();
+     test_x86_cq3_x8_repack();
+     test_x86_cq3_x16_repack();
++    test_x86_cq3_activation_stationary_p256();
+ #endif
+@@ -199,5 +201,8 @@ int main() {
+     if (std::getenv("CLARK_QWEN38_27B_CQ3_X16_PAIRED_V19") != nullptr) {
+         run_qwen38_27b_cq3_x16_paired_confirmation_v19();
+     }
++    if (std::getenv("CLARK_QWEN38_27B_CQ3_P256_V20") != nullptr) {
++        run_qwen38_27b_cq3_activation_stationary_p256_v20();
++    }
+     return 0;
+ }

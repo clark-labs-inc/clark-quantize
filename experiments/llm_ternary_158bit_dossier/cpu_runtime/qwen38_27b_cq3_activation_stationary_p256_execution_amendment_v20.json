@@ -1,0 +1,37 @@
+{
+  "schema": "qwen38_27b_cq3_activation_stationary_p256_execution_amendment_v20",
+  "experiment_id": "qwen38_27b_cq3_activation_stationary_p256_v20",
+  "frozen_at": "2026-08-18T21:14:59Z",
+  "parent_preregistration": "qwen38_27b_cq3_activation_stationary_p256_v20.json",
+  "parent_preregistration_commit": "b61a5e1",
+  "purpose": "Authenticate the implementation and benchmark harness before any candidate timing. This amendment changes no layout, panel size, arithmetic, workload, statistic, threshold, or stop rule.",
+  "implementation": {
+    "candidate_patch": "kernels/llama_cpp_cq3_activation_stationary_p256_v20.patch",
+    "candidate_patch_sha256": "f98753e4d1f6a1f389a04b70a9071beb18b7e313fdfea9d281d6d00163d4e3d5",
+    "benchmark_harness": "kernels/qwen38_27b_cq3_activation_stationary_p256_bench_v20.inc",
+    "benchmark_harness_sha256": "3b354fd59cb4ec4814f1d7b36bfc5a6b043657dce6add6c4ceed26e37287e6d2",
+    "source_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "required_parent_patches": [
+      "llama_cpp_cq3_avx2_x8_repack_v15.patch",
+      "llama_cpp_cq3_avx2_x16_repack_v16.patch"
+    ],
+    "candidate_environment_variable": "CLARK_QWEN38_27B_CQ3_P256_V20=1"
+  },
+  "pre_execution_checks": {
+    "repository_contract_tests_passed": 5,
+    "repository_contract_tests_denominator": 5,
+    "json_valid": true,
+    "diff_check_clean": true,
+    "native_build_required_before_timing": true,
+    "untimed_native_correctness_required_before_timing": true,
+    "candidate_library_and_test_binary_hashes_must_be_recorded": true
+  },
+  "immutability": {
+    "rows_per_panel": 256,
+    "measured_pairs_per_comparison": 21,
+    "minimum_median_x8_over_candidate_pairwise_ratio": 1.1,
+    "minimum_median_ordinary_over_candidate_pairwise_ratio": 1.43,
+    "maximum_pairwise_ratio_mad_fraction": 0.03,
+    "changes_after_candidate_timing_forbidden": true
+  }
+}
