@@ -1,0 +1,102 @@
+{
+  "schema": "qwen38_27b_materiality_priority_amendment_v4",
+  "frozen_at_utc": "2026-08-18T04:46:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "scope": "research admission, sequencing, and stop policy",
+  "directive": "Do not let narrow codec, sampled-row, isolated-kernel, or benchmark-plumbing work displace experiments capable of moving the whole-model quality-storage-CPU Pareto frontier.",
+  "current_gate": {
+    "experiment": "authenticated whole-text-model llama.cpp TQ1_0 and TQ2_0 controls",
+    "why_material": "establishes complete artifact bytes, catastrophic-forgetting behavior, and CPU control throughput on the exact 26895998464-parameter text graph",
+    "next": "complete the exact 851-tensor text-row storage gate"
+  },
+  "admission_policy_after_current_gate": {
+    "required_full_target": {
+      "parameters": 26895998464,
+      "tensors": 851,
+      "model_only": "Qwen/Qwen3.8-27B",
+      "qwen_4b_compute_forbidden": true
+    },
+    "a_new_scientific_lane_must_have_all": [
+      "a written algebraic representation that covers every text-graph linear family",
+      "an honest projected file rate including codes scales offsets rotations retained tensors indexes headers alignment and metadata",
+      "a CPU execution algebra that does not require materializing BF16 or FP16 weights",
+      "a model-level quality recovery mechanism based on real disjoint calibration and validation activations",
+      "a single preregistered falsification gate followed by scale-up or termination rather than parameter-sweep proliferation"
+    ],
+    "pilot_minimum_scope": "complete attention and MLP blocks at early middle and late depth, including every linear family and held-out block-output error",
+    "forbidden_as_standalone_next_steps": [
+      "sampled weight rows",
+      "one tensor reconstruction loss",
+      "synthetic-only microkernels",
+      "new radix packing variants without a quality-qualified whole-model consumer",
+      "new hash routing variants below complete-block scope",
+      "teacher-forced loss without free-generation capability evaluation"
+    ]
+  },
+  "primary_big_bet": {
+    "name": "activation-metric asymmetric ternarization with structured orthogonal tri-modal shaping",
+    "whole_model_hypothesis": "A shared or absorbable structured orthogonal geometry plus calibration-metric ternary relocation can make the complete Qwen3.8-27B text graph quality-viable near the base-3 storage limit while preserving a fused CPU execution path.",
+    "external_starting_point": {
+      "paper": "TWLA: Achieving Ternary Weights and Low-Bit Activations for LLMs via Post-Training Quantization",
+      "arxiv": "2606.13054v2",
+      "upstream_repository": "https://github.com/Kishon-zzx/TWLA",
+      "audited_commit": "805cbb9887c66fb894f88935e2bcfd5399f384a5",
+      "relevant_components": [
+        "E2M-ATQ calibration-metric asymmetric ternary relocation",
+        "KOTMS Kronecker orthogonal tri-modal shaping",
+        "inter-layer error interaction rather than independent per-layer promotion"
+      ],
+      "not_accepted_as_evidence": [
+        "the upstream Qwen3-8B example requests four GPUs and is not a CPU resource receipt",
+        "the upstream save_quantized_model path writes a PyTorch state_dict rather than a packed 1.58-bit artifact",
+        "the upstream rotation factors means scales masks and mixed ternary orders require independent byte accounting",
+        "the upstream code does not provide Clark's native packed CPU graph or paired tokens-per-second evidence"
+      ]
+    },
+    "falsification_gate": {
+      "scope": "complete blocks at layers 0 32 and 63 from the authenticated BF16 parent",
+      "minimum_heldout_block_output_error_reduction_vs_direct_ternary": 0.30,
+      "maximum_projected_complete_text_file_bits_per_parameter": 1.70,
+      "maximum_projected_rotation_and_auxiliary_bits_per_parameter": 0.10,
+      "requires_better_result_on_each_selected_block": true,
+      "next_if_passed": "one restartable 64-layer sequential whole-model conversion followed immediately by CUTE MATH code WikiText MMLU and paired CPU runtime",
+      "next_if_rejected": "terminate the family without threshold rotation-rank layer or calibration-item tuning"
+    }
+  },
+  "conditional_original_big_bet": {
+    "name": "shared activation-subspace correction",
+    "relationship_to_clark_hash": "Reuse sparse signed Johnson-Lindenstrauss geometry only to form one shared cheap activation sketch; store a low-bit layer correction whose runtime algebra is T*x plus A*(S*x).",
+    "admission_condition": "run only if the primary rotation and activation-metric gate leaves concentrated held-out error aligned with a low-dimensional activation subspace",
+    "minimum_complete_block_validation_error_reduction": 0.30,
+    "maximum_added_complete_text_bits_per_parameter": 0.10,
+    "maximum_projected_cpu_time_fraction": 0.10,
+    "scope_rule": "three complete representative blocks in one attempt; no sampled-row or routing sweeps",
+    "novelty_boundary": "Clark Hash itself is an embedding sketch and supplies no theorem that a transformer layer output is semi-losslessly preserved. Any such claim requires new model evidence and bounds."
+  },
+  "runtime_big_bet": {
+    "start_condition": "a complete representation passes capability and honest-storage gates",
+    "implementation": "one native packed format and fused ternary GEMV path covering the complete runnable graph",
+    "minimum_paired_end_to_end_speedup": 1.15,
+    "minimum_speedup_for_every_authoritative_pair": 1.0,
+    "measurements": [
+      "single-token decode",
+      "prompt prefill",
+      "resident memory",
+      "cold and warm load",
+      "energy and cost per generated token"
+    ],
+    "microkernel_policy": "isolated kernels are permitted only to remove a profiler-proven whole-graph bottleneck and cannot promote independently"
+  },
+  "global_stop_rules": [
+    "one terminal rejection closes a hypothesis family unless a new mathematical mechanism changes the preregistered prediction",
+    "no benchmark denominator may shrink after malformed output or server failure",
+    "infrastructure-invalid work remains neither zero nor scientific completion",
+    "no storage claim may use nominal payload bits while omitting auxiliary bytes",
+    "no breakthrough claim may precede a runnable whole-model artifact and paired quality-adjusted CPU evidence"
+  ],
+  "supersedes": {
+    "document": "qwen38_27b_materiality_priority_amendment_v3",
+    "change": "retain its exact text-graph scope and current queue, then impose a strict whole-model admission and one-shot stop policy on all successor research"
+  },
+  "claim_boundary": "Research strategy and admission policy only; no model quality, storage, runtime, novelty, or breakthrough result."
+}
