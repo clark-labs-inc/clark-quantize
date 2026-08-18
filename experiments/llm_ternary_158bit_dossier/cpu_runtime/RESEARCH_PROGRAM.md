@@ -24,6 +24,37 @@ This changes the order of work. The runtime contract is fixed before another
 large QAT run. Training must learn the exact scales, activation rounding,
 continuous islands, and tensor layouts that the CPU kernels execute.
 
+### Materiality filter
+
+The program does not continue an isolated codec, loader, or microkernel lane
+after its blocking contract is established. New work must have a credible path
+to changing at least one full-model axis by a material amount: capability at a
+fixed honest rate, complete artifact size, end-to-end CPU prefill/decode, peak
+RSS, or energy per token. Synthetic kernels remain diagnostics, never the main
+research loop.
+
+The next approximation family after the frozen Clark-Hash screen is therefore
+not another sampled route tweak. It is a complete layer-0 gate/up experiment:
+
+```text
+W ~= T + A C
+```
+
+`T` is the exact-support ternary CPU matrix, `A` is a row-scaled INT4 left
+factor, and `C` is one FP16 scale per rank coordinate times binary signs. Gate
+and up share `C`, so its storage and activation projection are paid once. At
+rank 40, the authenticated structural projection for both complete 17,408 x
+5,120 matrices is about 1.5465 bits/weight. A pass advances directly to real
+activations, the down projection, native graph materialization, and capability
+gates. A rejection ends this exact family rather than opening a seed sweep.
+
+Low-rank-plus-quantized decompositions, activation-aware SVD, fused low-rank
+branches, and ternary factorization all have prior art (including LQ-LoRA,
+ASVD, SVDQuant, and ExTernD). The research question here is narrower: whether
+a globally budgeted residual branch can preserve Qwen3.8-27B capability near
+1.58 total bits/parameter while improving CPU inference. Novelty remains
+unproven until a literature audit and full reproducible Pareto result agree.
+
 ## Decisions already made
 
 1. **Two representations, one set of codes.** The canonical artifact uses
