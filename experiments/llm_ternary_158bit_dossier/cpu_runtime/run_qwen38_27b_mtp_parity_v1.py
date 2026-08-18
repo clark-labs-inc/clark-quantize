@@ -143,6 +143,8 @@ def server_command(args: argparse.Namespace, width: int, port: int) -> list[str]
                 "draft-mtp",
                 "--spec-draft-n-max",
                 str(width),
+                "--spec-draft-p-min",
+                str(args.draft_p_min),
                 "-td",
                 str(args.threads),
                 "-tbd",
@@ -373,6 +375,7 @@ def summarize(args: argparse.Namespace, widths: list[int]) -> dict[str, Any]:
             "context": args.context,
             "batch": args.batch,
             "ubatch": args.ubatch,
+            "draft_p_min": args.draft_p_min,
         },
         "generation": {
             "prompt_count": len(PROMPTS),
@@ -401,6 +404,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch", type=int, default=128)
     parser.add_argument("--ubatch", type=int, default=64)
     parser.add_argument("--port-base", type=int, default=18100)
+    parser.add_argument("--draft-p-min", type=float, default=0.0)
     parser.add_argument("--load-timeout", type=float, default=180.0)
     parser.add_argument("--request-timeout", type=float, default=180.0)
     return parser.parse_args()
@@ -411,6 +415,8 @@ def main() -> int:
     widths = [int(part) for part in args.widths.split(",")]
     if not widths or widths[0] != 0 or any(width < 0 for width in widths):
         raise ValueError("widths must start with target width 0 and be non-negative")
+    if not 0.0 <= args.draft_p_min <= 1.0:
+        raise ValueError("draft-p-min must be between 0 and 1")
     for path in (args.server, args.target, args.draft):
         if not path.is_file():
             raise FileNotFoundError(path)

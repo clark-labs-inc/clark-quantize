@@ -50,6 +50,9 @@ def test_mtp_runner_reports_parity_acceptance_and_weighted_speed() -> None:
     assert "target_calls = accepted_decode_tokens - draft_accepted" in source
     assert '"mean_committed_tokens_per_target_call"' in source
     assert '"minimum_weight_bandwidth_bytes_per_second_at_100_tps"' in source
+    assert '"--spec-draft-p-min"' in source
+    assert '"draft_p_min": args.draft_p_min' in source
+    assert "0.0 <= args.draft_p_min <= 1.0" in source
 
 
 def test_mtp_receipt_preserves_exact_parity_and_100_tps_roofline() -> None:
