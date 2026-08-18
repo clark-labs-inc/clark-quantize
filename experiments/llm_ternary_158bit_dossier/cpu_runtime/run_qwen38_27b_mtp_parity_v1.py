@@ -268,9 +268,16 @@ def summarize(args: argparse.Namespace, widths: list[int]) -> dict[str, Any]:
         label = "target" if width == 0 else f"mtp{width}"
         receipts = load_prompt_receipts(args.output_dir, label)
         timings = [receipt["response"]["timings"] for receipt in receipts]
-        predicted_tokens = sum(int(timing["predicted_n"]) for timing in timings)
+        output_tokens = sum(int(timing["predicted_n"]) for timing in timings)
+        # llama-server produces the first output token during prompt eval. Its
+        # reported decode timing covers the remaining predicted_n - 1 tokens.
+        # Keep that TTFT token out of the decode numerator so the weighted value
+        # matches the runtime's per-prompt predicted_per_second convention.
+        accepted_decode_tokens = sum(
+            int(timing["predicted_n"]) - 1 for timing in timings
+        )
         predicted_seconds = sum(float(timing["predicted_ms"]) for timing in timings) / 1000.0
-        weighted_tps = predicted_tokens / predicted_seconds
+        weighted_tps = accepted_decode_tokens / predicted_seconds
         parity = [
             receipt["response"]["tokens"] == expected
             for receipt, expected in zip(receipts, target_tokens)
@@ -284,13 +291,29 @@ def summarize(args: argparse.Namespace, widths: list[int]) -> dict[str, Any]:
         draft_accepted = sum(
             int(timing.get("draft_n_accepted", 0)) for timing in timings
         )
+        # Every target verification commits one target-sampled token in addition
+        # to any accepted draft prefix. This identity makes target-call
+        # amortization observable without relying on a private runtime counter.
+        target_calls = accepted_decode_tokens - draft_accepted
+        target_bytes_per_accepted_token = (
+            args.target.stat().st_size * target_calls / accepted_decode_tokens
+        )
+        draft_bytes_per_accepted_token = (
+            args.draft.stat().st_size * draft_n / accepted_decode_tokens
+            if width
+            else 0.0
+        )
+        streamed_weight_bytes_per_accepted_token = (
+            target_bytes_per_accepted_token + draft_bytes_per_accepted_token
+        )
         configurations.append(
             {
                 "configuration": label,
                 "draft_width": width,
                 "prompt_token_parity": parity,
                 "exact_token_parity": config_parity,
-                "accepted_tokens": predicted_tokens,
+                "output_tokens_including_prompt_eval_token": output_tokens,
+                "accepted_decode_tokens": accepted_decode_tokens,
                 "accepted_tokens_per_second_weighted": weighted_tps,
                 "accepted_tokens_per_second_median_prompt": statistics.median(
                     float(timing["predicted_per_second"]) for timing in timings
@@ -299,6 +322,22 @@ def summarize(args: argparse.Namespace, widths: list[int]) -> dict[str, Any]:
                 "draft_n_accepted": draft_accepted,
                 "draft_acceptance_fraction": (
                     draft_accepted / draft_n if draft_n else None
+                ),
+                "estimated_target_verification_calls": target_calls,
+                "mean_committed_tokens_per_target_call": (
+                    accepted_decode_tokens / target_calls
+                ),
+                "target_weight_bytes_per_accepted_token_lower_bound": (
+                    target_bytes_per_accepted_token
+                ),
+                "draft_weight_bytes_per_accepted_token_lower_bound": (
+                    draft_bytes_per_accepted_token
+                ),
+                "combined_weight_bytes_per_accepted_token_lower_bound": (
+                    streamed_weight_bytes_per_accepted_token
+                ),
+                "minimum_weight_bandwidth_bytes_per_second_at_100_tps": (
+                    streamed_weight_bytes_per_accepted_token * 100.0
                 ),
                 "server_log_sha256": sha256_file(
                     args.output_dir / label / "server.log"

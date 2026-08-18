@@ -45,3 +45,7 @@ def test_mtp_runner_reports_parity_acceptance_and_weighted_speed() -> None:
     assert '"draft_n_accepted": draft_accepted' in source
     assert '"accepted_tokens_per_second_weighted": weighted_tps' in source
     assert '"accepted_decode_speedup_vs_target"' in source
+    assert 'int(timing["predicted_n"]) - 1' in source
+    assert "target_calls = accepted_decode_tokens - draft_accepted" in source
+    assert '"mean_committed_tokens_per_target_call"' in source
+    assert '"minimum_weight_bandwidth_bytes_per_second_at_100_tps"' in source
