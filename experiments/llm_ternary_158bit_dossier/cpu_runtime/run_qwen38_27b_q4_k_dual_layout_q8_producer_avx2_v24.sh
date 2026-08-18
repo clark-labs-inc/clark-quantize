@@ -58,7 +58,7 @@ require_sha256 "$execution_amendment" 9cb82f44ff82d8676de9b34b163d2ccd506a29bf7c
 require_sha256 "$candidate_patch" 0c0a8242adc3b1a4a912d8211ad16d42ae28c8004047a4f89733ae0e72a14704
 require_sha256 "$property_test" 17698f7333ff9486274f22c9bb9bebbc3f0d7a8fccd4d6c1e719b0c24e0575e7
 require_sha256 "$microbenchmark" 98e243c56ad79855faea4dd8d2c27577ee9bd4c5becf2017e9574ec1826c178b
-require_sha256 "$summarizer" b5e462be880a0fc4094214fab4eb5d02d4b5e8e40c0bcc3c91a7f6082bd5f506
+require_sha256 "$summarizer" 3bb345d22bcf125cbd28b438159588e0e600f3da127eab3f58a12b0f8ea92ee8
 require_sha256 "$target" 31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34
 test "$(git -C "$candidate_source" rev-parse HEAD)" = 4df29be4f4c3673f428170fda944a5b19f743bb8
 git -C "$candidate_source" diff --check

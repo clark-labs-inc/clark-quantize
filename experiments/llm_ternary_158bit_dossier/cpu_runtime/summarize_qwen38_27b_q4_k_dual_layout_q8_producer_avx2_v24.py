@@ -121,6 +121,12 @@ def main() -> int:
     widths = [int(row["width"]) for row in micro["widths"]]
     if widths != [2048, 4096, 8192, 16384]:
         raise ValueError(f"microbenchmark widths changed: {widths}")
+    micro_candidate_mad_fractions = {
+        str(row["width"]): mad_fraction(
+            [float(value) for value in row["dual_ns_per_call"]]
+        )
+        for row in micro["widths"]
+    }
 
     parent = load_pairs(args.state, "parent", "v21")
     control = load_pairs(args.state, "control", "control")
@@ -157,6 +163,9 @@ def main() -> int:
             and len(row["dual_ns_per_call"]) == 31
             for row in micro["widths"]
         ),
+        "micro_candidate_mad_at_most_0_03_each_width": all(
+            value <= 0.03 for value in micro_candidate_mad_fractions.values()
+        ),
         "v21_over_v24_graph_at_least_1_05": parent["paired_ratio_median"] >= 1.05,
         "control_over_v24_graph_at_least_1_18": control["paired_ratio_median"] >= 1.18,
         "candidate_process_median_mad_at_most_0_03": (
@@ -182,6 +191,7 @@ def main() -> int:
             "candidate_graph_processes_total": 12,
         },
         "microbenchmark": micro,
+        "micro_candidate_mad_fraction_by_width": micro_candidate_mad_fractions,
         "parent_v21_comparison": parent,
         "promoted_control_comparison": control,
         "candidate_process_median_mad_fraction": mad_fraction(candidate_medians),
