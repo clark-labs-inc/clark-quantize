@@ -1,0 +1,91 @@
+{
+  "schema": "qwen38_27b_q4_k_rowmajor_quality_gated_preregistration_v7",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_rowmajor_quality_gated_v7",
+  "frozen_at": "2026-08-18T14:04:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true,
+    "control_model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "candidate_model": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-q8-family-Q4_K-v1.gguf",
+    "control_runtime": "/workspace/build/llama.cpp-q4k-fused-ragged-avx2-v2",
+    "candidate_runtime": "/workspace/build/llama.cpp-q4k-fused-four-row-rowmajor-avx2-v5",
+    "candidate_patch": "kernels/llama_cpp_q4_k_fused_four_row_rowmajor_avx2_v5.patch"
+  },
+  "prior_evidence": {
+    "q4_k_transcode_target_only_speedup": 1.18565965048618,
+    "q4_k_transcode_mtp3_speedup": 1.0509744667402823,
+    "q4_k_transcode_cute_correct": 8,
+    "control_cute_correct": 9,
+    "rowmajor_v5_post_gate_mtp3_speedup": 1.129,
+    "rowmajor_v5_rejection_reason": "Greedy trajectories diverged and the original preregistration required exact cross-runtime token parity. CUTE, MMLU, and WikiText were not run, so capability loss was not established."
+  },
+  "hypothesis": "The row-major four-row Q4_K kernel attacks the exact n=4 path amplified when the 288 Q8_0 attention and SSM tensors are transcoded to Q4_K. Combining the two may clear the system MTP3 speed gate. Floating-point reduction order can change greedy trajectories without materially changing capability, so this experiment replaces cross-runtime token identity with frozen CUTE, WikiText, MMLU, and MATH quality gates while retaining collapse checks and exact denominators.",
+  "artifact_contract": {
+    "selected_tensor_count": 288,
+    "selected_weight_count": 6734479360,
+    "artifact_bytes_saved": 3367239680,
+    "nonselected_payloads_must_be_byte_identical": true,
+    "maximum_retained_candidates": 1
+  },
+  "systems": {
+    "a_control": "control model plus fused-ragged AVX2 v2 runtime",
+    "b_compression_ablation": "selective Q4_K candidate plus fused-ragged AVX2 v2 runtime",
+    "c_kernel_candidate": "the same selective Q4_K candidate plus row-major four-row AVX2 v5 runtime"
+  },
+  "sequential_gates": {
+    "gate_1_provenance_and_backend": {
+      "artifact_verification_required": true,
+      "candidate_runtime_diff_sha256_required": true,
+      "backend_reference_cases_required": "3/3",
+      "no_source_or_binary_mutation_after_freeze": true
+    },
+    "gate_2_same_weights_graph": {
+      "warmup_processes_per_runtime": 1,
+      "measured_processes_per_runtime": 4,
+      "samples_per_process": 7,
+      "minimum_c_over_b_speedup": 1.05,
+      "maximum_candidate_process_median_range_fraction": 0.05
+    },
+    "gate_3_free_generation": {
+      "candidate_prompts": 4,
+      "tokens_per_prompt": 96,
+      "minimum_unique_token_ids": 32,
+      "coherent_outputs_required": true,
+      "exact_cross_runtime_token_parity_required": false,
+      "trajectory_differences_must_be_recorded": true
+    },
+    "gate_4_paired_serving": {
+      "prompts_per_system": 4,
+      "tokens_per_prompt": 96,
+      "minimum_c_over_a_target_tps": 1.20,
+      "minimum_c_over_a_mtp3_tps": 1.08,
+      "minimum_c_over_b_target_tps": 1.03,
+      "minimum_c_over_b_mtp3_tps": 1.03
+    },
+    "gate_5_quick_quality": {
+      "cute_quick_denominator": 20,
+      "minimum_candidate_correct": 9,
+      "minimum_candidate_correct_relative_to_control": 0,
+      "wikitext_chunks": 4,
+      "maximum_candidate_over_control_ppl": 1.05
+    },
+    "gate_6_capability": {
+      "run_only_if_all_prior_gates_pass": true,
+      "mmlu_denominator": 64,
+      "maximum_correct_loss_vs_control": 1,
+      "paired_frozen_math500_subset_required": true
+    }
+  },
+  "stop_rules": [
+    "Reject before generation if the same-weights graph speedup is below 1.05 or unstable.",
+    "Reject before MMLU and MATH if target, MTP3, CUTE, or WikiText fails.",
+    "Do not interpret token divergence alone as capability loss, but never promote a divergent runtime without the frozen quality gates.",
+    "Do not retain more than one derived full-model candidate on the node."
+  ],
+  "claim_boundary": "A pass would establish a faster quality-gated four-core Milan development system. It would not establish final-node throughput, energy gains, 100 accepted tok/s, novelty, or a scientific breakthrough."
+}

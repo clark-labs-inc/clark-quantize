@@ -99,6 +99,13 @@ Q8_FAMILY_Q4_RECEIPT = (
 Q8_FAMILY_Q40_PREREG = (
     RUNTIME / "qwen38_27b_q8_family_q4_0_fastpath_v2.json"
 )
+Q8_FAMILY_Q40_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_q8_family_q4_0_fastpath_v2/terminal-decision.json"
+)
+Q4_K_ROWMAJOR_QUALITY_V7_PREREG = (
+    RUNTIME / "qwen38_27b_q4_k_rowmajor_quality_gated_v7.json"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -277,6 +284,44 @@ def test_q4_0_fastpath_must_beat_control_and_prior_q4_k_candidate() -> None:
     quality = prereg["sequential_gates"]["gate_5_quality"]
     assert quality["cute_quick_denominator"] == 20
     assert quality["maximum_wikitext_ppl_ratio"] <= 1.05
+
+
+def test_rowmajor_v7_replaces_token_identity_with_frozen_quality_gates() -> None:
+    prereg = json.loads(Q4_K_ROWMAJOR_QUALITY_V7_PREREG.read_text())
+    assert prereg["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert prereg["scope"]["qwen_4b_compute_forbidden"] is True
+    assert prereg["artifact_contract"]["selected_tensor_count"] == 288
+    assert prereg["artifact_contract"]["maximum_retained_candidates"] == 1
+    graph = prereg["sequential_gates"]["gate_2_same_weights_graph"]
+    assert graph["minimum_c_over_b_speedup"] >= 1.05
+    generation = prereg["sequential_gates"]["gate_3_free_generation"]
+    assert generation["exact_cross_runtime_token_parity_required"] is False
+    assert generation["trajectory_differences_must_be_recorded"] is True
+    serving = prereg["sequential_gates"]["gate_4_paired_serving"]
+    assert serving["minimum_c_over_a_mtp3_tps"] >= 1.08
+    assert serving["minimum_c_over_b_mtp3_tps"] >= 1.03
+    quality = prereg["sequential_gates"]["gate_5_quick_quality"]
+    assert quality["cute_quick_denominator"] == 20
+    assert quality["minimum_candidate_correct"] >= 9
+    assert quality["maximum_candidate_over_control_ppl"] <= 1.05
+    capability = prereg["sequential_gates"]["gate_6_capability"]
+    assert capability["mmlu_denominator"] == 64
+    assert capability["paired_frozen_math500_subset_required"] is True
+
+
+def test_q4_0_fastpath_is_terminally_rejected_with_quick_eval() -> None:
+    receipt = json.loads(Q8_FAMILY_Q40_RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["passed"] is False
+    assert receipt["artifact"]["nonselected_payloads_byte_identical"] is True
+    assert receipt["free_generation_canary"]["total_tokens"] == 384
+    graph = receipt["real_model_four_token_graph"]
+    assert graph["control_over_candidate"] < 1.10
+    assert graph["prior_q4_k_over_candidate"] < 1.03
+    cute = receipt["quick_quality_diagnostic"]["cute_quick"]
+    assert cute["candidate_correct"] == 8
+    assert cute["candidate_denominator"] == 20
 
 
 def test_fused_patch_shares_q4_decode_and_preserves_row_accumulators() -> None:
