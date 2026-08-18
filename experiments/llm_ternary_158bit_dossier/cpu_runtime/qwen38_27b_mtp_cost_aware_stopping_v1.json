@@ -1,0 +1,78 @@
+{
+  "schema": "qwen38_27b_mtp_cost_aware_stopping_v1",
+  "frozen_at_utc": "2026-08-18T07:47:00Z",
+  "objective": "Reduce Qwen3.8-27B CPU bytes and wall time per target-accepted token by stopping MTP proposal chains when their calibrated probability of avoiding a future target verification is below their marginal proposal cost.",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "qwen_4b_compute_forbidden": true,
+    "cpu_only": true,
+    "target_candidates": ["Q3_K_M", "Q4_K_M"],
+    "draft": "official one-layer Qwen3.8-27B MTP sidecar",
+    "exact_target_semantics_required": true
+  },
+  "decision_rule": {
+    "continue_at_position_i_when": "calibrated_acceptance_probability_i * measured_incremental_target_call_cost > measured_incremental_draft_step_cost + measured_incremental_verification_cost_i",
+    "weight_streaming_lower_bound_when_incremental_verification_is_amortized": "calibrated_acceptance_probability_i > draft_artifact_bytes / target_artifact_bytes",
+    "q4_weight_only_threshold": 0.08855713724945499,
+    "q3_weight_only_threshold": "compute from the authenticated Q3 artifact after materialization",
+    "warning": "Raw draft softmax probability is not assumed calibrated. The threshold is applied only after position-conditional calibration on the development split.",
+    "purpose": "Replace a blind width or confidence sweep with an explicit expected-cost stopping criterion."
+  },
+  "observed_anchor": {
+    "receipt": "receipts/qwen38_27b_mtp_parity_preflight_v1/summary.json",
+    "target": "Q4_K_M",
+    "best_tested_width": 3,
+    "exact_greedy_prompt_parity": "4/4",
+    "accepted_tokens_per_second": 2.952080894444324,
+    "mean_committed_tokens_per_target_call": 2.7555555555555555,
+    "combined_weight_bytes_per_accepted_token_lower_bound": 8579501011.612904,
+    "minimum_weight_bandwidth_bytes_per_second_at_100_tps": 857950101161.2904,
+    "claim_boundary": "development prompts only"
+  },
+  "instrumentation_required": [
+    "draft top-1 probability for every proposed position",
+    "proposal position within each chain",
+    "target accept or reject outcome for every proposed token",
+    "draft refresh and per-step wall time",
+    "target verification wall time by verified width",
+    "sampling commit and rollback wall time",
+    "target and draft artifact bytes",
+    "target-only and speculative committed token IDs"
+  ],
+  "protocol": {
+    "development": {
+      "prompts": 8,
+      "minimum_tokens_per_prompt": 128,
+      "fit": "position-conditional monotone calibration from draft confidence to target acceptance",
+      "candidate_max_widths": [3, 4, 6, 8],
+      "candidate_probability_floors": "the analytic cost threshold plus one adjacent lower and higher threshold; no broad grid"
+    },
+    "heldout": {
+      "prompts": 32,
+      "minimum_tokens_per_prompt": 128,
+      "prompt_classes": ["code", "mathematical_reasoning", "technical_prose", "general_instruction"],
+      "refit_forbidden": true,
+      "exact_committed_token_id_parity_on_every_prompt": true
+    },
+    "controls": [
+      "target only",
+      "fixed-width MTP with probability floor zero",
+      "cost-aware MTP using the frozen calibrated stopping rule"
+    ]
+  },
+  "promotion_gate": {
+    "exact_greedy_parity": true,
+    "minimum_heldout_accepted_tokens_per_second_improvement_vs_best_fixed_control": 0.05,
+    "minimum_heldout_mean_committed_tokens_per_target_call": 3.0,
+    "maximum_combined_weight_bytes_per_accepted_token_lower_bound": 7000000000,
+    "report_target_proposal_verification_commit_and_rollback_time_separately": true,
+    "speed_does_not_override_quality_or_parity_failure": true
+  },
+  "stop_rules": [
+    "reject if the calibrated rule is slower than the best fixed control on heldout prompts",
+    "reject if any committed greedy token differs from target only",
+    "do not rent the final AMD node if the measured target plus proposal roofline cannot exceed 100 accepted tokens per second with headroom",
+    "do not claim scientific novelty from a confidence threshold without a completed literature audit"
+  ],
+  "claim_boundary": "Frozen cost model and falsification protocol only; not a 100 tok/s, quality, final-node, or novelty result."
+}

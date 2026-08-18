@@ -9,6 +9,7 @@ RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREREG = RUNTIME / "qwen38_27b_mtp_parity_preflight_v1.json"
 RUNNER = RUNTIME / "run_qwen38_27b_mtp_parity_v1.py"
 RECEIPT = RUNTIME / "receipts/qwen38_27b_mtp_parity_preflight_v1/summary.json"
+COST_STOPPING = RUNTIME / "qwen38_27b_mtp_cost_aware_stopping_v1.json"
 
 
 def test_mtp_preflight_is_qwen38_cpu_only_and_hash_pinned() -> None:
@@ -70,3 +71,16 @@ def test_mtp_receipt_preserves_exact_parity_and_100_tps_roofline() -> None:
         == 857950101161.2904
     )
     assert "no stochastic, capability" in payload["claim_boundary"]
+
+
+def test_mtp_cost_stopping_is_qwen38_only_and_heldout_gated() -> None:
+    payload = json.loads(COST_STOPPING.read_text())
+    assert payload["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert payload["scope"]["qwen_4b_compute_forbidden"] is True
+    assert payload["scope"]["exact_target_semantics_required"] is True
+    assert payload["decision_rule"]["q4_weight_only_threshold"] == 0.08855713724945499
+    assert payload["protocol"]["heldout"]["prompts"] == 32
+    assert payload["protocol"]["heldout"]["refit_forbidden"] is True
+    assert payload["promotion_gate"]["exact_greedy_parity"] is True
+    assert payload["promotion_gate"]["maximum_combined_weight_bytes_per_accepted_token_lower_bound"] == 7_000_000_000
+    assert "not a 100 tok/s" in payload["claim_boundary"]
