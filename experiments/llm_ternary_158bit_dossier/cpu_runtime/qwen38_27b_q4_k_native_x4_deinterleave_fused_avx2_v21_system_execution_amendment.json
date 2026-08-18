@@ -1,0 +1,29 @@
+{
+  "schema": "qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_system_execution_amendment_v21",
+  "experiment_id": "qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_v21",
+  "amended_at": "2026-08-18T21:57:19Z",
+  "stage": "post_graph_pre_system",
+  "observations_available": {
+    "layout_property": true,
+    "backend_reference": true,
+    "paired_four_row_graph": true,
+    "target_only": false,
+    "mtp3": false,
+    "cute": false,
+    "wikitext": false
+  },
+  "graph_receipt": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/graph-decision.json",
+  "graph_gate_passed": true,
+  "paired_graph_ratio_median": 1.137261437618061,
+  "execution_change": "Split the already-preregistered target-only and MTP3 gate into a second non-restarting system service so the immutable graph receipt can be committed independently and a spot/preemption interruption cannot invalidate it.",
+  "system_harness": "run_qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_system_v21.sh",
+  "unchanged": [
+    "The target-only denominator remains 4 prompts by 96 tokens.",
+    "The target-only path must retain exact cross-runtime tokens, less than 1% zero tokens, and at least 0.98x control throughput.",
+    "The MTP3 denominator remains 4 prompts by 96 tokens.",
+    "Candidate MTP3 accepted throughput must be at least 1.05x control.",
+    "MTP3 trajectory and draft-acceptance differences are recorded but are not automatic rejection after numeric and capability gates.",
+    "CUTE-20 and four-chunk WikiText remain mandatory only after the system gate passes.",
+    "No threshold was changed after observing the graph result."
+  ]
+}

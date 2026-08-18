@@ -71,6 +71,54 @@ def frequency_summary(path: Path) -> dict[str, Any]:
     }
 
 
+def load_mtp_summary(root: Path) -> dict[str, Any]:
+    summary = json.loads((root / "summary.json").read_text())
+    if summary.get("terminal") is not True:
+        raise ValueError(f"non-terminal MTP receipt at {root}")
+    generation = summary["generation"]
+    if generation["prompt_count"] != 4 or generation["tokens_per_prompt"] != 96:
+        raise ValueError(f"non-frozen MTP denominator at {root}")
+    return summary
+
+
+def mtp_configuration(summary: dict[str, Any], label: str) -> dict[str, Any]:
+    return next(row for row in summary["configurations"] if row["configuration"] == label)
+
+
+def token_rows(root: Path, label: str) -> list[list[int]]:
+    return [
+        json.loads((root / label / f"prompt-{index:02d}.json").read_text())["response"][
+            "tokens"
+        ]
+        for index in range(4)
+    ]
+
+
+def token_digests(rows: list[list[int]]) -> list[str]:
+    return [
+        hashlib.sha256(json.dumps(row, separators=(",", ":")).encode()).hexdigest()
+        for row in rows
+    ]
+
+
+def first_mismatch_indices(
+    control: list[list[int]], candidate: list[list[int]]
+) -> list[int | None]:
+    result: list[int | None] = []
+    for control_row, candidate_row in zip(control, candidate):
+        result.append(
+            next(
+                (
+                    index
+                    for index, (left, right) in enumerate(zip(control_row, candidate_row))
+                    if left != right
+                ),
+                None,
+            )
+        )
+    return result
+
+
 def summarize_graph(args: argparse.Namespace) -> int:
     control_paths = sorted(args.state.glob("pair-*-control.json"))
     candidate_paths = sorted(args.state.glob("pair-*-candidate.json"))
@@ -156,19 +204,152 @@ def summarize_graph(args: argparse.Namespace) -> int:
     return 0 if passed else 2
 
 
+def summarize_system(args: argparse.Namespace) -> int:
+    graph = json.loads(args.graph_decision.read_text())
+    if graph.get("passed") is not True or graph.get("terminal") is not False:
+        raise ValueError("system stage requires a passed, non-terminal graph receipt")
+
+    control_summary = load_mtp_summary(args.control_mtp)
+    candidate_summary = load_mtp_summary(args.candidate_mtp)
+    control_target = mtp_configuration(control_summary, "target")
+    candidate_target = mtp_configuration(candidate_summary, "target")
+    control_mtp3 = mtp_configuration(control_summary, "mtp3")
+    candidate_mtp3 = mtp_configuration(candidate_summary, "mtp3")
+
+    control_target_tokens = token_rows(args.control_mtp, "target")
+    candidate_target_tokens = token_rows(args.candidate_mtp, "target")
+    control_mtp3_tokens = token_rows(args.control_mtp, "mtp3")
+    candidate_mtp3_tokens = token_rows(args.candidate_mtp, "mtp3")
+
+    target_ratio = (
+        candidate_target["accepted_tokens_per_second_weighted"]
+        / control_target["accepted_tokens_per_second_weighted"]
+    )
+    mtp3_ratio = (
+        candidate_mtp3["accepted_tokens_per_second_weighted"]
+        / control_mtp3["accepted_tokens_per_second_weighted"]
+    )
+    target_exact = control_target_tokens == candidate_target_tokens
+    mtp3_exact = control_mtp3_tokens == candidate_mtp3_tokens
+    candidate_target_zero_fraction = (
+        sum(token == 0 for row in candidate_target_tokens for token in row)
+        / sum(len(row) for row in candidate_target_tokens)
+    )
+    candidate_mtp3_zero_fraction = (
+        sum(token == 0 for row in candidate_mtp3_tokens for token in row)
+        / sum(len(row) for row in candidate_mtp3_tokens)
+    )
+
+    checks = {
+        "graph_gate_passed": True,
+        "target_only_cross_runtime_tokens_exact": target_exact,
+        "target_only_zero_fraction_below_0_01": candidate_target_zero_fraction < 0.01,
+        "target_only_regression_at_most_0_02": target_ratio >= 0.98,
+        "mtp3_candidate_over_control_at_least_1_05": mtp3_ratio >= 1.05,
+        "candidate_target_denominator_is_4x96": candidate_target[
+            "output_tokens_including_prompt_eval_token"
+        ]
+        == 384,
+        "candidate_mtp3_denominator_is_4x96": candidate_mtp3[
+            "output_tokens_including_prompt_eval_token"
+        ]
+        == 384,
+        "candidate_mtp3_zero_fraction_below_0_01": candidate_mtp3_zero_fraction < 0.01,
+    }
+    passed = all(checks.values())
+    payload = {
+        "schema": "qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_system_result_v21",
+        "stage": "target_and_mtp3_system",
+        "terminal": not passed,
+        "infrastructure_valid": True,
+        "model": "Qwen/Qwen3.8-27B",
+        "host_scope": "four physical AMD EPYC Milan cores",
+        "denominator": {"prompts": 4, "tokens_per_prompt": 96},
+        "graph_gate": {
+            "paired_control_over_candidate_ratio_median": graph["paired_ratio_median"],
+            "receipt_sha256": sha256_file(args.graph_decision),
+        },
+        "target_only": {
+            "control_accepted_tokens_per_second": control_target[
+                "accepted_tokens_per_second_weighted"
+            ],
+            "candidate_accepted_tokens_per_second": candidate_target[
+                "accepted_tokens_per_second_weighted"
+            ],
+            "candidate_over_control": target_ratio,
+            "cross_runtime_tokens_exact": target_exact,
+            "candidate_zero_token_fraction": candidate_target_zero_fraction,
+            "first_mismatch_index_by_prompt": first_mismatch_indices(
+                control_target_tokens, candidate_target_tokens
+            ),
+        },
+        "mtp3": {
+            "control_accepted_tokens_per_second": control_mtp3[
+                "accepted_tokens_per_second_weighted"
+            ],
+            "candidate_accepted_tokens_per_second": candidate_mtp3[
+                "accepted_tokens_per_second_weighted"
+            ],
+            "candidate_over_control": mtp3_ratio,
+            "cross_runtime_tokens_exact": mtp3_exact,
+            "first_mismatch_index_by_prompt": first_mismatch_indices(
+                control_mtp3_tokens, candidate_mtp3_tokens
+            ),
+            "control_draft_n": control_mtp3["draft_n"],
+            "candidate_draft_n": candidate_mtp3["draft_n"],
+            "control_draft_n_accepted": control_mtp3["draft_n_accepted"],
+            "candidate_draft_n_accepted": candidate_mtp3["draft_n_accepted"],
+            "control_mean_committed_tokens_per_target_call": control_mtp3[
+                "mean_committed_tokens_per_target_call"
+            ],
+            "candidate_mean_committed_tokens_per_target_call": candidate_mtp3[
+                "mean_committed_tokens_per_target_call"
+            ],
+            "candidate_zero_token_fraction": candidate_mtp3_zero_fraction,
+        },
+        "checks": checks,
+        "passed": passed,
+        "decision": "advance_to_quality_gate" if passed else "reject_system_gate",
+        "next_stage": "CUTE-20 and four-chunk WikiText" if passed else None,
+        "provenance": {
+            "control_server_sha256": sha256_file(args.control_server),
+            "candidate_server_sha256": sha256_file(args.candidate_server),
+            "control_summary_sha256": sha256_file(args.control_mtp / "summary.json"),
+            "candidate_summary_sha256": sha256_file(args.candidate_mtp / "summary.json"),
+            "control_target_token_sha256": token_digests(control_target_tokens),
+            "candidate_target_token_sha256": token_digests(candidate_target_tokens),
+            "control_mtp3_token_sha256": token_digests(control_mtp3_tokens),
+            "candidate_mtp3_token_sha256": token_digests(candidate_mtp3_tokens),
+        },
+        "claim_boundary": (
+            "A pass admits the same-weights kernel to frozen CUTE and WikiText. "
+            "It is not a conventional-decode breakthrough, trained approximation, "
+            "final-node, energy, 100 tok/s, novelty, or scientific-breakthrough result."
+        ),
+    }
+    atomic_json(args.out, payload)
+    print(json.dumps({"event": "system_terminal" if not passed else "system_passed", "passed": passed}))
+    return 0 if passed else 2
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", choices=("graph",), required=True)
-    parser.add_argument("--state", type=Path, required=True)
-    parser.add_argument("--property-log", type=Path, required=True)
-    parser.add_argument("--backend-log", type=Path, required=True)
-    parser.add_argument("--frequency-log", type=Path, required=True)
-    parser.add_argument("--preregistration", type=Path, required=True)
-    parser.add_argument("--layout-amendment", type=Path, required=True)
-    parser.add_argument("--candidate-patch", type=Path, required=True)
-    parser.add_argument("--layout-test", type=Path, required=True)
-    parser.add_argument("--control-binary", type=Path, required=True)
-    parser.add_argument("--candidate-binary", type=Path, required=True)
+    parser.add_argument("--stage", choices=("graph", "system"), required=True)
+    parser.add_argument("--state", type=Path)
+    parser.add_argument("--property-log", type=Path)
+    parser.add_argument("--backend-log", type=Path)
+    parser.add_argument("--frequency-log", type=Path)
+    parser.add_argument("--preregistration", type=Path)
+    parser.add_argument("--layout-amendment", type=Path)
+    parser.add_argument("--candidate-patch", type=Path)
+    parser.add_argument("--layout-test", type=Path)
+    parser.add_argument("--control-binary", type=Path)
+    parser.add_argument("--candidate-binary", type=Path)
+    parser.add_argument("--graph-decision", type=Path)
+    parser.add_argument("--control-mtp", type=Path)
+    parser.add_argument("--candidate-mtp", type=Path)
+    parser.add_argument("--control-server", type=Path)
+    parser.add_argument("--candidate-server", type=Path)
     parser.add_argument("--out", type=Path, required=True)
     return parser.parse_args()
 
@@ -177,6 +358,8 @@ def main() -> int:
     args = parse_args()
     if args.stage == "graph":
         return summarize_graph(args)
+    if args.stage == "system":
+        return summarize_system(args)
     raise AssertionError(args.stage)
 
 
