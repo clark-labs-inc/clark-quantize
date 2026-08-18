@@ -46,6 +46,16 @@ FOUR_ROW_V4_RECEIPT = (
 FOUR_ROW_V5_PREREG = (
     RUNTIME / "qwen38_27b_q4_k_fused_four_row_rowmajor_avx2_v5.json"
 )
+FOUR_ROW_V5_PATCH = (
+    RUNTIME / "kernels/llama_cpp_q4_k_fused_four_row_rowmajor_avx2_v5.patch"
+)
+FOUR_ROW_V5_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_q4_k_fused_four_row_rowmajor_avx2_v5/terminal-decision.json"
+)
+Q4_K_GEMM_V6_PREREG = (
+    RUNTIME / "qwen38_27b_q4_k_gemm_half_permute_avx2_v6.json"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -257,3 +267,49 @@ def test_four_row_v5_prereg_is_single_change_and_sequentially_gated() -> None:
     assert gates["gate_5_terminal_mtp3"][
         "minimum_candidate_over_control_accepted_tps"
     ] >= 1.05
+
+
+def test_four_row_v5_patch_changes_only_exact_four_row_q8_packing() -> None:
+    source = FOUR_ROW_V5_PATCH.read_text()
+    assert "const bool row_major_four_rows = q4_k_8x8 && ne11 == 4" in source
+    assert "row_major_four_rows ? 0 : ne11 - ne11 % 4" in source
+    assert "i11_processed + ith" in source
+    assert "from_float" in source
+    assert "ggml_quantize_mat_t" in source
+    assert "arch/x86/repack.cpp" not in source
+
+
+def test_four_row_v5_is_rejected_despite_mtp3_speed_diagnostic() -> None:
+    payload = json.loads(FOUR_ROW_V5_RECEIPT.read_text())
+    assert payload["terminal"] is True
+    assert payload["infrastructure_valid"] is True
+    assert payload["passed"] is False
+    assert payload["whole_model"]["candidate_over_control_mtp3"] > 1.12
+    assert payload["checks"]["terminal_target_4x96_exact_token_parity"] is False
+    assert payload["checks"]["terminal_mtp3_4x96_exact_token_parity"] is False
+    assert payload["checks"][
+        "predeclared_14_sample_graph_speedup_at_least_1_10"
+    ] is False
+    assert payload["cute"]["ran"] is False
+
+
+def test_q4_k_gemm_v6_prereg_preserves_algebra_and_gates_stability() -> None:
+    payload = json.loads(Q4_K_GEMM_V6_PREREG.read_text())
+    assert payload["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert payload["scope"]["qwen_4b_compute_forbidden"] is True
+    assert "floating-point accumulation order" in payload["implementation"][
+        "forbidden_changes"
+    ]
+    gates = payload["sequential_gates"]
+    assert gates["gate_1_static_and_backend"][
+        "byte_permutation_equivalence_exhaustive"
+    ] is True
+    assert gates["gate_2_real_model_four_row_graph"][
+        "include_all_28_measured_samples"
+    ] is True
+    assert gates["gate_2_real_model_four_row_graph"][
+        "maximum_candidate_process_median_range_fraction"
+    ] <= 0.05
+    assert gates["gate_3_terminal_generation"][
+        "target_and_mtp3_exact_control_parity"
+    ] is True

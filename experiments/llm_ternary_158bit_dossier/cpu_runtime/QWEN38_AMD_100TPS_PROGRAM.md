@@ -80,6 +80,13 @@ accumulator-only v4 was therefore stopped without a build. The next candidate
 isolates the causal repair by producing row-major Q8_K only for exact-four-row
 Q4_K 8x8 verification; all other layouts remain unchanged.
 
+The row-major repair validated the diagnosis but not the kernel: it eliminated
+degeneration and improved weighted MTP3 throughput by 1.129x, yet diverged from
+the control on two target-only prompts and one MTP3 prompt. It also missed the
+predeclared first-14 graph gate despite a faster expanded diagnostic. The next
+experiment therefore optimizes the correct interleaved GEMM directly and is
+forbidden from changing activation layout or arithmetic order.
+
 ## Target-model lane
 
 Q3_K_M is the immediate practical baseline. Post-trained aligned two-bit or

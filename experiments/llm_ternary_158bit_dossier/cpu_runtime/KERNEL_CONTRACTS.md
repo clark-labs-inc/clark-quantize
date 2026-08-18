@@ -273,6 +273,14 @@ before build. The next isolated experiment changes only exact-four-row
 activation packing to ordinary row-major Q8_K and retains a free-generation
 canary before any throughput claim.
 
+That isolated row-major v5 repair removed the token-zero collapse and improved
+the full MTP3 throughput diagnostic from 3.058 to 3.452 accepted tok/s. It is
+still rejected: target-only exact parity was 2/4, MTP3 exact parity was 3/4,
+draft counts changed, and the predeclared first 14 graph samples reached only
+1.046x. The next kernel leaves interleaved `block_q8_Kx4` and every arithmetic
+operation intact. It replaces a variable half-swap plus blend pair with the
+equivalent immediate `vperm2i128` concatenation inside native Q4_K GEMM.
+
 ## Required tests for every optimized kernel
 
 1. scalar-versus-optimized randomized property tests;

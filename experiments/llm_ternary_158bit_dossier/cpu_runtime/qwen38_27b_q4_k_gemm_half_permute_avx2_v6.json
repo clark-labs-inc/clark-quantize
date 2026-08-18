@@ -1,0 +1,68 @@
+{
+  "schema": "qwen38_27b_q4_k_gemm_half_permute_avx2_preregistration_v6",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_gemm_half_permute_avx2_v6",
+  "frozen_at": "2026-08-18T11:46:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "target_quantization": "Q4_K_M",
+    "official_mtp_draft_quantization": "Q4_0",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true
+  },
+  "negative_anchor": "receipts/qwen38_27b_q4_k_fused_four_row_rowmajor_avx2_v5/terminal-decision.json",
+  "hypothesis": "The native interleaved Q4_K GEMM forms [B0,B1,B4,B5] and [B2,B3,B6,B7] with a variable 8x32-bit permutation plus blend. Each pair is exactly a 128-bit-half concatenation and can be formed with one immediate vperm2i128, halving these data-motion instructions without changing any Q4/Q8 codes, integer dot products, floating accumulation order, or output storage.",
+  "implementation": {
+    "base": "Pinned llama.cpp plus cache-order v1 and promoted fused one-to-three-row v2",
+    "candidate_patch": "kernels/llama_cpp_q4_k_gemm_half_permute_avx2_v6.patch",
+    "required_rewrite": [
+      "replace blend(a, swap128(b), 0xF0) with permute2x128(a, b, 0x20)",
+      "replace blend(swap128(a), b, 0xF0) with permute2x128(a, b, 0x31)",
+      "apply only inside the AVX2 Q4_K GEMM path exercised by four-row verification"
+    ],
+    "forbidden_changes": [
+      "activation packing",
+      "quantized values or scales",
+      "integer dot-product order",
+      "floating-point accumulation order",
+      "one-to-three-row fused GEMV"
+    ]
+  },
+  "sequential_gates": {
+    "gate_1_static_and_backend": {
+      "byte_permutation_equivalence_exhaustive": true,
+      "backend_reference_cases_pass": true
+    },
+    "gate_2_real_model_four_row_graph": {
+      "warmup_processes_per_runtime": 1,
+      "measured_processes_per_runtime": 4,
+      "samples_per_process": 7,
+      "include_all_28_measured_samples": true,
+      "minimum_candidate_over_control_speedup": 1.03,
+      "maximum_candidate_process_median_range_fraction": 0.05
+    },
+    "gate_3_terminal_generation": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "target_and_mtp3_exact_control_parity": true,
+      "draft_behavior_must_equal_control": true,
+      "minimum_candidate_over_control_mtp3_accepted_tps": 1.03,
+      "maximum_target_only_tps_regression_fraction": 0.02
+    },
+    "gate_4_quality": {
+      "cute_quick_required_only_after_all_prior_gates_pass": true,
+      "candidate_must_match_q4_control_score_and_item_outputs": true
+    }
+  },
+  "stop_rules": [
+    "Reject if exhaustive byte-lane equivalence fails.",
+    "Reject before generation if graph speedup is below three percent or process medians are unstable.",
+    "Reject before CUTE if any committed token or draft count differs from control.",
+    "Do not reuse v5's row-major activation path."
+  ],
+  "claim_boundary": "A pass promotes one algebra-preserving AVX2 data-motion optimization for the native interleaved Q4_K GEMM on four Milan cores. The trained approximation, final-node, energy, 100 accepted tok/s, and novelty gates remain open."
+}
