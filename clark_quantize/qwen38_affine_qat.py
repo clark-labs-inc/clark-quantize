@@ -78,6 +78,10 @@ class TrainableAffinePayload(torch.nn.Module):
         self.mu_codebook = torch.nn.Parameter(
             torch.from_numpy(mu_values.astype(np.float32))
         )
+        zero_entries = np.flatnonzero(mu_values == np.float16(0))
+        if zero_entries.size == 0:
+            raise ValueError("QAT signed mu codebook lost its exact zero")
+        self.mu_zero_index = int(zero_entries[0])
         if (
             self.alpha_index_shadow.shape != (self.rows, self.groups)
             or self.mu_index_shadow.shape != (self.rows, self.groups)
@@ -151,6 +155,8 @@ class TrainableAffinePayload(torch.nn.Module):
         self.alpha_anchors.clamp_(min=0)
         self.mu_anchors.clamp_(min=0)
         self.alpha_codebook.clamp_(min=0)
+        self.alpha_codebook[0] = 0
+        self.mu_codebook[self.mu_zero_index] = 0
 
     @torch.no_grad()
     def export_compressed(self) -> CompressedAffineTernary:
@@ -165,6 +171,8 @@ class TrainableAffinePayload(torch.nn.Module):
         alpha_values = self.alpha_codebook.clamp_min(0).to(torch.float16).cpu().numpy()
         mu_anchors = self.mu_anchors.clamp_min(0).to(torch.float16).cpu().numpy()
         mu_values = self.mu_codebook.to(torch.float16).cpu().numpy()
+        alpha_values[0] = np.float16(0)
+        mu_values[self.mu_zero_index] = np.float16(0)
         alpha_reconstructed = reconstruct_row_normalized_scales(
             alpha_anchors, alpha_values, alpha_indices
         )

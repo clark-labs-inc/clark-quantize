@@ -74,6 +74,8 @@ def test_stored_qat_state_gets_finite_gradients_and_projects() -> None:
     assert bool((trained.codes_shadow <= 1).all())
     assert bool((trained.alpha_index_shadow >= 0).all())
     assert bool((trained.alpha_index_shadow <= 15).all())
+    assert float(trained.alpha_codebook[0].detach()) == 0
+    assert float(trained.mu_codebook[trained.mu_zero_index].detach()) == 0
 
 
 def test_fp16_ste_has_frozen_forward_and_identity_gradient() -> None:
