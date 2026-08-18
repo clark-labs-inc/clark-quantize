@@ -58,6 +58,8 @@ def test_runner_is_paired_pinned_and_restartable() -> None:
     assert 'if [[ -e "$state_dir/KERNEL_COMPLETE" ]]' in source
     assert '"terminal_resumed"' in source
     assert 'raise SystemExit(0 if summary["passed"] else 2)' in source
+    assert 'mtp_status" -ne 0 && "$mtp_status" -ne 2' in source
+    assert '"event": "mtp_terminal_input"' in source
 
 
 def test_summarizer_enforces_micro_whole_model_and_parity_gates() -> None:

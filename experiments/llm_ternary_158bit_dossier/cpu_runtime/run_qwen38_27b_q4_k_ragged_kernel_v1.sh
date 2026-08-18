@@ -124,20 +124,45 @@ run_perf control "$control_build/bin/test-backend-ops" 2
 printf 'complete\n' > "$state_dir/MICROBENCH_COMPLETE"
 
 mtp_runner="$runtime_dir/run_qwen38_27b_mtp_parity_v1.py"
-if [[ ! -s "$run_dir/control-mtp/summary.json" ]]; then
-  /workspace/venvs/quant-cpu/bin/python "$mtp_runner" \
-    --server "$control_build/bin/llama-server" --target "$target" --draft "$draft" \
-    --output-dir "$run_dir/control-mtp" --widths 0,3 --n-predict 96 \
-    --threads 4 --cpu-list 0,2,4,6 --context 512 --batch 128 --ubatch 64 \
-    --port-base 18400 > "$run_dir/control-mtp.log" 2>&1
-fi
-if [[ ! -s "$run_dir/candidate-mtp/summary.json" ]]; then
-  /workspace/venvs/quant-cpu/bin/python "$mtp_runner" \
-    --server "$candidate_build/bin/llama-server" --target "$target" --draft "$draft" \
-    --output-dir "$run_dir/candidate-mtp" --widths 0,3 --n-predict 96 \
-    --threads 4 --cpu-list 0,2,4,6 --context 512 --batch 128 --ubatch 64 \
-    --port-base 18500 > "$run_dir/candidate-mtp.log" 2>&1
-fi
+run_mtp() {
+  local label=$1
+  local server=$2
+  local output_dir=$3
+  local port_base=$4
+  local mtp_status=0
+
+  if [[ ! -s "$output_dir/summary.json" ]]; then
+    set +e
+    /workspace/venvs/quant-cpu/bin/python "$mtp_runner" \
+      --server "$server" --target "$target" --draft "$draft" \
+      --output-dir "$output_dir" --widths 0,3 --n-predict 96 \
+      --threads 4 --cpu-list 0,2,4,6 --context 512 --batch 128 --ubatch 64 \
+      --port-base "$port_base" > "$run_dir/${label}-mtp.log" 2>&1
+    mtp_status=$?
+    set -e
+    # Exit 2 is the MTP harness's scientific parity rejection.  Preserve it
+    # as a terminal input to the paired kernel decision instead of aborting
+    # before the candidate runs.  Any other nonzero status is infrastructure.
+    if [[ "$mtp_status" -ne 0 && "$mtp_status" -ne 2 ]]; then
+      echo "$label MTP harness failed with infrastructure status $mtp_status" >&2
+      return "$mtp_status"
+    fi
+  fi
+
+  /workspace/venvs/quant-cpu/bin/python - "$label" "$output_dir/summary.json" <<'PY'
+import json
+import sys
+
+label, path = sys.argv[1:]
+summary = json.load(open(path))
+if summary.get("terminal") is not True:
+    raise SystemExit(f"{label} MTP summary is not terminal")
+print(json.dumps({"event": "mtp_terminal_input", "label": label, "passed": summary.get("passed")}))
+PY
+}
+
+run_mtp control "$control_build/bin/llama-server" "$run_dir/control-mtp" 18400
+run_mtp candidate "$candidate_build/bin/llama-server" "$run_dir/candidate-mtp" 18500
 
 set +e
 /workspace/venvs/quant-cpu/bin/python \
