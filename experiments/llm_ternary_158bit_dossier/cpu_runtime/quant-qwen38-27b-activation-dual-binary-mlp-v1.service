@@ -1,0 +1,22 @@
+[Unit]
+Description=Test same-rate activation-dual binary factors on a complete Qwen3.8-27B MLP
+After=network-online.target quant-qwen38-27b-activation-binary-mlp-v1.service quant-qwen38-27b-row-scale-pipeline-v2.service
+Wants=network-online.target
+Requires=quant-qwen38-27b-activation-binary-mlp-v1.service quant-qwen38-27b-row-scale-pipeline-v2.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-activation-dual-v1
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-activation-dual.bundle
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/tmp/watch_qwen38_27b_activation_dual_binary_mlp_v1.sh
+CPUQuota=800%
+MemoryMax=24G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

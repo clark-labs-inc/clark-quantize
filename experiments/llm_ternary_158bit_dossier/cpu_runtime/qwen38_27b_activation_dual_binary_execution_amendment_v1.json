@@ -1,0 +1,72 @@
+{
+  "schema": "qwen38_27b_activation_dual_binary_execution_amendment_v1",
+  "status": "execution_frozen_but_not_scheduled",
+  "frozen_at_utc": "2026-08-18T03:52:34Z",
+  "execution_authorized": true,
+  "launch_scheduled": false,
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "method_preregistration_sha256": "25b652aa9d7efc8c50f8e52c9d8f02b61f600b692fc07a172ae60f4b4dab4e2c",
+  "priority": {
+    "class": "representation_level_same_rate_falsification",
+    "reason": "the candidate changes the approximation geometry while preserving the exact parent storage projection and runtime algebra",
+    "queue_position": "after authenticated whole-model llama.cpp ternary controls and the complete text-row storage gate",
+    "must_not_preempt": [
+      "quant-qwen38-27b-llamacpp-ternary-controls-v1.service",
+      "quant-qwen38-27b-row-scale-pipeline-v2.service"
+    ]
+  },
+  "execution_scope": {
+    "layer": 0,
+    "complete_mlp_tensors": 3,
+    "target_parameters": 267386880,
+    "sampled_weight_rows": false,
+    "candidate_sweep": false,
+    "maximum_factor_artifacts": 1,
+    "qwen_4b_compute": false
+  },
+  "controls": {
+    "primary": "byte-identical exported ternary backbone and same-rate rank-40 frozen-weight-right factor from the terminal activation-binary parent",
+    "direct": "byte-identical exported row-normalized ternary backbone without a residual factor",
+    "replay_required": "all direct and frozen-right gate up and complete-MLP validation metrics must reproduce before candidate comparison"
+  },
+  "resource_contract": {
+    "cpu_threads": 8,
+    "cpu_affinity": "0-7",
+    "memory_max_bytes": 25769803776,
+    "minimum_available_memory_bytes": 17179869184,
+    "minimum_free_disk_bytes": 10737418240,
+    "swap_bytes": 0,
+    "concurrent_qwen_or_llama_compute": 0
+  },
+  "terminal_contract": {
+    "accepted_process_statuses": [
+      0,
+      2
+    ],
+    "status_zero_requires_gate_pass": true,
+    "status_two_requires_gate_rejection": true,
+    "dependency_rejection_is_terminal_nonpromotion": true,
+    "infrastructure_invalid_is_neither_zero_nor_scientific_completion": true,
+    "watch_receipt_required": true
+  },
+  "frozen_inputs": {
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_activation_dual_binary_mlp_v1.py",
+      "sha256": "8dc36b7c69cbb79fdb3aa8c8415011b94e18bebaacd95f937060f57b397680a4"
+    },
+    "watcher": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/watch_qwen38_27b_activation_dual_binary_mlp_v1.sh",
+      "sha256": "89e7369f6a01cbbc71a5e46c6e55b140fd46b85401cb72daf418bb6130011661"
+    },
+    "service": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/quant-qwen38-27b-activation-dual-binary-mlp-v1.service",
+      "sha256": "6d773fb9d6d7a04f7c73b35b594246d636f2cb05b21b29e2e91e9c7c6c40ca46"
+    },
+    "terminal_wait_helper": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/wait_for_qwen38_terminal_receipt.sh",
+      "sha256": "b874a8ed05100d01d8b71449b7c9b4951495728d76173fab9fc02a57ef2ecbb7"
+    }
+  },
+  "claim_boundary": "An authenticated one-shot execution contract only. It is not a real Qwen result, whole-model artifact, capability result, throughput result, novelty result, or breakthrough."
+}
