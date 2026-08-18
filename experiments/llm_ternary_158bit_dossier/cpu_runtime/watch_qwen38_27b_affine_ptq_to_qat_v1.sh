@@ -3,8 +3,8 @@ set -euo pipefail
 
 # Terminal-gated handoff for the Qwen/Qwen3.8-27B affine block experiment.
 # Run this watcher as a root-owned transient service.  It performs no training;
-# it only stops a terminal parent restart loop and starts the frozen QAT runner
-# when the authenticated three-block PTQ gate passed.
+# it only stops a terminal parent restart loop and starts the independently
+# frozen QAT runner after the authenticated three-block PTQ result exists.
 
 readonly model="Qwen/Qwen3.8-27B"
 readonly parent_unit="quant-qwen38-27b-affine-butterfly-block-gate-v1.service"
@@ -44,12 +44,15 @@ jq -e --arg model "$model" --arg commit "$parent_runner_commit" '
   .complete == true and .terminal == true
 ' "$parent_receipt" >/dev/null
 
-# A scientific rejection is terminal.  Stop a Restart=on-failure loop and do
-# not launch QAT or reinterpret exit status 2 as infrastructure failure.
+# A PTQ rejection remains terminal for the no-training hypothesis.  The QAT
+# protocol was frozen before the parent result and its runner deliberately does
+# not require parent .gate.passed; it is the precommitted trained recovery test,
+# not a reinterpretation of PTQ exit status 2 as infrastructure failure.
 systemctl stop "$parent_unit" 2>/dev/null || true
-if ! jq -e '.gate.passed == true' "$parent_receipt" >/dev/null; then
-  echo "parent PTQ gate rejected; QAT remains unrun"
-  exit 0
+if jq -e '.gate.passed == true' "$parent_receipt" >/dev/null; then
+  echo "parent PTQ gate passed; proceeding to frozen kernel and QAT gates"
+else
+  echo "parent PTQ gate rejected; preserving rejection and proceeding to the independently preregistered QAT gate"
 fi
 
 # The native kernel timing gate is representation-independent and must run on

@@ -19,13 +19,14 @@ def test_handoff_is_qwen38_only_and_pins_both_research_identities() -> None:
     assert 'readonly qat_prereg_sha256="28d7ef3ca0eca806fc25e8a0b7de315a82e9e295fb2302210ad9720a1fdd0a26"' in source
 
 
-def test_handoff_requires_a_terminal_parent_pass_before_qat() -> None:
+def test_handoff_requires_a_terminal_parent_receipt_before_qat() -> None:
     source = WATCHER.read_text()
     receipt_check = source.index('.complete == true and .terminal == true')
-    pass_check = source.index(".gate.passed == true")
     launch = source.index("systemd-run")
-    assert receipt_check < pass_check < launch
-    assert 'echo "parent PTQ gate rejected; QAT remains unrun"' in source
+    assert receipt_check < launch
+    assert "frozen before the parent result" in source
+    assert "not require parent .gate.passed" in source
+    assert "independently preregistered QAT gate" in source
     assert 'systemctl stop "$parent_unit"' in source
 
 
