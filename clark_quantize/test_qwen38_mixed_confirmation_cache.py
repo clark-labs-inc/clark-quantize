@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 import sys
 
@@ -12,6 +13,11 @@ SCRIPT = (
     REPO
     / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
     / "collect_qwen38_27b_mixed_confirmation_cache_v1.py"
+)
+RECEIPT = (
+    REPO
+    / "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts"
+    / "qwen38_27b_calibration_ranked_aff3_cq3_mixed_v1/confirmation-cache.json"
 )
 
 
@@ -61,3 +67,31 @@ def test_confirmation_selected_rows_are_deterministic_and_unique() -> None:
     assert len(set(selected.tolist())) == 32
     assert int(selected.min()) == 0
     assert int(selected.max()) == 255
+
+
+def test_confirmation_receipt_is_exact_finite_and_terminal() -> None:
+    receipt = json.loads(RECEIPT.read_text())
+    assert receipt["schema"] == "qwen38_27b_mixed_confirmation_cache_receipt_v1"
+    assert receipt["model"] == "Qwen/Qwen3.8-27B"
+    assert receipt["target_layers"] == [0, 32, 63]
+    assert receipt["target_layer_types"] == [
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+    ]
+    assert receipt["confirmation_texts"] == 4
+    assert receipt["confirmation_rows"] == 32
+    assert receipt["finite"] is True
+    assert receipt["cache"]["bytes"] == 15_736_197
+    assert len(receipt["cache"]["sha256"]) == 64
+    assert set(receipt["cached_tensors"]) == {"0", "32", "63"}
+    assert all(
+        values[kind]["shape"] == [4, 64, 5120]
+        for values in receipt["cached_tensors"].values()
+        for kind in ("input", "output")
+    )
+    assert receipt["complete"] is True
+    assert receipt["terminal"] is True
+    assert receipt["claim_boundary"].startswith(
+        "fresh exact BF16 three-block confirmation cache only"
+    )
