@@ -21,10 +21,18 @@ SELECTED_SUFFIXES = (
     ".attn_k.weight",
     ".attn_v.weight",
 )
+RECURRENT_SUFFIXES = (
+    ".attn_qkv.weight",
+    ".attn_gate.weight",
+    ".ssm_out.weight",
+    ".ssm_alpha.weight",
+    ".ssm_beta.weight",
+)
 
 
-def is_selected(name: str) -> bool:
-    return name.startswith("blk.") and name.endswith(SELECTED_SUFFIXES)
+def is_selected(name: str, profile: str) -> bool:
+    suffixes = SELECTED_SUFFIXES if profile == "all_q8_family" else RECURRENT_SUFFIXES
+    return name.startswith("blk.") and name.endswith(suffixes)
 
 
 def update_payload_hash(
@@ -66,6 +74,15 @@ def main() -> int:
     parser.add_argument("--candidate", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--expected-selected", type=int, default=288)
+    parser.add_argument(
+        "--selection-profile",
+        choices=("all_q8_family", "recurrent_only"),
+        default="all_q8_family",
+    )
+    parser.add_argument(
+        "--expected-selected-weight-count", type=int, default=6_734_479_360
+    )
+    parser.add_argument("--expected-remaining-q8", type=int, default=0)
     parser.add_argument("--expected-target-type", default="Q4_K")
     parser.add_argument("--expected-bytes-saved", type=int, default=3_367_239_680)
     args = parser.parse_args()
@@ -79,7 +96,9 @@ def main() -> int:
     if set(control) != set(candidate):
         raise ValueError("control and candidate tensor names differ")
 
-    selected_names = sorted(name for name in control if is_selected(name))
+    selected_names = sorted(
+        name for name in control if is_selected(name, args.selection_profile)
+    )
     selected_weight_count = 0
     selected_payload_saved = 0
     structural_mismatches: list[str] = []
@@ -132,8 +151,12 @@ def main() -> int:
     checks = {
         "selected_tensor_count_exact": len(selected_names) == args.expected_selected,
         "selected_types_exact": not structural_mismatches,
-        "selected_weight_count_exact": selected_weight_count == 6_734_479_360,
-        "q8_removed": candidate_types.get("Q8_0", 0) == 0,
+        "selected_weight_count_exact": (
+            selected_weight_count == args.expected_selected_weight_count
+        ),
+        "q8_count_exact": (
+            candidate_types.get("Q8_0", 0) == args.expected_remaining_q8
+        ),
         "target_count_increased_by_selected": (
             candidate_types.get(args.expected_target_type, 0)
             - control_types.get(args.expected_target_type, 0)
@@ -158,6 +181,7 @@ def main() -> int:
         },
         "selected_tensor_count": len(selected_names),
         "selected_weight_count": selected_weight_count,
+        "selection_profile": args.selection_profile,
         "expected_target_type": args.expected_target_type,
         "selected_payload_bytes_saved": selected_payload_saved,
         "artifact_bytes_saved": actual_bytes_saved,
