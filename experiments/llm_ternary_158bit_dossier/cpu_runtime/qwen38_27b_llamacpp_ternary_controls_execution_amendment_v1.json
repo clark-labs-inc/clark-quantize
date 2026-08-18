@@ -1,0 +1,42 @@
+{
+  "schema": "qwen38_27b_llamacpp_ternary_controls_execution_amendment_v1",
+  "frozen_at_utc": "2026-08-18T04:21:07Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "initial_attempt": {
+    "completed_at_utc": "2026-08-18T04:18:40Z",
+    "process_exit_code": 126,
+    "classification": "infrastructure_invalid",
+    "error": "run_qwen38_27b_llamacpp_ternary_controls_v1.sh: Permission denied",
+    "watch_state": "/workspace/quant-state/qwen38-27b-llamacpp-ternary-controls-watch-v1",
+    "conversion_runner_entered": false,
+    "model_conversion_started": false,
+    "scientific_result_produced": false
+  },
+  "root_cause": "The byte-frozen conversion runner is intentionally stored as mode 100644, but the watcher attempted direct exec instead of invoking the runner through bash.",
+  "remediation": {
+    "change": "Invoke the unchanged byte-frozen conversion runner as an explicit bash script.",
+    "scientific_method_changed": false,
+    "conversion_runner_changed": false,
+    "evaluation_runner_changed": false,
+    "thresholds_changed": false,
+    "model_or_revision_changed": false,
+    "resume_from_partial_scientific_artifact": false
+  },
+  "frozen_sources": {
+    "preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_llamacpp_ternary_controls_preregistration_v1.json",
+      "sha256": "47dd08c797dae1bd94a0f9df67f1de854dcb427508ea71929c407b3a9e623a7b"
+    },
+    "conversion_runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_llamacpp_ternary_controls_v1.sh",
+      "sha256": "f0fca50757e696b2f41c4fd06b768c6fd3aa95fe8040b5e03208deeef2f36e29"
+    },
+    "watcher": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/watch_qwen38_27b_llamacpp_ternary_controls_v1.sh",
+      "sha256": "010e29b54d21e879d053deb743c6315e3541bea878802fe3981106f7b4616460"
+    }
+  },
+  "execution_authorized": true,
+  "claim_boundary": "Execution-only repair after a pre-run permission failure; no conversion, quality, throughput, storage, novelty, or breakthrough evidence."
+}

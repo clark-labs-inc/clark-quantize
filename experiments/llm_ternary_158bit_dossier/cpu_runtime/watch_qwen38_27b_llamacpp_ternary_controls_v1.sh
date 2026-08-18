@@ -54,13 +54,16 @@ sha256sum \
   "$runtime/qwen38_27b_materiality_priority_amendment_v3.json" \
   "$runtime/qwen38_27b_text_graph_scope_amendment_v1.json" \
   "$runtime/qwen38_27b_llamacpp_ternary_controls_preregistration_v1.json" \
+  "$runtime/qwen38_27b_llamacpp_ternary_controls_execution_amendment_v1.json" \
   "$runtime/run_qwen38_27b_llamacpp_ternary_controls_v1.sh" \
   "$runtime/eval_qwen38_27b_llamacpp_ternary_control_v1.sh" \
   clark_quantize/test_qwen38_llamacpp_ternary_controls_preregistration.py \
+  clark_quantize/test_qwen38_llamacpp_ternary_controls_execution.py \
   > "$state/source.sha256"
 
 "$python_bin" -m pytest -q \
   clark_quantize/test_qwen38_llamacpp_ternary_controls_preregistration.py \
+  clark_quantize/test_qwen38_llamacpp_ternary_controls_execution.py \
   > "$state/tests.stdout" 2> "$state/tests.stderr"
 
 while :; do
@@ -78,7 +81,7 @@ done
 free -b > "$state/memory-before.txt"
 df -B1 /workspace > "$state/disk-before.txt"
 REPO="$repo" PYTHON_BIN="$python_bin" \
-  "$runtime/run_qwen38_27b_llamacpp_ternary_controls_v1.sh" \
+  bash "$runtime/run_qwen38_27b_llamacpp_ternary_controls_v1.sh" \
   > "$state/run.stdout" 2> "$state/run.stderr"
 free -b > "$state/memory-after.txt"
 df -B1 /workspace > "$state/disk-after.txt"
