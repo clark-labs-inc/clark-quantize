@@ -1,0 +1,20 @@
+ ggml/include/ggml.h                 |   5 +-
+ ggml/src/ggml-common.h              |  19 +++++
+ ggml/src/ggml-cpu/arch-fallback.h   |   6 ++
+ ggml/src/ggml-cpu/arch/x86/quants.c | 154 ++++++++++++++++++++++++++++++++++++
+ ggml/src/ggml-cpu/ggml-cpu.c        |   9 +++
+ ggml/src/ggml-cpu/ops.cpp           |   7 ++
+ ggml/src/ggml-cpu/quants.c          |  40 ++++++++++
+ ggml/src/ggml-cpu/quants.h          |   5 ++
+ ggml/src/ggml-quants.c              | 135 +++++++++++++++++++++++++++++++
+ ggml/src/ggml-quants.h              |   5 ++
+ ggml/src/ggml.c                     |  16 ++++
+ gguf-py/gguf/constants.py           |   5 ++
+ include/llama.h                     |   1 +
+ src/llama-model-loader.cpp          |   2 +
+ src/llama-quant.cpp                 |   2 +
+ tests/CMakeLists.txt                |   4 +
+ tests/test-backend-ops.cpp          |   7 ++
+ tests/test-quantize-fns.cpp         |   3 +-
+ tools/quantize/quantize.cpp         |   1 +
+ 19 files changed, 424 insertions(+), 2 deletions(-)
