@@ -16,6 +16,10 @@ V12_PREREG = RUNTIME / "qwen38_27b_cq3_avx2_dual_chain_v12.json"
 V12_HARNESS_PATCH = (
     RUNTIME / "kernels/llama_cpp_cq3_avx2_dual_chain_tolerant_harness_v12.patch"
 )
+V12_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_cq3_avx2_dual_chain_v12/terminal-decision.json"
+)
 
 
 def test_dual_chain_prereg_targets_only_qwen38_27b_cq3() -> None:
@@ -68,3 +72,15 @@ def test_v12_replaces_bit_identity_with_bounded_error_before_timing() -> None:
     assert "max_scaled_delta <= 2e-5f" in harness
     assert "exact_control_candidate ? \"true\" : \"false\"" in harness
     assert "max_abs_delta" in harness
+
+
+def test_v12_stops_before_timing_on_full_shape_error_bound() -> None:
+    receipt = json.loads(V12_RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["passed"] is False
+    assert receipt["checks"]["assembly_has_two_independent_accumulator_registers"] is True
+    assert receipt["checks"]["full_shape_max_scaled_delta_at_most_2e_5"] is False
+    assert receipt["failure"]["population"]["total_outputs"] == 34_816
+    assert receipt["performance"]["ran"] is False
+    assert "No zero" in receipt["performance"]["reason"]
