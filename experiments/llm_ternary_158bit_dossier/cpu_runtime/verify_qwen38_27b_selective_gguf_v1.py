@@ -28,10 +28,16 @@ RECURRENT_SUFFIXES = (
     ".ssm_alpha.weight",
     ".ssm_beta.weight",
 )
+RECURRENT_AND_ATTENTION_Q_SUFFIXES = RECURRENT_SUFFIXES + (".attn_q.weight",)
 
 
 def is_selected(name: str, profile: str) -> bool:
-    suffixes = SELECTED_SUFFIXES if profile == "all_q8_family" else RECURRENT_SUFFIXES
+    if profile == "all_q8_family":
+        suffixes = SELECTED_SUFFIXES
+    elif profile == "recurrent_only":
+        suffixes = RECURRENT_SUFFIXES
+    else:
+        suffixes = RECURRENT_AND_ATTENTION_Q_SUFFIXES
     return name.startswith("blk.") and name.endswith(suffixes)
 
 
@@ -76,7 +82,11 @@ def main() -> int:
     parser.add_argument("--expected-selected", type=int, default=288)
     parser.add_argument(
         "--selection-profile",
-        choices=("all_q8_family", "recurrent_only"),
+        choices=(
+            "all_q8_family",
+            "recurrent_only",
+            "recurrent_and_attention_q",
+        ),
         default="all_q8_family",
     )
     parser.add_argument(

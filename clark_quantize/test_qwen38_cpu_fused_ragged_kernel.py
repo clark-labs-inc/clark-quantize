@@ -113,6 +113,13 @@ Q4_K_ROWMAJOR_QUALITY_V7_RECEIPT = (
 RECURRENT_Q4_K_ATTENTION_Q8_V8_PREREG = (
     RUNTIME / "qwen38_27b_recurrent_q4_k_attention_q8_rowmajor_v8.json"
 )
+RECURRENT_Q4_K_ATTENTION_Q8_V8_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_recurrent_q4_k_attention_q8_rowmajor_v8/terminal-decision.json"
+)
+ATTENTION_KV_Q8_Q4_K_V9_PREREG = (
+    RUNTIME / "qwen38_27b_attention_kv_q8_q4_k_rowmajor_v9.json"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -360,6 +367,34 @@ def test_recurrent_v8_keeps_attention_q8_and_requires_control_level_quality() ->
     serving = prereg["sequential_gates"]["gate_4_paired_serving"]
     assert serving["minimum_candidate_over_control_mtp3_tps"] >= 1.18
     quality = prereg["sequential_gates"]["gate_5_quick_quality"]
+    assert quality["minimum_candidate_correct"] >= 9
+    assert quality["cute_quick_denominator"] == 20
+
+
+def test_recurrent_v8_recovers_cute_but_fails_mtp_gate() -> None:
+    receipt = json.loads(RECURRENT_Q4_K_ATTENTION_Q8_V8_RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["passed"] is False
+    assert receipt["artifact"]["remaining_q8_tensor_count"] == 48
+    assert receipt["real_model_four_token_graph"]["candidate_over_control_speedup"] > 1.28
+    assert receipt["paired_serving"]["candidate_over_control_mtp3"] < 1.18
+    assert receipt["paired_serving"]["mtp3_exact_token_parity_with_own_target"] is True
+    assert receipt["quick_quality_diagnostic"]["cute_quick"]["candidate_correct"] == 10
+
+
+def test_v9_preserves_only_attention_kv_and_requires_mtp_and_quality() -> None:
+    prereg = json.loads(ATTENTION_KV_Q8_Q4_K_V9_PREREG.read_text())
+    artifact = prereg["artifact_contract"]
+    assert artifact["selection_profile"] == "recurrent_and_attention_q"
+    assert artifact["selected_tensor_count"] == 256
+    assert artifact["selected_weight_count"] == 6566707200
+    assert artifact["remaining_q8_tensor_count"] == 32
+    assert artifact["expected_bytes_saved"] == 3283353600
+    graph = prereg["sequential_gates"]["gate_3_graph"]
+    assert graph["minimum_candidate_over_all_q4_k_v7_fraction"] >= 0.98
+    serving = prereg["sequential_gates"]["gate_4_paired_serving"]
+    assert serving["minimum_candidate_over_control_mtp3_tps"] >= 1.20
+    quality = prereg["sequential_gates"]["gate_5_quality"]
     assert quality["minimum_candidate_correct"] >= 9
     assert quality["cute_quick_denominator"] == 20
 
