@@ -43,8 +43,14 @@ prepare_worktree() {
 mkdir -p "$run_dir" "$state_dir"
 cd "$repo"
 if [[ -e "$state_dir/KERNEL_COMPLETE" ]]; then
-  echo "ragged Q4_K kernel experiment is already complete"
-  exit 0
+  /workspace/venvs/quant-cpu/bin/python - "$state_dir/summary.json" <<'PY'
+import json
+import sys
+
+summary = json.load(open(sys.argv[1]))
+print(json.dumps({"event": "terminal_resumed", "passed": summary["passed"]}))
+raise SystemExit(0 if summary["passed"] else 2)
+PY
 fi
 if [[ -n "$(git status --short)" ]]; then
   echo "kernel experiment requires a clean Clark source checkout" >&2
@@ -92,6 +98,7 @@ cmake -S "$candidate_source" -B "$candidate_build" "${cmake_args[@]}"
 cmake --build "$candidate_build" --target test-backend-ops llama-server -j 4
 
 git -C "$control_source" rev-parse HEAD > "$state_dir/llama.commit"
+git rev-parse HEAD > "$state_dir/source.commit"
 sha256sum "$patch" "$control_build/bin/test-backend-ops" \
   "$candidate_build/bin/test-backend-ops" "$control_build/bin/llama-server" \
   "$candidate_build/bin/llama-server" > "$state_dir/inputs.sha256"
