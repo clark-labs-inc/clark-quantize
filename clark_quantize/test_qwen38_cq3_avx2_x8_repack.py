@@ -7,6 +7,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREREG = RUNTIME / "qwen38_27b_cq3_avx2_x8_repack_v15.json"
+PATCH = RUNTIME / "kernels/llama_cpp_cq3_avx2_x8_repack_v15.patch"
 
 
 def test_v15_is_storage_neutral_and_qwen38_27b_only() -> None:
@@ -48,3 +49,9 @@ def test_v15_maps_vector_lanes_to_outputs_without_dense_weights() -> None:
     assert algebra["chunks_per_128_weight_group"] == 8
     assert algebra["high_precision_weights_materialized"] is False
     assert "maddubs" in algebra["decode"]
+    source = PATCH.read_text()
+    assert "block_cq3_0x8" in source
+    assert "8*sizeof(block_cq3_0)" in source
+    assert "ggml_repack_cq3_0_to_cq3_0x8" in source
+    assert "_mm256_set1_epi32(values_word0)" in source
+    assert "_mm256_storeu_ps(s + row, sumf)" in source
