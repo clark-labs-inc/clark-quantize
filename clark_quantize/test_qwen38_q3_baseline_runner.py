@@ -14,6 +14,11 @@ Q3_K_L_PREREG = (
     / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
     / "qwen38_27b_q3_k_l_baseline_v1.json"
 )
+Q3_K_M_TERMINAL = (
+    REPO
+    / "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts"
+    / "qwen38_27b_q3_k_m_baseline_v1/terminal-decision.json"
+)
 
 
 def test_q3_baseline_is_qwen38_only_and_pins_the_bf16_parent() -> None:
@@ -60,3 +65,33 @@ def test_q3_k_l_is_one_adjacent_qwen38_control_with_a_stop_rule() -> None:
     assert payload["scope"]["no_iq3_or_additional_stock_three_bit_sweep_after_this_run"] is True
     assert payload["trigger"]["q3_k_m_cute_correct_of_20"] == 6
     assert "stop stock three-bit" in payload["stop_rules"][0]
+
+
+def test_q3_k_m_terminal_receipt_preserves_exact_negative_denominators() -> None:
+    import json
+
+    payload = json.loads(Q3_K_M_TERMINAL.read_text())
+    assert payload["terminal"] is True
+    assert payload["infrastructure_valid"] is True
+    assert payload["decision"] == "reject_before_speed_and_mmlu"
+    assert payload["quality"]["cute"] == {
+        "correct": 6,
+        "n": 20,
+        "required": 7,
+        "passed": False,
+        "breakdown": {
+            "contains_char": "4/4",
+            "ins_char": "0/4",
+            "del_char": "2/4",
+            "swap_char": "0/4",
+            "sub_char": "0/4",
+        },
+        "report_content_sha256": "a531360940ec35c7c31046ec1e3d6100ee260c9731a0484b55e161462024949c",
+    }
+    assert payload["quality"]["math500"]["correct"] == 3
+    assert payload["quality"]["math500"]["n"] == 8
+    assert payload["quality"]["code_trace"]["correct"] == 4
+    assert payload["quality"]["code_trace"]["n"] == 6
+    assert payload["quality"]["wikitext"]["ppl"] == 6.2277
+    assert payload["gates"]["speed_run"] is False
+    assert payload["gates"]["mmlu_run"] is False
