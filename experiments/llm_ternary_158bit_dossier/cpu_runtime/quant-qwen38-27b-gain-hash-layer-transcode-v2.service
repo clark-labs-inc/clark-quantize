@@ -1,0 +1,23 @@
+[Unit]
+Description=Retry direct complete-layer Qwen3.8-27B gain-hash transcode after quality parents
+After=network-online.target quant-qwen38-27b-gain-hash-routing-v1.service quant-qwen38-27b-mask64-gain-hash-fused-v1.service quant-qwen38-27b-activation-gain-hash-residual-v1.service
+Wants=network-online.target quant-qwen38-27b-gain-hash-routing-v1.service quant-qwen38-27b-mask64-gain-hash-fused-v1.service quant-qwen38-27b-activation-gain-hash-residual-v1.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-gain-transcode-v2
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+Environment=IDLE_TIMEOUT_SECONDS=43200
+ExecStart=/workspace/clark-quantize-gain-transcode-v2/experiments/llm_ternary_158bit_dossier/cpu_runtime/watch_qwen38_27b_gain_hash_layer_transcode_v2.sh
+CPUQuota=100%
+AllowedCPUs=0
+MemoryMax=1G
+MemorySwapMax=0
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

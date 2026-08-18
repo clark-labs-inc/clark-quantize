@@ -1,0 +1,60 @@
+{
+  "schema": "qwen38_27b_gain_hash_layer_transcode_retry_amendment_v2",
+  "status": "frozen_before_v2_authoritative_x86_retry",
+  "frozen_at_utc": "2026-08-18T01:53:00Z",
+  "parent_preregistration": {
+    "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_gain_hash_layer_transcode_preregistration_v1.json",
+    "sha256": "821bcdc1fec65cb28b8648cb62ebb0cfd8bf4fa27b9de5e4004befc7d4d686be"
+  },
+  "v1_infrastructure_invalid_observation": {
+    "unit": "quant-qwen38-27b-gain-hash-layer-transcode-v1.service",
+    "started_at_utc": "2026-08-18T01:50:17Z",
+    "failed_at_utc": "2026-08-18T01:50:18Z",
+    "systemd_result": "exit-code",
+    "exec_status": 2,
+    "watcher_message": "another llama.cpp workload is active",
+    "conflicting_process": "llama-bench Qwen3.8-27B Q4_K_M baseline prefill t2",
+    "benchmark_process_launched": false,
+    "result_receipt_created": false,
+    "scientific_classification": "infrastructure-invalid; neither a zero nor a completed transcode score",
+    "root_cause": "systemd After ordered the new start transaction after the already-started infrastructure service but did not wait for that active service to terminate"
+  },
+  "v2_harness_changes": {
+    "new_unit": "quant-qwen38-27b-gain-hash-layer-transcode-v2.service",
+    "new_result": "/workspace/quant-state/qwen38-27b-gain-hash-layer-transcode-v2.json",
+    "ordered_after": [
+      "quant-qwen38-27b-gain-hash-routing-v1.service",
+      "quant-qwen38-27b-mask64-gain-hash-fused-v1.service",
+      "quant-qwen38-27b-activation-gain-hash-residual-v1.service"
+    ],
+    "dependency_policy": "Wants plus After, so a parent rejection does not suppress this independent load-time benchmark",
+    "idle_admission": "poll every 30 seconds for no llama.cpp and no other Qwen Python compute process",
+    "idle_timeout_seconds": 43200,
+    "source_worktree": "separate clean detached worktree pinned by an expected.commit file",
+    "resource_envelope_unchanged": true,
+    "scientific_input_control_thresholds_unchanged": true
+  },
+  "unchanged_gate": {
+    "require_direct_output_hash_exact": true,
+    "require_dense_control_output_hash_exact": true,
+    "minimum_peak_rss_saving_bytes": 67108864,
+    "maximum_direct_peak_rss_bytes": 268435456,
+    "maximum_direct_median_seconds": 5.0,
+    "maximum_direct_slowdown_ratio_vs_dense_control": 1.75
+  },
+  "frozen_inputs": {
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_gain_hash_layer_transcode_v1.py",
+      "sha256": "e633b8e619c36ba408783f732777246971aa69e7cf57b16dcbcad5156bfb1caa"
+    },
+    "watcher_v2": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/watch_qwen38_27b_gain_hash_layer_transcode_v2.sh",
+      "sha256": "6719984081ab39a280c48053229fe52e0c29efaec2822c485f1875fc913c616d"
+    },
+    "service_v2": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/quant-qwen38-27b-gain-hash-layer-transcode-v2.service",
+      "sha256": "d9c88329f85882db324f7f7c7aa707ffc6e8013eef07288dc3cf2551a7a652de"
+    }
+  },
+  "claim_boundary": "orchestration-only retry amendment after an infrastructure-invalid launch; it changes no scientific input, control, metric, threshold, or claim"
+}
