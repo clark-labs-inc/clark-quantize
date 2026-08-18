@@ -89,6 +89,9 @@ Q8_N4_ORIENTATION_RECEIPT = (
 Q8_FAMILY_Q4_PREREG = (
     RUNTIME / "qwen38_27b_q8_family_q4_k_transcode_v1.json"
 )
+Q8_FAMILY_Q4_VERIFIER = (
+    RUNTIME / "verify_qwen38_27b_selective_gguf_v1.py"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -220,6 +223,17 @@ def test_q8_family_q4_screen_is_material_disk_bounded_and_quality_gated() -> Non
     assert quality["mmlu_denominator"] == 64
     assert quality["paired_frozen_math500_subset_required"] is True
     assert "QAT" in " ".join(prereg["recovery_if_quality_fails"])
+
+
+def test_selective_gguf_verifier_hashes_nonselected_payloads_and_exact_scope() -> None:
+    source = Q8_FAMILY_Q4_VERIFIER.read_text()
+    assert 'before_type != "Q8_0" or after_type != "Q4_K"' in source
+    assert 'candidate_types.get("Q8_0", 0) == 0' in source
+    assert "control_nonselected_sha256 == candidate_nonselected_sha256" in source
+    assert "selected_weight_count == 6_734_479_360" in source
+    assert "actual_bytes_saved == args.expected_bytes_saved" in source
+    assert "selected_payload_saved == args.expected_bytes_saved" in source
+    assert "all(checks.values())" in source
 
 
 def test_fused_patch_shares_q4_decode_and_preserves_row_accumulators() -> None:
