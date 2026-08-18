@@ -76,6 +76,9 @@ Q8_TINYBLAS_PROFILE_RECEIPT = (
 Q8_N4_ORIENTATION_PREREG = (
     RUNTIME / "qwen38_27b_q8_q8_n4_orientation_avx2_v1.json"
 )
+Q8_N4_ORIENTATION_PATCH = (
+    RUNTIME / "kernels/llama_cpp_q8_q8_n4_orientation_avx2_v1.patch"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -143,6 +146,18 @@ def test_q8_n4_orientation_candidate_is_material_and_exactness_gated() -> None:
         "minimum_candidate_over_control_mtp3_accepted_tps"
     ] >= 1.08
     assert gates["gate_4_quality"]["math_or_mmlu_style_gate_required_before_promotion"]
+
+
+def test_q8_n4_orientation_patch_is_type_shape_and_isa_scoped() -> None:
+    source = Q8_N4_ORIENTATION_PATCH.read_text()
+    assert "std::is_same_v<TA, block_q8_0>" in source
+    assert "std::is_same_v<TB, block_q8_0>" in source
+    assert "if (n - n0 == 4)" in source
+    assert "mc = 2" in source
+    assert "nc = 4" in source
+    assert "gemmMx4<2>(m0, m, n0, n)" in source
+    assert "defined(__AVX2__) && defined(__F16C__)" in source
+    assert source.count("gemmMx4<2>(m0, m, n0, n)") == 1
 
 
 def test_fused_patch_shares_q4_decode_and_preserves_row_accumulators() -> None:
