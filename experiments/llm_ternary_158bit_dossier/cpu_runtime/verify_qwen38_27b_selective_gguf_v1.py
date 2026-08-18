@@ -66,6 +66,7 @@ def main() -> int:
     parser.add_argument("--candidate", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--expected-selected", type=int, default=288)
+    parser.add_argument("--expected-target-type", default="Q4_K")
     parser.add_argument("--expected-bytes-saved", type=int, default=3_367_239_680)
     args = parser.parse_args()
 
@@ -99,7 +100,7 @@ def main() -> int:
                 structural_mismatches.append(f"{name}:shape")
                 continue
             if name in selected_names:
-                if before_type != "Q8_0" or after_type != "Q4_K":
+                if before_type != "Q8_0" or after_type != args.expected_target_type:
                     structural_mismatches.append(
                         f"{name}:type:{before_type}->{after_type}"
                     )
@@ -133,8 +134,9 @@ def main() -> int:
         "selected_types_exact": not structural_mismatches,
         "selected_weight_count_exact": selected_weight_count == 6_734_479_360,
         "q8_removed": candidate_types.get("Q8_0", 0) == 0,
-        "q4_count_increased_by_selected": (
-            candidate_types.get("Q4_K", 0) - control_types.get("Q4_K", 0)
+        "target_count_increased_by_selected": (
+            candidate_types.get(args.expected_target_type, 0)
+            - control_types.get(args.expected_target_type, 0)
             == args.expected_selected
         ),
         "nonselected_payloads_byte_identical": (
@@ -156,6 +158,7 @@ def main() -> int:
         },
         "selected_tensor_count": len(selected_names),
         "selected_weight_count": selected_weight_count,
+        "expected_target_type": args.expected_target_type,
         "selected_payload_bytes_saved": selected_payload_saved,
         "artifact_bytes_saved": actual_bytes_saved,
         "control_type_counts": control_types,

@@ -92,6 +92,13 @@ Q8_FAMILY_Q4_PREREG = (
 Q8_FAMILY_Q4_VERIFIER = (
     RUNTIME / "verify_qwen38_27b_selective_gguf_v1.py"
 )
+Q8_FAMILY_Q4_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_q8_family_q4_k_transcode_v1/terminal-decision.json"
+)
+Q8_FAMILY_Q40_PREREG = (
+    RUNTIME / "qwen38_27b_q8_family_q4_0_fastpath_v2.json"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -227,13 +234,49 @@ def test_q8_family_q4_screen_is_material_disk_bounded_and_quality_gated() -> Non
 
 def test_selective_gguf_verifier_hashes_nonselected_payloads_and_exact_scope() -> None:
     source = Q8_FAMILY_Q4_VERIFIER.read_text()
-    assert 'before_type != "Q8_0" or after_type != "Q4_K"' in source
+    assert 'parser.add_argument("--expected-target-type", default="Q4_K")' in source
+    assert 'before_type != "Q8_0" or after_type != args.expected_target_type' in source
+    assert 'candidate_types.get(args.expected_target_type, 0)' in source
     assert 'candidate_types.get("Q8_0", 0) == 0' in source
     assert "control_nonselected_sha256 == candidate_nonselected_sha256" in source
     assert "selected_weight_count == 6_734_479_360" in source
     assert "actual_bytes_saved == args.expected_bytes_saved" in source
     assert "selected_payload_saved == args.expected_bytes_saved" in source
     assert "all(checks.values())" in source
+
+
+def test_q8_family_q4_k_is_terminal_mixed_negative() -> None:
+    receipt = json.loads(Q8_FAMILY_Q4_RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["passed"] is False
+    assert receipt["artifact"]["nonselected_payloads_byte_identical"] is True
+    assert receipt["free_generation_canary"]["total_tokens"] == 384
+    assert receipt["real_model_four_token_graph"]["control_over_candidate"] >= 1.08
+    assert receipt["paired_serving"]["candidate_over_control_target"] > 1.18
+    assert receipt["paired_serving"]["candidate_over_control_mtp3"] < 1.08
+    assert receipt["quality"]["cute_quick"]["candidate_correct"] == 8
+    assert receipt["quality"]["cute_quick"]["candidate_denominator"] == 20
+    assert receipt["quality"]["wikitext_quick"]["candidate_over_control"] <= 1.05
+    assert receipt["quality"]["mmlu"]["ran"] is False
+
+
+def test_q4_0_fastpath_must_beat_control_and_prior_q4_k_candidate() -> None:
+    prereg = json.loads(Q8_FAMILY_Q40_PREREG.read_text())
+    assert prereg["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert prereg["scope"]["qwen_4b_compute_forbidden"] is True
+    assert prereg["artifact_contract"]["selected_tensor_count"] == 288
+    assert prereg["artifact_contract"]["maximum_retained_candidates"] == 1
+    graph = prereg["sequential_gates"]["gate_3_real_model_four_token_graph"]
+    assert graph["minimum_candidate_over_control_speedup"] >= 1.10
+    assert graph["minimum_candidate_over_prior_q4_k_speedup"] >= 1.03
+    serving = prereg["sequential_gates"]["gate_4_target_and_mtp3"]
+    assert serving["minimum_candidate_over_control_target_tps"] >= 1.20
+    assert serving["minimum_candidate_over_control_mtp3_tps"] >= 1.08
+    assert serving["minimum_candidate_over_prior_q4_k_mtp3_tps"] >= 1.03
+    quality = prereg["sequential_gates"]["gate_5_quality"]
+    assert quality["cute_quick_denominator"] == 20
+    assert quality["maximum_wikitext_ppl_ratio"] <= 1.05
 
 
 def test_fused_patch_shares_q4_decode_and_preserves_row_accumulators() -> None:
