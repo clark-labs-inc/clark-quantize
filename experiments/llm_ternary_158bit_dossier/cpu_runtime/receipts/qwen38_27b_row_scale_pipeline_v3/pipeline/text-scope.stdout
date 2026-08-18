@@ -1,0 +1,118 @@
+{
+  "amendment": {
+    "path": "/workspace/clark-quantize-row-scale-v3/experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_text_graph_scope_amendment_v1.json",
+    "sha256": "beb23c64d4d209a60d52976ab7746698f489bfc4122209f1a4d6f005189abe13"
+  },
+  "checkpoint": {
+    "download_receipt": "/workspace/models/Qwen3.8-27B/CLARK_DOWNLOAD_RECEIPT.json",
+    "download_receipt_sha256": "379cb8199efbb805578efcf88d006b5395ed19e559d950d36a3b492271ad5492",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "inventory_sha256": "8533a0edfba093faf2a865391405408461613b92ef83e8d511436f2ed96bc14d"
+  },
+  "checks": {
+    "text_matches_llama_cpp_model_n_params": true,
+    "text_plus_vision_plus_mtp_equals_checkpoint": true,
+    "text_storage_bpw_at_most_1_64": true
+  },
+  "claim_boundary": "exact graph-scope and projected byte reconciliation only; no scale reconstruction, artifact, capability, throughput advantage, or breakthrough",
+  "complete": true,
+  "created_at_utc": "2026-08-18T05:54:35Z",
+  "llama_cpp_q4_evidence": {
+    "inputs_path": "/workspace/quant-state/qwen38-27b-layer0-mlp-cq3-paired-throughput-v1/inputs.sha256",
+    "inputs_sha256": "2532d911696da529b23b7836d587d7dcc44b5d124d83830bf30b0ec277413914",
+    "model_n_params": 26895998464,
+    "model_sha256_from_inputs_contract": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "path": "/workspace/quant-state/qwen38-27b-layer0-mlp-cq3-paired-throughput-v1/baseline-prefill-t1.json",
+    "sha256": "77e0dbd4c696ea53009ab518bc83ebde7ccbfe1f5eaf9cf5e2c3e84c660683b2"
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "projected_text_storage": {
+    "bytes": {
+      "alignment_padding": 22080,
+      "auxiliary_model_files": 23108348,
+      "complete_bundle": 5471531964,
+      "retained_exact_payload": 1358848,
+      "retained_exact_sections_aligned": 1361920,
+      "scale_payload_anchors_and_codebooks": 115099712,
+      "scale_sections_aligned": 115114112,
+      "tensor_table_and_layout_metadata": 115776,
+      "ternary_code_payload": 5331827200,
+      "ternary_code_sections_aligned": 5331831808
+    },
+    "effective_bits_per_total_parameter": 1.6274634968688255,
+    "parameters": {
+      "retained_exact": 679424,
+      "ternary": 26895319040,
+      "total": 26895998464
+    },
+    "scales": {
+      "count": 210595840,
+      "fp16_codebook_bytes": 17472,
+      "fp16_row_anchor_bytes": 9784320,
+      "fp16_row_anchor_count": 4892160,
+      "index_bytes": 105297920
+    },
+    "strategy": {
+      "codec": "base3",
+      "fp16_row_anchor": true,
+      "group_semantics": "fixed",
+      "group_size": 128,
+      "name": "base3_group128_row_normalized_codebook4",
+      "scale_bits": 4,
+      "scale_codebook": true
+    },
+    "tensors": {
+      "retained_exact": 305,
+      "ternary": 546,
+      "total": 851
+    },
+    "ternary_code_payload_bits_per_ternary_parameter": 1.5859494931650382
+  },
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_text_graph_scope_receipt_v1",
+  "scopes": {
+    "checkpoint": {
+      "group_128_scales": 217521520,
+      "output_rows": 5241584,
+      "parameters": 27781427952,
+      "rank_ge_2_parameters": 27780313088,
+      "rank_ge_2_tensors": 666,
+      "retained_exact_parameters": 1114864,
+      "retained_exact_tensors": 533,
+      "tensors": 1199
+    },
+    "mtp_nextn": {
+      "group_128_scales": 3317760,
+      "output_rows": 64512,
+      "parameters": 424699392,
+      "rank_ge_2_parameters": 424673280,
+      "rank_ge_2_tensors": 8,
+      "retained_exact_parameters": 26112,
+      "retained_exact_tensors": 7,
+      "tensors": 15
+    },
+    "text": {
+      "group_128_scales": 210595840,
+      "output_rows": 4892160,
+      "parameters": 26895998464,
+      "rank_ge_2_parameters": 26895319040,
+      "rank_ge_2_tensors": 546,
+      "retained_exact_parameters": 679424,
+      "retained_exact_tensors": 305,
+      "tensors": 851
+    },
+    "vision": {
+      "group_128_scales": 3607920,
+      "output_rows": 284912,
+      "parameters": 460730096,
+      "rank_ge_2_parameters": 460320768,
+      "rank_ge_2_tensors": 112,
+      "retained_exact_parameters": 409328,
+      "retained_exact_tensors": 221,
+      "tensors": 333
+    }
+  },
+  "terminal": true,
+  "text_inventory_sha256": "23a5c5137b7893b6d551fcc0085c4a994bf7ae158938d57974d32c7ed856361f",
+  "valid": true
+}
