@@ -66,7 +66,7 @@ if [[ -n "$conflicts" ]]; then
   exit 2
 fi
 
-require_sha256 "$pivot" 5271fc03c09688cf9221fbb24ca6f553c004b29356f240cf40da5374f977e625
+require_sha256 "$pivot" e56d6ccddb6959b65a75b5ba22592b6381b910887ac8d89c94b1d1d3dd14287f
 require_sha256 "$cute_manifest" 19dd73eedf737d11f7c94d039822de62314abf31e3fb739a9a875fe65c5bbd16
 require_sha256 "$math_code_manifest" 1ec0b41ce3ca3597d65013ac0c8a48c208c4e03b05f0109be61319252c09dab0
 require_sha256 "$mmlu_manifest" e3e38ccb1bf35c56b600f1cf39bbd0ea38072f2b4bdd5fc36146c143fb658dba

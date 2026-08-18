@@ -72,6 +72,7 @@
     "base3_hot_decode_forbidden": true
   },
   "promotion_gate": {
+    "classification": "admission floor for a practical baseline or research candidate; not sufficient for a breakthrough claim",
     "quality": {
       "minimum_cute_correct_of_20": 7,
       "minimum_math500_correct_of_8": 4,
@@ -91,6 +92,31 @@
       "fixed_bits_per_weight_ceiling": null,
       "all_modes_scales_metadata_and_compute_images_counted": true
     }
+  },
+  "breakthrough_gate": {
+    "quality": {
+      "minimum_cute_correct_of_20": 8,
+      "minimum_math500_correct_of_8": 4,
+      "minimum_code_correct_of_6": 4,
+      "minimum_mmlu_correct_of_64": 50,
+      "maximum_wikitext_ppl_ratio_vs_q4": 1.05,
+      "near_bf16_validation_required_when_memory_appropriate_host_is_available": true
+    },
+    "performance": {
+      "minimum_four_physical_core_decode_tokens_per_second": 2.75,
+      "minimum_decode_speedup_vs_q4": 1.4,
+      "stretch_four_physical_core_decode_tokens_per_second": 3.2,
+      "minimum_paired_decode_row_speedup_vs_q4": 1.1,
+      "minimum_prefill_speed_fraction_vs_q4": 0.95
+    },
+    "claim_requirements": [
+      "complete runnable Qwen3.8-27B text model",
+      "exact trained algebra executed by native AMD CPU kernels",
+      "strong Q3_K_M and Q4_K_M controls on the same node",
+      "honest model compute-image RSS startup and energy accounting",
+      "literature audit supporting a precisely bounded novelty statement",
+      "independent reproduction from pinned source and model artifacts"
+    ]
   },
   "stop_rules": [
     "raw full-model ternary PTQ cannot promote regardless of speed",

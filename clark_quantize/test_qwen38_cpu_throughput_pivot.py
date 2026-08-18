@@ -42,6 +42,16 @@ def test_pivot_keeps_capability_and_material_speed_gates() -> None:
     assert payload["research_candidate"]["post_training_required_for_two_bit_bulk"] is True
 
 
+def test_breakthrough_gate_is_nearly_lossless_and_materially_faster() -> None:
+    gate = _payload()["breakthrough_gate"]
+    assert gate["quality"]["maximum_wikitext_ppl_ratio_vs_q4"] <= 1.05
+    assert gate["quality"]["minimum_mmlu_correct_of_64"] >= 50
+    assert gate["performance"]["minimum_four_physical_core_decode_tokens_per_second"] >= 2.75
+    assert gate["performance"]["minimum_decode_speedup_vs_q4"] >= 1.40
+    assert gate["performance"]["stretch_four_physical_core_decode_tokens_per_second"] >= 3.2
+    assert len(gate["claim_requirements"]) == 6
+
+
 def test_q3_baseline_is_pinned_and_not_presented_as_research() -> None:
     baseline = _payload()["first_practical_baseline"]
     assert baseline["format"] == "Q3_K_M"
