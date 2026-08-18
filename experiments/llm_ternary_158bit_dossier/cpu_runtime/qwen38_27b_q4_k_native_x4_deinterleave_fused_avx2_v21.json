@@ -1,0 +1,136 @@
+{
+  "schema": "qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_preregistration_v21",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_v21",
+  "frozen_at": "2026-08-18T21:32:09Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "target_quantization": "Q4_K_M",
+    "official_mtp_draft_quantization": "Q4_0",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "isa": "AVX2/FMA/F16C",
+    "qwen_4b_compute_forbidden": true
+  },
+  "evidence_anchors": {
+    "profile": {
+      "receipt": "receipts/qwen38_27b_mtp3_four_row_profile_v1/terminal-decision.json",
+      "four_row_q4_k_cycle_fraction": 0.4498,
+      "maximum_whole_request_speedup_if_kernel_were_free": 1.8175
+    },
+    "promoted_control": {
+      "runtime": "/workspace/build/llama.cpp-q4k-fused-ragged-avx2-v2",
+      "result": "The exact one-to-three-row Q4_K kernel improved shape-matched MTP2 accepted throughput by 1.148x with token parity."
+    },
+    "fast_but_arithmetic_changing_negative": {
+      "receipt": "receipts/qwen38_27b_q4_k_fused_four_row_rowmajor_avx2_v5/terminal-decision.json",
+      "result": "Ordinary row-major requantization removed token-zero collapse and exposed a 1.129x MTP3 diagnostic, but changed trajectories and missed its frozen graph gate."
+    },
+    "native_gemm_rewrite_negative": {
+      "receipt": "receipts/qwen38_27b_q4_k_gemm_half_permute_avx2_v6/terminal-decision.json",
+      "result": "An algebra-preserving native GEMM lane rewrite improved the four-row graph by only 1.0231x and was rejected."
+    }
+  },
+  "hypothesis": "The useful speed in the rejected row-major four-row kernel came from sharing each Q4_K weight decode across four output rows, not from changing activation quantization. Exactly deinterleaving the already-quantized native block_q8_Kx4 buffer into four ordinary block_q8_K views once per operator, then calling the fused four-accumulator AVX2 kernel, should retain native Q8_K codes, scales, and sums while recovering most of that speed ceiling.",
+  "layout_contract": {
+    "source": "block_q8_Kx4",
+    "destination": "four contiguous block_q8_K rows",
+    "block_sizes_bytes": {
+      "block_q8_Kx4": 1168,
+      "four_block_q8_K": 1168
+    },
+    "inverse_mapping": {
+      "d": "dst[row][block].d = src[block].d[row]",
+      "qs": "dst[row][block].qs[k] = src[block].qs[(k / 8) * 32 + row * 8 + (k % 8)]",
+      "bsums": "dst[row][block].bsums[group16] = src[block].bsums[row * 16 + group16]"
+    },
+    "forbidden_changes": [
+      "No float-to-Q8_K requantization is allowed after native block_q8_Kx4 production.",
+      "No Q4_K weight, model file, tokenizer, sampler, draft model, or cache representation may change.",
+      "No path outside exact-four-row Q4_K 8x8 matrix multiplication may change.",
+      "No high-precision activation or weight materialization may be introduced."
+    ],
+    "workspace": "One bounded Q8_K-sized transient buffer is allowed. It must be allocated by the graph workspace contract, populated once after native quantization, shared read-only by worker threads, and included in memory receipts."
+  },
+  "implementation": {
+    "base": "Pinned llama.cpp plus cache-order ragged dispatch v1 and promoted fused one-to-three-row AVX2 v2",
+    "candidate": "The base plus the rejected v3 four-accumulator arithmetic, repaired by a byte-exact native block_q8_Kx4 deinterleave before dispatch.",
+    "candidate_patch": "kernels/llama_cpp_q4_k_native_x4_deinterleave_fused_avx2_v21.patch",
+    "layout_test": "tests/test_q8_k_x4_deinterleave_v21.cpp",
+    "run_harness": "run_qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_v21.sh",
+    "summary_harness": "summarize_qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_v21.py"
+  },
+  "controls": {
+    "cpu_affinity": "0,2,4,6",
+    "threads": 4,
+    "context": 512,
+    "batch": 128,
+    "ubatch": 64,
+    "paired_process_order": "AB,BA repeated three times",
+    "graph_repetitions_per_process": 7,
+    "target_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "draft_sha256": "051a1764cff8c4f3ee6ae8b00593a0364c7539c67fa50ffc58f3f96509fca38e",
+    "frequency_monitor_required": true,
+    "service_unit_required": true,
+    "service_restart_policy": "no"
+  },
+  "sequential_gates": {
+    "gate_1_layout_and_backend_correctness": {
+      "seeded_native_blocks": 1024,
+      "required_special_cases": [
+        "all-zero",
+        "signed int8 extrema",
+        "alternating signs",
+        "distinct per-row scales",
+        "distinct per-row group sums"
+      ],
+      "source_bytes_unchanged": true,
+      "d_qs_bsums_inverse_mapping_bit_exact": true,
+      "backend_reference_cases": 3,
+      "backend_all_must_pass": true
+    },
+    "gate_2_four_row_graph": {
+      "paired_processes_per_runtime": 6,
+      "samples_per_process": 7,
+      "minimum_control_over_candidate_latency_ratio": 1.10,
+      "maximum_candidate_process_median_mad_fraction": 0.03,
+      "maximum_frequency_range_mhz": 100
+    },
+    "gate_3_unchanged_target_only_canary": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "control_vs_candidate_tokens_exact": true,
+      "candidate_zero_token_fraction_must_be_less_than": 0.01,
+      "maximum_candidate_tps_regression_fraction": 0.02
+    },
+    "gate_4_mtp3_system": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "minimum_candidate_over_control_accepted_tps": 1.05,
+      "candidate_committed_tokens_must_equal_denominator": true,
+      "record_exact_trajectory_and_draft_acceptance_differences": true,
+      "trajectory_difference_is_not_an_automatic_rejection_after_numeric_and_capability_gates"
+        : true
+    },
+    "gate_5_quality": {
+      "cute_quick_denominator": 20,
+      "candidate_minimum_correct": 9,
+      "candidate_may_trail_control_by_at_most": 1,
+      "wikitext_required": true,
+      "maximum_candidate_over_control_perplexity_ratio": 1.005,
+      "math500_smoke_required_if_cute_or_wikitext_is_ambiguous": true
+    }
+  },
+  "stop_rules": [
+    "Reject immediately if the byte-defined layout inverse or any backend reference case fails.",
+    "Reject before generation if the paired graph speedup is below 1.10x or stability/frequency gates fail.",
+    "Reject if the unchanged target-only path changes tokens, collapses, or regresses by more than two percent.",
+    "Reject if MTP3 accepted throughput improves by less than five percent.",
+    "Reject if the frozen CUTE or WikiText capability gate fails; do not excuse a quality failure as floating-point reassociation.",
+    "Record a terminal negative instead of tuning thresholds after observation."
+  ],
+  "promotion_boundary": "A pass promotes one same-weights AVX2 exact-four-row Q4_K verification kernel on four Milan cores. It does not establish the 2.75 tok/s conventional-decode breakthrough gate, a trained approximation, final-node scaling, energy benefit, 100 accepted tokens per second, or scientific novelty."
+}
