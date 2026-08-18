@@ -40,6 +40,9 @@ def test_materiality_policy_blocks_small_standalone_lanes() -> None:
 
 def test_twla_is_only_an_audited_starting_point() -> None:
     payload = json.loads(POLICY.read_text())
+    assert payload["primary_big_bet"]["frozen_experiment"] == (
+        "qwen38_27b_affine_butterfly_blocks_preregistration_v1.json"
+    )
     upstream = payload["primary_big_bet"]["external_starting_point"]
     assert upstream["arxiv"] == "2606.13054v2"
     assert upstream["audited_commit"] == "805cbb9887c66fb894f88935e2bcfd5399f384a5"
