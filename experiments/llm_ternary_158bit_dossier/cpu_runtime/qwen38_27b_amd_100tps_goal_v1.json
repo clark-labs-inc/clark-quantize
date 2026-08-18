@@ -1,0 +1,148 @@
+{
+  "schema": "qwen38_27b_amd_100tps_goal_v1",
+  "frozen_at_utc": "2026-08-18T07:20:00Z",
+  "objective": "Run Qwen/Qwen3.8-27B at no less than 100 accepted end-to-end tokens per second on an AMD CPU while retaining nearly all capability of the pinned Q4_K_M control.",
+  "supersedes_as_primary_objective": "qwen38_27b_cpu_throughput_pivot_v1",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "text_graph_parameters": 26895998464,
+    "directly_associated_mtp_or_draft_components_allowed": true,
+    "qwen_4b_compute_forbidden": true,
+    "cpu_deployment_only": true,
+    "amd_final_validation_required": true
+  },
+  "throughput_contract": {
+    "primary_metric": "accepted output tokens divided by request wall time after prompt ingestion",
+    "minimum_single_stream_accepted_tokens_per_second": 100.0,
+    "measurement": {
+      "minimum_generated_tokens_per_prompt": 256,
+      "minimum_prompts": 8,
+      "minimum_repetitions_per_prompt": 5,
+      "warm_model_required": true,
+      "prompt_classes": [
+        "code",
+        "mathematical_reasoning",
+        "technical_prose",
+        "general_instruction"
+      ],
+      "report_arithmetic_mean": true,
+      "report_median": true,
+      "report_p10": true,
+      "report_time_to_first_token_separately": true
+    },
+    "included_time": [
+      "draft or MTP execution",
+      "target verification",
+      "sampling and rejection handling",
+      "state rollback or commit",
+      "runtime scheduling overhead"
+    ],
+    "excluded_from_numerator": [
+      "rejected draft tokens",
+      "unverified proposed tokens",
+      "prompt tokens",
+      "tokens from concurrent requests"
+    ],
+    "aggregate_server_tokens_per_second_is_secondary_and_not_substitutable": true,
+    "prefill_tokens_per_second_is_secondary_and_not_substitutable": true,
+    "microkernel_or_draft_only_tokens_per_second_is_not_a_model_result": true
+  },
+  "observed_roofline": {
+    "q4_k_m": {
+      "bytes": 18973870432,
+      "four_core_decode_tokens_per_second": 1.88559,
+      "minimum_weight_read_bandwidth_bytes_per_second_at_100_dense_decode": 1897387043200
+    },
+    "tq2_0": {
+      "bytes": 11385047424,
+      "four_core_decode_tokens_per_second": 3.732836,
+      "minimum_weight_read_bandwidth_bytes_per_second_at_100_dense_decode": 1138504742400,
+      "quality_status": "rejected for catastrophic forgetting"
+    },
+    "interpretation": "A conventional one-target-pass-per-token implementation cannot reach the goal on the current CCX33. A credible path must reduce target bytes, amortize each target pass over multiple accepted tokens, exploit a much higher-bandwidth AMD node, or combine all three."
+  },
+  "primary_architecture": {
+    "target": "quality-qualified Q3 Q4 or post-trained mixed aligned-low-bit Qwen3.8-27B",
+    "proposer": "the pinned model's one-layer MTP sidecar first, followed by a target-conditioned block or tree proposer only if measured MTP acceptance-cost cannot meet the roofline",
+    "verification": "one batched target pass scores several proposed positions and commits only target-accepted tokens",
+    "kernel_focus": [
+      "NUMA-local target-weight sharding",
+      "multi-token low-bit GEMM rather than repeated GEMV",
+      "fused dequantization projection activation and residual epilogues",
+      "persistent draft state and allocation-free rollback",
+      "AVX-512 VNNI paths with AVX2 correctness fallback"
+    ],
+    "proposal_goal_mean_accepted_tokens_per_target_call": 4.0,
+    "proposal_goal_is_diagnostic_not_a_substitute_for_end_to_end_speed": true
+  },
+  "official_mtp_anchor": {
+    "repository": "ggml-org/Qwen3.8-27B-GGUF",
+    "revision": "0669b98607d47046c7c2b3f801011d54a08cfccf",
+    "filename": "mtp-Qwen3.8-27B-Q4_0.gguf",
+    "bytes": 1680271648,
+    "sha256": "051a1764cff8c4f3ee6ae8b00593a0364c7539c67fa50ffc58f3f96509fca38e",
+    "parent_config_mtp_hidden_layers": 1,
+    "runtime": "pinned llama.cpp draft-mtp path",
+    "status": "unvalidated on the pinned AMD CPU runtime"
+  },
+  "semantic_correctness": {
+    "greedy": {
+      "minimum_prompts": 32,
+      "minimum_tokens_per_prompt": 128,
+      "require_exact_committed_token_id_parity_with_non_speculative_target": true
+    },
+    "stochastic": {
+      "require_modified_rejection_sampling_against_target_probabilities": true,
+      "require_fixed_seed_trace_receipts": true,
+      "claim_target_distribution_preservation_only_after_an_audited_runtime_test": true
+    },
+    "known_risk": "Current upstream issue reports show draft-mtp can diverge from non-speculative greedy output on quantized targets; upstream support is a substrate, not correctness evidence."
+  },
+  "nearly_lossless_quality_gate": {
+    "target_artifact_must_pass_without_speculation": true,
+    "final_runtime_must_repeat_free_generation_gates_with_speculation": true,
+    "minimum_cute_correct_of_20": 8,
+    "minimum_math500_correct_of_8": 4,
+    "minimum_code_correct_of_6": 4,
+    "minimum_mmlu_correct_of_64": 50,
+    "maximum_wikitext_ppl_ratio_vs_q4": 1.05,
+    "q4_anchor": {
+      "cute_correct_of_20": 9,
+      "math500_correct_of_8": 5,
+      "code_correct_of_6": 5,
+      "mmlu_correct_of_64": 52,
+      "wikitext_ppl": 5.7847
+    }
+  },
+  "hardware_contract": {
+    "current_ccx33_role": "correctness development ablations and normalized admission tests only",
+    "current_ccx33_cannot_validate_100_tokens_per_second": true,
+    "final_node_requirements": [
+      "AMD x86-64 CPU",
+      "measured sustained memory bandwidth receipt",
+      "NUMA topology and memory placement receipt",
+      "all CPU cores and thread placement reported",
+      "no GPU or accelerator execution",
+      "target proposer state and scratch fit in measured host RAM"
+    ],
+    "first_scale_candidate": "dual-socket 192-core AMD EPYC 9R45 class node such as AWS hpc8a.96xlarge; provision only after the small-node acceptance and roofline gates justify it"
+  },
+  "admission_sequence": [
+    "measure target-only Q3_K_M and Q4_K_M multi-token verification cost for widths 1 2 4 and 8",
+    "measure the official Q4_0 MTP sidecar's drafting cost acceptance length and greedy parity",
+    "construct an end-to-end roofline from measured target draft sampling and rollback times",
+    "stop or redesign any lane whose optimistic upper bound is below 100 accepted tokens per second on the final node",
+    "train the proposer or sensitive target modes only after the measured bottleneck is identified",
+    "run the full nearly-lossless gate before the final throughput claim"
+  ],
+  "stop_rules": [
+    "no 100 tokens per second claim from prefill continuous batching microkernels or proposed tokens",
+    "no speculative result promotes without exact greedy parity",
+    "no target quantization promotes from reconstruction or teacher-forced loss alone",
+    "no target quantization promotes if any frozen quick capability denominator fails",
+    "no expensive final-node run starts unless the measured roofline can reach 100 accepted tokens per second",
+    "infrastructure-invalid work is neither a zero nor a completed result"
+  ],
+  "claim_boundary": "Frozen research objective and falsification contract only; no 100 tokens per second result or scientific novelty is claimed."
+}

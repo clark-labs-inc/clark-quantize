@@ -2,10 +2,11 @@
 
 Status: primary optimization objective; correctness-gated
 
-Objective: maximize useful `Qwen/Qwen3.8-27B` CPU prompt-prefill and
-token-generation throughput without hiding storage, memory, startup, or quality
-costs. There is no fixed 1.58-bit target. Qwen 4B results are historical
-references only and receive no new performance work.
+Objective: achieve at least 100 accepted single-stream output tokens/s for
+`Qwen/Qwen3.8-27B` on an AMD CPU without hiding proposal, verification,
+sampling, storage, memory, startup, or quality costs. The exact contract is in
+`qwen38_27b_amd_100tps_goal_v1.json`. There is no fixed 1.58-bit target. Qwen
+4B results are historical references only and receive no new performance work.
 
 ## Non-negotiable rule
 
@@ -15,6 +16,12 @@ parity contracts. Once a change reaches a runnable graph or model artifact, it
 must pass CUTE-Quick-20, pinned MATH-500 quick, sealed code traces, and
 WikiText. Model-changing or large graph changes also run the frozen MMLU slice.
 Infrastructure-invalid runs are neither zeroes nor completed scores.
+
+Only target-accepted output tokens count toward the 100 tok/s objective.
+Rejected or unverified draft tokens, prompt tokens, microkernel operations,
+and tokens from other concurrent requests do not count. Aggregate server
+throughput and prefill throughput are secondary metrics and are always
+reported separately.
 
 Accuracy and performance arms run alone on the measurement node. QAT, cache
 collection, evaluation, and throughput processes never share the four-core
@@ -59,18 +66,21 @@ quality-adjusted memory/speed/energy Pareto frontier rather than speed alone.
 
 ## Current priority order
 
-1. Establish reproducible Q4_K_M and Q3_K_M quality, memory, prefill, and
-   decode baselines on x86 AVX2.
-2. Build an activation-sensitivity ledger that selects which complete Qwen3.8
-   tensor families can use aligned two-bit compute and which remain Q3/Q4/Q6.
-3. Post-train the selected two-bit tensors against exact parent activations and
-   export only their hard runtime state.
-4. Profile the resulting whole-model single-token graph and optimize only its
-   dominant wall-time kernels, beginning with fused gate/up plus SwiGLU and the
-   down projection.
-5. Optimize prompt-prefill independently with unpack-amortizing GEMM tiles.
-6. Repeat on ARM DOTPROD, then add AVX-512/VNNI paths when suitable hardware is
-   available.
+1. Establish reproducible Q4_K_M and Q3_K_M target-only quality, memory,
+   prefill, single-token decode, and multi-token verification baselines.
+2. Validate the official Qwen3.8 one-layer MTP sidecar on AMD: exact greedy
+   parity first, then proposal cost and accepted tokens per target call across
+   different workloads.
+3. Build a measured end-to-end roofline. A lane stops before expensive scale-up
+   if its optimistic bound cannot reach 100 accepted tok/s on the final host.
+4. Build an activation-sensitivity ledger and post-train only target tensors
+   whose lower precision materially reduces multi-token target verification.
+5. Optimize NUMA-local low-bit GEMM for verification widths 2/4/8, fusing
+   dequantization, projections, nonlinearities, residuals, and state commit.
+6. If recursive MTP is too slow or inaccurate, train a target-conditioned
+   one-pass block/tree proposer rather than opening another codec sweep.
+7. Run final correctness, capability, and at least 100 accepted tok/s validation
+   on a measured high-bandwidth AMD node.
 
 Model precision is a measured allocation variable. Lower precision is useful
 only when the complete model stays on the quality-throughput-memory Pareto

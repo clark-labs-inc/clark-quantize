@@ -11,11 +11,13 @@ compute is spent on them. Every active lane below targets Qwen3.8-27B.
 
 ## North star
 
-Maximize useful Qwen3.8-27B tokens per second in a CPU process with no Python,
-PyTorch, CUDA, or Triton deployment dependency. Training may use accelerators,
-but deployment quality and performance are judged on CPUs. Ternary weights are
-one candidate compute representation, not the objective, and there is no fixed
-1.58- or 1.70-bit acceptance ceiling.
+Achieve at least 100 target-accepted, single-stream Qwen3.8-27B output tokens
+per second on an AMD CPU process with no Python, PyTorch, CUDA, Triton, GPU, or
+other accelerator deployment dependency. Training may use accelerators, but
+deployment quality and performance are judged on CPUs. Ternary weights are one
+candidate target representation, not the objective, and there is no fixed
+1.58- or 1.70-bit acceptance ceiling. The authoritative measurement contract is
+`qwen38_27b_amd_100tps_goal_v1.json`.
 
 The program is successful only when the model runs end to end on both ARM64
 and x86-64, retains measured capability against the strong Q4 control, and
@@ -82,9 +84,11 @@ unproven until a literature audit and full reproducible Pareto result agree.
    image may transcode the same codes into an ISA-specific 2-bit or LUT-tiled
    layout. Canonical packing is optimized for distribution; the compute image
    is optimized for inner-loop execution.
-2. **Text runtime first.** The vision tower and MTP are optional sidecars and
-   are not loaded by the first CPU runtime. Their bytes are reported whenever
-   a full multimodal artifact is claimed.
+2. **Text plus its MTP/draft path.** The vision tower remains excluded from the
+   text-only objective. Qwen3.8's directly associated one-layer MTP sidecar is
+   now a primary inference component because multi-token verification is the
+   credible route around one complete weight scan per accepted token. All MTP
+   or learned-draft bytes and time are counted.
 3. **Decode and prefill are separate products.** Decode is principally a
    matrix-vector and memory-bandwidth problem. Prefill is a matrix-matrix,
    attention, and chunked-recurrence problem. Each has its own kernels and
@@ -329,12 +333,28 @@ Every promoted build records:
 | Efficiency | package energy and joules/token where hardware counters permit |
 | Portability | scalar, ARM64, AVX2, AVX-512/VNNI results from the same artifact |
 
-Initial 27B product targets are a sub-10-GB text artifact, less than 16 GB RSS
-at short context, and at least 10 decode tokens/s on the M5 Max reference host;
-20 tokens/s is the stretch target. These are engineering targets, not claims,
-and will be revised only from measured rooflines and end-to-end profiles.
+The active 27B product target is at least 100 accepted single-stream output
+tokens/s on a high-bandwidth AMD CPU while passing the nearly-lossless quality
+gate. Artifact size and RSS are measured allocation variables rather than hard
+sub-10/sub-16-GB ceilings. The current CCX33 and M5 Max remain development
+hosts; neither can establish the AMD headline result.
 
 ## Immediate work order
+
+1. Preserve the terminal layer-0 receipt from the affine diagnostic and close
+   that weak-effect lane before it consumes another block.
+2. Complete the Qwen3.8-27B Q3_K_M target-only quality and runtime baseline.
+3. Download the pinned 1.68-GB Q4_0 MTP sidecar and test exact greedy parity
+   before interpreting any acceptance or speed number.
+4. Measure target verification widths 1/2/4/8 plus MTP proposal, acceptance,
+   sampling, rollback, and end-to-end cost on the same pinned runtime.
+5. Use those measurements to decide between recursive MTP, a trained one-pass
+   block/tree proposer, and a lower-byte post-trained target. Scale to an AMD
+   EPYC 9R45-class node only when the optimistic measured roofline exceeds 100
+   accepted tok/s.
+
+The older single-layer materiality sequence remains supporting evidence, not
+the primary work order:
 
 1. Complete the frozen Qwen3.8-27B `Q4_K_M` CPU quality suite and only then
    run its preregistered 1/2/4-core prefill/decode baseline.

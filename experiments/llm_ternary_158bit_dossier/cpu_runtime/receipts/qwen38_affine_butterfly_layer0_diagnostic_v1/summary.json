@@ -1,0 +1,75 @@
+{
+  "schema": "qwen38_affine_butterfly_layer0_diagnostic_receipt_v1",
+  "captured_at_utc": "2026-08-18T07:22:00Z",
+  "remote_service": "quant-qwen38-27b-affine-butterfly-block-gate-v1.service",
+  "remote_service_status_after_capture": "inactive",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "experiment_repository_commit": "1e524a9eb48e223b259a4d3714afc765bb107dcd",
+  "preregistration_sha256": "8fa0b3159a0b6b7bdea1b00a0373b946a73e4ce0cd860bb303d1eb8ad3d63b09",
+  "cache": {
+    "remote_path": "/workspace/quant-runs/qwen38-affine-butterfly-blocks-v1/block-cache.pt",
+    "remote_receipt_path": "/workspace/quant-state/qwen38-affine-butterfly-block-cache-v1.json",
+    "bytes": 47199426,
+    "sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+    "terminal": true
+  },
+  "layer_0_terminal": {
+    "type": "linear_attention",
+    "elapsed_seconds": 2470.3652245330013,
+    "direct_complete_block_validation_nmse": 0.1384394376807489,
+    "candidate_complete_block_validation_nmse": 0.02722328033356917,
+    "relative_validation_nmse_reduction_vs_direct": 0.803356032142026,
+    "minimum_required_reduction": 0.3,
+    "local_preregistered_gate_passed": true,
+    "actual_packed_tensor_and_rotation_bytes": 79474272,
+    "rank2_or_higher_parameter_count": 383262720,
+    "rank2_or_higher_tensor_count": 9
+  },
+  "site_diagnostics": [
+    {
+      "site": "attention_input",
+      "actual_storage_bytes": 17483296,
+      "direct_validation_nmse": 0.11087482223427146,
+      "final_validation_nmse": 0.049648883462257515,
+      "relative_validation_improvement_vs_direct": 0.5522077739403038,
+      "angle_payload_sha256": "d46f3544b2c9e5189f981cb5fe3e553acb2ebb8ff543d6e05fdfeabc8597be4e"
+    },
+    {
+      "site": "attention_output",
+      "actual_storage_bytes": 6539328,
+      "direct_validation_nmse": 0.22087785047360234,
+      "final_validation_nmse": 0.015486548856425584,
+      "relative_validation_improvement_vs_direct": 0.9298863655942884,
+      "angle_payload_sha256": "a1041db1dc228278d4ade5b382a20d598cc27335e231c97882d0d4cff0e005d9"
+    },
+    {
+      "site": "mlp_input",
+      "actual_storage_bytes": 36900992,
+      "direct_validation_nmse": 0.13278305002915594,
+      "final_validation_nmse": 0.2037982688138113,
+      "relative_validation_improvement_vs_direct": -0.5348214156028358,
+      "angle_payload_sha256": "e0fbf5ab0a5e7a0f74a1b03c5fba54380d34d2ab9bfae3a442f9d6b65daae3c8"
+    },
+    {
+      "site": "mlp_down",
+      "actual_storage_bytes": 18490432,
+      "direct_validation_nmse": 0.09570120594911671,
+      "final_validation_nmse": 0.18993461589802071,
+      "relative_validation_improvement_vs_direct": -0.9846627220038049,
+      "angle_payload_sha256": "b2091d4f1064bae1818f9fa811d87ab81bf36a91fbae17e7a40941ca57c9395a"
+    },
+    {
+      "site": "depthwise_conv",
+      "actual_storage_bytes": 60224,
+      "terminal": true
+    }
+  ],
+  "interpretation": {
+    "status": "closed after layer-0 diagnostic; layers 32 and 63 intentionally not executed",
+    "reason": "The absolute complete-block validation NMSE and deployed parameter burden are incompatible with the nearly-lossless 100 accepted tok/s program. The two MLP sites also became worse on held-out rows despite extremely small calibration NMSE.",
+    "quality_or_speed_claim_authorized": false,
+    "scientific_breakthrough_claim_authorized": false
+  },
+  "remote_artifact_retention": "Layer-0 packed payloads and the exact activation cache remain on quant; this committed compact receipt is sufficient to retain the decision if the host is later removed."
+}
