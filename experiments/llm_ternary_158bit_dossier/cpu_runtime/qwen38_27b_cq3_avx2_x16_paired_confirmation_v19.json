@@ -1,0 +1,101 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_x16_paired_confirmation_preregistration_v19",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_cq3_avx2_x16_paired_confirmation_v19",
+  "frozen_at": "2026-08-18T20:47:25Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "microbenchmark_cores": 1,
+    "pinned_logical_cpu": 0,
+    "qwen_4b_compute_forbidden": true,
+    "source_weight_type": "CQ3_0",
+    "control_runtime_layout": "CQ3_0x8",
+    "candidate_runtime_layout": "CQ3_0x16",
+    "activation_type": "CQ8_0",
+    "weight_bits_per_weight": 2.125,
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "frozen_candidate": {
+    "origin_receipt": "receipts/qwen38_27b_cq3_avx2_x16_repack_v16/terminal-decision.json",
+    "candidate_patch": "kernels/llama_cpp_cq3_avx2_x16_repack_v16.patch",
+    "candidate_patch_sha256": "8e8ad180217a761c8f4931dd90036164330a090e95b8f61716e2611fc970c6d5",
+    "original_test_binary_sha256": "de5b03a89c7675e63272a7719ef2238c287426e67b9bcf0d247801cb9d35c5fa",
+    "paired_harness": "kernels/qwen38_27b_cq3_x16_paired_bench_v19.inc",
+    "paired_harness_sha256": "0d180724131dfbb5c05e529f2aac2f06578a019819a04230a7d3bc7dbf3b7b7a",
+    "paired_harness_patch": "kernels/llama_cpp_cq3_x16_paired_harness_v19.patch",
+    "paired_harness_patch_sha256": "2e13eebfdcd2b8a1319581536ea87e31a31190db7f919fc5a283390f9d7632c7",
+    "kernel_code_changes_allowed": false,
+    "runtime_layout_changes_allowed": false,
+    "harness_only_change_allowed": true,
+    "reason": "v16 was bit exact and crossed both speed medians, but failed only its unpaired sample-range ceiling. This confirmation changes measurement design, not candidate code."
+  },
+  "hypothesis": "Within-pair AB/BA ratios will cancel host-frequency and thermal drift enough to determine whether CQ3_0x16 really provides at least 1.08x over CQ3_0x8 and 1.40x over ordinary CQ3 at the exact Qwen3.8-27B two-matrix MLP shape.",
+  "measurement": {
+    "matrices": 2,
+    "rows_per_matrix": 17408,
+    "columns": 5120,
+    "warmup_pairs": 2,
+    "measured_pairs_per_comparison": 21,
+    "cache_eviction_bytes_before_each_timed_call": 268435456,
+    "repack_time_excluded": true,
+    "comparisons": [
+      "CQ3_0x8 versus CQ3_0x16",
+      "ordinary CQ3_0 versus CQ3_0x16"
+    ],
+    "schedule": "For each index, run one adjacent comparison pair. Even indices use AB and odd indices BA. Alternate which comparison family runs first every two indices, yielding balanced AB/BA order without changing the kernel.",
+    "primary_statistics": [
+      "median of the 21 within-pair CQ3_0x8_time/CQ3_0x16_time ratios",
+      "median of the 21 within-pair ordinary_CQ3_0_time/CQ3_0x16_time ratios",
+      "median absolute deviation of each ratio vector divided by its median"
+    ],
+    "raw_time_medians_are_diagnostic_only": true,
+    "frequency_telemetry": {
+      "required": true,
+      "preferred_source": "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq",
+      "observed_fallback_source": "/proc/cpuinfo processor-0 cpu MHz",
+      "sample_before_and_after_every_adjacent_pair": true,
+      "missing_or_nonpositive_sample_policy": "infrastructure_invalid"
+    },
+    "host_idle_precondition": "No user compute service or process other than the benchmark may consume at least 1 percent CPU at launch.",
+    "smt_policy": "SMT remains enabled, but the benchmark is pinned to logical CPU 0 and its sibling must be idle."
+  },
+  "sequential_gates": {
+    "gate_0_provenance_and_correctness": {
+      "candidate_patch_sha256_must_match": true,
+      "ggml_cpu_library_sha256_must_match_v16": "e830a2bc9c5cfc095319c6991622e683850b40b73f579ce0fa21b7ef2496d1b8",
+      "runtime_bytes_must_equal_source_bytes": true,
+      "x16_output_must_match_x8_bits": true,
+      "maximum_scaled_float_error_vs_ordinary_cq3": 0.00005,
+      "all_outputs_finite": true,
+      "stop_before_timing_on_failure": true
+    },
+    "gate_1_paired_confirmation": {
+      "minimum_median_x8_over_x16_pairwise_ratio": 1.08,
+      "minimum_median_ordinary_over_x16_pairwise_ratio": 1.4,
+      "maximum_x8_over_x16_pairwise_ratio_mad_fraction": 0.03,
+      "maximum_ordinary_over_x16_pairwise_ratio_mad_fraction": 0.03,
+      "all_42_frequency_pairs_must_have_positive_samples": true
+    },
+    "gate_2_successor_kernel": {
+      "run_in_this_experiment": false,
+      "admit_only_on_gate_1_pass": true,
+      "next_target": "A separately preregistered CQ3 multi-column kernel for batch widths 2, 4, 6, and 8 that reuses the storage-neutral x16 weights across activation columns."
+    },
+    "gate_3_model_and_quality": {
+      "run_in_this_experiment": false,
+      "reason": "The frozen candidate is bit-identical to x8 and this experiment changes only the timing harness. Complete-model quality remains mandatory for any separately admitted representation."
+    }
+  },
+  "stop_rules": [
+    "Stop before timing if provenance, storage, bit-exactness, finiteness, or numerical error checks fail.",
+    "Classify the run as infrastructure invalid rather than failed if CPU pinning, host-idle, frequency telemetry, binary execution, or receipt capture fails.",
+    "Reject the frozen x16 candidate if either median ratio misses its threshold or either ratio MAD fraction exceeds 0.03.",
+    "Do not change candidate kernel code, pair count, order, thresholds, cache eviction size, or statistics after observing timing output.",
+    "Do not run model or capability evaluation in this harness-only confirmation, and do not infer a score for an unrun gate."
+  ],
+  "claim_boundary": "A pass would confirm a stable storage-neutral CQ3_X16 single-column primitive and admit a separate multi-column kernel experiment. It would not establish end-to-end model throughput, target-floor performance, quality, energy, novelty, 100 accepted tokens per second, or a scientific breakthrough."
+}
