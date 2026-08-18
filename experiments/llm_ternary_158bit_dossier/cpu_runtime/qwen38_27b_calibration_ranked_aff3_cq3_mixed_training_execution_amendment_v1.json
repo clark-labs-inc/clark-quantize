@@ -1,0 +1,101 @@
+{
+  "schema": "qwen38_27b_calibration_ranked_mixed_training_execution_amendment_v1",
+  "status": "frozen_after_gate_0_before_any_mixed_training_or_confirmation_score",
+  "frozen_at_utc": "2026-08-18T20:05:56Z",
+  "repository_commit_before_amendment": "58b264f54db62bed7259098c5a32c107a380b1e2",
+  "parent_preregistration_sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c",
+  "parent_pre_execution_amendment_sha256": "ff330cdef2222bfa0e319dc95651c180a88a13c49335046143072838b5bf6139",
+  "gate_0_receipt_sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320",
+  "state_at_freeze": {
+    "mixed_training_had_started": false,
+    "fresh_confirmation_had_been_scored": false,
+    "old_validation_rows_had_been_scored_for_this_candidate": false,
+    "gate_0_passed": true,
+    "gate_0_complete_block_nmse": {
+      "0": 0.008026277310677076,
+      "32": 0.007745945129903145,
+      "63": 0.11622622538543384
+    }
+  },
+  "calibration_identity": {
+    "cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+    "sequences": 8,
+    "tokens_per_sequence": 64,
+    "selected_rows": 64,
+    "selected_flat_int64_rows_sha256": "6dd3eeae269ec246844fb22960ac32629cb80030ea56704e3a2bb5cb65844f5b",
+    "validation_rows_forbidden": true,
+    "fresh_confirmation_forbidden_until_all_three_blocks_are_terminal": true
+  },
+  "fixed_block_order": [0, 32, 63],
+  "fixed_within_block_order": [
+    "authenticate and reproduce the gate-0 complete-block score",
+    "capture exact-teacher and parent-AFF3-candidate MLP inputs on the selected calibration rows",
+    "train CQ3 gate projection output-row shards in ascending row order",
+    "train CQ3 up projection output-row shards in ascending row order",
+    "recompute the candidate down-projection inputs from the frozen trained gate and up payloads",
+    "train CQ3 down projection output-row shards in ascending row order",
+    "freeze all three CQ3 payloads",
+    "run continuous-only AFF3 attention-output trust-region descent against complete-block calibration NMSE",
+    "export and authenticate one terminal block"
+  ],
+  "cq3_execution": {
+    "row_shard": 128,
+    "steps_per_shard": 6,
+    "selection_candidates": [0, 1, 2, 3, 4, 5, 6],
+    "selection_measure": "local projection output NMSE on calibration rows only",
+    "teacher_target": "the exact BF16 source projection evaluated on exact-teacher internal activations",
+    "candidate_input": "the current frozen candidate internal activation on the same selected rows",
+    "gate_and_up_are_frozen_before_down_input_recomputation": true,
+    "optimizer_state_retained_after_shard": false,
+    "only_the_selected_hard_codes_and_fp16_scales_are_persisted": true,
+    "maximum_weighted_code_churn_fraction": 0.05
+  },
+  "aff3_execution": {
+    "runs_after_all_three_cq3_payloads_in_the_block_are_frozen": true,
+    "loss": "complete-block selected-calibration-row squared error divided by exact-teacher selected-row squared energy",
+    "frozen": [
+      "ternary codes",
+      "alpha four-bit indices",
+      "mu four-bit indices",
+      "all non-attention-output tensors"
+    ],
+    "trainable": [
+      "FP32 alpha anchors with exact FP16 hard forward",
+      "FP32 alpha codebook with exact FP16 hard forward",
+      "FP32 mu anchors with exact FP16 hard forward",
+      "FP32 mu codebook with exact FP16 hard forward",
+      "FP32 Givens angles with exact FP16 hard forward"
+    ],
+    "outer_steps": 8,
+    "global_l2_radius_each_step": 0.02,
+    "backtracking_factors_in_order": [1.0, 0.5, 0.25, 0.125, 0.0625, 0.03125],
+    "proposal": "old parameter minus radius times factor times gradient divided by the global gradient L2 norm",
+    "acceptance": "accept the first finite hard-forward proposal no greater than the prior accepted complete-block calibration NMSE; otherwise restore the prior state",
+    "checkpoint_selection": "the final accepted state is the lowest accepted calibration NMSE because accepted scores are monotone non-increasing"
+  },
+  "restart_and_storage": {
+    "active_boundary": "one row shard while a block is incomplete; one authenticated terminal block after completion",
+    "partial_shards_are_authenticated_before reuse": true,
+    "optimizer_or_fp32_shadow_checkpoint_forbidden_after_shard": true,
+    "one_terminal_payload_per_tensor": true,
+    "one_terminal_result_per_block": true
+  },
+  "gate_1_scoring_order": [
+    "freeze and authenticate layers 0, 32, and 63",
+    "score all three final candidates once on the calibration cache",
+    "open the already sealed fresh-confirmation cache",
+    "score step-zero direct control and final trained candidate once on fresh confirmation",
+    "apply the frozen per-layer and mean-reduction gates without modification"
+  ],
+  "unchanged": [
+    "model and revision",
+    "mixed representation map",
+    "training hyperparameters",
+    "direct, calibration, confirmation, storage, quality, kernel, speed, memory, and energy thresholds",
+    "no-fallback and no-sweep rules",
+    "Qwen 4B compute prohibition"
+  ],
+  "complete": true,
+  "terminal": true,
+  "claim_boundary": "Protocol clarification only. It contains a gate-0 pass, no trained payload, no confirmation result, no whole-model quality or speed result, and no breakthrough."
+}
