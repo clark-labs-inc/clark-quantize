@@ -1,0 +1,183 @@
+{
+  "schema": "cpu_math_code_canary_result_v1",
+  "model_label": "qwen38-27b-tq2_0-v1",
+  "model_sha256": "51dfbc9b889d42086b2ac588805fec2c4fad4333894d7a33856a52c07cdcc3d3",
+  "evaluator_sha256": "fa3d0f870b3b0ed1d7d907cc8d146854b164e6d75cfa9d2bd20743979af74677",
+  "manifest": "/workspace/clark-quantize-tq-controls-v1/experiments/llm_ternary_158bit_dossier/cpu_runtime/math_code_canary_v1.json",
+  "manifest_content_sha256": "bb71cad0c51f0acc8167ef5df53ee629fd0660b8cad43e734427c3285ef6c130",
+  "server": "http://127.0.0.1:8111",
+  "started_at": "2026-08-18T05:36:18.503705+00:00",
+  "finished_at": "2026-08-18T05:43:52.963323+00:00",
+  "elapsed_seconds": 454.459618,
+  "summaries": [
+    {
+      "task": "math500",
+      "correct": 0,
+      "n": 8,
+      "accuracy": 0.0
+    },
+    {
+      "task": "code_trace",
+      "correct": 0,
+      "n": 6,
+      "accuracy": 0.0
+    }
+  ],
+  "records": [
+    {
+      "task": "math500",
+      "id": "math500:18",
+      "correct": false,
+      "prediction": null,
+      "gold": "28",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 42690.74231700506
+    },
+    {
+      "task": "math500",
+      "id": "math500:38",
+      "correct": false,
+      "prediction": null,
+      "gold": "2000",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 32201.64720300818
+    },
+    {
+      "task": "math500",
+      "id": "math500:86",
+      "correct": false,
+      "prediction": null,
+      "gold": "240",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 31851.01072199177
+    },
+    {
+      "task": "math500",
+      "id": "math500:237",
+      "correct": false,
+      "prediction": null,
+      "gold": "22",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 32499.790387009853
+    },
+    {
+      "task": "math500",
+      "id": "math500:387",
+      "correct": false,
+      "prediction": null,
+      "gold": "18",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 30747.052233011345
+    },
+    {
+      "task": "math500",
+      "id": "math500:406",
+      "correct": false,
+      "prediction": null,
+      "gold": "0",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 29838.50509300828
+    },
+    {
+      "task": "math500",
+      "id": "math500:474",
+      "correct": false,
+      "prediction": null,
+      "gold": "3",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 33874.90930799686
+    },
+    {
+      "task": "math500",
+      "id": "math500:487",
+      "correct": false,
+      "prediction": null,
+      "gold": "2",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 33282.11912800907
+    },
+    {
+      "task": "code_trace",
+      "id": "code_trace:odd_squares",
+      "correct": false,
+      "prediction": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "gold": "[1, 9, 25]",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 31647.083973992267
+    },
+    {
+      "task": "code_trace",
+      "id": "code_trace:gcd",
+      "correct": false,
+      "prediction": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "gold": "6",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 31662.12425500271
+    },
+    {
+      "task": "code_trace",
+      "id": "code_trace:loop_sum",
+      "correct": false,
+      "prediction": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "gold": "30",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 30173.492075991817
+    },
+    {
+      "task": "code_trace",
+      "id": "code_trace:slicing",
+      "correct": false,
+      "prediction": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "gold": "unia",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 29871.597311997903
+    },
+    {
+      "task": "code_trace",
+      "id": "code_trace:closure",
+      "correct": false,
+      "prediction": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "gold": "[7, 9, 12]",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 31753.37835100072
+    },
+    {
+      "task": "code_trace",
+      "id": "code_trace:dict_count",
+      "correct": false,
+      "prediction": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "gold": "6",
+      "output": "[CLARK_SCORER_UPSTREAM_PEG_NATIVE_ERROR_HTTP_500]",
+      "finish_reason": "server_format_error",
+      "usage": null,
+      "latency_ms": 32364.578111009905
+    }
+  ],
+  "report_content_sha256": "602f0c6c03441952f9b4f145b9b67bad6acbb5206cc19ce94a7c24928cc87b04"
+}

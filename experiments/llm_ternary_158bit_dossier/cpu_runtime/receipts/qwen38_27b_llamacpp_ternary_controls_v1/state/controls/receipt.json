@@ -1,0 +1,419 @@
+{
+  "claim_boundary": "whole-text-model upstream ternary controls; descriptive throughput is not an authoritative paired comparison",
+  "complete": true,
+  "controls": {
+    "TQ1_0": {
+      "conversion_receipt": "/workspace/quant-state/qwen38-27b-llamacpp-ternary-controls-v1/tq1_0-conversion.json",
+      "conversion_sha256": "1f35bedf82bd60d996e276e3f8c4f2b563659ed3603200bc8b05de5468f45d62",
+      "quality": {
+        "claim_boundary": "whole-text-model llama.cpp control characterization; descriptive throughput is not a paired performance claim",
+        "complete": true,
+        "cute": [
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 4,
+            "task": "contains_char"
+          },
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 4,
+            "task": "ins_char"
+          },
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 4,
+            "task": "del_char"
+          },
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 4,
+            "task": "swap_char"
+          },
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 4,
+            "task": "sub_char"
+          },
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 20,
+            "task": "cute_quick_20"
+          }
+        ],
+        "descriptive_throughput": {
+          "decode_t4": [
+            {
+              "avg_ns": 9936514429,
+              "avg_ts": 3.220446,
+              "backends": "CPU",
+              "build_commit": "4df29be4f",
+              "build_number": 1,
+              "cpu_info": "AMD EPYC-Milan Processor",
+              "cpu_mask": "0x0",
+              "cpu_strict": false,
+              "devices": "auto",
+              "embeddings": false,
+              "fit_min_ctx": 0,
+              "fit_target": 0,
+              "flash_attn": -1,
+              "gpu_info": "",
+              "load_mode": "mmap",
+              "main_gpu": 0,
+              "model_filename": "/workspace/models/controls/Qwen3.8-27B-TQ1_0.gguf",
+              "model_n_params": 26895998464,
+              "model_size": 10232621056,
+              "model_type": "qwen35 27B TQ1_0 - 1.69 bpw ternary",
+              "n_batch": 512,
+              "n_cpu_moe": 0,
+              "n_depth": 0,
+              "n_gen": 32,
+              "n_gpu_layers": 0,
+              "n_prompt": 0,
+              "n_threads": 4,
+              "n_ubatch": 512,
+              "no_host": false,
+              "no_kv_offload": false,
+              "no_op_offload": 0,
+              "poll": 50,
+              "samples_ns": [
+                9940858317,
+                9941115806,
+                9927569166
+              ],
+              "samples_ts": [
+                3.21904,
+                3.21895,
+                3.22335
+              ],
+              "split_mode": "layer",
+              "stddev_ns": 7749177,
+              "stddev_ts": 0.002512,
+              "tensor_buft_overrides": "none",
+              "tensor_split": "0.00",
+              "test_time": "2026-08-18T05:22:26Z",
+              "type_k": "f16",
+              "type_v": "f16"
+            }
+          ],
+          "paired_or_authoritative": false,
+          "prefill_t4": [
+            {
+              "avg_ns": 105768887649,
+              "avg_ts": 4.840747,
+              "backends": "CPU",
+              "build_commit": "4df29be4f",
+              "build_number": 1,
+              "cpu_info": "AMD EPYC-Milan Processor",
+              "cpu_mask": "0x0",
+              "cpu_strict": false,
+              "devices": "auto",
+              "embeddings": false,
+              "fit_min_ctx": 0,
+              "fit_target": 0,
+              "flash_attn": -1,
+              "gpu_info": "",
+              "load_mode": "mmap",
+              "main_gpu": 0,
+              "model_filename": "/workspace/models/controls/Qwen3.8-27B-TQ1_0.gguf",
+              "model_n_params": 26895998464,
+              "model_size": 10232621056,
+              "model_type": "qwen35 27B TQ1_0 - 1.69 bpw ternary",
+              "n_batch": 512,
+              "n_cpu_moe": 0,
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_gpu_layers": 0,
+              "n_prompt": 512,
+              "n_threads": 4,
+              "n_ubatch": 512,
+              "no_host": false,
+              "no_kv_offload": false,
+              "no_op_offload": 0,
+              "poll": 50,
+              "samples_ns": [
+                105834250887,
+                105832307977,
+                105640104083
+              ],
+              "samples_ts": [
+                4.83775,
+                4.83784,
+                4.84664
+              ],
+              "split_mode": "layer",
+              "stddev_ns": 111534070,
+              "stddev_ts": 0.005108,
+              "tensor_buft_overrides": "none",
+              "tensor_split": "0.00",
+              "test_time": "2026-08-18T05:15:22Z",
+              "type_k": "f16",
+              "type_v": "f16"
+            }
+          ]
+        },
+        "effective_file_bits_per_26895998464_parameters": 3.0468815255803845,
+        "format": "TQ1_0",
+        "logical_parameters": 26895998464,
+        "logical_scope": "Qwen3.8-27B text graph; vision and MTP/NextN excluded",
+        "math_code": [
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 8,
+            "task": "math500"
+          },
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 6,
+            "task": "code_trace"
+          }
+        ],
+        "mmlu": null,
+        "mmlu_skipped_after_quick_rejection": true,
+        "model": "/workspace/models/controls/Qwen3.8-27B-TQ1_0.gguf",
+        "model_bytes": 10243615104,
+        "model_sha256": "68896f948b0ac299e8f1e67101fffcc84f04eda2d716fac15f78c52008b645d3",
+        "quick_gate": {
+          "observed": {
+            "code_trace_correct": 0,
+            "cute_correct": 0,
+            "math500_correct": 0,
+            "wikitext_ppl": 1930869.5275,
+            "wikitext_ppl_ratio_vs_Q4": 333789.0517226477
+          },
+          "passed": false,
+          "schema": "qwen38_27b_llamacpp_ternary_quick_gate_v1",
+          "terminal": true,
+          "thresholds": {
+            "maximum_wikitext_ppl_ratio_vs_Q4": 1.25,
+            "minimum_code_trace_correct": 4,
+            "minimum_cute_correct": 7,
+            "minimum_math500_correct": 4
+          },
+          "valid": true
+        },
+        "schema": "qwen38_27b_llamacpp_ternary_control_summary_v1",
+        "terminal": true,
+        "wikitext_ppl": 1930869.5275
+      },
+      "quality_receipt": "/workspace/quant-state/qwen38-27b-tq1_0-control-v1/summary.json",
+      "quality_sha256": "e467414eb926d4546e5f8b079120c12b262b001aa077d75f49177522629dfd6e"
+    },
+    "TQ2_0": {
+      "conversion_receipt": "/workspace/quant-state/qwen38-27b-llamacpp-ternary-controls-v1/tq2_0-conversion.json",
+      "conversion_sha256": "902dc3b7349b84cc2e4bf747aaa5afe5ca72e785fe35d386b25024f0edae43cc",
+      "quality": {
+        "claim_boundary": "whole-text-model llama.cpp control characterization; descriptive throughput is not a paired performance claim",
+        "complete": true,
+        "cute": [
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 4,
+            "task": "contains_char"
+          },
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 4,
+            "task": "ins_char"
+          },
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 4,
+            "task": "del_char"
+          },
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 4,
+            "task": "swap_char"
+          },
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 4,
+            "task": "sub_char"
+          },
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 20,
+            "task": "cute_quick_20"
+          }
+        ],
+        "descriptive_throughput": {
+          "decode_t4": [
+            {
+              "avg_ns": 8572600213,
+              "avg_ts": 3.732836,
+              "backends": "CPU",
+              "build_commit": "4df29be4f",
+              "build_number": 1,
+              "cpu_info": "AMD EPYC-Milan Processor",
+              "cpu_mask": "0x0",
+              "cpu_strict": false,
+              "devices": "auto",
+              "embeddings": false,
+              "fit_min_ctx": 0,
+              "fit_target": 0,
+              "flash_attn": -1,
+              "gpu_info": "",
+              "load_mode": "mmap",
+              "main_gpu": 0,
+              "model_filename": "/workspace/models/controls/Qwen3.8-27B-TQ2_0.gguf",
+              "model_n_params": 26895998464,
+              "model_size": 11374053376,
+              "model_type": "qwen35 27B TQ2_0 - 2.06 bpw ternary",
+              "n_batch": 512,
+              "n_cpu_moe": 0,
+              "n_depth": 0,
+              "n_gen": 32,
+              "n_gpu_layers": 0,
+              "n_prompt": 0,
+              "n_threads": 4,
+              "n_ubatch": 512,
+              "no_host": false,
+              "no_kv_offload": false,
+              "no_op_offload": 0,
+              "poll": 50,
+              "samples_ns": [
+                8582663467,
+                8584800737,
+                8550336436
+              ],
+              "samples_ts": [
+                3.72845,
+                3.72752,
+                3.74254
+              ],
+              "split_mode": "layer",
+              "stddev_ns": 19310810,
+              "stddev_ts": 0.008419,
+              "tensor_buft_overrides": "none",
+              "tensor_split": "0.00",
+              "test_time": "2026-08-18T05:50:21Z",
+              "type_k": "f16",
+              "type_v": "f16"
+            }
+          ],
+          "paired_or_authoritative": false,
+          "prefill_t4": [
+            {
+              "avg_ns": 46125524159,
+              "avg_ts": 11.100166,
+              "backends": "CPU",
+              "build_commit": "4df29be4f",
+              "build_number": 1,
+              "cpu_info": "AMD EPYC-Milan Processor",
+              "cpu_mask": "0x0",
+              "cpu_strict": false,
+              "devices": "auto",
+              "embeddings": false,
+              "fit_min_ctx": 0,
+              "fit_target": 0,
+              "flash_attn": -1,
+              "gpu_info": "",
+              "load_mode": "mmap",
+              "main_gpu": 0,
+              "model_filename": "/workspace/models/controls/Qwen3.8-27B-TQ2_0.gguf",
+              "model_n_params": 26895998464,
+              "model_size": 11374053376,
+              "model_type": "qwen35 27B TQ2_0 - 2.06 bpw ternary",
+              "n_batch": 512,
+              "n_cpu_moe": 0,
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_gpu_layers": 0,
+              "n_prompt": 512,
+              "n_threads": 4,
+              "n_ubatch": 512,
+              "no_host": false,
+              "no_kv_offload": false,
+              "no_op_offload": 0,
+              "poll": 50,
+              "samples_ns": [
+                46137259570,
+                46196517111,
+                46042795798
+              ],
+              "samples_ts": [
+                11.0973,
+                11.0831,
+                11.1201
+              ],
+              "split_mode": "layer",
+              "stddev_ns": 77530269,
+              "stddev_ts": 0.018665,
+              "tensor_buft_overrides": "none",
+              "tensor_split": "0.00",
+              "test_time": "2026-08-18T05:47:15Z",
+              "type_k": "f16",
+              "type_v": "f16"
+            }
+          ]
+        },
+        "effective_file_bits_per_26895998464_parameters": 3.386391455736811,
+        "format": "TQ2_0",
+        "logical_parameters": 26895998464,
+        "logical_scope": "Qwen3.8-27B text graph; vision and MTP/NextN excluded",
+        "math_code": [
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 8,
+            "task": "math500"
+          },
+          {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 6,
+            "task": "code_trace"
+          }
+        ],
+        "mmlu": null,
+        "mmlu_skipped_after_quick_rejection": true,
+        "model": "/workspace/models/controls/Qwen3.8-27B-TQ2_0.gguf",
+        "model_bytes": 11385047424,
+        "model_sha256": "51dfbc9b889d42086b2ac588805fec2c4fad4333894d7a33856a52c07cdcc3d3",
+        "quick_gate": {
+          "observed": {
+            "code_trace_correct": 0,
+            "cute_correct": 0,
+            "math500_correct": 0,
+            "wikitext_ppl": 1930869.5275,
+            "wikitext_ppl_ratio_vs_Q4": 333789.0517226477
+          },
+          "passed": false,
+          "schema": "qwen38_27b_llamacpp_ternary_quick_gate_v1",
+          "terminal": true,
+          "thresholds": {
+            "maximum_wikitext_ppl_ratio_vs_Q4": 1.25,
+            "minimum_code_trace_correct": 4,
+            "minimum_cute_correct": 7,
+            "minimum_math500_correct": 4
+          },
+          "valid": true
+        },
+        "schema": "qwen38_27b_llamacpp_ternary_control_summary_v1",
+        "terminal": true,
+        "wikitext_ppl": 1930869.5275
+      },
+      "quality_receipt": "/workspace/quant-state/qwen38-27b-tq2_0-control-v1/summary.json",
+      "quality_sha256": "e48a2183179006e1d1657a54e88f92f93d8e0ce8ef5cfacaad9303988faf9df4"
+    }
+  },
+  "created_at_utc": "2026-08-18T05:50:47Z",
+  "logical_scope": "26895998464-parameter llama.cpp text graph",
+  "model": "Qwen/Qwen3.8-27B",
+  "schema": "qwen38_27b_llamacpp_ternary_controls_receipt_v1",
+  "terminal": true
+}

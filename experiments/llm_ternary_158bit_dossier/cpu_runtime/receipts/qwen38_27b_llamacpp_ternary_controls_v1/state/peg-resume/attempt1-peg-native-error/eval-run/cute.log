@@ -1,0 +1,40 @@
+Traceback (most recent call last):
+  File "/workspace/clark-quantize-tq-controls-v1/experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_cute_quick.py", line 110, in request_chat
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/urllib/request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/urllib/request.py", line 495, in open
+    response = meth(req, response)
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/urllib/request.py", line 604, in http_response
+    response = self.parent.error(
+        'http', request, response, code, msg, hdrs)
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/urllib/request.py", line 533, in error
+    return self._call_chain(*args)
+           ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/urllib/request.py", line 466, in _call_chain
+    result = func(*args)
+  File "/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/python3.13/urllib/request.py", line 613, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 500: Internal Server Error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/workspace/clark-quantize-tq-controls-v1/experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_cute_quick.py", line 214, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/clark-quantize-tq-controls-v1/experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_cute_quick.py", line 147, in main
+    response, latency_ms = request_chat(
+                           ~~~~~~~~~~~~^
+        args.server,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        int(contract["seed"]),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/workspace/clark-quantize-tq-controls-v1/experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_cute_quick.py", line 114, in request_chat
+    raise RuntimeError(f"chat API returned HTTP {error.code}: {detail}") from error
+RuntimeError: chat API returned HTTP 500: {"error":{"code":500,"message":"The model produced output that does not match the expected peg-native format","type":"server_error"}}
