@@ -1,0 +1,35 @@
+{
+  "schema": "qwen38_27b_rejected_q3_cleanup_receipt_v1",
+  "terminal": true,
+  "classification": "successful bounded reproducible-artifact cleanup",
+  "host": "quant",
+  "deleted_artifacts": [
+    {
+      "path": "/workspace/models/controls/Qwen3.8-27B-BF16.gguf",
+      "bytes_reverified_before_deletion": 53808281952,
+      "sha256_from_committed_source_receipts": "5a3eedc837bcbd1365cdbf5b71e698df3122e76586ba872f07ce3ed4a9bfa97e",
+      "disposition": "Reproducible source artifact; no longer needed after the stock Q3 sweep closed."
+    },
+    {
+      "path": "/workspace/models/controls/Qwen3.8-27B-Q3_K_M.gguf",
+      "bytes_reverified_before_deletion": 13301442912,
+      "sha256_from_committed_terminal_receipt": "aa4d1df596360a425c9b5b9356ee8f43909376d831359916dea5e8cc5f18679a",
+      "disposition": "Scientifically rejected and reproducible from the pinned source."
+    },
+    {
+      "path": "/workspace/models/controls/Qwen3.8-27B-Q3_K_L.gguf",
+      "bytes_reverified_before_deletion": 14344776032,
+      "sha256_from_committed_terminal_receipt": "809088a4c4842a9f8a0755c3e8b64b74ac473d776ccecea4c103736892e4be80",
+      "disposition": "Scientifically rejected and reproducible from the pinned source."
+    }
+  ],
+  "deleted_bytes_total": 81454500896,
+  "postcondition_at_cleanup": {
+    "artifacts_absent": true,
+    "df_available_human": "97G",
+    "df_use_percent": 56,
+    "retained_q4_target": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "retained_official_mtp_draft": "/workspace/models/controls/mtp-Qwen3.8-27B-Q4_0.gguf"
+  },
+  "recovery": "Not recoverable locally; redownload the pinned BF16 source and requantize using the committed manifests."
+}
