@@ -100,6 +100,7 @@ def test_shared_rotation_fit_covers_every_consumer_row_and_keeps_validation_disj
     calibration = torch.randn(6, 128)
     validation = torch.randn(5, 128)
     pairings = deterministic_givens_pairings(128, stages=2, seed=8)
+    progress = []
     fitted = fit_shared_affine_rotation(
         weights,
         calibration,
@@ -109,6 +110,7 @@ def test_shared_rotation_fit_covers_every_consumer_row_and_keeps_validation_disj
         learning_rate=2e-3,
         row_shard=2,
         group_size=128,
+        progress_callback=progress.append,
     )
     assert fitted.metrics["consumer_count"] == 2
     assert fitted.metrics["rows"] == 7
@@ -119,6 +121,7 @@ def test_shared_rotation_fit_covers_every_consumer_row_and_keeps_validation_disj
     assert any(row["gradient_norm_before_clip"] > 1e-8 for row in fitted.metrics["history"])
     assert fitted.metrics["finite"] is True
     assert set(fitted.quantized) == set(weights)
+    assert progress == fitted.metrics["history"]
     torch.testing.assert_close(
         fitted.angles,
         fitted.angles.to(torch.float16).to(torch.float32),

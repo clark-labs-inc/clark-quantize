@@ -12,7 +12,7 @@ complete-block experiment.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 import torch
 
@@ -397,6 +397,7 @@ def fit_shared_affine_rotation(
     learning_rate: float = 2e-3,
     row_shard: int = 128,
     group_size: int = 128,
+    progress_callback: Callable[[dict[str, float | int]], None] | None = None,
 ) -> SharedAffineRotationFit:
     """Fit one shared hard-forward rotation over every row of every consumer.
 
@@ -506,14 +507,15 @@ def fit_shared_affine_rotation(
         if not torch.isfinite(torch.tensor(gradient_norm)):
             raise RuntimeError("non-finite shared rotation gradient")
         optimizer.step()
-        history.append(
-            {
-                "step": step,
-                "calibration_nmse_before_update": step_loss,
-                "gradient_norm_before_clip": gradient_norm,
-                "processed_rows": processed_rows,
-            }
-        )
+        progress = {
+            "step": step,
+            "calibration_nmse_before_update": step_loss,
+            "gradient_norm_before_clip": gradient_norm,
+            "processed_rows": processed_rows,
+        }
+        history.append(progress)
+        if progress_callback is not None:
+            progress_callback(dict(progress))
 
     # The frozen storage contract is FP16 angles.  Refit every final payload
     # after the encode/decode boundary so the quality gate never sees the

@@ -361,6 +361,34 @@ def fit_site(
     pairings = deterministic_givens_pairings(
         dimension, stages=int(fit_config["rotation_stages"]), seed=seed
     )
+    print(
+        json.dumps(
+            {
+                "event": "site_fit_started",
+                "layer": layer_index,
+                "site": site,
+                "consumer_rows": sum(state[name].shape[0] for name in tensor_names),
+                "parameters": sum(state[name].numel() for name in tensor_names),
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
+
+    def report_step(progress: dict[str, float | int]) -> None:
+        print(
+            json.dumps(
+                {
+                    "event": "rotation_step_complete",
+                    "layer": layer_index,
+                    "site": site,
+                    **progress,
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
+
     fitted = fit_shared_affine_rotation(
         {name: state[name] for name in tensor_names},
         calibration,
@@ -370,6 +398,7 @@ def fit_site(
         learning_rate=float(fit_config["rotation_learning_rate"]),
         row_shard=int(fit_config["row_shard"]),
         group_size=int(fit_config["group_size"]),
+        progress_callback=report_step,
     )
     angles = write_angles(artifact_root, layer_index, site, fitted.angles)
     tensors = []
@@ -398,6 +427,18 @@ def fit_site(
         "terminal": True,
     }
     atomic_json(manifest, manifest_path)
+    print(
+        json.dumps(
+            {
+                "event": "site_terminal",
+                "layer": layer_index,
+                "site": site,
+                "actual_storage_bytes": manifest["actual_storage_bytes"],
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
     return manifest
 
 
@@ -442,6 +483,18 @@ def fit_conv(
         "terminal": True,
     }
     atomic_json(manifest, manifest_path)
+    print(
+        json.dumps(
+            {
+                "event": "site_terminal",
+                "layer": layer_index,
+                "site": "depthwise_conv",
+                "actual_storage_bytes": manifest["actual_storage_bytes"],
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
     return manifest
 
 
@@ -616,6 +669,17 @@ def main() -> None:
     for layer_index in TARGET_LAYERS:
         layer_started = time.monotonic()
         layer_type = config.layer_types[layer_index]
+        print(
+            json.dumps(
+                {
+                    "event": "layer_started",
+                    "layer": layer_index,
+                    "type": layer_type,
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
         state = layer_state(args.model_dir, weight_map, layer_index)
         hidden = cache["layers"][str(layer_index)]["input"]
         parent = cache["layers"][str(layer_index)]["output"]
