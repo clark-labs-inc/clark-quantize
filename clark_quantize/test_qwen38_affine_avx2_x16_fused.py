@@ -130,6 +130,8 @@ def test_v17_runner_enforces_correctness_stability_and_host_isolation() -> None:
     assert "TIMED_BATCHES = 11" in source
     assert "median_absolute_deviation_fraction" in source
     assert "p90_over_p10_ratio" in source
+    assert 'parser.add_argument("--output", type=Path)' in source
+    assert "os.replace(temporary, args.output)" in source
     assert '"artifact-self-test"' in source
     assert "load_compressed_affine_tensor" in source
     assert "actual affine canonical base-3 bytes changed" in source

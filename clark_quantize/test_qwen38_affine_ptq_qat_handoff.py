@@ -35,3 +35,15 @@ def test_handoff_prevents_scientific_rejection_restart_loops() -> None:
     assert "--property=RestartPreventExitStatus=2" in source
     assert 'if [[ -f "$qat_receipt" ]]' in source
     assert 'systemctl is-active --quiet "$qat_unit"' in source
+
+
+def test_handoff_times_the_frozen_kernel_while_idle_before_qat() -> None:
+    source = WATCHER.read_text()
+    stop_parent = source.index('systemctl stop "$parent_unit"')
+    benchmark = source.index("--mode benchmark")
+    launch_qat = source.rindex("systemd-run")
+    assert stop_parent < benchmark < launch_qat
+    assert 'readonly kernel_receipt="/workspace/quant-state/qwen38-affine-avx2-x16-benchmark-v17.json"' in source
+    assert "taskset -c 0" in source
+    assert 'kernel_status" -ne 0 && "$kernel_status" -ne 2' in source
+    assert 'echo "AFF3_X16 benchmark was infrastructure-invalid"' in source

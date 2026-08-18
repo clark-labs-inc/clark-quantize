@@ -17,6 +17,10 @@ readonly parent_runner_commit="1e524a9eb48e223b259a4d3714afc765bb107dcd"
 readonly qat_prereg_sha256="28d7ef3ca0eca806fc25e8a0b7de315a82e9e295fb2302210ad9720a1fdd0a26"
 readonly python_bin="/workspace/venvs/quant-cpu/bin/python"
 readonly qat_runner="experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_affine_butterfly_block_qat_v1.py"
+readonly kernel_build="/workspace/build/qwen38-affine-avx2-x16-v17"
+readonly kernel_runner="$kernel_build/run_qwen38_27b_affine_avx2_x16_fused_v17.py"
+readonly kernel_library="$kernel_build/libqwen38_affine_avx2_x16_v17.so"
+readonly kernel_receipt="/workspace/quant-state/qwen38-affine-avx2-x16-benchmark-v17.json"
 
 if [[ -f "$qat_receipt" ]]; then
   jq -e --arg model "$model" '
@@ -48,6 +52,25 @@ if ! jq -e '.gate.passed == true' "$parent_receipt" >/dev/null; then
   exit 0
 fi
 
+# The native kernel timing gate is representation-independent and must run on
+# an otherwise idle host.  Preserve exit 2 as a terminal scientific rejection;
+# either kernel result permits the separately governed QAT experiment to run.
+if [[ ! -f "$kernel_receipt" ]]; then
+  kernel_status=0
+  PYTHONPATH="$qat_repo" taskset -c 0 "$python_bin" "$kernel_runner" \
+    --library "$kernel_library" \
+    --mode benchmark \
+    --output "$kernel_receipt" || kernel_status=$?
+  if [[ "$kernel_status" -ne 0 && "$kernel_status" -ne 2 ]]; then
+    echo "AFF3_X16 benchmark was infrastructure-invalid" >&2
+    exit 75
+  fi
+fi
+jq -e '
+  .schema == "qwen38_27b_affine_avx2_x16_exact_shape_benchmark_v17" and
+  .model == "Qwen/Qwen3.8-27B" and .complete == true and .terminal == true
+' "$kernel_receipt" >/dev/null
+
 [[ "$(git -C "$qat_repo" rev-parse HEAD)" == "$qat_repo_commit" ]]
 [[ -z "$(git -C "$qat_repo" status --porcelain)" ]]
 git -C "$qat_repo" cat-file -e "${parent_runner_commit}^{commit}"
@@ -67,4 +90,3 @@ systemd-run \
   --property=CPUAccounting=yes \
   --property=MemoryAccounting=yes \
   "$python_bin" "$qat_runner" --threads 4
-

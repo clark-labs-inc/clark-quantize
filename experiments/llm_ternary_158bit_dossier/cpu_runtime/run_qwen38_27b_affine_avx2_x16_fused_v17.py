@@ -543,6 +543,7 @@ def main() -> None:
     )
     parser.add_argument("--artifact-root", type=Path)
     parser.add_argument("--manifest", type=Path)
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     library = load_library(args.library)
     if args.mode == "self-test":
@@ -556,7 +557,13 @@ def main() -> None:
     if not all(math.isfinite(value) for shape in result.get("shapes", [])
                for key, value in shape.items() if key == "maximum_scaled_float_error"):
         raise RuntimeError("non-finite AFF3 result")
-    print(json.dumps(result, indent=2, sort_keys=True), flush=True)
+    encoded = json.dumps(result, indent=2, sort_keys=True) + "\n"
+    if args.output is not None:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        temporary = args.output.with_name(f".{args.output.name}.{os.getpid()}.tmp")
+        temporary.write_text(encoded)
+        os.replace(temporary, args.output)
+    print(encoded, end="", flush=True)
     raise SystemExit(0 if result["passed"] else 2)
 
 
