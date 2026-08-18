@@ -64,7 +64,8 @@ sha256sum \
 while :; do
   conflicts=$(ps -eo pid=,comm=,args= | awk \
     '$2 ~ /^llama-(server|cli|bench|perplexi|quantize)/ ||
-     ($2 ~ /^(python|python3|torchrun)$/ && $0 ~ /qwen38.*(run|train|collect|convert)/) {print}')
+     ($2 ~ /^(python|python3|torchrun)$/ &&
+      $0 ~ /((run|train|collect|convert).*qwen38|qwen38.*(run|train|collect|convert))/) {print}')
   available_kib=$(awk '/MemAvailable:/ {print $2}' /proc/meminfo)
   if [[ -z "$conflicts" ]] && (( available_kib >= 12 * 1024 * 1024 )); then
     break
