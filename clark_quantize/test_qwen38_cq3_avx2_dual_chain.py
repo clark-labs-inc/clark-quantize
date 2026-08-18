@@ -30,6 +30,8 @@ V13_RECEIPT = (
     RUNTIME
     / "receipts/qwen38_27b_cq3_avx2_dual_chain_characterization_v13/terminal-decision.json"
 )
+V14_PREREG = RUNTIME / "qwen38_27b_cq3_avx2_dual_decode_v14.json"
+V14_PATCH = RUNTIME / "kernels/llama_cpp_cq3_avx2_dual_decode_v14.patch"
 
 
 def test_dual_chain_prereg_targets_only_qwen38_27b_cq3() -> None:
@@ -125,3 +127,20 @@ def test_v13_rejects_stable_dual_chain_regression_without_model_evals() -> None:
     assert measurement["scaled_delta_p99"] < measurement["max_scaled_delta"]
     assert receipt["checks"]["model_integration_required"] is False
     assert receipt["quality"]["ran"] is False
+
+
+def test_v14_preserves_fp_order_and_targets_integer_decode_overlap() -> None:
+    prereg = json.loads(V14_PREREG.read_text())
+    assert prereg["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert prereg["scope"]["qwen_4b_compute_forbidden"] is True
+    assert prereg["scope"]["weight_bits_per_weight"] == 2.125
+    correctness = prereg["sequential_gates"]["gate_1_build_and_bit_exactness"]
+    assert correctness["full_shape_exact_control_candidate"] is True
+    performance = prereg["sequential_gates"]["gate_2_exact_shape_microbenchmark"]
+    assert performance["minimum_control_over_candidate_speedup"] >= 1.05
+    source = V14_PATCH.read_text()
+    first = source.index("accumulator0), scale0, sumf")
+    second = source.index("accumulator1), scale1, sumf")
+    assert first < second
+    assert "ggml_cq3_integer_group_dual_decode_v14" in source
+    assert "sumf_group0" not in source

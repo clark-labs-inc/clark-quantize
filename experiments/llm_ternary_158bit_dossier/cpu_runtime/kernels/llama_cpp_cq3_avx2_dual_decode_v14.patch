@@ -1,0 +1,92 @@
+diff --git a/ggml/src/ggml-cpu/arch/x86/quants.c b/ggml/src/ggml-cpu/arch/x86/quants.c
+--- a/ggml/src/ggml-cpu/arch/x86/quants.c
++++ b/ggml/src/ggml-cpu/arch/x86/quants.c
+@@ -1571,6 +1571,39 @@ void ggml_vec_dot_tq2_0_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const vo
+ #endif
+ }
+ 
++#if defined(__AVX2__)
++static inline __m256i ggml_cq3_integer_group_dual_decode_v14(
++        const uint8_t * GGML_RESTRICT packed_values,
++        const block_cq8_0 * GGML_RESTRICT activation,
++        const __m256i mask,
++        const __m256i ones) {
++    const __m256i packed = _mm256_loadu_si256((const __m256i *) packed_values);
++    const __m256i digits0 = _mm256_and_si256(packed, mask);
++    const __m256i digits1 = _mm256_and_si256(
++        _mm256_srli_epi16(packed, 2), mask);
++    const __m256i digits2 = _mm256_and_si256(
++        _mm256_srli_epi16(packed, 4), mask);
++    const __m256i digits3 = _mm256_and_si256(
++        _mm256_srli_epi16(packed, 6), mask);
++    const int8_t * values = activation->qs;
++    const __m256i values0 = _mm256_loadu_si256((const __m256i *) (values + 0));
++    const __m256i values1 = _mm256_loadu_si256((const __m256i *) (values + 32));
++    const __m256i values2 = _mm256_loadu_si256((const __m256i *) (values + 64));
++    const __m256i values3 = _mm256_loadu_si256((const __m256i *) (values + 96));
++    const __m256i products01 = _mm256_add_epi16(
++        _mm256_maddubs_epi16(digits0, values0),
++        _mm256_maddubs_epi16(digits1, values1));
++    const __m256i products23 = _mm256_add_epi16(
++        _mm256_maddubs_epi16(digits2, values2),
++        _mm256_maddubs_epi16(digits3, values3));
++    const __m256i accumulator = _mm256_madd_epi16(
++        _mm256_add_epi16(products01, products23), ones);
++    return _mm256_sub_epi32(
++        accumulator,
++        _mm256_set_epi32(0, 0, 0, 0, 0, 0, 0, activation->sum));
++}
++#endif
++
+ void ggml_vec_dot_cq3_0_cq8_0(int n, float * GGML_RESTRICT s, size_t bs, const void * GGML_RESTRICT vx, size_t bx, const void * GGML_RESTRICT vy, size_t by, int nrc) {
+     assert(n % QK_CQ3_0 == 0);
+     assert(nrc == 1);
+@@ -1590,34 +1623,23 @@ void ggml_vec_dot_cq3_0_cq8_0(int n, float * GGML_RESTRICT s, size_t bs, const vo
+     __m256 sumf = _mm256_setzero_ps();
+ 
+     for (int ib = 0; ib < nb; ++ib) {
+-        for (int group = 0; group < 2; ++group) {
+-            const __m256i packed = _mm256_loadu_si256((const __m256i *)(x[ib].qs + group*32));
+-            const __m256i digits0 = _mm256_and_si256(packed, mask);
+-            const __m256i digits1 = _mm256_and_si256(_mm256_srli_epi16(packed, 2), mask);
+-            const __m256i digits2 = _mm256_and_si256(_mm256_srli_epi16(packed, 4), mask);
+-            const __m256i digits3 = _mm256_and_si256(_mm256_srli_epi16(packed, 6), mask);
+-            const int8_t * values = y[2*ib + group].qs;
+-            const __m256i values0 = _mm256_loadu_si256((const __m256i *)(values + 0));
+-            const __m256i values1 = _mm256_loadu_si256((const __m256i *)(values + 32));
+-            const __m256i values2 = _mm256_loadu_si256((const __m256i *)(values + 64));
+-            const __m256i values3 = _mm256_loadu_si256((const __m256i *)(values + 96));
+-            const __m256i products01 = _mm256_add_epi16(
+-                _mm256_maddubs_epi16(digits0, values0),
+-                _mm256_maddubs_epi16(digits1, values1));
+-            const __m256i products23 = _mm256_add_epi16(
+-                _mm256_maddubs_epi16(digits2, values2),
+-                _mm256_maddubs_epi16(digits3, values3));
+-            __m256i accumulator = _mm256_madd_epi16(_mm256_add_epi16(products01, products23), ones);
+-            accumulator = _mm256_sub_epi32(accumulator,
+-                _mm256_set_epi32(0, 0, 0, 0, 0, 0, 0, y[2*ib + group].sum));
+-            const __m256 scale = _mm256_set1_ps(
+-                GGML_CPU_FP16_TO_FP32(x[ib].d[group])*y[2*ib + group].d);
++        const __m256i accumulator0 = ggml_cq3_integer_group_dual_decode_v14(
++            x[ib].qs, y + 2*ib, mask, ones);
++        const __m256i accumulator1 = ggml_cq3_integer_group_dual_decode_v14(
++            x[ib].qs + 32, y + 2*ib + 1, mask, ones);
++        const __m256 scale0 = _mm256_set1_ps(
++            GGML_CPU_FP16_TO_FP32(x[ib].d[0])*y[2*ib].d);
++        const __m256 scale1 = _mm256_set1_ps(
++            GGML_CPU_FP16_TO_FP32(x[ib].d[1])*y[2*ib + 1].d);
+ #if defined(__FMA__)
+-            sumf = _mm256_fmadd_ps(_mm256_cvtepi32_ps(accumulator), scale, sumf);
++        sumf = _mm256_fmadd_ps(_mm256_cvtepi32_ps(accumulator0), scale0, sumf);
++        sumf = _mm256_fmadd_ps(_mm256_cvtepi32_ps(accumulator1), scale1, sumf);
+ #else
+-            sumf = _mm256_add_ps(sumf, _mm256_mul_ps(_mm256_cvtepi32_ps(accumulator), scale));
++        sumf = _mm256_add_ps(
++            sumf, _mm256_mul_ps(_mm256_cvtepi32_ps(accumulator0), scale0));
++        sumf = _mm256_add_ps(
++            sumf, _mm256_mul_ps(_mm256_cvtepi32_ps(accumulator1), scale1));
+ #endif
+-        }
+     }
+     *s = hsum_float_8(sumf);
+ #else
