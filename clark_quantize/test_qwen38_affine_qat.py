@@ -114,3 +114,10 @@ def test_runtime_modules_use_rotation_then_stored_weight_and_keep_bf16_boundary(
     assert proxy.weight.shape == (3, 1, 4)
     assert proxy.weight.dtype == torch.bfloat16
     assert proxy.bias is None
+
+    loss = linear(inputs).float().square().mean()
+    loss.backward()
+    assert trained.codes_shadow.grad is not None
+    assert rotation.angles.grad is not None
+    assert torch.isfinite(trained.codes_shadow.grad).all()
+    assert torch.isfinite(rotation.angles.grad).all()

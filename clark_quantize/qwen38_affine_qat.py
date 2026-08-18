@@ -6,6 +6,7 @@ from typing import Iterable
 
 import numpy as np
 import torch
+from torch.utils.checkpoint import checkpoint
 
 from .qwen38_affine_butterfly import (
     AffineTernary,
@@ -234,7 +235,7 @@ class StoredAffineLinear(torch.nn.Module):
         # reference so it is registered and optimized exactly once by the site.
         object.__setattr__(self, "_rotation_ref", rotation)
 
-    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+    def _decoded_forward(self, inputs: torch.Tensor) -> torch.Tensor:
         values = inputs.float()
         rotation = self._rotation_ref
         if rotation is not None:
@@ -246,6 +247,15 @@ class StoredAffineLinear(torch.nn.Module):
         return torch.nn.functional.linear(
             values, self.payload.decoded_rotated_weight()
         ).to(inputs.dtype)
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        # A 27B block would otherwise retain every reconstructed dense matrix
+        # until backward. Non-reentrant checkpointing recomputes the exact hard
+        # decode and keeps memory-bounded post-training probes feasible without
+        # changing forward values or the deployed stored representation.
+        if torch.is_grad_enabled():
+            return checkpoint(self._decoded_forward, inputs, use_reentrant=False)
+        return self._decoded_forward(inputs)
 
 
 class StoredAffineConvWeight(torch.nn.Module):
