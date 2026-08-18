@@ -101,7 +101,9 @@ if [[ -n "$(git status --short)" ]]; then
   echo "quality adjudication requires a clean research checkout" >&2
   exit 2
 fi
-if pgrep -x llama-server >/dev/null || pgrep -x llama-bench >/dev/null || pgrep -x llama-perplexity >/dev/null; then
+if pgrep -x llama-server >/dev/null \
+  || pgrep -x llama-bench >/dev/null \
+  || pgrep -f '/bin/llama-perplexity( |$)' >/dev/null; then
   echo "another llama.cpp workload is active" >&2
   exit 2
 fi
