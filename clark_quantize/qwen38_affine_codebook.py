@@ -73,7 +73,7 @@ def reconstruct_signed_row_normalized(
         not np.all(np.isfinite(frozen_anchors))
         or not np.all(np.isfinite(frozen_ratios))
         or np.any(frozen_anchors < 0)
-        or frozen_ratios[0] != 0
+        or not np.any(frozen_ratios == 0)
     ):
         raise ValueError("non-canonical signed row-normalized payload")
     return frozen_anchors[:, None] * frozen_ratios[codes]

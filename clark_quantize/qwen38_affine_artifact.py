@@ -13,9 +13,13 @@ from .base3_chunks import atomic_bytes, canonical_json
 from .qwen38_affine_butterfly import AffineTernary
 from .qwen38_affine_codebook import (
     CompressedAffineTernary,
+    SignedRowNormalizedCodebook,
     reconstruct_signed_row_normalized,
 )
-from .qwen38_row_scale_codebook import reconstruct_row_normalized_scales
+from .qwen38_row_scale_codebook import (
+    RowNormalizedScaleCodebook,
+    reconstruct_row_normalized_scales,
+)
 from .scale_codebook import pack_nibbles, unpack_nibbles
 from .ternary_cpu import (
     block203_matrix_size,
@@ -130,7 +134,9 @@ def write_affine_tensor(
     return result
 
 
-def load_affine_tensor(root: Path, descriptor: dict[str, Any]) -> AffineTernary:
+def load_compressed_affine_tensor(
+    root: Path, descriptor: dict[str, Any]
+) -> CompressedAffineTernary:
     if descriptor.get("schema") != "qwen38_affine_base3_tensor_v1":
         raise ValueError("affine tensor schema changed")
     rows, columns = (int(value) for value in descriptor["shape"])
@@ -142,6 +148,7 @@ def load_affine_tensor(root: Path, descriptor: dict[str, Any]) -> AffineTernary:
         raise ValueError("affine unpacked codes failed authentication")
 
     decoded: dict[str, np.ndarray] = {}
+    encodings: dict[str, tuple[np.ndarray, np.ndarray, np.ndarray]] = {}
     groups = (columns + int(descriptor["group_size"]) - 1) // int(
         descriptor["group_size"]
     )
@@ -160,6 +167,7 @@ def load_affine_tensor(root: Path, descriptor: dict[str, Any]) -> AffineTernary:
             if kind == "alpha"
             else reconstruct_signed_row_normalized(anchors, codebook, indices)
         )
+        encodings[kind] = (anchors.copy(), codebook.copy(), indices.copy())
 
     payload = AffineTernary(
         codes=torch.from_numpy(codes_array.copy()),
@@ -174,7 +182,27 @@ def load_affine_tensor(root: Path, descriptor: dict[str, Any]) -> AffineTernary:
         or bool((payload.alpha < 0).any())
     ):
         raise ValueError("decoded affine tensor is non-finite")
-    return payload
+    alpha_anchors, alpha_values, alpha_indices = encodings["alpha"]
+    mu_anchors, mu_values, mu_indices = encodings["mu"]
+    return CompressedAffineTernary(
+        payload=payload,
+        alpha=RowNormalizedScaleCodebook(
+            anchors=alpha_anchors,
+            values=alpha_values,
+            indices=alpha_indices,
+            reconstructed=decoded["alpha"],
+        ),
+        mu=SignedRowNormalizedCodebook(
+            anchors=mu_anchors,
+            values=mu_values,
+            indices=mu_indices,
+            reconstructed=decoded["mu"],
+        ),
+    )
+
+
+def load_affine_tensor(root: Path, descriptor: dict[str, Any]) -> AffineTernary:
+    return load_compressed_affine_tensor(root, descriptor).payload
 
 
 def verify_descriptor(root: Path, descriptor: dict[str, Any]) -> None:

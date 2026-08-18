@@ -8,6 +8,7 @@ import torch
 
 from clark_quantize.qwen38_affine_artifact import (
     load_affine_tensor,
+    load_compressed_affine_tensor,
     verify_descriptor,
     write_affine_tensor,
 )
@@ -29,9 +30,15 @@ def test_packed_affine_tensor_roundtrip_authenticates_actual_storage() -> None:
         descriptor = write_affine_tensor(root, "projection.weight", compressed)
         verify_descriptor(root, descriptor)
         rebuilt = load_affine_tensor(root, descriptor)
+        encoded = load_compressed_affine_tensor(root, descriptor)
         torch.testing.assert_close(
             rebuilt.reconstruct(), compressed.payload.reconstruct(), rtol=0, atol=0
         )
+        torch.testing.assert_close(
+            encoded.payload.reconstruct(), compressed.payload.reconstruct(), rtol=0, atol=0
+        )
+        np.testing.assert_array_equal(encoded.alpha.indices, compressed.alpha.indices)
+        np.testing.assert_array_equal(encoded.mu.values, compressed.mu.values)
         assert descriptor["storage_bytes"] == (
             descriptor["codes"]["bytes"] + compressed.parameter_storage_bytes
         )
