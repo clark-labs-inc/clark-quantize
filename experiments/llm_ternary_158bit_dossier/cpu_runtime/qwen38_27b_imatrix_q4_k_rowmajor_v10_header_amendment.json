@@ -1,0 +1,31 @@
+{
+  "schema": "qwen38_27b_imatrix_q4_k_rowmajor_header_amendment_v10",
+  "experiment_id": "qwen38_27b_imatrix_q4_k_rowmajor_v10",
+  "frozen_at": "2026-08-18T15:50:07Z",
+  "classification": "mechanical_container_header_correction_before_any_generation_or_quality_evaluation",
+  "observed_fact": {
+    "llama_cpp_imatrix_metadata_keys": [
+      "quantize.imatrix.file",
+      "quantize.imatrix.dataset",
+      "quantize.imatrix.entries_count",
+      "quantize.imatrix.chunks_count"
+    ],
+    "container_header_overhead_bytes": 320,
+    "preregistered_tensor_payload_bytes_saved": 3367239680,
+    "observed_tensor_payload_bytes_saved": 3367239680,
+    "preregistered_candidate_container_bytes_without_imatrix_metadata": 15606630752,
+    "corrected_candidate_container_bytes_with_imatrix_metadata": 15606631072
+  },
+  "corrected_artifact_gate": {
+    "selected_tensor_count": 288,
+    "selected_weight_count": 6734479360,
+    "remaining_q8_tensor_count": 0,
+    "selected_payload_bytes_saved_exact": true,
+    "candidate_container_bytes": 15606631072,
+    "allowed_container_header_overhead_bytes": 320,
+    "nonselected_payload_hash_parity_required": true,
+    "all_other_frozen_gates_unchanged": true
+  },
+  "anti_bias_boundary": "This amendment was frozen after observing only the deterministic GGUF header size and before loading the candidate for generation, graph timing, serving, CUTE, WikiText, MMLU, or MATH. It changes no tensor selection, tensor payload, performance threshold, quality threshold, corpus, prompt, or denominator.",
+  "claim_boundary": "The amendment permits only the four llama.cpp calibration-provenance fields. It does not excuse a payload mismatch or provide evidence of model correctness, quality, speed, novelty, or a breakthrough."
+}

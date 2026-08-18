@@ -127,6 +127,9 @@ ATTENTION_KV_Q8_Q4_K_V9_RECEIPT = (
 IMATRIX_Q4_K_ROWMAJOR_V10_PREREG = (
     RUNTIME / "qwen38_27b_imatrix_q4_k_rowmajor_v10.json"
 )
+IMATRIX_Q4_K_ROWMAJOR_V10_HEADER_AMENDMENT = (
+    RUNTIME / "qwen38_27b_imatrix_q4_k_rowmajor_v10_header_amendment.json"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -424,6 +427,34 @@ def test_v10_calibrates_on_train_and_scores_on_held_out_data() -> None:
     assert serving["minimum_candidate_over_control_mtp3_tps"] >= 1.20
     quality = prereg["sequential_gates"]["gate_5_quality"]
     assert quality["minimum_candidate_correct"] >= 9
+
+
+def test_v10_header_amendment_changes_only_imatrix_metadata_overhead() -> None:
+    prereg = json.loads(IMATRIX_Q4_K_ROWMAJOR_V10_PREREG.read_text())
+    amendment = json.loads(IMATRIX_Q4_K_ROWMAJOR_V10_HEADER_AMENDMENT.read_text())
+    observed = amendment["observed_fact"]
+    corrected = amendment["corrected_artifact_gate"]
+    artifact = prereg["artifact_contract"]
+    assert amendment["classification"].endswith(
+        "before_any_generation_or_quality_evaluation"
+    )
+    assert observed["container_header_overhead_bytes"] == 320
+    assert observed["preregistered_tensor_payload_bytes_saved"] == artifact[
+        "expected_bytes_saved"
+    ]
+    assert observed["observed_tensor_payload_bytes_saved"] == artifact[
+        "expected_bytes_saved"
+    ]
+    assert corrected["candidate_container_bytes"] == (
+        artifact["expected_candidate_bytes"]
+        + corrected["allowed_container_header_overhead_bytes"]
+    )
+    assert corrected["selected_tensor_count"] == artifact["selected_tensor_count"]
+    assert corrected["selected_weight_count"] == artifact["selected_weight_count"]
+    assert corrected["remaining_q8_tensor_count"] == artifact[
+        "remaining_q8_tensor_count"
+    ]
+    assert corrected["all_other_frozen_gates_unchanged"] is True
 
 
 def test_v9_recovers_control_cute_but_loses_too_much_kernel_speed() -> None:
