@@ -1,0 +1,59 @@
+{
+  "schema": "qwen38_27b_mtp3_four_row_profile_terminal_v1",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "host_scope": "four physical AMD EPYC Milan cores 0,2,4,6",
+  "decision": "prioritize_four_row_q4_k_target_kernel",
+  "reason": "After model load, the real MTP3 request spends 44.98% of sampled cycles in the four-row Q4_K target kernel and only 6.93% in the draft Q4_0 GEMV. Draft-only fusion has insufficient Amdahl ceiling, while the four-row target path is the largest isolated kernel target.",
+  "provenance": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "server_sha256": "f46979f9a3ebea22f8e2451eb4309cbd3287e224e7e345f800837aaf0226d3a8",
+    "target_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "draft_sha256": "051a1764cff8c4f3ee6ae8b00593a0364c7539c67fa50ffc58f3f96509fca38e",
+    "perf_version": "7.0.12",
+    "kernel": "7.0.0-29-generic"
+  },
+  "standalone_real_model_four_row_graph": {
+    "command_scope": "llama-bench Qwen3.8-27B Q4_K_M, prompt rows 4, generation 0, eight repetitions, no warmup, four pinned threads",
+    "average_nanoseconds": 822906554,
+    "prompt_tokens_per_second": 4.861338,
+    "cycles": 119351289269,
+    "instructions": 288233381142,
+    "bench_sha256": "37f47eb72e6056a0b33b3332fd5048570bfa225b86ab84bbdd720eeefb4a7985",
+    "stat_sha256": "25511fbde09b9628f5ccd046854735abc597a8f19be969c907e5d04b1c83270d",
+    "profile_report_sha256": "1e4ca36fa60fa38047a9a9280bff508e6850fa12ae7ce27527d846879d651e89"
+  },
+  "real_mtp3_request": {
+    "profile_boundary": "One 96-token exact-greedy server request after target and official MTP models were fully loaded; initialization and repacking are excluded.",
+    "predicted_tokens": 96,
+    "accepted_decode_tokens": 95,
+    "predicted_milliseconds": 25327.997,
+    "accepted_tokens_per_second": 3.7507900841902346,
+    "draft_generated": 75,
+    "draft_accepted": 69,
+    "draft_acceptance_fraction": 0.92,
+    "response_sha256": "e5497b6108c49f70b14c68af7fcb7d11162d1b2cb39b025e7e1e44975682ade8",
+    "profile_report_sha256": "69ecd549349a37fc9fab584dbd872aa8000741cbb9ce6b5e1922cd522046d2d7"
+  },
+  "exclusive_cycle_samples": {
+    "ggml_gemm_q4_K_8x8_q8_K": 0.4498,
+    "q8_x_q8_tinyblas_gemm": 0.2399,
+    "draft_q4_0_gemv": 0.0693,
+    "q6_k_vec_dot": 0.0564,
+    "openmp_runtime": 0.0551,
+    "q4_k_gemv": 0.0162
+  },
+  "amdahl_bounds": {
+    "maximum_whole_request_speedup_if_draft_q4_0_gemv_were_free": 1.0745,
+    "maximum_whole_request_speedup_if_four_row_q4_k_were_free": 1.8175,
+    "whole_request_speedup_if_four_row_q4_k_is_2x": 1.2902,
+    "whole_request_speedup_if_four_row_q4_k_is_3x": 1.4283
+  },
+  "measurement_limits": [
+    "Cycle shares are sampling estimates from one high-acceptance development prompt, not a workload-wide distribution.",
+    "The hardware cache-miss event returned zero and is excluded rather than interpreted.",
+    "Raw perf.data remains an ephemeral remote diagnostic and is not a version-controlled research artifact."
+  ],
+  "claim_boundary": "This terminal receipt selects the next kernel target. It is not a speedup, capability, quality, trained-model, final-node, or novelty result."
+}
