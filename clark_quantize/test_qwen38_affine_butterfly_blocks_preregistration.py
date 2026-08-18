@@ -49,8 +49,12 @@ def test_affine_base3_has_honest_whole_model_storage_and_cpu_algebra() -> None:
 
 def test_affine_butterfly_is_one_shot_falsifiable() -> None:
     payload = load_preregistration()
+    activation = payload["activation_protocol"]
     fit = payload["fit"]
     gate = payload["falsification_gate"]
+    assert len(activation["calibration_texts"]) == 8
+    assert len(activation["validation_texts"]) == 4
+    assert not set(activation["calibration_texts"]) & set(activation["validation_texts"])
     assert fit["rotation_stages"] == 6
     assert fit["rotation_steps"] == 8
     assert fit["no_sweep"].startswith("Layer set")
