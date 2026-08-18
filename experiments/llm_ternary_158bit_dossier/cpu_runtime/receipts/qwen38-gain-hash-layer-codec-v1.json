@@ -1,0 +1,103 @@
+{
+  "claim_boundary": {
+    "complete_layer_body_schema_proven": true,
+    "quality_or_capability_proven": false,
+    "real_Qwen_projection_shapes_counted": true,
+    "real_model_weights_encoded": false,
+    "semi_lossless_or_breakthrough_proven": false,
+    "token_throughput_proven": false,
+    "whole_model_artifact_proven": false
+  },
+  "complete": true,
+  "created_at_utc": "2026-08-18T01:36:13Z",
+  "gate": {
+    "observed_real_shapes": 2,
+    "passed": true,
+    "require_authenticated_outer_container": true,
+    "require_exact_synthetic_roundtrip": true,
+    "require_storage_ledger_identity": true,
+    "required_real_shapes": 2
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "records": [
+    {
+      "bits_per_weight": 1.5458970013786764,
+      "body_matches_storage_ledger": true,
+      "canonical_body_bytes": 17223024,
+      "columns": 5120,
+      "component_lengths": {
+        "correction_code_bytes": 348160,
+        "correction_scale_bytes": 34816,
+        "header_bytes": 64,
+        "ratio_codebook_bytes": 32,
+        "route_body_bytes": 6416,
+        "row_anchor_bytes": 34816,
+        "scale_index_bytes": 348160,
+        "ternary_bytes": 16450560
+      },
+      "ledger_total_bytes": 17223024,
+      "name": "gate_or_up_projection",
+      "parameters": 89128960,
+      "rows": 17408,
+      "sketch_dim": 40
+    },
+    {
+      "bits_per_weight": 1.5432545381433824,
+      "body_matches_storage_ledger": true,
+      "canonical_body_bytes": 17193584,
+      "columns": 17408,
+      "component_lengths": {
+        "correction_code_bytes": 348160,
+        "correction_scale_bytes": 10240,
+        "header_bytes": 64,
+        "ratio_codebook_bytes": 32,
+        "route_body_bytes": 26128,
+        "row_anchor_bytes": 10240,
+        "scale_index_bytes": 348160,
+        "ternary_bytes": 16450560
+      },
+      "ledger_total_bytes": 17193584,
+      "name": "down_projection",
+      "parameters": 89128960,
+      "rows": 5120,
+      "sketch_dim": 136
+    }
+  ],
+  "repository_commit": "7c155d13fb95b7dec6192d9af5ba8e69db543f6a",
+  "representation": {
+    "correction_storage": "signed row-aligned INT4 plus one FP16 scale per row",
+    "header_bytes": 64,
+    "load_time_compute_transcode": "mask64 support/sign body",
+    "outer_container": "authenticated CQ3 tensor section",
+    "route_storage": "canonical bucket sign and three-bit gain body",
+    "scale_storage": "four-bit group index plus FP16 row anchor and tensor codebook",
+    "ternary_storage": "exact enumerative 64-of-128 support plus signs"
+  },
+  "schema": "qwen38_27b_gain_hash_layer_codec_receipt_v1",
+  "sources": {
+    "cq3_container": {
+      "path": "clark_quantize/qwen38_cq3_container.py",
+      "sha256": "f889bc12f0c152d2229249169cad594a568e7365597897f7e022c123c3d3ea7b"
+    },
+    "layer_codec": {
+      "path": "clark_quantize/qwen38_gain_hash_layer_codec.py",
+      "sha256": "1866d06e66fa7b7877ec67bdae634b61275d73b0cfa72556d9096b55eb5e0868"
+    },
+    "route_codec": {
+      "path": "clark_quantize/qwen38_gain_route_codec.py",
+      "sha256": "bdc13b6eeed333f842334011934c8f0b879f159a2ced4cc610946ee726b37bd3"
+    },
+    "verifier": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/verify_qwen38_27b_gain_hash_layer_codec_v1.py",
+      "sha256": "7131e3c55e36be4143f67f26a4573c754dc171008a1eacec9b31c431b924a2b0"
+    }
+  },
+  "synthetic_exactness": {
+    "body_bytes": 502,
+    "body_sha256": "abae702be88edd25e76d369f3e09e45a70146715fc2bf512330209728f986ea5",
+    "cq3_section_exact": true,
+    "cq3_section_verified": true,
+    "exact_roundtrip_and_repack": true
+  },
+  "terminal": true
+}
