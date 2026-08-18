@@ -1,0 +1,77 @@
+{
+  "schema": "qwen38_27b_cq3_activation_stationary_p256_result_v20",
+  "completed_at": "2026-08-18T21:19:43.596060Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "classification": "bit_exact_stable_severe_performance_rejection",
+  "passed": false,
+  "kernel_promoted": false,
+  "decision": "reject_activation_stationary_p256_and_preserve_x8_register_residency",
+  "measurement": {
+    "matrices": 2,
+    "rows_per_matrix": 17408,
+    "columns": 5120,
+    "rows_per_panel": 256,
+    "warmup_pairs": 2,
+    "measured_pairs_per_comparison": 21,
+    "cache_eviction_bytes": 268435456,
+    "candidate_repack_us_excluded": 12278.367,
+    "x8_candidate_bit_exact": true,
+    "maximum_scaled_delta_vs_ordinary": 0.0000349350776,
+    "source_bytes": 47349760,
+    "x8_bytes": 47349760,
+    "candidate_bytes": 47349760,
+    "x8_over_candidate_pairwise_ratios": [0.329, 0.329, 0.324, 0.348, 0.340, 0.326, 0.323, 0.326, 0.333, 0.323, 0.325, 0.322, 0.325, 0.323, 0.327, 0.343, 0.321, 0.334, 0.328, 0.323, 0.327],
+    "ordinary_over_candidate_pairwise_ratios": [0.423, 0.415, 0.426, 0.426, 0.429, 0.423, 0.494, 0.437, 0.432, 0.429, 0.434, 0.430, 0.418, 0.432, 0.414, 0.418, 0.431, 0.437, 0.446, 0.446, 0.446],
+    "x8_over_candidate_pairwise_ratio_median": 0.326420367,
+    "ordinary_over_candidate_pairwise_ratio_median": 0.429952850,
+    "x8_over_candidate_pairwise_ratio_mad_fraction": 0.010582597,
+    "ordinary_over_candidate_pairwise_ratio_mad_fraction": 0.015945157,
+    "frequency_samples": 84,
+    "minimum_frequency_mhz": 2400.0,
+    "maximum_frequency_mhz": 2400.0
+  },
+  "checks": {
+    "service_exit_code_zero": true,
+    "repack_inverse_mapping_passed": true,
+    "runtime_bytes_equal_source_bytes": true,
+    "integer_group_dots_exact": true,
+    "x8_candidate_bit_exact": true,
+    "maximum_scaled_float_error_0_00005_met": true,
+    "median_x8_over_candidate_pairwise_ratio_1_10_met": false,
+    "median_ordinary_over_candidate_pairwise_ratio_1_43_met": false,
+    "x8_over_candidate_pairwise_ratio_mad_fraction_0_03_met": true,
+    "ordinary_over_candidate_pairwise_ratio_mad_fraction_0_03_met": true,
+    "all_frequency_samples_positive": true,
+    "host_idle_precondition_met": true
+  },
+  "diagnosis": {
+    "evidence": "The candidate is stable and bit exact, but takes roughly 6.1 ms for the two matrices versus roughly 2.0 ms for x8.",
+    "inference": "Removing activation-broadcast construction does not compensate for eight read-modify-write passes over INT32 scratch plus repeated row-loop entry. On Milan AVX2, keeping row accumulators resident in registers dominates this reuse tradeoff.",
+    "boundary": "This rejects the frozen 256-row scratch-panel geometry; it does not reject all block-major layouts or all CQ3 kernels."
+  },
+  "provenance": {
+    "preregistration": "qwen38_27b_cq3_activation_stationary_p256_v20.json",
+    "execution_amendment": "qwen38_27b_cq3_activation_stationary_p256_execution_amendment_v20.json",
+    "preregistration_commit": "b61a5e1",
+    "implementation_commit": "87292a6",
+    "benchmark": "benchmark.json",
+    "benchmark_sha256": "9ed58d7b4f390ff616cfc5d8b203740749658652b62e7b22bcc22d6b92d9dbda",
+    "execution": "execution.json",
+    "candidate_patch_sha256": "f98753e4d1f6a1f389a04b70a9071beb18b7e313fdfea9d281d6d00163d4e3d5",
+    "benchmark_harness_sha256": "3b354fd59cb4ec4814f1d7b36bfc5a6b043657dce6add6c4ceed26e37287e6d2",
+    "ggml_cpu_library_sha256": "86d8dbb1ae0944e12bd5c5482f755e17c15c99521ce31a85e19b15d84680a121",
+    "test_binary_sha256": "b73965a8e524aa57a43017fec6fe33a63d5159d7322976f1aff7029817eb18d1"
+  },
+  "graph_integration": {
+    "ran": false,
+    "reason": "The frozen native performance gate failed by a wide margin."
+  },
+  "quality": {
+    "ran": false,
+    "reason": "The lossless primitive failed performance before any representation or model gate."
+  },
+  "next_lane": "Retain CQ3_0x8 as the positive storage-neutral primitive. Any successor must keep per-row INT32 and FP32 accumulators in AVX2 registers and target a different material reuse opportunity, such as a fused model epilogue or multi-column verification, rather than external accumulator scratch.",
+  "claim_boundary": "The activation-stationary P256 layout is a stable, bit-exact 3.06x regression relative to x8 and is rejected. No graph throughput, target-floor, quality, energy, novelty, 100 accepted tokens per second, or breakthrough claim follows."
+}
