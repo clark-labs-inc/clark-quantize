@@ -1,0 +1,135 @@
+{
+  "candidate": [
+    {
+      "mean_ns": 702884123.7142857,
+      "median_ns": 699527289,
+      "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/pair-1-candidate.json",
+      "samples_ns": [699527289, 697054239, 697118789, 721149914, 701484409, 705423597, 698430629],
+      "sha256": "351ff26c371f6a1222729e3119c93a3ecb39e40fb5d529726b3b1837c90685cc"
+    },
+    {
+      "mean_ns": 695451413.7142857,
+      "median_ns": 696523940,
+      "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/pair-2-candidate.json",
+      "samples_ns": [685299872, 686265031, 696523940, 706188746, 701184749, 700208989, 692488569],
+      "sha256": "eedec20adf1ffedc0c866ee3e19e56c7cafece43eee98d740844469868012103"
+    },
+    {
+      "mean_ns": 696248597.8571428,
+      "median_ns": 696231350,
+      "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/pair-3-candidate.json",
+      "samples_ns": [695534380, 698101519, 693613779, 690064780, 696231350, 701582288, 698612089],
+      "sha256": "0f89d18e23333d818a357d07c5f1b66e06829da603ddd9bf2e20cbde340bef5f"
+    },
+    {
+      "mean_ns": 699260905.8571428,
+      "median_ns": 697584298,
+      "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/pair-4-candidate.json",
+      "samples_ns": [688966391, 698741559, 697584298, 690516620, 695960980, 703972948, 719083545],
+      "sha256": "3ca2ba786f6be3971fb165a17cd3d1ee33e169bcfb35cbf49018e749282ca20c"
+    },
+    {
+      "mean_ns": 702346559.4285715,
+      "median_ns": 699630460,
+      "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/pair-5-candidate.json",
+      "samples_ns": [706749366, 698944239, 694914369, 699630460, 708820376, 692063440, 715303666],
+      "sha256": "9902626e1373f559da150caae010584b19c01908d0a20a873f0dca27602800d9"
+    },
+    {
+      "mean_ns": 695507815,
+      "median_ns": 694252170,
+      "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/pair-6-candidate.json",
+      "samples_ns": [698881488, 690795740, 694252170, 707945107, 698314848, 689249631, 689115721],
+      "sha256": "da0dc505c8c9d4eb258ded6850d1cb9f4f51357766d262e114e3b724407c10df"
+    }
+  ],
+  "candidate_process_median_mad_fraction": 0.0023641916102069543,
+  "checks": {
+    "backend_reference_3_of_3": true,
+    "candidate_process_median_mad_at_most_0_03": true,
+    "frequency_range_at_most_100_mhz": true,
+    "layout_property_bit_exact": true,
+    "paired_graph_speedup_at_least_1_10": true
+  },
+  "claim_boundary": "This stage tests one exact-four-row same-weights Q4_K graph on four Milan cores. It is not a whole-model serving, quality, conventional decode, 100 tok/s, novelty, or breakthrough result.",
+  "control": [
+    {
+      "mean_ns": 802416950.7142857,
+      "median_ns": 793886811,
+      "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/pair-1-control.json",
+      "samples_ns": [814508667, 825939465, 793886811, 790320922, 790712491, 791080162, 810470137],
+      "sha256": "dcbfa3c34526d826330fba724589bef298957bbdbf2da942a4c91a2e2ef61e45"
+    },
+    {
+      "mean_ns": 792322997,
+      "median_ns": 793223071,
+      "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/pair-2-control.json",
+      "samples_ns": [781102604, 801650220, 795960600, 790362852, 788106321, 795855311, 793223071],
+      "sha256": "d92ffc98c1feb7f33be7a404f33e6b794762a1902eedd74785a454529dc6039e"
+    },
+    {
+      "mean_ns": 808416341,
+      "median_ns": 795226480,
+      "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/pair-3-control.json",
+      "samples_ns": [875988735, 795305861, 791984501, 793989301, 789673512, 795226480, 816745997],
+      "sha256": "5cb8827c245063e59e7a64a0281ee930b85c136bf2d68bbf9cf90a404775feb1"
+    },
+    {
+      "mean_ns": 797972797.2857143,
+      "median_ns": 799040790,
+      "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/pair-4-control.json",
+      "samples_ns": [800695200, 800666129, 816735577, 799040790, 785036952, 791287461, 792347472],
+      "sha256": "e371ff58c2db8af206c5c5c1ade9d3d06cf9ea64ad663ed4c52244ac343c04f5"
+    },
+    {
+      "mean_ns": 789737361.8571428,
+      "median_ns": 788333313,
+      "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/pair-5-control.json",
+      "samples_ns": [788333313, 801862788, 782898033, 782801074, 793859930, 781031774, 797374621],
+      "sha256": "805f01124675a6bd947fcf0f75534799471a5099943d25c0df5c1ec470479d90"
+    },
+    {
+      "mean_ns": 805848880,
+      "median_ns": 788456533,
+      "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/pair-6-control.json",
+      "samples_ns": [787042942, 788874171, 787294582, 788456533, 786869432, 789260641, 913143859],
+      "sha256": "6c3dd82a6bff4b3b9c6b09ffcdeb9477c64b22b44d49bfc860f387f1e14bb287"
+    }
+  ],
+  "decision": "advance_to_system_gate",
+  "denominator": {
+    "paired_process_ratios": 6,
+    "processes_per_runtime": 6,
+    "samples_per_process": 7,
+    "samples_per_runtime": 42
+  },
+  "frequency": {
+    "maximum_mhz": 2400.0,
+    "median_mhz": 2400.0,
+    "minimum_mhz": 2400.0,
+    "path": "/workspace/quant-state/qwen38-27b-q4-k-native-x4-deinterleave-v21/frequency.log",
+    "range_mhz": 0.0,
+    "sample_count": 171,
+    "sha256": "56ef1f5074f5e16fb096582d7879f1a8b0f539eede10da2a17956c39e691a737"
+  },
+  "host_scope": "four physical AMD EPYC Milan cores",
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "next_stage": "target-only and MTP3 system gates",
+  "paired_control_over_candidate_ratios": [1.1348904088286398, 1.1388310228073424, 1.1421871192671804, 1.14543975873723, 1.126785293196068, 1.1356918524287796],
+  "paired_ratio_median": 1.137261437618061,
+  "passed": true,
+  "provenance": {
+    "backend_log_sha256": "578b1ab4d8f6dc29d32764ab0cf3f7de859388d5d7cade76debcd21ad249cf83",
+    "candidate_binary_sha256": "90a08eb2f1a70d540c117b9db563c28fa9bb0b03eedca48d061cc147aab79a28",
+    "candidate_patch_sha256": "feedcb6bcf6b0ded4181a4cc234d8cef08731234ed494f31b43b107884531b69",
+    "control_binary_sha256": "61aa042a8bcea910c52043b6128ddb725c84c64f144d0fe8868ee24394376c35",
+    "layout_amendment_sha256": "853a4fbe87b3494a7e5a9af7fe67f3935ce621a06bfb9f2cdb835e7f4a062df0",
+    "layout_test_sha256": "a9f9695e27aadf3f2a8dc4362e7cc55f12d5c20e72efcd8d6c912116a9c91ced",
+    "preregistration_sha256": "22920fe4bc2dbb9c4ee109b207c93e8c7f00a62c3f141221cc53bf8904cb8c30",
+    "property_log_sha256": "01cc3bc513004b51b4ed920b9d1a353b00003bb59ca4dfb79929defc13360ca7"
+  },
+  "schema": "qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_graph_result_v21",
+  "stage": "four_row_graph",
+  "terminal": false
+}
