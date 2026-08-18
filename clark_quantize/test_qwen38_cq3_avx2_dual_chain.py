@@ -26,6 +26,10 @@ V13_PREREG = (
 V13_PATCH = (
     RUNTIME / "kernels/llama_cpp_cq3_avx2_dual_chain_characterization_v13.patch"
 )
+V13_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_cq3_avx2_dual_chain_characterization_v13/terminal-decision.json"
+)
 
 
 def test_dual_chain_prereg_targets_only_qwen38_27b_cq3() -> None:
@@ -107,3 +111,17 @@ def test_v13_is_nonpromotable_and_reports_full_error_distribution() -> None:
     assert "scaled_delta_p50" in source
     assert "scaled_delta_p99" in source
     assert "std::isfinite(max_scaled_delta)" in source
+
+
+def test_v13_rejects_stable_dual_chain_regression_without_model_evals() -> None:
+    receipt = json.loads(V13_RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["passed"] is False
+    measurement = receipt["measurement"]
+    assert measurement["total_outputs"] == 34_816
+    assert measurement["single_chain_over_dual_chain_speedup"] < 1.0
+    assert measurement["dual_chain_sample_range_fraction"] < 0.05
+    assert measurement["scaled_delta_p99"] < measurement["max_scaled_delta"]
+    assert receipt["checks"]["model_integration_required"] is False
+    assert receipt["quality"]["ran"] is False
