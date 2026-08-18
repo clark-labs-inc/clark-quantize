@@ -11,6 +11,10 @@ PATCH = RUNTIME / "kernels/llama_cpp_cq3_avx2_x8_repack_v15.patch"
 INTEGRATION_PATCH = (
     RUNTIME / "kernels/llama_cpp_cq3_avx2_x8_repack_integration_v15.patch"
 )
+RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_cq3_avx2_x8_repack_v15/terminal-decision.json"
+)
 
 
 def test_v15_is_storage_neutral_and_qwen38_27b_only() -> None:
@@ -67,3 +71,20 @@ def test_v15_integration_uses_persistent_repack_and_decode_gemv() -> None:
     assert "gemm<block_cq3_0, 8, 8, GGML_TYPE_CQ8_0>" in source
     assert "ggml_repack_get_optimal_repack_type" in source
     assert "ggml_cpu_has_avx2()" in source
+
+
+def test_v15_retains_native_win_but_rejects_layer0_only_promotion() -> None:
+    receipt = json.loads(RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["passed"] is False
+    assert receipt["native_kernel_passed"] is True
+    assert receipt["selective_model_promoted"] is False
+    native = receipt["native_measurement"]
+    assert native["control_over_candidate_speedup"] >= 1.25
+    assert native["candidate_sample_range_fraction"] <= 0.05
+    assert native["runtime_bytes"] == native["source_bytes"]
+    integration = receipt["model_integration"]
+    assert integration["candidate_over_control_speedup"] < 1.15
+    assert integration["target_diagnostic"]["ran"] is False
+    assert receipt["quality"]["ran"] is False
