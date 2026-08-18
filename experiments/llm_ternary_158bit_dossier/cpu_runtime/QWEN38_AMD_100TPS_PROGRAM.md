@@ -66,6 +66,16 @@ produce four target rows and use the existing GEMM4 path. MTP3 therefore
 remains the local serving winner, while the three-row kernel is promoted as a
 real end-to-end optimization. See `QWEN38_Q4_K_FUSED_RAGGED_AVX2_V2.md`.
 
+A profile taken after model load attributes 44.98% of real MTP3 cycles to the
+four-row Q4_K target kernel, 23.99% to Q8 matmul, and only 6.93% to the draft
+Q4_0 GEMV. This selects four-row target verification ahead of proposer fusion.
+The first direct extension was rejected: although its graph timing improved by
+1.113x, all 4 x 96 target and MTP outputs collapsed to token ID zero, draft
+acceptance became 0/1,116, and MTP3 fell from 3.0585 to 1.1360 accepted tok/s.
+The result tightens the contract: graph timing is never a score until a
+real-model free-generation canary passes, and the next candidate uses separate
+compile-time three- and four-row specializations.
+
 ## Target-model lane
 
 Q3_K_M is the immediate practical baseline. Post-trained aligned two-bit or

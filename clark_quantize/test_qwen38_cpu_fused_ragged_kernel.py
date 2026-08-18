@@ -20,6 +20,25 @@ PADDED_RECEIPT = (
     RUNTIME
     / "receipts/qwen38_27b_q4_k_ragged3_gemm4_v1/terminal-decision.json"
 )
+FOUR_ROW_PREREG = RUNTIME / "qwen38_27b_q4_k_fused_four_row_avx2_v3.json"
+FOUR_ROW_PATCH = (
+    RUNTIME / "kernels/llama_cpp_q4_k_fused_four_row_avx2_v3.patch"
+)
+FOUR_ROW_SUMMARIZER = (
+    RUNTIME / "summarize_qwen38_27b_q4_k_fused_four_row_avx2_v3.py"
+)
+FOUR_ROW_RUNNER = RUNTIME / "run_qwen38_27b_q4_k_fused_four_row_avx2_v3.sh"
+FOUR_ROW_PROFILE = (
+    RUNTIME
+    / "receipts/qwen38_27b_mtp3_four_row_profile_v1/terminal-decision.json"
+)
+FOUR_ROW_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_q4_k_fused_four_row_avx2_v3/terminal-decision.json"
+)
+FOUR_ROW_V4_PREREG = (
+    RUNTIME / "qwen38_27b_q4_k_fused_four_row_specialized_avx2_v4.json"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -106,3 +125,95 @@ def test_cute_receipt_has_exact_denominator_and_excludes_invalid_attempt() -> No
     assert payload["prior_attempt"]["scored"] is False
     assert payload["gates"]["item_level_output_parity"] is True
     assert payload["gates"]["passed"] is True
+
+
+def test_four_row_candidate_is_profile_selected_and_preregistered() -> None:
+    payload = json.loads(FOUR_ROW_PREREG.read_text())
+    profile = json.loads(FOUR_ROW_PROFILE.read_text())
+    assert payload["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert payload["scope"]["qwen_4b_compute_forbidden"] is True
+    assert payload["profile_anchor"]["four_row_q4_k_cycle_fraction"] == 0.4498
+    assert payload["promotion_gate"]["performance"][
+        "minimum_real_model_four_row_graph_speedup"
+    ] >= 1.10
+    assert payload["promotion_gate"]["performance"][
+        "minimum_whole_model_mtp3_accepted_tps_speedup"
+    ] >= 1.05
+    assert profile["terminal"] is True
+    assert profile["decision"] == "prioritize_four_row_q4_k_target_kernel"
+    assert profile["exclusive_cycle_samples"]["ggml_gemm_q4_K_8x8_q8_K"] > 0.40
+    assert profile["exclusive_cycle_samples"]["draft_q4_0_gemv"] < 0.10
+
+
+def test_four_row_patch_is_exact_shape_scoped() -> None:
+    source = FOUR_ROW_PATCH.read_text()
+    assert "assert(nr > 0 && nr <= 4)" in source
+    assert "__m256 acc_rows[4]" in source
+    assert "__m256i iacc_b[4]" in source
+    assert "const bool fused_four_rows = q4_k_8x8 && nrows == 4" in source
+    assert "nrows > 3 && !fused_four_rows" in source
+    assert "fused_four_rows ? 0" in source
+
+
+def test_four_row_summarizer_enforces_terminal_gates() -> None:
+    source = FOUR_ROW_SUMMARIZER.read_text()
+    assert "expected 14 paired graph samples" in source
+    assert "graph_speedup >= 1.10" in source
+    assert "mtp3_ratio >= 1.05" in source
+    assert "target_ratio >= 0.98" in source
+    assert "cross_runtime_mtp3_exact_token_parity" in source
+    assert '"draft_behavior_unchanged"' in source
+    assert '"cute_required": all(checks.values())' in source
+
+
+def test_four_row_runner_is_restartable_pinned_and_exact_denominator() -> None:
+    source = FOUR_ROW_RUNNER.read_text()
+    assert "Qwen3.8-27B-Q4_K_M.gguf" in source
+    assert "mtp-Qwen3.8-27B-Q4_0.gguf" in source
+    assert "4df29be4f4c3673f428170fda944a5b19f743bb8" in source
+    assert "-p 4 -n 0 -r 7" in source
+    assert "--widths 0,3 --n-predict 96" in source
+    assert 'if [[ -s "$state_dir/terminal-decision.json"' in source
+    assert "pgrep -x llama-server" in source
+    assert "summarize_qwen38_27b_q4_k_fused_four_row_avx2_v3.py" in source
+
+
+def test_four_row_v3_is_terminal_numerical_rejection() -> None:
+    payload = json.loads(FOUR_ROW_RECEIPT.read_text())
+    assert payload["terminal"] is True
+    assert payload["infrastructure_valid"] is True
+    assert payload["passed"] is False
+    assert payload["checks"]["four_row_graph_speedup_at_least_1_10"] is True
+    assert payload["checks"]["cross_runtime_target_exact_token_parity"] is False
+    assert payload["checks"]["whole_model_mtp3_speedup_at_least_1_05"] is False
+    assert payload["whole_model"]["candidate_draft_n"] == 1116
+    assert payload["whole_model"]["candidate_draft_n_accepted"] == 0
+    assert payload["token_diagnostics"]["candidate_target_unique_token_ids"] == [0]
+    assert payload["token_diagnostics"]["candidate_target_zero_token_fraction"] == 1.0
+    assert payload["provenance"]["four_row_patch_sha256"] == payload["provenance"][
+        "executed_four_row_patch_sha256"
+    ]
+    assert payload["provenance"]["repository_normalized_four_row_patch_sha256"] == (
+        "41fac22043304854d4b21562d3b5fb6c5bbbc880b339a4af9c7aae8bb849c5ab"
+    )
+
+
+def test_four_row_v4_prereg_requires_separate_specialization_and_canaries() -> None:
+    payload = json.loads(FOUR_ROW_V4_PREREG.read_text())
+    assert payload["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert payload["negative_anchor"]["classification"] == (
+        "numerical-contract failure"
+    )
+    structure = payload["implementation"]["required_structure"]
+    assert any("MAX_ROWS=3" in item for item in structure)
+    assert any("MAX_ROWS=4" in item for item in structure)
+    gates = payload["sequential_gates"]
+    assert gates["gate_1_ordinary_decode_canary"][
+        "control_vs_candidate_exact_tokens"
+    ] is True
+    assert gates["gate_2_backend_and_graph"][
+        "minimum_real_model_four_row_graph_speedup"
+    ] >= 1.10
+    assert gates["gate_3_mtp3_canary"][
+        "candidate_draft_acceptance_must_equal_control"
+    ] is True

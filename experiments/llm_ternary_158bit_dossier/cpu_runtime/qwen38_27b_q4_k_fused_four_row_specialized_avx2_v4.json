@@ -1,0 +1,74 @@
+{
+  "schema": "qwen38_27b_q4_k_fused_four_row_specialized_avx2_preregistration_v4",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_fused_four_row_specialized_avx2_v4",
+  "frozen_at": "2026-08-18T11:04:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "target_quantization": "Q4_K_M",
+    "official_mtp_draft_quantization": "Q4_0",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true
+  },
+  "negative_anchor": {
+    "receipt": "receipts/qwen38_27b_q4_k_fused_four_row_avx2_v3/terminal-decision.json",
+    "classification": "numerical-contract failure",
+    "observed_graph_speedup": 1.1130385668211535,
+    "candidate_target_zero_token_fraction": 1.0,
+    "candidate_mtp3_accepted_tokens_per_second": 1.1359814587736994,
+    "reason_for_followup": "Expanding every ragged-kernel accumulator array from three to four changed the compiled one-to-three-row path and collapsed all target outputs to token ID zero. The speed number is not promotable."
+  },
+  "hypothesis": "Compile-time-specialized three-row and four-row implementations can preserve the already-qualified one-to-three-row binary path while allowing a separate four-accumulator exact-four-row kernel, avoiding the v3 runtime-sized array regression.",
+  "implementation": {
+    "base": "Pinned llama.cpp plus cache-order v1 and promoted fused one-to-three-row v2",
+    "candidate_patch": "kernels/llama_cpp_q4_k_fused_four_row_specialized_avx2_v4.patch",
+    "required_structure": [
+      "instantiate the fused kernel with MAX_ROWS=3 for one-to-three-row calls",
+      "instantiate a distinct MAX_ROWS=4 path only for exactly four rows",
+      "retain the existing GEMM path for batches larger than four",
+      "do not enlarge the MAX_ROWS=3 accumulator or Q8 sum arrays"
+    ]
+  },
+  "sequential_gates": {
+    "gate_1_ordinary_decode_canary": {
+      "prompts": 4,
+      "tokens_per_prompt": 32,
+      "control_vs_candidate_exact_tokens": true,
+      "candidate_zero_token_fraction_must_be_less_than": 0.01
+    },
+    "gate_2_backend_and_graph": {
+      "backend_reference_cases_pass": true,
+      "real_model_four_row_samples_per_runtime": 14,
+      "minimum_real_model_four_row_graph_speedup": 1.10
+    },
+    "gate_3_mtp3_canary": {
+      "prompts": 1,
+      "tokens_per_prompt": 96,
+      "control_vs_candidate_exact_tokens": true,
+      "candidate_draft_acceptance_must_equal_control": true
+    },
+    "gate_4_terminal_mtp3": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "minimum_whole_model_mtp3_accepted_tps_speedup": 1.05,
+      "maximum_target_only_tps_regression_fraction": 0.02,
+      "all_control_vs_candidate_exact_tokens": true
+    },
+    "gate_5_quality": {
+      "cute_quick_required_only_after_all_prior_gates_pass": true,
+      "candidate_must_match_q4_control_score_and_item_outputs": true
+    }
+  },
+  "stop_rules": [
+    "Stop before MTP if any ordinary-decode canary token differs or degenerates.",
+    "Stop before the four-prompt run if the first MTP3 prompt changes any committed token or draft acceptance count.",
+    "Reject if the four-row graph speedup is below 1.10.",
+    "Reject if terminal MTP3 throughput improves by less than five percent.",
+    "Do not interpret a faster graph with invalid logits as a performance result."
+  ],
+  "claim_boundary": "A pass promotes one exact-four-row AVX2 verification kernel on four Milan cores. The trained approximation, broad quality, final-node, energy, 100 accepted tok/s, and novelty gates remain open."
+}

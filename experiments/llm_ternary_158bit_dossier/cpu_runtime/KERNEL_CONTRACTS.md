@@ -258,6 +258,17 @@ GEMM path used by MTP3, which remains the measured serving winner. Synthetic
 `test-backend-ops` results are not valid evidence for this repack path; the
 kernel contract requires real-model repacking and whole-server measurement.
 
+The first attempt to extend that implementation to exactly four rows is a
+terminal negative. Merely enlarging its runtime-indexed AVX2 accumulator arrays
+from three to four made the real four-row graph appear 1.113x faster, but it
+also collapsed every candidate target token to ID zero. MTP3 accepted 0 of
+1,116 draft proposals and fell to 1.136 accepted tok/s. Three small backend
+reference cases passed, demonstrating that synthetic tolerance tests did not
+cover the real model-load/repack failure. The speed number is invalid for
+promotion. Follow-up work must keep the qualified one-to-three-row binary path
+separate and compile an exact-four-row specialization, with a free-generation
+canary before any throughput run.
+
 ## Required tests for every optimized kernel
 
 1. scalar-versus-optimized randomized property tests;
