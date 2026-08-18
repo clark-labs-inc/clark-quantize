@@ -205,6 +205,161 @@ def affine_ternary_linear(inputs: torch.Tensor, quantized: AffineTernary) -> tor
     ).sum(-1)
 
 
+@torch.no_grad()
+def activation_metric_affine_ternary(
+    weight: torch.Tensor,
+    inputs: torch.Tensor,
+    *,
+    group_size: int = 128,
+) -> AffineTernary:
+    """Relocate one affine ternary matrix under its exact cached activations.
+
+    Initialization uses activation-diagonal weighted group means and three
+    clusters.  A group-coordinate affine solve accounts for cross-group
+    residual, one deterministic coordinate pass relocates every trit, and a
+    final affine solve closes the prescribed calibration update.  Workspace is
+    proportional to ``activation_rows * output_row_shard`` rather than the
+    full matrix.
+    """
+    if (
+        weight.ndim != 2
+        or inputs.ndim != 2
+        or weight.shape[1] != inputs.shape[1]
+        or weight.shape[0] == 0
+        or inputs.shape[0] == 0
+        or group_size <= 0
+        or not weight.is_floating_point()
+        or not inputs.is_floating_point()
+    ):
+        raise ValueError("activation-metric affine ternary dimensions changed")
+    source = weight.detach().float().contiguous()
+    calibration = inputs.detach().float().contiguous()
+    rows, columns = source.shape
+    groups = (columns + group_size - 1) // group_size
+    energy = calibration.square().sum(0)
+    codes = torch.zeros((rows, columns), dtype=torch.int8, device=source.device)
+    mu = torch.zeros((rows, groups), dtype=torch.float32, device=source.device)
+    alpha = torch.zeros_like(mu)
+
+    # Frozen weighted three-cluster initialization around each group mean.
+    for group in range(groups):
+        start = group * group_size
+        stop = min(start + group_size, columns)
+        group_weight = source[:, start:stop]
+        group_energy = energy[start:stop]
+        denominator = group_energy.sum()
+        if float(denominator) > 0:
+            center = (group_weight * group_energy).sum(-1) / denominator
+            centered = group_weight - center.unsqueeze(-1)
+            radius = torch.sqrt(
+                (centered.square() * group_energy).sum(-1) / denominator
+            )
+        else:
+            center = group_weight.mean(-1)
+            centered = group_weight - center.unsqueeze(-1)
+            radius = torch.sqrt(centered.square().mean(-1))
+        threshold = radius.unsqueeze(-1) * 0.5
+        group_codes = torch.where(
+            centered > threshold,
+            torch.ones_like(centered, dtype=torch.int8),
+            torch.where(
+                centered < -threshold,
+                -torch.ones_like(centered, dtype=torch.int8),
+                torch.zeros_like(centered, dtype=torch.int8),
+            ),
+        )
+        codes[:, start:stop] = group_codes
+        mu[:, group] = center
+        alpha[:, group] = radius
+
+    target = torch.nn.functional.linear(calibration, source)
+    payload = AffineTernary(codes=codes, mu=mu, alpha=alpha, group_size=group_size)
+    residual = target - affine_ternary_linear(calibration, payload)
+
+    def solve_all_groups() -> None:
+        nonlocal residual
+        for group in range(groups):
+            start = group * group_size
+            stop = min(start + group_size, columns)
+            x = calibration[:, start:stop]
+            group_codes = codes[:, start:stop].float()
+            old_weight = mu[:, group, None] + alpha[:, group, None] * group_codes
+            residual_without = residual + torch.nn.functional.linear(x, old_weight)
+            sums = x.sum(-1)
+            trit_projection = x @ group_codes.t()
+            ss = sums.square().sum()
+            sz = (sums[:, None] * trit_projection).sum(0)
+            zz = trit_projection.square().sum(0)
+            sy = (sums[:, None] * residual_without).sum(0)
+            zy = (trit_projection * residual_without).sum(0)
+            determinant = ss * zz - sz.square()
+            safe = determinant.abs() > 1e-12
+            fitted_mu = torch.where(
+                safe,
+                (sy * zz - zy * sz) / torch.where(safe, determinant, torch.ones_like(determinant)),
+                sy / ss.clamp_min(1e-12),
+            )
+            fitted_alpha = torch.where(
+                safe,
+                (ss * zy - sz * sy) / torch.where(safe, determinant, torch.ones_like(determinant)),
+                torch.zeros_like(zy),
+            )
+            negative = fitted_alpha < 0
+            if bool(negative.any()):
+                codes[negative, start:stop] *= -1
+                group_codes = codes[:, start:stop].float()
+                trit_projection[:, negative] *= -1
+                fitted_alpha = fitted_alpha.abs()
+            mu[:, group] = fitted_mu
+            alpha[:, group] = fitted_alpha
+            residual = residual_without - (
+                sums[:, None] * fitted_mu[None, :]
+                + trit_projection * fitted_alpha[None, :]
+            )
+
+    solve_all_groups()
+
+    # One deterministic coordinate pass under the exact activation residual.
+    candidate_trits = torch.tensor([-1.0, 0.0, 1.0], device=source.device)
+    for group in range(groups):
+        start = group * group_size
+        stop = min(start + group_size, columns)
+        group_alpha = alpha[:, group]
+        for column in range(start, stop):
+            x = calibration[:, column]
+            current = codes[:, column].float()
+            residual_without = residual + x[:, None] * (
+                group_alpha * current
+            )[None, :]
+            correlation = (residual_without * x[:, None]).sum(0)
+            x_energy = x.square().sum()
+            amplitudes = candidate_trits[:, None] * group_alpha[None, :]
+            score = amplitudes.square() * x_energy - 2 * amplitudes * correlation
+            selected = score.argmin(0).to(torch.int8) - 1
+            selected = torch.where(
+                group_alpha > 0, selected, torch.zeros_like(selected)
+            )
+            codes[:, column] = selected
+            residual = residual_without - x[:, None] * (
+                group_alpha * selected.float()
+            )[None, :]
+
+    solve_all_groups()
+    result = AffineTernary(
+        codes=codes.contiguous(),
+        mu=mu.contiguous(),
+        alpha=alpha.contiguous(),
+        group_size=group_size,
+    )
+    if (
+        set(result.codes.unique().tolist()) - {-1, 0, 1}
+        or bool((result.alpha < 0).any())
+        or not bool(torch.isfinite(result.reconstruct()).all())
+    ):
+        raise RuntimeError("activation-metric affine ternary fit is invalid")
+    return result
+
+
 def _direct_symmetric(weight: torch.Tensor, group_size: int) -> torch.Tensor:
     codes, scales = ternary_codes_scales(weight, group=group_size, method="optimal")
     rows, columns = codes.shape
@@ -285,15 +440,30 @@ def fit_shared_affine_rotation(
     )
     optimizer = torch.optim.Adam([angles], lr=learning_rate)
 
-    direct_candidates = {
-        name: _direct_symmetric(weight, group_size) for name, weight in frozen_weights.items()
-    }
-    direct_calibration_sse, calibration_energy = _consumer_error(
-        train_x, frozen_weights, direct_candidates
-    )
-    direct_validation_sse, validation_energy = _consumer_error(
-        valid_x, frozen_weights, direct_candidates
-    )
+    direct_calibration_sse = 0.0
+    direct_validation_sse = 0.0
+    calibration_energy = 0.0
+    validation_energy = 0.0
+    with torch.no_grad():
+        for weight in frozen_weights.values():
+            for start in range(0, weight.shape[0], row_shard):
+                stop = min(start + row_shard, weight.shape[0])
+                source_shard = weight[start:stop]
+                direct = _direct_symmetric(source_shard, group_size)
+                target_train = torch.nn.functional.linear(train_x, source_shard)
+                target_valid = torch.nn.functional.linear(valid_x, source_shard)
+                direct_calibration_sse += float(
+                    (torch.nn.functional.linear(train_x, direct) - target_train)
+                    .square()
+                    .sum()
+                )
+                direct_validation_sse += float(
+                    (torch.nn.functional.linear(valid_x, direct) - target_valid)
+                    .square()
+                    .sum()
+                )
+                calibration_energy += float(target_train.square().sum())
+                validation_energy += float(target_valid.square().sum())
     if calibration_energy <= 0 or validation_energy <= 0:
         raise ValueError("shared affine-rotation teacher energy is zero")
 
@@ -304,15 +474,17 @@ def fit_shared_affine_rotation(
         optimizer.zero_grad(set_to_none=True)
         step_loss = 0.0
         processed_rows = 0
+        rotated_inputs = apply_givens_product(train_x, angles, pairings)
         for name in names:
             weight = frozen_weights[name]
             for start in range(0, weight.shape[0], row_shard):
                 stop = min(start + row_shard, weight.shape[0])
                 source_shard = weight[start:stop]
-                rotated_inputs = apply_givens_product(train_x, angles, pairings)
                 rotated_weight = apply_givens_product(source_shard, angles, pairings)
-                hard = initialize_affine_ternary(
-                    rotated_weight.detach(), group_size=group_size
+                hard = activation_metric_affine_ternary(
+                    rotated_weight.detach(),
+                    rotated_inputs.detach(),
+                    group_size=group_size,
                 ).reconstruct()
                 straight_through = rotated_weight + (hard - rotated_weight).detach()
                 target = torch.nn.functional.linear(train_x, source_shard)
@@ -351,8 +523,25 @@ def fit_shared_affine_rotation(
     final_validation_sse = 0.0
     for name in names:
         weight = frozen_weights[name]
-        payload = initialize_affine_ternary(
-            apply_givens_product(weight, final_angles, pairings), group_size=group_size
+        code_shards = []
+        mu_shards = []
+        alpha_shards = []
+        for start in range(0, weight.shape[0], row_shard):
+            stop = min(start + row_shard, weight.shape[0])
+            source_shard = weight[start:stop]
+            fitted_shard = activation_metric_affine_ternary(
+                apply_givens_product(source_shard, final_angles, pairings),
+                rotated_train_x,
+                group_size=group_size,
+            )
+            code_shards.append(fitted_shard.codes)
+            mu_shards.append(fitted_shard.mu)
+            alpha_shards.append(fitted_shard.alpha)
+        payload = AffineTernary(
+            codes=torch.cat(code_shards, dim=0).contiguous(),
+            mu=torch.cat(mu_shards, dim=0).contiguous(),
+            alpha=torch.cat(alpha_shards, dim=0).contiguous(),
+            group_size=group_size,
         )
         quantized[name] = payload
         with torch.no_grad():

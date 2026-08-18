@@ -4,6 +4,7 @@ import torch
 import torch.nn.functional as functional
 
 from clark_quantize.qwen38_affine_butterfly import (
+    activation_metric_affine_ternary,
     affine_ternary_linear,
     apply_givens_product,
     deterministic_givens_pairings,
@@ -68,6 +69,26 @@ def test_affine_group_sum_runtime_matches_reconstructed_linear_for_partial_group
     observed = affine_ternary_linear(inputs, candidate)
     expected = functional.linear(inputs, candidate.reconstruct())
     torch.testing.assert_close(observed, expected, atol=2e-5, rtol=2e-5)
+
+
+def test_activation_metric_relocation_visits_all_coordinates_and_reduces_error() -> None:
+    torch.manual_seed(71)
+    inputs = torch.randn(9, 19)
+    # Correlation makes the exact activation metric materially different from
+    # independent Euclidean weight error.
+    inputs[:, 8:16] = inputs[:, :8] * 0.8 + inputs[:, 8:16] * 0.2
+    weight = torch.randn(5, 19) * 0.3 + 0.2
+    initial = initialize_affine_ternary(weight, group_size=8)
+    relocated = activation_metric_affine_ternary(weight, inputs, group_size=8)
+    target = functional.linear(inputs, weight)
+    initial_error = (functional.linear(inputs, initial.reconstruct()) - target).square().sum()
+    relocated_error = (
+        functional.linear(inputs, relocated.reconstruct()) - target
+    ).square().sum()
+    assert relocated.codes.shape == weight.shape
+    assert set(relocated.codes.unique().tolist()) <= {-1, 0, 1}
+    assert bool((relocated.alpha >= 0).all())
+    assert float(relocated_error) <= float(initial_error) + 1e-4
 
 
 def test_shared_rotation_fit_covers_every_consumer_row_and_keeps_validation_disjoint() -> None:
