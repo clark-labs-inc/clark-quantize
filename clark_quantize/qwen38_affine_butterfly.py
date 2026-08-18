@@ -515,7 +515,10 @@ def fit_shared_affine_rotation(
             }
         )
 
-    final_angles = angles.detach().contiguous()
+    # The frozen storage contract is FP16 angles.  Refit every final payload
+    # after the encode/decode boundary so the quality gate never sees the
+    # optimizer's transient FP32 angles.
+    final_angles = angles.detach().to(torch.float16).to(torch.float32).contiguous()
     rotated_train_x = apply_givens_product(train_x, final_angles, pairings)
     rotated_valid_x = apply_givens_product(valid_x, final_angles, pairings)
     quantized: dict[str, AffineTernary] = {}

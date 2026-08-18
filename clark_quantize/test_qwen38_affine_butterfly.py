@@ -119,3 +119,9 @@ def test_shared_rotation_fit_covers_every_consumer_row_and_keeps_validation_disj
     assert any(row["gradient_norm_before_clip"] > 1e-8 for row in fitted.metrics["history"])
     assert fitted.metrics["finite"] is True
     assert set(fitted.quantized) == set(weights)
+    torch.testing.assert_close(
+        fitted.angles,
+        fitted.angles.to(torch.float16).to(torch.float32),
+        rtol=0,
+        atol=0,
+    )
