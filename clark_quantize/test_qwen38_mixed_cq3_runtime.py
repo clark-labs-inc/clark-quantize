@@ -48,7 +48,10 @@ def test_streamed_cq3_linear_matches_the_stored_algebra(tmp_path: Path) -> None:
         codes.reshape(16, 2, 128).float() * scales.float().unsqueeze(-1)
     ).reshape(16, 256)
     expected = torch.nn.functional.linear(inputs.float(), weight)
-    assert torch.equal(observed, expected)
+    # BLAS may change the FP32 reduction order when the same output rows are
+    # issued as separate shard GEMMs.  The stored codes/scales are still exact;
+    # constrain only that expected last-bit arithmetic difference here.
+    torch.testing.assert_close(observed, expected, rtol=1e-6, atol=3e-7)
     assert "weight" not in dict(module.named_buffers())
     assert module.in_features == 256
     assert module.out_features == 16
