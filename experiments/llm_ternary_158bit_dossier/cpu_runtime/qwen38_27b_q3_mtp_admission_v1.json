@@ -1,0 +1,43 @@
+{
+  "schema": "qwen38_27b_q3_mtp_admission_v1",
+  "frozen_at_utc": "2026-08-18T07:50:00Z",
+  "objective": "Determine whether a quality-qualified Qwen3.8-27B Q3_K_M target plus the official MTP sidecar has enough exact-parity target-call amortization and low enough streamed-weight traffic to justify a high-bandwidth AMD scale test.",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "qwen_4b_compute_forbidden": true,
+    "cpu_only": true,
+    "development_node_only": true
+  },
+  "prerequisites": {
+    "q3_baseline_terminal_and_passed": true,
+    "q3_target_hash_from_authenticated_materialization_receipt": true,
+    "official_mtp_sha256": "051a1764cff8c4f3ee6ae8b00593a0364c7539c67fa50ffc58f3f96509fca38e",
+    "llama_server_sha256": "c1c5af73afc267dfd9256e8f97bd871e7842353dd25518587f68261d731a24c9"
+  },
+  "experiment": {
+    "target_control_width": 0,
+    "mtp_max_widths": [3, 4, 6, 8],
+    "draft_probability_floor": 0.0,
+    "prompts": 4,
+    "tokens_per_prompt": 64,
+    "temperature": 0.0,
+    "top_k": 1,
+    "threads": 4,
+    "physical_cpu_list": "0,2,4,6",
+    "trace_draft_confidence_and_acceptance": true,
+    "purpose": "fixed-width admission and calibration data collection before the separately frozen cost-aware stopping rule"
+  },
+  "promotion_gate": {
+    "exact_committed_token_id_parity_on_every_prompt_and_width": true,
+    "minimum_best_accepted_tokens_per_second": 2.75,
+    "minimum_best_speedup_vs_target": 1.4,
+    "minimum_best_mean_committed_tokens_per_target_call": 3.0,
+    "maximum_best_combined_weight_bytes_per_accepted_token_lower_bound": 7000000000,
+    "all_four_conditions_required": true
+  },
+  "next_action": {
+    "pass": "run the 32-prompt heldout cost-aware stopping validation, then measure STREAM and target kernels on the final AMD candidate",
+    "fail": "do not rent the final node; use the trace to choose between a cheaper trained MTP proposer and a lower-byte post-trained target"
+  },
+  "claim_boundary": "Four-prompt Q3 plus MTP development admission only; not a heldout semantic, final-node, 100 tok/s, capability, or novelty result."
+}
