@@ -79,6 +79,9 @@ Q8_N4_ORIENTATION_PREREG = (
 Q8_N4_ORIENTATION_PATCH = (
     RUNTIME / "kernels/llama_cpp_q8_q8_n4_orientation_avx2_v1.patch"
 )
+Q8_N4_EXACT_HARNESS = (
+    RUNTIME / "verify_qwen38_27b_q8_q8_n4_exact_v1.cpp"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -158,6 +161,23 @@ def test_q8_n4_orientation_patch_is_type_shape_and_isa_scoped() -> None:
     assert "gemmMx4<2>(m0, m, n0, n)" in source
     assert "defined(__AVX2__) && defined(__F16C__)" in source
     assert source.count("gemmMx4<2>(m0, m, n0, n)") == 1
+
+
+def test_q8_n4_exact_harness_covers_all_profiled_weight_shapes() -> None:
+    source = Q8_N4_EXACT_HARNESS.read_text()
+    for m, k in (
+        (10240, 160),
+        (48, 160),
+        (6144, 160),
+        (5120, 192),
+        (12288, 160),
+        (1024, 160),
+    ):
+        assert f"{{{m}, {k}}}" in source
+    assert "constexpr int64_t n = 4" in source
+    assert "constexpr int nth = 4" in source
+    assert "GGML_TYPE_Q8_0, GGML_TYPE_Q8_0, GGML_TYPE_F32" in source
+    assert "write_all(output, result.data()" in source
 
 
 def test_fused_patch_shares_q4_decode_and_preserves_row_accumulators() -> None:
