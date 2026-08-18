@@ -32,6 +32,10 @@ V13_RECEIPT = (
 )
 V14_PREREG = RUNTIME / "qwen38_27b_cq3_avx2_dual_decode_v14.json"
 V14_PATCH = RUNTIME / "kernels/llama_cpp_cq3_avx2_dual_decode_v14.patch"
+V14_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_cq3_avx2_dual_decode_v14/terminal-decision.json"
+)
 
 
 def test_dual_chain_prereg_targets_only_qwen38_27b_cq3() -> None:
@@ -144,3 +148,20 @@ def test_v14_preserves_fp_order_and_targets_integer_decode_overlap() -> None:
     assert first < second
     assert "ggml_cq3_integer_group_dual_decode_v14" in source
     assert "sumf_group0" not in source
+
+
+def test_v14_rejects_bit_exact_dual_decode_on_speed_and_stability() -> None:
+    receipt = json.loads(V14_RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["passed"] is False
+    assert receipt["classification"] == (
+        "bit_exact_performance_and_stability_rejection"
+    )
+    measurement = receipt["measurement"]
+    assert measurement["exact_control_candidate"] is True
+    assert len(measurement["dual_decode_candidate_samples_us"]) == 9
+    assert measurement["control_over_candidate_speedup"] < 1.0
+    assert measurement["candidate_sample_range_fraction"] > 0.05
+    assert receipt["checks"]["model_integration_required"] is False
+    assert receipt["quality"]["ran"] is False
