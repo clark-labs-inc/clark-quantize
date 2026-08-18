@@ -5,8 +5,8 @@ repo=${REPO:-/workspace/clark-quantize-cpu-qat}
 bundle=${BUNDLE:?BUNDLE must name the frozen Qwen3.8-27B row-scale-v2 bundle}
 bundle_branch=${BUNDLE_BRANCH:-refs/heads/codex/qwen38-base3-research}
 python_bin=${PYTHON_BIN:-/workspace/venvs/quant-cpu/bin/python}
-parent_unit=${PARENT_UNIT:-quant-qwen38-27b-activation-hash-residual-v1.service}
-parent_receipt=${PARENT_RECEIPT:-/workspace/quant-state/qwen38-27b-activation-hash-residual-watch-v1/receipt.json}
+parent_unit=${PARENT_UNIT:-quant-qwen38-27b-llamacpp-ternary-controls-v1.service}
+parent_receipt=${PARENT_RECEIPT:-/workspace/quant-state/qwen38-27b-llamacpp-ternary-controls-watch-v1/receipt.json}
 state=${STATE_DIR:-/workspace/quant-state/qwen38-27b-row-scale-pipeline-v2}
 mapped_result=${MAPPED_RESULT:-/workspace/quant-state/qwen38-27b-row-normalized-scale-codebook4-v1.json}
 mapped_manifest=${MAPPED_MANIFEST:-/workspace/quant-runs/qwen38-row-normalized-scale-codebook4-v1/manifest.json}
@@ -44,9 +44,11 @@ fi
 git rev-parse HEAD > "$state/repository.commit"
 date -u +%FT%TZ > "$state/started-at.txt"
 sha256sum \
+  "$runtime/qwen38_27b_materiality_priority_amendment_v1.json" \
   "$runtime/qwen38_27b_row_scale_orchestration_amendment_v2.json" \
   "$runtime/qwen38_27b_row_normalized_scale_codebook4_preregistration_v1.json" \
   "$runtime/qwen38_27b_full_row_normalized_scale_codebook4_preregistration_v1.json" \
+  "$runtime/watch_qwen38_27b_row_scale_pipeline_v2.sh" \
   "$runtime/run_qwen38_27b_row_normalized_scale_codebook4_v1.py" \
   "$runtime/run_qwen38_27b_full_row_normalized_scale_codebook4_v1.py" \
   clark_quantize/qwen38_row_scale_codebook.py \

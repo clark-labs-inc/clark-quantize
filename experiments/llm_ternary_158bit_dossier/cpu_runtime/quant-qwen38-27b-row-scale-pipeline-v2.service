@@ -1,7 +1,7 @@
 [Unit]
 Description=Repair and run mapped then complete Qwen3.8-27B row-scale gates
-After=network-online.target quant-qwen38-27b-activation-hash-residual-v1.service
-Before=quant-qwen38-27b-layer0-mlp-activation-qat-watch-v1.service
+After=network-online.target quant-qwen38-27b-llamacpp-ternary-controls-v1.service
+Before=quant-qwen38-27b-activation-hash-residual-v1.service quant-qwen38-27b-layer0-mlp-activation-qat-watch-v1.service
 Wants=network-online.target
 
 [Service]
