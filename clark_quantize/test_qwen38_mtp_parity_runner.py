@@ -54,6 +54,9 @@ def test_mtp_runner_reports_parity_acceptance_and_weighted_speed() -> None:
     assert '"--spec-draft-p-min"' in source
     assert '"draft_p_min": args.draft_p_min' in source
     assert "0.0 <= args.draft_p_min <= 1.0" in source
+    assert 'env["LLAMA_TRACE"] = "1"' in source
+    assert '"trace_speculative": args.trace_speculative' in source
+    assert '"server_verbosity": args.server_verbosity' in source
 
 
 def test_mtp_receipt_preserves_exact_parity_and_100_tps_roofline() -> None:

@@ -133,6 +133,8 @@ def server_command(args: argparse.Namespace, width: int, port: int) -> list[str]
         "--fit",
         "on",
         "--no-webui",
+        "-lv",
+        str(args.server_verbosity),
     ]
     if width:
         command.extend(
@@ -175,6 +177,8 @@ def run_configuration(args: argparse.Namespace, width: int, config_index: int) -
     log_path.parent.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ)
     env["OMP_NUM_THREADS"] = str(args.threads)
+    if args.trace_speculative:
+        env["LLAMA_TRACE"] = "1"
     with log_path.open("ab") as log:
         process = subprocess.Popen(
             command,
@@ -376,6 +380,8 @@ def summarize(args: argparse.Namespace, widths: list[int]) -> dict[str, Any]:
             "batch": args.batch,
             "ubatch": args.ubatch,
             "draft_p_min": args.draft_p_min,
+            "server_verbosity": args.server_verbosity,
+            "trace_speculative": args.trace_speculative,
         },
         "generation": {
             "prompt_count": len(PROMPTS),
@@ -405,6 +411,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--ubatch", type=int, default=64)
     parser.add_argument("--port-base", type=int, default=18100)
     parser.add_argument("--draft-p-min", type=float, default=0.0)
+    parser.add_argument("--server-verbosity", type=int, default=3)
+    parser.add_argument("--trace-speculative", action="store_true")
     parser.add_argument("--load-timeout", type=float, default=180.0)
     parser.add_argument("--request-timeout", type=float, default=180.0)
     return parser.parse_args()
@@ -417,6 +425,8 @@ def main() -> int:
         raise ValueError("widths must start with target width 0 and be non-negative")
     if not 0.0 <= args.draft_p_min <= 1.0:
         raise ValueError("draft-p-min must be between 0 and 1")
+    if not 0 <= args.server_verbosity <= 5:
+        raise ValueError("server-verbosity must be between 0 and 5")
     for path in (args.server, args.target, args.draft):
         if not path.is_file():
             raise FileNotFoundError(path)
