@@ -8,6 +8,7 @@ REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREREG = RUNTIME / "qwen38_27b_mtp_parity_preflight_v1.json"
 RUNNER = RUNTIME / "run_qwen38_27b_mtp_parity_v1.py"
+RECEIPT = RUNTIME / "receipts/qwen38_27b_mtp_parity_preflight_v1/summary.json"
 
 
 def test_mtp_preflight_is_qwen38_cpu_only_and_hash_pinned() -> None:
@@ -49,3 +50,20 @@ def test_mtp_runner_reports_parity_acceptance_and_weighted_speed() -> None:
     assert "target_calls = accepted_decode_tokens - draft_accepted" in source
     assert '"mean_committed_tokens_per_target_call"' in source
     assert '"minimum_weight_bandwidth_bytes_per_second_at_100_tps"' in source
+
+
+def test_mtp_receipt_preserves_exact_parity_and_100_tps_roofline() -> None:
+    payload = json.loads(RECEIPT.read_text())
+    assert payload["terminal"] is True
+    assert payload["passed"] is True
+    rows = {row["configuration"]: row for row in payload["configurations"]}
+    assert set(rows) == {"target", "mtp1", "mtp2", "mtp3"}
+    assert all(row["exact_token_parity"] for row in rows.values())
+    assert all(row["prompt_token_parity"] == [True] * 4 for row in rows.values())
+    assert rows["mtp3"]["accepted_tokens_per_second_weighted"] == 2.952080894444324
+    assert rows["mtp3"]["mean_committed_tokens_per_target_call"] == 2.7555555555555555
+    assert (
+        rows["mtp3"]["minimum_weight_bandwidth_bytes_per_second_at_100_tps"]
+        == 857950101161.2904
+    )
+    assert "no stochastic, capability" in payload["claim_boundary"]
