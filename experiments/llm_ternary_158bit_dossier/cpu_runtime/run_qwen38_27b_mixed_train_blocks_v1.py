@@ -71,6 +71,43 @@ def resource_guard(workspace: Path, minimum_free_disk_bytes: int) -> None:
         raise SystemExit("infrastructure-invalid: mixed training disk floor failed")
 
 
+def resolve_artifact_repository_commit(
+    artifact_root: Path, current_repository_commit: str
+) -> str:
+    """Preserve terminal block provenance across an aggregate-only code fix."""
+    paths = [
+        artifact_root / "layers" / str(layer) / "terminal-result.json"
+        for layer in TARGET_LAYERS
+    ]
+    existing = [path for path in paths if path.exists()]
+    if not existing:
+        return current_repository_commit
+    commits = {
+        json.loads(path.read_text()).get("repository_commit") for path in existing
+    }
+    if len(commits) != 1 or None in commits:
+        raise ValueError("terminal mixed block repository provenance changed")
+    artifact_commit = str(next(iter(commits)))
+    if len(existing) != len(paths) and artifact_commit != current_repository_commit:
+        raise ValueError("partial mixed training cannot cross repository commits")
+    if artifact_commit != current_repository_commit:
+        ancestor = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(REPO),
+                "merge-base",
+                "--is-ancestor",
+                artifact_commit,
+                current_repository_commit,
+            ],
+            check=False,
+        )
+        if ancestor.returncode != 0:
+            raise ValueError("terminal mixed block producer is not an ancestor")
+    return artifact_commit
+
+
 def selected_rows(values: torch.Tensor, rows: torch.Tensor) -> torch.Tensor:
     return values.reshape(-1, values.shape[-1]).index_select(0, rows).contiguous()
 
@@ -523,6 +560,9 @@ def main() -> None:
     repository_commit = subprocess.check_output(
         ["git", "-C", str(REPO), "rev-parse", "HEAD"], text=True
     ).strip()
+    artifact_repository_commit = resolve_artifact_repository_commit(
+        args.artifact_root, repository_commit
+    )
     index_path = args.model_dir / "model.safetensors.index.json"
     if (
         preregistration_sha256
@@ -558,6 +598,8 @@ def main() -> None:
         if (
             existing.get("schema") != SCHEMA
             or existing.get("repository_commit") != repository_commit
+            or existing.get("artifact_repository_commit")
+            != artifact_repository_commit
             or existing.get("training_amendment_sha256")
             != training_amendment_sha256
             or existing.get("complete") is not True
@@ -613,7 +655,7 @@ def main() -> None:
             validate_terminal_layer(
                 result,
                 artifact_root=args.artifact_root,
-                repository_commit=repository_commit,
+                repository_commit=artifact_repository_commit,
                 preregistration_sha256=preregistration_sha256,
                 training_amendment_sha256=training_amendment_sha256,
                 direct_receipt_sha256=direct_receipt_sha256,
@@ -1003,6 +1045,7 @@ def main() -> None:
         "model": MODEL_ID,
         "revision": MODEL_REVISION,
         "repository_commit": repository_commit,
+        "artifact_repository_commit": artifact_repository_commit,
         "preregistration_sha256": preregistration_sha256,
         "pre_execution_amendment_sha256": pre_execution_amendment_sha256,
         "training_amendment_sha256": training_amendment_sha256,

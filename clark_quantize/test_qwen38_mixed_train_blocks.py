@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import importlib.util
 import inspect
+import json
 from pathlib import Path
+import subprocess
 import sys
 
 import torch
@@ -99,3 +101,19 @@ def test_mixed_training_runner_has_frozen_sequence_and_terminal_gate() -> None:
     assert "storage_projection_within_maximum" in source
     assert "expected_source_sha256" in source
     assert "exact BF16 layer no longer reproduces the training cache" in source
+
+
+def test_aggregate_only_fix_preserves_terminal_artifact_commit(tmp_path: Path) -> None:
+    module = load_module()
+    current = subprocess.check_output(
+        ["git", "-C", str(REPO), "rev-parse", "HEAD"], text=True
+    ).strip()
+    parent = subprocess.check_output(
+        ["git", "-C", str(REPO), "rev-parse", "HEAD^"], text=True
+    ).strip()
+    assert module.resolve_artifact_repository_commit(tmp_path, current) == current
+    for layer in module.TARGET_LAYERS:
+        path = tmp_path / "layers" / str(layer) / "terminal-result.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps({"repository_commit": parent}))
+    assert module.resolve_artifact_repository_commit(tmp_path, current) == parent
