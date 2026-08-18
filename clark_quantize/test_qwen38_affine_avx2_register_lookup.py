@@ -20,6 +20,11 @@ RUNNER = (
     / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
     / "run_qwen38_27b_affine_avx2_register_lookup_v18.py"
 )
+RECEIPTS = (
+    REPO
+    / "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts"
+    / "qwen38_27b_affine_avx2_register_lookup_v18"
+)
 
 
 def load_preregistration() -> dict[str, object]:
@@ -93,3 +98,36 @@ def test_v18_runner_compares_v17_and_v18_under_frozen_gates() -> None:
     assert "median_absolute_deviation_fraction" in source
     assert "p90_over_p10_ratio" in source
     assert "QAT service is active" in source
+
+
+def test_v18_native_receipts_are_exact_and_authenticated() -> None:
+    synthetic = json.loads((RECEIPTS / "native-self-test.json").read_text())
+    actual = json.loads((RECEIPTS / "actual-artifact.json").read_text())
+    build = json.loads((RECEIPTS / "build-manifest.json").read_text())
+    assert synthetic["all_sixteen_codebook_indices_exercised"] is True
+    assert synthetic["lookup_fp32_bits_match_scalar_fp16_replay"] is True
+    assert synthetic["additional_runtime_compute_image_bytes"] == 0
+    assert all(shape["integer_dot_exact"] for shape in synthetic["shapes"])
+    assert all(shape["v17_v18_output_bit_exact"] for shape in synthetic["shapes"])
+    assert actual["all_source_blobs_authenticated"] is True
+    assert actual["shape"] == [48, 5120]
+    assert actual["v17_v18_output_bit_exact"] is True
+    assert actual["baseline_output_sha256"] == actual["candidate_output_sha256"]
+    assert build["timing_execution"]["infrastructure_valid"] is True
+    assert build["claim_boundary"].startswith("Authenticated native primitive")
+
+
+def test_v18_materially_beats_v17_on_the_frozen_exact_shape() -> None:
+    receipt = json.loads((RECEIPTS / "exact-shape-benchmark.json").read_text())
+    assert receipt["rows_per_matrix"] == 17_408
+    assert receipt["columns"] == 5_120
+    assert receipt["matrices"] == 2
+    assert receipt["timed_batches"] == 11
+    assert receipt["inner_iterations_per_timed_batch"] == 8
+    assert receipt["v17_over_v18_speedup"] >= receipt["minimum_v17_over_v18_speedup"]
+    assert receipt["samples"]["v18"]["median_absolute_deviation_fraction"] <= 0.03
+    assert receipt["samples"]["v18"]["p90_over_p10_ratio"] <= 1.08
+    assert all(receipt["checks"].values())
+    assert receipt["passed"] is True
+    assert receipt["complete"] is True
+    assert receipt["terminal"] is True

@@ -1,0 +1,62 @@
+{
+  "cache_eviction_bytes": 268435456,
+  "checks": {
+    "additional_runtime_compute_image_bytes_zero": true,
+    "minimum_v17_over_v18_speedup": true,
+    "v17_v18_output_bit_exact": true,
+    "v18_median_absolute_deviation_fraction": true,
+    "v18_p90_over_p10_ratio": true
+  },
+  "columns": 5120,
+  "complete": true,
+  "inner_iterations_per_timed_batch": 8,
+  "matrices": 2,
+  "minimum_v17_over_v18_speedup": 1.05,
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": true,
+  "repository_commit": "31a061a4ebeaf8971e3a2caea0cac5345b365ebe",
+  "rows_per_matrix": 17408,
+  "samples": {
+    "v17": {
+      "median_absolute_deviation_fraction": 0.004245128234878022,
+      "median_us": 3167.454375,
+      "p90_over_p10_ratio": 1.0555083229057836,
+      "samples_us": [
+        3180.900625,
+        3338.259375,
+        3167.454375,
+        3165.661875,
+        3129.7395,
+        3141.218125,
+        3165.365625,
+        3315.581875,
+        3162.394375,
+        3173.843125,
+        3201.03075
+      ]
+    },
+    "v18": {
+      "median_absolute_deviation_fraction": 0.010501439484049933,
+      "median_us": 2337.512875,
+      "p90_over_p10_ratio": 1.040999572814993,
+      "samples_us": [
+        2337.512875,
+        2437.149125,
+        2389.040375,
+        2345.018,
+        2312.965625,
+        2321.05425,
+        2349.759125,
+        2306.670375,
+        2301.078,
+        2318.743,
+        2401.242875
+      ]
+    }
+  },
+  "schema": "qwen38_27b_affine_avx2_register_lookup_exact_shape_benchmark_v18",
+  "terminal": true,
+  "timed_batches": 11,
+  "v17_over_v18_speedup": 1.3550532315249815,
+  "warmups": 3
+}

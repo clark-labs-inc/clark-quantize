@@ -1,0 +1,37 @@
+{
+  "schema": "qwen38_27b_affine_avx2_register_lookup_build_manifest_v18",
+  "model": "Qwen/Qwen3.8-27B",
+  "host": "quant",
+  "cpu": "AMD EPYC Milan",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "repository_commit": "31a061a4ebeaf8971e3a2caea0cac5345b365ebe",
+  "compile_flags": [
+    "-std=c++17",
+    "-O3",
+    "-DNDEBUG",
+    "-fPIC",
+    "-shared",
+    "-mavx2",
+    "-mf16c",
+    "-mfma"
+  ],
+  "sha256": {
+    "preregistration": "0983a26bd66c4c5ce5503b3bd0bf6c0a4ade3715b4e688ae6d214824cdc9a5aa",
+    "kernel_source": "ccdb4d9f4b283e1db54d9a9be3a17e1fbf2e33d382f8d32748d15447b4e64683",
+    "runner": "f27d02363ccc33710220266cafe1a3d8cca3bfb1f72158efab2fb441da2dfbe6",
+    "native_library": "cfcfcb43c404565320f4e0ce93b5b646190ab136d4fc2ce1811d67d70a6d8201",
+    "native_self_test": "012a4976b68a4b1820888b7fa64e57b6f1065fdd97d919fd331d1151660005a7",
+    "actual_artifact": "3c648f0f8e1f5846da2e4b7fd65d5fbaeae37dbb3cc5a69bf8fbd5b8987df837",
+    "exact_shape_benchmark": "1ade0150e8a79ba23d241d46b506bc5d9afa41b30b627f1397a877d71a5c60fc"
+  },
+  "timing_execution": {
+    "physical_cores_used": 1,
+    "taskset_cpu": 3,
+    "ptq_service_active": false,
+    "qat_service_active": false,
+    "infrastructure_valid": true
+  },
+  "claim_boundary": "Authenticated native primitive evidence only; no whole-model throughput, quality, or breakthrough claim.",
+  "complete": true,
+  "terminal": true
+}

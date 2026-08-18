@@ -1,0 +1,23 @@
+{
+  "all_outputs_finite": true,
+  "all_source_blobs_authenticated": true,
+  "artifact_root": "/workspace/quant-runs/qwen38-affine-butterfly-blocks-v1/artifact",
+  "baseline_output_sha256": "fe0cb1d1a19bbcc18dd8e36f354a1d9e7ea06f6e5fa9082354fe1661a99104e3",
+  "candidate_output_sha256": "fe0cb1d1a19bbcc18dd8e36f354a1d9e7ea06f6e5fa9082354fe1661a99104e3",
+  "canonical_codes_sha256": "34581b913e3696f0d2095f4a295c9e05a773afd440b90141bc58f0d0aa954b9e",
+  "complete": true,
+  "integer_dot_exact": true,
+  "manifest": "/workspace/quant-runs/qwen38-affine-butterfly-blocks-v1/artifact/layers/0/sites/attention_input/manifest.json",
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": true,
+  "repository_commit": "31a061a4ebeaf8971e3a2caea0cac5345b365ebe",
+  "rotation_authenticated": true,
+  "schema": "qwen38_27b_affine_avx2_register_lookup_actual_artifact_v18",
+  "shape": [
+    48,
+    5120
+  ],
+  "tensor": "layers.0.linear_attn.in_proj_a.weight",
+  "terminal": true,
+  "v17_v18_output_bit_exact": true
+}
