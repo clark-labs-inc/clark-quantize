@@ -1,0 +1,111 @@
+{
+  "schema": "qwen38_27b_activation_dual_binary_method_preregistration_v1",
+  "status": "method_frozen_before_any_real_activation_dual_run",
+  "frozen_at_utc": "2026-08-18T03:42:26Z",
+  "execution_authorized": false,
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "hypothesis": "At the identical rank-40 binary-right plus signed-INT4-left representation rate, selecting right factors in the real residual-output geometry and lifting them through calibration activations will reduce disjoint-validation complete-MLP squared error by at least five percent versus frozen weight-space right factors.",
+  "clark_hash_source": {
+    "repository": "clark-labs-inc/clark-hash",
+    "paper_path": "arxiv_submission/main.tex",
+    "paper_blob_sha": "4a7c7ffa06ac9c650c6b822cd0bc111d501c3818",
+    "method_reused": "asymmetric evaluation: stored row sketches are paired with an uncompressed live query sketch",
+    "material_extension": "replace a stateless sparse sketch with an activation-output-optimal binary right factor while retaining asymmetric A(Cx) execution"
+  },
+  "scope": {
+    "layer": 0,
+    "tensors": [
+      "model.language_model.layers.0.mlp.gate_proj.weight",
+      "model.language_model.layers.0.mlp.up_proj.weight",
+      "model.language_model.layers.0.mlp.down_proj.weight"
+    ],
+    "target_parameters": 267386880,
+    "complete_gate_up_down_required": true,
+    "all_weight_rows_and_columns_required": true,
+    "sampled_weight_rows_forbidden": true,
+    "qwen_4b_compute_forbidden": true
+  },
+  "geometry": {
+    "calibration_activations": "X with n real calibration rows and d model features",
+    "residual_outputs": "Y equals X times the transpose of the exported-ternary weight residual",
+    "initial_output_subspace": "rank-40 randomized SVD of the concatenated gate/up residual outputs; down is fitted independently on the candidate SwiGLU intermediate",
+    "dual_lift": "C transpose equals X transpose times inverse(X X transpose plus lambda I) times F",
+    "export": "binary-quantize every row of C with one FP16 scale, refit per-output signed-INT4 A, and retain the lowest exported calibration error",
+    "alternation": "after each exported A, solve the ridge-optimal sample feature matrix B equals Y A inverse(A transpose A plus lambda I), lift B through X, and re-export C and A",
+    "runtime_algebra": "T x plus A times C x",
+    "gate_up_reuse": "gate and up share one C x feature vector",
+    "rate_change_vs_parent": "exactly zero; tensor shapes, rank, ternary backbone, binary signs/scales, INT4 codes/scales, headers, and scale codec are identical"
+  },
+  "candidate": {
+    "rank": 40,
+    "iterations": 4,
+    "randomized_pca_iterations": 2,
+    "seed": 181409697,
+    "relative_ridge": 0.0001,
+    "group_size": 128,
+    "nonzero_per_group": 64,
+    "projected_complete_mlp_parameters": 267386880,
+    "projected_complete_mlp_bytes": 51467840,
+    "projected_complete_mlp_bits_per_weight": 1.5398763020833333
+  },
+  "parents": {
+    "weight_binary_receipt": "/workspace/quant-state/qwen38-27b-binary-low-rank-v1.json",
+    "weight_binary_gate_must_pass": true,
+    "frozen_right_activation_receipt": "/workspace/quant-state/qwen38-27b-activation-binary-mlp-v1.json",
+    "frozen_right_activation_receipt_must_be_complete_and_terminal": true,
+    "activation_cache_receipt": "/workspace/quant-state/qwen38-27b-layer0-mlp-activation-cache-v1.json",
+    "activation_cache_contract": "up to 256 calibration and 96 disjoint validation rows from the exact BF16 layer-0 prefix; no evaluation item in either split"
+  },
+  "controls": {
+    "primary": "same exported ternary backbone and activation-calibrated INT4 left factors using the frozen weight-space binary right factors",
+    "direct": "same exported row-normalized exact-half-support ternary matrices with no residual factor",
+    "rate_and_runtime": "candidate and primary control have identical component bytes and A(Cx) operator shapes",
+    "selection": "calibration outputs select the best exported iterate; validation outputs are never used for iteration or checkpoint selection"
+  },
+  "gate": {
+    "required_full_tensors": 3,
+    "minimum_full_mlp_validation_error_reduction_vs_frozen_right": 0.05,
+    "minimum_full_mlp_validation_error_reduction_vs_direct": 0.07,
+    "maximum_per_projection_validation_regression_vs_frozen_right": 0.005,
+    "maximum_full_mlp_validation_relative_rmse": 0.33,
+    "maximum_complete_mlp_bits_per_weight": 1.55,
+    "maximum_kernel_identity_error": 0.002
+  },
+  "decision_policy": [
+    "a failed or infrastructure-invalid weight-binary parent does not authorize this run",
+    "a frozen-right activation rejection remains a valid control and does not change this method or its thresholds",
+    "a rejection is terminal for this exact rank seed ridge and iteration contract and does not authorize a sweep",
+    "a pass authorizes one complete factor codec and end-to-end Qwen3.8-27B capability and paired CPU gate only",
+    "component loss or a constructed synthetic example is not model capability or a breakthrough",
+    "CUTE MATH-500 code MMLU WikiText whole-text storage and paired CPU throughput remain mandatory"
+  ],
+  "execution_contract": {
+    "runner_and_watcher_sha256_must_be_added_before_launch": true,
+    "machine_readable_terminal_receipt_required": true,
+    "restartable_single_factor_artifact_required": true,
+    "maximum_factor_artifacts": 1,
+    "swap_must_remain_zero": true,
+    "concurrent_llama_or_qwen_training_processes": 0,
+    "infrastructure_invalid_is_neither_zero_nor_complete": true
+  },
+  "frozen_inputs": {
+    "method_module": {
+      "path": "clark_quantize/qwen38_activation_dual_binary.py",
+      "sha256": "3fc50962788f9ab48223c026cdb29cb997bdae890e1f96581660978de6699474"
+    },
+    "method_tests": {
+      "path": "clark_quantize/test_qwen38_activation_dual_binary.py",
+      "sha256": "366a7758945754ed5eb6605c235f2a1080232e3516f4d4456473e15d64185940"
+    },
+    "parent_activation_module": {
+      "path": "clark_quantize/qwen38_activation_binary_mlp.py",
+      "sha256": "a5cb58519dec1977c8e6198743280416bd5ab780b542882acb91b547e29e96fa"
+    },
+    "parent_activation_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_activation_binary_mlp_preregistration_v1.json",
+      "sha256": "e2fcf9d727661818a38eb96b2364790417a63fc0af78e265ae7cef43cef4e05b"
+    }
+  },
+  "claim_boundary": "Frozen complete-MLP method and falsification contract only; no real Qwen activation result, artifact, capability, runtime, novelty, or breakthrough evidence."
+}
