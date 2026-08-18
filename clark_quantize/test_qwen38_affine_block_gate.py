@@ -68,3 +68,22 @@ def test_validation_nmse_uses_only_frozen_validation_rows() -> None:
     observed.reshape(-1, 4)[4] += 1
     assert MODULE.validation_nmse(observed, parent, torch.tensor([4])) == 1.0
     assert MODULE.validation_nmse(observed, parent, torch.tensor([1])) == 4.0
+
+
+def test_decoded_linear_preserves_fp32_weight_algebra_and_bf16_boundary() -> None:
+    class Block(torch.nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.proj = torch.nn.Linear(5, 3, bias=False, dtype=torch.bfloat16)
+
+    torch.manual_seed(117)
+    block = Block()
+    decoded = torch.randn(3, 5)
+    inputs = torch.randn(4, 5).to(torch.bfloat16)
+    MODULE.replace_weight(block, "proj.weight", decoded)
+    observed = block.proj(inputs)
+    expected = torch.nn.functional.linear(inputs.float(), decoded).to(torch.bfloat16)
+    assert isinstance(block.proj, MODULE.DecodedAffineLinear)
+    assert block.proj.weight.dtype == torch.float32
+    assert observed.dtype == torch.bfloat16
+    torch.testing.assert_close(observed, expected, rtol=0, atol=0)

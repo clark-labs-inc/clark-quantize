@@ -44,6 +44,21 @@ TARGET_LAYERS = (0, 32, 63)
 GROUP_SIZE = 128
 
 
+class DecodedAffineLinear(torch.nn.Module):
+    """Replay decoded stored weights without a second weight-rounding codec."""
+
+    def __init__(self, weight: torch.Tensor):
+        super().__init__()
+        if weight.ndim != 2 or not weight.is_floating_point():
+            raise ValueError("decoded affine linear weight must be a matrix")
+        self.in_features = weight.shape[1]
+        self.out_features = weight.shape[0]
+        self.register_buffer("weight", weight.detach().float().contiguous(), persistent=False)
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        return torch.nn.functional.linear(inputs.float(), self.weight).to(inputs.dtype)
+
+
 def atomic_json(payload: dict[str, Any], path: Path) -> None:
     atomic_bytes(path, canonical_json(payload))
 
@@ -503,18 +518,33 @@ def replace_weight(layer: Any, name: str, value: torch.Tensor) -> None:
     if parameter_name != "weight":
         raise ValueError(f"only matrix weights are replaceable: {name}")
     module = layer.get_submodule(module_name)
-    module.weight = torch.nn.Parameter(value.contiguous(), requires_grad=False)
+    if value.ndim == 2:
+        if not isinstance(module, torch.nn.Linear):
+            raise ValueError(f"decoded matrix does not target a linear module: {name}")
+        if "." in module_name:
+            parent_name, child_name = module_name.rsplit(".", 1)
+            parent = layer.get_submodule(parent_name)
+        else:
+            parent, child_name = layer, module_name
+        setattr(parent, child_name, DecodedAffineLinear(value))
+    elif value.ndim == 3:
+        if not isinstance(module, torch.nn.Conv1d):
+            raise ValueError(f"decoded rank-3 weight does not target a convolution: {name}")
+        module.weight = torch.nn.Parameter(value.contiguous(), requires_grad=False)
+    else:
+        raise ValueError(f"decoded weight rank changed: {name}")
 
 
 def direct_weight(source: torch.Tensor, *, row_shard: int) -> torch.Tensor:
     shape = source.shape
     matrix = source.reshape(shape[0], -1)
-    result = torch.empty_like(matrix)
+    output_dtype = torch.float32 if source.ndim == 2 else source.dtype
+    result = torch.empty(matrix.shape, dtype=output_dtype)
     for start in range(0, matrix.shape[0], row_shard):
         stop = min(start + row_shard, matrix.shape[0])
         result[start:stop] = _direct_symmetric(
             matrix[start:stop].float(), GROUP_SIZE
-        ).to(source.dtype)
+        ).to(output_dtype)
     return result.reshape(shape)
 
 
@@ -762,7 +792,7 @@ def main() -> None:
                     name,
                     materialize_candidate(
                         payload,
-                        dtype=state[name].dtype,
+                        dtype=torch.float32,
                         angles=angles,
                         pairings=pairings,
                         row_shard=int(fit_config["row_shard"]),
@@ -866,6 +896,11 @@ def main() -> None:
         "cache_sha256": sha256_file(args.cache),
         "layers": layer_results,
         "actual_selected_block_tensor_and_rotation_bytes": total_actual_storage,
+        "replay_arithmetic": {
+            "rank2_weights": "decode base3, FP16 anchors, FP16 codebooks, 4-bit indices, and FP16 angles into FP32 algebra; cast each linear output to the parent BF16 activation dtype",
+            "depthwise_convolution": "decode stored affine weight to parent BF16 because the Qwen causal convolution function consumes the weight directly",
+            "forbidden_extra_codec": "no derived effective linear matrix is rounded to BF16 before replay",
+        },
         "projected_complete_text_bundle": projected,
         "gate": gate,
         "elapsed_seconds": time.monotonic() - started,
