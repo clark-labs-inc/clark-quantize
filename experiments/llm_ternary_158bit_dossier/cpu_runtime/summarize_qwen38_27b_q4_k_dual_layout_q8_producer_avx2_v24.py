@@ -101,6 +101,7 @@ def main() -> int:
     parser.add_argument("--backend-log", type=Path, required=True)
     parser.add_argument("--frequency-log", type=Path, required=True)
     parser.add_argument("--preregistration", type=Path, required=True)
+    parser.add_argument("--execution-amendment", type=Path, required=True)
     parser.add_argument("--candidate-patch", type=Path, required=True)
     parser.add_argument("--property-test", type=Path, required=True)
     parser.add_argument("--microbenchmark", type=Path, required=True)
@@ -194,6 +195,7 @@ def main() -> int:
             "micro_log_sha256": sha256_file(args.micro_log),
             "backend_log_sha256": sha256_file(args.backend_log),
             "preregistration_sha256": sha256_file(args.preregistration),
+            "execution_amendment_sha256": sha256_file(args.execution_amendment),
             "candidate_patch_sha256": sha256_file(args.candidate_patch),
             "property_test_sha256": sha256_file(args.property_test),
             "microbenchmark_source_sha256": sha256_file(args.microbenchmark),

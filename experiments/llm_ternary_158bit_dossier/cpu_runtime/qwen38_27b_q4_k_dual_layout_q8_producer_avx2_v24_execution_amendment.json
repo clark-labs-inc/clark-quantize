@@ -1,0 +1,42 @@
+{
+  "schema": "qwen38_27b_q4_k_dual_layout_q8_producer_avx2_execution_amendment_v24",
+  "experiment_id": "qwen38_27b_q4_k_dual_layout_q8_producer_avx2_v24",
+  "amended_at": "2026-08-18T23:28:03Z",
+  "stage": "post_implementation_pre_build_pre_performance",
+  "performance_observations_available": false,
+  "reason": "The preregistration names both an exact-parent comparison and a promoted-control comparison but its compact paired-process language does not state whether one three-runtime sequence or two independently paired sequences supplies the ratios. This amendment freezes the executable denominator before the candidate is built or timed.",
+  "frozen_execution": {
+    "property": {
+      "seeded_blocks": 1024,
+      "special_cases": 6,
+      "candidate_native_vs_parent_native": "byte exact",
+      "candidate_rows_vs_parent_plus_bridge": "byte exact"
+    },
+    "microbenchmark": {
+      "widths": [2048, 4096, 8192, 16384],
+      "paired_samples_per_width": 31,
+      "alternating_order": true,
+      "calls_per_sample": "max(16, 262144 / width)"
+    },
+    "graph": {
+      "comparison_1": "v21 exact parent versus v24 candidate",
+      "comparison_2": "promoted v2 control versus v24 candidate",
+      "paired_processes_per_runtime_per_comparison": 6,
+      "samples_per_process": 7,
+      "order_per_comparison": "AB, BA repeated three times",
+      "candidate_processes_total": 12,
+      "candidate_samples_total": 84,
+      "v21_samples_total": 42,
+      "promoted_control_samples_total": 42
+    },
+    "service_boundary": "Property, microkernel, backend, and graph execute in one Restart=no service. Target, MTP3, and capability remain a separate service and may launch only after a passing immutable graph receipt is committed."
+  },
+  "unchanged": [
+    "The microkernel parent-over-v24 geomean threshold remains 1.10.",
+    "The paired v21-over-v24 graph threshold remains 1.05.",
+    "The paired promoted-control-over-v24 graph threshold remains 1.18.",
+    "The candidate process-median MAD and frequency thresholds remain 0.03 and 100 MHz.",
+    "All byte-exactness, backend, system, quick-capability, WikiText, stop, and claim-boundary rules remain frozen.",
+    "No v24 binary has been built and no v24 property, microkernel, backend, graph, generation, or quality result exists at amendment time."
+  ]
+}

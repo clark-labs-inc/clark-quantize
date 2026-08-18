@@ -11,6 +11,7 @@ state_dir=${STATE_DIR:-/workspace/quant-state/qwen38-27b-q4-k-dual-layout-produc
 run_dir=${RUN_DIR:-/workspace/quant-runs/qwen38-27b-q4-k-dual-layout-producer-v24}
 runtime_dir="$repo/experiments/llm_ternary_158bit_dossier/cpu_runtime"
 prereg="$runtime_dir/qwen38_27b_q4_k_dual_layout_q8_producer_avx2_v24.json"
+execution_amendment="$runtime_dir/qwen38_27b_q4_k_dual_layout_q8_producer_avx2_v24_execution_amendment.json"
 candidate_patch="$runtime_dir/kernels/llama_cpp_q4_k_dual_layout_q8_producer_avx2_v24.patch"
 property_test="$runtime_dir/tests/test_q8_k_dual_layout_producer_v24.cpp"
 microbenchmark="$runtime_dir/tests/benchmark_q8_k_dual_layout_producer_v24.cpp"
@@ -53,10 +54,11 @@ if pgrep -x llama-server >/dev/null || pgrep -x llama-bench >/dev/null || pgrep 
 fi
 
 require_sha256 "$prereg" d5bb4a17b7af476c0ec284bdf32f09e59fc9397b4957db41adf1d7a793c9fbd2
+require_sha256 "$execution_amendment" 9cb82f44ff82d8676de9b34b163d2ccd506a29bf7c231092b78b0b205cf63e5e
 require_sha256 "$candidate_patch" 0c0a8242adc3b1a4a912d8211ad16d42ae28c8004047a4f89733ae0e72a14704
 require_sha256 "$property_test" 17698f7333ff9486274f22c9bb9bebbc3f0d7a8fccd4d6c1e719b0c24e0575e7
 require_sha256 "$microbenchmark" 98e243c56ad79855faea4dd8d2c27577ee9bd4c5becf2017e9574ec1826c178b
-require_sha256 "$summarizer" 450408abbff2ff0abc26743d5ec5d062a399ab91f769ea7b851196cc018db347
+require_sha256 "$summarizer" b5e462be880a0fc4094214fab4eb5d02d4b5e8e40c0bcc3c91a7f6082bd5f506
 require_sha256 "$target" 31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34
 test "$(git -C "$candidate_source" rev-parse HEAD)" = 4df29be4f4c3673f428170fda944a5b19f743bb8
 git -C "$candidate_source" diff --check
@@ -153,6 +155,7 @@ status=0
   --backend-log "$state_dir/backend-q4k-n4.log" \
   --frequency-log "$state_dir/frequency.log" \
   --preregistration "$prereg" \
+  --execution-amendment "$execution_amendment" \
   --candidate-patch "$candidate_patch" \
   --property-test "$property_test" \
   --microbenchmark "$microbenchmark" \
