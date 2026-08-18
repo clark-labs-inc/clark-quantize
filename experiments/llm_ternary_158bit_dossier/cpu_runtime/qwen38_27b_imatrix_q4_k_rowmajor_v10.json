@@ -1,0 +1,98 @@
+{
+  "schema": "qwen38_27b_imatrix_q4_k_rowmajor_preregistration_v10",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_imatrix_q4_k_rowmajor_v10",
+  "frozen_at": "2026-08-18T15:17:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true,
+    "control": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "candidate": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-imatrix-Q4_K-v10.gguf",
+    "runtime": "/workspace/build/llama.cpp-q4k-fused-four-row-rowmajor-avx2-v5"
+  },
+  "hypothesis": "Activation-weighted Q4_K scale selection can preserve the blanket transcode's compact payload and validated n=4 kernel speed while reducing error along high-energy input directions. An importance matrix calibrated only on WikiText train may recover control-level CUTE and perplexity without retaining the disproportionately slow Q8 attention modes.",
+  "calibration_contract": {
+    "tool": "llama-imatrix built from llama.cpp revision 4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "source_model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "corpus": "/workspace/quant-runs/cq3-4b-ptq-scope-20260817/wikitext-2-raw/wiki.train.raw",
+    "corpus_sha256": "6707892fa3788b5ab9ed78ab5ff37d9fe825f6011a2ad4fcd6a6d467f0e7da57",
+    "held_out_wikitext_corpus_sha256": "173c87a53759e0201f33e0ccf978e510c2042d7f2cb78229d9a50d79b9e7dd08",
+    "calibration_and_eval_corpora_must_differ": true,
+    "chunks": 8,
+    "context": 512,
+    "batch": 512,
+    "ubatch": 512,
+    "threads": 4,
+    "compute_perplexity_during_calibration": false,
+    "start_chunk": 0,
+    "imatrix_sha256_must_be_recorded_before_transcode": true
+  },
+  "artifact_contract": {
+    "selection_profile": "all_q8_family",
+    "source_type": "Q8_0",
+    "target_type": "Q4_K",
+    "selected_tensor_count": 288,
+    "selected_weight_count": 6734479360,
+    "remaining_q8_tensor_count": 0,
+    "expected_bytes_saved": 3367239680,
+    "expected_candidate_bytes": 15606630752,
+    "all_nonselected_tensor_payloads_must_be_byte_identical": true,
+    "maximum_retained_candidates": 1
+  },
+  "sequential_gates": {
+    "gate_1_calibration_and_artifact": {
+      "imatrix_terminal_and_nonempty": true,
+      "selected_tensor_imatrix_coverage_must_be_reported": true,
+      "exact_selected_tensor_count": 288,
+      "exact_remaining_q8_tensor_count": 0,
+      "nonselected_payload_hash_parity": true,
+      "backend_reference_cases_required": "3/3"
+    },
+    "gate_2_free_generation": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "minimum_unique_token_ids": 32,
+      "coherent_outputs_required": true
+    },
+    "gate_3_graph": {
+      "warmup_processes_per_model": 1,
+      "measured_processes_per_model": 4,
+      "samples_per_process": 7,
+      "minimum_candidate_over_control_speedup": 1.25,
+      "minimum_candidate_over_unweighted_q4_k_v7_fraction": 0.98,
+      "maximum_process_median_range_fraction": 0.05
+    },
+    "gate_4_paired_serving": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "minimum_candidate_over_control_target_tps": 1.18,
+      "minimum_candidate_over_control_mtp3_tps": 1.20,
+      "minimum_candidate_mtp3_exact_parity_with_own_target": true
+    },
+    "gate_5_quality": {
+      "cute_quick_denominator": 20,
+      "minimum_candidate_correct": 9,
+      "minimum_candidate_correct_relative_to_control": 0,
+      "wikitext_chunks": 4,
+      "maximum_candidate_over_control_ppl": 1.05
+    },
+    "gate_6_capability": {
+      "run_only_if_all_prior_gates_pass": true,
+      "mmlu_denominator": 64,
+      "maximum_correct_loss_vs_control": 1,
+      "paired_frozen_math500_subset_required": true
+    }
+  },
+  "stop_rules": [
+    "Do not use CUTE, WikiText test, MMLU, or MATH data to construct the importance matrix.",
+    "Reject invalid or collapsed artifacts before timing.",
+    "Reject before paired serving if graph speed is below 1.25x control or loses more than 2% of unweighted blanket-Q4_K v7 speed.",
+    "Reject before MMLU and MATH if target, MTP3, CUTE, or held-out WikiText fails.",
+    "Do not retain more than one derived full-model candidate on the node."
+  ],
+  "claim_boundary": "A pass would establish an activation-calibrated, quality-gated Q4_K system on four-core Milan. It would not establish final-node throughput, energy gains, 100 accepted tok/s, novelty, or a scientific breakthrough."
+}

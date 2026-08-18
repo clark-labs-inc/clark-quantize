@@ -120,6 +120,9 @@ RECURRENT_Q4_K_ATTENTION_Q8_V8_RECEIPT = (
 ATTENTION_KV_Q8_Q4_K_V9_PREREG = (
     RUNTIME / "qwen38_27b_attention_kv_q8_q4_k_rowmajor_v9.json"
 )
+IMATRIX_Q4_K_ROWMAJOR_V10_PREREG = (
+    RUNTIME / "qwen38_27b_imatrix_q4_k_rowmajor_v10.json"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -397,6 +400,26 @@ def test_v9_preserves_only_attention_kv_and_requires_mtp_and_quality() -> None:
     quality = prereg["sequential_gates"]["gate_5_quality"]
     assert quality["minimum_candidate_correct"] >= 9
     assert quality["cute_quick_denominator"] == 20
+
+
+def test_v10_calibrates_on_train_and_scores_on_held_out_data() -> None:
+    prereg = json.loads(IMATRIX_Q4_K_ROWMAJOR_V10_PREREG.read_text())
+    assert prereg["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert prereg["scope"]["qwen_4b_compute_forbidden"] is True
+    calibration = prereg["calibration_contract"]
+    assert calibration["chunks"] == 8
+    assert calibration["compute_perplexity_during_calibration"] is False
+    assert calibration["calibration_and_eval_corpora_must_differ"] is True
+    assert calibration["corpus_sha256"] != calibration["held_out_wikitext_corpus_sha256"]
+    artifact = prereg["artifact_contract"]
+    assert artifact["selection_profile"] == "all_q8_family"
+    assert artifact["selected_tensor_count"] == 288
+    graph = prereg["sequential_gates"]["gate_3_graph"]
+    assert graph["minimum_candidate_over_unweighted_q4_k_v7_fraction"] >= 0.98
+    serving = prereg["sequential_gates"]["gate_4_paired_serving"]
+    assert serving["minimum_candidate_over_control_mtp3_tps"] >= 1.20
+    quality = prereg["sequential_gates"]["gate_5_quality"]
+    assert quality["minimum_candidate_correct"] >= 9
 
 
 def test_fused_patch_shares_q4_decode_and_preserves_row_accumulators() -> None:
