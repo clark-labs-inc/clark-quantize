@@ -1,0 +1,56 @@
+{
+  "schema": "qwen38_27b_calibration_ranked_mixed_training_execution_v1",
+  "host": "ubuntu-32gb-hel1-1",
+  "artifact_repository_commit": "46c044f0ce645056e9c31e73a7f90a44659077da",
+  "aggregate_repository_commit": "83c4454a68c3df1472b132682232e5ed613ca5ef",
+  "runner_receipt": {
+    "path": "training.json",
+    "sha256": "4454761a8519db03ca88a91c21cf8344cab12445266f1936767c04ebe3b76128"
+  },
+  "launch_policy": {
+    "cpu_affinity": [0, 2, 4, 6],
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "restart": "on-failure",
+    "restart_prevent_exit_status": 2
+  },
+  "artifact_production_unit": {
+    "unit": "quant-qwen38-27b-mixed-train-blocks-v1.service",
+    "invocation_id": "95bcb0375e1546cea7a8f2e1c8a79329",
+    "first_attempt": {
+      "artifacts_completed": true,
+      "aggregate_receipt_completed": false,
+      "exec_main_status": 1,
+      "failure": "aggregate-only KeyError caused by omitting the frozen gate key suffix _mixed",
+      "systemd_cpu_time_text": "20min 10.906s",
+      "systemd_wall_clock_text": "6min 5.145s",
+      "systemd_memory_peak_text": "3G"
+    },
+    "automatic_retry": {
+      "restart_counter": 1,
+      "terminal_blocks_reused_before_same_aggregate_failure": true,
+      "exec_main_status": 1,
+      "systemd_cpu_time_text": "21.722s",
+      "systemd_wall_clock_text": "31.064s",
+      "systemd_memory_peak_text": "1G"
+    },
+    "manually_stopped_after_repeated_aggregate_only_failure": true,
+    "scientific_payload_failure": false
+  },
+  "aggregate_resume_unit": {
+    "unit": "quant-qwen38-27b-mixed-train-blocks-v1-resume.service",
+    "invocation_id": "2b231b906fea474fb5ad55e58e9aec0e",
+    "artifact_producer_provenance_preserved": true,
+    "terminal_blocks_reused": [0, 32, 63],
+    "n_restarts": 0,
+    "result": "success",
+    "exec_main_code": 0,
+    "exec_main_status": 0,
+    "systemd_cpu_time_seconds": 21.101,
+    "systemd_wall_clock_seconds": 19.38,
+    "systemd_memory_peak_text": "937.2M"
+  },
+  "complete": true,
+  "terminal": true,
+  "claim_boundary": "Execution and recovery provenance for the terminal calibration-only three-block training subgate; confirmation remained sealed."
+}
