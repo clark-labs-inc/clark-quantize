@@ -66,6 +66,9 @@ Q4_K_GEMM_V6_RECEIPT = (
 Q8_TINYBLAS_PROFILE_PREREG = (
     RUNTIME / "qwen38_27b_q8_q8_tinyblas_shape_profile_v1.json"
 )
+Q8_TINYBLAS_PROFILE_PATCH = (
+    RUNTIME / "kernels/llama_cpp_q8_q8_shape_profile_v1.patch"
+)
 
 
 def test_fused_ragged_scope_and_whole_model_gate() -> None:
@@ -81,6 +84,24 @@ def test_fused_ragged_scope_and_whole_model_gate() -> None:
     assert correctness["tokens_per_prompt"] == 96
     assert performance["minimum_whole_model_mtp3_accepted_tps_speedup_vs_control"] >= 1.05
     assert performance["maximum_target_only_tps_regression_fraction"] <= 0.02
+
+
+def test_q8_shape_profiler_is_bounded_thread_deduplicated_and_non_scoreable() -> None:
+    prereg = json.loads(Q8_TINYBLAS_PROFILE_PREREG.read_text())
+    source = Q8_TINYBLAS_PROFILE_PATCH.read_text()
+    assert prereg["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert prereg["scope"]["qwen_4b_compute_forbidden"] is True
+    assert prereg["method"]["maximum_distinct_shapes"] == 128
+    assert "#ifdef CLARK_Q8_SHAPE_PROFILE" in source
+    assert "CLARK_Q8_PROFILE_MAX_SHAPES = 128" in source
+    assert "if (params->ith == 0)" in source
+    assert "clark_record_q8_shape(m, n, k, lda, ldb, ldc, params->nth)" in source
+    assert "CLARK_Q8_SHAPE" in source
+    assert "CLARK_Q8_SUMMARY" in source
+    assert "++clark_q8_profile.overflow" in source
+    assert prereg["correctness_boundary"].startswith(
+        "The profile build is not a candidate runtime"
+    )
 
 
 def test_fused_patch_shares_q4_decode_and_preserves_row_accumulators() -> None:
