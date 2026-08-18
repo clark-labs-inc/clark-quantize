@@ -1,0 +1,34 @@
+{
+  "schema": "qwen38_27b_calibration_ranked_mixed_direct_screen_execution_v1",
+  "host": "ubuntu-32gb-hel1-1",
+  "unit": "quant-qwen38-27b-mixed-direct-screen-v1.service",
+  "invocation_id": "3689b5c3cb0d485595c2e23de9a88fe4",
+  "repository_commit": "cad340b35b0a1b182173aa0afd30b9e25541fe48",
+  "runner_receipt": {
+    "path": "direct-screen.json",
+    "sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320"
+  },
+  "launch_observation": {
+    "cpu_affinity": [0, 2, 4, 6],
+    "memory_max_bytes": 32212254720,
+    "memory_swap_max_bytes": 0,
+    "restart": "on-failure",
+    "restart_prevent_exit_status": 2,
+    "n_restarts": 0
+  },
+  "terminal_observation": {
+    "active_state": "inactive",
+    "sub_state": "dead",
+    "result": "success",
+    "exec_main_code": 0,
+    "exec_main_status": 0,
+    "n_restarts": 0,
+    "systemd_wall_clock_seconds": 39.588,
+    "systemd_cpu_time_seconds": 87.1,
+    "systemd_memory_peak_text": "2.1G",
+    "runner_elapsed_seconds": 35.81352481202339
+  },
+  "complete": true,
+  "terminal": true,
+  "claim_boundary": "systemd execution receipt for the terminal three-block direct calibration screen only"
+}
