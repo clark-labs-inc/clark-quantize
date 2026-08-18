@@ -20,6 +20,12 @@ V12_RECEIPT = (
     RUNTIME
     / "receipts/qwen38_27b_cq3_avx2_dual_chain_v12/terminal-decision.json"
 )
+V13_PREREG = (
+    RUNTIME / "qwen38_27b_cq3_avx2_dual_chain_characterization_v13.json"
+)
+V13_PATCH = (
+    RUNTIME / "kernels/llama_cpp_cq3_avx2_dual_chain_characterization_v13.patch"
+)
 
 
 def test_dual_chain_prereg_targets_only_qwen38_27b_cq3() -> None:
@@ -84,3 +90,20 @@ def test_v12_stops_before_timing_on_full_shape_error_bound() -> None:
     assert receipt["failure"]["population"]["total_outputs"] == 34_816
     assert receipt["performance"]["ran"] is False
     assert "No zero" in receipt["performance"]["reason"]
+
+
+def test_v13_is_nonpromotable_and_reports_full_error_distribution() -> None:
+    prereg = json.loads(V13_PREREG.read_text())
+    assert prereg["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert prereg["scope"]["qwen_4b_compute_forbidden"] is True
+    assert prereg["classification"] == "non_promotable_diagnostic"
+    assert prereg["measurement_contract"]["total_outputs"] == 34_816
+    assert prereg["measurement_contract"]["timed_repetitions"] == 9
+    assert prereg["decision_contract"]["promotable"] is False
+    assert prereg["decision_contract"][
+        "no_numerical_threshold_will_be_selected_from_this_run"
+    ] is True
+    source = V13_PATCH.read_text()
+    assert "scaled_delta_p50" in source
+    assert "scaled_delta_p99" in source
+    assert "std::isfinite(max_scaled_delta)" in source
