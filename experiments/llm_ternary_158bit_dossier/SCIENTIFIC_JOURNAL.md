@@ -293,3 +293,24 @@ Evidence and contracts:
 - [selective-CQ3 MMLU checkpoint](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_quality_v1/mmlu.json.partial)
 - [persistent-affinity preregistration](cpu_runtime/qwen38_27b_persistent_affinity_preregistration_v1.json)
 - [full-graph profile preregistration](cpu_runtime/qwen38_27b_full_graph_profile_preregistration_v1.json)
+
+## 2026-08-17 — selective-CQ3 quick capability gate completed
+
+The direct selective-CQ3 candidate completed the frozen quick capability gate.
+Against the identical Q4 control it scored CUTE-Quick-20 `10/20` versus `9/20`,
+MATH quick-8 `5/8` versus `5/8`, code trace `5/6` versus `5/6`, and MMLU
+quick-64 `51/64` versus `52/64`. WikiText perplexity was `5.8297` versus
+`5.7847`, a `1.007779` ratio under the frozen `1.05` ceiling. All receipt and
+threshold checks passed.
+
+This only establishes that directly ternarizing
+`blk.0.ffn_{down,gate,up}.weight` did not catastrophically damage the quick
+development suite. It does not establish whole-model quality, a CPU speedup,
+or a Pareto improvement. The independent paired throughput gate remains the
+decisive result for this narrow candidate.
+
+Evidence:
+
+- [terminal selective-CQ3 quality summary](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_quality_v1/summary.json)
+- [completed MMLU-64 receipt](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_quality_v1/mmlu.json)
+- [WikiText receipt](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_quality_v1/wikitext.json)
