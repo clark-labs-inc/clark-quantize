@@ -1,0 +1,43 @@
+{
+  "schema": "qwen38_27b_activation_dual_binary_dependency_decision_v1",
+  "created_at_utc": "2026-08-18T04:18:38Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "terminal": true,
+  "valid_nonpromotion": true,
+  "authenticated_inputs": {
+    "weight_binary_result": {
+      "path": "../qwen38_27b_binary_low_rank_v1/result.json",
+      "sha256": "42562849f13172d77451a893e163e4536d81cb5f50693723ffcba2c310492171"
+    },
+    "activation_parent_skip": {
+      "path": "result.json",
+      "sha256": "dccd44f0708530d1472aec32f9a2406d801f832ad0a1ceae2873f3ea8ed9fb35"
+    },
+    "activation_dual_method": {
+      "path": "../../qwen38_27b_activation_dual_binary_method_preregistration_v1.json",
+      "sha256": "25b652aa9d7efc8c50f8e52c9d8f02b61f600b692fc07a172ae60f4b4dab4e2c"
+    },
+    "activation_dual_execution": {
+      "path": "../../qwen38_27b_activation_dual_binary_execution_amendment_v1.json",
+      "sha256": "1a2d4b6c4930250cd73f721d586c86d3440befb82a002cd7ce4bd02d0944591b"
+    }
+  },
+  "weight_binary_gate": {
+    "observed_bits_per_weight": 1.5464764763327206,
+    "observed_error_reduction_vs_direct_ternary": 0.012518080453324143,
+    "required_error_reduction_vs_direct_ternary": 0.03,
+    "observed_error_reduction_vs_gain_hash": 0.001273664513138928,
+    "required_error_reduction_vs_gain_hash": 0.02,
+    "passed": false
+  },
+  "decision": {
+    "activation_binary_parent_launched": false,
+    "activation_cache_launched": false,
+    "activation_dual_candidate_launched": false,
+    "activation_dual_artifact_created": false,
+    "exact_rank40_factor_lane_closed": true,
+    "reason": "The frozen activation and activation-dual methods both require a passing full real-weight binary-factor parent. The parent rejected and is nearly dominated by the lower-rate gain-hash control, so successor execution is unauthorized."
+  },
+  "claim_boundary": "Terminal dependency decision for the exact rank-40 factor family; not an activation-dual measurement, whole-model result, or breakthrough claim."
+}

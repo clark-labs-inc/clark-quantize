@@ -1,0 +1,172 @@
+{
+  "candidate": {
+    "best_iteration": 4,
+    "factor_artifact": "/workspace/quant-state/qwen38-27b-binary-low-rank-v1.pt",
+    "factor_artifact_bytes": 1669893,
+    "factor_artifact_sha256": "b38a2f8a1525decf4b1accc05a8604da6b9df484d51d0bf22efa3f948ad7eb4b",
+    "objective_history": [
+      3416.0151731215246,
+      3415.9754790187744,
+      3415.96031660679,
+      3415.948256526828
+    ],
+    "rank": 40,
+    "storage": {
+      "bits_per_weight": 1.5464764763327206,
+      "bytes": 34458960,
+      "group": 128,
+      "group_width_bits": 189,
+      "matrices": [
+        {
+          "body_bytes_excluding_shared_right": 17216608,
+          "columns": 5120,
+          "components": {
+            "header_bytes": 64,
+            "left_INT4_bytes": 348160,
+            "left_scale_bytes": 34816,
+            "ratio_codebook_bytes": 32,
+            "row_anchor_bytes": 34816,
+            "scale_index_bytes": 348160,
+            "ternary_bytes": 16450560
+          },
+          "parameters": 89128960,
+          "rows": 17408
+        },
+        {
+          "body_bytes_excluding_shared_right": 17216608,
+          "columns": 5120,
+          "components": {
+            "header_bytes": 64,
+            "left_INT4_bytes": 348160,
+            "left_scale_bytes": 34816,
+            "ratio_codebook_bytes": 32,
+            "row_anchor_bytes": 34816,
+            "scale_index_bytes": 348160,
+            "ternary_bytes": 16450560
+          },
+          "parameters": 89128960,
+          "rows": 17408
+        }
+      ],
+      "nonzero_per_group": 64,
+      "parameters": 178257920,
+      "rank": 40,
+      "shared_right": {
+        "FP16_rank_scale_bytes": 80,
+        "binary_sign_bytes": 25600,
+        "header_bytes": 64
+      }
+    }
+  },
+  "claim_boundary": {
+    "activation_or_capability_preservation_proven": false,
+    "complete_layer_including_down_projection": false,
+    "end_to_end_CPU_throughput_proven": false,
+    "full_real_layer0_gate_and_up_weights": true,
+    "scientific_novelty_or_breakthrough_proven": false,
+    "whole_model_1_58_bit_artifact_proven": false
+  },
+  "complete": true,
+  "created_at_utc": "2026-08-18T04:18:35Z",
+  "gain_hash_control": {
+    "aggregate_bits_per_weight": 1.5458970013786764,
+    "continuous_squared_error": 3418.6783102846985,
+    "exported_squared_error": 3420.304577090795,
+    "objective_history": [
+      3422.265940204581,
+      3420.8017970307646,
+      3419.9308574627644,
+      3419.377705552573,
+      3418.993573835519,
+      3418.6783102846985
+    ],
+    "per_tensor_storage": [
+      {
+        "bits_per_weight": 1.5458970013786764,
+        "gain_bits": 3,
+        "gain_codebook_bytes": 16,
+        "hash_code_bytes": 348160,
+        "hash_scale_bytes": 34816,
+        "header_bytes": 64,
+        "routing_and_gain_index_bytes": 6400,
+        "routing_bucket_bits": 6,
+        "row_anchor_bytes": 34816,
+        "scale_index_bytes": 348160,
+        "tensor_ratio_codebook_bytes": 32,
+        "ternary_code_bytes": 16450560,
+        "total_bytes": 17223024
+      },
+      {
+        "bits_per_weight": 1.5458970013786764,
+        "gain_bits": 3,
+        "gain_codebook_bytes": 16,
+        "hash_code_bytes": 348160,
+        "hash_scale_bytes": 34816,
+        "header_bytes": 64,
+        "routing_and_gain_index_bytes": 6400,
+        "routing_bucket_bits": 6,
+        "row_anchor_bytes": 34816,
+        "scale_index_bytes": 348160,
+        "tensor_ratio_codebook_bytes": 32,
+        "ternary_code_bytes": 16450560,
+        "total_bytes": 17223024
+      }
+    ]
+  },
+  "gate": {
+    "maximum_component_bits_per_weight": 1.55,
+    "maximum_kernel_identity_error": 0.0005,
+    "minimum_error_reduction_vs_direct_ternary": 0.03,
+    "minimum_error_reduction_vs_gain_hash": 0.02,
+    "observed_binary_low_rank_squared_error": 3415.948256526828,
+    "observed_component_bits_per_weight": 1.5464764763327206,
+    "observed_direct_ternary_squared_error": 3459.2514444163094,
+    "observed_error_reduction_vs_direct_ternary": 0.012518080453324143,
+    "observed_error_reduction_vs_gain_hash": 0.001273664513138928,
+    "observed_full_tensors": 2,
+    "observed_gain_hash_squared_error": 3420.304577090795,
+    "observed_kernel_identity_max_abs_error": 6.705522537231445e-08,
+    "passed": false,
+    "required_full_tensors": 2
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "preregistration_sha256": "990e356044d3fd8d60d453c579c0eba2e372efcf269525b6b8cf54d9f32e35d3",
+  "repository_commit": "971f6b13368ec77a8a6932f8c3f5d68828a53e30",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_binary_low_rank_residual_receipt_v1",
+  "scope": [
+    {
+      "direct_ternary_relative_rmse": 0.44121396663429874,
+      "direct_ternary_squared_error": 1793.5937884162652,
+      "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+      "scale_export": {
+        "ratio_codebook_bytes": 32,
+        "row_anchor_bytes": 34816,
+        "scale_index_count": 696320
+      },
+      "shape": [
+        17408,
+        5120
+      ],
+      "source_BF16_sha256": "33f8e7677f361290d5f6a415c00cb56149a8fdbea20122bc13f0e1004b469565",
+      "source_squared_sum": 9213.520108661081
+    },
+    {
+      "direct_ternary_relative_rmse": 0.44031817896289405,
+      "direct_ternary_squared_error": 1665.6576560000442,
+      "name": "model.language_model.layers.0.mlp.up_proj.weight",
+      "scale_export": {
+        "ratio_codebook_bytes": 32,
+        "row_anchor_bytes": 34816,
+        "scale_index_count": 696320
+      },
+      "shape": [
+        17408,
+        5120
+      ],
+      "source_BF16_sha256": "4f923e4b0b2d8b428c156f758dd67e94ee4bb0fbde8e823ac2c4d168753ec5f5",
+      "source_squared_sum": 8591.17396242358
+    }
+  ],
+  "terminal": true
+}
