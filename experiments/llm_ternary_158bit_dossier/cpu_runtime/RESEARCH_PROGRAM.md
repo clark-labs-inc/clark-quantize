@@ -11,18 +11,38 @@ compute is spent on them. Every active lane below targets Qwen3.8-27B.
 
 ## North star
 
-Produce a hard-ternary Qwen-family model whose primary deployment target is a
-CPU process with no Python, PyTorch, CUDA, or Triton dependency. Training may
-use GPUs; deployment quality is judged on CPUs.
+Maximize useful Qwen3.8-27B tokens per second in a CPU process with no Python,
+PyTorch, CUDA, or Triton deployment dependency. Training may use accelerators,
+but deployment quality and performance are judged on CPUs. Ternary weights are
+one candidate compute representation, not the objective, and there is no fixed
+1.58- or 1.70-bit acceptance ceiling.
 
-The program is successful only when the packed model runs end to end on both
-ARM64 and x86-64, retains measured capability against its exact BF16 parent,
-and demonstrates a useful advantage over a strong hardware-relevant int4
-control in at least one of memory, decode throughput, or energy.
+The program is successful only when the model runs end to end on both ARM64
+and x86-64, retains measured capability against the strong Q4 control, and
+demonstrates a material advantage in decode throughput, prompt throughput,
+resident memory, or energy. A mixed 2/3/4/6-bit model is preferred over a
+smaller artifact if it gives a better quality-adjusted CPU result.
 
-This changes the order of work. The runtime contract is fixed before another
-large QAT run. Training must learn the exact scales, activation rounding,
-continuous islands, and tensor layouts that the CPU kernels execute.
+This changes the order of work. Establish strong Q3 and Q4 CPU baselines,
+measure sensitivity, then train the exact low-bit tensors that materially move
+the whole-model runtime. Training must learn the exact scales, activation
+rounding, continuous islands, and tensor layouts that the CPU kernels execute.
+
+### 2026-08-18 throughput pivot
+
+Full-model TQ2_0 established a useful upper-bound signal on the current node:
+3.732836 decode tokens/s at four physical threads, versus 1.885590 for Q4_K_M.
+It also catastrophically failed the quality preflight. Direct radix/base-3
+decode is slower than the aligned two-bit compute image. Consequently:
+
+- the hot runtime uses aligned two-bit, bitplane, or an equally SIMD-friendly
+  layout; base-3 is optional cold storage only;
+- Q3_K_M or a stronger measured 3-bit model is the first practical baseline;
+- bulk two-bit tensors require post-training and activation-sensitive
+  selection; raw whole-model ternarization cannot promote;
+- sensitive layers, tensor families, and activation modes may remain Q4/Q6;
+- honest file bits remain a reported axis, but no fixed rate may reject an
+  otherwise superior quality-throughput-memory Pareto point.
 
 ### Materiality filter
 

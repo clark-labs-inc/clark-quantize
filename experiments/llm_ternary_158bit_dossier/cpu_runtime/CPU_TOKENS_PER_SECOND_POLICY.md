@@ -1,10 +1,10 @@
-# Continuous CPU Tokens-per-Second Side Quest
+# Primary CPU Tokens-per-Second Program
 
-Status: permanently active alongside model-quality research
+Status: primary optimization objective; correctness-gated
 
 Objective: maximize useful `Qwen/Qwen3.8-27B` CPU prompt-prefill and
-token-generation throughput without changing accepted model behavior or hiding
-storage, memory, startup, or quality costs. Qwen 4B results are historical
+token-generation throughput without hiding storage, memory, startup, or quality
+costs. There is no fixed 1.58-bit target. Qwen 4B results are historical
 references only and receive no new performance work.
 
 ## Non-negotiable rule
@@ -59,17 +59,19 @@ quality-adjusted memory/speed/energy Pareto frontier rather than speed alone.
 
 ## Current priority order
 
-1. Establish reproducible end-to-end BF16, direct-CQ3, and quality-retaining
-   QAT decode/prefill baselines on x86 AVX2.
-2. Profile the real single-token graph and remove the largest wall-time source,
-   beginning with CQ3 MLP gate/up/down traffic and DeltaNet state updates.
-3. Integrate and measure the promoted aligned-2 AVX2 GEMV compute image in the
-   real graph.
-4. Add fused gate/up plus SwiGLU and down-projection paths with graph parity.
+1. Establish reproducible Q4_K_M and Q3_K_M quality, memory, prefill, and
+   decode baselines on x86 AVX2.
+2. Build an activation-sensitivity ledger that selects which complete Qwen3.8
+   tensor families can use aligned two-bit compute and which remain Q3/Q4/Q6.
+3. Post-train the selected two-bit tensors against exact parent activations and
+   export only their hard runtime state.
+4. Profile the resulting whole-model single-token graph and optimize only its
+   dominant wall-time kernels, beginning with fused gate/up plus SwiGLU and the
+   down projection.
 5. Optimize prompt-prefill independently with unpack-amortizing GEMM tiles.
 6. Repeat on ARM DOTPROD, then add AVX-512/VNNI paths when suitable hardware is
    available.
 
-This side quest never authorizes deeper quantization. It supplies the runtime
-half of the breakthrough criterion while the quality lane supplies the model
-half.
+Model precision is a measured allocation variable. Lower precision is useful
+only when the complete model stays on the quality-throughput-memory Pareto
+frontier.
