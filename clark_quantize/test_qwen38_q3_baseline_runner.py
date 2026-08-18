@@ -19,6 +19,11 @@ Q3_K_M_TERMINAL = (
     / "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts"
     / "qwen38_27b_q3_k_m_baseline_v1/terminal-decision.json"
 )
+Q3_K_L_TERMINAL = (
+    REPO
+    / "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts"
+    / "qwen38_27b_q3_k_l_baseline_v1/terminal-decision.json"
+)
 
 
 def test_q3_baseline_is_qwen38_only_and_pins_the_bf16_parent() -> None:
@@ -95,3 +100,28 @@ def test_q3_k_m_terminal_receipt_preserves_exact_negative_denominators() -> None
     assert payload["quality"]["wikitext"]["ppl"] == 6.2277
     assert payload["gates"]["speed_run"] is False
     assert payload["gates"]["mmlu_run"] is False
+
+
+def test_q3_k_l_terminal_receipt_closes_stock_three_bit_sweep() -> None:
+    import json
+
+    payload = json.loads(Q3_K_L_TERMINAL.read_text())
+    assert payload["terminal"] is True
+    assert payload["infrastructure_valid"] is True
+    assert payload["decision"] == "reject_before_speed_and_mmlu"
+    assert payload["quality"]["cute"]["correct"] == 7
+    assert payload["quality"]["cute"]["n"] == 20
+    assert payload["quality"]["cute"]["passed"] is True
+    assert payload["quality"]["math500"] == {
+        "correct": 3,
+        "n": 8,
+        "required": 4,
+        "passed": False,
+    }
+    assert payload["quality"]["code_trace"]["correct"] == 4
+    assert payload["quality"]["code_trace"]["n"] == 6
+    assert payload["quality"]["wikitext"]["ppl"] == 6.2307
+    assert payload["quality"]["wikitext"]["passed"] is True
+    assert payload["gates"]["speed_run"] is False
+    assert payload["gates"]["mmlu_run"] is False
+    assert payload["stock_three_bit_sweep_closed"] is True
