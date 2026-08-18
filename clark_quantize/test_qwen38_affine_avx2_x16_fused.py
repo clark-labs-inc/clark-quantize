@@ -10,6 +10,16 @@ PREREG = (
     / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
     / "qwen38_27b_affine_avx2_x16_fused_v17.json"
 )
+KERNEL = (
+    REPO
+    / "experiments/llm_ternary_158bit_dossier/cpu_runtime/kernels"
+    / "qwen38_affine_avx2_x16_fused_v17.cpp"
+)
+RUNNER = (
+    REPO
+    / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
+    / "run_qwen38_27b_affine_avx2_x16_fused_v17.py"
+)
 
 
 def load_preregistration() -> dict[str, object]:
@@ -74,3 +84,44 @@ def test_v17_cannot_bypass_representation_or_quality_gates() -> None:
     assert quality["math500_quick_denominator"] == 32
     assert quality["mmlu_denominator"] == 64
     assert quality["maximum_wikitext_perplexity_ratio_vs_q4_control"] <= 1.05
+
+
+def test_v17_kernel_implements_the_frozen_low_bit_algebra() -> None:
+    source = KERNEL.read_text()
+    assert "struct Aff3X16Group" in source
+    assert "static_assert(sizeof(Aff3X16Group) == 528" in source
+    assert "cq3_aff3_repack_x16_v17" in source
+    assert "cq3_aff3_gemv_x16_v17" in source
+    assert "cq3_aff3_debug_dot_x16_v17" in source
+    assert "cq3_aff3_debug_decode_scales_x16_v17" in source
+    assert "_mm256_maddubs_epi16" in source
+    assert "_mm256_i32gather_ps" in source
+    assert "activation_sums[group]" in source
+    assert "floating-point weight matrix" in source
+
+
+def test_v17_x16_shares_activation_broadcasts_across_two_output_vectors() -> None:
+    source = KERNEL.read_text()
+    x16 = source.split("int cq3_aff3_gemv_x16_v17(", 1)[1].split(
+        "int cq3_aff3_debug_dot_x16_v17(", 1
+    )[0]
+    assert "dot0" in x16 and "dot1" in x16
+    assert "total0" in x16 and "total1" in x16
+    assert x16.count("load_activation_words(group_activation, chunk") == 1
+    assert "packed + 0" in x16
+    assert "packed + 32" in x16
+
+
+def test_v17_runner_enforces_correctness_stability_and_host_isolation() -> None:
+    source = RUNNER.read_text()
+    assert "pack_block203_rows" in source
+    assert "unpack_block203_rows" in source
+    assert "transcode_block203_rows_to_group128_2bit" in source
+    assert "reserved two-bit codes" in source
+    assert "x8/x16 outputs changed bits" in source
+    assert "len(os.sched_getaffinity(0)) != 1" in source
+    assert "affine PTQ service is active" in source
+    assert "INNER_ITERATIONS = 8" in source
+    assert "TIMED_BATCHES = 11" in source
+    assert "median_absolute_deviation_fraction" in source
+    assert "p90_over_p10_ratio" in source
