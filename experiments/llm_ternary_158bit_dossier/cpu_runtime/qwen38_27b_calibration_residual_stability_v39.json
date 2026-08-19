@@ -1,0 +1,133 @@
+{
+  "schema": "qwen38_27b_calibration_residual_stability_preregistration_v39",
+  "receipt_schema": "qwen38_27b_calibration_residual_stability_receipt_v39",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "experiment_id": "qwen38_27b_calibration_residual_stability_v39",
+  "status": "frozen_after_terminal_v38_before_confirmation_run",
+  "frozen_at_utc": "2026-08-19T06:55:00Z",
+  "hypothesis": "The unchanged v38 binary has stable useful latency when stability is estimated from seven independently interleaved timing-block medians rather than the maximum and minimum of all scheduler-exposed samples: for both exact trained payloads, the AVX2 block-median range will be at most 10 percent of the median of block medians while the original numerical, 1.25x speedup, and 7.272727 ms conservative all-layer gates remain unchanged.",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "qwen_4b_compute_forbidden": true,
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "kernel_threads": 1,
+    "kernel_code_change_from_v38": false,
+    "payload_change_from_v38": false,
+    "claim_boundary": "robust timing confirmation of the unchanged exact residual microkernel only; not a replacement of the terminal v38 record and not llama.cpp or whole-model evidence"
+  },
+  "parent": {
+    "terminal_decision_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_calibration_residual_cpu_v38/terminal-decision.json",
+    "terminal_decision_sha256": "62194319ad391e540f1ae8b53065fd4d08626dd9fa68467c80b785b624976558",
+    "receipt_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_calibration_residual_cpu_v38/receipt.json",
+    "receipt_sha256": "81b52eb7ad64240feab5c49b8c73dd6001272c93288a350c845067cfc54bf126",
+    "required_terminal_decision": "reject_v38_on_preregistered_full_range_stability_gate",
+    "required_only_failed_check": "candidate_sample_range_within_gate"
+  },
+  "post_v38_protocol_rationale": {
+    "v38_remains_rejected": true,
+    "observed_v38_layer0_raw_range_fraction": 0.36604117476492276,
+    "observed_v38_layer0_half_median_ratio": 1.0333811366072625,
+    "observed_v38_layer63_half_median_ratio": 1.0016507001022523,
+    "problem": "a raw maximum-minus-minimum gate confounds kernel stability with isolated host scheduling delays even when independent window medians agree",
+    "fixed_correction": "gate only independently collected block medians; preserve every raw sample in the receipt but do not let one preemption-tainted sample define the stability statistic",
+    "new_threshold_selection": "10 percent is frozen before v39 and is tighter than the original 20 percent raw-range threshold; it was not fit by rerunning the kernel",
+    "forbidden": "no kernel tuning, payload tuning, threshold change after execution, sample deletion, winsorization, or v38 relabeling"
+  },
+  "unchanged_kernel": {
+    "library_sha256": "d59444ac3a423d9bf10ed2e0701d7bc4d95529eb840afb36d0bb973c0c67ad66",
+    "runtime_algebra": "output += bias_FP16 + ((input_FP32 @ left_INT8) * left_scale_FP16 * right_scale_FP16) @ right_INT8",
+    "rank": 16,
+    "rank_scratch_bytes": 64,
+    "high_precision_factor_materialization_forbidden": true
+  },
+  "cases": [
+    {
+      "layer": 0,
+      "payload_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-0.csr",
+      "payload_bytes": 174144,
+      "payload_sha256": "20f632aada5aca1fba88d8505744f8148bddeed43b171c75c42b97434e4517d9"
+    },
+    {
+      "layer": 63,
+      "payload_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-63.csr",
+      "payload_bytes": 174144,
+      "payload_sha256": "47b759bb0a16ce987a412727ce68d275fa607e3df29f38d3a4bca0bddd2124e6"
+    }
+  ],
+  "measurement": {
+    "seed": 20260819,
+    "blocks_per_arm_per_payload": 7,
+    "warmups_per_arm_per_block": 3,
+    "samples_per_arm_per_block": 9,
+    "inner_native_calls_per_sample": 128,
+    "total_timed_native_calls": 32256,
+    "block_order": "even blocks scalar then AVX2; odd blocks AVX2 then scalar",
+    "primary_latency_statistic": "median of seven per-block medians",
+    "primary_stability_statistic": "maximum block median minus minimum block median, divided by the median of block medians",
+    "raw_samples": "retain all 252 timed sample values across two payloads and two arms; no sample is deleted or modified",
+    "correctness": "repeat safe scalar and AVX2 comparison to the exported PyTorch algebra before timing",
+    "pinning": "one process pinned to physical CPU 0; no concurrent Qwen or llama workload"
+  },
+  "gate": {
+    "required_exact_payloads": 2,
+    "maximum_absolute_error": 0.0005,
+    "minimum_avx2_speedup_vs_scalar": 1.25,
+    "maximum_projected_all_64_layers_avx2_ns": 7272727,
+    "maximum_avx2_block_median_range_fraction": 0.1,
+    "required_blocks_per_arm_per_payload": 7
+  },
+  "resources": {
+    "cpu_quota_percent": 100,
+    "memory_max_mib": 1024,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 20,
+    "concurrent_training_or_benchmark_processes": 0,
+    "persistent_output_bytes": "less than 1 MiB"
+  },
+  "promotion_rules": [
+    "run this frozen confirmation exactly once on the unchanged v38 binary",
+    "a gate failure is terminal and no further v39 timing is allowed",
+    "a pass admits the exact compact residual node to llama.cpp graph integration only",
+    "v38 remains a terminal rejection regardless of v39",
+    "all end-to-end Qwen3.8-27B quality, Q3_K_M/Q4_K_M throughput, resident-memory, and energy gates remain mandatory",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "v39 cannot establish the requested scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "native_c": {
+      "path": "clark_quantize/qwen38_calibration_residual_cpu.c",
+      "sha256": "dc99b3899c8c9946d4a9e38fe07bafd31161fc1df6ca62ebd99989aaf748137a"
+    },
+    "python_binding": {
+      "path": "clark_quantize/qwen38_calibration_residual_cpu.py",
+      "sha256": "346e0fca9bde2216d70748d24cb705b0b85f5f3e796127bf6cd81eda8b4d25dd"
+    },
+    "build_script": {
+      "path": "scripts/cpu/build_qwen38_calibration_residual_cpu.sh",
+      "sha256": "e530959268675cdd690bc4d1015169c5fc58d0f516001cd927ccfe5f54a98dfc"
+    },
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_calibration_residual_stability_v39.py",
+      "sha256": "175a325ffb23e69d6456f849e5cd856c97e646285dd2c8855d8d510b48062838"
+    },
+    "parent_terminal_decision": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_calibration_residual_cpu_v38/terminal-decision.json",
+      "sha256": "62194319ad391e540f1ae8b53065fd4d08626dd9fa68467c80b785b624976558"
+    },
+    "parent_receipt": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_calibration_residual_cpu_v38/receipt.json",
+      "sha256": "81b52eb7ad64240feab5c49b8c73dd6001272c93288a350c845067cfc54bf126"
+    },
+    "layer0_payload": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-0.csr",
+      "sha256": "20f632aada5aca1fba88d8505744f8148bddeed43b171c75c42b97434e4517d9"
+    },
+    "layer63_payload": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-63.csr",
+      "sha256": "47b759bb0a16ce987a412727ce68d275fa607e3df29f38d3a4bca0bddd2124e6"
+    }
+  },
+  "claim_boundary": "A pass would establish robust block-median timing for the unchanged exact v37 residual kernel and admit only a llama.cpp integration experiment. It would not erase v38, prove complete-model quality or speed, or establish novelty or a breakthrough."
+}
