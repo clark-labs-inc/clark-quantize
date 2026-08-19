@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 MODULE_PATH = RUNTIME / "run_qwen38_27b_prompt_robust_cell_support_v78.py"
 PREREG = RUNTIME / "qwen38_27b_prompt_robust_cell_support_preregistration_v78.json"
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_prompt_robust_cell_support_v78"
 
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(RUNTIME))
@@ -67,3 +68,20 @@ def test_v78_preregistration_freezes_same_cost_robust_development_screen() -> No
     assert gate["minimum_v76_median_prompt_directional_capacity"] == 0.3
     assert prereg["data_status"]["promotion_or_scientific_claim_from_v78_forbidden"] is True
     assert prereg["decision"]["no_breakthrough_claim"] is True
+
+
+def test_v78_terminal_receipt_rejects_forced_robust_support() -> None:
+    receipt = json.loads((RECEIPTS / "receipt.json").read_text())
+
+    assert receipt["complete"] is True
+    assert receipt["terminal"] is True
+    assert receipt["gate"] == {
+        "decision": "reject_mean_minus_std_prompt_robust_cell_support",
+        "passed": False,
+    }
+    assert receipt["metrics"]["fit"]["relative_improvement"] > 0.79
+    assert receipt["metrics"]["v42_validation_development"]["relative_improvement"] < 0.70
+    assert receipt["metrics"]["v76_development"]["relative_improvement"] < 0.57
+    assert receipt["metrics"]["v76_development"]["improved_prompt_fraction"] == 0.75
+    assert receipt["estimator"]["zero_selected_scales"] > 6_000
+    assert receipt["storage"]["additional_runtime_bytes_vs_v75"] == 0
