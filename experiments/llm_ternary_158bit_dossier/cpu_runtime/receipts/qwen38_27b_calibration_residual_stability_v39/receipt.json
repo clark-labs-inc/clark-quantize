@@ -1,0 +1,872 @@
+{
+  "claim_boundary": {
+    "block_median_stability_proven": true,
+    "complete_model_quality_or_speed_proven": false,
+    "llama_cpp_integration_proven": false,
+    "scientific_breakthrough_proven": false,
+    "unchanged_v38_kernel_confirmed": true
+  },
+  "complete": true,
+  "cpu": {
+    "lscpu": [
+      {
+        "data": "x86_64",
+        "field": "Architecture:"
+      },
+      {
+        "data": "32-bit, 64-bit",
+        "field": "CPU op-mode(s):"
+      },
+      {
+        "data": "40 bits physical, 48 bits virtual",
+        "field": "Address sizes:"
+      },
+      {
+        "data": "Little Endian",
+        "field": "Byte Order:"
+      },
+      {
+        "data": "8",
+        "field": "CPU(s):"
+      },
+      {
+        "data": "0-7",
+        "field": "On-line CPU(s) list:"
+      },
+      {
+        "data": "AuthenticAMD",
+        "field": "Vendor ID:"
+      },
+      {
+        "data": "AMD EPYC-Milan Processor",
+        "field": "Model name:"
+      },
+      {
+        "data": "25",
+        "field": "CPU family:"
+      },
+      {
+        "data": "1",
+        "field": "Model:"
+      },
+      {
+        "data": "2",
+        "field": "Thread(s) per core:"
+      },
+      {
+        "data": "4",
+        "field": "Core(s) per socket:"
+      },
+      {
+        "data": "1",
+        "field": "Socket(s):"
+      },
+      {
+        "data": "1",
+        "field": "Stepping:"
+      },
+      {
+        "data": "4800.00",
+        "field": "BogoMIPS:"
+      },
+      {
+        "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm rep_good nopl xtopology cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves clzero xsaveerptr wbnoinvd arat umip pku ospke rdpid fsrm",
+        "field": "Flags:"
+      },
+      {
+        "data": "KVM",
+        "field": "Hypervisor vendor:"
+      },
+      {
+        "data": "full",
+        "field": "Virtualization type:"
+      },
+      {
+        "data": "128 KiB (4 instances)",
+        "field": "L1d cache:"
+      },
+      {
+        "data": "128 KiB (4 instances)",
+        "field": "L1i cache:"
+      },
+      {
+        "data": "2 MiB (4 instances)",
+        "field": "L2 cache:"
+      },
+      {
+        "data": "32 MiB (1 instance)",
+        "field": "L3 cache:"
+      },
+      {
+        "data": "1",
+        "field": "NUMA node(s):"
+      },
+      {
+        "data": "0-7",
+        "field": "NUMA node0 CPU(s):"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Gather data sampling:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Ghostwrite:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Indirect target selection:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Itlb multihit:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability L1tf:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Mds:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Meltdown:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Mmio stale data:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Old microcode:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Reg file data sampling:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Retbleed:"
+      },
+      {
+        "data": "Vulnerable: Safe RET, no microcode",
+        "field": "Vulnerability Spec rstack overflow:"
+      },
+      {
+        "data": "Mitigation; Speculative Store Bypass disabled via prctl",
+        "field": "Vulnerability Spec store bypass:"
+      },
+      {
+        "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization",
+        "field": "Vulnerability Spectre v1:"
+      },
+      {
+        "data": "Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP conditional; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected",
+        "field": "Vulnerability Spectre v2:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Srbds:"
+      },
+      {
+        "data": "Vulnerable: No microcode",
+        "field": "Vulnerability Tsa:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Tsx async abort:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Vmscape:"
+      }
+    ]
+  },
+  "created_at_utc": "2026-08-19T06:56:13Z",
+  "features": {
+    "avx2": true,
+    "f16c": true,
+    "fma": true
+  },
+  "gate": {
+    "checks": {
+      "block_median_stability_within_gate": true,
+      "both_exact_payloads_executed": true,
+      "latency_within_unchanged_gate": true,
+      "numerical_error_within_gate": true,
+      "seven_blocks_per_arm_per_payload": true,
+      "speedup_within_unchanged_gate": true
+    },
+    "observed": {
+      "maximum_absolute_error": 1.9073486328125e-06,
+      "maximum_avx2_block_median_range_fraction": 0.043816089267979204,
+      "maximum_projected_all_64_layers_avx2_ns": 795940.5,
+      "minimum_avx2_speedup_vs_scalar": 9.868965079676181
+    },
+    "passed": true,
+    "specification": {
+      "maximum_absolute_error": 0.0005,
+      "maximum_avx2_block_median_range_fraction": 0.1,
+      "maximum_projected_all_64_layers_avx2_ns": 7272727,
+      "minimum_avx2_speedup_vs_scalar": 1.25,
+      "required_blocks_per_arm_per_payload": 7,
+      "required_exact_payloads": 2
+    }
+  },
+  "library_sha256": "d59444ac3a423d9bf10ed2e0701d7bc4d95529eb840afb36d0bb973c0c67ad66",
+  "parent_receipt_sha256": "81b52eb7ad64240feab5c49b8c73dd6001272c93288a350c845067cfc54bf126",
+  "parent_terminal_decision_sha256": "62194319ad391e540f1ae8b53065fd4d08626dd9fa68467c80b785b624976558",
+  "preregistration_sha256": "b1f81012a4563da69171c853fa9ae4ada9b8e2c64f8f4a78d035943e3bf3db37",
+  "records": [
+    {
+      "avx2_speedup_vs_scalar": 9.868965079676181,
+      "avx2_timing": {
+        "block_median_range_fraction": 0.043816089267979204,
+        "block_medians_ns": [
+          12102.734375,
+          12171.484375,
+          12585.7890625,
+          12392.5859375,
+          12647.65625,
+          12468.3671875,
+          12436.5703125
+        ],
+        "blocks": [
+          {
+            "block": 0,
+            "maximum_ns": 12200.3203125,
+            "median_ns": 12102.734375,
+            "minimum_ns": 12016.2578125,
+            "p90_ns": 12200.3203125,
+            "samples_ns": [
+              12102.734375,
+              12156.9609375,
+              12088.8359375,
+              12133.28125,
+              12016.2578125,
+              12200.3203125,
+              12081.796875,
+              12140.875,
+              12095.390625
+            ]
+          },
+          {
+            "block": 1,
+            "maximum_ns": 12623.828125,
+            "median_ns": 12171.484375,
+            "minimum_ns": 12007.125,
+            "p90_ns": 12623.828125,
+            "samples_ns": [
+              12623.828125,
+              12556.421875,
+              12171.484375,
+              12149.9296875,
+              12167.8203125,
+              12241.5625,
+              12007.125,
+              12193.59375,
+              12100.234375
+            ]
+          },
+          {
+            "block": 2,
+            "maximum_ns": 12975.1640625,
+            "median_ns": 12585.7890625,
+            "minimum_ns": 12315.703125,
+            "p90_ns": 12975.1640625,
+            "samples_ns": [
+              12646.5703125,
+              12934.21875,
+              12448.6796875,
+              12585.7890625,
+              12975.1640625,
+              12527.578125,
+              12658.6875,
+              12538.4375,
+              12315.703125
+            ]
+          },
+          {
+            "block": 3,
+            "maximum_ns": 12522.9765625,
+            "median_ns": 12392.5859375,
+            "minimum_ns": 12311.8046875,
+            "p90_ns": 12522.9765625,
+            "samples_ns": [
+              12344.1484375,
+              12316.09375,
+              12424.6171875,
+              12403.8359375,
+              12522.9765625,
+              12413.203125,
+              12311.8046875,
+              12392.5859375,
+              12334.921875
+            ]
+          },
+          {
+            "block": 4,
+            "maximum_ns": 12907.421875,
+            "median_ns": 12647.65625,
+            "minimum_ns": 12364.3828125,
+            "p90_ns": 12907.421875,
+            "samples_ns": [
+              12364.3828125,
+              12907.421875,
+              12610.6328125,
+              12836.8046875,
+              12823.28125,
+              12416.734375,
+              12630.15625,
+              12670.2421875,
+              12647.65625
+            ]
+          },
+          {
+            "block": 5,
+            "maximum_ns": 12986.6484375,
+            "median_ns": 12468.3671875,
+            "minimum_ns": 12273.4375,
+            "p90_ns": 12986.6484375,
+            "samples_ns": [
+              12549.390625,
+              12273.4375,
+              12454.84375,
+              12425.09375,
+              12780.703125,
+              12468.3671875,
+              12663.8359375,
+              12986.6484375,
+              12446.953125
+            ]
+          },
+          {
+            "block": 6,
+            "maximum_ns": 12637.125,
+            "median_ns": 12436.5703125,
+            "minimum_ns": 12285.6328125,
+            "p90_ns": 12637.125,
+            "samples_ns": [
+              12534.2265625,
+              12436.5703125,
+              12477.34375,
+              12481.734375,
+              12343.28125,
+              12333.984375,
+              12637.125,
+              12413.28125,
+              12285.6328125
+            ]
+          }
+        ],
+        "maximum_block_median_ns": 12647.65625,
+        "median_of_block_medians_ns": 12436.5703125,
+        "minimum_block_median_ns": 12102.734375
+      },
+      "block_order": [
+        [
+          "scalar",
+          "avx2"
+        ],
+        [
+          "avx2",
+          "scalar"
+        ],
+        [
+          "scalar",
+          "avx2"
+        ],
+        [
+          "avx2",
+          "scalar"
+        ],
+        [
+          "scalar",
+          "avx2"
+        ],
+        [
+          "avx2",
+          "scalar"
+        ],
+        [
+          "scalar",
+          "avx2"
+        ]
+      ],
+      "layer": 0,
+      "maximum_absolute_error": 8.344650268554688e-07,
+      "payload_sha256": "20f632aada5aca1fba88d8505744f8148bddeed43b171c75c42b97434e4517d9",
+      "projected_all_64_layers_avx2_ns": 795940.5,
+      "scalar_timing": {
+        "block_median_range_fraction": 0.034524664138969936,
+        "block_medians_ns": [
+          120550.453125,
+          119759.6640625,
+          122162.5546875,
+          123997.0859375,
+          122736.078125,
+          123589.046875,
+          123063.2578125
+        ],
+        "blocks": [
+          {
+            "block": 0,
+            "maximum_ns": 123268.1015625,
+            "median_ns": 120550.453125,
+            "minimum_ns": 119934.03125,
+            "p90_ns": 123268.1015625,
+            "samples_ns": [
+              123268.1015625,
+              120550.453125,
+              119934.03125,
+              120078.109375,
+              121806.4609375,
+              121195.3671875,
+              121493.1875,
+              120316.140625,
+              120024.828125
+            ]
+          },
+          {
+            "block": 1,
+            "maximum_ns": 123765.5234375,
+            "median_ns": 119759.6640625,
+            "minimum_ns": 119447.484375,
+            "p90_ns": 123765.5234375,
+            "samples_ns": [
+              119990.984375,
+              119473.1015625,
+              119538.9609375,
+              119645.9140625,
+              119447.484375,
+              123765.5234375,
+              119912.7109375,
+              120694.8203125,
+              119759.6640625
+            ]
+          },
+          {
+            "block": 2,
+            "maximum_ns": 127271.9296875,
+            "median_ns": 122162.5546875,
+            "minimum_ns": 119413.0234375,
+            "p90_ns": 127271.9296875,
+            "samples_ns": [
+              119502.015625,
+              119413.0234375,
+              124312.5546875,
+              122162.5546875,
+              126431.78125,
+              121772.6328125,
+              122313.2578125,
+              121780.5234375,
+              127271.9296875
+            ]
+          },
+          {
+            "block": 3,
+            "maximum_ns": 124785.140625,
+            "median_ns": 123997.0859375,
+            "minimum_ns": 121846.21875,
+            "p90_ns": 124785.140625,
+            "samples_ns": [
+              122505.7578125,
+              122348.421875,
+              121846.21875,
+              122318.265625,
+              124642.3203125,
+              123997.0859375,
+              124785.140625,
+              124062.3203125,
+              124401.0
+            ]
+          },
+          {
+            "block": 4,
+            "maximum_ns": 125314.2734375,
+            "median_ns": 122736.078125,
+            "minimum_ns": 121726.921875,
+            "p90_ns": 125314.2734375,
+            "samples_ns": [
+              122462.3125,
+              122664.125,
+              123322.3203125,
+              121846.15625,
+              121726.921875,
+              125314.2734375,
+              124411.078125,
+              123833.6484375,
+              122736.078125
+            ]
+          },
+          {
+            "block": 5,
+            "maximum_ns": 125842.9453125,
+            "median_ns": 123589.046875,
+            "minimum_ns": 122272.9453125,
+            "p90_ns": 125842.9453125,
+            "samples_ns": [
+              123562.7890625,
+              124540.515625,
+              124085.9140625,
+              124372.0078125,
+              123589.046875,
+              122272.9453125,
+              125842.9453125,
+              123582.015625,
+              123233.2578125
+            ]
+          },
+          {
+            "block": 6,
+            "maximum_ns": 125794.6640625,
+            "median_ns": 123063.2578125,
+            "minimum_ns": 121658.4921875,
+            "p90_ns": 125794.6640625,
+            "samples_ns": [
+              124017.484375,
+              121658.4921875,
+              122027.4765625,
+              122584.7421875,
+              123595.609375,
+              125794.6640625,
+              123063.2578125,
+              123904.046875,
+              122763.1015625
+            ]
+          }
+        ],
+        "maximum_block_median_ns": 123997.0859375,
+        "median_of_block_medians_ns": 122736.078125,
+        "minimum_block_median_ns": 119759.6640625
+      }
+    },
+    {
+      "avx2_speedup_vs_scalar": 9.996526305896072,
+      "avx2_timing": {
+        "block_median_range_fraction": 0.016669000365079945,
+        "block_medians_ns": [
+          12194.7734375,
+          12208.375,
+          12364.7734375,
+          12195.1640625,
+          12219.0703125,
+          12251.25,
+          12398.453125
+        ],
+        "blocks": [
+          {
+            "block": 0,
+            "maximum_ns": 12820.9375,
+            "median_ns": 12194.7734375,
+            "minimum_ns": 12120.0859375,
+            "p90_ns": 12820.9375,
+            "samples_ns": [
+              12176.4921875,
+              12228.203125,
+              12136.1796875,
+              12529.2265625,
+              12120.0859375,
+              12232.890625,
+              12194.7734375,
+              12173.0546875,
+              12820.9375
+            ]
+          },
+          {
+            "block": 1,
+            "maximum_ns": 12349.15625,
+            "median_ns": 12208.375,
+            "minimum_ns": 12122.96875,
+            "p90_ns": 12349.15625,
+            "samples_ns": [
+              12349.15625,
+              12242.5,
+              12156.890625,
+              12267.5,
+              12122.96875,
+              12293.453125,
+              12206.171875,
+              12170.9375,
+              12208.375
+            ]
+          },
+          {
+            "block": 2,
+            "maximum_ns": 12733.84375,
+            "median_ns": 12364.7734375,
+            "minimum_ns": 12148.515625,
+            "p90_ns": 12733.84375,
+            "samples_ns": [
+              12364.7734375,
+              12645.4765625,
+              12389.21875,
+              12231.9609375,
+              12293.2109375,
+              12148.515625,
+              12733.84375,
+              12607.734375,
+              12185.546875
+            ]
+          },
+          {
+            "block": 3,
+            "maximum_ns": 12545.546875,
+            "median_ns": 12195.1640625,
+            "minimum_ns": 12121.5,
+            "p90_ns": 12545.546875,
+            "samples_ns": [
+              12193.84375,
+              12545.546875,
+              12195.1640625,
+              12167.4296875,
+              12233.203125,
+              12121.5,
+              12229.609375,
+              12183.125,
+              12252.984375
+            ]
+          },
+          {
+            "block": 4,
+            "maximum_ns": 12394.7734375,
+            "median_ns": 12219.0703125,
+            "minimum_ns": 12138.7578125,
+            "p90_ns": 12394.7734375,
+            "samples_ns": [
+              12210.5546875,
+              12241.09375,
+              12248.7578125,
+              12138.7578125,
+              12283.046875,
+              12145.1640625,
+              12394.7734375,
+              12218.828125,
+              12219.0703125
+            ]
+          },
+          {
+            "block": 5,
+            "maximum_ns": 12523.59375,
+            "median_ns": 12251.25,
+            "minimum_ns": 12136.171875,
+            "p90_ns": 12523.59375,
+            "samples_ns": [
+              12136.171875,
+              12264.453125,
+              12213.6875,
+              12207.96875,
+              12251.25,
+              12270.40625,
+              12267.5,
+              12150.796875,
+              12523.59375
+            ]
+          },
+          {
+            "block": 6,
+            "maximum_ns": 13438.59375,
+            "median_ns": 12398.453125,
+            "minimum_ns": 12178.5234375,
+            "p90_ns": 13438.59375,
+            "samples_ns": [
+              12262.65625,
+              12389.4609375,
+              12178.5234375,
+              12323.59375,
+              12398.453125,
+              12818.203125,
+              13438.59375,
+              13046.3359375,
+              12399.6171875
+            ]
+          }
+        ],
+        "maximum_block_median_ns": 12398.453125,
+        "median_of_block_medians_ns": 12219.0703125,
+        "minimum_block_median_ns": 12194.7734375
+      },
+      "block_order": [
+        [
+          "scalar",
+          "avx2"
+        ],
+        [
+          "avx2",
+          "scalar"
+        ],
+        [
+          "scalar",
+          "avx2"
+        ],
+        [
+          "avx2",
+          "scalar"
+        ],
+        [
+          "scalar",
+          "avx2"
+        ],
+        [
+          "avx2",
+          "scalar"
+        ],
+        [
+          "scalar",
+          "avx2"
+        ]
+      ],
+      "layer": 63,
+      "maximum_absolute_error": 1.9073486328125e-06,
+      "payload_sha256": "47b759bb0a16ce987a412727ce68d275fa607e3df29f38d3a4bca0bddd2124e6",
+      "projected_all_64_layers_avx2_ns": 782020.5,
+      "scalar_timing": {
+        "block_median_range_fraction": 0.01597693428010799,
+        "block_medians_ns": [
+          122239.0390625,
+          122148.2578125,
+          123520.0546875,
+          121568.5,
+          122006.703125,
+          122227.6328125,
+          122072.875
+        ],
+        "blocks": [
+          {
+            "block": 0,
+            "maximum_ns": 127950.296875,
+            "median_ns": 122239.0390625,
+            "minimum_ns": 120996.15625,
+            "p90_ns": 127950.296875,
+            "samples_ns": [
+              122579.6640625,
+              123124.8984375,
+              127950.296875,
+              122239.0390625,
+              123543.9609375,
+              120996.15625,
+              121140.125,
+              121089.984375,
+              121320.2890625
+            ]
+          },
+          {
+            "block": 1,
+            "maximum_ns": 125063.8125,
+            "median_ns": 122148.2578125,
+            "minimum_ns": 121525.140625,
+            "p90_ns": 125063.8125,
+            "samples_ns": [
+              122113.1015625,
+              125063.8125,
+              122148.2578125,
+              121668.4140625,
+              122980.5234375,
+              122236.46875,
+              121571.375,
+              121525.140625,
+              122509.7421875
+            ]
+          },
+          {
+            "block": 2,
+            "maximum_ns": 125112.875,
+            "median_ns": 123520.0546875,
+            "minimum_ns": 121530.453125,
+            "p90_ns": 125112.875,
+            "samples_ns": [
+              123520.0546875,
+              124463.7265625,
+              123846.078125,
+              121650.90625,
+              125112.875,
+              124235.0546875,
+              122438.9609375,
+              121530.453125,
+              122306.6875
+            ]
+          },
+          {
+            "block": 3,
+            "maximum_ns": 123092.5625,
+            "median_ns": 121568.5,
+            "minimum_ns": 121004.9765625,
+            "p90_ns": 123092.5625,
+            "samples_ns": [
+              121785.0546875,
+              121503.3359375,
+              121568.5,
+              121096.765625,
+              123092.5625,
+              121523.5703125,
+              121004.9765625,
+              121877.5546875,
+              122370.453125
+            ]
+          },
+          {
+            "block": 4,
+            "maximum_ns": 123391.9375,
+            "median_ns": 122006.703125,
+            "minimum_ns": 120816.6171875,
+            "p90_ns": 123391.9375,
+            "samples_ns": [
+              120816.6171875,
+              122134.0390625,
+              121840.765625,
+              122384.109375,
+              122006.703125,
+              121598.4921875,
+              123391.9375,
+              122371.765625,
+              121030.296875
+            ]
+          },
+          {
+            "block": 5,
+            "maximum_ns": 123191.0703125,
+            "median_ns": 122227.6328125,
+            "minimum_ns": 121601.3828125,
+            "p90_ns": 123191.0703125,
+            "samples_ns": [
+              122667.484375,
+              121601.3828125,
+              122069.1953125,
+              121924.5859375,
+              122073.578125,
+              123191.0703125,
+              122389.1171875,
+              122227.6328125,
+              122258.34375
+            ]
+          },
+          {
+            "block": 6,
+            "maximum_ns": 127586.625,
+            "median_ns": 122072.875,
+            "minimum_ns": 121929.1953125,
+            "p90_ns": 127586.625,
+            "samples_ns": [
+              121976.9296875,
+              122036.5390625,
+              122072.875,
+              121929.1953125,
+              122027.6328125,
+              124438.3359375,
+              127586.625,
+              124583.171875,
+              123179.515625
+            ]
+          }
+        ],
+        "maximum_block_median_ns": 123520.0546875,
+        "median_of_block_medians_ns": 122148.2578125,
+        "minimum_block_median_ns": 121568.5
+      }
+    }
+  ],
+  "repository_commit": "36e4f8003071b3ee4cfcce40760054bef7b07fdf",
+  "schema": "qwen38_27b_calibration_residual_stability_receipt_v39",
+  "terminal": true
+}

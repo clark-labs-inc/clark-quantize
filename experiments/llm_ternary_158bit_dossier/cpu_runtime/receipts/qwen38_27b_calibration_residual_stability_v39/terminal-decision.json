@@ -1,0 +1,64 @@
+{
+  "schema": "qwen38_27b_calibration_residual_stability_terminal_decision_v39",
+  "experiment_id": "qwen38_27b_calibration_residual_stability_v39",
+  "decision": "admit_unchanged_exact_residual_kernel_to_llama_cpp_integration_gate",
+  "terminal": true,
+  "gate_passed": true,
+  "repository_commit": "36e4f8003071b3ee4cfcce40760054bef7b07fdf",
+  "preregistration": {
+    "path": "../../qwen38_27b_calibration_residual_stability_v39.json",
+    "sha256": "b1f81012a4563da69171c853fa9ae4ada9b8e2c64f8f4a78d035943e3bf3db37"
+  },
+  "receipt": {
+    "path": "receipt.json",
+    "sha256": "52949a764b1e940ecf6171b07e592bc08244ef4509ce91ce6f1df8f4fd264a9a"
+  },
+  "unchanged_kernel": {
+    "library_sha256": "d59444ac3a423d9bf10ed2e0701d7bc4d95529eb840afb36d0bb973c0c67ad66",
+    "v38_remains_rejected": true,
+    "kernel_code_changed_after_v38": false,
+    "payloads_changed_after_v38": false,
+    "high_precision_factor_materialization": false,
+    "rank_scratch_bytes": 64
+  },
+  "observed": {
+    "maximum_absolute_error": 0.0000019073486328125,
+    "minimum_avx2_speedup_vs_scalar": 9.868965079676181,
+    "maximum_projected_all_64_layers_avx2_ns": 795940.5,
+    "maximum_avx2_block_median_range_fraction": 0.043816089267979204,
+    "layer0_avx2_median_of_block_medians_ns": 12436.5703125,
+    "layer63_avx2_median_of_block_medians_ns": 12219.0703125
+  },
+  "gates": {
+    "maximum_absolute_error": 0.0005,
+    "minimum_avx2_speedup_vs_scalar": 1.25,
+    "maximum_projected_all_64_layers_avx2_ns": 7272727,
+    "maximum_avx2_block_median_range_fraction": 0.1,
+    "all_passed": true
+  },
+  "denominators": {
+    "exact_trained_payloads": 2,
+    "arms_per_payload": 2,
+    "blocks_per_arm_per_payload": 7,
+    "samples_per_arm_per_block": 9,
+    "inner_native_calls_per_sample": 128,
+    "retained_raw_timing_samples": 252,
+    "total_timed_native_calls": 32256
+  },
+  "execution_receipt": {
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "allowed_cpu": 0,
+    "memory_max_bytes": 1073741824,
+    "memory_swap_max_bytes": 0,
+    "started_at": "2026-08-19T06:56:09Z",
+    "finished_at": "2026-08-19T06:56:13Z",
+    "wall_seconds": 3.913,
+    "cpu_seconds": 3.899,
+    "peak_memory": "147M",
+    "exit_status": 0,
+    "classification": "terminal_scientific_pass"
+  },
+  "next_stage": "integrate_the_exact_compact_rank16_payload_node_into_the_pinned_llama_cpp_graph_without_high_precision_materialization_then_run_graph_parity_and_end_to_end_quality_speed_gates",
+  "claim_boundary": "This passes the robust native microkernel gate only. It does not erase v38, establish llama.cpp graph parity, whole-model quality, end-to-end throughput, resident-memory or energy improvement, novelty, or a scientific breakthrough."
+}

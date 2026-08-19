@@ -8,6 +8,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREREG = RUNTIME / "qwen38_27b_calibration_residual_stability_v39.json"
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_calibration_residual_stability_v39"
 
 
 def sha256(path: Path) -> str:
@@ -57,3 +58,22 @@ def test_v39_runner_retains_every_raw_sample_and_alternates_order() -> None:
     assert "summarize_blocks" in source
     assert "median_of_block_medians_ns" in source
     assert "library_sha256" in source
+
+
+def test_v39_terminal_pass_retains_all_raw_samples_and_v38_rejection() -> None:
+    receipt = json.loads((RECEIPTS / "receipt.json").read_text())
+    decision = json.loads((RECEIPTS / "terminal-decision.json").read_text())
+    assert receipt["gate"]["passed"] is True
+    assert decision["decision"] == (
+        "admit_unchanged_exact_residual_kernel_to_llama_cpp_integration_gate"
+    )
+    assert decision["receipt"]["sha256"] == sha256(RECEIPTS / "receipt.json")
+    assert decision["unchanged_kernel"]["v38_remains_rejected"] is True
+    raw_samples = sum(
+        len(block["samples_ns"])
+        for row in receipt["records"]
+        for arm in ("scalar_timing", "avx2_timing")
+        for block in row[arm]["blocks"]
+    )
+    assert raw_samples == decision["denominators"]["retained_raw_timing_samples"] == 252
+    assert all(receipt["gate"]["checks"].values())
