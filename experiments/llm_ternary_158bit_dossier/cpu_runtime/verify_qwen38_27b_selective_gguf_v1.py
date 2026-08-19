@@ -95,6 +95,15 @@ def main() -> int:
     parser.add_argument("--expected-remaining-q8", type=int, default=0)
     parser.add_argument("--expected-target-type", default="Q4_K")
     parser.add_argument("--expected-bytes-saved", type=int, default=3_367_239_680)
+    parser.add_argument(
+        "--expected-selected-payload-bytes-saved",
+        type=int,
+        help=(
+            "Expected bytes removed from selected tensor payloads. Defaults to "
+            "--expected-bytes-saved; pass it separately when deterministic GGUF "
+            "provenance metadata changes the container header size."
+        ),
+    )
     args = parser.parse_args()
 
     from gguf import GGUFReader
@@ -158,6 +167,11 @@ def main() -> int:
     control_nonselected_sha256 = control_digest.hexdigest()
     candidate_nonselected_sha256 = candidate_digest.hexdigest()
     actual_bytes_saved = args.control.stat().st_size - args.candidate.stat().st_size
+    expected_selected_payload_bytes_saved = (
+        args.expected_selected_payload_bytes_saved
+        if args.expected_selected_payload_bytes_saved is not None
+        else args.expected_bytes_saved
+    )
     checks = {
         "selected_tensor_count_exact": len(selected_names) == args.expected_selected,
         "selected_types_exact": not structural_mismatches,
@@ -177,7 +191,7 @@ def main() -> int:
         ),
         "artifact_bytes_saved_exact": actual_bytes_saved == args.expected_bytes_saved,
         "selected_payload_bytes_saved_exact": (
-            selected_payload_saved == args.expected_bytes_saved
+            selected_payload_saved == expected_selected_payload_bytes_saved
         ),
     }
     payload = {
@@ -194,6 +208,7 @@ def main() -> int:
         "selection_profile": args.selection_profile,
         "expected_target_type": args.expected_target_type,
         "selected_payload_bytes_saved": selected_payload_saved,
+        "expected_selected_payload_bytes_saved": expected_selected_payload_bytes_saved,
         "artifact_bytes_saved": actual_bytes_saved,
         "control_type_counts": control_types,
         "candidate_type_counts": candidate_types,
