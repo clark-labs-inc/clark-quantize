@@ -1,0 +1,106 @@
+{
+  "schema": "qwen38_27b_sensitivity_gated_residual_terminal_decision_v37",
+  "experiment_id": "qwen38_27b_sensitivity_gated_residual_v37",
+  "decision": "admit_exact_algebra_to_native_kernel_gate_only",
+  "terminal": true,
+  "scientific_gate_passed": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "repository_commit": "391ed4d5e5aa5cee101b66f3e88b3985fa2bd70b",
+  "preregistration_sha256": "4d5b8646887ccee1959fcd12fb8056deaa57ce06941a0f721c57843ba15dbd36",
+  "source_receipts": {
+    "calibration": {
+      "path": "calibration.json",
+      "sha256": "6871879dd4413419bfb36e233275481bce291d6bac1c884770c2514c876eeb73"
+    },
+    "fresh_confirmation_cache": {
+      "path": "fresh-confirmation-cache.json",
+      "sha256": "fa3fe548de7218f6d583efbca76c9d4a9bb3927ac2286bddffebcb994f9b9a0e",
+      "tensor_cache_sha256": "37c0681fea4bcba7205e9bf81fdca9a663e16406fe95f40b528b15067eaaa69a"
+    },
+    "confirmation": {
+      "path": "confirmation.json",
+      "sha256": "0703c5b4b74b8fdee5628663c46f760c34ca4b2f22c0aad34866a6b491ff9efc"
+    },
+    "remote_artifact_manifest": {
+      "path": "artifacts.sha256",
+      "sha256": "27e4facffb26ef018a41b3ac0cdfc07a217af9b1ae711b35559ca8f950aa22d8",
+      "verified_all_entries": true
+    }
+  },
+  "denominators": {
+    "calibration_rows_per_layer": 64,
+    "fresh_confirmation_texts": 4,
+    "fresh_confirmation_rows_per_layer": 32,
+    "layers": 3,
+    "active_residual_layers": 2,
+    "exact_bypass_layers": 1,
+    "candidates_per_layer": 2
+  },
+  "confirmation": {
+    "mean_relative_nmse_reduction_across_all_three_layers": 0.12712473405985922,
+    "layers": [
+      {
+        "layer": 0,
+        "base_nmse": 0.01685277931392193,
+        "candidate_nmse": 0.01617278717458248,
+        "relative_reduction": 0.04034896124093381
+      },
+      {
+        "layer": 32,
+        "base_nmse": 0.013671082444489002,
+        "candidate_nmse": 0.013671082444489002,
+        "relative_reduction": 0.0,
+        "bypass_tensor_exact": true
+      },
+      {
+        "layer": 63,
+        "base_nmse": 0.06460540741682053,
+        "candidate_nmse": 0.04257333278656006,
+        "relative_reduction": 0.34102524093864384
+      }
+    ],
+    "all_preregistered_checks_passed": true
+  },
+  "deployable_projection_if_all_64_layers_were_active": {
+    "persistent_bytes": 11145216,
+    "macs_per_token": 10485760,
+    "complete_compute_image_bytes": 12410186080,
+    "weight_traffic_fraction_vs_base_compute_image": 0.0008988772698023427
+  },
+  "payloads": [
+    {
+      "layer": 0,
+      "path": "artifacts/layer-0.csr",
+      "bytes": 174144,
+      "sha256": "20f632aada5aca1fba88d8505744f8148bddeed43b171c75c42b97434e4517d9"
+    },
+    {
+      "layer": 63,
+      "path": "artifacts/layer-63.csr",
+      "bytes": 174144,
+      "sha256": "47b759bb0a16ce987a412727ce68d275fa607e3df29f38d3a4bca0bddd2124e6"
+    }
+  ],
+  "execution_receipt": {
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "logical_cpus": 8,
+    "allowed_cpus": [0, 2, 4, 6],
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "restart_policy": "on-failure excluding exit status 2",
+    "systemd_invocation_id": "780c010a157d4076b8065596d96e7fe2",
+    "started_at": "2026-08-19T06:20:36Z",
+    "finished_at": "2026-08-19T06:25:44Z",
+    "wall_seconds": 308.086,
+    "cpu_seconds": 825.194,
+    "reported_peak_memory": "27.9G",
+    "restart_count": 0,
+    "exit_status": 0,
+    "result": "success"
+  },
+  "next_stage": "implement_and_benchmark_the_exact_rank16_int8_residual_algebra_in_a_native_avx2_kernel_before_any_llama_cpp_or_whole_model_claim",
+  "claim_boundary": "This is positive three-block holdout evidence for sensitivity-gated activation-subspace correction only. It is not a whole-model capability, perplexity, llama.cpp, energy, or throughput result and does not establish the 2.75 tok/s breakthrough gate."
+}

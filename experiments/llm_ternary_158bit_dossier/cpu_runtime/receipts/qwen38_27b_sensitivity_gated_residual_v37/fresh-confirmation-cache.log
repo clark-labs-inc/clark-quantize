@@ -1,0 +1,482 @@
+[transformers] You tried to access the `AttentionInterface` with a `config._attn_implementation` set to `None`. This is expected if you use an Attention Module as a standalone Module. If this is not the case, something went wrong with the dispatch of `config._attn_implementation`
+{
+  "cache": {
+    "bytes": 15736197,
+    "path": "/workspace/quant-runs/qwen38-sensitivity-gated-residual-v37/fresh-confirmation-cache.pt",
+    "sha256": "37c0681fea4bcba7205e9bf81fdca9a663e16406fe95f40b528b15067eaaa69a"
+  },
+  "cached_tensors": {
+    "0": {
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "3d5cb1f4e4e63899c1e5d3e95b30fe1edce83a6664ad1e22347cbac7513ff3d8",
+        "shape": [
+          4,
+          64,
+          5120
+        ]
+      },
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7a2ca69b15222ed7e5f2b4a7db8d5f9f83ec1e26602b8aaabd2937ee77f97a55",
+        "shape": [
+          4,
+          64,
+          5120
+        ]
+      }
+    },
+    "32": {
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "cb1e0c30598d1dce3245d858e004ba35427a74fd1769d8adc57c089770658023",
+        "shape": [
+          4,
+          64,
+          5120
+        ]
+      },
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "90cc0d87eb4ff122cb360191620c86026233d43d19f46ecb80ddeab1f704beab",
+        "shape": [
+          4,
+          64,
+          5120
+        ]
+      }
+    },
+    "63": {
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "c9528e96930ba803da8be6b5f73bbd2d38b62c2e5e1192a9e562d5383f0ee8ab",
+        "shape": [
+          4,
+          64,
+          5120
+        ]
+      },
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "d209a3137f7c354bc00f3caf2068c715e89c2f1658fe750f993d33a9db5b5061",
+        "shape": [
+          4,
+          64,
+          5120
+        ]
+      }
+    }
+  },
+  "claim_boundary": "fresh exact BF16 three-block confirmation cache only; it remains sealed from mixed-mode training and cannot support a quality, runtime, or breakthrough claim",
+  "complete": true,
+  "confirmation_rows": 32,
+  "confirmation_texts": 4,
+  "download_receipt_sha256": "379cb8199efbb805578efcf88d006b5395ed19e559d950d36a3b492271ad5492",
+  "elapsed_seconds": 163.69786868599476,
+  "finite": true,
+  "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+  "model": "Qwen/Qwen3.8-27B",
+  "preregistration": "/workspace/clark-quantize-residual-v37/experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_sensitivity_gated_residual_v37.json",
+  "preregistration_sha256": "4d5b8646887ccee1959fcd12fb8056deaa57ce06941a0f721c57843ba15dbd36",
+  "propagated_layers": [
+    {
+      "elapsed_seconds": 2.3534225419862196,
+      "layer": 0,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.512433689000318,
+      "layer": 1,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.505210616014665,
+      "layer": 2,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.473282201011898,
+      "layer": 3,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.528505127003882,
+      "layer": 4,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.4210659460222814,
+      "layer": 5,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.4195539250213187,
+      "layer": 6,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.2969290660112165,
+      "layer": 7,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.5432105239888187,
+      "layer": 8,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.480559824994998,
+      "layer": 9,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.349571920989547,
+      "layer": 10,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.305381240992574,
+      "layer": 11,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.3759759739914443,
+      "layer": 12,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.360256077023223,
+      "layer": 13,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.4249647770193405,
+      "layer": 14,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.3225153680250514,
+      "layer": 15,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.345765787991695,
+      "layer": 16,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.420083575998433,
+      "layer": 17,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.3724930619937368,
+      "layer": 18,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.2910771520109847,
+      "layer": 19,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.4423693559947424,
+      "layer": 20,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.429265839018626,
+      "layer": 21,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.4354573920136318,
+      "layer": 22,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.355535555019742,
+      "layer": 23,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.484605987003306,
+      "layer": 24,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.475778343010461,
+      "layer": 25,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.573038049013121,
+      "layer": 26,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.2732674150029197,
+      "layer": 27,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.451919232000364,
+      "layer": 28,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.4241066969989333,
+      "layer": 29,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.4145136830047704,
+      "layer": 30,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.2804201079998165,
+      "layer": 31,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.3257404989853967,
+      "layer": 32,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.374340384005336,
+      "layer": 33,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.393355602020165,
+      "layer": 34,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.2332440259924624,
+      "layer": 35,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.3497635920066386,
+      "layer": 36,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.4064259990118444,
+      "layer": 37,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.433899041992845,
+      "layer": 38,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.3022573789930902,
+      "layer": 39,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.3776501340034883,
+      "layer": 40,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.3659203200077172,
+      "layer": 41,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.3434733269969,
+      "layer": 42,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.209049434022745,
+      "layer": 43,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.383756038005231,
+      "layer": 44,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.4066758080152795,
+      "layer": 45,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.372707624017494,
+      "layer": 46,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.273864793998655,
+      "layer": 47,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.3746696829912253,
+      "layer": 48,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.394720853015315,
+      "layer": 49,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.3731463220028672,
+      "layer": 50,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.2831457199936267,
+      "layer": 51,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.450114551000297,
+      "layer": 52,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.382168147014454,
+      "layer": 53,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.4376589539751876,
+      "layer": 54,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.289819643017836,
+      "layer": 55,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.3839723780110944,
+      "layer": 56,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.409540169988759,
+      "layer": 57,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.550280888011912,
+      "layer": 58,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.279230688000098,
+      "layer": 59,
+      "parameters": 372255232,
+      "type": "full_attention"
+    },
+    {
+      "elapsed_seconds": 2.447736428002827,
+      "layer": 60,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.4991374030068982,
+      "layer": 61,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.4685667140001897,
+      "layer": 62,
+      "parameters": 383273184,
+      "type": "linear_attention"
+    },
+    {
+      "elapsed_seconds": 2.318942216981668,
+      "layer": 63,
+      "parameters": 372255232,
+      "type": "full_attention"
+    }
+  ],
+  "repository_commit": "391ed4d5e5aa5cee101b66f3e88b3985fa2bd70b",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_mixed_confirmation_cache_receipt_v1",
+  "target_layer_types": [
+    "linear_attention",
+    "linear_attention",
+    "full_attention"
+  ],
+  "target_layers": [
+    0,
+    32,
+    63
+  ],
+  "terminal": true,
+  "training_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19"
+}

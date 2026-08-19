@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -14,6 +15,12 @@ V36 = (
 RUNNER = RUNTIME / "run_qwen38_27b_sensitivity_gated_residual_v37.py"
 SHELL_RUNNER = RUNTIME / "run_qwen38_27b_sensitivity_gated_residual_v37.sh"
 COLLECTOR = RUNTIME / "collect_qwen38_27b_mixed_confirmation_cache_v1.py"
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_sensitivity_gated_residual_v37"
+DECISION = RECEIPTS / "terminal-decision.json"
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def test_v37_sensitivity_admission_is_derived_exactly_from_v36() -> None:
@@ -86,3 +93,38 @@ def test_v37_has_no_new_grid_and_collector_accepts_its_frozen_status() -> None:
     assert "candidate_ranks" not in runner
     assert "for rank in" not in runner
     assert prereg["status"] in collector
+
+
+def test_v37_terminal_decision_matches_sealed_positive_receipts() -> None:
+    decision = json.loads(DECISION.read_text())
+    confirmation = json.loads((RECEIPTS / "confirmation.json").read_text())
+    calibration = json.loads((RECEIPTS / "calibration.json").read_text())
+    assert decision["decision"] == "admit_exact_algebra_to_native_kernel_gate_only"
+    assert decision["scientific_gate_passed"] is True
+    assert confirmation["gate"]["passed"] is True
+    assert calibration["gate"]["passed"] is True
+    for record in decision["source_receipts"].values():
+        if "path" in record and record["path"] != "artifacts.sha256":
+            assert sha256(RECEIPTS / record["path"]) == record["sha256"]
+    layers = confirmation["layers"]
+    observed_mean = sum(row["relative_reduction"] for row in layers) / len(layers)
+    assert observed_mean == decision["confirmation"][
+        "mean_relative_nmse_reduction_across_all_three_layers"
+    ]
+    assert decision["denominators"] == {
+        "calibration_rows_per_layer": 64,
+        "fresh_confirmation_texts": 4,
+        "fresh_confirmation_rows_per_layer": 32,
+        "layers": 3,
+        "active_residual_layers": 2,
+        "exact_bypass_layers": 1,
+        "candidates_per_layer": 2,
+    }
+
+
+def test_v37_preserves_both_exact_deployable_payloads() -> None:
+    decision = json.loads(DECISION.read_text())
+    for record in decision["payloads"]:
+        payload = RECEIPTS / record["path"]
+        assert payload.stat().st_size == record["bytes"] == 174144
+        assert sha256(payload) == record["sha256"]

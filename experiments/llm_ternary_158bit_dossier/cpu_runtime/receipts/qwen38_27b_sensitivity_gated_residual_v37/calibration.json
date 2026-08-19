@@ -1,0 +1,90 @@
+{
+  "active_layers": [
+    0,
+    63
+  ],
+  "bypass_layers": [
+    32
+  ],
+  "claim_boundary": "A pass establishes a three-block sensitivity-gated geometric correction signal and deployable projection only. It is not a whole-model quality or speed result, does not establish 2.75 or 100 tok/s, and does not support novelty, lossless, DFlash3, or scientific-breakthrough claims.",
+  "complete": true,
+  "conservative_projection": {
+    "complete_compute_image_bytes": 12410186080,
+    "macs_per_token": 10485760,
+    "persistent_bytes": 11145216,
+    "weight_traffic_fraction_vs_base_compute_image": 0.0008988772698023427
+  },
+  "elapsed_seconds": 69.56395286601037,
+  "fixed_rank": 16,
+  "fixed_ridge_fraction": 0.01,
+  "gate": {
+    "checks": {
+      "all_payload_roundtrips_exact": true,
+      "both_active_layers_not_regressed": true,
+      "bypass_layer_has_no_payload_and_is_exact": true,
+      "conservative_compute_image_at_most_12_42b": true,
+      "conservative_macs_at_most_11m": true,
+      "conservative_residual_bytes_at_most_12m": true,
+      "conservative_weight_fraction_at_most_0_001": true,
+      "mean_active_relative_reduction_at_least_0_2": true,
+      "payload_count_is_two": true
+    },
+    "passed": true
+  },
+  "layers": [
+    {
+      "base_calibration_nmse": 0.0016303611919283867,
+      "calibration_rows": 64,
+      "corrected_calibration_nmse": 0.000359261961420998,
+      "descriptor": {
+        "path": "/workspace/quant-runs/qwen38-sensitivity-gated-residual-v37/artifacts/layer-0.json",
+        "sha256": "8ea5963b7d68502c4459e61b1911e51344e8c3af8e17ca9340f9c6833763f03a"
+      },
+      "layer": 0,
+      "mode": "rank16_int8_residual",
+      "payload": {
+        "bytes": 174144,
+        "path": "/workspace/quant-runs/qwen38-sensitivity-gated-residual-v37/artifacts/layer-0.csr",
+        "sha256": "20f632aada5aca1fba88d8505744f8148bddeed43b171c75c42b97434e4517d9"
+      },
+      "relative_reduction": 0.7796427176998344
+    },
+    {
+      "base_calibration_nmse": 0.0006913114339113235,
+      "calibration_rows": 64,
+      "corrected_calibration_nmse": 0.0006913114339113235,
+      "descriptor": null,
+      "layer": 32,
+      "mode": "exact_bypass",
+      "payload": null,
+      "relative_reduction": 0.0
+    },
+    {
+      "base_calibration_nmse": 0.0331767238676548,
+      "calibration_rows": 64,
+      "corrected_calibration_nmse": 0.006760014686733484,
+      "descriptor": {
+        "path": "/workspace/quant-runs/qwen38-sensitivity-gated-residual-v37/artifacts/layer-63.json",
+        "sha256": "76985942c476ff7fe05271e0dce94eea17f9749abfeb5df6138f62f63e2363d2"
+      },
+      "layer": 63,
+      "mode": "rank16_int8_residual",
+      "payload": {
+        "bytes": 174144,
+        "path": "/workspace/quant-runs/qwen38-sensitivity-gated-residual-v37/artifacts/layer-63.csr",
+        "sha256": "47b759bb0a16ce987a412727ce68d275fa607e3df29f38d3a4bca0bddd2124e6"
+      },
+      "relative_reduction": 0.7962422476161346
+    }
+  ],
+  "model": "Qwen/Qwen3.8-27B",
+  "next_stage": "collect_untouched_holdout",
+  "preregistration_sha256": "4d5b8646887ccee1959fcd12fb8056deaa57ce06941a0f721c57843ba15dbd36",
+  "repository_commit": "391ed4d5e5aa5cee101b66f3e88b3985fa2bd70b",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_sensitivity_gated_residual_fit_result_v37",
+  "terminal": true,
+  "training_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+  "training_receipt_sha256": "4454761a8519db03ca88a91c21cf8344cab12445266f1936767c04ebe3b76128",
+  "v36_receipt_sha256": "4afd259111d19993b1605ac9ae84947bcf775efe087d4174832128d3d8573969"
+}
