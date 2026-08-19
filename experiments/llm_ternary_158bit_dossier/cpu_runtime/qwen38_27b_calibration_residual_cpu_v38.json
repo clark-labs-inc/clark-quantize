@@ -1,0 +1,138 @@
+{
+  "schema": "qwen38_27b_calibration_residual_cpu_preregistration_v38",
+  "receipt_schema": "qwen38_27b_calibration_residual_cpu_receipt_v38",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "experiment_id": "qwen38_27b_calibration_residual_cpu_v38",
+  "status": "frozen_before_authoritative_amd_execution",
+  "frozen_at_utc": "2026-08-19T06:40:00Z",
+  "hypothesis": "The exact two trained v37 rank-16 INT8/FP16 residual payloads can be executed directly on AMD AVX2 without expanding either factor: a fixed FMA/F16C kernel with only 16 FP32 scratch values will agree with the exported PyTorch algebra within 5e-4, beat the scalar C oracle by at least 1.25x, and conservatively add no more than 7.272727 ms per token even if all 64 layers were sensitivity-admitted.",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "qwen_4b_compute_forbidden": true,
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "kernel_threads": 1,
+    "claim_boundary": "exact trained residual microkernel only; not llama.cpp integration, whole-model quality, end-to-end throughput, energy, or breakthrough evidence"
+  },
+  "parent": {
+    "terminal_decision_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/terminal-decision.json",
+    "terminal_decision_sha256": "26dae44ab53bf194b89c46e7a175808865b8c8eb40207dd83ef4edaefec7ba36",
+    "required_decision": "admit_exact_algebra_to_native_kernel_gate_only",
+    "required_scientific_gate_passed": true
+  },
+  "runtime_algebra": {
+    "exported_form": "output += bias_FP16 + ((input_FP32 @ left_INT8) * left_scale_FP16 * right_scale_FP16) @ right_INT8",
+    "left_layout": "input_features by rank row-major signed INT8",
+    "right_layout": "rank by output_features row-major signed INT8",
+    "rank": 16,
+    "input_features": 5120,
+    "output_features": 5120,
+    "persistent_bytes_per_active_layer": 174144,
+    "rank_scratch_bytes_per_call": 64,
+    "high_precision_factor_materialization_forbidden": true,
+    "dense_5120_by_5120_residual_materialization_forbidden": true,
+    "avx2_schedule": "accumulate the 16 left-code dot products in two eight-lane FP32 vectors, apply both FP16 component scales, then stream each of the 16 right-code rows into an eight-output FMA accumulator initialized from FP16 bias and add it to the live FP32 residual output"
+  },
+  "cases": [
+    {
+      "layer": 0,
+      "payload_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-0.csr",
+      "payload_bytes": 174144,
+      "payload_sha256": "20f632aada5aca1fba88d8505744f8148bddeed43b171c75c42b97434e4517d9"
+    },
+    {
+      "layer": 63,
+      "payload_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-63.csr",
+      "payload_bytes": 174144,
+      "payload_sha256": "47b759bb0a16ce987a412727ce68d275fa607e3df29f38d3a4bca0bddd2124e6"
+    }
+  ],
+  "measurement": {
+    "seed": 20260819,
+    "inputs": "one deterministic FP32 Gaussian activation and base-output vector per exact trained payload; no benchmark or evaluation text is used",
+    "correctness_oracle": "the existing exported Int8ResidualAdapter.correction PyTorch implementation using the same exact payload",
+    "safe_entry_checks": "scalar and AVX2 safe C ABI calls must succeed before timing",
+    "timing_entry": "trusted in-place output-add C ABI",
+    "warmups_per_half": 5,
+    "repetitions_per_half": 16,
+    "inner_iterations_per_sample": 128,
+    "timing_order": [
+      "scalar_a",
+      "avx2_a",
+      "avx2_b",
+      "scalar_b"
+    ],
+    "samples_per_arm_per_payload": 32,
+    "statistic": "median monotonic wall-clock nanoseconds per native call",
+    "pinning": "one process pinned to physical CPU 0; no concurrent Qwen or llama workload",
+    "compiler": "system C compiler with C11 O3 Wall Wextra Werror shared PIC; AVX2/FMA/F16C is function-targeted and runtime-authenticated"
+  },
+  "gate": {
+    "required_exact_payloads": 2,
+    "maximum_absolute_error": 0.0005,
+    "minimum_avx2_speedup_vs_scalar": 1.25,
+    "maximum_projected_all_64_layers_avx2_ns": 7272727,
+    "maximum_candidate_sample_range_fraction": 0.2,
+    "required_payload_bytes_each": 174144,
+    "required_rank_scratch_bytes": 64
+  },
+  "projection_context": {
+    "all_64_layers_persistent_bytes": 11145216,
+    "all_64_layers_macs_per_token": 10485760,
+    "latency_gate_derivation": "7.272727 ms is 2 percent of the 363.636 ms/token latency corresponding to the 2.75 tok/s breakthrough target",
+    "interpretation": "the all-64 projection is deliberately conservative; v37 admitted only two of three pilot layers"
+  },
+  "resources": {
+    "cpu_quota_percent": 100,
+    "memory_max_mib": 1024,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 20,
+    "concurrent_training_or_benchmark_processes": 0,
+    "persistent_output_bytes": "less than 1 MiB"
+  },
+  "promotion_rules": [
+    "run the frozen two-payload correctness and timing protocol once on quant",
+    "a numerical, latency, speedup, or stability gate failure is a terminal scientific rejection and must be retained",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "a pass admits only the exact residual node to llama.cpp graph integration",
+    "llama.cpp must consume the compact payload directly and must not materialize high-precision factors or a dense residual matrix",
+    "whole-model free generation, WikiText, CUTE, MATH-500, code, MMLU, Q3_K_M/Q4_K_M throughput, resident memory, and energy gates remain mandatory",
+    "this microkernel cannot establish the 2.75 tok/s target or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "native_c": {
+      "path": "clark_quantize/qwen38_calibration_residual_cpu.c",
+      "sha256": "dc99b3899c8c9946d4a9e38fe07bafd31161fc1df6ca62ebd99989aaf748137a"
+    },
+    "python_binding": {
+      "path": "clark_quantize/qwen38_calibration_residual_cpu.py",
+      "sha256": "346e0fca9bde2216d70748d24cb705b0b85f5f3e796127bf6cd81eda8b4d25dd"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_qwen38_calibration_residual_cpu.py",
+      "sha256": "c4580f7f81e6a9117d29124bbfcdb3ae773d2c88ab166e4bad2dff94290c26b3"
+    },
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_calibration_residual_cpu_v38.py",
+      "sha256": "fcb68a8b12d099845149996ede3c9ee754011eaaaa23338e58f39b97894df41d"
+    },
+    "build_script": {
+      "path": "scripts/cpu/build_qwen38_calibration_residual_cpu.sh",
+      "sha256": "e530959268675cdd690bc4d1015169c5fc58d0f516001cd927ccfe5f54a98dfc"
+    },
+    "parent_terminal_decision": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/terminal-decision.json",
+      "sha256": "26dae44ab53bf194b89c46e7a175808865b8c8eb40207dd83ef4edaefec7ba36"
+    },
+    "layer0_payload": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-0.csr",
+      "sha256": "20f632aada5aca1fba88d8505744f8148bddeed43b171c75c42b97434e4517d9"
+    },
+    "layer63_payload": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-63.csr",
+      "sha256": "47b759bb0a16ce987a412727ce68d275fa607e3df29f38d3a4bca0bddd2124e6"
+    }
+  },
+  "claim_boundary": "A pass proves only that the exact v37 trained compact residual algebra has a numerically faithful, bounded-overhead AMD AVX2 implementation. It does not prove llama.cpp integration, whole-model quality, end-to-end speed, energy, novelty, or the requested breakthrough."
+}
