@@ -1,0 +1,86 @@
+{
+  "authenticated_inputs": {
+    "full_context_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "layer59_context_shard_sha256": "bec10cdc2b4a4bd568bb3b2cc3e7ffe01b30b9f8dd91108d680c4db33f610cc1",
+    "source_tensor_sha256": {
+      "mlp.down_proj.weight": "ce8eaece6fd48b996ff5328840d7b75d5d91dc23acf358711388973b5c9584ca",
+      "mlp.gate_proj.weight": "af5f1f3627acd6ed1a1e3ff71defaeb4433b1dc280efdb01b6d8ebf9086ab1c3",
+      "mlp.up_proj.weight": "2d3f11424f7705452380d1c7a2df4e625929ab9c460882e9c81ce5effadc7feb"
+    },
+    "v44_payload_sha256": {
+      "down": "faa8661738f9c0bdcadc2dcd7eac7723ca39c1d99486523b2e8b21e636c76356",
+      "gate": "ca349cd022d248a29fae502d523430b50fa5894f1e5deff549e222b159a02599",
+      "up": "1592cd2858371645fd8e236113caa1c39d733a959b3a54ab0bbe4f6d550de4bc"
+    },
+    "v44_training_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f"
+  },
+  "checks": {
+    "all_parent_artifacts_authenticated": true,
+    "complete_mlp_nmse_not_regressed": true,
+    "down_payload_storage_neutral": true,
+    "exact_layer_replay": true,
+    "gauge_finite_and_bounded": true,
+    "minimum_relative_complete_mlp_nmse_improvement_met": false,
+    "training_all_finite": true,
+    "unquantized_gauge_identity_nmse_within_maximum": true,
+    "up_codes_unchanged": true,
+    "up_payload_storage_neutral": true,
+    "up_scale_fold_nmse_within_maximum": false
+  },
+  "claim_boundary": "Calibration-only layer-59 MLP gauge pilot. A pass cannot establish whole-model capability, perplexity, MATH, code, MMLU, throughput, energy, novelty, 100 tokens per second, or a scientific breakthrough.",
+  "complete": true,
+  "gate": {
+    "decision": "reject_fixed_column_rms_gauge_before_model_integration",
+    "passed": false
+  },
+  "gauge": {
+    "algebra": "up_prime = D up; down_prime = down D^-1",
+    "derivation": "D_j = clamp(rms over rows of source down column j divided by the median positive column RMS, 0.25, 4.0)",
+    "maximum": 1.4197568893432617,
+    "mean": 1.0000801086425781,
+    "median": 1.0,
+    "minimum": 0.6625083684921265,
+    "sha256": "913e54a21abb08a4f7d97370ecb717023eec4ea79c0d4a1444f38838d4118dca",
+    "unquantized_identity_nmse": 2.3407681055687135e-06,
+    "up_scale_fold_nmse": 1.1571007235033903e-05
+  },
+  "metrics": {
+    "gauged_topology_complete_mlp_nmse": 0.22797712683677673,
+    "relative_complete_mlp_nmse_improvement": 0.0033411777734710262,
+    "v44_mixed_topology_complete_mlp_nmse": 0.22874139249324799,
+    "v44_recorded_down_projection_nmse": 0.21852178603165218
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "preregistration_sha256": "cc0fbaef6eac2953d5c29457d14fb39ad03aaf3a452cb93e9d82e04bd821d768",
+  "repository_commit": "c261ce4dd023e0fcde0ddd44508d04b06a521708",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_swiglu_diagonal_gauge_pilot_receipt_v71",
+  "storage": {
+    "additional_runtime_operations": 0,
+    "baseline_up_down_payload_bytes": 47349760,
+    "gauge_training_artifact_not_required_at_runtime": 71300,
+    "gauged_up_down_payload_bytes": 47349760,
+    "runtime_sidecar_bytes": 0
+  },
+  "terminal": true,
+  "training": {
+    "aggregate_calibration_metrics": {
+      "accepted_shards": 40,
+      "all_finite": true,
+      "calibration_target_squared_sum": 574911.9448242188,
+      "relative_calibration_nmse_improvement": 0.23651414320986125,
+      "rows": 5120,
+      "selected_calibration_nmse": 0.22769907603878703,
+      "selected_calibration_squared_error_sum": 130906.91864013672,
+      "selection_data": "calibration_only",
+      "shards": 40,
+      "step_zero_calibration_nmse": 0.29823614152603123,
+      "step_zero_calibration_squared_error_sum": 171459.52014160156,
+      "weighted_selected_code_churn_fraction": 0.02554230415262282
+    },
+    "calibration_rows": 64,
+    "descriptor": "blk.59.ffn_down_gauged.weight.json",
+    "elapsed_seconds": 20.660960256995168,
+    "topology": "v44 trained gate plus gauged v44 trained up plus newly trained gauged down"
+  }
+}
