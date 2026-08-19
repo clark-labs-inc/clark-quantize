@@ -279,6 +279,60 @@ def validate_terminal_layer(
             raise ValueError("all-layer trained terminal CQ3 descriptor changed")
 
 
+def validate_direct_parent_artifacts(
+    direct_receipt: dict[str, Any],
+    *,
+    direct_artifact_root: Path,
+) -> None:
+    """Authenticate the complete v43 parent before starting any optimizer work."""
+    layers = direct_receipt.get("layers", [])
+    if (
+        len(layers) != 64
+        or [record.get("layer") for record in layers] != list(range(64))
+        or not all(record.get("passed") is True for record in layers)
+    ):
+        raise ValueError("all-layer direct parent denominator changed")
+    for result in layers:
+        direct.validate_terminal_layer(
+            result,
+            artifact_root=direct_artifact_root,
+            aff3_root=direct_artifact_root / "aff3-base",
+            repository_commit=direct_receipt["repository_commit"],
+            preregistration_sha256=direct_receipt["preregistration_sha256"],
+            full_context_receipt_sha256=FULL_CONTEXT_RECEIPT_SHA256,
+        )
+
+
+def validate_full_context_parent_artifacts(
+    full_context_receipt: dict[str, Any],
+    *,
+    full_context_root: Path,
+) -> None:
+    """Hash every v42 layer shard before the all-layer training launch."""
+    layers = full_context_receipt.get("layers", [])
+    if (
+        len(layers) != 64
+        or [record.get("layer") for record in layers] != list(range(64))
+    ):
+        raise ValueError("all-layer full-context parent denominator changed")
+    context_path = full_context_root / "context.pt"
+    if (
+        context_path.stat().st_size != full_context_receipt["context"]["bytes"]
+        or sha256_file(context_path)
+        != full_context_receipt["context"]["sha256"]
+    ):
+        raise ValueError("all-layer training context artifact changed")
+    for layer_index, record in enumerate(layers):
+        shard_path = full_context_root / "layers" / f"{layer_index:02d}.pt"
+        if (
+            shard_path.stat().st_size != record["shard"]["bytes"]
+            or sha256_file(shard_path) != record["shard"]["sha256"]
+        ):
+            raise ValueError(
+                f"all-layer training full-context shard {layer_index} changed"
+            )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -346,6 +400,11 @@ def main() -> None:
         ),
     )
     parser.add_argument("--threads", type=int, default=4)
+    parser.add_argument(
+        "--preflight-only",
+        action="store_true",
+        help="authenticate all frozen parents and exit without creating artifacts",
+    )
     args = parser.parse_args()
     if args.threads != 4:
         raise ValueError("the frozen all-layer mixed training uses four CPU threads")
@@ -396,6 +455,33 @@ def main() -> None:
         or pilot_receipt.get("terminal") is not True
     ):
         raise ValueError("all-layer mixed training source evidence changed")
+    validate_direct_parent_artifacts(
+        direct_receipt,
+        direct_artifact_root=args.direct_artifact_root,
+    )
+    validate_full_context_parent_artifacts(
+        full_context_receipt,
+        full_context_root=args.full_context_root,
+    )
+    if args.preflight_only:
+        print(
+            json.dumps(
+                {
+                    "event": "all_layer_mixed_training_preflight_terminal",
+                    "model": MODEL_ID,
+                    "revision": MODEL_REVISION,
+                    "direct_receipt_sha256": direct_receipt_sha,
+                    "full_context_receipt_sha256": FULL_CONTEXT_RECEIPT_SHA256,
+                    "direct_layers_authenticated": 64,
+                    "full_context_layers_authenticated": 64,
+                    "writes": 0,
+                    "passed": True,
+                    "terminal": True,
+                },
+                sort_keys=True,
+            )
+        )
+        return
     if args.receipt.exists() or args.completion_marker.exists():
         if not args.receipt.is_file() or not args.completion_marker.is_file():
             raise RuntimeError("partial all-layer training terminal receipt")
@@ -427,11 +513,6 @@ def main() -> None:
         raise SystemExit(0 if existing["gate"]["passed"] else 2)
 
     context_path = args.full_context_root / "context.pt"
-    if (
-        context_path.stat().st_size != full_context_receipt["context"]["bytes"]
-        or sha256_file(context_path) != full_context_receipt["context"]["sha256"]
-    ):
-        raise ValueError("all-layer training context artifact changed")
     context = torch.load(context_path, map_location="cpu", weights_only=False)
     calibration_rows = context["calibration_flat_rows"].long()
     attention_mask = context["attention_mask"].long()[:8]

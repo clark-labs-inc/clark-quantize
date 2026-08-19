@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
+import pytest
+
 
 REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
@@ -119,3 +121,97 @@ def test_v44_does_not_make_a_quality_or_breakthrough_claim() -> None:
     assert '"claim_boundary": prereg["claim_boundary"]' in source
     assert "internal-validation" not in source.lower()
     assert "breakthrough" not in source.lower()
+
+
+def test_v44_preauthenticates_all_direct_parent_layers(monkeypatch) -> None:
+    module = load_module()
+    seen: list[int] = []
+
+    def fake_validate(result, **kwargs):
+        seen.append(result["layer"])
+        assert kwargs["artifact_root"] == Path("/direct")
+        assert kwargs["aff3_root"] == Path("/direct/aff3-base")
+        assert kwargs["full_context_receipt_sha256"] == (
+            module.FULL_CONTEXT_RECEIPT_SHA256
+        )
+
+    monkeypatch.setattr(module.direct, "validate_terminal_layer", fake_validate)
+    module.validate_direct_parent_artifacts(
+        {
+            "repository_commit": "direct-commit",
+            "preregistration_sha256": "direct-prereg",
+            "layers": [
+                {"layer": layer, "passed": True} for layer in range(64)
+            ],
+        },
+        direct_artifact_root=Path("/direct"),
+    )
+    assert seen == list(range(64))
+
+
+@pytest.mark.parametrize(
+    "layers",
+    [
+        [{"layer": layer, "passed": True} for layer in range(63)],
+        [
+            {"layer": layer, "passed": layer != 31}
+            for layer in range(64)
+        ],
+        [
+            {"layer": (1 if layer == 0 else layer), "passed": True}
+            for layer in range(64)
+        ],
+    ],
+)
+def test_v44_rejects_changed_direct_parent_denominator(layers) -> None:
+    module = load_module()
+    with pytest.raises(ValueError, match="parent denominator"):
+        module.validate_direct_parent_artifacts(
+            {
+                "repository_commit": "direct-commit",
+                "preregistration_sha256": "direct-prereg",
+                "layers": layers,
+            },
+            direct_artifact_root=Path("/direct"),
+        )
+
+
+def test_v44_preauthenticates_all_context_shards(tmp_path, monkeypatch) -> None:
+    module = load_module()
+    context = tmp_path / "context.pt"
+    context.write_bytes(b"context")
+    layers_root = tmp_path / "layers"
+    layers_root.mkdir()
+    layers = []
+    for layer in range(64):
+        path = layers_root / f"{layer:02d}.pt"
+        payload = f"layer-{layer}".encode()
+        path.write_bytes(payload)
+        layers.append(
+            {
+                "layer": layer,
+                "shard": {"bytes": len(payload), "sha256": f"hash-{layer}"},
+            }
+        )
+
+    def fake_sha(path):
+        if path == context:
+            return "context-hash"
+        return f"hash-{int(path.stem)}"
+
+    monkeypatch.setattr(module, "sha256_file", fake_sha)
+    module.validate_full_context_parent_artifacts(
+        {
+            "context": {"bytes": len(b"context"), "sha256": "context-hash"},
+            "layers": layers,
+        },
+        full_context_root=tmp_path,
+    )
+
+
+def test_v44_preflight_is_before_artifact_creation() -> None:
+    source = SCRIPT.read_text()
+    assert source.index("if args.preflight_only:") < source.index(
+        "args.artifact_root.mkdir"
+    )
+    assert '"writes": 0' in source
