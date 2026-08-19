@@ -23,6 +23,7 @@ PREREG = (
     / "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_calibration_span_residual_v36.json"
 )
 RUNTIME = PREREG.parent
+SHELL_RUNNER = RUNTIME / "run_qwen38_27b_calibration_span_residual_v36.sh"
 sys.path.insert(0, str(RUNTIME))
 
 import run_qwen38_27b_calibration_span_residual_v36 as runner
@@ -199,3 +200,17 @@ def test_v36_rank_32_projection_matches_storage_and_mac_formula() -> None:
     assert projection["persistent_bytes"] == 64 * per_layer_bytes
     assert projection["macs_per_token"] == 64 * per_layer_macs
     assert projection["weight_traffic_fraction_vs_base_compute_image"] < 0.002
+
+
+def test_v36_shell_runner_preserves_holdout_sequence_and_disk_bounds() -> None:
+    source = SHELL_RUNNER.read_text()
+    calibration = source.index("--stage calibration")
+    holdout = source.index(
+        'taskset -c 0,2,4,6 "$python_bin" "$collector"', calibration
+    )
+    confirmation = source.index("--stage confirmation")
+    assert calibration < holdout < confirmation
+    assert "EXPECTED_REPOSITORY_COMMIT" in source
+    assert "EXPERIMENT_COMPLETE" in source
+    assert "artifacts.sha256" in source
+    assert "another llama.cpp workload is active" in source
