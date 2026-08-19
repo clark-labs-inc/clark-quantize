@@ -1,0 +1,136 @@
+{
+  "claim_boundary": "Exact compiled CQ3 primitive and representative trained AFF3 direct-versus-GGML graph parity only; whole-model generation, quality, throughput, memory, energy, novelty, and scientific breakthrough remain unmeasured.",
+  "compile": {
+    "build_log_sha256": "5e8598ef65318b596f215a83cd37a3b41f2b3b8074e1454e9d047a7a069ff08c",
+    "build_type": "Release",
+    "generator": "Ninja",
+    "ggml_native": true,
+    "ggml_openmp": true,
+    "parallel_jobs": 4,
+    "runtime_artifacts": {
+      "libggml-base.so": {
+        "bytes": 944112,
+        "sha256": "a692da6eab20283ca9fd3d426c28a65b28998e9f9b9f1d455a87de6ddc10dac7"
+      },
+      "libggml-cpu.so": {
+        "bytes": 1183064,
+        "sha256": "3dc01dda717a6a8c74085ab7278120c204e60f92b953c7d8cfe1809fd2735690"
+      },
+      "libggml.so": {
+        "bytes": 59648,
+        "sha256": "f207f4de8d07155295c7c1e2d7ceb86a74332653dc0114c3a8de3899b60d21a5"
+      },
+      "libllama.so": {
+        "bytes": 4507040,
+        "sha256": "ff39284714cbd7c2541610f176ab0e783e60eabb7911c3dc059bd783407d1df2"
+      },
+      "llama-cli": {
+        "bytes": 1282264,
+        "sha256": "66cd0e0b0a1276dd7caceac64fbaf7c2cd05111b8f31e0375bd89cb2ccffc12d"
+      },
+      "llama-perplexity": {
+        "bytes": 15960,
+        "sha256": "be9149ccdc77343087fff7de7d2370f3285cb0082ac23c20b458445053101c34"
+      },
+      "llama-server": {
+        "bytes": 17904,
+        "sha256": "58d611c2a2bb38fdb8d32121d4b7a54180ad89233020037a11cdd67b6774177d"
+      },
+      "qwen38-aff3-runtime-smoke-v63-retry1": {
+        "bytes": 97152,
+        "sha256": "782ebfa37478a2b9abfbf3e18efd14f5c6e81589abff13daaec50c0bacbe0f9d"
+      },
+      "test-cq3": {
+        "bytes": 44312,
+        "sha256": "c835bac195ce8efaf675243f7f1d5ecfc61bb8a2cae9ab717ec2f870a18daa76"
+      }
+    }
+  },
+  "complete": true,
+  "high_precision_weight_materialization": false,
+  "infrastructure_retry": {
+    "amendment_sha256": "9693a0fd01b4927942fbc395cde487b58d51cdb41c015ab4704de562cd1ffaec",
+    "incident_sha256": "7102e7b464dc1b4fbd99869deb543c029fb7cacf51c63be8ca67cb68ad34d32c",
+    "installed_file": "tests/qwen38_27b_cq3_x86_pair_bench_v1.inc",
+    "installed_file_sha256": "18ad5425d182c8aec18d895e2ba649604ff3e6028c78d3dbc7c81369dabd354a",
+    "runtime_or_numerical_source_changes": false
+  },
+  "inputs": {
+    "aff3_layer_count": 64,
+    "candidate_bytes": 13893519712,
+    "candidate_sha256": "506505935f82bade12ab4b51bd1ca9b6e1b5cc11eeae99a6e230b9a7b9044ffc",
+    "residual_payload_bytes": 0,
+    "v62_terminal_marker_sha256": "ade3256aa4851403b8c6467a0642bb9eb2c7fc973cbcad97412cc935bd6a8291"
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "passed": true,
+  "performance_timing_ran": false,
+  "preregistration_sha256": "7797caa49c8553e545edf7a3b1990bb4935818792868d765046dd99e69132125",
+  "repository_commit": "aded9c85fb22dd63230f9730bff743feb01a7257",
+  "schema": "qwen38_27b_trained_compact_integration_gate_v63",
+  "source": {
+    "authentication_receipt_sha256": "52928a76e79ac54f87a6e3fcba10f4dbc2e14e005403e50fc0a2b929c744bb96",
+    "llama_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "tracked_diff_sha256": "f76b42067337f35d8f5721b92faffcff90f4e1cd15afe8e4aa22ec4fdf67eb4a"
+  },
+  "terminal": true,
+  "test_cq3": {
+    "benchmark_environment_present": false,
+    "exit_code": 0,
+    "passed": true,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "trained_aff3_graph_parity": [
+    {
+      "bit_exact": true,
+      "layer": 0,
+      "receipt_sha256": "8205a610522110f839787bdc82b36402ce85582929f076f9e52a6e45908231d6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "task_mask": 15,
+      "tokens": 1
+    },
+    {
+      "bit_exact": true,
+      "layer": 0,
+      "receipt_sha256": "6300e5ab7c8e6fec83b720dff9ed685986158d47c9ebb9aa3d50f8efc0fe7088",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "task_mask": 15,
+      "tokens": 8
+    },
+    {
+      "bit_exact": true,
+      "layer": 32,
+      "receipt_sha256": "d791072b35c9b0174b1c2c04cb12e7891b11fd97ff98ab2edede45b35fe936c0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "task_mask": 15,
+      "tokens": 1
+    },
+    {
+      "bit_exact": true,
+      "layer": 32,
+      "receipt_sha256": "3098659d9b384ba759fde25a8c5a90793b96c5f7b307c8504878365118d94898",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "task_mask": 15,
+      "tokens": 8
+    },
+    {
+      "bit_exact": true,
+      "layer": 63,
+      "receipt_sha256": "0b0a56177d1eef63e84912a8e357acdd7b9c0c1532dab231358019a12be36749",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "task_mask": 15,
+      "tokens": 1
+    },
+    {
+      "bit_exact": true,
+      "layer": 63,
+      "receipt_sha256": "a2e98a924848b11de4e0782b7bdf8fb3e98956a1154733c9778a41e30a0accb4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "task_mask": 15,
+      "tokens": 8
+    }
+  ],
+  "whole_model_generation_ran": false
+}
