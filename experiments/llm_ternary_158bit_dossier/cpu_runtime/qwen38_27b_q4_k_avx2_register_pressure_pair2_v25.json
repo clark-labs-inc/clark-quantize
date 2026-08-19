@@ -28,9 +28,9 @@
     "disassembly_sha256": "880a2c04aa4e1fb1cb192bd5b122afb96a85f96a137001eae1cd6966bc499904",
     "observation": "The nr=4 source keeps eight FP32 accumulators, eight INT32 accumulators, row sums, decoded weights, and scales live on a 16-YMM-register ISA. The compiled exact symbol therefore uses a 1472-byte frame and extensive vector stack traffic."
   },
-  "hypothesis": "A compile-time two-row AVX2 specialization executed twice for the exact four-row verification shape can outperform the parent four-row loop even though it decodes Q4_K weights twice. It trades duplicate cache-hot weight decode for sharply lower register pressure, retaining each row's integer-dot and floating accumulation order while removing most YMM spills and reloads.",
+  "hypothesis": "A compile-time two-row AVX2 specialization executed twice inside each eight-output-column tile of the exact four-row verification shape can outperform the parent four-row loop even though it decodes that Q4_K tile twice. The second pass revisits roughly 23 KiB of weight blocks immediately, trading cache-local duplicate decode for sharply lower register pressure while retaining each row's integer-dot and floating accumulation order and removing most YMM spills and reloads.",
   "implementation_contract": {
-    "strategy": "Refactor the Q4_K x Q8_K ragged kernel into compile-time NR specializations. Dispatch nr=4 as two NR=2 calls over rows 0-1 and 2-3; keep nr=1,2,3 behavior and every non-Q4_K dispatch unchanged.",
+    "strategy": "Refactor the Q4_K x Q8_K ragged kernel into a compile-time NR specialization for one eight-output-column tile. For each outer x tile, dispatch nr=4 as consecutive NR=2 passes over rows 0-1 and 2-3 before advancing x; do not scan the complete matrix twice. Keep nr=1,2,3 arithmetic and every non-Q4_K dispatch unchanged.",
     "weight_representation_unchanged": true,
     "activation_representation_unchanged": true,
     "v21_native_x4_to_row_major_bridge_unchanged": true,
