@@ -1,0 +1,427 @@
+{
+  "claim_boundary": {
+    "complete_model_quality_or_speed_proven": false,
+    "exact_trained_v37_payloads_executed": true,
+    "llama_cpp_integration_proven": false,
+    "native_rank16_arithmetic_proven": false,
+    "no_high_precision_factor_materialization": true,
+    "scientific_breakthrough_proven": false
+  },
+  "compiler": "cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "complete": true,
+  "cpu": {
+    "lscpu": [
+      {
+        "data": "x86_64",
+        "field": "Architecture:"
+      },
+      {
+        "data": "32-bit, 64-bit",
+        "field": "CPU op-mode(s):"
+      },
+      {
+        "data": "40 bits physical, 48 bits virtual",
+        "field": "Address sizes:"
+      },
+      {
+        "data": "Little Endian",
+        "field": "Byte Order:"
+      },
+      {
+        "data": "8",
+        "field": "CPU(s):"
+      },
+      {
+        "data": "0-7",
+        "field": "On-line CPU(s) list:"
+      },
+      {
+        "data": "AuthenticAMD",
+        "field": "Vendor ID:"
+      },
+      {
+        "data": "AMD EPYC-Milan Processor",
+        "field": "Model name:"
+      },
+      {
+        "data": "25",
+        "field": "CPU family:"
+      },
+      {
+        "data": "1",
+        "field": "Model:"
+      },
+      {
+        "data": "2",
+        "field": "Thread(s) per core:"
+      },
+      {
+        "data": "4",
+        "field": "Core(s) per socket:"
+      },
+      {
+        "data": "1",
+        "field": "Socket(s):"
+      },
+      {
+        "data": "1",
+        "field": "Stepping:"
+      },
+      {
+        "data": "4800.00",
+        "field": "BogoMIPS:"
+      },
+      {
+        "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm rep_good nopl xtopology cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves clzero xsaveerptr wbnoinvd arat umip pku ospke rdpid fsrm",
+        "field": "Flags:"
+      },
+      {
+        "data": "KVM",
+        "field": "Hypervisor vendor:"
+      },
+      {
+        "data": "full",
+        "field": "Virtualization type:"
+      },
+      {
+        "data": "128 KiB (4 instances)",
+        "field": "L1d cache:"
+      },
+      {
+        "data": "128 KiB (4 instances)",
+        "field": "L1i cache:"
+      },
+      {
+        "data": "2 MiB (4 instances)",
+        "field": "L2 cache:"
+      },
+      {
+        "data": "32 MiB (1 instance)",
+        "field": "L3 cache:"
+      },
+      {
+        "data": "1",
+        "field": "NUMA node(s):"
+      },
+      {
+        "data": "0-7",
+        "field": "NUMA node0 CPU(s):"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Gather data sampling:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Ghostwrite:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Indirect target selection:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Itlb multihit:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability L1tf:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Mds:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Meltdown:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Mmio stale data:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Old microcode:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Reg file data sampling:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Retbleed:"
+      },
+      {
+        "data": "Vulnerable: Safe RET, no microcode",
+        "field": "Vulnerability Spec rstack overflow:"
+      },
+      {
+        "data": "Mitigation; Speculative Store Bypass disabled via prctl",
+        "field": "Vulnerability Spec store bypass:"
+      },
+      {
+        "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization",
+        "field": "Vulnerability Spectre v1:"
+      },
+      {
+        "data": "Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP conditional; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected",
+        "field": "Vulnerability Spectre v2:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Srbds:"
+      },
+      {
+        "data": "Vulnerable: No microcode",
+        "field": "Vulnerability Tsa:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Tsx async abort:"
+      },
+      {
+        "data": "Not affected",
+        "field": "Vulnerability Vmscape:"
+      }
+    ]
+  },
+  "created_at_utc": "2026-08-19T06:48:05Z",
+  "features": {
+    "avx2": true,
+    "f16c": true,
+    "fma": true
+  },
+  "gate": {
+    "checks": {
+      "both_exact_v37_payloads_executed": true,
+      "candidate_sample_range_within_gate": false,
+      "conservative_64_layer_latency_within_gate": true,
+      "maximum_absolute_error_within_gate": true,
+      "minimum_avx2_speedup_within_gate": true,
+      "payload_bytes_exact": true,
+      "scratch_is_rank16_fp32_only": true
+    },
+    "observed_maximum_absolute_error": 1.9073486328125e-06,
+    "observed_maximum_candidate_sample_range_fraction": 0.36604117476492276,
+    "observed_maximum_projected_all_64_layers_avx2_ns": 784582.5,
+    "observed_minimum_avx2_speedup_vs_scalar": 9.915807588409,
+    "passed": false,
+    "specification": {
+      "maximum_absolute_error": 0.0005,
+      "maximum_candidate_sample_range_fraction": 0.2,
+      "maximum_projected_all_64_layers_avx2_ns": 7272727,
+      "minimum_avx2_speedup_vs_scalar": 1.25,
+      "required_exact_payloads": 2,
+      "required_payload_bytes_each": 174144,
+      "required_rank_scratch_bytes": 64
+    }
+  },
+  "library_sha256": "d59444ac3a423d9bf10ed2e0701d7bc4d95529eb840afb36d0bb973c0c67ad66",
+  "parent_terminal_decision_sha256": "26dae44ab53bf194b89c46e7a175808865b8c8eb40207dd83ef4edaefec7ba36",
+  "preregistration_sha256": "bf4a1f6cc30479548646e19c47eb070c4f15c09cd822ef132f7e7d5ba668ec45",
+  "records": [
+    {
+      "avx2_speedup_vs_scalar": 9.948712850465057,
+      "avx2_timing": {
+        "maximum_ns": 16515.546875,
+        "median_ns": 12259.1015625,
+        "minimum_ns": 12028.2109375,
+        "p90_ns": 14026.8828125,
+        "range_fraction_of_median": 0.36604117476492276,
+        "samples_ns": [
+          12139.53125,
+          12539.6171875,
+          12733.3671875,
+          12028.2109375,
+          12144.921875,
+          12090.6328125,
+          12082.7421875,
+          12102.3515625,
+          12079.8515625,
+          12425.234375,
+          12029.2265625,
+          12146.2578125,
+          12290.0,
+          12155.8671875,
+          12499.6953125,
+          12408.046875,
+          12741.0234375,
+          16515.546875,
+          14458.765625,
+          12043.671875,
+          14026.8828125,
+          12185.8671875,
+          15167.2734375,
+          12228.203125,
+          12515.3203125,
+          13022.3515625,
+          12586.7265625,
+          13853.125,
+          12046.96875,
+          12411.171875,
+          12081.640625,
+          12156.109375
+        ]
+      },
+      "input_features": 5120,
+      "layer": 0,
+      "maximum_absolute_error_avx2_vs_pytorch": 8.344650268554688e-07,
+      "maximum_absolute_error_avx2_vs_scalar": 4.76837158203125e-07,
+      "maximum_absolute_error_scalar_vs_pytorch": 3.5762786865234375e-07,
+      "output_features": 5120,
+      "payload_bytes": 174144,
+      "payload_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-0.csr",
+      "payload_sha256": "20f632aada5aca1fba88d8505744f8148bddeed43b171c75c42b97434e4517d9",
+      "projected_all_64_layers_avx2_ns": 784582.5,
+      "rank": 16,
+      "rank_scratch_bytes": 64,
+      "scalar_timing": {
+        "maximum_ns": 124698.3359375,
+        "median_ns": 121962.28125,
+        "minimum_ns": 119779.4296875,
+        "p90_ns": 123601.234375,
+        "range_fraction_of_median": 0.04033137294240304,
+        "samples_ns": [
+          120554.671875,
+          120491.921875,
+          121240.765625,
+          120032.9453125,
+          119779.4296875,
+          120254.8203125,
+          119894.1171875,
+          120525.4453125,
+          121332.015625,
+          120964.265625,
+          121298.96875,
+          122189.7421875,
+          122168.2578125,
+          122664.4296875,
+          121892.7109375,
+          121479.4296875,
+          121751.546875,
+          123907.3203125,
+          122031.8515625,
+          123601.234375,
+          122548.40625,
+          122746.46875,
+          122302.3984375,
+          122508.109375,
+          123039.1875,
+          123756.46875,
+          122486.4609375,
+          124698.3359375,
+          121812.796875,
+          121762.625,
+          122513.5,
+          122991.3046875
+        ]
+      }
+    },
+    {
+      "avx2_speedup_vs_scalar": 9.915807588409,
+      "avx2_timing": {
+        "maximum_ns": 12590.4765625,
+        "median_ns": 12107.58984375,
+        "minimum_ns": 11941.5703125,
+        "p90_ns": 12366.4140625,
+        "range_fraction_of_median": 0.05359499771417915,
+        "samples_ns": [
+          12532.7421875,
+          12590.4765625,
+          12512.8125,
+          12169.6171875,
+          12086.9609375,
+          12036.1015625,
+          11994.765625,
+          12072.1171875,
+          12102.5859375,
+          12157.265625,
+          11941.5703125,
+          12183.9921875,
+          12028.90625,
+          12033.9921875,
+          11986.2578125,
+          12119.296875,
+          12047.5859375,
+          12116.8828125,
+          11999.84375,
+          11956.8828125,
+          12071.9609375,
+          12047.265625,
+          12169.6171875,
+          12162.5078125,
+          12187.1875,
+          12366.4140625,
+          12308.9921875,
+          12179.140625,
+          12112.59375,
+          12048.203125,
+          12362.9765625,
+          12097.4296875
+        ]
+      },
+      "input_features": 5120,
+      "layer": 63,
+      "maximum_absolute_error_avx2_vs_pytorch": 9.5367431640625e-07,
+      "maximum_absolute_error_avx2_vs_scalar": 1.9073486328125e-06,
+      "maximum_absolute_error_scalar_vs_pytorch": 1.9073486328125e-06,
+      "output_features": 5120,
+      "payload_bytes": 174144,
+      "payload_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-63.csr",
+      "payload_sha256": "47b759bb0a16ce987a412727ce68d275fa607e3df29f38d3a4bca0bddd2124e6",
+      "projected_all_64_layers_avx2_ns": 774885.75,
+      "rank": 16,
+      "rank_scratch_bytes": 64,
+      "scalar_timing": {
+        "maximum_ns": 123092.0859375,
+        "median_ns": 120056.53125,
+        "minimum_ns": 118966.8515625,
+        "p90_ns": 121457.15625,
+        "range_fraction_of_median": 0.03436076598290024,
+        "samples_ns": [
+          119971.78125,
+          119714.5078125,
+          120050.28125,
+          119361.9375,
+          120062.78125,
+          119708.265625,
+          120529.8984375,
+          119508.1015625,
+          120258.7265625,
+          119011.546875,
+          119936.921875,
+          118966.8515625,
+          123092.0859375,
+          119206.078125,
+          119559.0390625,
+          120557.9453125,
+          120967.6328125,
+          120049.1171875,
+          120268.109375,
+          121457.15625,
+          120192.796875,
+          119807.78125,
+          120214.28125,
+          121306.296875,
+          120732.71875,
+          119815.3671875,
+          119679.5859375,
+          120037.9453125,
+          121884.1171875,
+          122421.9375,
+          120374.5,
+          120428.1875
+        ]
+      }
+    }
+  ],
+  "repository_commit": "e97c04524791d2c2333d69d24586964d889938e1",
+  "schema": "qwen38_27b_calibration_residual_cpu_receipt_v38",
+  "terminal": true,
+  "timing_order": [
+    "scalar_a",
+    "avx2_a",
+    "avx2_b",
+    "scalar_b"
+  ]
+}

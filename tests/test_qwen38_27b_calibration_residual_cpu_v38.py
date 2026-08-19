@@ -8,6 +8,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREREG = RUNTIME / "qwen38_27b_calibration_residual_cpu_v38.json"
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_calibration_residual_cpu_v38"
 
 
 def sha256(path: Path) -> str:
@@ -78,3 +79,19 @@ def test_v38_benchmark_does_not_open_capability_evals() -> None:
         assert forbidden not in source
     assert "load_int8_adapter" in source
     assert "cq3_calibration_residual_f32_avx2_trusted" in source
+
+
+def test_v38_terminal_rejection_preserves_the_single_failed_gate() -> None:
+    receipt = json.loads((RECEIPTS / "receipt.json").read_text())
+    decision = json.loads((RECEIPTS / "terminal-decision.json").read_text())
+    assert receipt["gate"]["passed"] is False
+    assert decision["decision"] == "reject_v38_on_preregistered_full_range_stability_gate"
+    assert decision["gate_passed"] is False
+    assert decision["receipt"]["sha256"] == sha256(RECEIPTS / "receipt.json")
+    failed = [name for name, passed in receipt["gate"]["checks"].items() if not passed]
+    assert failed == ["candidate_sample_range_within_gate"]
+    evidence = decision["positive_nonpromotion_evidence"]
+    assert evidence["maximum_absolute_error"] <= 0.0005
+    assert evidence["minimum_avx2_speedup_vs_scalar"] >= 1.25
+    assert evidence["maximum_projected_all_64_layers_avx2_ns"] <= 7272727
+    assert decision["denominators"]["total_timed_native_calls"] == 32768
