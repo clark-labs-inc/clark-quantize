@@ -1,0 +1,85 @@
+2026-08-19T16:02:04+00:00 ubuntu-32gb-hel1-1 systemd[1]: Starting quant-qwen38-27b-all-layer-sensitivity-residual-v45.service - Qwen3.8-27B all-layer sensitivity residual v45...
+2026-08-19T16:02:04+00:00 ubuntu-32gb-hel1-1 systemd[1]: Started quant-qwen38-27b-all-layer-sensitivity-residual-v45.service - Qwen3.8-27B all-layer sensitivity residual v45.
+2026-08-19T16:08:13+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 0}
+2026-08-19T16:08:42+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.018498070538043976, "event": "v45_layer_terminal", "final_validation_nmse": 0.017811015248298645, "layer": 0, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:08:43+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 1}
+2026-08-19T16:09:11+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.009053554385900497, "event": "v45_layer_terminal", "final_validation_nmse": 0.008982326835393906, "layer": 1, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:09:12+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 2}
+2026-08-19T16:09:40+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.011522823013365269, "event": "v45_layer_terminal", "final_validation_nmse": 0.011096968315541744, "layer": 2, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:09:40+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 3}
+2026-08-19T16:09:42+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: [transformers] You tried to access the `AttentionInterface` with a `config._attn_implementation` set to `None`. This is expected if you use an Attention Module as a standalone Module. If this is not the case, something went wrong with the dispatch of `config._attn_implementation`
+2026-08-19T16:10:08+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.004765473771840334, "event": "v45_layer_terminal", "final_validation_nmse": 0.0047523388639092445, "layer": 3, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:10:09+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 4}
+2026-08-19T16:10:37+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.004907504189759493, "event": "v45_layer_terminal", "final_validation_nmse": 0.004924597218632698, "layer": 4, "mode": "rank16_int8_residual", "passed": false}
+2026-08-19T16:10:37+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 5}
+2026-08-19T16:11:06+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.005464527755975723, "event": "v45_layer_terminal", "final_validation_nmse": 0.005445019342005253, "layer": 5, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:11:06+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 6}
+2026-08-19T16:11:35+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.01046822965145111, "event": "v45_layer_terminal", "final_validation_nmse": 0.010403471998870373, "layer": 6, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:11:35+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 7}
+2026-08-19T16:12:04+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.005740088876336813, "event": "v45_layer_terminal", "final_validation_nmse": 0.005751152988523245, "layer": 7, "mode": "rank16_int8_residual", "passed": false}
+2026-08-19T16:12:04+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 8}
+2026-08-19T16:12:33+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.005943525582551956, "event": "v45_layer_terminal", "final_validation_nmse": 0.0059373341500759125, "layer": 8, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:12:33+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 9}
+2026-08-19T16:13:02+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.005754070356488228, "event": "v45_layer_terminal", "final_validation_nmse": 0.0057301027700304985, "layer": 9, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:13:02+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 10}
+2026-08-19T16:13:31+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.005686283577233553, "event": "v45_layer_terminal", "final_validation_nmse": 0.005634257569909096, "layer": 10, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:13:31+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 11}
+2026-08-19T16:13:59+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.00357583980076015, "event": "v45_layer_terminal", "final_validation_nmse": 0.003551946021616459, "layer": 11, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:14:00+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 12}
+2026-08-19T16:14:28+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.0040066963993012905, "event": "v45_layer_terminal", "final_validation_nmse": 0.0040054344572126865, "layer": 12, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:14:28+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 13}
+2026-08-19T16:14:57+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.0047182366251945496, "event": "v45_layer_terminal", "final_validation_nmse": 0.004735833965241909, "layer": 13, "mode": "rank16_int8_residual", "passed": false}
+2026-08-19T16:14:57+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 14}
+2026-08-19T16:15:26+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.00455591082572937, "event": "v45_layer_terminal", "final_validation_nmse": 0.004557719919830561, "layer": 14, "mode": "rank16_int8_residual", "passed": false}
+2026-08-19T16:15:26+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 15}
+2026-08-19T16:15:55+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.002667730674147606, "event": "v45_layer_terminal", "final_validation_nmse": 0.002664163475856185, "layer": 15, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:15:55+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 16}
+2026-08-19T16:16:23+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.003916524816304445, "event": "v45_layer_terminal", "final_validation_nmse": 0.003925831522792578, "layer": 16, "mode": "rank16_int8_residual", "passed": false}
+2026-08-19T16:16:24+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 17}
+2026-08-19T16:16:52+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.0065157790668308735, "event": "v45_layer_terminal", "final_validation_nmse": 0.006495196372270584, "layer": 17, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:16:52+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 18}
+2026-08-19T16:17:20+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.010240592062473297, "event": "v45_layer_terminal", "final_validation_nmse": 0.009836148470640182, "layer": 18, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:17:20+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 19}
+2026-08-19T16:17:48+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.014388364739716053, "event": "v45_layer_terminal", "final_validation_nmse": 0.014038298279047012, "layer": 19, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:17:48+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 20}
+2026-08-19T16:18:17+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.019418058916926384, "event": "v45_layer_terminal", "final_validation_nmse": 0.018699750304222107, "layer": 20, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:18:17+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 21}
+2026-08-19T16:18:46+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.016449056565761566, "event": "v45_layer_terminal", "final_validation_nmse": 0.016459789127111435, "layer": 21, "mode": "rank16_int8_residual", "passed": false}
+2026-08-19T16:18:46+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 22}
+2026-08-19T16:19:15+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.013552683405578136, "event": "v45_layer_terminal", "final_validation_nmse": 0.013592037372291088, "layer": 22, "mode": "rank16_int8_residual", "passed": false}
+2026-08-19T16:19:15+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 23}
+2026-08-19T16:19:43+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.01244315505027771, "event": "v45_layer_terminal", "final_validation_nmse": 0.012505969032645226, "layer": 23, "mode": "rank16_int8_residual", "passed": false}
+2026-08-19T16:19:43+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 24}
+2026-08-19T16:20:12+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.014686807990074158, "event": "v45_layer_terminal", "final_validation_nmse": 0.01453897450119257, "layer": 24, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:20:12+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 25}
+2026-08-19T16:20:41+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.013137525878846645, "event": "v45_layer_terminal", "final_validation_nmse": 0.012871727347373962, "layer": 25, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:20:41+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 26}
+2026-08-19T16:21:10+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.012326947413384914, "event": "v45_layer_terminal", "final_validation_nmse": 0.011799504980444908, "layer": 26, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:21:10+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 27}
+2026-08-19T16:21:38+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.010880844667553902, "event": "v45_layer_terminal", "final_validation_nmse": 0.010922151617705822, "layer": 27, "mode": "rank16_int8_residual", "passed": false}
+2026-08-19T16:21:38+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 28}
+2026-08-19T16:22:07+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.011267030611634254, "event": "v45_layer_terminal", "final_validation_nmse": 0.011292125098407269, "layer": 28, "mode": "rank16_int8_residual", "passed": false}
+2026-08-19T16:22:07+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 29}
+2026-08-19T16:22:36+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.009559821337461472, "event": "v45_layer_terminal", "final_validation_nmse": 0.009558937512338161, "layer": 29, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:22:36+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 30}
+2026-08-19T16:23:05+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.011275462806224823, "event": "v45_layer_terminal", "final_validation_nmse": 0.011033990420401096, "layer": 30, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:23:05+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 31}
+2026-08-19T16:23:33+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"base_validation_nmse": 0.009763965383172035, "event": "v45_layer_terminal", "final_validation_nmse": 0.00964223314076662, "layer": 31, "mode": "rank16_int8_residual", "passed": true}
+2026-08-19T16:23:33+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: {"event": "v45_layer_started", "layer": 32}
+2026-08-19T16:24:02+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: Traceback (most recent call last):
+2026-08-19T16:24:02+00:00 ubuntu-32gb-hel1-1 taskset[1305665]:   File "/workspace/src/clark-quantize-qwen38-v45/experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_all_layer_sensitivity_residual_v45.py", line 935, in <module>
+2026-08-19T16:24:02+00:00 ubuntu-32gb-hel1-1 taskset[1305665]:     main()
+2026-08-19T16:24:02+00:00 ubuntu-32gb-hel1-1 taskset[1305665]:     ~~~~^^
+2026-08-19T16:24:02+00:00 ubuntu-32gb-hel1-1 taskset[1305665]:   File "/workspace/src/clark-quantize-qwen38-v45/experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_all_layer_sensitivity_residual_v45.py", line 789, in main
+2026-08-19T16:24:02+00:00 ubuntu-32gb-hel1-1 taskset[1305665]:     raise ValueError("v45 pilot sensitivity mode reproduction changed")
+2026-08-19T16:24:02+00:00 ubuntu-32gb-hel1-1 taskset[1305665]: ValueError: v45 pilot sensitivity mode reproduction changed
+2026-08-19T16:24:02+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-27b-all-layer-sensitivity-residual-v45.service: Main process exited, code=exited, status=1/FAILURE
+2026-08-19T16:24:02+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-27b-all-layer-sensitivity-residual-v45.service: Failed with result 'exit-code'.
+2026-08-19T16:24:02+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-27b-all-layer-sensitivity-residual-v45.service: Consumed 41min 33.974s CPU time over 21min 58.497s wall clock time, 27.6G memory peak.
+2026-08-19T16:24:07+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-27b-all-layer-sensitivity-residual-v45.service: Scheduled restart job, restart counter is at 1.
+2026-08-19T16:24:07+00:00 ubuntu-32gb-hel1-1 systemd[1]: Starting quant-qwen38-27b-all-layer-sensitivity-residual-v45.service - Qwen3.8-27B all-layer sensitivity residual v45...
+2026-08-19T16:24:08+00:00 ubuntu-32gb-hel1-1 systemd[1]: Started quant-qwen38-27b-all-layer-sensitivity-residual-v45.service - Qwen3.8-27B all-layer sensitivity residual v45.
+2026-08-19T16:25:28+00:00 ubuntu-32gb-hel1-1 systemd[1]: Stopping quant-qwen38-27b-all-layer-sensitivity-residual-v45.service - Qwen3.8-27B all-layer sensitivity residual v45...
+2026-08-19T16:25:28+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-27b-all-layer-sensitivity-residual-v45.service: Deactivated successfully.
+2026-08-19T16:25:28+00:00 ubuntu-32gb-hel1-1 systemd[1]: Stopped quant-qwen38-27b-all-layer-sensitivity-residual-v45.service - Qwen3.8-27B all-layer sensitivity residual v45.
+2026-08-19T16:25:28+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-27b-all-layer-sensitivity-residual-v45.service: Consumed 1min 25.133s CPU time over 1min 25.216s wall clock time, 5.6G memory peak.
