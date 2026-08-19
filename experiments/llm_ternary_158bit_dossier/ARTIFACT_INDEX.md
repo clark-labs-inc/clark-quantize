@@ -1,6 +1,6 @@
 # LLM 1.58-bit Ternary Artifact Index
 
-Status date: 2026-08-17
+Status date: 2026-08-19
 
 This is a link-only index. Existing experiment files remain in their original
 locations so historical commands, imports, and archived paths continue to work.
@@ -17,6 +17,7 @@ locations so historical commands, imports, and archived paths continue to work.
 | [Qwen3.8-27B Q4 CPU throughput control](cpu_runtime/receipts/qwen38_27b_cpu_throughput_v1/summary.json) | Repeated 1-, 2-, and 4-thread prefill/decode baseline | Throughput only; load latency, TTFT, energy, and candidate comparisons remain separate gates |
 | [Qwen3.8-27B selective CQ3 conversion](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_v1/conversion-receipt.json) | Exact three-tensor layer-0 MLP conversion and load smoke | Byte scope and loadability only; capability evaluation is still required |
 | [Qwen3.8-27B selective CQ3 quality gate](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_quality_v1/summary.json) | Terminal CUTE, MATH/code, MMLU-64, and WikiText comparison | Frozen quick quality gate passed for one layer-0 MLP triplet; not a whole-model or throughput promotion |
+| [Qwen3.8-27B all-layer trained-CQ3 GGUF materializer](cpu_runtime/materialize_qwen38_27b_all_layer_trained_cq3_v46.py) | Fail-closed exact-byte overlay for all 192 trained v44 MLP payloads | Implementation and synthetic tests only; requires a passed v44 receipt plus an authenticated all-MLP CQ3 template, and excludes AFF3, residuals, quality, and performance |
 | [Qwen3.8-27B persistent-affinity gate](cpu_runtime/qwen38_27b_persistent_affinity_preregistration_v1.json) | Exact full-token comparison of per-call versus once-per-worker CPU pinning | Frozen protocol queued after graph and capability work; no observed speedup yet |
 | [Qwen3.8-27B full-graph profile](cpu_runtime/qwen38_27b_full_graph_profile_preregistration_v1.json) | Exact 557-call projection-time attribution over the 64-layer graph | Frozen diagnostic protocol; it cannot establish a throughput improvement or capability claim |
 
