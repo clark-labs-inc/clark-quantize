@@ -29,6 +29,13 @@ NATIVE_HARNESS = REPO / (
     "qwen38_cq3_exact_lut_native_v58.c"
 )
 NATIVE_BUILD = REPO / "scripts/cpu/build_qwen38_cq3_exact_lut_native_v58.sh"
+BENCHMARK = REPO / (
+    "experiments/llm_ternary_158bit_dossier/cpu_runtime/kernels/"
+    "benchmark_qwen38_cq3_exact_lut_native_v58.c"
+)
+BENCHMARK_BUILD = REPO / (
+    "scripts/cpu/build_qwen38_cq3_exact_lut_benchmark_v58.sh"
+)
 DEVELOPMENT_RECEIPT = REPO / (
     "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/"
     "qwen38_27b_cq3_exact_lut32_avx2_v58/development-parity.json"
@@ -264,3 +271,21 @@ def test_v58_development_receipt_is_bounded_and_source_authenticated() -> None:
     assert "not the preregistered Milan full-shape timing" in receipt[
         "claim_boundary"
     ]
+
+
+def test_v58_full_shape_harness_matches_frozen_abba_contract() -> None:
+    source = BENCHMARK.read_text()
+    build = BENCHMARK_BUILD.read_text()
+
+    assert "WARMUP_PAIRS = 2" in source
+    assert "MEASURED_PAIRS = 21" in source
+    assert "EVICTION_BYTES = 256 * 1024 * 1024" in source
+    assert '(shape_spec){"gate_up", 2, 17408, 5120}' in source
+    assert '(shape_spec){"down", 1, 5120, 17408}' in source
+    assert "run_x8, run_lut32" in source
+    assert "run_ordinary, run_lut32" in source
+    assert "full-shape LUT32 output differs from x8 bits" in source
+    assert "maximum_scaled_delta > 0.00005f" in source
+    assert "cq3_exact_lut_build_tables" in source
+    assert "-mavx2 -mfma -mf16c" in build
+    assert "-Wall -Wextra -Werror" in build
