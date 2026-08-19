@@ -1,0 +1,42 @@
+{
+  "candidate": {
+    "bytes": 13066455712,
+    "path": "/workspace/models/candidates/Qwen3.8-27B-imatrix-Q4-trained-CQ3-sensitivity32-v80.gguf",
+    "sha256": "09880f4d1b740f29b5e0cf0daf70ea649b7f5d2b57fb27df064fc1d03c9fab7d"
+  },
+  "claim_boundary": "Complete-model quality result only; no throughput, energy, novelty, or scientific-breakthrough claim.",
+  "complete": true,
+  "cute_is_adaptive_lineage_evidence": true,
+  "decision": "reject_composition_before_kernel_integration",
+  "mmlu": {
+    "correct_of_64": null,
+    "passed": false,
+    "ran": false
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": false,
+  "performance_ran": false,
+  "preregistration_sha256": "e152af61f0526c74684b559db0fb3d4d5f268457874ac0fb4c1b27a9ac02aef6",
+  "quick_quality": {
+    "candidate_sha256": "09880f4d1b740f29b5e0cf0daf70ea649b7f5d2b57fb27df064fc1d03c9fab7d",
+    "checks": {
+      "code_at_least_4_of_6": false,
+      "cute_at_least_8_of_20": true,
+      "math500_at_least_4_of_8": false,
+      "wikitext_ratio_at_most_1_05": false
+    },
+    "complete": true,
+    "observed": {
+      "code_correct_of_6": 3,
+      "cute_correct_of_20": 9,
+      "math500_correct_of_8": 1,
+      "wikitext_ppl": 6.3088,
+      "wikitext_ppl_ratio_vs_q4": 1.0906010683354366
+    },
+    "passed": false,
+    "schema": "qwen38_27b_imatrix_cq3_hybrid_quick_quality_v81",
+    "terminal": true
+  },
+  "schema": "qwen38_27b_imatrix_cq3_hybrid_quality_result_v81",
+  "terminal": true
+}

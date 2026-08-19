@@ -10,6 +10,7 @@ RUNTIME = ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 MODULE_PATH = RUNTIME / "run_qwen38_27b_imatrix_cq3_hybrid_quality_v81.py"
 PREREG = RUNTIME / "qwen38_27b_imatrix_cq3_hybrid_quality_preregistration_v81.json"
 LAUNCHER = RUNTIME / "launch_qwen38_27b_imatrix_cq3_hybrid_quality_v81.sh"
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_imatrix_cq3_hybrid_quality_v81"
 SPEC = importlib.util.spec_from_file_location("imatrix_cq3_quality_v81", MODULE_PATH)
 assert SPEC and SPEC.loader
 MODULE = importlib.util.module_from_spec(SPEC)
@@ -60,3 +61,32 @@ def test_v81_runner_is_restartable_and_enforces_denominators() -> None:
     assert "AllowedCPUs=0,2,4,6" in launcher
     assert "MemoryMax=30000000000" in launcher
     assert "MemorySwapMax=0" in launcher
+
+
+def test_v81_terminal_receipt_rejects_whole_layer_cq3_composition() -> None:
+    result = json.loads((RECEIPTS / "summary.json").read_text())
+    quick = json.loads((RECEIPTS / "quick-quality-summary.json").read_text())
+    cute = json.loads((RECEIPTS / "cute.json").read_text())
+    math_code = json.loads((RECEIPTS / "math-code.json").read_text())
+    wiki = json.loads((RECEIPTS / "wikitext.json").read_text())
+    assert result["complete"] and result["terminal"]
+    assert result["passed"] is False
+    assert result["decision"] == "reject_composition_before_kernel_integration"
+    assert result["performance_ran"] is False
+    assert result["mmlu"] == {"correct_of_64": None, "passed": False, "ran": False}
+    assert quick["observed"] == {
+        "code_correct_of_6": 3,
+        "cute_correct_of_20": 9,
+        "math500_correct_of_8": 1,
+        "wikitext_ppl": 6.3088,
+        "wikitext_ppl_ratio_vs_q4": 1.0906010683354366,
+    }
+    assert quick["checks"] == {
+        "code_at_least_4_of_6": False,
+        "cute_at_least_8_of_20": True,
+        "math500_at_least_4_of_8": False,
+        "wikitext_ratio_at_most_1_05": False,
+    }
+    assert len(cute["records"]) == 20
+    assert len(math_code["records"]) == 14
+    assert wiki["valid"] and len(wiki["chunks"]) == 4
