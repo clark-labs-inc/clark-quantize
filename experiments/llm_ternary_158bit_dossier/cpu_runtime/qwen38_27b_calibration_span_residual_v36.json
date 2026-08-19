@@ -1,0 +1,161 @@
+{
+  "schema": "qwen38_27b_calibration_span_residual_preregistration_v36",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_representation_kernel_codesign_v1",
+  "experiment_id": "qwen38_27b_calibration_span_residual_v36",
+  "status": "frozen_after_terminal_qat_before_mixed_execution",
+  "frozen_at": "2026-08-19T05:25:00Z",
+  "objective": "Test whether the large fresh-confirmation error of the trained mixed CQ3/AFF3 block is concentrated in a low-dimensional calibration activation span and can be corrected by one globally selected, deployable INT8 reduced-rank residual map without sacrificing the projected CPU bandwidth advantage.",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "pilot_layers": [
+      0,
+      32,
+      63
+    ],
+    "pilot_layer_types": [
+      "linear_attention",
+      "linear_attention",
+      "full_attention"
+    ],
+    "hidden_size": 5120,
+    "qwen_4b_compute_forbidden": true,
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4
+  },
+  "motivation": {
+    "prior_training_receipt_sha256": "4454761a8519db03ca88a91c21cf8344cab12445266f1936767c04ebe3b76128",
+    "prior_confirmation_receipt_sha256": "0b6935d03cfd62b19c7e6cb178bd74c431b2b064db56d20603064f68401f10ce",
+    "trained_fresh_confirmation_nmse": {
+      "0": 0.015116163339942713,
+      "32": 0.010391787330390444,
+      "63": 0.07016447242365172
+    },
+    "prior_gate_maximum": 0.05,
+    "interpretation": "Training removed 45.5% of layer-63 direct error but left it above the frozen limit. The next large lever is error-subspace geometry, not another scalar scale tweak or a tiny dense-kernel change."
+  },
+  "base_candidate": {
+    "representation": "the exact frozen three-layer trained CQ3 MLP plus AFF3 attention-output payloads from the prior mixed experiment",
+    "training_receipt_sha256": "4454761a8519db03ca88a91c21cf8344cab12445266f1936767c04ebe3b76128",
+    "direct_receipt_sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320",
+    "projected_complete_compute_image_bytes_before_residual": 12399040864,
+    "payload_mutation_forbidden": true
+  },
+  "method": {
+    "name": "calibration-span reduced-rank residual",
+    "fit_target": "For each pilot block, predict exact_BF16_block_output minus frozen_trained_mixed_block_output from that block's exact input hidden state.",
+    "centered_dual_ridge_map": "DeltaW = X_centered.T @ solve(X_centered @ X_centered.T + lambda I, E_centered)",
+    "thin_truncated_svd": "QR-factor both thin dual factors and take the SVD only of their at-most-64-by-64 middle product; a hidden-size-squared matrix is forbidden.",
+    "runtime_form": "candidate_output + input @ left_INT8 @ right_INT8 + bias_FP16",
+    "int8_quantization": "symmetric per-rank-component scales: per-column for left and per-row for right; recompute the combined bias after factor quantization",
+    "native_kernel_target": "one activation-quantize plus AVX2 INT8 skinny GEMV, then one rank-vector by INT8 output GEMV fused with the residual add",
+    "known_method_boundary": "This is reduced-rank ridge regression expressed in a dual calibration span and quantized for deployment. Novelty is neither presumed nor claimed."
+  },
+  "data": {
+    "training_cache": {
+      "path": "/workspace/quant-runs/qwen38-affine-butterfly-blocks-v1/block-cache.pt",
+      "sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "calibration_rows": 64,
+      "old_validation_rows": 32,
+      "old_validation_use": "forbidden; v36 uses a deterministic internal split of the 64 calibration rows"
+    },
+    "calibration_split": {
+      "fit_rows": 48,
+      "validation_rows": 16,
+      "validation_rule": "Within the frozen ordered calibration-row vector, ordinals congruent to 3 modulo 4 are validation; all others are fit.",
+      "same_split_all_layers": true
+    },
+    "fresh_confirmation": {
+      "texts": [
+        "A warehouse ships 128 boxes in equal groups to 8 stores. Compute the boxes per store and state one check on the result.",
+        "Give language-agnostic pseudocode for stable deduplication of a list while preserving the first occurrence of each value.",
+        "Explica en espanol, en dos frases, por que una medicion repetible es mas confiable que una sola anecdota.",
+        "A log record contains user_id, event_time, duration_ms, and outcome. Describe a deterministic filter for successful events slower than 750 milliseconds."
+      ],
+      "maximum_sequence_tokens": 64,
+      "selected_rows_per_layer": 32,
+      "target_layers": [
+        0,
+        32,
+        63
+      ],
+      "collected_after_preregistration": true,
+      "may_score_only_the_final_frozen_candidate": true,
+      "checkpoint_or_hyperparameter_selection_forbidden": true,
+      "prior_confirmation_cache_forbidden": true,
+      "evaluation_contamination_forbidden": "No CUTE, MATH-500, code-trace, MMLU, WikiText, prior confirmation tensor, or copied benchmark item may enter fitting, selection, or fresh confirmation."
+    }
+  },
+  "training": {
+    "seed": 20260819,
+    "candidate_ranks": [
+      8,
+      16,
+      32,
+      48
+    ],
+    "candidate_ridge_fractions": [
+      0.0001,
+      0.001,
+      0.01
+    ],
+    "selection": "Evaluate exactly 12 globally shared rank/ridge pairs on the 16 internal validation rows. Admit only pairs that do not regress any pilot layer versus the frozen trained mixed candidate; select minimum arithmetic-mean validation NMSE, then lower rank, then larger ridge fraction.",
+    "refit": "After global selection, refit one adapter per pilot layer on all 64 calibration rows, quantize both factors to INT8, recompute the FP16 bias, and freeze payload hashes before collecting or opening fresh confirmation.",
+    "per_layer_hyperparameter_selection_forbidden": true,
+    "fresh_confirmation_refit_forbidden": true,
+    "no_additional_optimizer": true
+  },
+  "gates": {
+    "internal_validation": {
+      "all_three_layers_must_not_regress": true,
+      "minimum_mean_relative_nmse_reduction": 0.1,
+      "minimum_layer63_relative_nmse_reduction": 0.15
+    },
+    "refit_calibration": {
+      "all_three_layers_must_not_regress": true,
+      "minimum_mean_relative_nmse_reduction": 0.2,
+      "all_payload_roundtrips_exact": true
+    },
+    "fresh_confirmation": {
+      "all_three_layers_must_not_regress_vs_frozen_trained_mixed": true,
+      "minimum_mean_relative_nmse_reduction": 0.1,
+      "maximum_final_complete_block_nmse_per_layer": 0.05,
+      "exact_candidate_count_per_layer": 2
+    },
+    "deployment": {
+      "maximum_residual_bytes_complete_64_layer_projection": 41000000,
+      "maximum_complete_compute_image_bytes": 12440000000,
+      "maximum_residual_weight_traffic_fraction": 0.004,
+      "maximum_residual_macs_per_token_complete_64_layer_projection": 32000000
+    }
+  },
+  "storage_and_compute": {
+    "persistent_bytes_per_layer_formula": "2 * hidden_size * rank INT8 codes + 2 * rank FP16 scales + hidden_size FP16 bias",
+    "macs_per_layer_formula": "2 * hidden_size * rank",
+    "rank_32_complete_64_layer_projection": {
+      "persistent_bytes": 21635072,
+      "macs_per_token": 20971520,
+      "weight_traffic_fraction_vs_base_compute_image": 0.0017448973619824925
+    },
+    "rank_48_complete_64_layer_projection": {
+      "persistent_bytes": 32124928,
+      "macs_per_token": 31457280,
+      "weight_traffic_fraction_vs_base_compute_image": 0.002590920038639288
+    }
+  },
+  "execution_policy": {
+    "systemd_restart": "on-failure",
+    "restart_prevent_exit_status": 2,
+    "memory_max_bytes": 30000000000,
+    "swap_forbidden": true,
+    "minimum_free_disk_bytes": 21474836480,
+    "concurrent_training_or_benchmark_processes": 0,
+    "terminal_scientific_rejection_exit_status": 2,
+    "checkpoint_limit": "one final adapter payload per pilot layer plus terminal receipts; retain no optimizer or rank-grid checkpoints"
+  },
+  "sequential_rule": "Freeze this protocol, complete v35 without overlap, fit and select from calibration only, freeze and hash the three final INT8 adapters, collect a new post-preregistration BF16 confirmation cache, and score exactly the frozen trained base and frozen residual candidate once.",
+  "next_if_passed": "Implement and benchmark the fused AVX2 skinny residual kernel, then expand the trained CQ3/AFF3 plus residual conversion one restartable layer at a time with whole-model CUTE, MATH-500, code, WikiText, MMLU, and serving gates.",
+  "claim_boundary": "A pass establishes a three-block geometric correction signal and deployable storage/compute projection only. It is not a whole-model quality or speed result, does not establish 2.75 or 100 tok/s, and does not support a DFlash3, novelty, lossless, or scientific-breakthrough claim."
+}

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 import torch
 
@@ -7,6 +10,13 @@ from clark_quantize.qwen38_calibration_span_residual import (
     fit_float_residual_adapter,
     normalized_mse,
     quantize_residual_adapter,
+)
+
+
+REPO = Path(__file__).resolve().parents[1]
+PREREG = (
+    REPO
+    / "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_calibration_span_residual_v36.json"
 )
 
 
@@ -73,3 +83,40 @@ def test_fit_rejects_invalid_rank_and_zero_energy() -> None:
             rank=4,
             ridge_fraction=1e-4,
         )
+
+
+def test_v36_prereg_keeps_selection_out_of_fresh_confirmation() -> None:
+    prereg = json.loads(PREREG.read_text())
+    assert prereg["scope"]["active_model_only"] == "Qwen/Qwen3.8-27B"
+    assert prereg["scope"]["qwen_4b_compute_forbidden"] is True
+    assert prereg["data"]["calibration_split"] == {
+        "fit_rows": 48,
+        "validation_rows": 16,
+        "validation_rule": "Within the frozen ordered calibration-row vector, ordinals congruent to 3 modulo 4 are validation; all others are fit.",
+        "same_split_all_layers": True,
+    }
+    assert prereg["training"]["candidate_ranks"] == [8, 16, 32, 48]
+    assert prereg["training"]["candidate_ridge_fractions"] == [
+        0.0001,
+        0.001,
+        0.01,
+    ]
+    fresh = prereg["data"]["fresh_confirmation"]
+    assert fresh["collected_after_preregistration"] is True
+    assert fresh["checkpoint_or_hyperparameter_selection_forbidden"] is True
+    assert fresh["prior_confirmation_cache_forbidden"] is True
+    assert prereg["training"]["per_layer_hyperparameter_selection_forbidden"] is True
+
+
+def test_v36_rank_32_projection_matches_storage_and_mac_formula() -> None:
+    prereg = json.loads(PREREG.read_text())
+    hidden = prereg["scope"]["hidden_size"]
+    rank = 32
+    per_layer_bytes = 2 * hidden * rank + 4 * rank + 2 * hidden
+    per_layer_macs = 2 * hidden * rank
+    projection = prereg["storage_and_compute"][
+        "rank_32_complete_64_layer_projection"
+    ]
+    assert projection["persistent_bytes"] == 64 * per_layer_bytes
+    assert projection["macs_per_token"] == 64 * per_layer_macs
+    assert projection["weight_traffic_fraction_vs_base_compute_image"] < 0.002
