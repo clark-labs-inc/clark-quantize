@@ -1,0 +1,82 @@
+{
+  "schema": "qwen38_27b_all_mlp_cq3_template_preregistration_v55",
+  "experiment_id": "qwen38_27b_all_mlp_cq3_template_v55",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "frozen_at_utc": "2026-08-19T14:10:20Z",
+  "objective": "Produce one authenticated structural GGUF template with CQ3_0 slots for all 192 Qwen3.8-27B MLP tensors while preserving every non-target tensor byte-for-byte, so the exact v44 trained payloads can be overlaid without decoding or requantization.",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true,
+    "structural_template_only": true
+  },
+  "baseline": {
+    "path": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "bytes": 18973870432,
+    "sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "target_type": {
+      "id": 12,
+      "name": "Q4_K"
+    }
+  },
+  "converter": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "source_worktree": "/workspace/src/llama.cpp-qwen38-selective-v1",
+    "source_diff_sha256": "79294f0fdf173d6909145a5481d866c813a549db40ebe506ed185dd2f78a3364",
+    "llama_quantize": "/workspace/build/llama.cpp-qwen38-selective-v1/bin/llama-quantize",
+    "llama_quantize_sha256": "30c8e7234e1e3486077f238901df5f83accd49248e928b80586f93e84bb87b7d",
+    "test_cq3": "/workspace/build/llama.cpp-qwen38-selective-v1/bin/test-cq3",
+    "test_cq3_sha256": "2c1dfa7f1e1fca79d7fef2ff16de8315349b16a7346865c39a57a70288e01834",
+    "cq3_patch_sha256": "b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1",
+    "selective_copy_patch_sha256": "19a40bf56d1ed3d1af6ea12d941891a75252b8b6541229c21db8102b2dd2e7c1",
+    "scope_verifier_sha256": "3a2a864ad8d93b28154c04bddf2410a2f22c6887c373abea08c84c78cd526cce"
+  },
+  "tensor_scope": {
+    "target_regex": "^blk\\.([0-9]|[1-5][0-9]|6[0-3])\\.ffn_(down|gate|up)\\.weight$",
+    "target_layers": 64,
+    "targets_per_layer": 3,
+    "target_count": 192,
+    "non_target_count": 659,
+    "target_parameters": 17112760320,
+    "baseline_target_type": 12,
+    "candidate_target_type": 43,
+    "candidate_type_name": "CQ3_0",
+    "candidate_effective_bits_per_weight": 2.125
+  },
+  "output": {
+    "path": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-all-MLP-CQ3_0-template-v55.gguf",
+    "expected_bytes": 13893519712,
+    "expected_saved_bytes_vs_baseline": 5080350720,
+    "partial_then_atomic_rename": true,
+    "minimum_free_disk_bytes_before_conversion": 19327352832
+  },
+  "execution": {
+    "command": "llama-quantize --allow-requantize --tensor-type ^blk\\.([0-9]|[1-5][0-9]|6[0-3])\\.ffn_(down|gate|up)\\.weight$=CQ3_0 BASELINE PARTIAL COPY 4",
+    "threads": 4,
+    "allowed_logical_cpus": [0, 2, 4, 6],
+    "memory_max_bytes": 20000000000,
+    "memory_swap_max_bytes": 0,
+    "must_not_overlap_v44_or_v45": true,
+    "failure_cleanup_limited_to_exact_partial_path": true
+  },
+  "gates": [
+    "the frozen CQ3 unit test must pass before conversion",
+    "the conversion log must contain exactly the preregistered 192 override names",
+    "the final GGUF byte count must equal 13893519712",
+    "all 659 non-target tensor names, shapes, types, sizes, and payload hashes must match the baseline",
+    "all 192 target tensors must change from GGML type 12 to type 43",
+    "every target payload must differ from its Q4_K source payload",
+    "the final artifact and scope receipt must be content authenticated"
+  ],
+  "stop_rules": [
+    "refuse execution while v44 or v45 is active",
+    "refuse changed source, binary, verifier, baseline identity, tensor count, or output size",
+    "never overwrite an existing final candidate",
+    "never treat a partial file as a candidate",
+    "do not run capability or throughput claims from this untrained structural template"
+  ],
+  "claim_boundary": "A pass proves only an exact 192-slot structural GGUF template suitable for v46 trained-payload overlay. It is not trained-model quality, AFF3 execution, residual execution, CPU throughput, memory, energy, novelty, or scientific-breakthrough evidence."
+}
