@@ -1,0 +1,55 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_out_of_line_row_pair2_terminal_result_v29",
+  "experiment_id": "qwen38_27b_q4_k_avx2_out_of_line_row_pair2_v29",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "passed": false,
+  "decision": "reject_paired_native_microkernel_gate",
+  "failed_gate": "gate_1_paired_native_microkernel",
+  "gate_0": {
+    "passed": true,
+    "combined_stack_frame_bytes": 608,
+    "combined_vector_stack_moves": 1,
+    "targeted_row_microkernel_call_sites": 2,
+    "seeded_cases": 1024,
+    "special_cases": 5,
+    "parent_candidate_fp32_output_sha256": "272d2b97c74109c571b31a891f032a4063f7ebb61192ecc55e9e58e9dc722db1",
+    "source_buffers_unchanged": true,
+    "backend_reference_tests_passed": 3,
+    "backend_reference_tests_total": 3
+  },
+  "gate_1": {
+    "passed": false,
+    "paired_samples": 155,
+    "geometric_mean_parent_over_candidate_latency_ratio": 0.7986315812790301,
+    "required_geometric_mean_ratio": 1.08,
+    "minimum_shape_ratio_median": 0.7915928277196076,
+    "required_shape_floor": 0.98,
+    "maximum_pairwise_ratio_mad_fraction": 0.030365462271036515,
+    "required_maximum_mad_fraction": 0.03,
+    "frequency_mhz_minimum": 2400.0,
+    "frequency_mhz_maximum": 2400.0,
+    "outputs_bit_exact": true
+  },
+  "interpretation": "The noinline row boundary eliminated nearly all AVX2 spill traffic and preserved bit-exact output, but two row calls plus repeated Q4 loads imposed a consistent roughly 25% latency penalty across all five shapes. Full-model graph, serving, and quality gates were correctly skipped.",
+  "downstream": {
+    "real_model_graph": false,
+    "serving": false,
+    "quality": false
+  },
+  "provenance": {
+    "preregistration_sha256": "7bfb02f2225b7a3917898c63bbd0d28aa3bcf752bcac71604fc6db840e0e8fe6",
+    "source_parent_sha256": "c171a06d5a5d5d5221a6167c7039b759e38efd073dca7ba33a46afa8ed6b1ec2",
+    "source_candidate_sha256": "dbfcdb1e9754397ebad1da78d0e84e3d6909e47985539c5fc98d2502d6beb541",
+    "source_transform_sha256": "5c81ea5f01ec5e6f059862ea7041ec61c733716ab7432754f073dc28080f77ff",
+    "candidate_libggml_cpu_sha256": "b3cfa9ab19cd59d73560d791c1aa7a2a785eb5f75bc49434e1807384df503cbd",
+    "codegen_observation_sha256": "31808261e4e63f20790f9cd5607da4be5164f3e2577950e2676732e0d3c33545",
+    "row_microkernel_disassembly_sha256": "494d32e85111f1da6b39b0e8af3c6577487002b2b5e4283d37311a1a9cc74d69",
+    "tile_disassembly_sha256": "b3480b16706050b066979fc13f64830a2d4d66f648ee79121461f84cdd491a84",
+    "micro_decision_sha256": "1f1aad2d0d5ca00e57b5f12773a3ff955f14b1210b39626936ce147c8863979a",
+    "runner_sha256": "f0742b53227c8b7bec49a9de90f6ab3fee761962c423a9ece448e7c0bd02d8fc",
+    "summarizer_sha256": "519fa87e18577d76da5fdb50b68c6eab1dba51e5ab0947139ea340ecbb5b6de1"
+  },
+  "next_hypothesis": "Compile the stronger exact inlined v27 algebra with Clang 21 and compare code generation before considering handwritten assembly. The compiler experiment preserves source and isolates whether GCC 15 register allocation is the remaining barrier.",
+  "claim_boundary": "Terminal native-microkernel negative for the v29 function-boundary design only; no full-model or quality claim."
+}

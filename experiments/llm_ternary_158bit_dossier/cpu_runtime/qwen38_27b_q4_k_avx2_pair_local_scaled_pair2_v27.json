@@ -1,0 +1,120 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_pair_local_scaled_pair2_preregistration_v27",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_avx2_pair_local_scaled_pair2_v27",
+  "frozen_at": "2026-08-19T03:27:29Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true,
+    "parent_runtime": "/workspace/build/llama.cpp-q4k-native-x4-deinterleave-v21",
+    "parent_source": "/workspace/src/llama.cpp-q4k-native-x4-deinterleave-v21",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "parent_evidence": {
+    "v21_four_row_graph_speedup": 1.137261437618061,
+    "v21_mtp3_speedup": 1.146572084561092,
+    "v21_quality_qualified_by_v22": true,
+    "v25_stack_frame_bytes": 1024,
+    "v25_vector_stack_moves": 67,
+    "v26_stack_frame_bytes": 1152,
+    "v26_vector_stack_moves": 50,
+    "v26_result": "rejected before timing; raw-pair streaming reduced moves but retained four persistent low/high row accumulators and enlarged the frame"
+  },
+  "mathematical_basis": {
+    "identity": "madd(sum_j low_j, scale_low) + madd(sum_j high_j, scale_high) = sum_j (madd(low_j, scale_low) + madd(high_j, scale_high))",
+    "bounded_exactness": "Q4 values are in [0,15] and Q8 values in [-128,127]. One maddubs pair lies in [-3840,3810], and the four raw-pair sum lies in [-15360,15240], strictly inside int16. Pair-local scale application therefore introduces neither int16 wrap nor saturation and preserves the subsequent int32 value exactly.",
+    "floating_point_order": "The per-super-block integer total is unchanged before conversion to FP32, so every row retains the parent's FP multiply-add order."
+  },
+  "hypothesis": "Applying Q4 scales immediately to each bounded raw-pair contribution reduces four long-lived int16 low/high accumulators to two int32 row accumulators. This should let the compiler keep the pair2 tile within the AVX2 register file, cross the static spill gate, and preserve bit-exact output.",
+  "implementation_contract": {
+    "strategy": "Start from the v21 candidate through the deterministic v25 and v26 transforms. Replace the v26 raw-pair helper with a pair-local scaled helper. For each raw pair, compute low and high dot contributions for row 0, apply scales into its int32 accumulator, then repeat for row 1 while the two raw Q4 vectors remain live. Do not retain low/high accumulators across raw pairs.",
+    "persistent_integer_dot_accumulators": 2,
+    "persistent_low_high_int16_accumulators": 0,
+    "maximum_simultaneously_live_q4_raw_vectors": 2,
+    "runtime_indexed_row_accumulator_arrays_forbidden": true,
+    "weight_representation_unchanged": true,
+    "activation_representation_unchanged": true,
+    "v21_native_x4_to_row_major_bridge_unchanged": true,
+    "floating_accumulation_order_per_row_unchanged": true,
+    "no_approximation_or_weight_change": true,
+    "hand_written_assembly": false
+  },
+  "sequential_gates": {
+    "gate_0_source_property_backend_and_codegen": {
+      "seeded_random_four_row_cases": 1024,
+      "special_cases": [
+        "all-zero activations",
+        "signed int8 extrema",
+        "alternating activation signs",
+        "distinct row scales",
+        "distinct row group sums"
+      ],
+      "candidate_outputs_must_be_bit_exact_to_parent": true,
+      "source_inputs_must_remain_byte_identical": true,
+      "backend_reference_cases": 3,
+      "backend_all_must_pass": true,
+      "maximum_stack_frame_bytes": 768,
+      "maximum_vector_stack_moves": 24
+    },
+    "gate_1_paired_native_microkernel": {
+      "shape_families": [
+        [10240, 4, 5120],
+        [6144, 4, 5120],
+        [5120, 4, 6144],
+        [12288, 4, 5120],
+        [1024, 4, 5120]
+      ],
+      "warmup_pairs": 2,
+      "measured_pairs_per_shape": 31,
+      "cache_eviction_bytes": 268435456,
+      "minimum_geometric_mean_parent_over_candidate_latency_ratio": 1.08,
+      "no_shape_may_regress_below_ratio": 0.98,
+      "maximum_pairwise_ratio_mad_fraction": 0.03
+    },
+    "gate_2_paired_real_model_four_row_graph": {
+      "model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+      "cpu_affinity": "0,2,4,6",
+      "unscored_warmup_processes_per_runtime": 1,
+      "paired_processes_per_runtime": 6,
+      "samples_per_process": 7,
+      "minimum_parent_over_candidate_latency_ratio": 1.05,
+      "maximum_candidate_process_median_mad_fraction": 0.03,
+      "maximum_frequency_range_mhz": 100
+    },
+    "gate_3_target_and_mtp3_system": {
+      "target_model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+      "draft_model": "/workspace/models/controls/mtp-Qwen3.8-27B-Q4_0.gguf",
+      "prompts_per_runtime": 4,
+      "tokens_per_prompt": 96,
+      "candidate_target_tokens_must_match_parent": true,
+      "candidate_mtp3_tokens_must_match_its_own_target": true,
+      "minimum_candidate_over_parent_target_tps": 0.99,
+      "minimum_candidate_over_parent_mtp3_accepted_tps": 1.04
+    },
+    "gate_4_same_weights_capability_tripwire": {
+      "run_only_after_all_prior_gates_pass": true,
+      "cute_quick_minimum_correct": 9,
+      "cute_quick_denominator": 20,
+      "math500_minimum_correct": 5,
+      "math500_denominator": 8,
+      "code_trace_minimum_correct": 5,
+      "code_trace_denominator": 6,
+      "maximum_wikitext_ppl_ratio_vs_stock": 1.005,
+      "wikitext_chunks": 4
+    }
+  },
+  "stop_rules": [
+    "Freeze this algebra, live-state contract, and every numeric gate before generating candidate source.",
+    "Reject before timing if bit-exact property, backend, frame, or vector-stack-move checks fail.",
+    "Reject before the real-model graph if the microkernel geometric mean is below 1.08, any shape regresses below 0.98, or stability fails.",
+    "Reject before serving if paired graph gain is below 1.05 or frequency or stability gates fail.",
+    "Reject before capability evaluation if tokens differ or MTP3 gains less than 1.04.",
+    "Do not tune source structure or thresholds after observing v27 code generation or timing."
+  ],
+  "promotion_boundary": "A pass promotes an exact same-weights pair-local-scaled AVX2 kernel for the four-row Q4_K MTP3 verifier. It does not establish final-node scaling, 100 tok/s, model compression, or novelty."
+}

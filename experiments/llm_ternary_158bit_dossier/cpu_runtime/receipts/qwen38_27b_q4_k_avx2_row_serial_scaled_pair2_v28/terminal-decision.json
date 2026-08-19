@@ -1,0 +1,45 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_row_serial_scaled_pair2_terminal_result_v28",
+  "experiment_id": "qwen38_27b_q4_k_avx2_row_serial_scaled_pair2_v28",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "passed": false,
+  "decision": "reject_codegen_gate",
+  "failed_gate": "gate_0_source_property_backend_and_codegen",
+  "failed_checks": [
+    "maximum_row_serial_scaled_pair2_stack_frame_bytes",
+    "maximum_row_serial_scaled_pair2_vector_stack_moves"
+  ],
+  "observed": {
+    "stack_frame_bytes": 1024,
+    "vector_stack_moves": 61,
+    "lines_referencing_rsp": 93,
+    "symbol_bytes": 2493,
+    "v27_stack_frame_bytes": 800,
+    "v27_vector_stack_moves": 38
+  },
+  "required": {
+    "maximum_stack_frame_bytes": 768,
+    "maximum_vector_stack_moves": 24
+  },
+  "interpretation": "Serial row evaluation caused GCC to re-expand duplicated Q4 decode work and lengthen live ranges. The frame grew by 28.0% and vector stack moves by 60.5% versus v27, so timing and model gates were correctly skipped.",
+  "scientific_measurements_started": false,
+  "downstream": {
+    "property_backend": false,
+    "microbenchmark": false,
+    "real_model_graph": false,
+    "serving": false,
+    "quality": false
+  },
+  "provenance": {
+    "preregistration_sha256": "95f3bbcc8b99cc00bb835ece5f40ca05d223deeafd861fc9787229c5b21e1141",
+    "source_parent_sha256": "c171a06d5a5d5d5221a6167c7039b759e38efd073dca7ba33a46afa8ed6b1ec2",
+    "source_candidate_sha256": "8811d9b512c41bd09c026c6515c0a988cd448d7696f6e3347a2e9611262a08e3",
+    "source_transform_sha256": "8886378aa82552ea5283374deed79c56274fb562e5f7bfc04e341994d57d9448",
+    "candidate_libggml_cpu_sha256": "2709d09550887410388ce9a98b4aa40a45c133a8a13a7118b5c76144cb462c3a",
+    "codegen_observation_sha256": "b599e6a4bb4d38d071341cc01c6467bfe8708d0b6f84f7647d7a31b3641b558d",
+    "disassembly_sha256": "5ecf2c7140c2948fc4d72c7718ad2653c6398b44aff7ee1b63fb3c306fe95951"
+  },
+  "next_hypothesis": "Place the complete exact four-pair computation for one row behind a noinline microkernel boundary. Score the sum of caller and callee stack traffic, then let paired timing adjudicate the two calls per super-block if the combined static gate passes.",
+  "claim_boundary": "Terminal static-codegen negative for v28 only; no timing, quality, or broad kernel conclusion."
+}

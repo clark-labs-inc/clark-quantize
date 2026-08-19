@@ -1,0 +1,39 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_clang21_holdout_graph_result_v31",
+  "experiment_id": "qwen38_27b_q4_k_avx2_clang21_holdout_replication_v31",
+  "stage": "four_row_graph",
+  "infrastructure_valid": true,
+  "passed": false,
+  "paired_parent_over_candidate_ratios": [
+    1.0275897977080084,
+    1.0246953447280025,
+    1.0067836106032775,
+    1.0292118929716083,
+    1.0260610209143477,
+    1.0187633476758382
+  ],
+  "paired_ratio_median": 1.025378182821175,
+  "candidate_process_median_mad_fraction": 0.005576565980989638,
+  "frequency": {
+    "minimum_mhz": 2400.0,
+    "maximum_mhz": 2400.0,
+    "range_mhz": 0.0,
+    "sample_count": 168
+  },
+  "denominator": {
+    "processes_per_runtime": 6,
+    "samples_per_process": 7,
+    "samples_per_runtime": 42
+  },
+  "checks": {
+    "paired_graph_speedup_at_least_minimum": false,
+    "candidate_process_median_stability": true,
+    "frequency_range_within_limit": true
+  },
+  "provenance": {
+    "preregistration_sha256": "ac287cd496ef21a5226d53322e21e6dbfcc068415e2a92d392d7315fdaef5eca",
+    "parent_binary_sha256": "90a08eb2f1a70d540c117b9db563c28fa9bb0b03eedca48d061cc147aab79a28",
+    "candidate_binary_sha256": "7a01aa1a0a866a2904e6ca09b42d501372a408503948f1880acc19fcfc356b70"
+  },
+  "claim_boundary": "Exact same-weights Qwen3.8-27B four-row Q4_K graph on four Milan cores; not serving, quality, conventional decode, 100 tok/s, or novelty."
+}

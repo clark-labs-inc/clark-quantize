@@ -1,0 +1,47 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_pair_local_scaled_pair2_terminal_result_v27",
+  "experiment_id": "qwen38_27b_q4_k_avx2_pair_local_scaled_pair2_v27",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "passed": false,
+  "decision": "reject_codegen_gate",
+  "failed_gate": "gate_0_source_property_backend_and_codegen",
+  "failed_checks": [
+    "maximum_pair_local_scaled_pair2_stack_frame_bytes",
+    "maximum_pair_local_scaled_pair2_vector_stack_moves"
+  ],
+  "observed": {
+    "stack_frame_bytes": 800,
+    "vector_stack_moves": 38,
+    "lines_referencing_rsp": 70,
+    "symbol_bytes": 2271,
+    "v26_stack_frame_bytes": 1152,
+    "v26_vector_stack_moves": 50,
+    "v25_stack_frame_bytes": 1024,
+    "v25_vector_stack_moves": 67
+  },
+  "required": {
+    "maximum_stack_frame_bytes": 768,
+    "maximum_vector_stack_moves": 24
+  },
+  "interpretation": "Distributing the exact Q4 scale application into each bounded raw-pair contribution reduced the frame by 30.6% and vector stack moves by 24.0% versus v26, but it still missed both frozen code-generation limits. Timing and model gates were correctly skipped.",
+  "scientific_measurements_started": false,
+  "downstream": {
+    "property_backend": false,
+    "microbenchmark": false,
+    "real_model_graph": false,
+    "serving": false,
+    "quality": false
+  },
+  "provenance": {
+    "preregistration_sha256": "1ffcbcc2895542369e2bcf534e3ca972d427be0275fc217931c3efa5df57b707",
+    "source_parent_sha256": "c171a06d5a5d5d5221a6167c7039b759e38efd073dca7ba33a46afa8ed6b1ec2",
+    "source_candidate_sha256": "02c71df73938ed97e965ae165c55c2a9c9c751a80e558495140722031be386e5",
+    "source_transform_sha256": "1ba56aa63c006ce5ab41063b24ae684b2c72532461cb374bc95eae1bb10bdf71",
+    "candidate_libggml_cpu_sha256": "0bc5330d247a09c4bd1a76b8d9ca617df75f71430ffb2dfafecea1c0e9dab8e6",
+    "codegen_observation_sha256": "fd6329545d45c2ce9db9c498b66eba0e93e3478a1cb6e4193af4eda74d9bf01a",
+    "disassembly_sha256": "b77edf75b469d87fd3724bc7b688bae3f144f4acf2ac5052664a84ffd0ed41b8"
+  },
+  "next_hypothesis": "Process one activation row at a time across all four raw pairs. Reload the hot Q4 bytes for the second row, but retain only one row accumulator and one activation stream at once; the extra L1 loads should cost less than the remaining spill traffic.",
+  "claim_boundary": "Terminal static-codegen negative for v27 only; no timing, quality, or broad kernel conclusion."
+}

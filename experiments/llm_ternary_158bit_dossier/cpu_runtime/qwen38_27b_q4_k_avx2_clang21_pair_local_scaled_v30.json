@@ -1,0 +1,109 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_clang21_pair_local_scaled_preregistration_v30",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_avx2_clang21_pair_local_scaled_v30",
+  "frozen_at": "2026-08-19T03:56:50Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true,
+    "source_candidate": "/workspace/src/llama.cpp-q4k-pair-local-scaled-pair2-v27",
+    "source_candidate_sha256": "02c71df73938ed97e965ae165c55c2a9c9c751a80e558495140722031be386e5",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "compiler": "Ubuntu clang 21.1.8",
+    "compiler_path": "/usr/lib/llvm-21/bin/clang",
+    "compiler_sha256": "412bbe8c60571a1eb06f48fde89635033621caeb01a9b4ee76d46711bae8e932"
+  },
+  "parent_evidence": {
+    "gcc15_v27_stack_frame_bytes": 800,
+    "gcc15_v27_vector_stack_moves": 38,
+    "gcc15_v27_result": "rejected before timing despite exact algebra",
+    "v29_noinline_combined_stack_frame_bytes": 608,
+    "v29_noinline_combined_vector_stack_moves": 1,
+    "v29_geometric_mean_parent_over_candidate_latency_ratio": 0.7986315812790301
+  },
+  "hypothesis": "Clang 21 may allocate the v27 inlined pair-local exact kernel within AVX2's 16-vector register file more effectively than GCC 15. If so, it can retain shared Q4 loads without v29's function-call penalty and cross the frozen spill and speed gates without source changes.",
+  "implementation_contract": {
+    "source_must_be_byte_identical_to_v27": true,
+    "cmake_c_compiler": "/usr/bin/clang",
+    "cmake_cxx_compiler": "/usr/bin/clang++",
+    "build_type": "Release",
+    "ggml_native": true,
+    "ggml_openmp": true,
+    "weight_representation_unchanged": true,
+    "activation_representation_unchanged": true,
+    "floating_accumulation_order_per_row_unchanged": true,
+    "no_approximation_or_weight_change": true,
+    "source_tuning_after_codegen_forbidden": true
+  },
+  "sequential_gates": {
+    "gate_0_source_property_backend_and_codegen": {
+      "seeded_random_four_row_cases": 1024,
+      "special_cases": 5,
+      "candidate_outputs_must_be_bit_exact_to_gcc_parent": true,
+      "source_inputs_must_remain_byte_identical": true,
+      "backend_reference_cases": 3,
+      "backend_all_must_pass": true,
+      "maximum_stack_frame_bytes": 768,
+      "maximum_vector_stack_moves": 24
+    },
+    "gate_1_paired_native_microkernel": {
+      "shape_families": [
+        [10240, 4, 5120],
+        [6144, 4, 5120],
+        [5120, 4, 6144],
+        [12288, 4, 5120],
+        [1024, 4, 5120]
+      ],
+      "warmup_pairs": 2,
+      "measured_pairs_per_shape": 31,
+      "cache_eviction_bytes": 268435456,
+      "minimum_geometric_mean_parent_over_candidate_latency_ratio": 1.08,
+      "no_shape_may_regress_below_ratio": 0.98,
+      "maximum_pairwise_ratio_mad_fraction": 0.03
+    },
+    "gate_2_paired_real_model_four_row_graph": {
+      "model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+      "cpu_affinity": "0,2,4,6",
+      "unscored_warmup_processes_per_runtime": 1,
+      "paired_processes_per_runtime": 6,
+      "samples_per_process": 7,
+      "minimum_parent_over_candidate_latency_ratio": 1.05,
+      "maximum_candidate_process_median_mad_fraction": 0.03,
+      "maximum_frequency_range_mhz": 100
+    },
+    "gate_3_target_and_mtp3_system": {
+      "target_model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+      "draft_model": "/workspace/models/controls/mtp-Qwen3.8-27B-Q4_0.gguf",
+      "prompts_per_runtime": 4,
+      "tokens_per_prompt": 96,
+      "candidate_target_tokens_must_match_parent": true,
+      "candidate_mtp3_tokens_must_match_its_own_target": true,
+      "minimum_candidate_over_parent_target_tps": 0.99,
+      "minimum_candidate_over_parent_mtp3_accepted_tps": 1.04
+    },
+    "gate_4_same_weights_capability_tripwire": {
+      "run_only_after_all_prior_gates_pass": true,
+      "cute_quick_minimum_correct": 9,
+      "cute_quick_denominator": 20,
+      "math500_minimum_correct": 5,
+      "math500_denominator": 8,
+      "code_trace_minimum_correct": 5,
+      "code_trace_denominator": 6,
+      "maximum_wikitext_ppl_ratio_vs_stock": 1.005,
+      "wikitext_chunks": 4
+    }
+  },
+  "stop_rules": [
+    "Freeze the v27 source hash, compiler identity, and every numeric gate before configuring the build.",
+    "Reject before timing if source identity, bit-exact property, backend, frame, or vector-stack-move checks fail.",
+    "Reject before the real-model graph if the microkernel geometric mean is below 1.08, any shape regresses below 0.98, or stability fails.",
+    "Reject before serving if paired graph gain is below 1.05 or frequency or stability gates fail.",
+    "Reject before capability evaluation if tokens differ or MTP3 gains less than 1.04."
+  ],
+  "promotion_boundary": "A pass promotes the exact v27 source with a pinned Clang 21 toolchain for Qwen3.8-27B four-row Q4_K verification. It does not establish final-node scaling, 100 tok/s, model compression, or novelty."
+}

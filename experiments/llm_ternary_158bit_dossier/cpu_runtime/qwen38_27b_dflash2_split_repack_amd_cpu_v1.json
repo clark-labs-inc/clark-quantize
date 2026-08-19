@@ -1,0 +1,81 @@
+{
+  "schema": "qwen38_27b_dflash2_split_repack_amd_cpu_preregistration_v1",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_speculative_program_v1",
+  "experiment_id": "qwen38_27b_dflash2_split_repack_amd_cpu_v1",
+  "run_id": "qwen38_27b_dflash2_split_repack_20260819T025159Z",
+  "frozen_at": "2026-08-19T02:51:59Z",
+  "causal_question": "Can the Qwen3.8-27B target use raw Q4_K weights for exact greedy verification while the 2B DFlash2 draft independently uses CPU weight repacking to recover proposal speed?",
+  "parent_evidence": {
+    "both_models_repacked": {
+      "target_weighted_tps": 1.8922535983454853,
+      "dflash2_weighted_tps": 2.4352650499959916,
+      "dflash2_over_target": 1.2869654744614014,
+      "mean_committed_tokens_per_target_call": 4.108695652173913,
+      "exact_prompt_parity": "2/3",
+      "peak_vm_hwm_gib": 29.909820556640625
+    },
+    "both_models_raw": {
+      "target_weighted_tps": 1.888761700876277,
+      "dflash2_weighted_tps": 2.244335973485152,
+      "dflash2_over_target": 1.188258928911219,
+      "mean_committed_tokens_per_target_call": 3.78,
+      "exact_prompt_parity": "3/3",
+      "peak_vm_hwm_gib": 20.966873168945312
+    }
+  },
+  "hypothesis": "The fully raw run lost DFlash2 throughput because the global --no-repack flag also disabled repacking for the small draft. An explicit draft override should retain the raw target's exact token path and low memory while recovering most of the fully repacked draft's throughput and accepted block length.",
+  "frozen_change": {
+    "only_runtime_semantic_change": "add a draft-specific repack override that inherits the target setting unless explicitly supplied",
+    "target_setting": "--no-repack",
+    "draft_setting": "--spec-draft-repack",
+    "target": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "target_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "draft": "/workspace/models/drafts/dflash2/Qwen3.8-27B-DFlash2-Q4_K_M.gguf",
+    "draft_sha256": "18a380efc9b7ed8d88677fc895f5c11ae170653434ee378f7348f715c14d0594",
+    "base_runtime_revision": "5ecbe1ac17ec0484c5b44af0bd580cdc9c428ed4",
+    "patch": "cpu_runtime/kernels/llama_cpp_dflash2_split_repack_v1.patch",
+    "patch_sha256": "ff387ded9c161f062fed68af334dae13612e47d2a171cf1590a0171f1c1f5ced",
+    "runner_sha256": "532954930f75d13b2024bad98b779036656f59fac2a0d6de5fd1277058a01513",
+    "prompts": 3,
+    "tokens_per_prompt": 64,
+    "temperature": 0.0,
+    "top_k": 1,
+    "dflash2_draft_n_max": 7,
+    "threads": 4,
+    "cpu_affinity": "0,2,4,6"
+  },
+  "gates": {
+    "infrastructure": {
+      "unit_test_for_inherit_enable_disable": true,
+      "server_loads_without_oom": true,
+      "no_swap": true,
+      "maximum_dflash2_vm_hwm_gib": 23.0
+    },
+    "correctness": {
+      "exact_greedy_token_parity_prompts": 3,
+      "total_prompts": 3
+    },
+    "proposal_recovery": {
+      "minimum_dflash2_weighted_tps": 2.34,
+      "minimum_dflash2_over_same_runtime_target": 1.24,
+      "minimum_speedup_over_both_models_raw": 1.04,
+      "minimum_mean_committed_tokens_per_target_call": 4.0
+    }
+  },
+  "decision_rules": {
+    "pass": "All infrastructure, exactness, and proposal-recovery gates pass. Retain split repacking as the exact, memory-lean base for cost-adaptive DFlash CPU work.",
+    "partial": "Exactness and memory pass but a proposal-recovery gate fails. Retain only the mechanism and diagnose the draft path before any controller work.",
+    "reject": "Reject the configuration if exact parity, no-swap, load, or memory fails.",
+    "winner_boundary": "Even a pass is not a throughput winner unless it also beats the existing MTP3 v23 mixed-prompt result of 3.611857 tokens/s under a qualified paired gate."
+  },
+  "stop_rules": [
+    "Build and test only the isolated patched DFlash2 fork.",
+    "Run exactly the same target and DFlash2 three-prompt smoke once.",
+    "Do not change draft width, quantization, prompts, sampling, CPU affinity, or thread count.",
+    "Do not call this DFlash3 or claim novelty; it is a causal systems experiment only.",
+    "Do not enter capability or six-rotation evaluation unless all split-repack gates pass."
+  ],
+  "artifact_residency": "Raw responses, build products, and logs remain on quant; synchronize only compact reviewed receipts and hashes.",
+  "claim_boundary": "Focused exactness, memory, and proposal-speed recovery test on one 4-core AMD Milan host. No quality, final-node, 100 tok/s, or novelty claim."
+}

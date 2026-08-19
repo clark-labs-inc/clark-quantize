@@ -1,0 +1,55 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_clang21_holdout_terminal_result_v31",
+  "experiment_id": "qwen38_27b_q4_k_avx2_clang21_holdout_replication_v31",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "passed": false,
+  "decision": "reject_real_model_graph_gate",
+  "failed_gate": "gate_2_paired_real_model_four_row_graph",
+  "inherited_gate_0": {
+    "passed": true,
+    "stack_frame_bytes": 168,
+    "vector_stack_moves": 14,
+    "seeded_cases": 1024,
+    "special_cases": 5,
+    "backend_reference_tests": "3/3",
+    "parent_candidate_fp32_output_sha256": "272d2b97c74109c571b31a891f032a4063f7ebb61192ecc55e9e58e9dc722db1"
+  },
+  "gate_1_holdout_replication": {
+    "passed": true,
+    "paired_samples": 315,
+    "geometric_mean_parent_over_candidate_latency_ratio": 1.15252916728253,
+    "minimum_shape_ratio_median": 1.1397994455948166,
+    "maximum_pairwise_ratio_mad_fraction": 0.028240079262940768,
+    "frequency_mhz": 2400.0,
+    "outputs_bit_exact": true
+  },
+  "gate_2_real_model_graph": {
+    "passed": false,
+    "paired_ratio_median": 1.025378182821175,
+    "required_ratio": 1.05,
+    "candidate_process_median_mad_fraction": 0.005576565980989638,
+    "required_maximum_mad_fraction": 0.03,
+    "frequency_range_mhz": 0.0,
+    "required_maximum_frequency_range_mhz": 100,
+    "denominator": "6 paired processes, 7 samples per process, 42 samples per runtime"
+  },
+  "interpretation": "Pinned Clang 21 plus the exact pair-local scaled Q4_K source reproducibly accelerated the isolated four-row kernel by 15.3%, but only improved the actual Qwen3.8-27B four-row graph by 2.54% median. The graph result was stable and frequency-flat, so MTP serving and capability gates were correctly skipped.",
+  "downstream": {
+    "target_serving": false,
+    "mtp3_serving": false,
+    "quality": false
+  },
+  "provenance": {
+    "preregistration_sha256": "ac287cd496ef21a5226d53322e21e6dbfcc068415e2a92d392d7315fdaef5eca",
+    "micro_decision_raw_sha256": "b709451ad774d115cf0b54dd2cbd8e0473f5061422f55e2132e0514ce05f44da",
+    "graph_decision_raw_sha256": "b0e05a7222a82ef8803a67b29c9e8861059b7cc1ae58eb7021acb31d4ba85601",
+    "graph_runner_sha256": "3334f07a2f2274fec5358a8c931571f2eb481eed05d4f7073b6da0c136e3bbcd",
+    "graph_summarizer_sha256": "934fe87837932fe12dab94ad4766b5447ffd351930472d2088983752a2a1d2df",
+    "parent_binary_sha256": "90a08eb2f1a70d540c117b9db563c28fa9bb0b03eedca48d061cc147aab79a28",
+    "candidate_binary_sha256": "7a01aa1a0a866a2904e6ca09b42d501372a408503948f1880acc19fcfc356b70",
+    "model_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34"
+  },
+  "next_hypothesis": "The remaining full-graph limit is no longer this Q4_K verifier tile alone. Profile the Clang full graph to quantify Q8xQ8, Q6_K, OpenMP, and attention shares, then pursue a multi-kernel composition or fused speculative graph rather than another isolated Q4_K source tweak.",
+  "claim_boundary": "Terminal real-model graph negative for v31. The isolated exact kernel/compiler win is real, but it is not a serving, quality, 100 tok/s, or novelty result."
+}

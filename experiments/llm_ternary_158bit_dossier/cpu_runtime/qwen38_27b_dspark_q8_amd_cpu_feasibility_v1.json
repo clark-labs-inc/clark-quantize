@@ -1,0 +1,90 @@
+{
+  "schema": "qwen38_27b_dspark_q8_amd_cpu_feasibility_preregistration_v1",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_speculative_program_v1",
+  "experiment_id": "qwen38_27b_dspark_q8_amd_cpu_feasibility_v1",
+  "run_id": "qwen38_27b_dspark_q8_smoke_20260819T031059Z",
+  "frozen_at": "2026-08-19T03:10:59Z",
+  "causal_question": "Does the Qwen3.8-27B DSpark drafter's trained Markov dependency improve exact-greedy CPU throughput and accepted block length enough to justify confidence-threshold calibration on the 4-core AMD node?",
+  "literature_basis": {
+    "dspark_paper": "https://arxiv.org/abs/2607.05147",
+    "dspark_claim_boundary": "The paper combines a semi-autoregressive Markov head with confidence-scheduled verification; its reported 60-85% production gain is a DeepSeek-V4 serving result, not evidence for this CPU node.",
+    "exact_qwen38_checkpoint": "https://huggingface.co/RadixArk/Qwen3.8-27B-DSpark/tree/85ef153be924f17ce4bf62726954eeaa4a73e854",
+    "upstream_checkpoint_macro_acceptance_length": 3.35,
+    "upstream_checkpoint_request_weighted_acceptance_length": 3.39,
+    "upstream_measurement_difference": "FP8 target, BF16 draft, SGLang, GPU, temperature 0.6; useful only as a model-provenance prior.",
+    "gguf_conversion": "https://huggingface.co/magnitudedev/Qwen3.8-27B-DSpark-GGUF/tree/27b7a55fa4893d0c95abd4ec6e0c6e8b33802e18"
+  },
+  "parent_evidence": {
+    "dflash2_target_raw_exact": {
+      "weighted_tps": 2.244335973485152,
+      "over_target": 1.188258928911219,
+      "mean_committed_tokens_per_target_call": 3.78,
+      "exact_prompt_parity": "3/3"
+    },
+    "dflash2_target_raw_draft_repacked": {
+      "weighted_tps": 2.193140126893927,
+      "over_target": 1.249908271043899,
+      "mean_committed_tokens_per_target_call": 3.78,
+      "exact_prompt_parity": "3/3",
+      "peak_vm_hwm_gib": 21.764434814453125,
+      "conclusion": "draft-only repacking did not recover speed or alter proposals; the split-repack hypothesis was falsified"
+    }
+  },
+  "hypothesis": "DSpark's trained low-rank Markov head should improve difficult suffix coherence relative to DFlash2 while preserving one-pass block drafting. On a single CPU stream, the unthresholded model must first prove that its additional draft work is repaid by longer accepted prefixes; confidence scheduling is not assumed beneficial until calibrated against measured CPU verifier costs.",
+  "frozen_configuration": {
+    "target": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "target_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "draft": "/workspace/models/drafts/dspark/RadixArk-Qwen3.8-27B-DSpark-Q8_0.gguf",
+    "draft_bytes": 1455376576,
+    "draft_sha256": "b007a76b2ce57c1a3ecf36046543aebf60a763861624647d653f16d336c781d2",
+    "source_checkpoint_revision": "85ef153be924f17ce4bf62726954eeaa4a73e854",
+    "gguf_revision": "27b7a55fa4893d0c95abd4ec6e0c6e8b33802e18",
+    "runtime_base_revision": "5ecbe1ac17ec0484c5b44af0bd580cdc9c428ed4",
+    "runtime_patch": "cpu_runtime/kernels/llama_cpp_dflash2_split_repack_v1.patch",
+    "runtime_sha256": "3b95b902c3e1579c77dcc176a30660da88c63ed04041011011d32773cf6095f9",
+    "runner_sha256": "b7eb0c393af89488abdb39722e16dd46ee1a61c542773beb7208477b9bc5986f",
+    "target_repack": false,
+    "draft_repack": true,
+    "spec_type": "draft-dspark",
+    "draft_n_max": 7,
+    "draft_p_min": 0.0,
+    "prompts": 3,
+    "tokens_per_prompt": 64,
+    "temperature": 0.0,
+    "top_k": 1,
+    "threads": 4,
+    "cpu_affinity": "0,2,4,6"
+  },
+  "gates": {
+    "infrastructure": {
+      "server_loads_without_oom": true,
+      "no_swap": true,
+      "maximum_candidate_vm_hwm_gib": 26.0
+    },
+    "correctness": {
+      "exact_greedy_token_parity_prompts": 3,
+      "total_prompts": 3
+    },
+    "feasibility": {
+      "minimum_candidate_weighted_tps": 2.4,
+      "minimum_candidate_over_same_runtime_target": 1.3,
+      "minimum_speedup_over_exact_dflash2_raw": 1.05,
+      "minimum_mean_committed_tokens_per_target_call": 3.2
+    }
+  },
+  "decision_rules": {
+    "pass": "All infrastructure, exactness, and feasibility gates pass. Retain DSpark and preregister CPU-specific confidence-threshold calibration.",
+    "promising_but_slow": "Exactness and memory pass and committed length is at least 3.2, but throughput fails. Permit a bounded confidence-threshold diagnostic only after measuring width-specific verifier cost.",
+    "reject": "Reject this Q8_0 configuration if load, swap, memory, exact parity, or committed length fails.",
+    "winner_boundary": "A smoke pass is not a winner; promotion still requires the qualified paired throughput gate, MATH or CUTE, MMLU-type checks, and the existing goal's quality constraints."
+  },
+  "stop_rules": [
+    "Run exactly the same target and DSpark three-prompt smoke once.",
+    "Do not change width, confidence threshold, quantization, prompts, sampling, CPU affinity, or thread count.",
+    "Do not transfer the paper's GPU serving claims to this CPU result.",
+    "Do not enter threshold calibration or capability evaluation unless its decision rule is satisfied."
+  ],
+  "artifact_residency": "Raw responses and logs remain on quant; synchronize only compact reviewed receipts and hashes.",
+  "claim_boundary": "Focused exact-greedy feasibility smoke on one 4-core AMD Milan host. No quality, final-node, 100 tok/s, or novelty claim."
+}

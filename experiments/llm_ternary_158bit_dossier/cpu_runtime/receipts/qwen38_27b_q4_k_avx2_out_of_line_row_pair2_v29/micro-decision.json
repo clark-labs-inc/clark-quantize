@@ -1,0 +1,70 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_out_of_line_row_pair2_micro_result_v29",
+  "experiment_id": "qwen38_27b_q4_k_avx2_out_of_line_row_pair2_v29",
+  "passed": false,
+  "pairs": 155,
+  "geometric_mean_parent_over_candidate_latency_ratio": 0.7986315812790301,
+  "minimum_shape_ratio_median": 0.7915928277196076,
+  "maximum_pairwise_ratio_mad_fraction": 0.030365462271036515,
+  "frequency_mhz_minimum": 2400.0,
+  "frequency_mhz_maximum": 2400.0,
+  "checks": {
+    "all_expected_pairs_present": true,
+    "outputs_bit_exact": true,
+    "geometric_mean_at_least_minimum": false,
+    "no_shape_regresses_below_floor": false,
+    "paired_ratio_stability": false
+  },
+  "shapes": [
+    {
+      "m": 10240,
+      "n": 4,
+      "k": 5120,
+      "pairs": 31,
+      "parent_latency_us_median": 4388.66,
+      "candidate_latency_us_median": 5504.04,
+      "paired_parent_over_candidate_ratio_median": 0.7961268254081129,
+      "paired_ratio_mad_fraction": 0.012424147738651406
+    },
+    {
+      "m": 6144,
+      "n": 4,
+      "k": 5120,
+      "pairs": 31,
+      "parent_latency_us_median": 2643.82,
+      "candidate_latency_us_median": 3322.33,
+      "paired_parent_over_candidate_ratio_median": 0.7915928277196076,
+      "paired_ratio_mad_fraction": 0.015356481357344623
+    },
+    {
+      "m": 5120,
+      "n": 4,
+      "k": 6144,
+      "pairs": 31,
+      "parent_latency_us_median": 2647.48,
+      "candidate_latency_us_median": 3297.53,
+      "paired_parent_over_candidate_ratio_median": 0.8034504155598826,
+      "paired_ratio_mad_fraction": 0.015799940715411274
+    },
+    {
+      "m": 12288,
+      "n": 4,
+      "k": 5120,
+      "pairs": 31,
+      "parent_latency_us_median": 5254.63,
+      "candidate_latency_us_median": 6579.02,
+      "paired_parent_over_candidate_ratio_median": 0.7966612048602983,
+      "paired_ratio_mad_fraction": 0.01608827309812499
+    },
+    {
+      "m": 1024,
+      "n": 4,
+      "k": 5120,
+      "pairs": 31,
+      "parent_latency_us_median": 448.51,
+      "candidate_latency_us_median": 559.31,
+      "paired_parent_over_candidate_ratio_median": 0.8045803718859933,
+      "paired_ratio_mad_fraction": 0.030365462271036515
+    }
+  ]
+}

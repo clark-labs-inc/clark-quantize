@@ -1,0 +1,76 @@
+diff --git a/common/common.h b/common/common.h
+index d90b03a95..e2f4b0ef1 100644
+--- a/common/common.h
++++ b/common/common.h
+@@ -331,6 +331,9 @@ struct common_params_speculative_draft {
+ 
+     bool backend_sampling = true; // offload draft sampling to the backend (default: on)
+ 
++    bool repack              = true;  // whether the draft model uses weight repacking
++    bool repack_override_set = false; // otherwise inherit the target-model setting
++
+     common_params_model mparams;
+ 
+     llama_context * ctx_tgt = nullptr;
+diff --git a/common/arg.cpp b/common/arg.cpp
+index 06aa5f8de..d978caefc 100644
+--- a/common/arg.cpp
++++ b/common/arg.cpp
+@@ -4114,6 +4114,15 @@ common_params_context common_params_parser_init(common_params & params, llama_ex
+             params.speculative.draft.backend_sampling = value;
+         }
+     ).set_spec().set_examples({LLAMA_EXAMPLE_SPECULATIVE, LLAMA_EXAMPLE_SERVER, LLAMA_EXAMPLE_CLI}).set_env("LLAMA_ARG_SPEC_DRAFT_BACKEND_SAMPLING"));
++    add_opt(common_arg(
++        {"--spec-draft-repack"},
++        {"--no-spec-draft-repack"},
++        "whether to enable weight repacking for the draft model (default: same as --repack)",
++        [](common_params & params, bool value) {
++            params.speculative.draft.repack = value;
++            params.speculative.draft.repack_override_set = true;
++        }
++    ).set_spec().set_examples({LLAMA_EXAMPLE_SPECULATIVE, LLAMA_EXAMPLE_SERVER, LLAMA_EXAMPLE_CLI}).set_env("LLAMA_ARG_SPEC_DRAFT_REPACK"));
+     add_opt(common_arg(
+         {"--spec-draft-device", "-devd", "--device-draft"}, "<dev1,dev2,..>",
+         "comma-separated list of devices to use for offloading the draft model (none = don't offload)\n"
+diff --git a/common/speculative.cpp b/common/speculative.cpp
+index 3448b66a7..1ed18d82d 100644
+--- a/common/speculative.cpp
++++ b/common/speculative.cpp
+@@ -2388,6 +2388,10 @@ common_params common_base_params_to_speculative(const common_params & params) {
+             result.cpuparams.n_threads       = params_spec.cpuparams.n_threads;
+             result.cpuparams_batch.n_threads = params_spec.cpuparams_batch.n_threads;
+         }
++
++        if (params_spec.repack_override_set) {
++            result.no_extra_bufts = !params_spec.repack;
++        }
+     }
+ 
+     result.cache_type_k  = params_spec.cache_type_k;
+diff --git a/tests/test-arg-parser.cpp b/tests/test-arg-parser.cpp
+index 76f1085c8..3a4447384 100644
+--- a/tests/test-arg-parser.cpp
++++ b/tests/test-arg-parser.cpp
+@@ -42,8 +42,22 @@ static void test(void) {
+         const auto draft = common_base_params_to_speculative(base);
+         assert(draft.n_outputs_max == 4);
+         assert(draft.n_outputs_max_per_seq == 1);
++        assert(draft.no_extra_bufts == base.no_extra_bufts);
+     }
+ 
++    {
++        common_params base;
++        base.no_extra_bufts = true;
++        base.speculative.draft.mparams.path = "test-draft.gguf";
++        base.speculative.draft.repack_override_set = true;
++
++        base.speculative.draft.repack = true;
++        assert(common_base_params_to_speculative(base).no_extra_bufts == false);
++
++        base.speculative.draft.repack = false;
++        assert(common_base_params_to_speculative(base).no_extra_bufts == true);
++    }
++
+     printf("test-arg-parser: make sure there is no duplicated arguments in any examples\n\n");
+     for (int ex = 0; ex < LLAMA_EXAMPLE_COUNT; ex++) {
+         try {

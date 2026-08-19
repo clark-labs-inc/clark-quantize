@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Restartable exact-greedy DFlash2 CPU feasibility smoke for Qwen3.8-27B."""
+"""Restartable exact-greedy speculative CPU feasibility smoke for Qwen3.8-27B."""
 
 from __future__ import annotations
 
@@ -25,6 +25,20 @@ PROMPTS = (
 
 EXPECTED_TARGET_SHA256 = "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34"
 EXPECTED_DFLASH2_SHA256 = "18a380efc9b7ed8d88677fc895f5c11ae170653434ee378f7348f715c14d0594"
+EXPECTED_DSPARK_SHA256 = "b007a76b2ce57c1a3ecf36046543aebf60a763861624647d653f16d336c781d2"
+
+DRAFT_SPECS = {
+    "dflash2": {
+        "sha256": EXPECTED_DFLASH2_SHA256,
+        "bytes": 1_143_006_752,
+        "spec_type": "draft-dflash",
+    },
+    "dspark": {
+        "sha256": EXPECTED_DSPARK_SHA256,
+        "bytes": 1_455_376_576,
+        "spec_type": "draft-dspark",
+    },
+}
 
 
 def atomic_json(path: Path, payload: dict[str, Any]) -> None:
@@ -144,15 +158,15 @@ def server_command(args: argparse.Namespace, label: str, port: int) -> list[str]
         "-lv",
         str(args.server_verbosity),
     ]
-    if label == "dflash2":
+    if label == args.draft_kind:
         command.extend(
             [
                 "-md",
-                str(args.dflash2_draft),
+                str(args.draft),
                 "--spec-type",
-                "draft-dflash",
+                DRAFT_SPECS[args.draft_kind]["spec_type"],
                 "--spec-draft-n-max",
-                "7",
+                str(args.draft_n_max),
                 "-td",
                 str(args.threads),
                 "-tbd",
@@ -161,10 +175,14 @@ def server_command(args: argparse.Namespace, label: str, port: int) -> list[str]
                 "0",
             ]
         )
+        if args.draft_p_min > 0.0:
+            command.extend(["--spec-draft-p-min", str(args.draft_p_min)])
     elif label != "target":
         raise ValueError(f"unsupported configuration: {label}")
     if args.disable_repack:
         command.append("--no-repack")
+    if label == args.draft_kind and args.enable_draft_repack:
+        command.append("--spec-draft-repack")
     return command
 
 
@@ -244,7 +262,7 @@ def run_configuration(args: argparse.Namespace, label: str, config_index: int) -
                 if len(tokens) != args.n_predict:
                     raise RuntimeError(f"{label} prompt {prompt_index} returned {len(tokens)} tokens")
                 receipt = {
-                    "schema": "qwen38_27b_dflash2_smoke_prompt_receipt_v1",
+                    "schema": "qwen38_27b_speculative_smoke_prompt_receipt_v1",
                     "terminal": True,
                     "configuration": label,
                     "prompt_index": prompt_index,
@@ -278,7 +296,7 @@ def run_configuration(args: argparse.Namespace, label: str, config_index: int) -
             atomic_json(
                 memory_path,
                 {
-                    "schema": "qwen38_27b_dflash2_smoke_memory_v1",
+                    "schema": "qwen38_27b_speculative_smoke_memory_v1",
                     "terminal": True,
                     "configuration": label,
                     "samples": samples,
@@ -304,19 +322,19 @@ def weighted_tps(receipts: list[dict[str, Any]]) -> float:
 
 def summarize(args: argparse.Namespace) -> dict[str, Any]:
     target = load_receipts(args.output_dir, "target")
-    dflash2 = load_receipts(args.output_dir, "dflash2")
+    candidate = load_receipts(args.output_dir, args.draft_kind)
     parity = [
-        candidate["response"]["tokens"] == control["response"]["tokens"]
-        for control, candidate in zip(target, dflash2)
+        candidate_row["response"]["tokens"] == control["response"]["tokens"]
+        for control, candidate_row in zip(target, candidate)
     ]
     target_tps = weighted_tps(target)
-    dflash2_tps = weighted_tps(dflash2)
-    timings = [receipt["response"]["timings"] for receipt in dflash2]
+    candidate_tps = weighted_tps(candidate)
+    timings = [receipt["response"]["timings"] for receipt in candidate]
     accepted_decode_tokens = sum(int(timing["predicted_n"]) - 1 for timing in timings)
     draft_n = sum(int(timing.get("draft_n", 0)) for timing in timings)
     draft_n_accepted = sum(int(timing.get("draft_n_accepted", 0)) for timing in timings)
     target_calls = accepted_decode_tokens - draft_n_accepted
-    memory_payload = json.loads((args.output_dir / "dflash2" / "memory.json").read_text())
+    memory_payload = json.loads((args.output_dir / args.draft_kind / "memory.json").read_text())
     vm_hwm_values = [
         sample["process"]["vm_hwm_kib"]
         for sample in memory_payload["samples"]
@@ -330,13 +348,13 @@ def summarize(args: argparse.Namespace) -> dict[str, Any]:
     max_vm_hwm_kib = max(vm_hwm_values)
     max_vm_swap_kib = max(vm_swap_values)
     checks = {
-        "three_prompts_x_64_tokens": len(dflash2) == 3 and all(len(row["response"]["tokens"]) == args.n_predict for row in dflash2),
+        "three_prompts_x_64_tokens": len(candidate) == 3 and all(len(row["response"]["tokens"]) == args.n_predict for row in candidate),
         "exact_greedy_token_parity_3_of_3": all(parity),
         "no_server_swap": max_vm_swap_kib == 0,
-        "dflash2_vm_hwm_at_most_28_5_gib": max_vm_hwm_kib <= int(28.5 * 1024 * 1024),
+        "candidate_vm_hwm_at_most_28_5_gib": max_vm_hwm_kib <= int(28.5 * 1024 * 1024),
     }
     return {
-        "schema": "qwen38_27b_dflash2_amd_cpu_feasibility_smoke_summary_v1",
+        "schema": "qwen38_27b_speculative_amd_cpu_feasibility_smoke_summary_v1",
         "terminal": True,
         "passed": all(checks.values()),
         "classification": "gate_0_and_gate_1_feasibility_smoke_only",
@@ -344,7 +362,12 @@ def summarize(args: argparse.Namespace) -> dict[str, Any]:
         "model": "Qwen/Qwen3.8-27B",
         "artifacts": {
             "target": {"path": str(args.target), "bytes": args.target.stat().st_size, "expected_sha256": args.target_sha256},
-            "dflash2": {"path": str(args.dflash2_draft), "bytes": args.dflash2_draft.stat().st_size, "sha256": sha256_file(args.dflash2_draft)},
+            "draft": {
+                "kind": args.draft_kind,
+                "path": str(args.draft),
+                "bytes": args.draft.stat().st_size,
+                "sha256": sha256_file(args.draft),
+            },
         },
         "runtime": {
             "path": str(args.server),
@@ -354,15 +377,19 @@ def summarize(args: argparse.Namespace) -> dict[str, Any]:
             "context": args.context,
             "batch": args.batch,
             "ubatch": args.ubatch,
-            "repack": not args.disable_repack,
+            "target_repack": not args.disable_repack,
+            "draft_repack": args.enable_draft_repack or not args.disable_repack,
+            "draft_n_max": args.draft_n_max,
+            "draft_p_min": args.draft_p_min,
         },
         "generation": {"prompts": len(PROMPTS), "tokens_per_prompt": args.n_predict, "temperature": 0.0, "top_k": 1, "seed": 42},
         "parity": {"per_prompt": parity, "exact": all(parity)},
         "throughput_diagnostic": {
             "target_weighted_tps": target_tps,
-            "dflash2_weighted_tps": dflash2_tps,
-            "dflash2_over_target": dflash2_tps / target_tps,
-            "dflash2_median_prompt_tps": statistics.median(float(timing["predicted_per_second"]) for timing in timings),
+            "candidate_kind": args.draft_kind,
+            "candidate_weighted_tps": candidate_tps,
+            "candidate_over_target": candidate_tps / target_tps,
+            "candidate_median_prompt_tps": statistics.median(float(timing["predicted_per_second"]) for timing in timings),
             "draft_n": draft_n,
             "draft_n_accepted": draft_n_accepted,
             "draft_acceptance_fraction": draft_n_accepted / draft_n if draft_n else None,
@@ -379,7 +406,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--server", type=Path, required=True)
     parser.add_argument("--target", type=Path, required=True)
     parser.add_argument("--target-sha256", required=True)
-    parser.add_argument("--dflash2-draft", type=Path, required=True)
+    parser.add_argument("--draft", "--dflash2-draft", dest="draft", type=Path, required=True)
+    parser.add_argument("--draft-kind", choices=sorted(DRAFT_SPECS), default="dflash2")
+    parser.add_argument("--draft-n-max", type=int, default=7)
+    parser.add_argument("--draft-p-min", type=float, default=0.0)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--n-predict", type=int, default=64)
     parser.add_argument("--threads", type=int, default=4)
@@ -390,6 +420,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--port-base", type=int, default=18920)
     parser.add_argument("--server-verbosity", type=int, default=3)
     parser.add_argument("--disable-repack", action="store_true")
+    parser.add_argument("--enable-draft-repack", action="store_true")
     parser.add_argument("--load-timeout", type=float, default=300.0)
     parser.add_argument("--request-timeout", type=float, default=300.0)
     return parser.parse_args()
@@ -397,21 +428,28 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    for path in (args.server, args.target, args.dflash2_draft):
+    for path in (args.server, args.target, args.draft):
         if not path.is_file():
             raise FileNotFoundError(path)
     if args.target.stat().st_size != 18973870432:
         raise ValueError("unexpected target size")
-    if args.dflash2_draft.stat().st_size != 1143006752:
-        raise ValueError("unexpected DFlash2 draft size")
+    draft_spec = DRAFT_SPECS[args.draft_kind]
+    if args.draft.stat().st_size != draft_spec["bytes"]:
+        raise ValueError(f"unexpected {args.draft_kind} draft size")
     if args.target_sha256 != EXPECTED_TARGET_SHA256:
         raise ValueError("unexpected frozen target SHA-256 argument")
-    if sha256_file(args.dflash2_draft) != EXPECTED_DFLASH2_SHA256:
-        raise ValueError("DFlash2 draft SHA-256 mismatch")
+    if sha256_file(args.draft) != draft_spec["sha256"]:
+        raise ValueError(f"{args.draft_kind} draft SHA-256 mismatch")
     if args.n_predict != 64:
         raise ValueError("the frozen smoke requires exactly 64 generated tokens")
+    if not 1 <= args.draft_n_max <= 7:
+        raise ValueError("the frozen Qwen3.8 draft models support widths 1 through 7")
+    if not 0.0 <= args.draft_p_min <= 1.0:
+        raise ValueError("--draft-p-min must be in [0, 1]")
+    if args.enable_draft_repack and not args.disable_repack:
+        raise ValueError("--enable-draft-repack is only meaningful with --disable-repack")
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    for index, label in enumerate(("target", "dflash2")):
+    for index, label in enumerate(("target", args.draft_kind)):
         run_configuration(args, label, index)
     summary = summarize(args)
     atomic_json(args.output_dir / "summary.json", summary)

@@ -1,0 +1,54 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_clang21_pair_local_scaled_terminal_result_v30",
+  "experiment_id": "qwen38_27b_q4_k_avx2_clang21_pair_local_scaled_v30",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "passed": false,
+  "decision": "reject_microkernel_stability_gate",
+  "failed_gate": "gate_1_paired_native_microkernel",
+  "gate_0": {
+    "passed": true,
+    "stack_frame_bytes": 168,
+    "vector_stack_moves": 14,
+    "required_maximum_stack_frame_bytes": 768,
+    "required_maximum_vector_stack_moves": 24,
+    "seeded_cases": 1024,
+    "special_cases": 5,
+    "parent_candidate_fp32_output_sha256": "272d2b97c74109c571b31a891f032a4063f7ebb61192ecc55e9e58e9dc722db1",
+    "source_buffers_unchanged": true,
+    "backend_reference_tests_passed": 3,
+    "backend_reference_tests_total": 3
+  },
+  "gate_1": {
+    "passed": false,
+    "paired_samples": 155,
+    "geometric_mean_parent_over_candidate_latency_ratio": 1.1534291142859496,
+    "required_geometric_mean_ratio": 1.08,
+    "minimum_shape_ratio_median": 1.141526589993119,
+    "required_shape_floor": 0.98,
+    "maximum_pairwise_ratio_mad_fraction": 0.03280011432011071,
+    "required_maximum_mad_fraction": 0.03,
+    "frequency_mhz_minimum": 2400.0,
+    "frequency_mhz_maximum": 2400.0,
+    "outputs_bit_exact": true
+  },
+  "interpretation": "Pinned Clang 21 compiled the byte-identical exact v27 source into a 168-byte frame with 14 vector stack moves and delivered a 15.3% geometric-mean native-kernel speedup. Every shape improved by at least 14.2%, but the smallest shape's 3.28% paired-ratio MAD narrowly exceeded the frozen 3.00% stability cap, so model gates were correctly skipped.",
+  "downstream": {
+    "real_model_graph": false,
+    "serving": false,
+    "quality": false
+  },
+  "provenance": {
+    "preregistration_sha256": "2fddab40c37192504bade566011436fe73acb7412dcb1f40c1875d9758c0f7b5",
+    "source_candidate_sha256": "02c71df73938ed97e965ae165c55c2a9c9c751a80e558495140722031be386e5",
+    "compiler_sha256": "412bbe8c60571a1eb06f48fde89635033621caeb01a9b4ee76d46711bae8e932",
+    "candidate_libggml_cpu_sha256": "02b27cf8dec0c43a62b680d81640a97b4caef45c28f8377524dd2f083b480a81",
+    "codegen_observation_sha256": "32da10ee9e39742bc42c92a81a2f06c6de56cefd1b6a656af0a990e5a9586bff",
+    "disassembly_sha256": "c2c62fd6926470beee49c174ae4a004ed1c1d7e5f8f5251afe5e9e2afba64dcc",
+    "micro_decision_raw_sha256": "96e7b47614ac9e6eb1f033fa79c7e07c31d4d35f229a8c11a7811b6c5c6af93e",
+    "runner_sha256": "f0742b53227c8b7bec49a9de90f6ab3fee761962c423a9ece448e7c0bd02d8fc",
+    "summarizer_sha256": "519fa87e18577d76da5fdb50b68c6eab1dba51e5ab0947139ea340ecbb5b6de1"
+  },
+  "next_hypothesis": "An independent 63-pair-per-shape holdout replication with the identical source, compiler, affinity, thresholds, and alternating order can distinguish a stable compiler win from the one borderline small-shape dispersion result.",
+  "claim_boundary": "Terminal v30 speed-positive but stability-negative native microkernel result; no full-model, serving, or quality claim."
+}

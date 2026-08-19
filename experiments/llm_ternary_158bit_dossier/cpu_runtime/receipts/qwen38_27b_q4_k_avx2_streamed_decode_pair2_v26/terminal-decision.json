@@ -1,0 +1,45 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_streamed_decode_pair2_terminal_result_v26",
+  "experiment_id": "qwen38_27b_q4_k_avx2_streamed_decode_pair2_v26",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "passed": false,
+  "decision": "reject_codegen_gate",
+  "failed_gate": "gate_0_source_property_backend_and_codegen",
+  "failed_checks": [
+    "maximum_streamed_pair2_stack_frame_bytes",
+    "maximum_streamed_pair2_vector_stack_moves"
+  ],
+  "observed": {
+    "stack_frame_bytes": 1152,
+    "vector_stack_moves": 50,
+    "lines_referencing_rsp": 91,
+    "symbol_bytes": 2355,
+    "v25_stack_frame_bytes": 1024,
+    "v25_vector_stack_moves": 67
+  },
+  "required": {
+    "maximum_stack_frame_bytes": 768,
+    "maximum_vector_stack_moves": 24
+  },
+  "interpretation": "Pair-local raw-vector streaming reduced vector stack moves by 25.4% versus v25, but did not reduce live state enough: the compiler enlarged the frame by 128 bytes. Timing and model gates were correctly skipped.",
+  "scientific_measurements_started": false,
+  "downstream": {
+    "property_backend": false,
+    "microbenchmark": false,
+    "real_model_graph": false,
+    "serving": false,
+    "quality": false
+  },
+  "provenance": {
+    "preregistration_sha256": "b932a4374a94c93e2f3d8bf27b5cb9e632a3adcc2312c64b434391277924f0a1",
+    "source_parent_sha256": "c171a06d5a5d5d5221a6167c7039b759e38efd073dca7ba33a46afa8ed6b1ec2",
+    "source_candidate_sha256": "b12fd8b75f010935244bbd834ee04bb0efe3f5f8f91baa8c7f06041c273ed245",
+    "source_transform_sha256": "2a2d1720c31b3eacfdd6108f32fcf2c66ecf40e5adb5485f2ac3d3658d22c701",
+    "candidate_libggml_cpu_sha256": "53966b57d8ab7fd184a628b23baf4a188ea037cfc59ba0a1065fdf70eba877f8",
+    "codegen_observation_sha256": "5650b72166dfb1065cb5673b0e90eeca144de855baa00f5f8dfd98d9d7c5f642",
+    "disassembly_sha256": "0853da0b911d4cf1ae05d6c0ef16f73595728bdb0e8c53b28214cf33225c84c3"
+  },
+  "next_hypothesis": "Exploit linearity inside the bounded int16 dot range: apply Q4 scales to each raw-pair contribution immediately, reducing four persistent low/high row accumulators to two int32 row accumulators before FP accumulation.",
+  "claim_boundary": "Terminal static-codegen negative for v26 only; no timing, quality, or broad kernel conclusion."
+}
