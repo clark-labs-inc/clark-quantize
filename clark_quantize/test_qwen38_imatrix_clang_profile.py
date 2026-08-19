@@ -19,6 +19,13 @@ V33_RUNNER = RUNTIME / "run_qwen38_27b_imatrix_q4_k_clang21_graph_profile_v33.sh
 V33_SUMMARIZER = (
     RUNTIME / "summarize_qwen38_27b_imatrix_q4_k_clang21_graph_profile_v33.py"
 )
+V33_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_imatrix_q4_k_clang21_graph_profile_v33/terminal-decision.json"
+)
+V34_PREREG = RUNTIME / "qwen38_27b_clang21_libomp_longrun_v34.json"
+V34_RUNNER = RUNTIME / "run_qwen38_27b_clang21_libomp_longrun_v34.sh"
+V34_SUMMARIZER = RUNTIME / "summarize_qwen38_27b_clang21_libomp_longrun_v34.py"
 
 
 def test_v32_stock_profile_is_terminal_and_does_not_select_from_stock_q8() -> None:
@@ -74,3 +81,55 @@ def test_v33_reducer_uses_exclusive_cycles_and_materiality_gate() -> None:
     assert "single_group_zero_cost_ceilings" in source
     assert "required_speedup_from_v23_anchor" in source
     assert "artifact_and_binary_identities_exact" in source
+
+
+def test_v33_receipt_retains_profile_but_blocks_speed_claim_on_phase_change() -> None:
+    receipt = json.loads(V33_RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["profiles"]["candidate_clang21_v30"][
+        "exclusive_cycle_fractions"
+    ]["q8_x_q8_tinyblas"] == 0.0
+    assert receipt["profiles"]["candidate_clang21_v30"][
+        "exclusive_cycle_fractions"
+    ]["q4_k_verifier"] > 0.66
+    phase = receipt["post_profile_phase_change_diagnostic"]
+    assert phase["candidate_post_over_pre"] > 1.16
+    assert receipt["aggregate_diagnostic"]["speed_claim_authorized"] is False
+    assert "isolate Clang code generation" in receipt["next_lane"]
+
+
+def test_v34_preregisters_long_process_runtime_isolation() -> None:
+    prereg = json.loads(V34_PREREG.read_text())
+    assert prereg["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert prereg["scope"]["qwen_4b_compute_forbidden"] is True
+    assert prereg["protocol"]["samples_per_process"] == 32
+    assert prereg["protocol"]["run_order"] == [
+        "parent_a",
+        "clang_default_a",
+        "clang_active_a",
+        "clang_active_b",
+        "clang_default_b",
+        "parent_b",
+    ]
+    assert prereg["protocol"]["clang_active_environment"] == {
+        "KMP_BLOCKTIME": "infinite",
+        "OMP_WAIT_POLICY": "active",
+        "KMP_LIBRARY": "turnaround",
+    }
+    assert prereg["analysis"]["stable_process_maximum_changepoint_ratio"] <= 1.05
+    assert prereg["analysis"]["minimum_parent_over_candidate_arm_median"] >= 1.04
+
+
+def test_v34_runner_and_reducer_preserve_every_longrun_sample() -> None:
+    runner = V34_RUNNER.read_text()
+    reducer = V34_SUMMARIZER.read_text()
+    assert "-p 4 -n 0 -r 32" in runner
+    assert runner.count("run_one ") == 6
+    assert "KMP_BLOCKTIME=infinite" in runner
+    assert "OMP_WAIT_POLICY=active" in runner
+    assert "pgrep -x perf" in runner
+    assert "for split in range(8, 25)" in reducer
+    assert '"samples": samples' in reducer
+    assert "all_32_samples_count" in V34_PREREG.read_text()
+    assert "select_clang_active_policy_for_serving_validation" in reducer

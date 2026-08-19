@@ -1,0 +1,89 @@
+{
+  "schema": "qwen38_27b_clang21_libomp_longrun_preregistration_v34",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_clang21_libomp_longrun_v34",
+  "status": "frozen_before_candidate_measurement",
+  "frozen_at": "2026-08-19T04:55:00Z",
+  "objective": "Determine whether the v33 Clang phase change reproduces without perf and whether an always-active libomp policy preserves the exact Clang Q4_K code-generation gain over a long process.",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "artifact": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-imatrix-Q4_K-v10.gguf",
+    "artifact_sha256": "6176472b7d039a6d911b34eea78dd4507256b4a22b3003d40b8587b711014f2a",
+    "parent_binary": "/workspace/build/llama.cpp-q4k-native-x4-deinterleave-v21/bin/llama-bench",
+    "parent_binary_sha256": "90a08eb2f1a70d540c117b9db563c28fa9bb0b03eedca48d061cc147aab79a28",
+    "candidate_binary": "/workspace/build/llama.cpp-q4k-clang21-pair-local-scaled-v30/bin/llama-bench",
+    "candidate_binary_sha256": "7a01aa1a0a866a2904e6ca09b42d501372a408503948f1880acc19fcfc356b70",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4,
+    "cpu_affinity": "0,2,4,6",
+    "qwen_4b_compute_forbidden": true
+  },
+  "v33_trigger": {
+    "receipt_sha256": "72cd95c9425ae56b6e14b41b97e57cdfa21dcd4b5b253f34dbee16ffeef46829",
+    "candidate_first_20_median_ns": 594110396.0,
+    "candidate_last_12_median_ns": 692117929.0,
+    "candidate_last_over_first": 1.1649651877157188,
+    "parent_last_over_first": 1.0078438951218107,
+    "frequency_range_mhz": 0.0,
+    "runtime_difference": "parent links GNU libgomp; candidate links LLVM libomp"
+  },
+  "hypotheses": [
+    "If the Clang default arm repeats a greater-than-10% changepoint without perf, the v33 shift is a runtime or host effect rather than perf sampling overhead.",
+    "If KMP_BLOCKTIME=infinite plus OMP_WAIT_POLICY=active removes the shift while retaining at least 1.04x parent speed, libomp sleep/wake policy is the causal bottleneck and the active policy is admitted for serving validation.",
+    "If neither Clang arm is stable, no Clang speed result is retained; the 66.4% Q4_K share still selects the representation/kernel lane."
+  ],
+  "protocol": {
+    "run_order": [
+      "parent_a",
+      "clang_default_a",
+      "clang_active_a",
+      "clang_active_b",
+      "clang_default_b",
+      "parent_b"
+    ],
+    "samples_per_process": 32,
+    "llama_bench_arguments": {
+      "prompt_tokens": 4,
+      "generated_tokens": 0,
+      "batch": 128,
+      "ubatch": 64,
+      "threads": 4,
+      "output": "json"
+    },
+    "common_environment": {
+      "OMP_NUM_THREADS": "4"
+    },
+    "clang_default_environment": "no additional OpenMP policy variables",
+    "clang_active_environment": {
+      "KMP_BLOCKTIME": "infinite",
+      "OMP_WAIT_POLICY": "active",
+      "KMP_LIBRARY": "turnaround"
+    },
+    "performance_tools": "none",
+    "accuracy_and_performance_run_alone": true
+  },
+  "analysis": {
+    "changepoint": "For every 32-sample process, scan splits 8 through 24 inclusive and report the split maximizing the larger of pre/post and post/pre medians.",
+    "stable_process_maximum_changepoint_ratio": 1.05,
+    "stable_arm_maximum_run_median_mad_fraction": 0.03,
+    "minimum_parent_over_candidate_arm_median": 1.04,
+    "default_phase_reproduction_ratio": 1.10,
+    "all_32_samples_count": true,
+    "means_medians_first_half_last_half_and_raw_samples_required": true
+  },
+  "validity_gates": {
+    "artifact_and_binary_hashes_exact": true,
+    "six_processes_exit_zero": true,
+    "every_process_has_32_samples": true,
+    "frequency_range_mhz_maximum": 100,
+    "no_perf_process_present": true
+  },
+  "resources": {
+    "memory_max_gib": 30,
+    "max_wall_minutes": 8,
+    "disk_policy": "JSON summaries and hashes only; no model or checkpoint copy"
+  },
+  "claim_boundary": "Long-process runtime-isolation diagnostic only. No serving speed, quality, 2.75 tok/s, 100 tok/s, energy, novelty, or breakthrough claim is authorized."
+}
