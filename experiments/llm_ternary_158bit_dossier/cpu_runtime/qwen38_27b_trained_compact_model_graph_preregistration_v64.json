@@ -1,0 +1,71 @@
+{
+  "schema": "qwen38_27b_trained_compact_model_graph_preregistration_v64",
+  "experiment_id": "qwen38_27b_trained_compact_model_graph_v64",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_after_v63_source_freeze_before_v62_terminal_materialization_v63_compile_or_any_trained_model_graph_observation",
+  "frozen_at_utc": "2026-08-19T17:01:28Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "objective": "Prove one bounded all-64-layer free-generation execution through the exact residual-free trained CQ3 plus AFF3 llama.cpp graph before opening any quality or throughput measurement.",
+  "required_parents": {
+    "v62_preregistration_sha256": "146a554da68fb3bec2f24a0c2230a6e282511af32f84cf6a0431652fd044674b",
+    "v62_terminal_materialization_pass_required": true,
+    "v63_preregistration_sha256": "7797caa49c8553e545edf7a3b1990bb4935818792868d765046dd99e69132125",
+    "v63_runner_sha256": "93147b2d7b80c42515506482c569c8f447fa4edaf87b4fb7312c11ee0f5a82ff",
+    "v63_terminal_integration_pass_required": true,
+    "v51_bounded_worker_sha256": "49975e98cdf7f021fa4b7dab1e984aca0e88e7e0ef2027f4a095007d8ac7c339"
+  },
+  "candidate_contract": {
+    "trained_cq3_target_tensors": 192,
+    "trained_aff3_layer_set": "0-63",
+    "trained_aff3_images": 64,
+    "post_block_residual_payload_bytes": 0,
+    "QWEN38_RESIDUAL_DIR_must_be_unset": true,
+    "QWEN38_RESIDUAL_LAYERS_must_be_unset": true,
+    "high_precision_weight_materialization_forbidden": true
+  },
+  "execution": {
+    "host": "quant",
+    "physical_cpu_list": [0, 2, 4, 6],
+    "threads": 4,
+    "threads_batch": 4,
+    "context": 128,
+    "batch": 128,
+    "ubatch": 64,
+    "seed": 20260819,
+    "temperature": 0,
+    "ignore_eos": true,
+    "requested_generated_tokens": 8,
+    "prompt": "Complete this sentence with a short factual answer: The capital of France is",
+    "no_warmup": true,
+    "no_conversation": true,
+    "single_turn": true,
+    "no_display_prompt": true,
+    "simple_io": true,
+    "performance_timing": false,
+    "runtime_max_seconds": 420,
+    "file_size_max_bytes_per_stream": 1048576,
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0
+  },
+  "pass_gate": {
+    "v62_and_v63_manifests_authenticate": true,
+    "llama_cli_and_runtime_library_hashes_match_v63_receipt": true,
+    "all_64_aff3_images_active": true,
+    "process_exit_code": 0,
+    "systemd_result": "success",
+    "generated_output_nonempty": true,
+    "stream_bounds_respected": true,
+    "interactive_mode_absent": true,
+    "performance_markers_absent": true,
+    "residual_environment_absent": true
+  },
+  "decision_rules": {
+    "retain_any_graph_failure_as_a_terminal_negative": true,
+    "no_quality_or_performance_inference_from_v64": true,
+    "quality_and_conventional_performance_gates_may_start_only_after_v64_passes": true,
+    "v59_lut_runtime_forbidden": true,
+    "v45_residual_runtime_forbidden": true
+  },
+  "claim_boundary": "A pass establishes only bounded all-64-layer execution and nonempty free generation by the exact trained residual-free CQ3 plus AFF3 model graph. It is not semantic correctness, benchmark quality, throughput, memory efficiency, energy efficiency, 100 tokens per second, novelty, or scientific-breakthrough evidence."
+}
