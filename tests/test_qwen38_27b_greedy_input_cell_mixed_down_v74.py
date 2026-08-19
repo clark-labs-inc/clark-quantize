@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import sys
@@ -13,6 +14,7 @@ MODULE_PATH = RUNTIME / "run_qwen38_27b_greedy_input_cell_mixed_down_v74.py"
 PREREG = (
     RUNTIME / "qwen38_27b_greedy_input_cell_mixed_down_preregistration_v74.json"
 )
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_greedy_input_cell_mixed_down_v74"
 
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(RUNTIME))
@@ -103,3 +105,33 @@ def test_v74_preregistration_freezes_disjoint_prompt_cell_protocol() -> None:
     assert observed_increase == layout["relative_full_mlp_payload_increase"]
     assert observed_increase < 0.04
     assert MODULE.HEADER.size == 64
+
+
+def test_v74_terminal_receipt_retains_broad_fresh_gain_but_rejects() -> None:
+    receipt_path = RECEIPTS / "receipt.json"
+    receipt = json.loads(receipt_path.read_text())
+    marker = json.loads((RECEIPTS / "EXPERIMENT_COMPLETE.json").read_text())
+
+    assert receipt["complete"] is True
+    assert receipt["terminal"] is True
+    assert receipt["gate"] == {
+        "decision": "reject_source_int4_input_cell_substitution",
+        "passed": False,
+    }
+    assert receipt["data_split"]["confirmation_rows_observed_during_selection"] == 0
+    assert receipt["metrics"][
+        "relative_calibration_complete_mlp_nmse_improvement"
+    ] > 0.10
+    assert receipt["metrics"][
+        "relative_confirmation_complete_mlp_nmse_improvement"
+    ] > 0.08
+    assert receipt["metrics"][
+        "confirmation_to_calibration_improvement_ratio"
+    ] > 0.8
+    assert receipt["cell_selection"][
+        "confirmation_positive_output_tile_fraction"
+    ] > 0.99
+    assert receipt["storage"]["relative_full_mlp_payload_increase"] < 0.04
+    assert marker["receipt_sha256"] == hashlib.sha256(
+        receipt_path.read_bytes()
+    ).hexdigest()
