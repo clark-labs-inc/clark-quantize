@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 
 import pytest
@@ -11,6 +12,9 @@ SCRIPT = (
     REPO
     / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
     / "run_qwen38_27b_all_layer_sensitivity_residual_v45.py"
+)
+PREREGISTRATION = (
+    SCRIPT.parent / "qwen38_27b_all_layer_sensitivity_residual_v45.json"
 )
 
 
@@ -108,12 +112,26 @@ def test_v45_gate_rejects_changed_evidence(mutation) -> None:
         assert gate["passed"] is False
 
 
-def test_v45_is_inert_without_post_v44_preregistration() -> None:
+def test_v45_is_bound_to_frozen_post_v44_preregistration() -> None:
     source = SCRIPT.read_text()
     assert "qwen38_27b_all_layer_sensitivity_residual_v45.json" in source
-    assert not (
-        SCRIPT.parent / "qwen38_27b_all_layer_sensitivity_residual_v45.json"
-    ).exists()
+    preregistration = json.loads(PREREGISTRATION.read_text())
+    assert preregistration["schema"] == (
+        "qwen38_27b_all_layer_sensitivity_residual_preregistration_v45"
+    )
+    assert preregistration["status"] == (
+        "frozen_after_v44_pass_before_residual_fit"
+    )
+    assert preregistration["scope"]["target_layers"] == list(range(64))
+    assert preregistration["parent_training"]["receipt_sha256"] == (
+        "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f"
+    )
+    assert preregistration["frozen_inputs"]["runner_repository_commit"] == (
+        "5b8e68d07d331082d3bc094a520a430afd203b11"
+    )
+    assert preregistration["frozen_inputs"]["runner_sha256"] == (
+        "c262ea82c9a9ce706baadd2b6902c7243b34a45a6cfd27a91b00339da46e7ef1"
+    )
     assert '"frozen_after_v44_pass_before_residual_fit"' in source
     assert 'prereg.get("parent_training", {}).get("receipt_sha256")' in source
     assert 'prereg.get("frozen_inputs", {}).get("runner_sha256")' in source
