@@ -1,0 +1,167 @@
+{
+  "schema": "qwen38_27b_cq3_exact_lut32_llamacpp_preregistration_v59",
+  "experiment_id": "qwen38_27b_cq3_exact_lut32_llamacpp_v59",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_before_llamacpp_implementation_and_before_milan_v58_result",
+  "frozen_at_utc": "2026-08-19T15:26:32Z",
+  "objective": "Replace the accepted storage-neutral CQ3 x8 decode repack inside the exact Qwen3.8-27B CQ3 plus trained AFF3 plus compact residual llama.cpp source composition with the v58 exact 32-output-row subset-LUT algebra, without changing serialized CQ3 bytes, CQ8 activation quantization, trained payloads, or graph semantics.",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "target_cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "target_operation": "single-token CQ3 MLP GEMV",
+    "target_shapes": [
+      {
+        "matrices": 2,
+        "rows": 17408,
+        "columns": 5120,
+        "role": "gate and up"
+      },
+      {
+        "matrices": 1,
+        "rows": 5120,
+        "columns": 17408,
+        "role": "down"
+      }
+    ],
+    "qwen_4b_compute_forbidden": true
+  },
+  "frozen_parents": {
+    "repository_commit_before_preregistration": "5b8e68d07d331082d3bc094a520a430afd203b11",
+    "v57_execution_receipt_sha256": "b97519e3d2356b433af326234c7d726b8188558f3417a1b1db53eb6130c57426",
+    "v57_transform_script_sha256": "b950168e2fad873837a8e76858a48fa074671b00b4ec51ac5069e7f6859d8cbd",
+    "v57_tracked_diff_sha256": "7153043563f397e644db1e7ca8ce5c2cececfcb30cd1dc6b48d67aa9de3a7661",
+    "v58_preregistration_sha256": "f767918d279fd673147057d607ee0bf15873dbb29eef6e0db1e3cba5ce1dc399",
+    "v58_native_source_sha256": "880386b55ce01c8457c258fa0d1c9b36e1503ca1c6541b0166a2206bf4b6d497",
+    "v58_native_header_sha256": "46f028717bdce7343131c554aed98a9600af55cdbdc05dd7c96a543d19673308",
+    "v58_full_shape_benchmark_sha256": "adbc175d99e54d45281dcf7052f1053d137c83abf01af35c62895f543c46e97f"
+  },
+  "admission_rule": {
+    "required_parent_schema": "qwen38_cq3_exact_lut_native_benchmark_decision_v58",
+    "required_parent_terminal": true,
+    "required_parent_infrastructure_valid": true,
+    "required_parent_passed": true,
+    "required_shapes": [
+      "gate_up",
+      "down"
+    ],
+    "minimum_each_shape_x8_over_lut32": 1.1,
+    "minimum_geometric_mean_x8_over_lut32": 1.15,
+    "minimum_geometric_mean_ordinary_over_lut32": 1.45,
+    "maximum_each_shape_ratio_mad_fraction": 0.03,
+    "integer_group_dot_bit_exact": true,
+    "scaled_fp32_output_bit_exact_vs_x8": true,
+    "persistent_storage_expansion_fraction": 0.0,
+    "rule": "Do not implement, compile, or run v59 if the authenticated Milan v58 decision fails any admission field."
+  },
+  "implementation_contract": {
+    "serialized_gguf_type": "GGML_TYPE_CQ3_0 unchanged",
+    "serialized_block_layout": "block_cq3_0 unchanged at 68 bytes per 256 weights",
+    "runtime_compute_image": "32 source rows transposed into FP16 scales plus one byte containing two quartet subset masks per output row",
+    "runtime_compute_image_bytes_per_tile": 2176,
+    "source_bytes_per_tile": 2176,
+    "persistent_storage_expansion_fraction": 0.0,
+    "activation_type": "existing block_cq8_0 with FP32 scale, INT32 sum, and 128 signed INT8 values",
+    "activation_quantization_changed": false,
+    "ephemeral_table_algebra": "for each quartet build sixteen signed INT16 subset sums, then evaluate L(bit0) + 2*L(bit1) - sum(q8)",
+    "maximum_ephemeral_table_bytes_per_worker": 139264,
+    "required_x86_isa": [
+      "AVX2",
+      "FMA",
+      "F16C"
+    ],
+    "ggml_repack_template": {
+      "activation_interleave": 8,
+      "output_chunk_rows": 32,
+      "weight_type": "block_cq3_0",
+      "activation_type": "GGML_TYPE_CQ8_0"
+    },
+    "eligible_output_dimensions": [
+      5120,
+      17408
+    ],
+    "high_precision_weight_materialization": false,
+    "trained_aff3_payload_changed": false,
+    "compact_residual_payload_changed": false,
+    "graph_placement_changed": false,
+    "non_avx2_behavior": "retain the ordinary CQ3 path; never execute an unsupported trusted kernel"
+  },
+  "source_change_boundary": {
+    "allowed_llamacpp_files": [
+      "ggml/src/ggml-common.h",
+      "ggml/src/ggml-cpu/quants.h",
+      "ggml/src/ggml-cpu/arch/x86/quants.c",
+      "ggml/src/ggml-cpu/repack.cpp",
+      "tests/test-cq3.cpp",
+      "tests/qwen38_27b_cq3_exact_lut32_v59.inc"
+    ],
+    "forbidden_changes": [
+      "model architecture or tokenizer",
+      "CQ3 quantization or serialized bytes",
+      "CQ8 activation rounding",
+      "AFF3 or residual math",
+      "evaluation prompts or denominators",
+      "Q4 control implementation"
+    ]
+  },
+  "native_correctness_gates": {
+    "reserved_ternary_code_rejected_during_repack": true,
+    "storage_bytes_equal_before_and_after_repack": true,
+    "all_output_rows_exact_vs_existing_x8_integer_group_dot": true,
+    "all_scaled_outputs_bit_exact_vs_existing_x8": true,
+    "ordinary_cq3_scaled_delta_maximum": 0.00005,
+    "adversarial_activation_cases": [
+      "all 127",
+      "all -128",
+      "alternating signed extremes",
+      "deterministic random"
+    ],
+    "required_test_targets": [
+      "test-cq3",
+      "test-backend-ops"
+    ]
+  },
+  "model_gates": {
+    "required_runtime": "v57 graph composition with v59 CQ3 kernel substitution",
+    "free_generation_required": true,
+    "minimum_generated_tokens": 32,
+    "required_quality_suites": [
+      "WikiText",
+      "CUTE character-level",
+      "MATH-500",
+      "code",
+      "MMLU"
+    ],
+    "maximum_wikitext_perplexity_ratio_vs_q4_k_m": 1.05,
+    "no_material_capability_loss": true,
+    "minimum_decode_tokens_per_second": 2.75,
+    "minimum_decode_speedup_vs_q4_k_m": 1.4,
+    "stretch_decode_tokens_per_second": 3.2,
+    "memory_and_energy_receipts_required": true
+  },
+  "measurement_protocol": {
+    "host": "quant",
+    "cpu_set": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "threads": 4,
+    "warmup_runs": 2,
+    "measured_runs": 21,
+    "order": "paired ABBA",
+    "cache_eviction_bytes": 268435456,
+    "report_all_samples": true,
+    "report_median_and_mad": true,
+    "measure_only_when_v44_v45_and_other_authoritative_compute_are_inactive": true
+  },
+  "decision_rules": {
+    "reject": "Reject v59 on parent-admission failure, any numerical mismatch, storage expansion, source-boundary violation, compile or native-test failure, free-generation failure, WikiText ratio above 1.05, material capability loss, decode below 2.75 tok/s, or decode speedup below 1.40x Q4_K_M.",
+    "promote": "Promote only when the exact integrated runtime passes every native and whole-model gate with terminal receipts and independently reproducible source hashes.",
+    "no_claim": "Microkernel or source-composition success alone is not a Qwen3.8-27B CPU breakthrough."
+  },
+  "claim_boundary": "A v59 pass may establish an exact storage-neutral CQ3 kernel substitution inside the complete trained Qwen3.8-27B runtime and, only if all frozen whole-model gates pass, the requested AMD CPU inference result. It does not by itself establish novelty; the literature boundary and independent reproduction remain mandatory."
+}
