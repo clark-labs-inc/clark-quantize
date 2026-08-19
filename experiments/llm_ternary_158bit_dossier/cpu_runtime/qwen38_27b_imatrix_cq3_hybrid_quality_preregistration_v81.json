@@ -1,0 +1,45 @@
+{
+  "schema": "qwen38_27b_imatrix_cq3_hybrid_quality_preregistration_v81",
+  "experiment_id": "qwen38_27b_imatrix_cq3_hybrid_quality_v81",
+  "model": "Qwen/Qwen3.8-27B",
+  "frozen_before_first_v80_generation_or_perplexity_observation": true,
+  "candidate": {
+    "path": "/workspace/models/candidates/Qwen3.8-27B-imatrix-Q4-trained-CQ3-sensitivity32-v80.gguf",
+    "bytes": 13066455712,
+    "sha256": "09880f4d1b740f29b5e0cf0daf70ea649b7f5d2b57fb27df064fc1d03c9fab7d",
+    "v80_materialization_summary_sha256": "329ab257cd2f8c6d7d57a750df7f2783c97bb79d0a817069cc960f7dda954aa3",
+    "v80_materialization_receipt_sha256": "7f8074b3291145c3fe5917cd82a867ed1a37b3d2cf9fbebd429eaa0a227e1261"
+  },
+  "evaluation_order": [
+    "CUTE Quick 20 free generation",
+    "MATH-500 8 plus code-trace 6 free generation",
+    "WikiText-2 four by 512 perplexity",
+    "MMLU five-shot 64 only if every quick gate passes"
+  ],
+  "quick_gates": {
+    "minimum_cute_correct_of_20": 8,
+    "minimum_math500_correct_of_8": 4,
+    "minimum_code_trace_correct_of_6": 4,
+    "maximum_wikitext_ppl_ratio_vs_q4": 1.05,
+    "q4_control_wikitext_ppl": 5.7847
+  },
+  "mmlu_gate": {
+    "minimum_correct_of_64": 50,
+    "q4_control_correct_of_64": 52,
+    "runs_only_after_quick_pass": true,
+    "checkpoint_every_items": 4
+  },
+  "data_status": {
+    "cute_is_adaptive_lineage_evidence": true,
+    "reason": "the frozen 32-layer partition was retained after v67 CUTE passed, although v81 itself was frozen before this composed artifact was scored",
+    "math_code_wikitext_and_mmlu_are_required_independent_surfaces": true,
+    "promotion_or_novelty_claim_from_v81_alone_forbidden": true
+  },
+  "promotion": {
+    "if_all_quality_gates_pass": "admit the exact artifact to one combined imatrix-Q4 plus CQ3 Clang MTP3 runtime integration",
+    "if_any_quick_gate_fails": "reject the composition before kernel integration and do not tune the selected layer count",
+    "if_only_mmlu_fails": "reject broad near-Q4 capability before kernel integration"
+  },
+  "performance_is_forbidden_inside_v81": true,
+  "claim_boundary": "Frozen complete-model capability falsification contract. A pass authorizes one combined-kernel system test; it does not establish throughput, energy, novelty, or a scientific breakthrough."
+}
