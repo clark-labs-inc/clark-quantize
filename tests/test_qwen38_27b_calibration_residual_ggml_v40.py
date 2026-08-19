@@ -8,6 +8,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREREG = RUNTIME / "qwen38_27b_calibration_residual_ggml_v40.json"
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_calibration_residual_ggml_v40"
 
 
 def sha256(path: Path) -> str:
@@ -108,3 +109,67 @@ def test_v40_claim_boundary_forbids_whole_model_promotion() -> None:
     assert "MATH-500" in rules
     assert "MMLU" in rules
     assert "cannot establish the 2.75 tok/s target" in rules
+
+
+def test_v40_terminal_receipt_passes_every_frozen_gate() -> None:
+    receipt = json.loads((RECEIPTS / "receipt.json").read_text())
+    assert receipt["complete"] is True
+    assert receipt["terminal"] is True
+    assert receipt["passed"] is True
+    assert len(receipt["cases"]) == 4
+    assert all(receipt["gate"]["checks"].values())
+    assert sum(
+        len(block)
+        for case in receipt["cases"]
+        for arm in ("direct", "ggml")
+        for block in case[arm]["raw_ns_per_batch_blocks"]
+    ) == 504
+    assert max(
+        case["maximum_absolute_error_vs_direct"] for case in receipt["cases"]
+    ) == 0.0
+    decode = [case for case in receipt["cases"] if case["tokens"] == 1]
+    assert max(case["ggml_overhead_ratio_vs_direct"] for case in decode) == (
+        1.0181524704377736
+    )
+    assert max(case["ggml_ns_per_token"] * 64 for case in decode) == 706_165.0
+    assert max(
+        row["eight_token_per_token_vs_decode_ratio"]
+        for row in receipt["microbatch_ratios"]
+    ) == 0.2999111452637459
+
+
+def test_v40_completion_marker_was_written_after_receipt_and_decision() -> None:
+    receipt_path = RECEIPTS / "receipt.json"
+    decision_path = RECEIPTS / "terminal-decision.json"
+    marker = json.loads((RECEIPTS / "complete.json").read_text())
+    decision = json.loads(decision_path.read_text())
+    assert marker["terminal"] is marker["passed"] is True
+    assert marker["receipt_sha256"] == sha256(receipt_path)
+    assert marker["decision_sha256"] == sha256(decision_path)
+    assert decision["receipt_sha256"] == sha256(receipt_path)
+    assert decision["decision"] == (
+        "admit_exact_compact_node_to_llama_adapter_loader_integration_only"
+    )
+
+
+def test_v40_execution_receipt_authenticates_the_bounded_run() -> None:
+    execution = json.loads((RECEIPTS / "execution.json").read_text())
+    assert execution["repository_commit"] == (
+        "0949961e7bebb816cd640e3879e12790e41aa23e"
+    )
+    assert execution["llama_cpp_revision"] == (
+        "4df29be4f4c3673f428170fda944a5b19f743bb8"
+    )
+    assert execution["cpu_affinity"] == [0, 2, 4, 6]
+    assert execution["memory_swap_max_bytes"] == 0
+    assert execution["restarts"] == 0
+    assert execution["result"] == "success"
+    assert execution["exit_code"] == 0
+    assert execution["retained_raw_timing_samples"] == 504
+    assert execution["receipt_sha256"] == sha256(RECEIPTS / "receipt.json")
+    assert execution["terminal_decision_sha256"] == sha256(
+        RECEIPTS / "terminal-decision.json"
+    )
+    assert execution["completion_marker_sha256"] == sha256(
+        RECEIPTS / "complete.json"
+    )
