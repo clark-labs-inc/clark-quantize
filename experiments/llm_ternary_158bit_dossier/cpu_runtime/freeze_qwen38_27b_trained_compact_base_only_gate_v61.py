@@ -19,6 +19,9 @@ RUNTIME = Path(__file__).resolve().parent
 MODEL_ID = "Qwen/Qwen3.8-27B"
 MODEL_REVISION = "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0"
 V45_SCHEMA = "qwen38_27b_all_layer_sensitivity_residual_receipt_v45"
+V45_INCIDENT_SCHEMA = (
+    "qwen38_27b_all_layer_sensitivity_residual_protocol_incident_v45"
+)
 V60_SCHEMA = "qwen38_27b_trained_compact_whole_model_gate_preregistration_v60"
 V60_SHA256 = "cdf92c6746520e62bb834b463eed0ac16a627cc4c788b70136a5728d21d2930c"
 
@@ -78,6 +81,54 @@ def validate_v45_negative(receipt: dict[str, Any]) -> list[str]:
     return failures
 
 
+def validate_v45_outcome(outcome: dict[str, Any]) -> dict[str, Any]:
+    if outcome.get("schema") == V45_SCHEMA:
+        return {
+            "classification": "terminal_negative_receipt",
+            "failed_frozen_gates": validate_v45_negative(outcome),
+            "repository_commit": outcome["repository_commit"],
+            "preregistration_sha256": outcome["preregistration_sha256"],
+            "training_receipt_sha256": outcome["training_receipt_sha256"],
+        }
+    partial = outcome.get("partial_scientific_result", {})
+    evidence = outcome.get("evidence", {})
+    decision = outcome.get("decision", {})
+    if (
+        outcome.get("schema") != V45_INCIDENT_SCHEMA
+        or outcome.get("model") != MODEL_ID
+        or outcome.get("revision") != MODEL_REVISION
+        or outcome.get("classification")
+        != "terminal_protocol_negative_no_v45_receipt"
+        or outcome.get("infrastructure_valid") is not True
+        or outcome.get("blocked_layer") != 32
+        or outcome.get("complete") is not True
+        or outcome.get("terminal") is not True
+        or partial.get("terminal_layers") != 32
+        or partial.get("active_residual_layers") != 32
+        or partial.get("frozen_mean_reduction_gate_already_missed") is not True
+        or partial.get("frozen_no_validation_regression_gate_already_missed")
+        is not True
+        or evidence.get("v45_terminal_receipt_present") is not False
+        or evidence.get("v45_completion_marker_present") is not False
+        or decision.get("v45_residual_rejected") is not True
+        or decision.get("original_v60_residual_candidate_admission_failed")
+        is not True
+        or decision.get("do_not_materialize_or_execute_v45_payloads") is not True
+    ):
+        raise ValueError("v45 protocol-negative incident identity changed")
+    return {
+        "classification": outcome["classification"],
+        "failed_frozen_gates": [
+            "all_active_layers_validation_not_regressed",
+            "mean_active_relative_validation_nmse_reduction",
+            "pilot_sensitivity_mode_reproduction_protocol",
+        ],
+        "repository_commit": None,
+        "preregistration_sha256": evidence["preregistration_sha256"],
+        "training_receipt_sha256": None,
+    }
+
+
 def validate_v60(preregistration: dict[str, Any]) -> None:
     admission = preregistration.get("candidate_admission", {})
     performance = preregistration.get("performance_protocol", {})
@@ -110,7 +161,7 @@ def build_amendment(
     repository_commit: str,
     frozen_at_utc: str,
 ) -> dict[str, Any]:
-    failures = validate_v45_negative(v45_receipt)
+    v45_validation = validate_v45_outcome(v45_receipt)
     validate_v60(v60_preregistration)
     return {
         "schema": "qwen38_27b_trained_compact_base_only_gate_amendment_v61",
@@ -136,13 +187,10 @@ def build_amendment(
             "sha256": V60_SHA256,
             "all_manifests_prompts_quality_thresholds_and_performance_thresholds_unchanged": True,
         },
-        "terminal_v45_negative": {
-            "schema": V45_SCHEMA,
-            "receipt_sha256": v45_receipt_sha256,
-            "repository_commit": v45_receipt["repository_commit"],
-            "preregistration_sha256": v45_receipt["preregistration_sha256"],
-            "training_receipt_sha256": v45_receipt["training_receipt_sha256"],
-            "failed_frozen_gates": failures,
+        "terminal_v45_outcome": {
+            "schema": v45_receipt["schema"],
+            "outcome_sha256": v45_receipt_sha256,
+            **v45_validation,
             "original_v60_residual_candidate_rejected": True,
         },
         "candidate_identity": {
@@ -178,7 +226,7 @@ def build_amendment(
             "generator_sha256": generator_sha256,
             "generator_repository_commit": repository_commit,
             "v60_sha256": V60_SHA256,
-            "v45_receipt_sha256": v45_receipt_sha256,
+            "v45_outcome_sha256": v45_receipt_sha256,
         },
         "claim_boundary": (
             "A pass can qualify only the exact residual-free trained compact "
@@ -203,7 +251,9 @@ def atomic_no_overwrite(payload: dict[str, Any], path: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--v45-receipt", type=Path, required=True)
+    parser.add_argument(
+        "--v45-outcome", "--v45-receipt", dest="v45_outcome", type=Path, required=True
+    )
     parser.add_argument(
         "--v60-preregistration",
         type=Path,
@@ -225,11 +275,11 @@ def main() -> None:
     ).strip()
     if tracked:
         raise RuntimeError("v61 freeze requires a clean tracked worktree")
-    receipt = json.loads(args.v45_receipt.read_text())
+    receipt = json.loads(args.v45_outcome.read_text())
     v60 = json.loads(args.v60_preregistration.read_text())
     payload = build_amendment(
         v45_receipt=receipt,
-        v45_receipt_sha256=sha256_file(args.v45_receipt),
+        v45_receipt_sha256=sha256_file(args.v45_outcome),
         v60_preregistration=v60,
         generator_sha256=sha256_file(Path(__file__)),
         repository_commit=subprocess.check_output(
@@ -244,7 +294,7 @@ def main() -> None:
                 "event": "v61_base_only_gate_amendment_frozen",
                 "output": str(args.output),
                 "sha256": sha256_file(args.output),
-                "v45_receipt_sha256": payload["frozen_inputs"]["v45_receipt_sha256"],
+                "v45_outcome_sha256": payload["frozen_inputs"]["v45_outcome_sha256"],
                 "terminal": True,
             },
             sort_keys=True,

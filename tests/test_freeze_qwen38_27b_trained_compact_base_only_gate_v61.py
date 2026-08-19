@@ -11,6 +11,9 @@ REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 SCRIPT = RUNTIME / "freeze_qwen38_27b_trained_compact_base_only_gate_v61.py"
 V60 = RUNTIME / "qwen38_27b_trained_compact_whole_model_gate_preregistration_v60.json"
+INCIDENT = RUNTIME / (
+    "receipts/qwen38_27b_all_layer_sensitivity_residual_v45_protocol_incident/incident.json"
+)
 
 
 def load_module():
@@ -67,7 +70,7 @@ def test_v61_freezes_separate_residual_free_candidate_without_gate_changes() -> 
         frozen_at_utc="2026-08-19T00:00:00Z",
     )
     assert payload["status"].startswith("frozen_after_v45_negative")
-    assert payload["terminal_v45_negative"]["original_v60_residual_candidate_rejected"]
+    assert payload["terminal_v45_outcome"]["original_v60_residual_candidate_rejected"]
     assert payload["candidate_identity"]["post_block_residual_payload_bytes"] == 0
     assert payload["candidate_identity"]["QWEN38_RESIDUAL_DIR_must_be_unset"]
     assert payload["candidate_identity"]["v45_payload_materialization_forbidden"]
@@ -107,3 +110,15 @@ def test_v61_uses_atomic_no_overwrite_and_clean_source_contract() -> None:
     assert "refusing to overwrite a frozen v61 amendment" in source
     assert '"--untracked-files=no"' in source
     assert "os.replace(temporary, path)" in source
+
+
+def test_v61_accepts_authenticated_protocol_negative_incident() -> None:
+    module = load_module()
+    outcome = module.validate_v45_outcome(json.loads(INCIDENT.read_text()))
+    assert outcome["classification"] == "terminal_protocol_negative_no_v45_receipt"
+    assert outcome["preregistration_sha256"] == (
+        "c4b64d7bdb6af2e6e09fc857cf0defd7bcd9a2b24903beb3b5023c3692a51664"
+    )
+    assert "pilot_sensitivity_mode_reproduction_protocol" in outcome[
+        "failed_frozen_gates"
+    ]
