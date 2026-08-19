@@ -24,6 +24,7 @@ def load_v49() -> ModuleType:
 V49 = load_v49()
 LLAMA_REVISION = V49.LLAMA_REVISION
 FROZEN_FILES = V49.FROZEN_FILES
+V49_TRANSFORM_QWEN_SOURCE = V49.transform_qwen_source
 
 
 def repair_transformed_qwen_source(text: str) -> str:
@@ -88,7 +89,7 @@ private:
 
 
 def transform_qwen_source(text: str) -> str:
-    return repair_transformed_qwen_source(V49.transform_qwen_source(text))
+    return repair_transformed_qwen_source(V49_TRANSFORM_QWEN_SOURCE(text))
 
 
 def main() -> None:

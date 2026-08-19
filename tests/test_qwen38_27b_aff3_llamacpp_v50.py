@@ -73,6 +73,7 @@ def test_successor_keeps_exact_v49_revision_and_frozen_file_scope() -> None:
     module = load_module()
 
     assert module.LLAMA_REVISION == "4df29be4f4c3673f428170fda944a5b19f743bb8"
+    assert module.V49_TRANSFORM_QWEN_SOURCE is not module.transform_qwen_source
     assert set(module.FROZEN_FILES) == {
         "src/CMakeLists.txt",
         "src/models/models.h",
