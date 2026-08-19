@@ -1,0 +1,60 @@
+{
+  "schema": "qwen38_27b_aff3_rotated_avx2_development_receipt_v47",
+  "created_at": "2026-08-19T09:58:37Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "implementation_commit": "4406d2d9d12511bedf70923f350f8a63420310fe",
+  "host": "quant",
+  "cpu": "AMD EPYC Milan AVX2",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "build_command": "g++ -O3 -std=c++17 -shared -fPIC -mavx2 -mfma -mf16c -mssse3 -Wall -Wextra -Werror qwen38_aff3_rotated_avx2_v47.cpp -o libqwen38_aff3_v47.so",
+  "source_sha256": {
+    "kernel": "66478809168aabba3d6fa86d17d8888583a965c8a8c336095aac8506c28ad681",
+    "runtime_image": "db5bc157da6731d46e4fdf1a4c2940175a4008046a094a505b24d2566f679fc7",
+    "correctness_harness": "c337faf08cc57f04339654a74437b266e031e29c9315694a6e35496d2fc74c15"
+  },
+  "binary_sha256": "00642818438f6ee89359aa32bb974d387f1fdb21d25cdc617955ba2d95d383e0",
+  "evidence": {
+    "native_self_test": {
+      "path": "native-self-test.json",
+      "sha256": "d1e8af2b08741e04e91a9872f5978981d01b0bc8a1f6f6f8479f800602236fa5",
+      "passed": true,
+      "rotation_maximum_absolute_error": 1.1920928955078125e-07,
+      "rotated_a8_codes_exact": true,
+      "rotated_a8_sums_exact": true,
+      "fused_output_bit_exact_vs_composed_v18": true
+    },
+    "actual_direct_layer0_runtime_image": {
+      "path": "layer00-runtime-image.json",
+      "sha256": "040c190aeba2466b6db9829928d1ecad7a91902402d587358834b7aca8ef8766",
+      "source_manifest_sha256": "3273a448535f42b4bd59f55ffc5aaaf135414e779648bfe9d0e7292ff8875877",
+      "source_manifest_repository_commit": "71f80ca83e8a462d548ed3e83a0d0ed572935412",
+      "shape": [
+        5120,
+        6144
+      ],
+      "stages": 6,
+      "runtime_compute_image_bytes": 8241216,
+      "persistent_dense_weight_bytes": 0,
+      "decoded_group_scale_matrix_bytes": 0,
+      "root_sha256": "dbe0344332c188d971f2cb6586583c723ab70a33a428bfefb66eff95f77d0a24"
+    },
+    "actual_direct_layer0_native_parity": {
+      "path": "layer00-native-parity.json",
+      "sha256": "e1b00cf2922da08bcb23a8a8d1f302290942b2e7b9da9ef74f661340307fe860",
+      "passed": true,
+      "fused_output_bit_exact_vs_composed_v18": true,
+      "output_sha256": "65bf76c36de96d41130c5fcd2c87b1a187d324b381a7c139a3d48903f2b6cae3"
+    }
+  },
+  "live_run_noninterference": {
+    "v43_service_active_after_correctness_checks": true,
+    "v43_restart_count_after_correctness_checks": 0,
+    "performance_timing_ran": false
+  },
+  "classification": "native_fused_algebra_and_actual_shape_correctness_pass_development_only",
+  "next_required_gate": "freeze and run trained-v44 actual-artifact parity plus one-token and eight-token GGML custom-node integration before llama.cpp model-graph attachment",
+  "claim_boundary": "This post-implementation development receipt proves exact composition of the six-stage rotation, group-128 A8 quantizer, and already-validated AFF3_X16 v18 GEMV on synthetic data and one authenticated direct-v43 layer-0 tensor. It is not preregistered performance evidence, does not cover trained-v44 algebra, does not attach the operation to llama.cpp, and establishes no whole-model quality, throughput, memory, energy, novelty, or breakthrough result.",
+  "complete": true,
+  "terminal": true
+}
