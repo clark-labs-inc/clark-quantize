@@ -1,0 +1,46 @@
+{
+  "schema": "qwen38_27b_activation_conditioned_residual_paging_preregistration_v82",
+  "experiment_id": "qwen38_27b_activation_conditioned_residual_paging_v82",
+  "model": "Qwen/Qwen3.8-27B",
+  "status": "frozen_before_execution",
+  "hypothesis": {
+    "name": "activation-conditioned residual paging",
+    "algebra": "W x = W_CQ3 x + sum over selected input groups g of (W_source - W_CQ3)_g x_g",
+    "selector": "select a fixed number of groups using ||x_g||_2 times the precomputed Frobenius norm ||R_g||_F; selection never reads residual weights",
+    "reason": "v81 shows that permanently deleting complete MLP precision modes breaks reasoning, while v23 proves that retaining those modes in Q4 preserves capability; conditional residual traffic tests whether those modes can remain exact but cold for most token-group pairs",
+    "novelty_status": "unassessed; this is a falsification screen, not a novelty claim"
+  },
+  "scope": {
+    "layers": [1, 23, 45],
+    "roles_per_layer": ["gate", "up", "down"],
+    "operator_count": 9,
+    "layer_positions": ["early", "middle", "late"],
+    "residual_group_size": 128,
+    "fixed_residual_group_fraction": 0.1,
+    "gate_up_selected_groups_of_40": 4,
+    "down_selected_groups_of_136": 14,
+    "no_layer_count_rank_seed_or_budget_sweep": true
+  },
+  "upper_bound_status": {
+    "residual_values": "exact BF16 source minus exact deployed trained-CQ3 weights",
+    "why_optimistic": "a deployable residual must be quantized and packed; exact BF16 residual execution can only overstate attainable recovery",
+    "why_failure_is_material": "if exact residual values selected by a deployable no-residual-read bound cannot recover the error at ten-percent traffic, a quantized implementation of this geometry cannot",
+    "why_pass_is_not_promotion": "a pass requires fresh prompts, residual quantization, complete-model quality, and native-kernel evidence"
+  },
+  "authenticated_inputs": {
+    "full_context_v42_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "trained_cq3_v44_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+    "v81_quality_rejection_sha256": "d8f65bec8998c3548b03d6fdf4b92aee85813e7fc5cbf09cf362f6c2b0dd244e"
+  },
+  "gate": {
+    "minimum_operator_nmse_reduction_each": 0.5,
+    "minimum_complete_mlp_nmse_reduction_each_layer": 0.7,
+    "minimum_median_complete_mlp_nmse_reduction": 0.8,
+    "maximum_residual_group_fraction_each": 0.103,
+    "all_exact_layer_replays_required": true,
+    "all_values_finite_required": true
+  },
+  "next_if_passed": "repeat the same frozen selector on fresh prompts, then quantize the residual pages and construct one complete dynamic artifact",
+  "next_if_failed": "close input-group residual paging at throughput-relevant traffic; do not tune the budget or layer set",
+  "claim_boundary": "Architecture-contaminated exact-residual upper-bound screen across nine representative operators. It cannot establish complete-model quality, speed, energy, novelty, or a scientific breakthrough."
+}
