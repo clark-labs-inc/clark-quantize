@@ -1,0 +1,97 @@
+{
+  "schema": "qwen38_27b_q4_k_clang21_full_graph_profile_result_v32",
+  "experiment_id": "qwen38_27b_q4_k_clang21_full_graph_profile_v32",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "passed": true,
+  "decision": "retain_multi_kernel_lane",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "artifact": "stock Q4_K_M control",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4,
+    "cpu_affinity": "0,2,4,6"
+  },
+  "checks": {
+    "both_profiles_have_minimum_samples": true,
+    "zero_lost_samples": true,
+    "bench_denominators_exact": true,
+    "frequency_range_within_limit": true,
+    "service_result_success": true,
+    "raw_perf_data_hashed_then_deleted": true
+  },
+  "frequency": {
+    "minimum_mhz": 2400.0,
+    "maximum_mhz": 2400.0,
+    "range_mhz": 0.0,
+    "samples": 69
+  },
+  "profiles": {
+    "parent_gcc_v21": {
+      "perf_samples": 104000,
+      "lost_samples": 0,
+      "bench_samples": 32,
+      "bench_median_ns": 727535716.0,
+      "exclusive_cycle_fractions": {
+        "q4_k_verifier": 0.465,
+        "q8_x_q8_tinyblas": 0.3025,
+        "q6_k": 0.0529,
+        "openmp": 0.055,
+        "load_repack": 0.014
+      }
+    },
+    "candidate_clang21_v30": {
+      "perf_samples": 105000,
+      "lost_samples": 0,
+      "bench_samples": 32,
+      "bench_median_ns": 717878430.0,
+      "exclusive_cycle_fractions": {
+        "q4_k_verifier": 0.4284,
+        "q8_x_q8_tinyblas": 0.3127,
+        "q6_k": 0.0514,
+        "openmp": 0.0608,
+        "load_repack": 0.0143
+      }
+    }
+  },
+  "paired_bench_parent_over_candidate": 1.0134525368034808,
+  "amdahl": {
+    "confirmed_q4_native_speedup": 1.15252916728253,
+    "q4_only_parent_relative_ceiling": 1.0655749437955027,
+    "q4_plus_infinitely_fast_q8_parent_relative_ceiling": 1.5724246898125906,
+    "required_q8_speedup_given_confirmed_q4_for_1_40x": 3.8621026771712708,
+    "required_additional_candidate_speedup_for_1_40x": 1.3814164444402341
+  },
+  "invalid_attempt": {
+    "classification": "infrastructure-invalid reducer output; not an experiment score",
+    "reason": "The initial parser treated the report footer Total Lost Samples: 0 as a nonzero loss and omitted the GCC and Clang runtime aliases. The analysis amendment was frozen before correction; no samples or thresholds changed.",
+    "sha256": "e42848b451927cdc621c419da8e28c73037eb68c81c74f9bb61c6d0fb14e8d48"
+  },
+  "service": {
+    "unit": "quant-qwen38-v32-full-graph-profile",
+    "active_state": "inactive",
+    "sub_state": "dead",
+    "result": "success",
+    "exec_main_status": 0,
+    "wall_clock": "1min 9.499s",
+    "cpu_time": "3min 33.066s",
+    "memory_peak": "9.3G"
+  },
+  "provenance": {
+    "preregistration_sha256": "2bdf5683257ea82ec4033bd45d0365d1c84cecf8efcebfc26115d3ccecff569c",
+    "runner_sha256": "324e296b486e70eb98f03775e80c4fcc19edb819409cb67a17ccc6c0a413d63e",
+    "summarizer_sha256": "72f5165e8a9964eba38d9f86886114e8edbcc2e362d402c6a32d8e5b6974d1c2",
+    "analysis_amendment_sha256": "a8f0ea52bc6d02e6ed29f0f32c8462e2ec14dde3a6b9082287cc2f9768e50fdc",
+    "remote_terminal_decision_sha256": "c4b97105668ad5bd1079287d7102c6058e8261ea1e8c64467d2a88e187c70127",
+    "frequency_sha256": "f205e134c3c90c1745d5b4890ae18810428b3751f1e97139c32c842f8c4b66fd",
+    "parent_bench_sha256": "a7994067e5377f47b3df346f8a2f8b6be9c0f8ee0a7d4eba33b60d12e8fe4efc",
+    "candidate_bench_sha256": "93c4ef63115119f0f577cf7b57d9643b411ec64ae539c58492a60bc11b24ae1b",
+    "parent_report_sha256": "66d12192627f25aa4a4da7799773b5cd82595408e3ef680651c8ada04a88d0ac",
+    "candidate_report_sha256": "62acd65eb8d08dd5bb315b47c971c35cc3278a17fcff0f7ac5bfceb34045afaa",
+    "parent_perf_data_sha256": "bbae690ffdee83b48a1714a54f207171697e7bb32b6d65843502084a9d8ce222",
+    "candidate_perf_data_sha256": "244a3c31ce6999d4c14af02ace2bd632083057321f72998a3505389b6fa8d37e"
+  },
+  "next_lane": "Profile the activation-calibrated all-Q4_K quality anchor under the confirmed Clang kernel. The stock graph's Q8xQ8 hotspot belongs to the 288 Q8_0 weight tensors already removed by that artifact, so it must not drive the next implementation selection.",
+  "claim_boundary": "Sampling-based stock-model bottleneck and Amdahl diagnostic only. It is not a speed, quality, energy, or novelty result."
+}

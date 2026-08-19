@@ -1,0 +1,94 @@
+{
+  "schema": "qwen38_27b_imatrix_q4_k_clang21_graph_profile_preregistration_v33",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_imatrix_q4_k_clang21_graph_profile_v33",
+  "status": "frozen_before_candidate_measurement",
+  "frozen_at": "2026-08-19T04:38:16Z",
+  "objective": "Measure the real remaining cycle distribution after composing the activation-calibrated all-Q4_K artifact with the independently exact Clang 21 Q4_K kernel, then select the minimum material kernel or representation intervention needed to approach 2.75 conventional decode tok/s.",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "artifact": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-imatrix-Q4_K-v10.gguf",
+    "artifact_sha256": "6176472b7d039a6d911b34eea78dd4507256b4a22b3003d40b8587b711014f2a",
+    "artifact_bytes": 15606631072,
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4,
+    "cpu_affinity": "0,2,4,6",
+    "qwen_4b_compute_forbidden": true,
+    "parent_binary": "/workspace/build/llama.cpp-q4k-native-x4-deinterleave-v21/bin/llama-bench",
+    "parent_binary_sha256": "90a08eb2f1a70d540c117b9db563c28fa9bb0b03eedca48d061cc147aab79a28",
+    "candidate_binary": "/workspace/build/llama.cpp-q4k-clang21-pair-local-scaled-v30/bin/llama-bench",
+    "candidate_binary_sha256": "7a01aa1a0a866a2904e6ca09b42d501372a408503948f1880acc19fcfc356b70"
+  },
+  "quality_anchor": {
+    "v10_receipt_sha256": "e2b38e054e46df7ec4a99ef76d065d1a58ac113536eba4fa59c2deb54196185c",
+    "v23_terminal_receipt_sha256": "5e595caf7744ceec9a5c0d77d4d36f215fd7bec1968beb1ae7ef94b2de1a2435",
+    "cute": "9/20 versus stock 9/20",
+    "wikitext_ppl": 5.7219,
+    "wikitext_ratio_vs_stock": 0.9891437758224281,
+    "math500": "5/8",
+    "code_trace": "5/6",
+    "conventional_decode_tps": 2.2852360287690288,
+    "mtp3_accepted_tps": 3.611857030874639,
+    "quality_statement": "These are retained v23 receipts, not new v33 results. V33 changes only the executable and runs a no-generation graph profile."
+  },
+  "prior_evidence": {
+    "v31_exact_native_q4_speedup": 1.15252916728253,
+    "v32_stock_graph_speedup": 1.0134525368034808,
+    "v32_stock_candidate_cycle_shares": {
+      "q4_k_verifier": 0.4284,
+      "q8_x_q8_tinyblas": 0.3127,
+      "q6_k": 0.0514,
+      "openmp": 0.0608
+    },
+    "reason_v32_cannot_select_v33_kernel": "The v32 stock artifact still contains 288 Q8_0 weight tensors. The v10 quality anchor transcodes all 288 to activation-calibrated Q4_K, so the stock Q8xQ8 hotspot is not assumed to survive."
+  },
+  "protocol": {
+    "runtime_order": "parent_then_candidate",
+    "llama_bench_arguments": {
+      "prompt_tokens": 4,
+      "generated_tokens": 0,
+      "repetitions": 32,
+      "batch": 128,
+      "ubatch": 64,
+      "threads": 4,
+      "output": "json"
+    },
+    "perf_event": "cycles:P",
+    "sample_frequency_hz": 999,
+    "call_graph": "frame-pointer",
+    "report_mode": "exclusive_self_overhead",
+    "raw_perf_data_policy": "hash then delete after the CSV report is sealed",
+    "accuracy_and_performance_run_alone": true
+  },
+  "validity_gates": {
+    "artifact_sha256_must_match": true,
+    "binary_sha256_must_match": true,
+    "samples_per_runtime_minimum": 5000,
+    "lost_samples_must_equal": 0,
+    "llama_bench_samples_per_runtime": 32,
+    "frequency_range_mhz_maximum": 100,
+    "both_processes_must_exit_zero": true
+  },
+  "analysis": {
+    "conventional_decode_target_tps": 2.75,
+    "required_speedup_from_v23_anchor": 1.2033768730698555,
+    "report_groups": [
+      "q4_k_verifier",
+      "q8_x_q8_tinyblas",
+      "q6_k",
+      "openmp",
+      "load_repack"
+    ],
+    "selection_rule": "Select only a hotspot with at least 10% exclusive cycles or a measured cross-kernel fusion opportunity whose Amdahl ceiling can materially close the 1.2034x gap. If no such single hotspot exists, require representation reduction or a preregistered multi-group composition.",
+    "forbidden_inference": "Do not transfer v32 stock-model shares to v10 and do not interpret profile timing as serving throughput."
+  },
+  "resources": {
+    "memory_max_gib": 30,
+    "max_wall_minutes": 10,
+    "checkpoint_retention": "no checkpoints; raw perf.data is deleted after hashing"
+  },
+  "claim_boundary": "Diagnostic selection only. No quality, serving-speed, 2.75 tok/s, 100 tok/s, energy, novelty, or breakthrough claim is authorized."
+}

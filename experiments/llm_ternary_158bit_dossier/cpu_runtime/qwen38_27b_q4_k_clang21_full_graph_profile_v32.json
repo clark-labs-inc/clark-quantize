@@ -1,0 +1,89 @@
+{
+  "schema": "qwen38_27b_q4_k_clang21_full_graph_profile_preregistration_v32",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_clang21_full_graph_profile_v32",
+  "frozen_at": "2026-08-19T04:25:01Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "model_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4,
+    "cpu_affinity": "0,2,4,6",
+    "qwen_4b_compute_forbidden": true,
+    "parent_binary_sha256": "90a08eb2f1a70d540c117b9db563c28fa9bb0b03eedca48d061cc147aab79a28",
+    "parent_libggml_cpu_sha256": "f6a1b46830bda9e322ff77d8d203eeb835b48cda0986cb547ea6141d08f95029",
+    "candidate_binary_sha256": "7a01aa1a0a866a2904e6ca09b42d501372a408503948f1880acc19fcfc356b70",
+    "candidate_libggml_cpu_sha256": "02b27cf8dec0c43a62b680d81640a97b4caef45c28f8377524dd2f083b480a81",
+    "perf_version": "7.0.12"
+  },
+  "prior_evidence": {
+    "v31_native_kernel_speedup": 1.15252916728253,
+    "v31_real_graph_speedup": 1.025378182821175,
+    "prior_gcc_mtp_cycle_shares": {
+      "q4_k_four_row": 0.4498,
+      "q8_x_q8_tinyblas": 0.2399,
+      "draft_q4_0": 0.0693,
+      "q6_k": 0.0564,
+      "openmp": 0.0551
+    }
+  },
+  "hypothesis": "The byte-identical Clang Q4_K tile win shifts enough exclusive cycles into Q8xQ8, Q6_K, OpenMP, or other graph work that an isolated Q4_K optimization no longer has a sufficient Amdahl ceiling. A paired long-repetition profile will identify the minimum composition capable of the 1.40x whole-model target.",
+  "protocol": {
+    "runtimes": [
+      "parent_gcc_v21",
+      "candidate_clang_v30"
+    ],
+    "llama_bench_arguments": {
+      "prompt_tokens": 4,
+      "generated_tokens": 0,
+      "repetitions": 32,
+      "batch": 128,
+      "ubatch": 64,
+      "threads": 4,
+      "output": "json"
+    },
+    "perf_event": "cycles:P",
+    "sample_frequency_hz": 999,
+    "call_graph": "frame-pointer",
+    "report_mode": "exclusive_self_overhead",
+    "runtime_order": "parent_then_candidate",
+    "raw_perf_data_policy": "hash then delete after reports are sealed"
+  },
+  "validity_gates": {
+    "samples_per_runtime_minimum": 5000,
+    "lost_samples_must_equal": 0,
+    "llama_bench_samples_per_runtime": 32,
+    "frequency_range_mhz_maximum": 100,
+    "both_processes_must_exit_zero": true
+  },
+  "aggregation_contract": {
+    "q4_k_verifier_patterns": [
+      "ggml_gemm_q4_K_8x8_q8_K",
+      "ggml_gemv_q4_K_8x8_q8_K_pair_local_scaled_pair2_tile"
+    ],
+    "q8_x_q8_patterns": [
+      "tinyBLAS_Q0_AVX<block_q8_0, block_q8_0"
+    ],
+    "q6_k_patterns": [
+      "ggml_vec_dot_q6_K_q8_K"
+    ],
+    "openmp_patterns": [
+      "libgomp.so",
+      "GOMP_"
+    ],
+    "load_repack_patterns": [
+      "repack_q4_K_to_q4_K_8_bl"
+    ],
+    "groups_must_use_exclusive_self_overhead": true
+  },
+  "selection_rules": [
+    "Compute the candidate cycle shares and Amdahl ceilings before editing another kernel.",
+    "Use the independently confirmed 1.152529 Q4_K native speedup when calculating whether Q4_K plus any single other group can reach 1.40x.",
+    "If Q4_K plus an infinitely fast Q8xQ8 group still cannot reach 1.40x, reject a two-kernel-only plan and require trained approximation or at least a three-group composition.",
+    "Do not interpret model-load repacking or page-fault shares as steady-state decode work.",
+    "Do not make a speed, quality, or novelty claim from a sampling profile."
+  ],
+  "promotion_boundary": "This diagnostic selects the next implementation lane. It does not promote a runtime or satisfy any throughput or capability gate."
+}

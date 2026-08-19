@@ -1,0 +1,31 @@
+{
+  "schema": "qwen38_27b_q4_k_clang21_full_graph_profile_analysis_amendment_v32",
+  "experiment_id": "qwen38_27b_q4_k_clang21_full_graph_profile_v32",
+  "frozen_at": "2026-08-19T04:30:59Z",
+  "reason": "The first reducer was infrastructure-invalid: an unanchored header regex matched 'Total Lost Samples: 0' instead of '# Samples: 104K/105K', and the frozen aggregation aliases omitted the GCC ggml_gemv Q4 spelling and Clang libomp runtime spelling. The underlying reports, denominators, thresholds, and samples remain immutable.",
+  "immutable_inputs": {
+    "parent_bench_sha256": "a7994067e5377f47b3df346f8a2f8b6be9c0f8ee0a7d4eba33b60d12e8fe4efc",
+    "candidate_bench_sha256": "93c4ef63115119f0f577cf7b57d9643b411ec64ae539c58492a60bc11b24ae1b",
+    "parent_report_sha256": "66d12192627f25aa4a4da7799773b5cd82595408e3ef680651c8ada04a88d0ac",
+    "candidate_report_sha256": "62acd65eb8d08dd5bb315b47c971c35cc3278a17fcff0f7ac5bfceb34045afaa",
+    "parent_raw_perf_sha256": "bbae690ffdee83b48a1714a54f207171697e7bb32b6d65843502084a9d8ce222",
+    "candidate_raw_perf_sha256": "244a3c31ce6999d4c14af02ace2bd632083057321f72998a3505389b6fa8d37e",
+    "invalid_first_reduction_sha256": "e42848b451927cdc621c419da8e28c73037eb68c81c74f9bb61c6d0fb14e8d48"
+  },
+  "allowed_corrections": {
+    "sample_header_regex": "Anchor to the '# Samples:' line in multiline mode.",
+    "q4_k_verifier_aliases_added": [
+      "ggml_gemv_q4_K_8x8_q8_K"
+    ],
+    "openmp_aliases_added": [
+      "libomp.so",
+      "__kmp"
+    ]
+  },
+  "forbidden_changes": [
+    "No new profile or benchmark samples.",
+    "No threshold, denominator, Amdahl target, group reassignment, or source change.",
+    "No removal of the infrastructure-invalid first reduction."
+  ],
+  "claim_boundary": "Parser and canonical symbol-alias correction only."
+}
