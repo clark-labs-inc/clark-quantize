@@ -22,6 +22,10 @@ TARGET_LAYERS = (0, 32, 63)
 TARGET_LAYER_TYPES = ("linear_attention", "linear_attention", "full_attention")
 SCHEMA = "qwen38_27b_mixed_confirmation_cache_v1"
 RECEIPT_SCHEMA = "qwen38_27b_mixed_confirmation_cache_receipt_v1"
+ALLOWED_PREREGISTRATION_STATUSES = {
+    "frozen_after_terminal_qat_before_mixed_execution",
+    "frozen_after_terminal_v36_before_any_fresh_holdout_collection",
+}
 
 
 def validate_existing(
@@ -97,7 +101,7 @@ def main() -> None:
     protocol = prereg["data"]["fresh_confirmation"]
     texts = list(protocol["texts"])
     if (
-        prereg.get("status") != "frozen_after_terminal_qat_before_mixed_execution"
+        prereg.get("status") not in ALLOWED_PREREGISTRATION_STATUSES
         or scope.get("active_model_only") != MODEL_ID
         or scope.get("revision") != MODEL_REVISION
         or tuple(scope.get("pilot_layers", [])) != TARGET_LAYERS
