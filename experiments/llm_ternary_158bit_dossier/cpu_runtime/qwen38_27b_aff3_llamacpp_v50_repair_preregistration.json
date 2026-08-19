@@ -1,0 +1,68 @@
+{
+  "schema": "qwen38_27b_aff3_llamacpp_repair_preregistration_v50",
+  "experiment_id": "qwen38_27b_aff3_llamacpp_repair_v50",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_after_v49_actual_model_failure_before_repair_execution",
+  "frozen_at_utc": "2026-08-19T12:31:42Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "llama_cpp": {
+    "source": "https://github.com/ggml-org/llama.cpp.git",
+    "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "source_must_be_clean_before_transform": true
+  },
+  "parent_failure": {
+    "diagnosis_sha256": "935594544d3741706df48599f27ee5bb9d187da7b07e1130e926c9e2043646ee",
+    "failed_smoke_receipt_sha256": "f6de56cdcc5089f4a9d739c5835df6893dc9f7883b4bc18baac8184dc26cb8c4",
+    "gdb_stdout_sha256": "5ceb5e7204daf2578c53afe2559d62857cc2c8d3a8534d3b54da84b885bc361e",
+    "classification": "callback_userdata_lifetime_violation"
+  },
+  "frozen_unchanged_inputs": {
+    "v49_transformer_sha256": "fe1dbb567bf9c2ae6dd6cbca35d13dbc8742308735b70a5e9aecf5d9a406d5c1",
+    "runtime_cpp_sha256": "51ae1057964ad24e48a48e1408e68a4c55137a9d52124483c5201a5dcce3a05c",
+    "runtime_h_sha256": "a31132f2e4605e5db8f1dcc922f695624809734cd6b539615a47561c27be12ea",
+    "runtime_smoke_cpp_sha256": "d32d4a157d19e25f8bc7ab673a5d114133cf20fc4aef71406423dca2f9fc50b8",
+    "native_kernel_cpp_sha256": "66478809168aabba3d6fa86d17d8888583a965c8a8c336095aac8506c28ad681"
+  },
+  "repair_contract": {
+    "numerical_code_changes_permitted": false,
+    "sidecar_format_changes_permitted": false,
+    "graph_projection_seam_changes_permitted": false,
+    "callback_state_owner": "llm_graph_result via one no-op llm_graph_input_i owner",
+    "builder_destruction_must_not_release_callback_state": true,
+    "graph_reuse_must_retain_callback_state": true,
+    "graph_reset_must_release_callback_state": true,
+    "model_global_shared_scratch_forbidden": true,
+    "intentional_state_leak_forbidden": true
+  },
+  "development_gate": {
+    "clean_transform_must_compile": true,
+    "one_and_eight_token_output_bit_exact_vs_v47": true,
+    "all_four_callback_tasks_must_run": true,
+    "actual_qwen_model_load_and_graph_execution_must_pass": true,
+    "bounded_eight_token_greedy_generation_must_be_nonempty": true,
+    "performance_timing_permitted": false
+  },
+  "execution": {
+    "host": "quant",
+    "physical_cpu_list": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "threads": 4,
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "seed": 20260819,
+    "generated_tokens": 8
+  },
+  "promotion_rules": [
+    "v49 failure evidence remains immutable",
+    "the v50 repair must be built from the exact clean llama.cpp revision",
+    "the standalone one-token and eight-token algebra must remain bit-exact",
+    "the actual Qwen3.8-27B graph must complete bounded free generation without a signal",
+    "no quality or performance claim may be inferred from this repair gate"
+  ],
+  "claim_boundary": "A v50 pass can establish only a lifetime-safe real llama.cpp graph attachment for the unchanged AFF3 algebra. It is not trained-v44 behavior, whole-model quality, throughput, memory, energy, novelty, or scientific-breakthrough evidence."
+}
