@@ -214,3 +214,4 @@ def test_v36_shell_runner_preserves_holdout_sequence_and_disk_bounds() -> None:
     assert "EXPERIMENT_COMPLETE" in source
     assert "artifacts.sha256" in source
     assert "another llama.cpp workload is active" in source
+    assert "pgrep -f '^/workspace/venvs/quant-cpu/bin/python" in source

@@ -69,7 +69,7 @@ if pgrep -f '/bin/llama-(server|bench|perplexity)( |$)' >/dev/null; then
   echo "another llama.cpp workload is active" >&2
   exit 2
 fi
-if pgrep -f '/workspace/venvs/quant-cpu/bin/python .*[q]wen' >/dev/null; then
+if pgrep -f '^/workspace/venvs/quant-cpu/bin/python .*[q]wen' >/dev/null; then
   echo "another Qwen Python workload is active" >&2
   exit 2
 fi
