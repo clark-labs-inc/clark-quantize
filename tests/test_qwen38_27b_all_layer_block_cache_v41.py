@@ -13,6 +13,7 @@ REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 SCRIPT = RUNTIME / "collect_qwen38_27b_all_layer_block_cache_v41.py"
 PREREG = RUNTIME / "qwen38_27b_all_layer_block_cache_v41.json"
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_all_layer_block_cache_v41"
 
 
 def sha256(path: Path) -> str:
@@ -135,3 +136,40 @@ def test_v41_claim_boundary_forbids_quality_or_speed_claims() -> None:
     rules = "\n".join(data["promotion_rules"])
     assert "not a quantized model" in rules
     assert "fresh confirmation remains sealed" in rules
+
+
+def test_v41_was_aborted_before_any_terminal_gate() -> None:
+    execution = json.loads((RECEIPTS / "execution-aborted.json").read_text())
+    assert execution["classification"] == (
+        "manually_aborted_preterminal_semantic_design_invalid"
+    )
+    assert execution["manual_stop"] is True
+    assert execution["restarts"] == 0
+    assert execution["checkpoint"]["next_layer"] == 16
+    assert execution["checkpoint"]["bytes"] == 39_341_472
+    assert len(execution["checkpoint"]["cached_layer_prefix"]) == 16
+    assert execution["terminal_artifacts"] == {
+        "cache_exists": False,
+        "receipt_exists": False,
+        "completion_marker_exists": False,
+        "scientific_gate_evaluated": False,
+    }
+    assert "neither a completed cache nor a zero score" in execution[
+        "status_boundary"
+    ]
+
+
+def test_v41_design_rejection_requires_full_sequence_context() -> None:
+    decision = json.loads((RECEIPTS / "design-decision.json").read_text())
+    assert decision["terminal_design_decision"] is True
+    assert decision["experiment_complete"] is False
+    assert decision["gate_evaluated"] is False
+    assert decision["decision"] == (
+        "reject_selected_row_cache_as_input_to_mixed_attention_training"
+    )
+    assert decision["execution_receipt_sha256"] == sha256(
+        RECEIPTS / "execution-aborted.json"
+    )
+    assert "full 64-token BF16 block input and output context" in decision[
+        "replacement_requirement"
+    ]

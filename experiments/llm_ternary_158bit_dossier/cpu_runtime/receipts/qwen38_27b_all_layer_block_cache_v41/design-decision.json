@@ -1,0 +1,12 @@
+{
+  "schema": "qwen38_27b_all_layer_block_cache_design_decision_v41",
+  "experiment_id": "qwen38_27b_all_layer_block_cache_v41",
+  "terminal_design_decision": true,
+  "experiment_complete": false,
+  "gate_evaluated": false,
+  "decision": "reject_selected_row_cache_as_input_to_mixed_attention_training",
+  "execution_receipt_path": "execution-aborted.json",
+  "execution_receipt_sha256": "1b2be7df16af7134f1c553d49fc4366a80f5796c8022e6057186b70165e42546",
+  "replacement_requirement": "full 64-token BF16 block input and output context for all twelve frozen sequences, sharded atomically by layer",
+  "claim_boundary": "A terminal design rejection does not turn the interrupted cache run into a scientific score or completed experiment."
+}
