@@ -1,0 +1,85 @@
+{
+  "schema": "qwen38_27b_imatrix_cq3_hybrid_materialization_preregistration_v80",
+  "experiment_id": "qwen38_27b_imatrix_cq3_hybrid_materialization_v80",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "frozen_before_candidate_materialization": true,
+  "hypothesis": {
+    "representation": "retain the activation-calibrated imatrix Q4_K target for all tensors except the frozen 32 least-sensitive complete MLP triplets, then replace those 96 tensors with the already-trained exact CQ3 codes and scales",
+    "system_reason": "the v23 imatrix target is already near-Q4 quality and reaches 4.09 accepted tok/s with the exact MTP3 runtime, while the independently frozen v67 partition retained the CUTE admission floor; their composition removes 2.54 GB from the quality-qualified target without fitting another layer-local residual",
+    "falsifiable_prediction": "the exact complete artifact is 13,066,455,712 bytes and preserves enough capability to enter whole-model WikiText, CUTE, MATH, code, and MMLU evaluation before a combined CQ3 plus imatrix-Q4 AMD kernel is built"
+  },
+  "authenticated_parents": {
+    "imatrix_q4_target": {
+      "path": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-imatrix-Q4_K-v10.gguf",
+      "bytes": 15606631072,
+      "sha256": "6176472b7d039a6d911b34eea78dd4507256b4a22b3003d40b8587b711014f2a",
+      "v23_terminal_receipt_sha256": "5e595caf7744ceec9a5c0d77d4d36f215fd7bec1968beb1ae7ef94b2de1a2435",
+      "quality": {
+        "cute_correct_of_20": 9,
+        "math500_correct_of_8": 5,
+        "code_correct_of_6": 5,
+        "wikitext_ppl": 5.7219
+      },
+      "amd_runtime": {
+        "target_tok_s": 2.2935212338106212,
+        "mtp3_accepted_tok_s": 4.092448439154422,
+        "exact_mtp_token_parity": true
+      }
+    },
+    "trained_cq3_partition": {
+      "v67_summary_sha256": "0f895cea20c3ed5fa4e7be39dd890b92f45113198d73aed8ea34683fe64452cd",
+      "v44_training_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+      "selected_layer_count": 32,
+      "selected_tensor_count": 96,
+      "cute_correct_of_20": 8,
+      "layers": [
+        1, 3, 4, 5, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 19,
+        20, 21, 23, 24, 25, 27, 28, 29,
+        36, 37, 39, 40, 41, 43, 44, 45
+      ]
+    }
+  },
+  "artifact_contract": {
+    "candidate_path": "/workspace/models/candidates/Qwen3.8-27B-imatrix-Q4-trained-CQ3-sensitivity32-v80.gguf",
+    "expected_bytes": 13066455712,
+    "bytes_saved_vs_imatrix_q4": 2540175360,
+    "fraction_saved_vs_imatrix_q4": 0.16276256856980184,
+    "fraction_saved_vs_stock_q4_k_m": 0.3113447380792149,
+    "honest_complete_file_bits_per_text_parameter": 3.8865129262969904,
+    "exact_selected_payloads_required": true,
+    "all_nonselected_file_bytes_identical_to_imatrix_parent_required": true,
+    "no_high_precision_weight_materialization_at_runtime": true
+  },
+  "materialization_gate": {
+    "exact_selected_layer_count": 32,
+    "exact_selected_tensor_count": 96,
+    "exact_candidate_bytes": 13066455712,
+    "full_v44_training_denominator_authenticated": true,
+    "candidate_sha256_required": true,
+    "interrupted_partial_is_the_only_file_the_runner_may_replace": true
+  },
+  "next_whole_model_gate_if_materialization_passes": {
+    "free_generation_required": true,
+    "minimum_cute_correct_of_20": 8,
+    "minimum_math500_correct_of_8": 4,
+    "minimum_code_correct_of_6": 4,
+    "minimum_mmlu_correct_of_64": 50,
+    "maximum_wikitext_ppl_ratio_vs_q4": 1.05,
+    "q4_wikitext_ppl": 5.7847,
+    "performance_after_quality_only": {
+      "minimum_four_core_accepted_tok_s": 2.25,
+      "target_four_core_accepted_tok_s": 2.75,
+      "stretch_four_core_accepted_tok_s": 3.2,
+      "minimum_speedup_over_stock_q4_decode": 1.4
+    }
+  },
+  "stop_rules": [
+    "do not tune the 32-layer partition after observing v80",
+    "do not promote from reconstruction, CUTE alone, or artifact size",
+    "if any quick whole-model capability gate fails, do not spend time on combined-kernel integration",
+    "if capability passes, integrate the exact CQ3 codes with the proven imatrix-Q4 Clang MTP3 runtime rather than opening another layer-local approximation sweep"
+  ],
+  "claim_boundary": "Frozen whole-model artifact-composition and downstream falsification contract only. It is not a quality, performance, energy, novelty, or scientific-breakthrough result."
+}
