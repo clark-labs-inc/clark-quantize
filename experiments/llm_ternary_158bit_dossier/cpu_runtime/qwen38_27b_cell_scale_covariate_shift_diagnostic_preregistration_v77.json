@@ -1,0 +1,56 @@
+{
+  "schema": "qwen38_27b_cell_scale_covariate_shift_diagnostic_preregistration_v77",
+  "experiment_id": "qwen38_27b_cell_scale_covariate_shift_diagnostic_v77",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_postmortem_before_vector_diagnostics",
+  "frozen_at_utc": "2026-08-20T06:50:00Z",
+  "objective": "Determine whether v76's heterogeneous fresh-prompt gains arise primarily from correction-magnitude covariate shift or from loss of correction-direction and selected-cell support, without fitting or promoting any new artifact.",
+  "parent_result": {
+    "v76_receipt_sha256": "444d249cf32b3a7a3f440250988b2fd44e191b80a62a1c6110ed3f5b87502fc8",
+    "v76_checkpoint_sha256": "cd05845eb77f7671adabae0113c4a6fc92b835f92d43378d582f51db5de1d0d8",
+    "fresh_relative_complete_mlp_nmse_improvement": 0.6726854697504412,
+    "fresh_positive_output_tile_fraction": 0.9921875,
+    "improved_prompt_fraction": 1.0,
+    "gate_passed": false,
+    "fresh_data_is_now_architecture_contaminated": true
+  },
+  "frozen_diagnostics": {
+    "residual": "exact BF16 MLP output minus the three-CQ3 baseline MLP output",
+    "correction": "frozen v75 hybrid MLP output minus the three-CQ3 baseline MLP output",
+    "per_prompt_values": [
+      "deployed_relative_sse_improvement",
+      "residual_correction_cosine",
+      "nonnegative_scalar_directional_capacity_equal_to_positive_cosine_squared",
+      "unconstrained_optimal_scalar_on_the_frozen_correction",
+      "relative_sse_improvement_at_that_diagnostic_scalar",
+      "deployed_fraction_of_directional_capacity",
+      "per_tile_optimal_scalar_quantiles"
+    ],
+    "aggregate_values": [
+      "unconstrained_optimal_scalar_on_all_fresh_rows",
+      "relative_sse_improvement_at_that_diagnostic_scalar",
+      "deployed_fraction_of_directional_capacity"
+    ],
+    "no_parameter_fit_or_artifact_write": true,
+    "diagnostic_scalars_are_not_deployable_candidates": true
+  },
+  "classification_rule": {
+    "minimum_median_prompt_directional_capacity_for_magnitude_shift": 0.5,
+    "maximum_median_deployed_fraction_of_capacity_for_magnitude_shift": 0.8,
+    "magnitude_covariate_shift": "median prompt directional capacity is at least 0.5 and median deployed fraction of capacity is below 0.8",
+    "cell_support_or_direction_shift": "median prompt directional capacity is below 0.5",
+    "mixed_or_well_scaled": "all remaining cases"
+  },
+  "decision": {
+    "if_magnitude_covariate_shift": "derive a prompt-balanced distributionally robust scale estimator at identical cells, codes, bytes, operations, and passes",
+    "if_cell_support_or_direction_shift": "derive leave-one-prompt-out stable cell support before refitting scales, keeping the same fixed rate",
+    "if_mixed_or_well_scaled": "jointly regularize selection support and scales under prompt-group risk",
+    "v76_tuning_or_promotion_forbidden": true,
+    "new_untouched_prompts_required_for_any_future_promotion": true,
+    "no_whole_model_claim": true,
+    "no_benchmark_claim": true,
+    "no_novelty_claim": true,
+    "no_breakthrough_claim": true
+  },
+  "claim_boundary": "Postmortem geometry diagnosis on the now-open v76 prompts. It may choose the next mathematical estimator family, but cannot fit, validate, promote, or establish quality, throughput, novelty, or a breakthrough."
+}
