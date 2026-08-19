@@ -4,7 +4,8 @@ set -euo pipefail
 repo=${REPO:-/workspace/src/clark-quantize-qwen38-v49-smoke}
 python_bin=${PYTHON_BIN:-/workspace/venvs/quant-cpu/bin/python}
 cli=${LLAMA_CLI:-/workspace/build/llama.cpp-qwen38-aff3-v49c/bin/llama-cli}
-libllama=${LIBLLAMA:-/workspace/build/llama.cpp-qwen38-aff3-v49c/bin/libllama.so}
+runtime_lib_dir=${RUNTIME_LIB_DIR:-/workspace/build/llama.cpp-qwen38-aff3-v49c/bin}
+libllama="$runtime_lib_dir/libllama.so"
 model=${MODEL:-/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf}
 sidecar=${SIDECAR:-/workspace/quant-runs/qwen38-aff3-rotated-v47/layer-00-direct.aff3x16}
 state_dir=${STATE_DIR:-/workspace/quant-state/qwen38-aff3-llamacpp-model-smoke-v49}
@@ -77,6 +78,13 @@ test -f "$preregistration"
 require_sha256 "$preregistration" 85dce05fb4306d4fd4974c64df7b478f1b949ced81cb3af0ab201e8d147cacfe
 require_sha256 "$cli" 1bd2b6d3d5f0b1b988508bb6682cd9af896b40da46422200a47b887a7c4ae600
 require_sha256 "$libllama" dc4860ba93c9e2df68e001aa7dba159b062edc7297555b80ad67651e978bd83f
+require_sha256 "$runtime_lib_dir/libggml-cpu.so" 4536aef1e89f0bfb31b533e2357d05f42e809cd3361ad30312c23260052a9178
+require_sha256 "$runtime_lib_dir/libggml-base.so" 024be97cceb2ad5a2fad3df57920cb4059d84230ae68044473fe434381a4f665
+require_sha256 "$runtime_lib_dir/libggml.so" f7389605444d6bbbfa0c382eff64096116b8bd8105ebef79d596a1bd2c1c2a4a
+require_sha256 "$runtime_lib_dir/libllama-cli-impl.so" 967255be4a091ba2f99ece091df90c11569f8215ff227cde706fe3a7fcf6e13f
+require_sha256 "$runtime_lib_dir/libllama-common.so" 6df3874f00e21e38e0dd4bd0af5774a011dd073565b9422ea287f651b27d3396
+require_sha256 "$runtime_lib_dir/libllama-server-impl.so" 732d0a61bd6c6d3fc5b6ae7adabb9e102709d57fb9015d6554c7c3f278d4cef5
+require_sha256 "$runtime_lib_dir/libmtmd.so" a14b1eba2029e3d50bfa89edd2ec8a1e45387c45539d71619987709f0c0ce64c
 require_sha256 "$model" 31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34
 require_sha256 "$sidecar" a4cec7372ac21a0093d047c1452277508583ebca1e3f4f66c73a8a74142ccf48
 
@@ -124,7 +132,7 @@ mv "$stderr_path.tmp" "$stderr_path"
 
 "$python_bin" - \
   "$receipt" "$stdout_path" "$stderr_path" "$status" \
-  "$repo" "$preregistration" "$cli" "$libllama" "$model" "$sidecar" \
+  "$repo" "$preregistration" "$cli" "$runtime_lib_dir" "$model" "$sidecar" \
   "$prompt" <<'PY'
 import hashlib
 import json
@@ -151,7 +159,7 @@ def sha256(path: Path) -> str:
     repo,
     preregistration,
     cli,
-    libllama,
+    runtime_lib_dir,
     model,
     sidecar,
     prompt,
@@ -160,6 +168,7 @@ receipt_path = Path(receipt_path)
 stdout_path = Path(stdout_path)
 stderr_path = Path(stderr_path)
 repo = Path(repo)
+runtime_lib_dir = Path(runtime_lib_dir)
 stderr_text = stderr_path.read_text(errors="replace")
 stdout_bytes = stdout_path.read_bytes()
 performance_markers = (
@@ -180,7 +189,19 @@ payload = {
     "preregistration_sha256": sha256(Path(preregistration)),
     "inputs": {
         "llama_cli_sha256": sha256(Path(cli)),
-        "libllama_sha256": sha256(Path(libllama)),
+        "runtime_library_sha256": {
+            name: sha256(runtime_lib_dir / name)
+            for name in (
+                "libllama.so",
+                "libggml-cpu.so",
+                "libggml-base.so",
+                "libggml.so",
+                "libllama-cli-impl.so",
+                "libllama-common.so",
+                "libllama-server-impl.so",
+                "libmtmd.so",
+            )
+        },
         "q4_control_gguf_sha256": sha256(Path(model)),
         "direct_v43_layer0_aff3_sha256": sha256(Path(sidecar)),
         "active_aff3_layers": [0],

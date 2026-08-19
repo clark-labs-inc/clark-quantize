@@ -14,6 +14,13 @@ def test_model_smoke_binds_exact_runtime_model_and_sidecar() -> None:
 
     assert "1bd2b6d3d5f0b1b988508bb6682cd9af896b40da46422200a47b887a7c4ae600" in source
     assert "dc4860ba93c9e2df68e001aa7dba159b062edc7297555b80ad67651e978bd83f" in source
+    assert "4536aef1e89f0bfb31b533e2357d05f42e809cd3361ad30312c23260052a9178" in source
+    assert "024be97cceb2ad5a2fad3df57920cb4059d84230ae68044473fe434381a4f665" in source
+    assert "f7389605444d6bbbfa0c382eff64096116b8bd8105ebef79d596a1bd2c1c2a4a" in source
+    assert '"libllama-cli-impl.so"' in source
+    assert '"libllama-common.so"' in source
+    assert '"libllama-server-impl.so"' in source
+    assert '"libmtmd.so"' in source
     assert "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34" in source
     assert "a4cec7372ac21a0093d047c1452277508583ebca1e3f4f66c73a8a74142ccf48" in source
     assert "QWEN38_AFF3_LAYERS=0" in source
