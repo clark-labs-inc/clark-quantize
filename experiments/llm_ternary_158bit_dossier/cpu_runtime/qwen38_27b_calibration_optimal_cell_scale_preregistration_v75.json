@@ -1,0 +1,113 @@
+{
+  "schema": "qwen38_27b_calibration_optimal_cell_scale_preregistration_v75",
+  "experiment_id": "qwen38_27b_calibration_optimal_cell_scale_v75",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_development_screen_before_execution",
+  "frozen_at_utc": "2026-08-20T05:22:00Z",
+  "objective": "Increase the capacity of v74's one-pass x8-by-128 mixed-cell representation at identical bytes by solving each candidate INT4 cell's eight FP16 row scales via exact conditional calibration least squares before greedy selection.",
+  "parent_finding": {
+    "v74_calibration_improvement": 0.10080280380376631,
+    "v74_disjoint_prompt_confirmation_improvement": 0.08839198537725163,
+    "v74_generalization_ratio": 0.8768802259640026,
+    "v74_positive_confirmation_output_tile_fraction": 0.9984375238418579,
+    "v74_full_mlp_payload_increase": 0.037062968569780856,
+    "conclusion": "Cell routing generalizes broadly, but source-weight INT4 scales leave deployable capacity unused. Optimize the already-stored scale values against activation residuals without adding codes, bytes, passes, or operations."
+  },
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "hidden_size": 5120,
+    "intermediate_size": 17408,
+    "layers": 64
+  },
+  "scope": {
+    "layer": 59,
+    "tensor": "mlp.down_proj.weight",
+    "selection_rows": 64,
+    "development_confirmation_rows": 32,
+    "whole_model_generation_forbidden": true,
+    "performance_timing_forbidden": true,
+    "fresh_holdout_claim_forbidden": true
+  },
+  "authenticated_inputs": {
+    "full_context_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "v44_training_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+    "v74_negative_receipt_sha256": "d4e81fae37d658c64bfe366d4a409642eb9432198c1d3047f675d7614702a791",
+    "source_tensor_sha256": {
+      "mlp.gate_proj.weight": "af5f1f3627acd6ed1a1e3ff71defaeb4433b1dc280efdb01b6d8ebf9086ab1c3",
+      "mlp.up_proj.weight": "2d3f11424f7705452380d1c7a2df4e625929ab9c460882e9c81ce5effadc7feb",
+      "mlp.down_proj.weight": "ce8eaece6fd48b996ff5328840d7b75d5d91dc23acf358711388973b5c9584ca"
+    },
+    "v44_payload_sha256": {
+      "gate": "ca349cd022d248a29fae502d523430b50fa5894f1e5deff549e222b159a02599",
+      "up": "1592cd2858371645fd8e236113caa1c39d733a959b3a54ab0bbe4f6d550de4bc",
+      "down": "faa8661738f9c0bdcadc2dcd7eac7723ca39c1d99486523b2e8b21e636c76356"
+    }
+  },
+  "data_status": {
+    "selection": "64 calibration rows from eight prompts",
+    "development_confirmation": "32 rows from four disjoint prompts first opened by v74",
+    "development_confirmation_is_architecture_contaminated": true,
+    "reason": "v75's scale-optimization hypothesis was chosen after observing aggregate v74 confirmation metrics",
+    "allowed_use": "reject or admit the algebra to a new-prompt replication only",
+    "promotion_or_scientific_claim_from_v75_forbidden": true,
+    "benchmark_items_used": false
+  },
+  "int4_cell": {
+    "codes": "fixed signed INT4 source-weight codes in [-8, 7], group 128, from four deterministic weight-space scale iterations",
+    "stored_scales": "one FP16 scale for each of eight output rows in a selected cell",
+    "scale_fit": "for every candidate cell and output row, solve max(0, dot(z, residual plus removed-CQ3-cell-output) divided by dot(z, z)), round to FP16, then score the deployed rounded value",
+    "z": "calibration activation dotted with the fixed signed INT4 code vector",
+    "greedy_steps_per_output_tile": 16,
+    "selected_cells": 10240,
+    "learned_runtime_values": "the same 81920 FP16 scales already counted by the INT4 cell format",
+    "additional_runtime_bytes_vs_v74": 0,
+    "additional_runtime_operations_vs_v74": 0,
+    "sweep": false
+  },
+  "canonical_layout": {
+    "header_bytes": 64,
+    "cell_mode_bitmap_bytes": 10880,
+    "cq3_bytes_per_cell": 272,
+    "int4_bytes_per_cell": 528,
+    "unselected_cells": 76800,
+    "selected_cells": 10240,
+    "hybrid_down_payload_bytes": 26307264,
+    "baseline_three_cq3_mlp_payload_bytes": 71024640,
+    "hybrid_three_projection_mlp_payload_bytes": 73657024,
+    "relative_full_mlp_payload_increase": 0.037062968569780856,
+    "runtime_dispatch": "unchanged mutually exclusive CQ3 or INT4 x8-by-128 cell execution in one down-projection pass",
+    "high_precision_weight_materialization_at_runtime": false
+  },
+  "development_gate": {
+    "required_selected_cells": 10240,
+    "all_selected_calibration_marginal_benefits_positive": true,
+    "minimum_relative_calibration_mlp_nmse_improvement": 0.2,
+    "minimum_relative_development_confirmation_mlp_nmse_improvement": 0.15,
+    "minimum_development_confirmation_to_calibration_ratio": 0.5,
+    "minimum_development_confirmation_positive_output_tile_fraction": 0.9,
+    "maximum_relative_full_mlp_payload_increase": 0.04,
+    "packed_int4_roundtrip_exact": true,
+    "canonical_payload_bytes_exact": true,
+    "all_values_finite": true
+  },
+  "resources": {
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "allowed_logical_cpus": [0, 2, 4, 6],
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "restart_on_failure": true,
+    "minimum_free_disk_bytes": 8589934592
+  },
+  "decision": {
+    "if_pass": "freeze the exact selected cells, INT4 codes, and optimized scales, then generate a new disjoint non-benchmark prompt cache and independently replicate before any multilayer promotion",
+    "if_fail": "reject fixed-code calibration-optimal cell scaling and move to a structured rotation or trainable cell codes without tuning this rate on the development confirmation",
+    "no_holdout_claim": true,
+    "no_whole_model_claim": true,
+    "no_novelty_claim": true,
+    "no_breakthrough_claim": true
+  },
+  "claim_boundary": "Development-only layer-59 algebra screen on an architecture-contaminated confirmation set. A pass can only authorize a new-prompt replication; it cannot establish held-out quality, whole-model capability, benchmarks, throughput, energy, novelty, 100 tokens per second, or a scientific breakthrough."
+}
