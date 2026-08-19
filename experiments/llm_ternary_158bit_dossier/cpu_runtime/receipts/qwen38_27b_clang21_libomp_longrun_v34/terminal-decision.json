@@ -1,0 +1,120 @@
+{
+  "schema": "qwen38_27b_clang21_libomp_longrun_result_v34",
+  "experiment_id": "qwen38_27b_clang21_libomp_longrun_v34",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "passed": true,
+  "decision": "select_clang_active_policy_for_serving_validation",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "artifact": "activation-calibrated all-Q4_K v10 quality anchor",
+    "artifact_sha256": "6176472b7d039a6d911b34eea78dd4507256b4a22b3003d40b8587b711014f2a",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4
+  },
+  "checks": {
+    "artifact_and_binary_identities_exact": true,
+    "six_processes_exit_zero": true,
+    "six_processes_have_exact_32_sample_denominators": true,
+    "frequency_range_within_limit": true,
+    "no_perf_process_present": true,
+    "all_values_positive": true,
+    "service_result_success": true
+  },
+  "frequency": {
+    "minimum_mhz": 2400.0,
+    "maximum_mhz": 2400.0,
+    "range_mhz": 0.0,
+    "samples": 184
+  },
+  "arms": {
+    "parent_gcc_v21": {
+      "run_medians_ns": [
+        603873649.5,
+        602776132.5
+      ],
+      "median_of_run_medians_ns": 603324891.0,
+      "run_median_mad_fraction": 0.0009095572024062239,
+      "maximum_changepoint_ratio": 1.0107262336600944,
+      "both_processes_stable": true
+    },
+    "clang_default_v30": {
+      "run_medians_ns": [
+        571152995.0,
+        571197080.0
+      ],
+      "median_of_run_medians_ns": 571175037.5,
+      "run_median_mad_fraction": 0.00003859149744442394,
+      "maximum_changepoint_ratio": 1.0136019197223929,
+      "both_processes_stable": true,
+      "parent_over_arm_median": 1.0562872173838656,
+      "speed_gate_passed": true,
+      "stability_gate_passed": true
+    },
+    "clang_active_v30": {
+      "environment": {
+        "KMP_BLOCKTIME": "infinite",
+        "OMP_WAIT_POLICY": "active",
+        "KMP_LIBRARY": "turnaround"
+      },
+      "run_medians_ns": [
+        570685754.5,
+        567643194.0
+      ],
+      "median_of_run_medians_ns": 569164474.25,
+      "run_median_mad_fraction": 0.002672830647071961,
+      "maximum_changepoint_ratio": 1.0084611897896527,
+      "both_processes_stable": true,
+      "parent_over_arm_median": 1.0600185329469376,
+      "speed_gate_passed": true,
+      "stability_gate_passed": true
+    }
+  },
+  "causal_diagnostic": {
+    "v33_candidate_post_over_pre": 1.1649651877157188,
+    "default_phase_reproduced_without_perf": false,
+    "interpretation": "The v33 within-process slowdown does not reproduce when perf is absent. Both Clang arms are stable, so the prior anomaly is classified as an instrumentation interaction rather than a steady-state kernel regression. Active libomp wins the preregistered selection rule by retaining a stable 1.0600x graph speedup."
+  },
+  "quality_anchor_from_v23": {
+    "cute": "9/20 versus stock 9/20",
+    "wikitext_ppl": 5.7219,
+    "wikitext_ppl_ratio_vs_stock": 0.9891437758224281,
+    "math500": "5/8",
+    "code_trace": "5/6",
+    "conventional_decode_tps": 2.2852360287690288,
+    "mtp3_accepted_tps": 3.611857030874639,
+    "classification": "retained prior receipt; no v34 capability inference"
+  },
+  "target_analysis": {
+    "conventional_decode_target_tps": 2.75,
+    "required_speedup_from_v23_anchor": 1.2033768730698555,
+    "clang_graph_speedup": 1.0600185329469376,
+    "projected_conventional_decode_tps_if_graph_gain_transfers_exactly": 2.422390122167749,
+    "serving_gate_already_established": false
+  },
+  "service": {
+    "unit": "quant-qwen38-v34-libomp-longrun",
+    "result": "success",
+    "exec_main_status": 0,
+    "wall_clock": "3min 54.114s",
+    "cpu_time": "9min 50.026s",
+    "memory_peak": "12.8G"
+  },
+  "provenance": {
+    "preregistration_sha256": "dd23f5e9ccf592d532663cbd185e8ed9347e11dda508ac62e0a2b4628cc25bca",
+    "runner_sha256": "f0f5604966a24e383cbde83b15fe9a6c38f509b16fd1cfa2cf777269824c0be8",
+    "summarizer_sha256": "41ea24b1a47195bd1ee27542608083ee20c50fdb47efb90434211061fb6cf0fd",
+    "remote_terminal_decision_sha256": "862cc5eb0aae8b7490af682117f6b6b2a8248f39973e2e610033bd15491e911c",
+    "sealed_inputs_sha256": "309bb7e4d4969e839c8fd731caa3a44e679474d0f761faf8c618a7dfd219489e",
+    "frequency_sha256": "25adbd887ef68760e7fcd5b0413c9a4858e316c27626995c913ba4f6028d3bc3",
+    "parent_a_sha256": "91e6003e18f28c95f84ce3784eff22515308e933cac0202e0d3b695b4b4282d9",
+    "parent_b_sha256": "73d9c323ccea8cfdeea1e3427f31dc42c1556ef18a0b21bc7a39d985e4d9323b",
+    "clang_default_a_sha256": "fd5cce93ef05a4a6fe3b61d65bee4889530cfd7c1568c7522bd483c1cd447d41",
+    "clang_default_b_sha256": "985b664c67695dbe67318360880705074d41ff94e85049af870a3f66d486b9fa",
+    "clang_active_a_sha256": "5fd24202d77a07720c6af83be1ad9b919359d603184b18e5a02874a82172a1c9",
+    "clang_active_b_sha256": "06dc71467729b8d9634f3f1d4459e2bea8cf1dea22790a15ab27a96bf4edf124"
+  },
+  "next_lane": "Run an AB/BA llama-server validation on the exact v10 model, comparing parent v21 against Clang v30 with the selected active libomp policy under conventional decode and MTP3. Only after serving transfer is measured may the compiler composition be combined with a trained three-bit or residual-assisted representation.",
+  "claim_boundary": "Infrastructure-valid long-process graph result only: active-policy Clang is 1.0600x faster than the GCC parent by the preregistered median-of-run-medians statistic. No serving speed, new quality, 2.75 tok/s, 100 tok/s, energy, novelty, or breakthrough result is established."
+}

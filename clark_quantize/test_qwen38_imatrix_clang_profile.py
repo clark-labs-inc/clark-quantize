@@ -26,6 +26,10 @@ V33_RECEIPT = (
 V34_PREREG = RUNTIME / "qwen38_27b_clang21_libomp_longrun_v34.json"
 V34_RUNNER = RUNTIME / "run_qwen38_27b_clang21_libomp_longrun_v34.sh"
 V34_SUMMARIZER = RUNTIME / "summarize_qwen38_27b_clang21_libomp_longrun_v34.py"
+V34_RECEIPT = (
+    RUNTIME
+    / "receipts/qwen38_27b_clang21_libomp_longrun_v34/terminal-decision.json"
+)
 
 
 def test_v32_stock_profile_is_terminal_and_does_not_select_from_stock_q8() -> None:
@@ -133,3 +137,19 @@ def test_v34_runner_and_reducer_preserve_every_longrun_sample() -> None:
     assert '"samples": samples' in reducer
     assert "all_32_samples_count" in V34_PREREG.read_text()
     assert "select_clang_active_policy_for_serving_validation" in reducer
+
+
+def test_v34_receipt_selects_stable_active_libomp_for_serving_only() -> None:
+    receipt = json.loads(V34_RECEIPT.read_text())
+    assert receipt["terminal"] is True
+    assert receipt["infrastructure_valid"] is True
+    assert receipt["passed"] is True
+    assert receipt["causal_diagnostic"]["default_phase_reproduced_without_perf"] is False
+    assert all(
+        arm["maximum_changepoint_ratio"] < 1.02
+        for arm in receipt["arms"].values()
+    )
+    assert receipt["arms"]["clang_active_v30"]["parent_over_arm_median"] >= 1.06
+    assert receipt["decision"] == "select_clang_active_policy_for_serving_validation"
+    assert receipt["target_analysis"]["serving_gate_already_established"] is False
+    assert "Run an AB/BA llama-server validation" in receipt["next_lane"]
