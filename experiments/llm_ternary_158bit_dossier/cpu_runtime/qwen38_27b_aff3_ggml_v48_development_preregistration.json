@@ -1,0 +1,70 @@
+{
+  "schema": "qwen38_27b_aff3_ggml_development_preregistration_v48",
+  "experiment_id": "qwen38_27b_aff3_ggml_development_v48",
+  "created_at": "2026-08-19T10:07:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "repository_parent_commit": "c4393501d9a8743097e5725e2e7cbd2a64201d0f",
+  "purpose": "Implement and validate a real GGML CPU custom node around the exact v47 rotated-AFF3 algebra before any performance timing or llama.cpp model-graph attachment.",
+  "frozen_external_input": {
+    "role": "authenticated direct-v43 layer-0 development image; trained-v44 promotion input is intentionally unavailable until v43 and v44 pass",
+    "path": "/workspace/quant-runs/qwen38-aff3-rotated-v47/layer-00-direct.aff3x16",
+    "file_bytes": 8245376,
+    "file_sha256": "a4cec7372ac21a0093d047c1452277508583ebca1e3f4f66c73a8a74142ccf48",
+    "root_sha256": "dbe0344332c188d971f2cb6586583c723ab70a33a428bfefb66eff95f77d0a24",
+    "shape": [
+      5120,
+      6144
+    ],
+    "stages": 6
+  },
+  "llama_cpp": {
+    "source_path": "/workspace/src/llama.cpp-residual-graph-v40",
+    "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "source_must_be_clean": true,
+    "ggml_cpu_sha256": "3979b1f2f8cc15c60e6ffe56427493782515beb0edb77115416a957f6a321a7e",
+    "ggml_base_sha256": "9c72be64bb6b21675dfc40c9950d0e265c2fdc38d638157f46bbc4e202bebc8b",
+    "ggml_sha256": "67cdcb86c0f3fca7b62a338e0be8bfeca00919c4042a7f0d807c14826b50c367"
+  },
+  "implementation_contract": {
+    "image_loading": "read-only mmap with fail-closed header, bounds, padding, semantic, and SHA-256 authentication",
+    "rotation": "derive FP32 cosine and sine coefficients once at image load from the stored FP16 angles; never materialize a dense weight or decoded group-scale matrix",
+    "decode_tasking": "split the 5120 output rows into 16-row-aligned ranges across all four GGML CPU tasks; each task owns scratch and independently rotates and quantizes the one live activation to avoid an unsupported cross-task barrier",
+    "eight_token_tasking": "assign complete tokens round-robin across four GGML CPU tasks",
+    "graph_seam": "ggml_map_custom2 over an uncomputed 5120-row shape anchor and the live 6144-row activation",
+    "token_counts": [
+      1,
+      8
+    ],
+    "threads": 4,
+    "physical_cpu_affinity_for_later_timing_only": [
+      0,
+      2,
+      4,
+      6
+    ]
+  },
+  "development_correctness_gate": {
+    "required_root_authentication": true,
+    "required_image_semantic_validation": true,
+    "required_token_counts": [
+      1,
+      8
+    ],
+    "required_threads_observed_for_decode": 4,
+    "required_output_bit_exact_vs_direct_v47": true,
+    "maximum_absolute_error_vs_direct_v47": 0.0,
+    "required_persistent_dense_weight_bytes": 0,
+    "required_decoded_group_scale_matrix_bytes": 0,
+    "performance_timing_permitted": false
+  },
+  "promotion_sequence": [
+    "pass this development correctness gate on the direct-v43 image",
+    "freeze implementation and a separate performance preregistration after v43 stops owning the CPU",
+    "repeat exact artifact parity on trained-v44 output",
+    "attach the frozen node to the Qwen3.8-27B llama.cpp model graph",
+    "run whole-model free-generation, WikiText, CUTE, MATH-500, code, MMLU, throughput, memory, and energy gates"
+  ],
+  "claim_boundary": "A v48 development pass can establish only authenticated GGML graph execution and exact parity with the v47 kernel on one direct-v43 layer. It cannot establish trained-v44 quality, performance, whole-model capability, novelty, or a scientific breakthrough.",
+  "frozen": true
+}
