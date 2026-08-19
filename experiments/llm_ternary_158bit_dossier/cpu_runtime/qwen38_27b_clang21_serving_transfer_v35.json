@@ -1,0 +1,127 @@
+{
+  "schema": "qwen38_27b_clang21_serving_transfer_preregistration_v35",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_clang21_serving_transfer_v35",
+  "status": "frozen_before_candidate_measurement",
+  "frozen_at": "2026-08-19T05:06:33Z",
+  "objective": "Test whether the stable Clang 21 plus active-libomp Q4_K graph gain transfers to conventional and MTP3 llama-server decode on the exact quality-qualified 27B artifact, then re-run frozen capability tripwires on the selected runtime.",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "target_model": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-imatrix-Q4_K-v10.gguf",
+    "target_model_sha256": "6176472b7d039a6d911b34eea78dd4507256b4a22b3003d40b8587b711014f2a",
+    "target_model_bytes": 15606631072,
+    "draft_model": "/workspace/models/controls/mtp-Qwen3.8-27B-Q4_0.gguf",
+    "draft_model_sha256": "051a1764cff8c4f3ee6ae8b00593a0364c7539c67fa50ffc58f3f96509fca38e",
+    "draft_model_bytes": 1680271648,
+    "parent_server": "/workspace/build/llama.cpp-q4k-native-x4-deinterleave-v21/bin/llama-server",
+    "parent_server_sha256": "2c9db28068c8cf92f92fa631e1667e5d1cb39c83e21ae3245bb655d69ec358fc",
+    "parent_cpu_library_sha256": "f6a1b46830bda9e322ff77d8d203eeb835b48cda0986cb547ea6141d08f95029",
+    "candidate_server": "/workspace/build/llama.cpp-q4k-clang21-pair-local-scaled-v30/bin/llama-server",
+    "candidate_server_sha256": "e0efaa0b8c8412d6d85f1796442bff3ad8d8788fdc0542de7004a97f51d3bf9a",
+    "candidate_perplexity_sha256": "680daa54d7c27ca69abdd31f9234ab97a2791cc0b71620f78909e0f181dfea87",
+    "candidate_cpu_library_sha256": "02b27cf8dec0c43a62b680d81640a97b4caef45c28f8377524dd2f083b480a81",
+    "candidate_links_libomp": true,
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4,
+    "cpu_affinity": "0,2,4,6",
+    "qwen_4b_compute_forbidden": true
+  },
+  "retained_evidence": {
+    "v23_quality_anchor": {
+      "cute": "9/20 versus stock 9/20",
+      "wikitext_ppl": 5.7219,
+      "wikitext_ppl_ratio_vs_stock": 0.9891437758224281,
+      "math500": "5/8",
+      "code_trace": "5/6",
+      "conventional_decode_tps": 2.2852360287690288,
+      "mtp3_accepted_tps": 3.611857030874639
+    },
+    "v34_receipt_sha256": "d37ca1843fd04a675fe83fe7608b2fecbd82ff011c16e0239ca9dae46da1b08d",
+    "v34_parent_over_clang_active_graph_median": 1.0600185329469376,
+    "v34_maximum_candidate_changepoint_ratio": 1.0084611897896527,
+    "v34_default_phase_reproduced_without_perf": false
+  },
+  "hypothesis": "The stable compiler and OpenMP composition transfers at least 1.04x to conventional decode and 1.02x to MTP3 on the same model, while exact target-versus-MTP token parity and the frozen quick capability gates remain intact.",
+  "protocol": {
+    "run_order": [
+      "parent_a",
+      "candidate_a",
+      "candidate_b",
+      "parent_b"
+    ],
+    "configurations_per_run": [
+      "target",
+      "mtp3"
+    ],
+    "prompts_per_configuration": 4,
+    "generated_tokens_per_prompt": 96,
+    "temperature": 0.0,
+    "top_k": 1,
+    "seed": 42,
+    "ignore_eos": true,
+    "server": {
+      "threads": 4,
+      "context": 512,
+      "batch": 128,
+      "ubatch": 64,
+      "draft_width": 3,
+      "draft_p_min": 0.0
+    },
+    "parent_environment": {
+      "OMP_NUM_THREADS": "4",
+      "KMP_variables": "unset"
+    },
+    "candidate_environment": {
+      "OMP_NUM_THREADS": "4",
+      "KMP_BLOCKTIME": "infinite",
+      "OMP_WAIT_POLICY": "active",
+      "KMP_LIBRARY": "turnaround"
+    },
+    "frequency_monitoring": true,
+    "performance_runs_alone": true,
+    "restartable_per_configuration": true
+  },
+  "gates": {
+    "serving_transfer": {
+      "minimum_candidate_over_parent_conventional_tps": 1.04,
+      "minimum_candidate_over_parent_mtp3_tps": 1.02,
+      "minimum_candidate_conventional_tps": 2.35,
+      "minimum_candidate_mtp3_tps": 3.5,
+      "maximum_run_median_mad_fraction": 0.05,
+      "candidate_target_mtp3_exact_token_parity_every_prompt": true,
+      "maximum_frequency_range_mhz": 100.0
+    },
+    "always_run_quick_quality": {
+      "cute_quick_minimum_correct": 9,
+      "cute_quick_denominator": 20,
+      "math500_minimum_correct": 5,
+      "math500_denominator": 8,
+      "code_trace_minimum_correct": 5,
+      "code_trace_denominator": 6,
+      "maximum_wikitext_ppl_ratio_vs_stock": 1.01,
+      "wikitext_chunks": 4
+    },
+    "conditional_mmlu": {
+      "denominator": 64,
+      "minimum_correct": 49,
+      "maximum_loss_vs_stock_correct": 3,
+      "stock_correct": 52
+    }
+  },
+  "program_targets": {
+    "conventional_decode_tps": 2.75,
+    "minimum_speedup_vs_q4": 1.4,
+    "stretch_tps": 100.0,
+    "compiler_composition_alone_expected_to_meet_program_target": false
+  },
+  "resources": {
+    "memory_max_gib": 29,
+    "max_wall_minutes": 90,
+    "disk_policy": "Small JSON/log receipts only; reuse the single retained v10 model and MTP draft; create no model or checkpoint copy."
+  },
+  "decision_rule": "Retain Clang active as a representation-kernel composition component only if both serving transfer ratios, absolute development floors, stability, exact same-runtime MTP parity, quick capability, and conditional MMLU gates pass. Failure rejects the compiler composition but does not reject the trained representation lane.",
+  "claim_boundary": "A pass establishes only a same-model, four-core Milan compiler/runtime composition. It does not establish 2.75 conventional tok/s, 1.40x over Q4, 100 tok/s, broad near-lossless quality, energy efficiency, novelty, DFlash3, or a scientific breakthrough."
+}
