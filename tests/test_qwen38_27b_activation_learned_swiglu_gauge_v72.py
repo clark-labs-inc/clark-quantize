@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import sys
@@ -12,6 +13,9 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 MODULE_PATH = RUNTIME / "run_qwen38_27b_activation_learned_swiglu_gauge_v72.py"
 PREREG = RUNTIME / "qwen38_27b_activation_learned_swiglu_gauge_preregistration_v72.json"
+RECEIPTS = (
+    RUNTIME / "receipts/qwen38_27b_activation_learned_swiglu_gauge_v72"
+)
 
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(RUNTIME))
@@ -88,3 +92,34 @@ def test_v72_preregistration_freezes_interleaved_confirmation_protocol() -> None
     assert prereg["gauge_optimization"]["sweep"] is False
     assert prereg["pilot_gate"]["runtime_sidecar_bytes"] == 0
     assert prereg["pilot_gate"]["additional_runtime_operations"] == 0
+
+
+def test_v72_terminal_receipt_rejects_non_generalizing_identity_gauge() -> None:
+    receipt_path = RECEIPTS / "receipt.json"
+    marker = json.loads((RECEIPTS / "EXPERIMENT_COMPLETE.json").read_text())
+    receipt = json.loads(receipt_path.read_text())
+
+    assert receipt["complete"] is True
+    assert receipt["terminal"] is True
+    assert receipt["gate"] == {
+        "decision": "reject_activation_learned_diagonal_gauge_before_model_integration",
+        "passed": False,
+    }
+    assert receipt["gauge_optimization"]["selected_step"] == 0
+    assert receipt["gauge_optimization"]["minimum"] == 1.0
+    assert receipt["gauge_optimization"]["maximum"] == 1.0
+    assert receipt["exactness"]["unquantized_gauge_identity_nmse"] == 0.0
+    assert receipt["exactness"]["up_scale_fold_nmse"] == 0.0
+    assert 0 < receipt["metrics"][
+        "relative_train_complete_mlp_nmse_improvement"
+    ] < 0.15
+    assert receipt["metrics"][
+        "relative_confirmation_complete_mlp_nmse_improvement"
+    ] < 0
+    assert receipt["storage"]["baseline_up_down_payload_bytes"] == receipt[
+        "storage"
+    ]["gauged_up_down_payload_bytes"]
+    assert receipt["storage"]["runtime_sidecar_bytes"] == 0
+    assert marker["receipt_sha256"] == hashlib.sha256(
+        receipt_path.read_bytes()
+    ).hexdigest()
