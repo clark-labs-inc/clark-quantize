@@ -15,7 +15,7 @@ import struct
 import tempfile
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Self
+from typing import Any
 
 import numpy as np
 
@@ -418,7 +418,7 @@ class Aff3RuntimeImage:
         self.sections = records
         self.root_sha256 = root_sha.hex()
 
-    def __enter__(self) -> Self:
+    def __enter__(self) -> Aff3RuntimeImage:
         return self
 
     def __exit__(self, exc_type: object, exc: object, traceback: object) -> None:
