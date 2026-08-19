@@ -1,0 +1,74 @@
+{
+  "schema": "qwen38_27b_aff3_llamacpp_model_smoke_incident_v50",
+  "experiment_id": "qwen38_27b_aff3_llamacpp_model_smoke_v50",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "observed_at_utc": "2026-08-19T12:56:44Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "repository_commit": "55f903f0bd3423988eb6e31bdb09acd9ca35520c",
+  "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+  "execution": {
+    "host": "quant",
+    "unit": "quant-qwen38-27b-aff3-llamacpp-model-smoke-v50.service",
+    "physical_cpu_list": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "n_restarts": 0,
+    "requested_generated_tokens": 8,
+    "cli_flags_missing": [
+      "--no-conversation",
+      "--single-turn"
+    ],
+    "hard_output_limit_present": false,
+    "hard_runtime_limit_present": false
+  },
+  "observations": {
+    "v49_sigsegv_reproduced": false,
+    "actual_model_loaded": true,
+    "actual_graph_reached_generation": true,
+    "reported_prompt_tokens_per_second": 6.8,
+    "reported_generation_tokens_per_second": 1.9,
+    "bounded_generation_preview": ".sp/l/t/p/t/t.mp.mp",
+    "automatic_conversation_mode_entered": true,
+    "available_commands_banner_present": true,
+    "closed_stdin_prompt_loop_present": true,
+    "generated_stdout_bytes_before_manual_stop": 23378820176,
+    "stdout_first_1mib_sha256": "6d0852d9642bd958f307154adabe6fdfc114257886672618875cbc7e1c9dc381",
+    "stdout_last_1mib_sha256": "11c7654b30d4a0ee1768937c7e61b59bf24218d79f8050d895cab54238776c65",
+    "stdout_tail_pattern": "repeated > prompts followed by Exiting...",
+    "stderr_bytes": 0,
+    "disk_free_before_cleanup_gib": 40,
+    "disk_free_after_cleanup_gib": 62
+  },
+  "termination": {
+    "manual_stop_required": true,
+    "service_stopped": true,
+    "runner_interrupted_after_service_stop": true,
+    "runner_client_exit_code": 255,
+    "v50_durable_receipt_written": false,
+    "large_generated_artifact_deleted": true,
+    "deleted_path": "/workspace/quant-state/qwen38-aff3-llamacpp-model-smoke-v50/generation.stdout",
+    "deleted_bytes": 23378820176,
+    "deletion_recoverable": false
+  },
+  "classification": "unbounded_automatic_conversation_eof_prompt_loop",
+  "secondary_harness_defect": "manual systemd stop returned success to systemd-run, so the original nonempty-output predicate could have produced a false pass",
+  "required_successor_controls": {
+    "force_no_conversation": true,
+    "force_single_turn": true,
+    "hard_output_bytes_per_stream": 1048576,
+    "hard_runtime_seconds": 300,
+    "reject_interactive_banner": true,
+    "reject_repeated_prompt_pattern": true,
+    "record_service_result": true
+  },
+  "passed": false,
+  "complete": true,
+  "terminal": true,
+  "claim_boundary": "v50 establishes only that the repaired graph progressed beyond the former v49 lifetime segfault into actual-model generation. It is a failed harness run and is not quality, throughput, memory, energy, novelty, or scientific-breakthrough evidence."
+}

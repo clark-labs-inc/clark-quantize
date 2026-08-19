@@ -1,0 +1,74 @@
+{
+  "schema": "qwen38_27b_aff3_llamacpp_model_gate_preregistration_v51",
+  "experiment_id": "qwen38_27b_aff3_llamacpp_model_gate_v51",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_after_v50_harness_incident_before_v51_execution",
+  "frozen_at_utc": "2026-08-19T13:00:41Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "parent_evidence": {
+    "v49_callback_lifetime_diagnosis_sha256": "935594544d3741706df48599f27ee5bb9d187da7b07e1130e926c9e2043646ee",
+    "v50_harness_incident_sha256": "cb04554a9316af13d59f970701ed42d8c9c1c2cdaa6382a4e26cdc54eacddc42",
+    "v50_classification": "unbounded_automatic_conversation_eof_prompt_loop"
+  },
+  "frozen_runtime": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "transformed_qwen35_cpp_sha256": "6953d033c467029db896efa528b6261eb04999b94d3e731952b75f4ffa5e36d5",
+    "llama_cli_sha256": "e55a49bfc03e7ae6346a7f3e8240a18cddd64a176a8cc6d61e9ab7f1a38ff92c",
+    "standalone_smoke_sha256": "b8033fe6c240ccef2e2f76d0d1249f7e24a33c929451ec565bf0b97f1ce3fe84",
+    "one_token_receipt_sha256": "8205a610522110f839787bdc82b36402ce85582929f076f9e52a6e45908231d6",
+    "eight_token_receipt_sha256": "6300e5ab7c8e6fec83b720dff9ed685986158d47c9ebb9aa3d50f8efc0fe7088",
+    "q4_control_gguf_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "direct_v43_layer0_aff3_sha256": "a4cec7372ac21a0093d047c1452277508583ebca1e3f4f66c73a8a74142ccf48",
+    "numerical_code_changes_permitted": false,
+    "kernel_changes_permitted": false,
+    "sidecar_changes_permitted": false
+  },
+  "execution": {
+    "host": "quant",
+    "physical_cpu_list": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "threads": 4,
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "runtime_max_seconds": 300,
+    "file_size_max_bytes_per_stream": 1048576,
+    "generated_tokens": 8,
+    "seed": 20260819,
+    "greedy": true,
+    "no_warmup": true,
+    "performance_timing_permitted": false,
+    "required_cli_flags": [
+      "--no-conversation",
+      "--single-turn",
+      "--no-display-prompt",
+      "--simple-io",
+      "--no-warmup",
+      "--no-perf"
+    ]
+  },
+  "pass_predicate": {
+    "service_exit_code": 0,
+    "service_result": "success",
+    "bounded_stdout_nonempty": true,
+    "stdout_max_bytes": 1048576,
+    "stderr_max_bytes": 1048576,
+    "interactive_banner_forbidden": true,
+    "repeated_prompt_pattern_forbidden": true,
+    "performance_markers_forbidden": true,
+    "v49_signal_failure_forbidden": true,
+    "standalone_algebra_receipts_must_remain_bit_exact": true
+  },
+  "promotion_rules": [
+    "v49 and v50 negative evidence remain immutable",
+    "the v51 run must use the unchanged v50 runtime and layer-0 sidecar",
+    "the service must terminate on its own inside both file-size and runtime ceilings",
+    "one successful bounded run is only an integration gate",
+    "no quality or performance claim may be inferred from this gate"
+  ],
+  "claim_boundary": "A v51 pass can establish only bounded one-shot actual-Qwen graph execution with the repaired AFF3 callback lifetime. It is not trained-v44 behavior, whole-model quality, throughput, memory, energy, novelty, or scientific-breakthrough evidence."
+}
