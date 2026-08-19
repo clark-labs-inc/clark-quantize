@@ -1,0 +1,40 @@
+{
+  "schema": "qwen38_27b_dflash2_amd_cpu_feasibility_launch_v1",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_speculative_program_v1",
+  "experiment_id": "qwen38_27b_dflash2_amd_cpu_feasibility_v1",
+  "run_id": "qwen38_27b_dflash2_smoke_20260819T022056Z",
+  "frozen_at": "2026-08-19T02:20:56Z",
+  "execution": {
+    "host": "quant",
+    "mode": "local CPU inference with no external model-provider calls",
+    "server": "/workspace/build/llama.cpp-dflash2-pr27342/bin/llama-server",
+    "runner": "/workspace/quant-state/qwen38-27b-dflash2-amd-cpu-feasibility-v1/run_smoke.py",
+    "output_directory": "/workspace/quant-state/qwen38-27b-dflash2-amd-cpu-feasibility-v1/run/smoke",
+    "trajectory_jsonl": "/workspace/quant-state/qwen38-27b-dflash2-amd-cpu-feasibility-v1/run/smoke/trajectory.jsonl",
+    "cpu_affinity": "0,2,4,6",
+    "threads": 4,
+    "permissions": "read model and runtime artifacts; write only the experiment state directory",
+    "provider": null,
+    "provider_request_ids": [],
+    "incremental_api_cost_usd": 0.0,
+    "instance_cost_class": "existing non-spot CCX33"
+  },
+  "inputs": {
+    "preregistration_sha256": "6c9bb6b8a562c93b1f59f5a413ddb785a4ca1fa7c32939238dbcab8f9198f291",
+    "runner_sha256": "fac222f77e105867a62e5d0fd2a48dc152f70fa452cf92d41d89a650a0bcbb55",
+    "llama_cpp_revision": "5ecbe1ac17ec0484c5b44af0bd580cdc9c428ed4",
+    "server_sha256": "e3de4a2856c5cae83a28e66f7ee007557936bb58c132b14e0c271c9ea43dbab7",
+    "target_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "dflash2_sha256": "18a380efc9b7ed8d88677fc895f5c11ae170653434ee378f7348f715c14d0594"
+  },
+  "expected_output_schema": "qwen38_27b_dflash2_amd_cpu_feasibility_smoke_summary_v1",
+  "stop_rules": [
+    "stop if the runtime exits during model load",
+    "stop if either artifact hash or size differs from the frozen contract",
+    "stop if any prompt returns fewer than 64 tokens",
+    "stop after the three-prompt target and DFlash2 smoke; do not enter the paired throughput rotation automatically",
+    "classify output mismatch, swap use, or peak memory above 28.5 GiB as a failed smoke gate"
+  ],
+  "artifact_residency": "Raw models, server logs, prompt responses, and full trajectory remain on quant. Only compact reviewed receipts, source, and hashes may be synchronized to Git."
+}
