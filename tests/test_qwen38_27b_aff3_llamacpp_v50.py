@@ -11,6 +11,7 @@ REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREPARE = RUNTIME / "llama_cpp/prepare_llama_cpp_qwen38_aff3_v50.py"
 PREREG = RUNTIME / "qwen38_27b_aff3_llamacpp_v50_repair_preregistration.json"
+BUILD_SMOKE = REPO / "scripts/cpu/build_qwen38_aff3_llamacpp_runtime_smoke_v50.sh"
 
 
 def load_module():
@@ -79,3 +80,14 @@ def test_successor_keeps_exact_v49_revision_and_frozen_file_scope() -> None:
         "src/models/models.h",
         "src/models/qwen35.cpp",
     }
+
+
+def test_smoke_builder_stages_the_exact_transformed_runtime() -> None:
+    source = BUILD_SMOKE.read_text()
+
+    assert "mktemp -d" in source
+    assert "qwen38-aff3-runtime-smoke.cpp" in source
+    assert 'model_source="$llama_source/src/models"' in source
+    assert 'cp "$model_source/qwen38-aff3-runtime.cpp" "$stage/"' in source
+    assert 'cp -R "$model_source/qwen38-aff3-kernels" "$stage/"' in source
+    assert '"$stage/qwen38-aff3-runtime-smoke.cpp"' in source
