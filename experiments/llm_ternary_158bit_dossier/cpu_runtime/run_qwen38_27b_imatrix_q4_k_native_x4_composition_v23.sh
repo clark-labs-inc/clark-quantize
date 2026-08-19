@@ -6,6 +6,8 @@ python_bin=${PYTHON_BIN:-/workspace/venvs/quant-cpu/bin/python}
 control_build=${CONTROL_BUILD:-/workspace/build/llama.cpp-q4k-fused-ragged-avx2-v2}
 candidate_build=${CANDIDATE_BUILD:-/workspace/build/llama.cpp-q4k-native-x4-deinterleave-v21}
 quantizer=${QUANTIZER:-/workspace/build/llama.cpp-qwen38-selective-v1/bin/llama-quantize}
+llama_source=${LLAMA_SOURCE:-/workspace/src/llama.cpp-qwen38-selective-v1}
+gguf_python=${GGUF_PYTHON:-$llama_source/gguf-py}
 stock_model=${STOCK_MODEL:-/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf}
 candidate_model=${CANDIDATE_MODEL:-/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-imatrix-Q4_K-v10.gguf}
 draft=${DRAFT:-/workspace/models/controls/mtp-Qwen3.8-27B-Q4_0.gguf}
@@ -156,6 +158,7 @@ for binary in \
   "$candidate_build/bin/llama-perplexity" "$quantizer"; do
   test -x "$binary"
 done
+test "$(git -C "$llama_source" rev-parse HEAD)" = 4df29be4f4c3673f428170fda944a5b19f743bb8
 test "$(stat -c %s "$candidate_model")" = "$expected_candidate_bytes"
 require_sha256 "$prereg" 2957f4315c757b6d16036dce33eabab7a585809d83da9bf2fb14114fb55920a0
 require_sha256 "$stock_model" "$expected_stock_sha"
@@ -163,6 +166,8 @@ require_sha256 "$candidate_model" "$expected_candidate_sha"
 require_sha256 "$draft" "$expected_draft_sha"
 require_sha256 "$imatrix" "$expected_imatrix_sha"
 require_sha256 "$quantizer" 30c8e7234e1e3486077f238901df5f83accd49248e928b80586f93e84bb87b7d
+require_sha256 "$gguf_python/gguf/__init__.py" 3ccfc0104cd7ea88c6028743b7bf3f2c89b5f474425de03a217a6072320d7c2f
+require_sha256 "$gguf_python/gguf/gguf_reader.py" f1784b59de0f6ef5454091acd0997214a0c3151c0f33ee1f6394eca8441a0002
 require_sha256 "$v22_quality_receipt" be8b4e77f5c516bb24c695f90207511e754a724784caa12d9005b79818bb1474
 require_sha256 "$baseline" 1557f1aac13f6c557e89006427aa829e2707f07ad73aa29611763e754c409a64
 require_sha256 "$cute_manifest" 19dd73eedf737d11f7c94d039822de62314abf31e3fb739a9a875fe65c5bbd16
@@ -179,11 +184,12 @@ sha256sum "$prereg" "$amendment" "$summarizer" "$verifier" "$mtp_harness" \
   "$control_build/bin/llama-bench" "$control_build/bin/llama-server" \
   "$candidate_build/bin/llama-bench" "$candidate_build/bin/llama-server" \
   "$candidate_build/bin/llama-perplexity" "$quantizer" "$stock_model" \
+  "$gguf_python/gguf/__init__.py" "$gguf_python/gguf/gguf_reader.py" \
   "$candidate_model" "$draft" "$imatrix" > "$state_dir/inputs.sha256"
 git rev-parse HEAD > "$state_dir/source.commit"
 
 if [[ ! -s "$state_dir/artifact-verification.json" ]]; then
-  PYTHONPATH="$repo" "$python_bin" "$verifier" \
+  PYTHONPATH="$gguf_python:$repo" "$python_bin" "$verifier" \
     --control "$stock_model" --candidate "$candidate_model" \
     --selection-profile all_q8_family --expected-target-type Q4_K \
     --expected-bytes-saved 3367239360 \
