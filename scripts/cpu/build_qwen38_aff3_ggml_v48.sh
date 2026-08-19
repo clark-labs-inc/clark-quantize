@@ -9,7 +9,8 @@ fi
 llama_source=$1
 llama_build=$2
 output=$3
-repo=$(git rev-parse --show-toplevel)
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+repo=$(git -C "$script_dir" rev-parse --show-toplevel)
 runtime="$repo/experiments/llm_ternary_158bit_dossier/cpu_runtime"
 source_file="$runtime/qwen38_aff3_ggml_v48.cpp"
 
