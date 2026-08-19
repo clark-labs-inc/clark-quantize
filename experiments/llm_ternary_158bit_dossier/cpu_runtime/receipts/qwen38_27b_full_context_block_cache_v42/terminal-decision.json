@@ -1,0 +1,36 @@
+{
+  "schema": "qwen38_27b_full_context_block_cache_terminal_decision_v42",
+  "experiment": "qwen38_27b_full_context_block_cache_v42",
+  "decision": "admit_full_context_cache_to_frozen_all_layer_training_only",
+  "terminal_decision": true,
+  "cache_gate_passed": true,
+  "experiment_complete": true,
+  "execution_receipt_sha256": "f431b3c1fecdcd5f28b473ce793ad29de8b78642b85c58e3eaae97c169e237cd",
+  "collector_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+  "completion_marker_sha256": "54e55af6730ed3329bb2464bbfe2ec9be27ec04f66f13b95c73f50d79378c42a",
+  "evidence": {
+    "required_layers": 64,
+    "observed_layers": 64,
+    "complete_sequence_shape_per_endpoint": [
+      12,
+      64,
+      5120
+    ],
+    "dtype": "torch.bfloat16",
+    "pilot_layers_bit_exact": [
+      0,
+      32,
+      63
+    ],
+    "adjacent_output_input_hash_chain_exact": true,
+    "restarts": 0,
+    "independent_terminal_revalidation_passed": true
+  },
+  "promotion": "Preregister and run exactly one restartable 64-layer expansion of the already-frozen mixed CQ3 MLP and AFF3 attention-output training algebra using these complete sequence responses. Keep the sensitivity rule and complete-block rank-16 residual frozen; do not open fresh whole-model confirmation data yet.",
+  "forbidden_claims": [
+    "the cache is not a quantized model",
+    "the cache does not demonstrate approximation quality",
+    "the cache does not demonstrate whole-model capability or speed",
+    "the cache does not demonstrate novelty or a scientific breakthrough"
+  ]
+}

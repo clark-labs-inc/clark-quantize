@@ -1,0 +1,2477 @@
+{
+  "claim_boundary": "A pass proves only that exact frozen full-sequence BF16 block inputs and outputs for all 64 Qwen3.8-27B text layers were streamed and cached with authenticated pilot parity under bounded CPU resources. It does not establish approximation quality, a complete model, end-to-end capability or speed, novelty, or a scientific breakthrough.",
+  "complete": true,
+  "context": {
+    "bytes": 17817,
+    "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/context.pt",
+    "sha256": "7cf30c42c996b492e77544488e4815dd9a1dcc348a2fb4accf3bf31a1cd5abc7"
+  },
+  "download_receipt_sha256": "379cb8199efbb805578efcf88d006b5395ed19e559d950d36a3b492271ad5492",
+  "elapsed_seconds_this_invocation": 464.91660047500045,
+  "gate": {
+    "all_values_finite": true,
+    "full_context_shape_per_endpoint": [
+      12,
+      64,
+      5120
+    ],
+    "individual_shards_within_maximum": true,
+    "maximum_allowed_individual_shard_bytes": 17000000,
+    "maximum_observed_individual_shard_bytes": 15730917,
+    "maximum_total_shard_bytes": 1100000000,
+    "observed_layers": 64,
+    "passed": true,
+    "pilot_layers_bit_exact": [
+      0,
+      32,
+      63
+    ],
+    "required_layers": 64,
+    "storage_within_maximum": true,
+    "total_shard_bytes": 1006778688
+  },
+  "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+  "layers": [
+    {
+      "complete": true,
+      "elapsed_seconds": 7.2731879870116245,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "28f8a74b6de8495253cd2b1cf1d578cc1091d047f98ce0cdee77380ab185eec0",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 0,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "0f4b290845518405054a55726716516f3f2f11abc8bb7173b9603e7153b772ca",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": true,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/00.pt",
+        "sha256": "2a9aad3c63229c264e070b914984755264eb078bddcd282127e4fe244f20d48e"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.204655408975668,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "0f4b290845518405054a55726716516f3f2f11abc8bb7173b9603e7153b772ca",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 1,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "de6b05eb6e1ad3dddb17a0fb27a0744fad067d2a929b972a704c4dc5b2b9dc39",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/01.pt",
+        "sha256": "5887cda82a01d15de7bbf5fbcb528b40c7a9be769cf1104c62812c6c30f381b7"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.209365772025194,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "de6b05eb6e1ad3dddb17a0fb27a0744fad067d2a929b972a704c4dc5b2b9dc39",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 2,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7f494cdeaf2584aa18d064b56dbf2de232924aaee7dc0ee258e82172d863ac58",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/02.pt",
+        "sha256": "b660def13f6ba871713a268905023f206ab7678d95f95aee7de878eafa1b30ce"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.001855737005826,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7f494cdeaf2584aa18d064b56dbf2de232924aaee7dc0ee258e82172d863ac58",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 3,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "c56e5833cd003225f33bd05cd3fb1c084b2a04d0c8d00ceb64931fe55f61e89e",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/03.pt",
+        "sha256": "92c014a6ae7537fbc21432388d71b9815046817644a2666b1e203af8b6a3eae2"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.147664415999316,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "c56e5833cd003225f33bd05cd3fb1c084b2a04d0c8d00ceb64931fe55f61e89e",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 4,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "9a2efd14cbe640818f8f60319cb97656d1c0adce19380bcea7976df4b70b0ce5",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/04.pt",
+        "sha256": "8fb321a959beeacb4c4f0bc636d43826703367f23bdc38db696022382d86405b"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.985441299009835,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "9a2efd14cbe640818f8f60319cb97656d1c0adce19380bcea7976df4b70b0ce5",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 5,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7df0743ebc994826b86c395c6edb7e012b6e18ddfd3c921d62d7933bb3e65d6f",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/05.pt",
+        "sha256": "34cacb86d410329fa0683fe50a9381f75aa3065b63eedabe56859acbab31cb6b"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.130851149006048,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7df0743ebc994826b86c395c6edb7e012b6e18ddfd3c921d62d7933bb3e65d6f",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 6,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "696fca0bd023c9042436bb86d93f58e8a36a8e1b56a6bb519724f927dedf798c",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/06.pt",
+        "sha256": "0614adf29c1dab8a00e5911085232e8329eda1f320c4defb9a7f588c1ce94788"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.843342381005641,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "696fca0bd023c9042436bb86d93f58e8a36a8e1b56a6bb519724f927dedf798c",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 7,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "dda395b7185fa60931b43b4c936b8b8ef0fbb89da900d6cba238c79303fa8b24",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/07.pt",
+        "sha256": "3509d80bb5db01f59617d3856fccbcd63d7eec48ee13ef45b80866f7ca2604b9"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.191959233983653,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "dda395b7185fa60931b43b4c936b8b8ef0fbb89da900d6cba238c79303fa8b24",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 8,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "80d4fbe2bbfaf0395f3db6f7393d64fa9f014a86604b3f60f6a6c829cb6e31ba",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/08.pt",
+        "sha256": "2af560e3dd9cc1b03f8def956cd12ae8cc1090d06db10a582213c7dea6d65226"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.3190375859849155,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "80d4fbe2bbfaf0395f3db6f7393d64fa9f014a86604b3f60f6a6c829cb6e31ba",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 9,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "2e67a4c29fc3561bea623fba48b472d76b105a0e03b00bbb898acda94f22cdac",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/09.pt",
+        "sha256": "78b45986fa967f65aaec05596830961fe1cf4ee9ee2c16ea0f43e3c8ada4dd2d"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.888187239994295,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "2e67a4c29fc3561bea623fba48b472d76b105a0e03b00bbb898acda94f22cdac",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 10,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "149f37a60a71696db16e92ed1d7466630f74e58879345091fea5d75fa5b28ed7",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/10.pt",
+        "sha256": "ec3c16b17dbf28e7e31575863fc3d062959f8c0dd045d72592ed8fb5acf38457"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.680308313982096,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "149f37a60a71696db16e92ed1d7466630f74e58879345091fea5d75fa5b28ed7",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 11,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "53b9e85206882cf73b65918baeb43f106858bb1a15c632062ef1a5fe1be16abb",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/11.pt",
+        "sha256": "8ccff0ed295c3bda97659a0a040c10dd11ce8f1b7097670284258824eb8c8065"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.871172131999629,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "53b9e85206882cf73b65918baeb43f106858bb1a15c632062ef1a5fe1be16abb",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 12,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7436f473300d2df46d908a29b82af3fc391002dc43e823079a10346347ca95b0",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/12.pt",
+        "sha256": "0b10b5a5b6b45f06fda98aea92cb1503ce227acfb77b1b181c91942b10421b8a"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.915178761002608,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7436f473300d2df46d908a29b82af3fc391002dc43e823079a10346347ca95b0",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 13,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "39f547c5a763d07e9ae7fdca3d74bf1a7e93b8800e2f524c0414407952baa22a",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/13.pt",
+        "sha256": "06a16e080799948a7b84563794afc77813b484da1ccfe023a131ff05930c3949"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.927666984993266,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "39f547c5a763d07e9ae7fdca3d74bf1a7e93b8800e2f524c0414407952baa22a",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 14,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "8ffaa6d38ff92d7a8acb0d5508d75b9dd0a0e4bf11965ee83530089cab21d488",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/14.pt",
+        "sha256": "a297a53cc47171e56c378c2f65f9e4f70b06803ada7ba0dae4ac08a6f7bb60a2"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.927311125997221,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "8ffaa6d38ff92d7a8acb0d5508d75b9dd0a0e4bf11965ee83530089cab21d488",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 15,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "b29d2c3e92e3df26486431920605f98d81fdd6affc25a2999972658aa7a49a0c",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/15.pt",
+        "sha256": "d66d60ac4e18ee48d559dd0e8004372a74a17b58bf1ebfafc4e13c7014ba53f8"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.905057065974688,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "b29d2c3e92e3df26486431920605f98d81fdd6affc25a2999972658aa7a49a0c",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 16,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "906ddfc79f66b6c6bb58654ab126e840f79b424fde8e1185ec5ffed7e8b1bca8",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/16.pt",
+        "sha256": "ece9df2043e31369c6acfdc571b01df33ab442b9fc654951f0405410d2881d63"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.923314403014956,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "906ddfc79f66b6c6bb58654ab126e840f79b424fde8e1185ec5ffed7e8b1bca8",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 17,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "57f02fbf501c834ce46e1a7cc83266ee9c1f7e3ff0c464a46f4cae8733f83ed1",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/17.pt",
+        "sha256": "675caab574d9e96e457843bc87942ab81764ab625e77ec6d84ffab7cd05210db"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.027964396984316,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "57f02fbf501c834ce46e1a7cc83266ee9c1f7e3ff0c464a46f4cae8733f83ed1",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 18,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "40a8d84d3d38d7fdc2ecc755eee89f22275c46a05cfa1a151465dab01c4717c0",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/18.pt",
+        "sha256": "592b7d51e69f099dd9a489c2109a2d07bced87d7d821e50d223ae0f104a05ed8"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.787257418007357,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "40a8d84d3d38d7fdc2ecc755eee89f22275c46a05cfa1a151465dab01c4717c0",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 19,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "27dd9bb1ec81f5a92c0e144ceeca3f82134f19b01fa7863fe3bbb713cc994d28",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/19.pt",
+        "sha256": "757c5136cd8a68f4a4b29f71b1a3f355cc8a5aa3bfda389c73239ef65d763ce5"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.598778280022088,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "27dd9bb1ec81f5a92c0e144ceeca3f82134f19b01fa7863fe3bbb713cc994d28",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 20,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "17dc27846a11a8df67852df18f2d27d61e1d232b9abbfcdd1e16f6d46a2108c2",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/20.pt",
+        "sha256": "38ffe093af222a72d0c92aaba43f13f911ebc9c814c69f76c692ae8bfdca0ebe"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.276433218008606,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "17dc27846a11a8df67852df18f2d27d61e1d232b9abbfcdd1e16f6d46a2108c2",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 21,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "c2ebbbaec82f1972a7a8361f10c448d45218b90860a77f2f564ddd4027f42b09",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/21.pt",
+        "sha256": "564adbe8f9ad1e910b90ec58825ab3334c8ba6b1c091e822ae5fd6dbaa65bec6"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 8.185843870975077,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "c2ebbbaec82f1972a7a8361f10c448d45218b90860a77f2f564ddd4027f42b09",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 22,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "177956114f59b1a7c93d191b372fb76b4b390bf0a54f83cc2bc99e62266bdfb4",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/22.pt",
+        "sha256": "b27f80831d5a22dd0cfcebdb829887c6b2dfa9cf18bc2baf561e9b0aa631b325"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.540042615990387,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "177956114f59b1a7c93d191b372fb76b4b390bf0a54f83cc2bc99e62266bdfb4",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 23,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "ab3f3c26a407873a0ac53002cd6e0efecc0a42ed8881abd83d01b3b2813c911f",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/23.pt",
+        "sha256": "52e98bf5fb129dc00c2777e9eb8a9f1076bd1886bd089d27dc5fd26e36db1d96"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.021999065007549,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "ab3f3c26a407873a0ac53002cd6e0efecc0a42ed8881abd83d01b3b2813c911f",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 24,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "537241bdc3538dc15a43c4fa1edbf7a32239a084bc1726082a783fc1faba595e",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/24.pt",
+        "sha256": "c74a9a843eaa5a822e4f1a3b962531b06911ebfe544e02536a34d5391bab023a"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.033776947995648,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "537241bdc3538dc15a43c4fa1edbf7a32239a084bc1726082a783fc1faba595e",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 25,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "f5c3d6ac7444c8046b0e5d8fbe06de7d783c8b7d1f18992dfc7e367404314521",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/25.pt",
+        "sha256": "82b845e77dbc85f791b0906e9076141d2ff8e84ef8b061c7e28111c1f0721a82"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.0126682209956925,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "f5c3d6ac7444c8046b0e5d8fbe06de7d783c8b7d1f18992dfc7e367404314521",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 26,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "0de6d45ae524356b6b480054b78a14193e68f0d8da722c71362ef1db3a6c7805",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/26.pt",
+        "sha256": "7fbed09ef8066f01cdcfdeb307b1ef179937005d30db123fba00291c8cd8e19c"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.917756301001646,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "0de6d45ae524356b6b480054b78a14193e68f0d8da722c71362ef1db3a6c7805",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 27,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "74f211db2abb1d6b8b31156a42d79978d3f2507de034e5587070edac8b4a28cb",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/27.pt",
+        "sha256": "41cb82d9784e105accfcfcb5c1fa6ff05e9e1bd5d050a6224a973b0ed2ab7c0c"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.031225587008521,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "74f211db2abb1d6b8b31156a42d79978d3f2507de034e5587070edac8b4a28cb",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 28,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "8a74d2cc635ca202994032be8970b782232ab54e73c622f537307c82797b9878",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/28.pt",
+        "sha256": "ee35616cb74991497266a85a6e6f42864b5d8942567c1c26454f6e1dd81e217b"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.181634998996742,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "8a74d2cc635ca202994032be8970b782232ab54e73c622f537307c82797b9878",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 29,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "1379eb22d0616ce925378197bd48dce152084dce92513f4dec5e1b132aa67563",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/29.pt",
+        "sha256": "d60970d42ae1eca39fdff445849f7c14e8379beff885d8220aa6cdb093983caf"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.214195573003963,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "1379eb22d0616ce925378197bd48dce152084dce92513f4dec5e1b132aa67563",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 30,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "b23b99e2abe9b8241e12c4ede914d44ad7ea9291eb7efb0a8e04f6069ddbaf73",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/30.pt",
+        "sha256": "83f8eed84e8d368571d705eec156b08b94641a32d32c3edd7500fd2f624f6e6a"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.9856104089994915,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "b23b99e2abe9b8241e12c4ede914d44ad7ea9291eb7efb0a8e04f6069ddbaf73",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 31,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "0f38e3b097dcf9e19ce39dac8590b7393aa8a78182115f94c92abaec97437b13",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/31.pt",
+        "sha256": "548224db7d33693e851b3414e60433fadc720aa873afd60b32592bc7a07b2b03"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.02802096598316,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "0f38e3b097dcf9e19ce39dac8590b7393aa8a78182115f94c92abaec97437b13",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 32,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "1a83cae27716810a2597daab40a1e84e5ed38afef7c08e32391045fc5cadc435",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": true,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/32.pt",
+        "sha256": "11826d40db86a48eb502d86abb72c4080079079bc25d8f6cebd4142156994ed7"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.917469090985833,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "1a83cae27716810a2597daab40a1e84e5ed38afef7c08e32391045fc5cadc435",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 33,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "b1b74dd038c0c9c478541dc673b33099c4ea53c816c296a93886be6c3a1818fa",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/33.pt",
+        "sha256": "31d74e52ed9b4b6b8a3b800bc347c9824bff4f499e9c6be151e8f2ee51658d07"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.858928258006927,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "b1b74dd038c0c9c478541dc673b33099c4ea53c816c296a93886be6c3a1818fa",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 34,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "2f9f258175e7c7c8fdd6f82a68805d164b5ff76048fa7f21be3e9a184c288aae",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/34.pt",
+        "sha256": "f75c3dadb601e8e5a9cd7a1ca7b6b45910afdc0767e7901043f383dffdbe66c5"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.878884436009685,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "2f9f258175e7c7c8fdd6f82a68805d164b5ff76048fa7f21be3e9a184c288aae",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 35,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "26692caf910ea71c7847edfa03eed2767dd76db400cabef65dfacc32ae7af3b3",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/35.pt",
+        "sha256": "f98da4d1e15982efef8644ef2daa80839d692300842f618ca36948a3b863c128"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.970705912011908,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "26692caf910ea71c7847edfa03eed2767dd76db400cabef65dfacc32ae7af3b3",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 36,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "0a90f37918f9675c27e97e254de318cf0b0dd9e2e992c10788e9d08af186f4c7",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/36.pt",
+        "sha256": "759f177a5e4d7c3817c0d363b195a38b45f04119a5ca2c5988c28acf1aaeb6df"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.042956404009601,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "0a90f37918f9675c27e97e254de318cf0b0dd9e2e992c10788e9d08af186f4c7",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 37,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "35efde43065ab01d191cc5ceedb929a482391301cbc05fffed2b3676d1e8aab7",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/37.pt",
+        "sha256": "eb983f99b78fc06680fb983cb9c68f5e6d7bf3f62411ceffdbac6839a4d84c1b"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.148232355975779,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "35efde43065ab01d191cc5ceedb929a482391301cbc05fffed2b3676d1e8aab7",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 38,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "bf085fd7aab4d1f3cfce02ac93dccff1bc5fe6a21e6d1f985029a675f78c0b7d",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/38.pt",
+        "sha256": "020307f5b5c7adfd9c254ab90f54001f89d12ebea44f879dfa6da822d8fbb249"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.972497912996914,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "bf085fd7aab4d1f3cfce02ac93dccff1bc5fe6a21e6d1f985029a675f78c0b7d",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 39,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "d83779ab3d7473f225352fab8f9c177c6c0b50fac05c983eba3dc48223d40d54",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/39.pt",
+        "sha256": "dad6ecb1715327862e2d02bc57bf103f4e96d5431a01c35aef4f7a43e0825ecf"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.025857175001875,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "d83779ab3d7473f225352fab8f9c177c6c0b50fac05c983eba3dc48223d40d54",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 40,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "26625c49a0540343a7dced8067e69c8fe9aa3fb5ec91383151093ff94169e4ee",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/40.pt",
+        "sha256": "3a3a3fe47cc1a80d96d07a0dedf208ee5e81d183c0b05c0c31af81a6bcebda02"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.102904136991128,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "26625c49a0540343a7dced8067e69c8fe9aa3fb5ec91383151093ff94169e4ee",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 41,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "f0b541037e64e445407e08dd558216ad015aede86aa5bbbcf3eb8df76e6ff488",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/41.pt",
+        "sha256": "7652a5f01892692e3ed51be0e2bda309b4edf6ff0a78dc0bc2815f1939f01dea"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.361225063010352,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "f0b541037e64e445407e08dd558216ad015aede86aa5bbbcf3eb8df76e6ff488",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 42,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "0b158cccc3173c485d570f50d922cf2fddab3c573e61f00d64e175cf079b5bf0",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/42.pt",
+        "sha256": "703cd9c2b88ceaf54abf0026cf79d84a2a1215dbae870dad18630b3988116c93"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.983339708007406,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "0b158cccc3173c485d570f50d922cf2fddab3c573e61f00d64e175cf079b5bf0",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 43,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "8baa0d45ab0694a5b1f886f959626dada2d16b9baed6b25c952ec916dc8a1c46",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/43.pt",
+        "sha256": "714a242bcfaccb7a1d1256a7fa4079e89d1f961ba88bf30d21527c76039412a8"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.04496380200726,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "8baa0d45ab0694a5b1f886f959626dada2d16b9baed6b25c952ec916dc8a1c46",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 44,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "768cb6acf623db9620ebf8fec2ba01ac7160e8d01e93bcbc415eb33aab235d47",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/44.pt",
+        "sha256": "920678aa4d11601ee073ecd65429b65c4461e778a830c85d8ff96f92997bf222"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.383551267994335,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "768cb6acf623db9620ebf8fec2ba01ac7160e8d01e93bcbc415eb33aab235d47",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 45,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "b191c525911bebde9fcd0f585a49c223a7b92d3d97183444031beaf5e12d4d3a",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/45.pt",
+        "sha256": "83f62cef56612499e4525e88109aa18869207722fcb606d0d62f35b46b6a8e30"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.212143640004797,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "b191c525911bebde9fcd0f585a49c223a7b92d3d97183444031beaf5e12d4d3a",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 46,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "9c92743298d4a2146431b30859b1770dd80c455bc322838c33cb8a9249607f02",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/46.pt",
+        "sha256": "f1e1703d331d8239d510d96570059bb9ad31d26eaeb5ce4ff08c34392030c629"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.97873179501039,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "9c92743298d4a2146431b30859b1770dd80c455bc322838c33cb8a9249607f02",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 47,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7caaa47d0790f7b1392437d12ba576489aaa042162341bc2d3453807b75f6bd6",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/47.pt",
+        "sha256": "bb13eaf2ae27fbb23528acff9c0d5bb9ebbeea10cfa59258422edf3ba5051515"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.107002047996502,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7caaa47d0790f7b1392437d12ba576489aaa042162341bc2d3453807b75f6bd6",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 48,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "38707d107aaa87164f2edb009b67f127762bd3570af258f0a5326d6f27306562",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/48.pt",
+        "sha256": "7d6f36bbe68c6b64c090f38fbc5d31134edb2bfc72d837aede81c20bd58b3efc"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.0995647340023424,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "38707d107aaa87164f2edb009b67f127762bd3570af258f0a5326d6f27306562",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 49,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "ecc491356ff6436a9d0115ffe13c9960e8771571fb4c4cb11be620abdbff9539",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/49.pt",
+        "sha256": "3d83e02f6cac22cc3d4469f7c686255e1a74e7936d3e3f0f46d4c8dc50942096"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.974024774011923,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "ecc491356ff6436a9d0115ffe13c9960e8771571fb4c4cb11be620abdbff9539",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 50,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "d3b165e53c01ee83c25043421d7e49fe3f65f6f824b816129e17212e82a3c1aa",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/50.pt",
+        "sha256": "fac2818872ceec6185fef51ae5c4980c81b9a3e50c3a2a4f5db44173172e86e5"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.889310498983832,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "d3b165e53c01ee83c25043421d7e49fe3f65f6f824b816129e17212e82a3c1aa",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 51,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "a5b6bac0efd7dded9a9ca6374437b132cc9703bd34065d2c13f392eb6a254974",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/51.pt",
+        "sha256": "738c87a285ee34c91bae8e06a158ef393cd2992138987dd5d90a7903d14ac126"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.087780789996032,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "a5b6bac0efd7dded9a9ca6374437b132cc9703bd34065d2c13f392eb6a254974",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 52,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "974317cea2524e9ff6acfb6d47f8aef5293667da1132ba0b5eae9e7776b6fb37",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/52.pt",
+        "sha256": "b925f7a2ea61dae9c2aa1d7f7214289bd702f3758a946f80ec6f579bfce7e70c"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.310646468977211,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "974317cea2524e9ff6acfb6d47f8aef5293667da1132ba0b5eae9e7776b6fb37",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 53,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "9c7dc3ab7f6f65e97c2a1c9501749fc7c1ec765ea0c2358258a85abf78e35001",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/53.pt",
+        "sha256": "2b673552899cd4c1b1570e2e1effee1d137665d143df5cb721f0fc178c5b0050"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.3536713359935675,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "9c7dc3ab7f6f65e97c2a1c9501749fc7c1ec765ea0c2358258a85abf78e35001",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 54,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "f5583feb427fe4114703249b3388cfb86cf6440c7e35b836794c25bb976542c2",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/54.pt",
+        "sha256": "28a354c5013a6ff550c604c46c6e33162a5c062ee1906cd88ebcd140b4ac991e"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.179900846997043,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "f5583feb427fe4114703249b3388cfb86cf6440c7e35b836794c25bb976542c2",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 55,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7389d4c91703a4f3224dec74e2ce0191b4ccda866d5aa77715df6959f5ed5e84",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/55.pt",
+        "sha256": "7c909a65633eff73904eda044e8c666536721207719c8278b658ce5ea8e20c2e"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.3471260240185075,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7389d4c91703a4f3224dec74e2ce0191b4ccda866d5aa77715df6959f5ed5e84",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 56,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "2fa6404aabf17e26178395e6ca62116b74c78a4c1743bea34f3a24661d2b67af",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/56.pt",
+        "sha256": "7a9cf5d6a143731ed20d745beb6870b631fbf5ed46f8cf002fcbdcea4b0c986c"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.253871156979585,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "2fa6404aabf17e26178395e6ca62116b74c78a4c1743bea34f3a24661d2b67af",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 57,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "00a0d0ca63576eb6a7dd2a94e4c576ce95f74c57859fbf3b78c0b35630e6b3da",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/57.pt",
+        "sha256": "03f9c94190e985cc60ac84a5ab3f11003b3520a957ff1392ec3d53ba47accd89"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.164566930994624,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "00a0d0ca63576eb6a7dd2a94e4c576ce95f74c57859fbf3b78c0b35630e6b3da",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 58,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "fc42cc14249458225b4f56fe408caa5b59084dcf47953ad2d328ac35ea987f0f",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/58.pt",
+        "sha256": "648d08e5140489e7c708cbb4446159e1e53a476a9fe0d508d2f1d98927a494ad"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.2690007030032575,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "fc42cc14249458225b4f56fe408caa5b59084dcf47953ad2d328ac35ea987f0f",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 59,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7b77e5488e65902aee151894ef4616f43609bc44588200761c2d7ace118ea63d",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/59.pt",
+        "sha256": "bec10cdc2b4a4bd568bb3b2cc3e7ffe01b30b9f8dd91108d680c4db33f610cc1"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.125867704977281,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "7b77e5488e65902aee151894ef4616f43609bc44588200761c2d7ace118ea63d",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 60,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "a298cc3d5a78a16bfc8fd5133edace5b15786e941717a9eb1da61d967b5c6a5c",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/60.pt",
+        "sha256": "6c9598fa3c71611c9e594e82e305c2a9bc2441bfb7647d81e13ae1046be4185e"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.946329433005303,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "a298cc3d5a78a16bfc8fd5133edace5b15786e941717a9eb1da61d967b5c6a5c",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 61,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "38171e0d1154211b86d1bc22c79fe68aa0e92a2c1b51607d4a6c2621fc7f8877",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/61.pt",
+        "sha256": "6abb6b36ec8d0a5e3f44728f2177c515eb07bb2b0dbde91db4034abc803efe66"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 7.151044095022371,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "38171e0d1154211b86d1bc22c79fe68aa0e92a2c1b51607d4a6c2621fc7f8877",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 62,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "1ee3c6e38974ed34f9106f9bdb8a180dec6d0a4c6244155eef5d644b0a4a7a03",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 383273184,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": false,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/62.pt",
+        "sha256": "dd2099005977fdcf564947cfa1b236fba4db38dd6981d3c8a66e71a086fc9066"
+      },
+      "terminal": true,
+      "type": "linear_attention"
+    },
+    {
+      "complete": true,
+      "elapsed_seconds": 6.967575521004619,
+      "input": {
+        "dtype": "torch.bfloat16",
+        "sha256": "1ee3c6e38974ed34f9106f9bdb8a180dec6d0a4c6244155eef5d644b0a4a7a03",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "layer": 63,
+      "model": "Qwen/Qwen3.8-27B",
+      "output": {
+        "dtype": "torch.bfloat16",
+        "sha256": "17024d70b211750ba388bc5b3e5ecf0bde961b2fb5d8a4d798cb5a54855c488d",
+        "shape": [
+          12,
+          64,
+          5120
+        ]
+      },
+      "parameters": 372255232,
+      "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "pilot_bit_exact": true,
+      "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+      "producer_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_full_context_block_shard_descriptor_v42",
+      "shard": {
+        "bytes": 15730917,
+        "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/layers/63.pt",
+        "sha256": "ee632fe59e417f4e884646082041d06de3a5f8c28f09e1da3d6cac48d0f17119"
+      },
+      "terminal": true,
+      "type": "full_attention"
+    }
+  ],
+  "model": "Qwen/Qwen3.8-27B",
+  "parent_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+  "preregistration": "/workspace/clark-quantize-full-context-v42/experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_full_context_block_cache_v42.json",
+  "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+  "repository_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+  "resumed_from_layer": null,
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_full_context_block_cache_receipt_v42",
+  "terminal": true
+}

@@ -13,6 +13,7 @@ REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 SCRIPT = RUNTIME / "collect_qwen38_27b_full_context_block_cache_v42.py"
 PREREG = RUNTIME / "qwen38_27b_full_context_block_cache_v42.json"
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_full_context_block_cache_v42"
 
 
 def sha256(path: Path) -> str:
@@ -179,3 +180,43 @@ def test_v42_claim_boundary_forbids_quality_or_speed_claims() -> None:
     rules = "\n".join(data["promotion_rules"])
     assert "not a quantized model" in rules
     assert "fresh confirmation remains sealed" in rules
+
+
+def test_v42_terminal_receipts_are_authenticated_and_complete() -> None:
+    receipt = json.loads((RECEIPTS / "receipt.json").read_text())
+    marker = json.loads((RECEIPTS / "complete.json").read_text())
+    execution = json.loads((RECEIPTS / "execution.json").read_text())
+    module_schema = "qwen38_27b_full_context_block_cache_receipt_v42"
+    assert receipt["schema"] == module_schema
+    assert module_schema.endswith("v42")
+    assert receipt["complete"] is True and receipt["terminal"] is True
+    assert len(receipt["layers"]) == 64
+    assert [record["layer"] for record in receipt["layers"]] == list(range(64))
+    assert all(
+        receipt["layers"][index]["output"]["sha256"]
+        == receipt["layers"][index + 1]["input"]["sha256"]
+        for index in range(63)
+    )
+    assert marker["receipt_sha256"] == sha256(RECEIPTS / "receipt.json")
+    assert execution["terminal_artifacts"]["remote_receipt"]["sha256"] == sha256(
+        RECEIPTS / "receipt.json"
+    )
+    assert execution["terminal_artifacts"]["remote_completion_marker"][
+        "sha256"
+    ] == sha256(RECEIPTS / "complete.json")
+
+
+def test_v42_terminal_decision_admits_training_only() -> None:
+    execution = json.loads((RECEIPTS / "execution.json").read_text())
+    decision = json.loads((RECEIPTS / "terminal-decision.json").read_text())
+    assert execution["systemd"]["restarts"] == 0
+    assert execution["systemd"]["journal_started_layer_events"] == 64
+    assert execution["systemd"]["journal_terminal_layer_events"] == 64
+    assert execution["gate"]["passed"] is True
+    assert decision["execution_receipt_sha256"] == sha256(
+        RECEIPTS / "execution.json"
+    )
+    assert decision["decision"] == (
+        "admit_full_context_cache_to_frozen_all_layer_training_only"
+    )
+    assert len(decision["forbidden_claims"]) == 4

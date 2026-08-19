@@ -1,0 +1,86 @@
+{
+  "schema": "qwen38_27b_full_context_block_cache_execution_receipt_v42",
+  "experiment": "qwen38_27b_full_context_block_cache_v42",
+  "host": "quant",
+  "unit": "quant-qwen38-27b-full-context-block-cache-v42.service",
+  "invocation_id": "895a0a6dce8543e3a7f99ad1d5594dd3",
+  "repository_commit": "bef03ae95a1d27b216f7400c7f11f9ef938849e7",
+  "preregistration_sha256": "bbadcdafa41dba332e8eda7918020f55d19b13940ee06046b5036f972472e82d",
+  "started_at_utc": "2026-08-19T08:02:22Z",
+  "finished_at_utc": "2026-08-19T08:10:11Z",
+  "systemd": {
+    "result": "success",
+    "exit_status": 0,
+    "restarts": 0,
+    "wall_clock": "7min 48.985s",
+    "cpu_time": "29min 35.951s",
+    "memory_peak": "28.8G",
+    "journal_started_layer_events": 64,
+    "journal_terminal_layer_events": 64,
+    "journal_started_layer_denominator_exact": true,
+    "journal_terminal_layer_denominator_exact": true
+  },
+  "resource_limits": {
+    "allowed_cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "cpu_quota_percent": 400,
+    "memory_max_bytes": 31000000000,
+    "memory_swap_max_bytes": 0,
+    "host_swap_observed_bytes": 0,
+    "restart": "on-failure",
+    "restart_prevent_exit_status": 2,
+    "start_limit_burst": 3
+  },
+  "terminal_artifacts": {
+    "remote_receipt": {
+      "path": "/workspace/quant-state/qwen38-full-context-block-cache-v42/receipt.json",
+      "bytes": 86450,
+      "sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28"
+    },
+    "remote_completion_marker": {
+      "path": "/workspace/quant-state/qwen38-full-context-block-cache-v42/complete.json",
+      "bytes": 185,
+      "sha256": "54e55af6730ed3329bb2464bbfe2ec9be27ec04f66f13b95c73f50d79378c42a"
+    },
+    "context": {
+      "path": "/workspace/quant-runs/qwen38-full-context-block-cache-v42/context.pt",
+      "bytes": 17817,
+      "sha256": "7cf30c42c996b492e77544488e4815dd9a1dcc348a2fb4accf3bf31a1cd5abc7"
+    },
+    "layer_pt_files": 64,
+    "layer_json_descriptors": 64,
+    "layer_index_denominator_exact": true,
+    "adjacent_output_input_hash_chain_exact": true
+  },
+  "gate": {
+    "passed": true,
+    "required_layers": 64,
+    "observed_layers": 64,
+    "all_values_finite": true,
+    "pilot_layers_bit_exact": [
+      0,
+      32,
+      63
+    ],
+    "maximum_observed_individual_shard_bytes": 15730917,
+    "maximum_allowed_individual_shard_bytes": 17000000,
+    "total_shard_bytes": 1006778688,
+    "maximum_total_shard_bytes": 1100000000
+  },
+  "independent_terminal_revalidation": {
+    "exit_status": 0,
+    "elapsed_wall_seconds": 2.17,
+    "maximum_resident_kib": 239748,
+    "swaps": 0,
+    "file_system_outputs": 0,
+    "printed_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "printed_receipt_matches_terminal_receipt": true
+  },
+  "complete": true,
+  "terminal": true,
+  "claim_boundary": "This execution receipt proves a complete authenticated full-context activation cache only. It is not approximation-quality, whole-model capability, end-to-end throughput, novelty, or breakthrough evidence."
+}
