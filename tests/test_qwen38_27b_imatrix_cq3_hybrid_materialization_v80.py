@@ -10,6 +10,7 @@ RUNTIME = ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 MODULE_PATH = RUNTIME / "run_qwen38_27b_imatrix_cq3_hybrid_materialization_v80.py"
 PREREG = RUNTIME / "qwen38_27b_imatrix_cq3_hybrid_materialization_preregistration_v80.json"
 LAUNCHER = RUNTIME / "launch_qwen38_27b_imatrix_cq3_hybrid_materialization_v80.sh"
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_imatrix_cq3_hybrid_materialization_v80"
 SPEC = importlib.util.spec_from_file_location("imatrix_cq3_v80", MODULE_PATH)
 assert SPEC and SPEC.loader
 MODULE = importlib.util.module_from_spec(SPEC)
@@ -64,3 +65,23 @@ def test_v80_launcher_is_disk_bounded_and_restartable() -> None:
     assert "partial.unlink()" in runner
     assert "candidate exists without its materialization receipt" in runner
     assert "need {required} free bytes" in runner
+
+
+def test_v80_terminal_receipt_proves_exact_complete_artifact() -> None:
+    summary = json.loads((RECEIPTS / "summary.json").read_text())
+    materialization = json.loads((RECEIPTS / "materialization.json").read_text())
+    marker = json.loads((RECEIPTS / "EXPERIMENT_COMPLETE.json").read_text())
+    assert summary["complete"] and summary["terminal"]
+    assert summary["decision"] == "admit_to_whole_model_quality_gate"
+    assert summary["candidate"] == {
+        "bytes": 13_066_455_712,
+        "path": "/workspace/models/candidates/Qwen3.8-27B-imatrix-Q4-trained-CQ3-sensitivity32-v80.gguf",
+        "sha256": "09880f4d1b740f29b5e0cf0daf70ea649b7f5d2b57fb27df064fc1d03c9fab7d",
+    }
+    assert materialization["valid"] is True
+    assert materialization["selected_tensor_count"] == 96
+    assert all(materialization["checks"].values())
+    assert len(materialization["targets"]) == 96
+    non_target = materialization["non_target_file_bytes_sha256"]
+    assert non_target["candidate"] == non_target["template"]
+    assert marker["candidate_sha256"] == summary["candidate"]["sha256"]
