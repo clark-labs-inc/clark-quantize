@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 MODULE_PATH = RUNTIME / "materialize_qwen38_27b_sensitivity_selected_cq3_v67.py"
 PREREG = RUNTIME / "qwen38_27b_sensitivity_selected_cq3_half_preregistration_v67.json"
+PREREG_V68 = RUNTIME / "qwen38_27b_sensitivity_selected_cq3_48_preregistration_v68.json"
 TRAINING = RUNTIME / "receipts/qwen38_27b_all_layer_mixed_train_v44/terminal-receipt.json"
 
 sys.path.insert(0, str(RUNTIME))
@@ -91,3 +92,31 @@ def test_candidate_size_and_tensor_denominator_are_exact() -> None:
     assert candidate["expected_bytes"] == q4_bytes - candidate[
         "expected_saved_bytes_vs_q4"
     ]
+
+
+def test_v68_is_the_frozen_48_layer_binary_search_midpoint() -> None:
+    prereg = json.loads(PREREG_V68.read_text())
+    training = json.loads(TRAINING.read_text())
+    ranking = []
+    for layer in training["layers"]:
+        score = max(
+            item["aggregate_calibration_metrics"]["selected_calibration_nmse"]
+            for item in layer["cq3_training"]
+        )
+        ranking.append((score, layer["layer"]))
+    ranking.sort()
+    selected = sorted(layer for _, layer in ranking[:48])
+    candidate = prereg["candidate"]
+
+    assert prereg["binary_search"]["midpoint_layers"] == 48
+    assert selected == prereg["selection"]["admitted_layers"]
+    assert ranking[47][0] == prereg["selection"]["maximum_admitted_score"]
+    assert ranking[48][0] == prereg["selection"]["minimum_rejected_score"]
+    assert sorted(selected + prereg["selection"]["q4_retained_layers"]) == list(
+        range(64)
+    )
+    assert candidate["selected_mlp_tensors"] == 48 * 3
+    assert candidate["expected_bytes"] == (
+        prereg["model"]["q4_control_bytes"]
+        - candidate["expected_saved_bytes_vs_q4"]
+    )

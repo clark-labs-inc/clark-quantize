@@ -79,6 +79,10 @@ def main() -> None:
     parser.add_argument("--layers", required=True, type=parse_layers)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
+    parser.add_argument(
+        "--receipt-schema",
+        default="qwen38_27b_sensitivity_selected_cq3_materialization_v67",
+    )
     args = parser.parse_args()
 
     if args.output.exists():
@@ -148,7 +152,7 @@ def main() -> None:
         ),
     }
     receipt = {
-        "schema": "qwen38_27b_sensitivity_selected_cq3_materialization_v67",
+        "schema": args.receipt_schema,
         "model": "Qwen/Qwen3.8-27B",
         "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
         "selected_layers": list(args.layers),
