@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import os
+from pathlib import Path
+import tempfile
 
 import torch
 
@@ -82,6 +85,91 @@ class Int8ResidualAdapter:
     def correction(self, inputs: torch.Tensor) -> torch.Tensor:
         left, right = self.float_factors()
         return inputs.float().matmul(left).matmul(right) + self.bias.float()
+
+
+def expected_int8_adapter_bytes(
+    input_features: int, output_features: int, rank: int
+) -> int:
+    if input_features <= 0 or output_features <= 0 or rank <= 0:
+        raise ValueError("adapter dimensions must be positive")
+    return (
+        input_features * rank
+        + rank * output_features
+        + 4 * rank
+        + 2 * output_features
+    )
+
+
+def int8_adapter_bytes(adapter: Int8ResidualAdapter) -> bytes:
+    payload = b"".join(
+        tensor.detach().cpu().contiguous().numpy().tobytes()
+        for tensor in (
+            adapter.left_codes,
+            adapter.left_scales,
+            adapter.right_codes,
+            adapter.right_scales,
+            adapter.bias,
+        )
+    )
+    if len(payload) != adapter.persistent_bytes:
+        raise AssertionError("INT8 adapter serialization byte count changed")
+    return payload
+
+
+def write_int8_adapter(path: Path, adapter: Int8ResidualAdapter) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", dir=path.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(int8_adapter_bytes(adapter))
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    except BaseException:
+        temporary.unlink(missing_ok=True)
+        raise
+
+
+def load_int8_adapter(
+    path: Path,
+    *,
+    input_features: int,
+    output_features: int,
+    rank: int,
+    ridge_fraction: float,
+) -> Int8ResidualAdapter:
+    expected = expected_int8_adapter_bytes(input_features, output_features, rank)
+    payload = bytearray(path.read_bytes())
+    if len(payload) != expected:
+        raise ValueError("INT8 adapter payload byte count changed")
+    offset = 0
+
+    def take(dtype: torch.dtype, count: int) -> torch.Tensor:
+        nonlocal offset
+        element_size = torch.empty((), dtype=dtype).element_size()
+        stop = offset + count * element_size
+        tensor = torch.frombuffer(payload, dtype=dtype, count=count, offset=offset).clone()
+        offset = stop
+        return tensor
+
+    left_codes = take(torch.int8, input_features * rank).reshape(input_features, rank)
+    left_scales = take(torch.float16, rank)
+    right_codes = take(torch.int8, rank * output_features).reshape(rank, output_features)
+    right_scales = take(torch.float16, rank)
+    bias = take(torch.float16, output_features)
+    if offset != len(payload):
+        raise AssertionError("INT8 adapter parser did not consume the payload")
+    return Int8ResidualAdapter(
+        left_codes=left_codes,
+        left_scales=left_scales,
+        right_codes=right_codes,
+        right_scales=right_scales,
+        bias=bias,
+        ridge_fraction=ridge_fraction,
+    )
 
 
 def _validate_fit_tensors(

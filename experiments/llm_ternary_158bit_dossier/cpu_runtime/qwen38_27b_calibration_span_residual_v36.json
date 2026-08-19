@@ -5,6 +5,12 @@
   "experiment_id": "qwen38_27b_calibration_span_residual_v36",
   "status": "frozen_after_terminal_qat_before_mixed_execution",
   "frozen_at": "2026-08-19T05:25:00Z",
+  "pre_execution_correction": {
+    "frozen_at": "2026-08-19T05:34:00Z",
+    "measurement_state": "no v36 cache collection, fit, grid score, or confirmation score had begun",
+    "correction": "Replace requested rank 48 with rank 47 because centering 48 fit rows leaves algebraic rank at most 47.",
+    "all_other_protocol_fields_unchanged": true
+  },
   "objective": "Test whether the large fresh-confirmation error of the trained mixed CQ3/AFF3 block is concentrated in a low-dimensional calibration activation span and can be corrected by one globally selected, deployable INT8 reduced-rank residual map without sacrificing the projected CPU bandwidth advantage.",
   "scope": {
     "active_model_only": "Qwen/Qwen3.8-27B",
@@ -94,7 +100,7 @@
       8,
       16,
       32,
-      48
+      47
     ],
     "candidate_ridge_fractions": [
       0.0001,
@@ -139,10 +145,10 @@
       "macs_per_token": 20971520,
       "weight_traffic_fraction_vs_base_compute_image": 0.0017448973619824925
     },
-    "rank_48_complete_64_layer_projection": {
-      "persistent_bytes": 32124928,
-      "macs_per_token": 31457280,
-      "weight_traffic_fraction_vs_base_compute_image": 0.002590920038639288
+    "rank_47_complete_64_layer_projection": {
+      "persistent_bytes": 31469312,
+      "macs_per_token": 30801920,
+      "weight_traffic_fraction_vs_base_compute_image": 0.00253804405882471
     }
   },
   "execution_policy": {

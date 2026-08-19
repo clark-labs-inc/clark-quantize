@@ -2,14 +2,18 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import sys
 
 import pytest
 import torch
 
 from clark_quantize.qwen38_calibration_span_residual import (
+    expected_int8_adapter_bytes,
     fit_float_residual_adapter,
+    load_int8_adapter,
     normalized_mse,
     quantize_residual_adapter,
+    write_int8_adapter,
 )
 
 
@@ -18,6 +22,10 @@ PREREG = (
     REPO
     / "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_calibration_span_residual_v36.json"
 )
+RUNTIME = PREREG.parent
+sys.path.insert(0, str(RUNTIME))
+
+import run_qwen38_27b_calibration_span_residual_v36 as runner
 
 
 def synthetic_problem() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -69,6 +77,35 @@ def test_int8_factors_preserve_most_of_the_geometric_correction() -> None:
     )
 
 
+def test_int8_payload_roundtrip_is_exact(tmp_path: Path) -> None:
+    hidden, candidate, target = synthetic_problem()
+    adapter = quantize_residual_adapter(
+        fit_float_residual_adapter(
+            hidden,
+            candidate,
+            target,
+            rank=4,
+            ridge_fraction=1e-4,
+        )
+    )
+    path = tmp_path / "adapter.csr"
+    write_int8_adapter(path, adapter)
+    restored = load_int8_adapter(
+        path,
+        input_features=hidden.shape[1],
+        output_features=target.shape[1],
+        rank=4,
+        ridge_fraction=1e-4,
+    )
+    assert path.stat().st_size == expected_int8_adapter_bytes(40, 32, 4)
+    assert path.stat().st_size == adapter.persistent_bytes
+    assert torch.equal(restored.left_codes, adapter.left_codes)
+    assert torch.equal(restored.left_scales, adapter.left_scales)
+    assert torch.equal(restored.right_codes, adapter.right_codes)
+    assert torch.equal(restored.right_scales, adapter.right_scales)
+    assert torch.equal(restored.bias, adapter.bias)
+
+
 def test_fit_rejects_invalid_rank_and_zero_energy() -> None:
     hidden, candidate, target = synthetic_problem()
     with pytest.raises(ValueError, match="rank must be"):
@@ -85,6 +122,45 @@ def test_fit_rejects_invalid_rank_and_zero_energy() -> None:
         )
 
 
+def test_v36_context_replay_slices_to_sequences_containing_selected_rows(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Config:
+        layer_types = ["full_attention"]
+
+    captured: dict[str, tuple[int, ...]] = {}
+
+    def fake_context(config, hidden, attention_mask, position_ids):
+        captured["hidden"] = tuple(hidden.shape)
+        captured["attention_mask"] = tuple(attention_mask.shape)
+        captured["position_ids"] = tuple(position_ids.shape)
+        return "positions", {"full_attention": "mask"}
+
+    monkeypatch.setattr(runner.qat, "make_context", fake_context)
+    cache = {
+        "layers": {
+            "0": {
+                "input": torch.zeros(12, 64, 2),
+                "output": torch.ones(12, 64, 2),
+            }
+        },
+        "attention_mask": torch.ones(12, 64),
+        "text_position_ids": torch.arange(64).repeat(12, 1),
+    }
+    hidden, parent, positions, mask, position_ids = runner.load_context(
+        Config(), cache, 0, selected=torch.tensor([0, 7 * 64 + 11])
+    )
+    assert hidden.shape == parent.shape == (8, 64, 2)
+    assert position_ids.shape == (8, 64)
+    assert positions == "positions"
+    assert mask == "mask"
+    assert captured == {
+        "hidden": (8, 64, 2),
+        "attention_mask": (8, 64),
+        "position_ids": (8, 64),
+    }
+
+
 def test_v36_prereg_keeps_selection_out_of_fresh_confirmation() -> None:
     prereg = json.loads(PREREG.read_text())
     assert prereg["scope"]["active_model_only"] == "Qwen/Qwen3.8-27B"
@@ -95,7 +171,10 @@ def test_v36_prereg_keeps_selection_out_of_fresh_confirmation() -> None:
         "validation_rule": "Within the frozen ordered calibration-row vector, ordinals congruent to 3 modulo 4 are validation; all others are fit.",
         "same_split_all_layers": True,
     }
-    assert prereg["training"]["candidate_ranks"] == [8, 16, 32, 48]
+    assert prereg["training"]["candidate_ranks"] == [8, 16, 32, 47]
+    assert prereg["pre_execution_correction"]["measurement_state"].startswith(
+        "no v36"
+    )
     assert prereg["training"]["candidate_ridge_fractions"] == [
         0.0001,
         0.001,
