@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 MODULE_PATH = RUNTIME / "run_qwen38_27b_hierarchical_cell_subspace_residual_v79.py"
 PREREG = RUNTIME / "qwen38_27b_hierarchical_cell_subspace_residual_preregistration_v79.json"
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_hierarchical_cell_subspace_residual_v79"
 
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(RUNTIME))
@@ -57,3 +58,23 @@ def test_v79_preregistration_freezes_nonredundant_hierarchical_composition() -> 
     assert gate["minimum_absolute_v76_improvement_over_v75"] == 0.04
     assert prereg["data_status"]["promotion_or_scientific_claim_from_v79_forbidden"] is True
     assert prereg["decision"]["no_breakthrough_claim"] is True
+
+
+def test_v79_terminal_receipt_preserves_subspace_near_miss() -> None:
+    receipt = json.loads((RECEIPTS / "receipt.json").read_text())
+    metrics = receipt["metrics"]
+
+    assert receipt["complete"] is True
+    assert receipt["terminal"] is True
+    assert receipt["gate"] == {
+        "decision": "reject_rank16_residual_after_v75_cell_path",
+        "passed": False,
+    }
+    assert metrics["fit"]["relative_improvement"] > 0.95
+    assert 0.83 < metrics["v42_validation_development"]["relative_improvement"] < 0.84
+    assert 0.70 < metrics["v76_development"]["relative_improvement"] < 0.72
+    assert metrics["v76_development"]["improved_prompt_fraction"] == 1.0
+    assert metrics["v76_development"]["positive_output_tile_fraction"] > 0.995
+    assert metrics["v76_development"]["median_prompt_directional_capacity"] < 0.23
+    assert receipt["adapter"]["payload"]["bytes"] == 370_752
+    assert receipt["checks"]["v75_v76_metric_reproduced"] is True
