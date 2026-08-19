@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import sys
@@ -14,6 +15,7 @@ PREREG = (
     RUNTIME
     / "qwen38_27b_exact_marginal_tile_mixed_down_preregistration_v73.json"
 )
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_exact_marginal_tile_mixed_down_v73"
 
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(RUNTIME))
@@ -103,3 +105,31 @@ def test_v73_preregistration_freezes_x8_exact_marginal_layout() -> None:
     assert observed_increase < 0.05
     assert layout["high_precision_weight_materialization_at_runtime"] is False
     assert MODULE.HEADER.size == 64
+
+
+def test_v73_terminal_receipt_retains_directional_holdout_gain_but_rejects() -> None:
+    receipt_path = RECEIPTS / "receipt.json"
+    receipt = json.loads(receipt_path.read_text())
+    marker = json.loads((RECEIPTS / "EXPERIMENT_COMPLETE.json").read_text())
+
+    assert receipt["complete"] is True
+    assert receipt["terminal"] is True
+    assert receipt["gate"] == {
+        "decision": "reject_fixed_budget_output_tile_mixed_precision_at_12_5_percent",
+        "passed": False,
+    }
+    assert receipt["tile_selection"]["selected_count"] == 80
+    assert receipt["tile_selection"]["confirmation_rows_observed_during_selection"] == 0
+    assert receipt["metrics"][
+        "relative_confirmation_complete_mlp_nmse_improvement"
+    ] > 0.05
+    assert receipt["metrics"]["all_int4_confirmation_complete_mlp_nmse"] > receipt[
+        "metrics"
+    ]["baseline_confirmation_complete_mlp_nmse"]
+    assert receipt["tile_selection"][
+        "selected_confirmation_positive_fraction"
+    ] < 0.5
+    assert receipt["storage"]["total_bytes"] == 26_982_544
+    assert marker["receipt_sha256"] == hashlib.sha256(
+        receipt_path.read_bytes()
+    ).hexdigest()
