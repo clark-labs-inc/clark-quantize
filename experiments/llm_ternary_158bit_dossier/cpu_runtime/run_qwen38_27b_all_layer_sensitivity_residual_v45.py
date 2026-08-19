@@ -467,10 +467,32 @@ def main() -> None:
         != training_receipt_sha
         or prereg.get("frozen_inputs", {}).get("runner_sha256")
         != sha256_file(Path(__file__))
+        or prereg.get("frozen_inputs", {}).get("training_receipt_sha256")
+        != training_receipt_sha
+        or prereg.get("frozen_inputs", {}).get("direct_receipt_sha256")
+        != direct_receipt_sha
+        or prereg.get("frozen_inputs", {}).get("full_context_receipt_sha256")
+        != FULL_CONTEXT_RECEIPT_SHA256
+        or prereg.get("frozen_inputs", {}).get(
+            "pilot_residual_preregistration_sha256"
+        )
+        != PILOT_RESIDUAL_PREREGISTRATION_SHA256
+        or prereg.get("frozen_inputs", {}).get(
+            "pilot_residual_calibration_sha256"
+        )
+        != PILOT_RESIDUAL_CALIBRATION_SHA256
         or prereg.get("sensitivity_rule", {}).get("minimum_base_validation_nmse")
         != SENSITIVITY_THRESHOLD
         or prereg.get("adapter", {}).get("rank") != RANK
         or prereg.get("adapter", {}).get("ridge_fraction") != RIDGE_FRACTION
+        or prereg.get("gate", {}).get(
+            "minimum_mean_active_relative_validation_nmse_reduction"
+        )
+        != 0.1
+        or prereg.get("gate", {}).get("maximum_final_validation_nmse_per_layer")
+        != 0.05
+        or prereg.get("gate", {}).get("maximum_residual_payload_bytes")
+        != 12_000_000
     ):
         raise ValueError("v45 preregistration changed")
     resource_guard(

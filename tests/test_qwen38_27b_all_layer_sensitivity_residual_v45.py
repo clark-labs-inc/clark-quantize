@@ -117,6 +117,13 @@ def test_v45_is_inert_without_post_v44_preregistration() -> None:
     assert '"frozen_after_v44_pass_before_residual_fit"' in source
     assert 'prereg.get("parent_training", {}).get("receipt_sha256")' in source
     assert 'prereg.get("frozen_inputs", {}).get("runner_sha256")' in source
+    assert 'prereg.get("frozen_inputs", {}).get("training_receipt_sha256")' in source
+    assert 'prereg.get("frozen_inputs", {}).get("direct_receipt_sha256")' in source
+    assert '"pilot_residual_preregistration_sha256"' in source
+    assert '"pilot_residual_calibration_sha256"' in source
+    assert "!= 0.1" in source
+    assert "!= 0.05" in source
+    assert "!= 12_000_000" in source
 
 
 def test_v45_uses_only_calibration_for_fit_and_validation_for_selection() -> None:
