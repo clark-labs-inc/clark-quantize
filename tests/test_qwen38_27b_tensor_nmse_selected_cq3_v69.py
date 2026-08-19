@@ -15,6 +15,10 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 MODULE_PATH = RUNTIME / "materialize_qwen38_27b_tensor_nmse_selected_cq3_v69.py"
 PREREG = RUNTIME / "qwen38_27b_tensor_nmse_selected_cq3_preregistration_v69.json"
+QUALITY_PREREG = (
+    RUNTIME / "qwen38_27b_tensor_nmse_selected_cq3_quality_preregistration_v70.json"
+)
+QUALITY_RUNNER = RUNTIME / "run_qwen38_27b_tensor_nmse_selected_cq3_quality_v70.sh"
 TRAINING = RUNTIME / "receipts/qwen38_27b_all_layer_mixed_train_v44/terminal-receipt.json"
 
 sys.path.insert(0, str(RUNTIME))
@@ -123,3 +127,31 @@ def test_preregistered_threshold_is_finite_and_not_benchmark_score() -> None:
 def test_preregistration_bytes_are_stable_for_launcher_pin() -> None:
     digest = hashlib.sha256(PREREG.read_bytes()).hexdigest()
     assert len(digest) == 64
+
+
+def test_v70_quality_gate_excludes_adaptive_cute_and_pins_denominators() -> None:
+    prereg = json.loads(QUALITY_PREREG.read_text())
+    gate = prereg["promotion_gate"]
+    evaluations = prereg["evaluations"]
+
+    assert prereg["evidence_independence"]["cute_status"].startswith("adaptive")
+    assert "cute_correct_min" not in gate
+    assert evaluations["math_code"]["math500_items"] == 8
+    assert evaluations["math_code"]["code_trace_items"] == 6
+    assert evaluations["mmlu"]["items"] == 64
+    assert evaluations["wikitext"]["chunks"] == 4
+    assert gate == {
+        "all_receipts_valid": True,
+        "math500_correct_min": 4,
+        "code_trace_correct_min": 4,
+        "mmlu_correct_min": 49,
+        "wikitext_ppl_ratio_max": 1.05,
+        "all_evaluations_run_even_after_an_earlier_miss": True,
+        "throughput_forbidden_until_all_checks_pass": True,
+    }
+
+
+def test_v70_runner_contains_no_cute_evaluation_call() -> None:
+    runner = QUALITY_RUNNER.read_text()
+    assert "eval_llama_cpp_cute_quick.py" not in runner
+    assert "cute_excluded_from_promotion_as_adaptive" in runner
