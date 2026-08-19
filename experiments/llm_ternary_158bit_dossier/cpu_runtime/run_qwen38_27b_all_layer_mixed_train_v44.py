@@ -426,6 +426,14 @@ def main() -> None:
         or prereg.get("scope", {}).get("qwen_4b_compute_forbidden") is not True
         or prereg.get("parent_direct", {}).get("receipt_sha256")
         != direct_receipt_sha
+        or prereg.get("frozen_inputs", {}).get("runner", {}).get("sha256")
+        != sha256_file(Path(__file__))
+        or prereg.get("frozen_inputs", {}).get("direct_receipt_sha256")
+        != direct_receipt_sha
+        or prereg.get("frozen_inputs", {}).get("full_context_receipt_sha256")
+        != FULL_CONTEXT_RECEIPT_SHA256
+        or prereg.get("frozen_inputs", {}).get("pilot_training_receipt_sha256")
+        != PILOT_TRAINING_RECEIPT_SHA256
     ):
         raise ValueError("all-layer mixed training preregistration changed")
     resource_guard(

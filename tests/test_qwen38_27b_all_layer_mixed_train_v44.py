@@ -63,6 +63,11 @@ def test_v44_cannot_run_before_a_frozen_v43_pass_handoff() -> None:
     assert 'direct_receipt.get("gate", {}).get("passed") is not True' in source
     assert 'prereg.get("parent_direct", {}).get("receipt_sha256")' in source
     assert "!= direct_receipt_sha" in source
+    assert 'prereg.get("frozen_inputs", {}).get("runner", {}).get("sha256")' in source
+    assert "!= sha256_file(Path(__file__))" in source
+    assert 'prereg.get("frozen_inputs", {}).get("direct_receipt_sha256")' in source
+    assert 'prereg.get("frozen_inputs", {}).get("full_context_receipt_sha256")' in source
+    assert 'prereg.get("frozen_inputs", {}).get("pilot_training_receipt_sha256")' in source
 
 
 def test_v44_training_has_no_validation_or_confirmation_input() -> None:
