@@ -1,0 +1,71 @@
+{
+  "candidate_identity": {
+    "QWEN38_RESIDUAL_DIR_must_be_unset": true,
+    "QWEN38_RESIDUAL_LAYERS_must_be_unset": true,
+    "high_precision_weight_materialization_forbidden": true,
+    "post_block_residual_payload_bytes": 0,
+    "trained_cq3_and_aff3_source": "terminal passed v44 payloads",
+    "v45_payload_materialization_forbidden": true,
+    "v58_native_lut_must_pass_before_v59_is_used": true,
+    "v59_llamacpp_integration_must_compile_and_pass_native_parity": true
+  },
+  "claim_boundary": "A pass can qualify only the exact residual-free trained compact Qwen3.8-27B runtime on the frozen four-core Milan node. It does not erase the v45 negative, establish 100 tokens per second, or establish novelty.",
+  "decision_rules": {
+    "failed_v45_residual_must_never_execute": true,
+    "no_v60_threshold_or_denominator_changes": true,
+    "optional_mtp_cannot_rescue_conventional_failure": true,
+    "reject_on_any_inherited_v60_gate_failure": true,
+    "this_is_a_separate_candidate_not_a_rescue_of_v45": true
+  },
+  "experiment_id": "qwen38_27b_trained_compact_base_only_gate_v61",
+  "frozen_at_utc": "2026-08-19T16:34:47.884679Z",
+  "frozen_inputs": {
+    "generator_repository_commit": "b8e87d762dc57398529d548938e807817426e028",
+    "generator_sha256": "d4b1ef283cc9d63be0530accde63e269f499b9db92a74c58985e4bc92979f904",
+    "v45_outcome_sha256": "c88dac6c4c12cfa7533fb032f2a4bb8fa147123c5c182788627a2bfb3ab6fbe2",
+    "v60_sha256": "cdf92c6746520e62bb834b463eed0ac16a627cc4c788b70136a5728d21d2930c"
+  },
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "inherited_frozen_gates": {
+    "candidate_over_q4_weighted_decode_speedup_minimum": 1.4,
+    "candidate_over_q4_wikitext_ppl_ratio_maximum": 1.05,
+    "candidate_weighted_tokens_per_second_minimum": 2.75,
+    "candidate_weighted_tokens_per_second_stretch": 3.2,
+    "code_correct_minimum": 5,
+    "cute_correct_minimum": 7,
+    "free_generation_required": true,
+    "math500_correct_minimum": 4,
+    "mmlu_correct_minimum": 51,
+    "resident_memory_and_energy_receipts_required": true
+  },
+  "objective": "Qualify one separate trained CQ3 plus AFF3 Qwen3.8-27B candidate with the failed v45 post-block residual disabled, under every frozen v60 capability and conventional-throughput threshold.",
+  "parent_v60": {
+    "all_manifests_prompts_quality_thresholds_and_performance_thresholds_unchanged": true,
+    "schema": "qwen38_27b_trained_compact_whole_model_gate_preregistration_v60",
+    "sha256": "cdf92c6746520e62bb834b463eed0ac16a627cc4c788b70136a5728d21d2930c"
+  },
+  "schema": "qwen38_27b_trained_compact_base_only_gate_amendment_v61",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "cpu": "AMD EPYC Milan",
+    "host": "quant",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true,
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0"
+  },
+  "status": "frozen_after_v45_negative_before_candidate_materialization_or_whole_model_observation",
+  "terminal_v45_outcome": {
+    "classification": "terminal_protocol_negative_no_v45_receipt",
+    "failed_frozen_gates": [
+      "all_active_layers_validation_not_regressed",
+      "mean_active_relative_validation_nmse_reduction",
+      "pilot_sensitivity_mode_reproduction_protocol"
+    ],
+    "original_v60_residual_candidate_rejected": true,
+    "outcome_sha256": "c88dac6c4c12cfa7533fb032f2a4bb8fa147123c5c182788627a2bfb3ab6fbe2",
+    "preregistration_sha256": "c4b64d7bdb6af2e6e09fc857cf0defd7bcd9a2b24903beb3b5023c3692a51664",
+    "repository_commit": null,
+    "schema": "qwen38_27b_all_layer_sensitivity_residual_protocol_incident_v45",
+    "training_receipt_sha256": null
+  }
+}

@@ -14,6 +14,7 @@ V60 = RUNTIME / "qwen38_27b_trained_compact_whole_model_gate_preregistration_v60
 INCIDENT = RUNTIME / (
     "receipts/qwen38_27b_all_layer_sensitivity_residual_v45_protocol_incident/incident.json"
 )
+AMENDMENT = RUNTIME / "qwen38_27b_trained_compact_base_only_gate_amendment_v61.json"
 
 
 def load_module():
@@ -122,3 +123,15 @@ def test_v61_accepts_authenticated_protocol_negative_incident() -> None:
     assert "pilot_sensitivity_mode_reproduction_protocol" in outcome[
         "failed_frozen_gates"
     ]
+
+
+def test_v61_frozen_amendment_binds_actual_incident_and_preserves_v60_gates() -> None:
+    payload = json.loads(AMENDMENT.read_text())
+    assert payload["frozen_inputs"]["v45_outcome_sha256"] == (
+        "c88dac6c4c12cfa7533fb032f2a4bb8fa147123c5c182788627a2bfb3ab6fbe2"
+    )
+    assert payload["parent_v60"][
+        "all_manifests_prompts_quality_thresholds_and_performance_thresholds_unchanged"
+    ]
+    assert payload["candidate_identity"]["post_block_residual_payload_bytes"] == 0
+    assert payload["decision_rules"]["failed_v45_residual_must_never_execute"]
