@@ -1,0 +1,27 @@
+{
+  "schema": "qwen38_27b_aff3_llamacpp_negative_validation_v49",
+  "model": "Qwen/Qwen3.8-27B",
+  "cases": [
+    {
+      "case": "directory_without_layer_set",
+      "expected_failure": "both QWEN38_AFF3_DIR and QWEN38_AFF3_LAYERS are required",
+      "rejected": true
+    },
+    {
+      "case": "malformed_multiple_dash_layer_set",
+      "declaration": "0-1-2",
+      "expected_failure": "invalid AFF3 layer token 0-1-2",
+      "rejected": true
+    },
+    {
+      "case": "layer_1_filename_with_authenticated_layer_0_payload",
+      "expected_failure": "runtime layer or dimensions changed",
+      "rejected": true
+    }
+  ],
+  "all_negative_cases_rejected": true,
+  "performance_timing_ran": false,
+  "passed": true,
+  "complete": true,
+  "terminal": true
+}
