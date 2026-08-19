@@ -1,0 +1,105 @@
+{
+  "schema": "qwen38_27b_aff3_ggml_development_receipt_v48",
+  "created_at": "2026-08-19T10:18:27Z",
+  "experiment_id": "qwen38_27b_aff3_ggml_development_v48",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "repository_commit": "4c9a90b8af619a2fab7517be802390d9a97a9036",
+  "implementation_commit": "c17adb87a8d67b3d6eca57320e0a1ad16abecb84",
+  "host": "quant",
+  "cpu": "AMD EPYC Milan AVX2",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "llama_cpp": {
+    "source_path": "/workspace/src/llama.cpp-residual-graph-v40",
+    "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "source_clean": true,
+    "ggml_cpu_sha256": "3979b1f2f8cc15c60e6ffe56427493782515beb0edb77115416a957f6a321a7e",
+    "ggml_base_sha256": "9c72be64bb6b21675dfc40c9950d0e265c2fdc38d638157f46bbc4e202bebc8b",
+    "ggml_sha256": "67cdcb86c0f3fca7b62a338e0be8bfeca00919c4042a7f0d807c14826b50c367"
+  },
+  "sha256": {
+    "preregistration": "fa654b3dc800ca1f5aba4454ecff8a44ed8a3716ecc41aedcf5df339b67553b1",
+    "source": "66427b90d0ea0b3080bed742c2865719b69aa4bb1fd1f35c59e7e9e5d92f1408",
+    "build_script": "ae55b228b5104c942f0498b61d0ef47544d181f242cab96a18bf17208cbe3e39",
+    "binary": "d1fc1a0ef9cfb97f800414e096708df5f3097d3ee6bc8b88cd4061ab1c5bcd3c",
+    "runtime_image_file": "a4cec7372ac21a0093d047c1452277508583ebca1e3f4f66c73a8a74142ccf48"
+  },
+  "runtime_image": {
+    "path": "/workspace/quant-runs/qwen38-aff3-rotated-v47/layer-00-direct.aff3x16",
+    "bytes": 8245376,
+    "root_sha256": "dbe0344332c188d971f2cb6586583c723ab70a33a428bfefb66eff95f77d0a24",
+    "shape": [
+      5120,
+      6144
+    ],
+    "stages": 6,
+    "source_classification": "authenticated direct-v43 development artifact; not trained-v44"
+  },
+  "cases": [
+    {
+      "path": "decode-validation.json",
+      "tokens": 1,
+      "threads": 4,
+      "observed_task_mask": 15,
+      "output_bit_exact": true,
+      "maximum_absolute_error": 0.0,
+      "performance_timing_ran": false,
+      "passed": true
+    },
+    {
+      "path": "eight-token-validation.json",
+      "tokens": 8,
+      "threads": 4,
+      "observed_task_mask": 15,
+      "output_bit_exact": true,
+      "maximum_absolute_error": 0.0,
+      "performance_timing_ran": false,
+      "passed": true
+    }
+  ],
+  "checks": {
+    "preregistration_preceded_implementation_execution": true,
+    "clean_checkout_rebuild_passed": true,
+    "root_authentication_passed": true,
+    "image_semantic_validation_passed": true,
+    "malformed_zero_byte_image_rejected": true,
+    "one_and_eight_token_cases_passed": true,
+    "all_four_ggml_tasks_observed": true,
+    "precomputed_rotation_bit_exact_vs_direct_v47": true,
+    "persistent_dense_weight_bytes_zero": true,
+    "decoded_group_scale_matrix_bytes_zero": true,
+    "performance_timing_ran": false
+  },
+  "implementation": {
+    "image_loader": "read-only mmap; exact header, dimensions, section bounds, zero padding, reserved-code, finite-FP16, perfect-pairing, and root-SHA checks",
+    "rotation": "FP32 cosine and sine coefficients derived once from stored FP16 angles; 147456 bytes per loaded layer",
+    "decode_parallelism": "5120 output rows split on 16-row tile boundaries across four GGML tasks",
+    "eight_token_parallelism": "whole tokens assigned round-robin across four GGML tasks",
+    "scratch_bytes_per_task": 31104,
+    "graph_shape_anchor_bytes_decode": 20480,
+    "graph_shape_anchor_bytes_eight_token": 163840
+  },
+  "preflight_repair": {
+    "observed_failure": "the first clean-checkout build invocation ran outside a Git working directory and the build script rejected it",
+    "repair_commit": "4c9a90b8af619a2fab7517be802390d9a97a9036",
+    "resolution": "the build script now derives the repository root from its own BASH_SOURCE path; the clean detached rebuild then passed"
+  },
+  "live_run_noninterference": {
+    "v43_service_active_after_validation": true,
+    "v43_restart_count_after_validation": 0,
+    "validation_affinity": [
+      7
+    ],
+    "v43_terminal_layers_after_validation": 29,
+    "v43_passed_layers_after_validation": 29,
+    "v43_median_complete_block_nmse": 0.004302672896903267,
+    "v43_worst_complete_block_nmse": 0.013405854276030627,
+    "v43_maximum_allowed_nmse": 0.12
+  },
+  "classification": "authenticated_ggml_graph_and_exact_v47_parity_pass_development_only",
+  "next_required_gate": "after v43 releases the CPU, freeze and execute a separate timing protocol; after v44 passes, repeat exact trained-artifact parity before Qwen3.8-27B llama.cpp model-graph attachment",
+  "claim_boundary": "This preregistered development result proves authenticated GGML execution and exact v47 parity for one direct-v43 layer image at one and eight tokens. It is not trained-v44 evidence and establishes no performance, whole-model quality, memory, energy, novelty, or breakthrough claim.",
+  "passed": true,
+  "complete": true,
+  "terminal": true
+}
