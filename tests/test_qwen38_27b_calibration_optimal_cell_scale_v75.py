@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import sys
@@ -11,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 MODULE_PATH = RUNTIME / "run_qwen38_27b_calibration_optimal_cell_scale_v75.py"
 PREREG = RUNTIME / "qwen38_27b_calibration_optimal_cell_scale_preregistration_v75.json"
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_calibration_optimal_cell_scale_v75"
 
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(RUNTIME))
@@ -80,3 +82,37 @@ def test_v75_preregistration_freezes_same_rate_development_only_screen() -> None
     assert layout["hybrid_three_projection_mlp_payload_bytes"] == 73_657_024
     assert layout["relative_full_mlp_payload_increase"] < 0.04
     assert layout["high_precision_weight_materialization_at_runtime"] is False
+
+
+def test_v75_terminal_receipt_passes_only_to_new_prompt_replication() -> None:
+    receipt_path = RECEIPTS / "receipt.json"
+    receipt = json.loads(receipt_path.read_text())
+    marker = json.loads((RECEIPTS / "EXPERIMENT_COMPLETE.json").read_text())
+
+    assert receipt["complete"] is True
+    assert receipt["terminal"] is True
+    assert receipt["gate"] == {
+        "decision": "freeze_optimal_cell_scales_for_new_prompt_replication",
+        "passed": True,
+    }
+    assert receipt["data_status"][
+        "development_confirmation_is_architecture_contaminated"
+    ] is True
+    assert receipt["data_status"]["fresh_holdout_claim_forbidden"] is True
+    assert receipt["metrics"][
+        "relative_calibration_complete_mlp_nmse_improvement"
+    ] > 0.89
+    assert receipt["metrics"][
+        "relative_development_complete_mlp_nmse_improvement"
+    ] > 0.82
+    assert receipt["metrics"][
+        "development_to_calibration_improvement_ratio"
+    ] > 0.9
+    assert receipt["cell_selection"][
+        "development_positive_output_tile_fraction"
+    ] > 0.99
+    assert receipt["storage"]["additional_runtime_bytes_vs_v74"] == 0
+    assert receipt["storage"]["additional_runtime_operations_vs_v74"] == 0
+    assert marker["receipt_sha256"] == hashlib.sha256(
+        receipt_path.read_bytes()
+    ).hexdigest()
