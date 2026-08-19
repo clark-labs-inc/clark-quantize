@@ -9,6 +9,7 @@ REPO = Path(__file__).resolve().parents[1]
 RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREREG = RUNTIME / "qwen38_27b_calibration_residual_ggml_v40.json"
 RECEIPTS = RUNTIME / "receipts/qwen38_27b_calibration_residual_ggml_v40"
+PLACEMENT = RUNTIME / "qwen38_27b_calibration_residual_v40_semantic_placement_addendum.json"
 
 
 def sha256(path: Path) -> str:
@@ -173,3 +174,35 @@ def test_v40_execution_receipt_authenticates_the_bounded_run() -> None:
     assert execution["completion_marker_sha256"] == sha256(
         RECEIPTS / "complete.json"
     )
+
+
+def test_v40_placement_addendum_corrects_weight_level_wording() -> None:
+    placement = json.loads(PLACEMENT.read_text())
+    assert placement["status"] == (
+        "frozen_after_terminal_v40_before_any_loader_or_model_graph_edit"
+    )
+    correction = placement["original_v40_wording_correction"]
+    assert correction["build_lora_mm_attachment_forbidden"] is True
+    assert correction["weight_name_keying_forbidden"] is True
+    assert correction["layer_index_keying_required"] is True
+    assert correction["v40_measurements_changed"] is False
+    assert correction["v40_gate_result_changed"] is False
+    semantics = placement["correct_graph_semantics"]
+    assert "entering the selected transformer block" in semantics["saved_input"]
+    assert "after the full candidate block" in semantics["placement"]
+    assert "candidate output exactly" in semantics["bypass"]
+
+
+def test_v40_placement_addendum_preserves_base_candidate_identity() -> None:
+    placement = json.loads(PLACEMENT.read_text())
+    dependency = placement["base_candidate_dependency"]
+    assert dependency["applying_payload_to_q4_or_bf16_base_forbidden"] is True
+    assert dependency[
+        "applying_payload_to_a_differently_trained_mixed_base_forbidden"
+    ] is True
+    assert dependency["whole_model_export_exists"] is False
+    evidence = placement["evidence"]
+    for descriptor in evidence.values():
+        path = RUNTIME / descriptor["path"]
+        assert path.is_file()
+        assert sha256(path) == descriptor["sha256"]
