@@ -3,7 +3,7 @@ set -euo pipefail
 
 repo=${REPO:-/workspace/src/clark-quantize-qwen38-v63}
 runner=experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_trained_compact_integration_gate_v63.sh
-unit=quant-qwen38-27b-trained-compact-integration-v63
+unit=quant-qwen38-27b-trained-compact-integration-v63-retry1
 
 if systemctl is-active --quiet "$unit.service"; then
   systemctl show "$unit.service" -p ActiveState -p SubState -p MainPID -p NRestarts
@@ -23,7 +23,7 @@ test -z "$(git -C "$repo" status --porcelain --untracked-files=no)"
 
 systemd-run \
   --unit="$unit" \
-  --description="Qwen3.8-27B trained CQ3 AFF3 exact integration gate v63" \
+  --description="Qwen3.8-27B trained CQ3 AFF3 exact integration gate v63 retry1" \
   --property=Type=exec \
   --property=CPUQuota=400% \
   --property=AllowedCPUs=0,2,4,6 \

@@ -6,9 +6,10 @@ python_bin=${PYTHON_BIN:-/workspace/venvs/quant-cpu/bin/python}
 llama_build=${LLAMA_BUILD:-/workspace/build/llama.cpp-qwen38-cq3-aff3-v63}
 runtime="$repo/experiments/llm_ternary_158bit_dossier/cpu_runtime"
 prereg="$runtime/qwen38_27b_trained_compact_model_graph_preregistration_v64.json"
+parent_retry_amendment="$runtime/qwen38_27b_trained_compact_model_graph_v64_parent_retry_amendment.json"
 worker="$runtime/run_qwen38_27b_aff3_llamacpp_model_worker_v51.sh"
 v62_state=/workspace/quant-state/qwen38-trained-compact-materialize-v62
-v63_state=/workspace/quant-state/qwen38-trained-compact-integration-gate-v63
+v63_state=/workspace/quant-state/qwen38-trained-compact-integration-gate-v63-retry1
 candidate=/workspace/models/candidates/Qwen3.8-27B-trained-CQ3-AFF3-base-v62.gguf
 aff3_root=/workspace/models/candidates/qwen38-trained-aff3-v53
 state=${STATE_DIR:-/workspace/quant-state/qwen38-trained-compact-model-graph-v64}
@@ -22,6 +23,7 @@ unit=quant-qwen38-27b-trained-compact-model-graph-v64
 prompt='Complete this sentence with a short factual answer: The capital of France is'
 
 expected_prereg=a33e3ddf4e70c139ea5e6325b3e55276672dd4955272fc8ddf38efec187db4ce
+expected_parent_retry_amendment=2fb2a935709f4c7f703911c1532a142ed56a7310f3f0c1aae0424c1b1ebc7758
 expected_worker=49975e98cdf7f021fa4b7dab1e984aca0e88e7e0ef2027f4a095007d8ac7c339
 
 require_sha() {
@@ -39,7 +41,8 @@ if [[ -n ${QWEN38_RESIDUAL_DIR+x} || -n ${QWEN38_RESIDUAL_LAYERS+x} ]]; then
 fi
 for active in \
   quant-qwen38-27b-trained-compact-materialize-v62.service \
-  quant-qwen38-27b-trained-compact-integration-v63.service; do
+  quant-qwen38-27b-trained-compact-integration-v63.service \
+  quant-qwen38-27b-trained-compact-integration-v63-retry1.service; do
   if systemctl is-active --quiet "$active"; then
     echo "refusing to overlap model-graph gate with $active" >&2
     exit 2
@@ -50,6 +53,7 @@ test -x "$worker"
 test -x "$cli"
 test -z "$(git -C "$repo" status --porcelain --untracked-files=no)"
 require_sha "$prereg" "$expected_prereg"
+require_sha "$parent_retry_amendment" "$expected_parent_retry_amendment"
 require_sha "$worker" "$expected_worker"
 test -f "$v62_state/EXPERIMENT_COMPLETE.json" -a -f "$v62_state/artifacts.sha256"
 test -f "$v63_state/EXPERIMENT_COMPLETE.json" -a -f "$v63_state/artifacts.sha256"
@@ -109,6 +113,9 @@ if (
     or v63.get("passed") is not True
     or v63.get("complete") is not True
     or v63.get("terminal") is not True
+    or v63.get("infrastructure_retry", {}).get("amendment_sha256") != "9693a0fd01b4927942fbc395cde487b58d51cdb41c015ab4704de562cd1ffaec"
+    or v63.get("infrastructure_retry", {}).get("incident_sha256") != "7102e7b464dc1b4fbd99869deb543c029fb7cacf51c63be8ca67cb68ad34d32c"
+    or v63.get("infrastructure_retry", {}).get("runtime_or_numerical_source_changes") is not False
     or v63.get("inputs", {}).get("candidate_sha256") != sha256(candidate)
     or v63.get("inputs", {}).get("aff3_layer_count") != 64
     or v63.get("inputs", {}).get("residual_payload_bytes") != 0
@@ -254,6 +261,7 @@ payload = {
         "llama_cli_sha256": sha256(Path(cli)),
         "v62_marker_sha256": sha256(Path(v62_marker)),
         "v63_receipt_sha256": sha256(Path(v63_receipt)),
+        "v64_parent_retry_amendment_sha256": "2fb2a935709f4c7f703911c1532a142ed56a7310f3f0c1aae0424c1b1ebc7758",
         "input_authentication_sha256": sha256(Path(input_auth)),
         "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
     },

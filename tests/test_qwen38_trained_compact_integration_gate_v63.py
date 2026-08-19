@@ -10,6 +10,7 @@ RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 PREREG = RUNTIME / "qwen38_27b_trained_compact_integration_gate_preregistration_v63.json"
 RUNNER = RUNTIME / "run_qwen38_27b_trained_compact_integration_gate_v63.sh"
 LAUNCHER = RUNTIME / "launch_qwen38_27b_trained_compact_integration_gate_v63.sh"
+RETRY_AMENDMENT = RUNTIME / "qwen38_27b_trained_compact_integration_v63_infrastructure_retry_amendment.json"
 
 
 def sha256(path: Path) -> str:
@@ -59,6 +60,10 @@ def test_v63_runner_is_fail_closed_and_resource_bounded() -> None:
     runner = RUNNER.read_text()
     launcher = LAUNCHER.read_text()
     assert f"expected_prereg={sha256(PREREG)}" in runner
+    assert f"expected_retry_amendment={sha256(RETRY_AMENDMENT)}" in runner
+    assert "expected_repair_source=18ad5425d182c8aec18d895e2ba649604ff3e6028c78d3dbc7c81369dabd354a" in runner
+    assert "qwen38_27b_cq3_x86_pair_bench_v1.inc" in runner
+    assert "runtime_or_numerical_source_changes\": False" in runner
     assert "sha256sum -c \"$v62_manifest\"" in runner
     assert "status --porcelain" in runner
     assert "CLARK_QWEN38_27B_CQ3_X8_BENCH" in runner
@@ -71,3 +76,22 @@ def test_v63_runner_is_fail_closed_and_resource_bounded() -> None:
     assert "MemorySwapMax=0" in launcher
     assert "AllowedCPUs=0,2,4,6" in launcher
     assert "RestartPreventExitStatus=2" in launcher
+    assert "integration-v63-retry1" in launcher
+
+
+def test_v63_retry_is_strictly_non_numerical() -> None:
+    amendment = json.loads(RETRY_AMENDMENT.read_text())
+    repair = amendment["repair_contract"]
+    unchanged = amendment["unchanged_contract"]
+    assert amendment["classification"] == "infrastructure_retry_only"
+    assert repair["source_sha256"] == sha256(
+        RUNTIME / "qwen38_27b_cq3_x86_pair_bench_v1.inc"
+    )
+    assert repair["runtime_source_changes_permitted"] is False
+    assert repair["numerical_source_changes_permitted"] is False
+    assert repair["kernel_source_changes_permitted"] is False
+    assert repair["test_source_changes_permitted"] is False
+    assert unchanged["trained_aff3_layers"] == [0, 32, 63]
+    assert unchanged["token_counts"] == [1, 8]
+    assert unchanged["whole_model_generation_forbidden"]
+    assert unchanged["performance_timing_forbidden"]

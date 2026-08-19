@@ -7,6 +7,9 @@ llama_source=${LLAMA_SOURCE:-/workspace/src/llama.cpp-qwen38-cq3-aff3-v54-script
 llama_build=${LLAMA_BUILD:-/workspace/build/llama.cpp-qwen38-cq3-aff3-v63}
 runtime="$repo/experiments/llm_ternary_158bit_dossier/cpu_runtime"
 prereg="$runtime/qwen38_27b_trained_compact_integration_gate_preregistration_v63.json"
+retry_amendment="$runtime/qwen38_27b_trained_compact_integration_v63_infrastructure_retry_amendment.json"
+repair_source="$runtime/qwen38_27b_cq3_x86_pair_bench_v1.inc"
+repair_target="$llama_source/tests/qwen38_27b_cq3_x86_pair_bench_v1.inc"
 v54_transform="$runtime/receipts/qwen38_27b_cq3_aff3_llamacpp_v54-transform.json"
 v62_state=/workspace/quant-state/qwen38-trained-compact-materialize-v62
 v62_marker="$v62_state/EXPERIMENT_COMPLETE.json"
@@ -15,13 +18,15 @@ candidate=/workspace/models/candidates/Qwen3.8-27B-trained-CQ3-AFF3-base-v62.ggu
 aff3_root=/workspace/models/candidates/qwen38-trained-aff3-v53
 cq3_materialization="$v62_state/cq3-materialization.json"
 aff3_materialization="$v62_state/aff3-materialization.json"
-state=${STATE_DIR:-/workspace/quant-state/qwen38-trained-compact-integration-gate-v63}
+state=${STATE_DIR:-/workspace/quant-state/qwen38-trained-compact-integration-gate-v63-retry1}
 receipt="$state/receipt.json"
 marker="$state/EXPERIMENT_COMPLETE.json"
 manifest="$state/artifacts.sha256"
-standalone="$llama_build/bin/qwen38-aff3-runtime-smoke-v63"
+standalone="$llama_build/bin/qwen38-aff3-runtime-smoke-v63-retry1"
 
 expected_prereg=7797caa49c8553e545edf7a3b1990bb4935818792868d765046dd99e69132125
+expected_retry_amendment=9693a0fd01b4927942fbc395cde487b58d51cdb41c015ab4704de562cd1ffaec
+expected_repair_source=18ad5425d182c8aec18d895e2ba649604ff3e6028c78d3dbc7c81369dabd354a
 expected_v62_prereg=146a554da68fb3bec2f24a0c2230a6e282511af32f84cf6a0431652fd044674b
 expected_v54_transform=6f2fc0d2877e430926c5dce039e44e59a6acb6994217f43a6a3e70773d739401
 expected_llama_revision=4df29be4f4c3673f428170fda944a5b19f743bb8
@@ -51,12 +56,19 @@ test -d "$llama_source/.git" -o -f "$llama_source/.git"
 test -z "$(git -C "$repo" status --porcelain --untracked-files=no)"
 mkdir -p "$state" "$llama_build"
 require_sha "$prereg" "$expected_prereg"
+require_sha "$retry_amendment" "$expected_retry_amendment"
+require_sha "$repair_source" "$expected_repair_source"
 require_sha "$runtime/qwen38_27b_trained_compact_x8_runtime_preregistration_v62.json" "$expected_v62_prereg"
 require_sha "$v54_transform" "$expected_v54_transform"
 test "$(git -C "$llama_source" rev-parse HEAD)" = "$expected_llama_revision"
 test "$(git -C "$llama_source" diff --binary | sha256sum | awk '{print $1}')" = "$expected_llama_diff"
 test -f "$v62_marker" -a -f "$v62_manifest"
 (cd / && sha256sum -c "$v62_manifest")
+if [[ -e "$repair_target" ]]; then
+  require_sha "$repair_target" "$expected_repair_source"
+else
+  install -m 0644 "$repair_source" "$repair_target"
+fi
 
 if [[ -f "$marker" || -f "$manifest" || -f "$receipt" ]]; then
   test -f "$marker" -a -f "$manifest" -a -f "$receipt"
@@ -83,7 +95,7 @@ if (( available < 8000000000 )); then
 fi
 
 "$python_bin" - \
-  "$v54_transform" "$llama_source" "$v62_marker" "$candidate" \
+  "$v54_transform" "$llama_source" "$repair_target" "$v62_marker" "$candidate" \
   "$cq3_materialization" "$aff3_materialization" "$aff3_root" \
   >"$state/source-and-artifact-authentication.json" <<'PY'
 import hashlib
@@ -101,7 +113,7 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-transform_path, source, marker_path, candidate, cq3_path, aff3_path, aff3_root = map(Path, sys.argv[1:])
+transform_path, source, repair_target, marker_path, candidate, cq3_path, aff3_path, aff3_root = map(Path, sys.argv[1:])
 transform = json.loads(transform_path.read_text())
 marker = json.loads(marker_path.read_text())
 cq3 = json.loads(cq3_path.read_text())
@@ -120,11 +132,17 @@ for line in status.splitlines():
     elif path.is_file():
         observed_paths.add(relative)
 expected_files = transform.get("working_tree_files_sha256", {})
-if observed_paths != set(expected_files):
+repair_relative = "tests/qwen38_27b_cq3_x86_pair_bench_v1.inc"
+if observed_paths != set(expected_files) | {repair_relative}:
     raise SystemExit("authenticated v54 source file denominator changed")
 for relative, expected in expected_files.items():
     if sha256(source / relative) != expected:
         raise SystemExit(f"authenticated v54 source changed: {relative}")
+if (
+    repair_target != source / repair_relative
+    or sha256(repair_target) != "18ad5425d182c8aec18d895e2ba649604ff3e6028c78d3dbc7c81369dabd354a"
+):
+    raise SystemExit("v63 retry benchmark-include repair changed")
 images = sorted(aff3_root.glob("layer-*.aff3x16"))
 if (
     marker.get("schema") != "qwen38_27b_trained_compact_materialization_marker_v62"
@@ -153,7 +171,13 @@ payload = {
     "tracked_diff_sha256": hashlib.sha256(subprocess.check_output(
         ["git", "-C", str(source), "diff", "--binary"]
     )).hexdigest(),
-    "authenticated_working_tree_files": len(expected_files),
+    "authenticated_working_tree_files": len(expected_files) + 1,
+    "infrastructure_retry": {
+        "classification": "exact_frozen_benchmark_include_install_only",
+        "path": repair_relative,
+        "sha256": sha256(repair_target),
+        "runtime_or_numerical_source_changes": False,
+    },
     "candidate_sha256": sha256(candidate),
     "candidate_bytes": candidate.stat().st_size,
     "cq3_target_tensors": len(cq3["targets"]),
@@ -269,7 +293,7 @@ for layer in (0, 32, 63):
         })
 binary_names = (
     "test-cq3", "llama-cli", "llama-server", "llama-perplexity",
-    "qwen38-aff3-runtime-smoke-v63", "libllama.so", "libggml-cpu.so",
+    "qwen38-aff3-runtime-smoke-v63-retry1", "libllama.so", "libggml-cpu.so",
     "libggml-base.so", "libggml.so",
 )
 binaries = {}
@@ -286,6 +310,13 @@ payload = {
         ["git", "-C", str(repo), "rev-parse", "HEAD"], text=True
     ).strip(),
     "preregistration_sha256": sha256(prereg),
+    "infrastructure_retry": {
+        "amendment_sha256": "9693a0fd01b4927942fbc395cde487b58d51cdb41c015ab4704de562cd1ffaec",
+        "incident_sha256": "7102e7b464dc1b4fbd99869deb543c029fb7cacf51c63be8ca67cb68ad34d32c",
+        "installed_file": "tests/qwen38_27b_cq3_x86_pair_bench_v1.inc",
+        "installed_file_sha256": "18ad5425d182c8aec18d895e2ba649604ff3e6028c78d3dbc7c81369dabd354a",
+        "runtime_or_numerical_source_changes": False,
+    },
     "source": {
         "llama_revision": subprocess.check_output(
             ["git", "-C", str(source), "rev-parse", "HEAD"], text=True
