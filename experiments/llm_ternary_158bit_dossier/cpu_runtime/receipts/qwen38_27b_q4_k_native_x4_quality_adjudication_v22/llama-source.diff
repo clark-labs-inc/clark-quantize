@@ -1,0 +1,346 @@
+diff --git a/ggml/src/ggml-cpu/arch/x86/repack.cpp b/ggml/src/ggml-cpu/arch/x86/repack.cpp
+index af1cebad1..5e8f9f0a0 100644
+--- a/ggml/src/ggml-cpu/arch/x86/repack.cpp
++++ b/ggml/src/ggml-cpu/arch/x86/repack.cpp
+@@ -1501,38 +1501,44 @@ void ggml_gemv_q4_K_8x8_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const vo
+     const block_q4_Kx8 * b_ptr_start = (const block_q4_Kx8 *)vx;
+     const block_q8_K * a_ptr_start = (const block_q8_K *)vy;
+ 
+-    // Process Q8_K blocks one by one
+-    for (int64_t y = 0; y < nr; y++) {
+-
+-        // Pointers to LHS blocks of block_q8_K format
+-        const block_q8_K * a_ptr = a_ptr_start + (y * nb);
++    assert(nr > 0 && nr <= 4);
+ 
+-        // Take group of eight interleaved block_q4_K structures at each pass of the loop and perform dot product operation
+-        for (int64_t x = 0; x < nc / 8; x++) {
++    // Decode each Q4_K weight block once and reuse it across all ragged
++    // verification rows.  The row-dependent Q8 loads and dot products remain
++    // separate; the expensive nibble/scale unpack is shared.
++    for (int64_t x = 0; x < nc / 8; x++) {
++        const block_q4_Kx8 * b_ptr = b_ptr_start + (x * b_nb);
+ 
+-            // Pointers to RHS blocks
+-            const block_q4_Kx8 * b_ptr = b_ptr_start + (x * b_nb);
++        __m256 acc_rows[4] = {
++            _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(),
++        };
++        __m256 acc_min_rows[4] = {
++            _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(),
++        };
+ 
+-            // Master FP accumulators
+-            __m256 acc_row = _mm256_setzero_ps();
+-            __m256 acc_min_rows = _mm256_setzero_ps();
+-
+-            for (int64_t b = 0; b < nb; b++) {
+-
+-                // Load and convert to FP32 scale from block_q8_K
+-                const __m256 row_scale_f32 = _mm256_set1_ps((a_ptr[b].d));
++        for (int64_t b = 0; b < nb; b++) {
+ 
+                 // Load the scale values for the 8 blocks interleaved in block_q4_Kx8
+                 // col_scale_f32 rearranged so as to multiply with appropriate quants
+                 const __m256 col_scale_f32 = GGML_F32Cx8_REARRANGE_LOAD(b_ptr[b].d, deltamask);
+                 const __m256 col_dmin_f32 = GGML_F32Cx8_LOAD(b_ptr[b].dmin);
+ 
+-                __m256i iacc_b = _mm256_setzero_si256();
+-                __m256i iacc_min_b = _mm256_setzero_si256();
+-
+-                const __m256i q8sums = _mm256_loadu_si256((const __m256i * )(a_ptr[b].bsums));
+-                __m256i q8s = _mm256_castsi128_si256(_mm_hadd_epi16(_mm256_castsi256_si128(q8sums), _mm256_extracti128_si256(q8sums, 1)));
+-                q8s = _mm256_permute2f128_si256(q8s, q8s, 0);
++                __m256i iacc_b[4] = {
++                    _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(),
++                };
++                __m256i iacc_min_b[4] = {
++                    _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(),
++                };
++                __m256i q8s[4];
++                for (int64_t y = 0; y < nr; ++y) {
++                    const block_q8_K * a_ptr = a_ptr_start + y * nb;
++                    const __m256i q8sums =
++                        _mm256_loadu_si256((const __m256i *) a_ptr[b].bsums);
++                    q8s[y] = _mm256_castsi128_si256(_mm_hadd_epi16(
++                        _mm256_castsi256_si128(q8sums),
++                        _mm256_extracti128_si256(q8sums, 1)));
++                    q8s[y] = _mm256_permute2f128_si256(q8s[y], q8s[y], 0);
++                }
+ 
+                 // Processes two sub blocks from each Q4_K in each iteration
+                 for (int sb = 0; sb < QK_K / 64; sb++) {
+@@ -1600,6 +1606,11 @@ void ggml_gemv_q4_K_8x8_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const vo
+                     // Mins of first and second sub block of Q4_K block are arranged side by side
+                     __m256i mins_01 = _mm256_cvtepu8_epi16(_mm_unpacklo_epi8(_mm_shuffle_epi32(mins_and_scales_0, 78), _mm_shuffle_epi32(mins_and_scales_1, 78)));
+ 
++                    // The Q4_K decode above is shared.  Only the Q8_K loads and
++                    // dot products below are repeated for each verification row.
++                    for (int64_t y = 0; y < nr; ++y) {
++                    const block_q8_K * a_ptr = a_ptr_start + y * nb;
++
+                     // Load the two sub block values corresponding to sb in block_q8_K in batches of 16 bytes and replicate the same across 256 bit vector
+                     __m256i lhs_vec_00 = _mm256_castsi128_si256(_mm_loadu_si128((const __m128i *)(a_ptr[b].qs + sb * 64)));
+                     __m256i lhs_vec_01 = _mm256_castsi128_si256(_mm_loadu_si128((const __m128i *)(a_ptr[b].qs + 16 + sb * 64)));
+@@ -1655,26 +1666,38 @@ void ggml_gemv_q4_K_8x8_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const vo
+ 
+                     // Broadcast the bsums of the two sub blocks  of the iteration of Q8_K across the vector
+                     // Multiply-Add with corresponding mins of Q4_Kx8 with bsums
+-                    __m256i q8s_sb = _mm256_shuffle_epi32(q8s, 0);
++                    __m256i q8s_sb = _mm256_shuffle_epi32(q8s[y], 0);
+                     __m256i iacc_min_sb = _mm256_madd_epi16(q8s_sb, mins_01);
+-                    q8s = _mm256_bsrli_epi128(q8s, 4);
++                    q8s[y] = _mm256_bsrli_epi128(q8s[y], 4);
+ 
+                     // Accumulate for the complete block
+-                    iacc_b = _mm256_add_epi32(iacc_b, iacc_sb);
+-                    iacc_min_b = _mm256_add_epi32(iacc_min_b, iacc_min_sb);
++                    iacc_b[y] = _mm256_add_epi32(iacc_b[y], iacc_sb);
++                    iacc_min_b[y] = _mm256_add_epi32(iacc_min_b[y], iacc_min_sb);
++                    }
+                 }
+ 
+                 // Multiply-Add with scale values for the complete super block
+-                acc_row = _mm256_fmadd_ps(_mm256_cvtepi32_ps(iacc_b), _mm256_mul_ps(col_scale_f32, row_scale_f32), acc_row);
+-                acc_min_rows = _mm256_fmadd_ps(_mm256_cvtepi32_ps(iacc_min_b), _mm256_mul_ps(col_dmin_f32, row_scale_f32), acc_min_rows);
++                for (int64_t y = 0; y < nr; ++y) {
++                    const block_q8_K * a_ptr = a_ptr_start + y * nb;
++                    const __m256 row_scale_f32 = _mm256_set1_ps(a_ptr[b].d);
++                    acc_rows[y] = _mm256_fmadd_ps(
++                        _mm256_cvtepi32_ps(iacc_b[y]),
++                        _mm256_mul_ps(col_scale_f32, row_scale_f32), acc_rows[y]);
++                    acc_min_rows[y] = _mm256_fmadd_ps(
++                        _mm256_cvtepi32_ps(iacc_min_b[y]),
++                        _mm256_mul_ps(col_dmin_f32, row_scale_f32), acc_min_rows[y]);
++                }
+ 
+             }
+ 
+             // Accumulated output values permuted so as to be stored in appropriate order post accumulation
+-            acc_row = _mm256_permutevar8x32_ps(acc_row, finalpermutemask);
+-            _mm256_storeu_ps(s + (y * nr + x * 8), _mm256_sub_ps(acc_row, acc_min_rows));
++            for (int64_t y = 0; y < nr; ++y) {
++                acc_rows[y] = _mm256_permutevar8x32_ps(acc_rows[y], finalpermutemask);
++                _mm256_storeu_ps(
++                    s + y * bs + x * 8,
++                    _mm256_sub_ps(acc_rows[y], acc_min_rows[y]));
++            }
+         }
+-    }
+ 
+ #else
+     UNUSED(kmask1);
+diff --git a/ggml/src/ggml-cpu/repack.cpp b/ggml/src/ggml-cpu/repack.cpp
+index 9689ca3ce..23e539609 100644
+--- a/ggml/src/ggml-cpu/repack.cpp
++++ b/ggml/src/ggml-cpu/repack.cpp
+@@ -312,6 +312,39 @@ void ggml_quantize_mat_q8_K_4x8_generic(const float * GGML_RESTRICT x, void * GG
+ 
+ } // extern "C"
+ 
++void ggml_repack_q8_K_4x8_to_q8_K_rows(const void * GGML_RESTRICT vx,
++                                       void * GGML_RESTRICT vy,
++                                       int64_t k) {
++    assert(QK_K == 256);
++    assert(k % QK_K == 0);
++
++    const int nb = k / QK_K;
++    const block_q8_Kx4 * GGML_RESTRICT x = (const block_q8_Kx4 *) vx;
++    block_q8_K * GGML_RESTRICT y = (block_q8_K *) vy;
++
++    static_assert(sizeof(block_q8_Kx4) == 4 * sizeof(block_q8_K));
++
++    for (int b = 0; b < nb; ++b) {
++        for (int row = 0; row < 4; ++row) {
++            block_q8_K & dst = y[row * nb + b];
++            dst.d = x[b].d[row];
++            for (int group16 = 0; group16 < QK_K / 16; ++group16) {
++                const int tiled = (group16 / 4) * 16 + row * 4 + (group16 % 4);
++                dst.bsums[group16] = x[b].bsums[tiled];
++            }
++
++            // Native 4x8 Q8_K stores one eight-byte group from each row in
++            // every 32-byte vector.  Constant-size copies compile to scalar
++            // 64-bit loads/stores on AVX2 and preserve every signed code bit.
++            for (int group8 = 0; group8 < QK_K / 8; ++group8) {
++                memcpy(dst.qs + group8 * 8,
++                       x[b].qs + group8 * 32 + row * 8,
++                       8);
++            }
++        }
++    }
++}
++
+ template <int64_t INTER_SIZE, ggml_type PARAM_TYPE>
+ void ggml_quantize_mat_t(const float * GGML_RESTRICT x, void * GGML_RESTRICT vy, int64_t nrow, int64_t n_per_row);
+ 
+@@ -967,9 +1000,6 @@ void ggml_gemv_q4_K_8x8_q8_K_generic(int n, float * GGML_RESTRICT s, size_t bs,
+     assert (n % qk == 0);
+     assert (nc % ncols_interleaved == 0);
+ 
+-    UNUSED(bs);
+-    UNUSED(nr);
+-
+     float sumf[8];
+     float sum_minf[8];
+     uint32_t utmp[32];
+@@ -977,15 +1007,20 @@ void ggml_gemv_q4_K_8x8_q8_K_generic(int n, float * GGML_RESTRICT s, size_t bs,
+     int sumi2;
+     int sumi;
+ 
+-    const block_q8_K * a_ptr = (const block_q8_K *) vy;
+     for (int x = 0; x < nc / ncols_interleaved; x++) {
+         const block_q4_Kx8 * b_ptr = (const block_q4_Kx8 *) vx + (x * nb);
+ 
+-        for (int j = 0; j < ncols_interleaved; j++) {
+-            sumf[j] = 0.0;
+-            sum_minf[j] = 0.0;
+-        }
+-        for (int l = 0; l < nb; l++) {
++        // Keep one repacked weight tile resident while evaluating all of the
++        // ragged speculative-verification rows.  The old caller issued one
++        // GEMV per row, which streamed the complete matrix once per token.
++        for (int y = 0; y < nr; y++) {
++            const block_q8_K * a_ptr = (const block_q8_K *) vy + y * nb;
++
++            for (int j = 0; j < ncols_interleaved; j++) {
++                sumf[j] = 0.0;
++                sum_minf[j] = 0.0;
++            }
++            for (int l = 0; l < nb; l++) {
+             for (int sb = 0; sb < 8; sb++) {
+                 memcpy(utmp + sb * 4, b_ptr[l].scales + sb * 12, 12);
+                 utmp[sb * 4 + 3] = ((utmp[sb * 4 + 2] >> 4) & kmask2) | (((utmp[sb * 4 + 1] >> 6) & kmask3) << 4);
+@@ -1019,9 +1054,10 @@ void ggml_gemv_q4_K_8x8_q8_K_generic(int n, float * GGML_RESTRICT s, size_t bs,
+                     sum_minf[j] += mins[j] * (a_ptr[l].bsums[sb * 2] + a_ptr[l].bsums[sb * 2 + 1]) * GGML_CPU_FP16_TO_FP32(b_ptr[l].dmin[j]) * a_ptr[l].d;
+                 }
+             }
+-        }
+-        for (int j = 0; j < ncols_interleaved; j++) {
+-            s[x * ncols_interleaved + j] = sumf[j] - sum_minf[j];
++            }
++            for (int j = 0; j < ncols_interleaved; j++) {
++                s[y * bs + x * ncols_interleaved + j] = sumf[j] - sum_minf[j];
++            }
+         }
+     }
+ }
+@@ -4163,6 +4199,15 @@ template <typename BLOC_TYPE, int64_t INTER_SIZE, int64_t NB_COLS, ggml_type PAR
+             case GGML_OP_MUL_MAT:
+                 {
+                     size = ggml_row_size(PARAM_TYPE, ggml_nelements(op->src[1]));
++                    constexpr bool q4_k_8x8 =
++                        std::is_same_v<BLOC_TYPE, block_q4_K> && INTER_SIZE == 8 && NB_COLS == 8;
++                    if constexpr (q4_k_8x8) {
++                        if (op->src[1]->ne[1] == 4) {
++                            // Keep native block_q8_Kx4 plus one exact
++                            // row-major Q8_K view for the four-row kernel.
++                            size *= 2;
++                        }
++                    }
+                     return true;
+                 }
+             case GGML_OP_MUL_MAT_ID:
+@@ -4229,7 +4274,13 @@ template <typename BLOC_TYPE, int64_t INTER_SIZE, int64_t NB_COLS, ggml_type PAR
+         const int64_t i2 = i12;
+ 
+         const char * src0_ptr = (const char *) src0->data + i02 * nb02;
+-        const char * src1_ptr = (const char *) params->wdata + (i11 + i12 * ne11) * src1_col_stride;
++        constexpr bool q4_k_8x8 =
++            std::is_same_v<BLOC_TYPE, block_q4_K> && INTER_SIZE == 8 && NB_COLS == 8;
++        const bool exact_four_rows = q4_k_8x8 && ne11 == 4;
++        const size_t native_wdata_size = ggml_row_size(PARAM_TYPE, ggml_nelements(src1));
++        const char * src1_base = (const char *) params->wdata +
++                                 (exact_four_rows ? native_wdata_size : 0);
++        const char * src1_ptr = src1_base + (i11 + i12 * ne11) * src1_col_stride;
+         char *       dst_ptr  = ((char *) dst->data + (i1 * nb1 + i2 * nb2));
+ 
+         const int64_t nrows = src1_end - src1_start;
+@@ -4237,16 +4288,30 @@ template <typename BLOC_TYPE, int64_t INTER_SIZE, int64_t NB_COLS, ggml_type PAR
+ 
+         GGML_ASSERT(src1_ptr + src1_col_stride * nrows <= (const char *) params->wdata + params->wsize);
+ 
+-        // If there are more than three rows in src1, use gemm; otherwise, use gemv.
+-        if (nrows > 3) {
++        // The dedicated four-row Q4_K path reuses the same decoded weight tile
++        // across four independent Q8_K accumulators. Larger multiples retain
++        // the existing GEMM implementation.
++        const bool fused_four_rows = q4_k_8x8 && nrows == 4;
++        if (nrows > 3 && !fused_four_rows) {
+             gemm<BLOC_TYPE, INTER_SIZE, NB_COLS, PARAM_TYPE>(ne00, (float *) (dst_ptr) + src0_start, nb1 / nb0,
+                                                              src0_ptr + src0_start * nb01, src1_ptr,
+                                                              nrows - (nrows % 4), ncols);
+         }
+-        for (int iter = nrows - (nrows % 4); iter < nrows; iter++) {
+-            gemv<BLOC_TYPE, INTER_SIZE, NB_COLS, PARAM_TYPE>(ne00, (float *) (dst_ptr + (iter * nb1)) + src0_start,
+-                                                             ne01, src0_ptr + src0_start * nb01,
+-                                                             src1_ptr + (src1_col_stride * iter), 1 /* nrows */, ncols);
++        const int64_t ragged_start = fused_four_rows ? 0 : nrows - (nrows % 4);
++        if constexpr (std::is_same_v<BLOC_TYPE, block_q4_K> && INTER_SIZE == 8 && NB_COLS == 8) {
++            const int64_t ragged_rows = nrows - ragged_start;
++            if (ragged_rows > 0) {
++                gemv<BLOC_TYPE, INTER_SIZE, NB_COLS, PARAM_TYPE>(
++                    ne00, (float *) (dst_ptr + ragged_start * nb1) + src0_start, nb1 / nb0,
++                    src0_ptr + src0_start * nb01, src1_ptr + src1_col_stride * ragged_start,
++                    ragged_rows, ncols);
++            }
++        } else {
++            for (int iter = ragged_start; iter < nrows; iter++) {
++                gemv<BLOC_TYPE, INTER_SIZE, NB_COLS, PARAM_TYPE>(ne00, (float *) (dst_ptr + (iter * nb1)) + src0_start,
++                                                                 ne01, src0_ptr + src0_start * nb01,
++                                                                 src1_ptr + (src1_col_stride * iter), 1 /* nrows */, ncols);
++            }
+         }
+     }
+ 
+@@ -4286,7 +4351,12 @@ template <typename BLOC_TYPE, int64_t INTER_SIZE, int64_t NB_COLS, ggml_type PAR
+         const size_t nbw1  = ggml_row_size(PARAM_TYPE, ne10);
+         const size_t nbw2  = nbw1 * ne11;
+ 
+-        assert(params->wsize >= nbw2 * ne12);
++        constexpr bool q4_k_8x8 =
++            std::is_same_v<BLOC_TYPE, block_q4_K> && INTER_SIZE == 8 && NB_COLS == 8;
++        const bool exact_four_rows = q4_k_8x8 && ne11 == 4;
++        const size_t native_wdata_size = nbw2 * ne12;
++
++        assert(params->wsize >= native_wdata_size * (exact_four_rows ? 2 : 1));
+ 
+         const ggml_from_float_t from_float = ggml_get_type_traits_cpu(PARAM_TYPE)->from_float;
+ 
+@@ -4308,6 +4378,18 @@ template <typename BLOC_TYPE, int64_t INTER_SIZE, int64_t NB_COLS, ggml_type PAR
+             }
+         }
+ 
++        if (exact_four_rows) {
++            // Only the owner of a four-row plane writes its native x4 block.
++            // Wait for those producers, then split planes across threads and
++            // construct the lossless row-major view once per operator.
++            ggml_barrier(params->threadpool);
++            for (int64_t i12 = ith; i12 < ne12; i12 += nth) {
++                const char * native_plane = wdata + i12 * nbw2;
++                char * row_major_plane = wdata + native_wdata_size + i12 * nbw2;
++                ggml_repack_q8_K_4x8_to_q8_K_rows(native_plane, row_major_plane, ne10);
++            }
++        }
++
+         // disable for NUMA
+         const bool disable_chunking = ggml_is_numa();
+ 
+diff --git a/ggml/src/ggml-cpu/repack.h b/ggml/src/ggml-cpu/repack.h
+index cb21edf62..35b481f72 100644
+--- a/ggml/src/ggml-cpu/repack.h
++++ b/ggml/src/ggml-cpu/repack.h
+@@ -101,6 +101,13 @@ struct block_q8_Kx4 {
+ 
+ static_assert(sizeof(block_q8_Kx4) == sizeof(float) * 4 + QK_K * 4 + (QK_K / 4) * sizeof(int16_t), "wrong q8_K block size/padding");
+ 
++// Exact inverse of the native four-row Q8_K packing used by
++// ggml_quantize_mat_q8_K_4x8.  The destination holds four contiguous
++// block_q8_K rows.  No floating-point requantization is performed.
++void ggml_repack_q8_K_4x8_to_q8_K_rows(const void * GGML_RESTRICT vx,
++                                       void * GGML_RESTRICT vy,
++                                       int64_t k);
++
+ struct block_iq4_nlx4 {
+     ggml_half d[4];            // deltas for 4 iq4_nl blocks
+     uint8_t   qs[QK4_NL * 2];  // nibbles / quants for 4 iq4_nl blocks

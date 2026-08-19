@@ -1,0 +1,65 @@
+{
+  "candidate": {
+    "code_trace_correct": 5,
+    "code_trace_n": 6,
+    "cute_correct": 9,
+    "cute_n": 20,
+    "math500_correct": 5,
+    "math500_n": 8,
+    "wikitext_ppl": 5.8089,
+    "wikitext_ppl_ratio": 1.0041834494442237
+  },
+  "claim_boundary": "A pass quality-qualifies the same-weights v21 AVX2 kernel for its measured MTP3 speed signal. It does not reverse v21 token-identity rejection, establish the 2.75 tok/s conventional-decode breakthrough gate, reach 100 tok/s, or support novelty or scientific-breakthrough claims.",
+  "decision": "quality_qualified_same_weights_kernel",
+  "denominators": {
+    "code_trace": 6,
+    "cute": 20,
+    "math500": 8,
+    "mmlu": 64,
+    "wikitext_chunks": 4
+  },
+  "experiment_id": "qwen38_27b_q4_k_native_x4_quality_adjudication_v22",
+  "gate_1_checks": {
+    "code_trace_at_least_5_of_6": true,
+    "cute_at_least_9_of_20": true,
+    "math500_at_least_5_of_8": true,
+    "wikitext_ratio_at_most_1_005": true
+  },
+  "gate_1_passed": true,
+  "gate_2_checks": {
+    "mmlu_at_least_51_and_loss_at_most_1": true,
+    "mmlu_receipt_valid_64": true
+  },
+  "infrastructure_valid": true,
+  "mmlu": {
+    "accuracy": 0.828125,
+    "correct": 53,
+    "loss_vs_baseline_correct": -1,
+    "n": 64
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "model_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+  "passed": true,
+  "provenance": {
+    "baseline_sha256": "1557f1aac13f6c557e89006427aa829e2707f07ad73aa29611763e754c409a64",
+    "cute_sha256": "c26f558464510d47bc826c763cb7810c141f5815d4f5544aada5a4951b44becd",
+    "manifest_amendment_sha256": "5ec58787e7c3307ebb0a61492c9e957d5f98d266c49aca7273c9d94e3ccd465c",
+    "math_code_sha256": "6f050b8bf9c5e014865ebf9e179b727e948c8b62807b2fee3d5d5adc3eae478e",
+    "mmlu_sha256": "311f157d4c9f23a4de7c9d989c98287bd348e9b566152b2fecf2c9ee88d0d98b",
+    "predecessor_system_decision_sha256": "ad73826a56cd903589c88277e8759f92623286d5428f9ad10d004f4be71779a5",
+    "preregistration_sha256": "2c1680cd595d914011d584915a1c51c71afa7ce7350c5d759215c797c42bcdcd",
+    "wikitext_sha256": "74f1f018e002282a1e1e07ae00212c4344a4715b719dbcb1bf400fce3892703e"
+  },
+  "receipt_checks": {
+    "cute_receipt_valid_20": true,
+    "math_code_receipt_valid_8_plus_6": true,
+    "wikitext_receipt_valid_4_chunks": true
+  },
+  "retained_speed_signal": {
+    "candidate_mtp3_accepted_tps": 3.444548529233525,
+    "mtp3_candidate_over_control_accepted_tps": 1.146572084561092,
+    "v21_exact_token_gate_remains_failed": true
+  },
+  "schema": "qwen38_27b_q4_k_native_x4_quality_adjudication_result_v22",
+  "terminal": true
+}

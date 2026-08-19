@@ -1,0 +1,15 @@
+2026-08-18T22:30:55.635640+00:00 ubuntu-32gb-hel1-1 systemd[1]: Started quant-qwen38-q4k-x4-quality-v22.service - [systemd-run] /usr/bin/env REPO=/workspace/clark-quantize-row-scale-v3 /workspace/clark-quantize-row-scale-v3/experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_q4_k_native_x4_quality_adjudication_v22.sh.
+2026-08-18T22:32:57.066797+00:00 ubuntu-32gb-hel1-1 env[1191491]: {"event":"quality_gate_1_start","denominators":{"cute":20,"math500":8,"code_trace":6,"wikitext_chunks":4}}
+2026-08-18T22:33:05.982534+00:00 ubuntu-32gb-hel1-1 env[1191491]: {"event":"candidate_server_ready"}
+2026-08-18T22:40:06.670091+00:00 ubuntu-32gb-hel1-1 env[1191491]: {"event":"cute_complete","n":20}
+2026-08-18T22:44:04.319215+00:00 ubuntu-32gb-hel1-1 env[1191491]: {"event":"math_code_complete","math500_n":8,"code_trace_n":6}
+2026-08-18T22:49:15.020568+00:00 ubuntu-32gb-hel1-1 env[1191491]: {"event":"wikitext_complete","chunks":4}
+2026-08-18T22:49:15.051835+00:00 ubuntu-32gb-hel1-1 env[1192635]: {"candidate": {"code_trace_correct": 5, "code_trace_n": 6, "cute_correct": 9, "cute_n": 20, "math500_correct": 5, "math500_n": 8, "wikitext_ppl": 5.8089, "wikitext_ppl_ratio": 1.0041834494442237}, "decision": "advance_to_mmlu_64", "event": "quality_gate_1_passed", "mmlu": null, "passed": false}
+2026-08-18T22:49:15.056197+00:00 ubuntu-32gb-hel1-1 env[1191491]: {"event":"quality_gate_2_start","mmlu_n":64}
+2026-08-18T22:49:15.086361+00:00 ubuntu-32gb-hel1-1 systemd-run[1192638]: Running as unit: llama-cpu-eval-qwen38-27b-q4-native-x4-v22.service; invocation ID: 6a40b58853c9467c875aa8a0a597340d
+2026-08-18T22:49:23.946147+00:00 ubuntu-32gb-hel1-1 env[1191491]: {"event":"candidate_server_ready"}
+2026-08-19T00:19:20.836982+00:00 ubuntu-32gb-hel1-1 env[1191491]: {"event":"mmlu_complete","n":64}
+2026-08-19T00:19:22.387321+00:00 ubuntu-32gb-hel1-1 env[1198572]: {"candidate": {"code_trace_correct": 5, "code_trace_n": 6, "cute_correct": 9, "cute_n": 20, "math500_correct": 5, "math500_n": 8, "wikitext_ppl": 5.8089, "wikitext_ppl_ratio": 1.0041834494442237}, "decision": "quality_qualified_same_weights_kernel", "event": "quality_terminal", "mmlu": {"accuracy": 0.828125, "correct": 53, "loss_vs_baseline_correct": -1, "n": 64}, "passed": true}
+2026-08-19T00:19:22.412646+00:00 ubuntu-32gb-hel1-1 env[1191491]: {"event":"quality_harness_terminal","exit_code":0}
+2026-08-19T00:19:22.420157+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-q4k-x4-quality-v22.service: Deactivated successfully.
+2026-08-19T00:19:22.420709+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-q4k-x4-quality-v22.service: Consumed 21min 27.025s CPU time over 1h 48min 26.784s wall clock time, 13G memory peak.
