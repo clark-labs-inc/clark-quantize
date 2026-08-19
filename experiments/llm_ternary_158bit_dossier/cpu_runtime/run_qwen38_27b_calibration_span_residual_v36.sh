@@ -30,7 +30,8 @@ confirmation_receipt="$state_dir/confirmation.json"
 finish() {
   local status=$1
   printf 'complete\n' > "$state_dir/EXPERIMENT_COMPLETE"
-  find "$state_dir" "$run_dir" -type f ! -name artifacts.sha256 -print0 \
+  find "$state_dir" "$run_dir" -type f \
+    ! -name artifacts.sha256 ! -name artifacts.sha256.tmp -print0 \
     | sort -z | xargs -0 sha256sum > "$state_dir/artifacts.sha256.tmp"
   mv "$state_dir/artifacts.sha256.tmp" "$state_dir/artifacts.sha256"
   echo "{\"event\":\"v36_terminal\",\"exit_code\":${status}}"
