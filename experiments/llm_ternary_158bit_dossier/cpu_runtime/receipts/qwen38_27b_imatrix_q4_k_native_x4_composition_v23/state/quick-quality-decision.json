@@ -1,0 +1,42 @@
+{
+  "claim_boundary": "Frozen quick capability tripwire only; not broad near-lossless quality.",
+  "decision": "quick_quality_passed",
+  "denominators": {
+    "code_trace": 6,
+    "cute": 20,
+    "math500": 8,
+    "wikitext_chunks": 4
+  },
+  "infrastructure_valid": true,
+  "observed": {
+    "code_trace_correct": 5,
+    "code_trace_n": 6,
+    "cute_correct": 9,
+    "cute_n": 20,
+    "math500_correct": 5,
+    "math500_n": 8,
+    "wikitext_ppl": 5.7219,
+    "wikitext_ppl_ratio_vs_stock": 0.9891437758224281
+  },
+  "passed": true,
+  "provenance": {
+    "baseline_sha256": "1557f1aac13f6c557e89006427aa829e2707f07ad73aa29611763e754c409a64",
+    "cute_sha256": "5b98029ed0ec5429b3cbd83bcf257e71ba369486b4f7d60ec9e5b223ee164c66",
+    "math_code_sha256": "44e3320c8b6f3b82ec547e7ff10087cb2423a61bb858f8db7cd745bd54e03b79",
+    "wikitext_sha256": "d3c39e8b034020765aa17cb17638d02c2127a12da070b27e891a85e079305914"
+  },
+  "quality_checks": {
+    "code_trace_at_least_5_of_6": true,
+    "cute_at_least_9_of_20": true,
+    "math500_at_least_5_of_8": true,
+    "wikitext_ratio_at_most_1_01": true
+  },
+  "receipt_checks": {
+    "cute_receipt_valid_20": true,
+    "math_code_receipt_valid_8_plus_6": true,
+    "wikitext_receipt_valid_4_chunks": true
+  },
+  "schema": "qwen38_27b_imatrix_q4_k_native_x4_quick_quality_result_v23",
+  "stage": "always_run_quick_quality",
+  "terminal": false
+}

@@ -1,0 +1,45 @@
+{
+  "artifact_bytes_saved": 3367239360,
+  "candidate": {
+    "bytes": 15606631072,
+    "path": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-imatrix-Q4_K-v10.gguf"
+  },
+  "candidate_nonselected_payloads_sha256": "24bc0d8af954e0a004e698226e61cc66cb42def2c4a2580eb047b04480241a38",
+  "candidate_type_counts": {
+    "F32": 353,
+    "Q4_K": 481,
+    "Q6_K": 17
+  },
+  "checks": {
+    "artifact_bytes_saved_exact": true,
+    "nonselected_payloads_byte_identical": true,
+    "q8_count_exact": true,
+    "selected_payload_bytes_saved_exact": true,
+    "selected_tensor_count_exact": true,
+    "selected_types_exact": true,
+    "selected_weight_count_exact": true,
+    "target_count_increased_by_selected": true
+  },
+  "claim_boundary": "Container and payload integrity only; no model correctness or quality claim.",
+  "control": {
+    "bytes": 18973870432,
+    "path": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf"
+  },
+  "control_nonselected_payloads_sha256": "24bc0d8af954e0a004e698226e61cc66cb42def2c4a2580eb047b04480241a38",
+  "control_type_counts": {
+    "F32": 353,
+    "Q4_K": 193,
+    "Q6_K": 17,
+    "Q8_0": 288
+  },
+  "expected_selected_payload_bytes_saved": 3367239680,
+  "expected_target_type": "Q4_K",
+  "schema": "qwen38_27b_selective_gguf_verification_v1",
+  "selected_payload_bytes_saved": 3367239680,
+  "selected_tensor_count": 288,
+  "selected_weight_count": 6734479360,
+  "selection_profile": "all_q8_family",
+  "structural_mismatches": [],
+  "terminal": true,
+  "valid": true
+}

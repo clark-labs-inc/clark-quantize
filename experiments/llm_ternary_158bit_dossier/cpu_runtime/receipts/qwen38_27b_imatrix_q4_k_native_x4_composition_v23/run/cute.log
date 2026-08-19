@@ -1,0 +1,61 @@
+{"task": "contains_char", "id": "contains_char:line74", "correct": true, "prediction": "Yes", "gold": "Yes"}
+{"task": "contains_char", "id": "contains_char:line233", "correct": true, "prediction": "Yes", "gold": "Yes"}
+{"task": "contains_char", "id": "contains_char:line509", "correct": true, "prediction": "No", "gold": "No"}
+{"task": "contains_char", "id": "contains_char:line887", "correct": true, "prediction": "Yes", "gold": "Yes"}
+{"task": "ins_char", "id": "ins_char:line74", "correct": true, "prediction": "btack", "gold": "btack"}
+{"task": "ins_char", "id": "ins_char:line233", "correct": false, "prediction": "indceex", "gold": "indecx"}
+{"task": "ins_char", "id": "ins_char:line509", "correct": false, "prediction": "otnptions", "gold": "optionts"}
+{"task": "ins_char", "id": "ins_char:line887", "correct": false, "prediction": "purcharce", "gold": "purchaser"}
+{"task": "del_char", "id": "del_char:line74", "correct": true, "prediction": "bck", "gold": "bck"}
+{"task": "del_char", "id": "del_char:line233", "correct": false, "prediction": "ine", "gold": "inex"}
+{"task": "del_char", "id": "del_char:line509", "correct": true, "prediction": "ptins", "gold": "ptins"}
+{"task": "del_char", "id": "del_char:line887", "correct": false, "prediction": "purchase", "gold": "purcase"}
+{"task": "swap_char", "id": "swap_char:line74", "correct": false, "prediction": "peopel", "gold": "pelpoe"}
+{"task": "swap_char", "id": "swap_char:line233", "correct": false, "prediction": "kiln", "gold": "kinl"}
+{"task": "swap_char", "id": "swap_char:line509", "correct": false, "prediction": "filded", "gold": "fidle"}
+{"task": "swap_char", "id": "swap_char:line887", "correct": false, "prediction": "engohu", "gold": "ehougn"}
+{"task": "sub_char", "id": "sub_char:line74", "correct": true, "prediction": "bdck", "gold": "bdck"}
+{"task": "sub_char", "id": "sub_char:line233", "correct": false, "prediction": "indx", "gold": "indxx"}
+{"task": "sub_char", "id": "sub_char:line509", "correct": false, "prediction": "doptions", "gold": "opdions"}
+{"task": "sub_char", "id": "sub_char:line887", "correct": true, "prediction": "plrchase", "gold": "plrchase"}
+{
+  "out": "/workspace/quant-state/qwen38-27b-imatrix-q4-k-native-x4-v23/cute.json",
+  "summaries": [
+    {
+      "task": "contains_char",
+      "correct": 4,
+      "n": 4,
+      "accuracy": 1.0
+    },
+    {
+      "task": "ins_char",
+      "correct": 1,
+      "n": 4,
+      "accuracy": 0.25
+    },
+    {
+      "task": "del_char",
+      "correct": 2,
+      "n": 4,
+      "accuracy": 0.5
+    },
+    {
+      "task": "swap_char",
+      "correct": 0,
+      "n": 4,
+      "accuracy": 0.0
+    },
+    {
+      "task": "sub_char",
+      "correct": 2,
+      "n": 4,
+      "accuracy": 0.5
+    },
+    {
+      "task": "cute_quick_20",
+      "correct": 9,
+      "n": 20,
+      "accuracy": 0.45
+    }
+  ]
+}

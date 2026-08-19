@@ -1,0 +1,66 @@
+{
+  "claim_boundary": "Four-prompt exact-greedy development preflight only; no stochastic, capability, final-node, 100 accepted tok/s, or breakthrough claim.",
+  "classification": "development preflight only",
+  "configurations": [
+    {
+      "accepted_decode_speedup_vs_target": 1.0,
+      "accepted_decode_tokens": 380,
+      "accepted_tokens_per_second_median_prompt": 2.2767300207869168,
+      "accepted_tokens_per_second_weighted": 2.277264722687227,
+      "combined_weight_bytes_per_accepted_token_lower_bound": 15606631072.0,
+      "configuration": "target",
+      "draft_acceptance_fraction": null,
+      "draft_n": 0,
+      "draft_n_accepted": 0,
+      "draft_weight_bytes_per_accepted_token_lower_bound": 0.0,
+      "draft_width": 0,
+      "estimated_target_verification_calls": 380,
+      "exact_token_parity": true,
+      "mean_committed_tokens_per_target_call": 1.0,
+      "minimum_weight_bandwidth_bytes_per_second_at_100_tps": 1560663107200.0,
+      "output_tokens_including_prompt_eval_token": 384,
+      "prompt_token_parity": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "server_log_sha256": "4d342160ea092554a269c12646ca5d893ccb24870c344e41a9150aeb3c2ec2a7",
+      "target_weight_bytes_per_accepted_token_lower_bound": 15606631072.0
+    }
+  ],
+  "draft": {
+    "bytes": 1680271648,
+    "path": "/workspace/models/controls/mtp-Qwen3.8-27B-Q4_0.gguf",
+    "sha256": "051a1764cff8c4f3ee6ae8b00593a0364c7539c67fa50ffc58f3f96509fca38e"
+  },
+  "generation": {
+    "ignore_eos": true,
+    "prompt_count": 4,
+    "seed": 42,
+    "temperature": 0.0,
+    "tokens_per_prompt": 96,
+    "top_k": 1
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": true,
+  "runtime": {
+    "batch": 128,
+    "context": 512,
+    "cpu_list": "0,2,4,6",
+    "draft_p_min": 0.0,
+    "path": "/workspace/build/llama.cpp-q4k-native-x4-deinterleave-v21/bin/llama-server",
+    "server_verbosity": 3,
+    "sha256": "2c9db28068c8cf92f92fa631e1667e5d1cb39c83e21ae3245bb655d69ec358fc",
+    "threads": 4,
+    "trace_speculative": false,
+    "ubatch": 64
+  },
+  "schema": "qwen38_27b_mtp_parity_summary_v1",
+  "target": {
+    "bytes": 15606631072,
+    "path": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-imatrix-Q4_K-v10.gguf",
+    "sha256": "6176472b7d039a6d911b34eea78dd4507256b4a22b3003d40b8587b711014f2a"
+  },
+  "terminal": true
+}

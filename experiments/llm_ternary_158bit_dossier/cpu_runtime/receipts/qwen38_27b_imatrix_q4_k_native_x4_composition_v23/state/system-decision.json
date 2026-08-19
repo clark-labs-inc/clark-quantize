@@ -1,0 +1,58 @@
+{
+  "checks": {
+    "candidate_mtp3_at_least_3_75_tps": false,
+    "candidate_mtp3_denominator_is_4x96": true,
+    "candidate_mtp3_matches_own_target_tokens": true,
+    "candidate_mtp3_zero_fraction_below_0_01": true,
+    "candidate_target_denominator_is_4x96": true,
+    "graph_gate_passed": true,
+    "mtp3_candidate_over_control_at_least_1_20": false,
+    "target_candidate_over_control_at_least_1_12": true
+  },
+  "claim_boundary": "Four-prompt paired serving result only; not broad capability, final-node, or a breakthrough claim.",
+  "decision": "reject_serving_gate",
+  "denominator": {
+    "prompts_per_system": 4,
+    "tokens_per_prompt": 96
+  },
+  "infrastructure_valid": true,
+  "mtp3": {
+    "candidate_accepted_tps": 3.611857030874639,
+    "candidate_draft_n": 410,
+    "candidate_draft_n_accepted": 241,
+    "candidate_exact_parity_with_own_target": true,
+    "candidate_over_control": 1.1799795867345504,
+    "candidate_zero_token_fraction": 0.0,
+    "control_accepted_tps": 3.060948741384597,
+    "control_draft_n": 384,
+    "control_draft_n_accepted": 250
+  },
+  "passed": false,
+  "provenance": {
+    "candidate_mtp3_token_sha256": [
+      "d10b10e02779d1aa446c627431fcbc10ba8aded55a17563e5f970d2beeea2711",
+      "35ecee7c2862ee78fbdeeee5603af4223ee22122f47e95e7e75cdfb07dc979f9",
+      "66e42cb17d624350a7503a26fd87ca5c3f86ec633fc79695b5dbeb437f892a43",
+      "bcda2d6fd0936f71c2c04b86816c9292698e409034b1d62c0be4cb493bdb0622"
+    ],
+    "candidate_server_sha256": "2c9db28068c8cf92f92fa631e1667e5d1cb39c83e21ae3245bb655d69ec358fc",
+    "candidate_summary_sha256": "bca8e23eb439a62d0eef54c46bc0035b35c66a0d723ec60384b2074dfb1aa3d9",
+    "candidate_target_token_sha256": [
+      "d10b10e02779d1aa446c627431fcbc10ba8aded55a17563e5f970d2beeea2711",
+      "35ecee7c2862ee78fbdeeee5603af4223ee22122f47e95e7e75cdfb07dc979f9",
+      "66e42cb17d624350a7503a26fd87ca5c3f86ec633fc79695b5dbeb437f892a43",
+      "bcda2d6fd0936f71c2c04b86816c9292698e409034b1d62c0be4cb493bdb0622"
+    ],
+    "control_server_sha256": "fae5927f440f6342e3de14f17ecc1ddb73e1b13def31aca5fa714dbf6bea129d",
+    "control_summary_sha256": "7e790ca6390032832144b4aa393e48c77a09237535e1dbb75315fc2fb30898ea",
+    "graph_decision_sha256": "9e488c32e39607517d3a63666078d9f73b12930f91f14136cc328828a1bae7e4"
+  },
+  "schema": "qwen38_27b_imatrix_q4_k_native_x4_system_result_v23",
+  "stage": "paired_target_and_mtp3_serving",
+  "target": {
+    "candidate_accepted_tps": 2.2852360287690288,
+    "candidate_over_control": 1.2084234425453442,
+    "control_accepted_tps": 1.8910887924811826
+  },
+  "terminal": false
+}

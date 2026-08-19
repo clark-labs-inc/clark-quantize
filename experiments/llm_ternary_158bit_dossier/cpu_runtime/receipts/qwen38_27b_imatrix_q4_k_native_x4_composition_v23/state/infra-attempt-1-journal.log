@@ -1,0 +1,11 @@
+2026-08-19T00:56:07+00:00 ubuntu-32gb-hel1-1 systemd[1]: Started quant-qwen38-v23-composition.service - [systemd-run] /workspace/clark-quantize-row-scale-v3/experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_imatrix_q4_k_native_x4_composition_v23.sh.
+2026-08-19T01:00:16+00:00 ubuntu-32gb-hel1-1 run_qwen38_27b_imatrix_q4_k_native_x4_composition_v23.sh[1208419]: Traceback (most recent call last):
+2026-08-19T01:00:16+00:00 ubuntu-32gb-hel1-1 run_qwen38_27b_imatrix_q4_k_native_x4_composition_v23.sh[1208419]:   File "/workspace/clark-quantize-row-scale-v3/experiments/llm_ternary_158bit_dossier/cpu_runtime/verify_qwen38_27b_selective_gguf_v1.py", line 227, in <module>
+2026-08-19T01:00:16+00:00 ubuntu-32gb-hel1-1 run_qwen38_27b_imatrix_q4_k_native_x4_composition_v23.sh[1208419]:     raise SystemExit(main())
+2026-08-19T01:00:16+00:00 ubuntu-32gb-hel1-1 run_qwen38_27b_imatrix_q4_k_native_x4_composition_v23.sh[1208419]:                      ~~~~^^
+2026-08-19T01:00:16+00:00 ubuntu-32gb-hel1-1 run_qwen38_27b_imatrix_q4_k_native_x4_composition_v23.sh[1208419]:   File "/workspace/clark-quantize-row-scale-v3/experiments/llm_ternary_158bit_dossier/cpu_runtime/verify_qwen38_27b_selective_gguf_v1.py", line 109, in main
+2026-08-19T01:00:16+00:00 ubuntu-32gb-hel1-1 run_qwen38_27b_imatrix_q4_k_native_x4_composition_v23.sh[1208419]:     from gguf import GGUFReader
+2026-08-19T01:00:16+00:00 ubuntu-32gb-hel1-1 run_qwen38_27b_imatrix_q4_k_native_x4_composition_v23.sh[1208419]: ModuleNotFoundError: No module named 'gguf'
+2026-08-19T01:00:16+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-v23-composition.service: Main process exited, code=exited, status=1/FAILURE
+2026-08-19T01:00:16+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-v23-composition.service: Failed with result 'exit-code'.
+2026-08-19T01:00:16+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-v23-composition.service: Consumed 4min 7.272s CPU time over 4min 8.609s wall clock time, 15.8G memory peak.

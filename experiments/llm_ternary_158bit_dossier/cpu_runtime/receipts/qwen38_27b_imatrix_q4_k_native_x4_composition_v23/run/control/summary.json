@@ -1,0 +1,92 @@
+{
+  "claim_boundary": "Four-prompt exact-greedy development preflight only; no stochastic, capability, final-node, 100 accepted tok/s, or breakthrough claim.",
+  "classification": "development preflight only",
+  "configurations": [
+    {
+      "accepted_decode_speedup_vs_target": 1.0,
+      "accepted_decode_tokens": 380,
+      "accepted_tokens_per_second_median_prompt": 1.895330375527025,
+      "accepted_tokens_per_second_weighted": 1.8910887924811826,
+      "combined_weight_bytes_per_accepted_token_lower_bound": 18973870432.0,
+      "configuration": "target",
+      "draft_acceptance_fraction": null,
+      "draft_n": 0,
+      "draft_n_accepted": 0,
+      "draft_weight_bytes_per_accepted_token_lower_bound": 0.0,
+      "draft_width": 0,
+      "estimated_target_verification_calls": 380,
+      "exact_token_parity": true,
+      "mean_committed_tokens_per_target_call": 1.0,
+      "minimum_weight_bandwidth_bytes_per_second_at_100_tps": 1897387043200.0,
+      "output_tokens_including_prompt_eval_token": 384,
+      "prompt_token_parity": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "server_log_sha256": "26be25452f381c0d7382917c23bfb715a9143bf23b96bd60c24081afee04d411",
+      "target_weight_bytes_per_accepted_token_lower_bound": 18973870432.0
+    },
+    {
+      "accepted_decode_speedup_vs_target": 1.618617144554335,
+      "accepted_decode_tokens": 380,
+      "accepted_tokens_per_second_median_prompt": 3.2226722606022054,
+      "accepted_tokens_per_second_weighted": 3.060948741384597,
+      "combined_weight_bytes_per_accepted_token_lower_bound": 8189019655.2421055,
+      "configuration": "mtp3",
+      "draft_acceptance_fraction": 0.6510416666666666,
+      "draft_n": 384,
+      "draft_n_accepted": 250,
+      "draft_weight_bytes_per_accepted_token_lower_bound": 1697958717.9789474,
+      "draft_width": 3,
+      "estimated_target_verification_calls": 130,
+      "exact_token_parity": false,
+      "mean_committed_tokens_per_target_call": 2.923076923076923,
+      "minimum_weight_bandwidth_bytes_per_second_at_100_tps": 818901965524.2106,
+      "output_tokens_including_prompt_eval_token": 384,
+      "prompt_token_parity": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "server_log_sha256": "7512869b94204565752d5b8ba3472904a5ed58e266a36d437dfcde3c53ca94e1",
+      "target_weight_bytes_per_accepted_token_lower_bound": 6491060937.263158
+    }
+  ],
+  "draft": {
+    "bytes": 1680271648,
+    "path": "/workspace/models/controls/mtp-Qwen3.8-27B-Q4_0.gguf",
+    "sha256": "051a1764cff8c4f3ee6ae8b00593a0364c7539c67fa50ffc58f3f96509fca38e"
+  },
+  "generation": {
+    "ignore_eos": true,
+    "prompt_count": 4,
+    "seed": 42,
+    "temperature": 0.0,
+    "tokens_per_prompt": 96,
+    "top_k": 1
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": false,
+  "runtime": {
+    "batch": 128,
+    "context": 512,
+    "cpu_list": "0,2,4,6",
+    "draft_p_min": 0.0,
+    "path": "/workspace/build/llama.cpp-q4k-fused-ragged-avx2-v2/bin/llama-server",
+    "server_verbosity": 3,
+    "sha256": "fae5927f440f6342e3de14f17ecc1ddb73e1b13def31aca5fa714dbf6bea129d",
+    "threads": 4,
+    "trace_speculative": false,
+    "ubatch": 64
+  },
+  "schema": "qwen38_27b_mtp_parity_summary_v1",
+  "target": {
+    "bytes": 18973870432,
+    "path": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34"
+  },
+  "terminal": true
+}
