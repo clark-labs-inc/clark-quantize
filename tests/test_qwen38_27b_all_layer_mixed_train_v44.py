@@ -220,3 +220,17 @@ def test_v44_preflight_is_before_artifact_creation() -> None:
         "args.artifact_root.mkdir"
     )
     assert '"writes": 0' in source
+
+
+def test_v44_frozen_loader_uses_only_stored_aff3_cq3_algebra() -> None:
+    source = SCRIPT.read_text()
+    start = source.index("def build_frozen_trained_block(")
+    stop = source.index("\ndef validate_terminal_layer(", start)
+    loader = source[start:stop]
+    assert "validate_terminal_layer(" in loader
+    assert "load_compressed_affine_tensor(" in loader
+    assert "StoredAffineLinear(payload, rotation)" in loader
+    assert "load_trained_cq3_linear(" in loader
+    assert "SelectedRowsCq3Mlp(" in loader
+    assert "torch.nn.functional.linear" not in loader
+    assert "reconstruct" not in loader.lower()

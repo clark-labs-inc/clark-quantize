@@ -232,6 +232,93 @@ def load_trained_cq3_linear(
     )
 
 
+def build_frozen_trained_block(
+    *,
+    config: Any,
+    layer_index: int,
+    state: Mapping[str, torch.Tensor],
+    selected_rows: torch.Tensor,
+    direct_aff3_root: Path,
+    direct_repository_commit: str,
+    direct_preregistration_sha256: str,
+    trained_artifact_root: Path,
+    trained_result: dict[str, Any],
+    trained_repository_commit: str,
+    trained_preregistration_sha256: str,
+    direct_receipt_sha256: str,
+) -> qat.TrainableBlock:
+    """Load exact stored v44 algebra for scoring without persistent dense weights."""
+    validate_terminal_layer(
+        trained_result,
+        artifact_root=trained_artifact_root,
+        repository_commit=trained_repository_commit,
+        preregistration_sha256=trained_preregistration_sha256,
+        direct_receipt_sha256=direct_receipt_sha256,
+    )
+    block = build_trainable_aff3_block(
+        config=config,
+        layer_index=layer_index,
+        state=state,
+        direct_aff3_root=direct_aff3_root,
+        direct_repository_commit=direct_repository_commit,
+        direct_preregistration_sha256=direct_preregistration_sha256,
+    )
+    manifest_paths = trained_result.get("site_manifests", [])
+    if len(manifest_paths) != 1:
+        raise ValueError("all-layer trained AFF3 manifest denominator changed")
+    manifest = json.loads((trained_artifact_root / manifest_paths[0]).read_text())
+    names = tuple(manifest.get("tensor_names", []))
+    if (
+        manifest.get("schema") != "qwen38_affine_butterfly_qat_site_v1"
+        or manifest.get("repository_commit") != trained_repository_commit
+        or manifest.get("preregistration_sha256")
+        != trained_preregistration_sha256
+        or manifest.get("parent_receipt_sha256") != direct_receipt_sha256
+        or manifest.get("layer") != layer_index
+        or manifest.get("site") != "attention_output"
+        or names != block.names_by_site["attention_output"]
+        or manifest.get("complete") is not True
+        or manifest.get("terminal") is not True
+    ):
+        raise ValueError("all-layer frozen trained AFF3 manifest changed")
+    angles = parent.read_angles(trained_artifact_root, manifest["angles"])
+    pairings = block.rotations["attention_output"].pairings
+    rotation = TrainableStoredRotation(angles, pairings)
+    payloads: dict[str, TrainableAffinePayload] = {}
+    for name, descriptor in zip(names, manifest["tensors"]):
+        verify_descriptor(trained_artifact_root, descriptor)
+        payload = TrainableAffinePayload(
+            load_compressed_affine_tensor(trained_artifact_root, descriptor)
+        )
+        payloads[name] = payload
+        module_name, parameter_name = name.rsplit(".", 1)
+        if parameter_name != "weight":
+            raise ValueError("all-layer frozen trained AFF3 target changed")
+        qat.set_child_module(
+            block.layer, module_name, StoredAffineLinear(payload, rotation)
+        )
+    block.payloads = payloads
+    block.rotations = {"attention_output": rotation}
+    block.names_by_site = {"attention_output": names}
+
+    tensor_root = (
+        trained_artifact_root / "layers" / f"{layer_index:02d}" / "cq3"
+    )
+    targets = pilot_direct.mlp_targets(layer_index)
+    qat.set_child_module(
+        block.layer,
+        "mlp",
+        pilot_direct.SelectedRowsCq3Mlp(
+            *(load_trained_cq3_linear(tensor_root, target) for target in targets),
+            selected_rows=selected_rows,
+        ),
+    )
+    for parameter in block.layer.parameters():
+        parameter.requires_grad_(False)
+    block.layer.eval()
+    return block
+
+
 def validate_terminal_layer(
     result: dict[str, Any],
     *,
