@@ -1,0 +1,119 @@
+{
+  "schema": "qwen38_27b_optimal_cell_scale_fresh_replication_preregistration_v76",
+  "experiment_id": "qwen38_27b_optimal_cell_scale_fresh_replication_v76",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_before_fresh_prompt_tokenization_or_layer_propagation",
+  "frozen_at_utc": "2026-08-20T06:10:00Z",
+  "objective": "Independently replicate the frozen v75 layer-59 mixed-cell payload on newly authored, disjoint, non-benchmark prompts without changing a code, scale, selected cell, payload byte, rate, or gate after observing the new activations.",
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "hidden_size": 5120,
+    "intermediate_size": 17408,
+    "layers": 64
+  },
+  "scope": {
+    "layer": 59,
+    "tensor": "mlp.down_proj.weight",
+    "fresh_prompt_count": 8,
+    "maximum_sequence_tokens": 64,
+    "fresh_rows": 64,
+    "whole_model_generation_forbidden": true,
+    "performance_timing_forbidden": true,
+    "benchmark_claim_forbidden": true
+  },
+  "fresh_prompt_protocol": {
+    "provenance": "Newly authored synthetic engineering and explanatory prompts, frozen in this preregistration before tokenization, propagation, or measurement.",
+    "benchmark_items_used": false,
+    "prompts": [
+      "A storage service receives duplicate completion callbacks after a network retry. Explain an idempotent state transition design and identify the invariant that prevents double accounting.",
+      "Explain why the eigenvalues of a triangular matrix are visible on its diagonal, then give an intuitive geometric interpretation without relying on a numerical example.",
+      "Design a bounded concurrent logging buffer for a CPU inference server. Discuss ownership, backpressure, ordering, and what should happen when a writer crashes midway.",
+      "A compiler lowers a high-level matrix expression into vector instructions. Trace the transformations that preserve semantics and name two mistakes that could silently change rounding behavior.",
+      "Compare arithmetic coding with fixed-width symbol packing for a small neural-network weight alphabet, focusing on random access, branch cost, metadata, and decode throughput.",
+      "Write a concise incident analysis for a cache invalidation bug that only appears after a rolling deployment, including the causal chain and a durable prevention mechanism.",
+      "Describe how to test whether a faster approximation kernel is genuinely correct when errors may cancel in aggregate but concentrate in a few output channels.",
+      "An online scheduler must share four physical CPU cores between prompt processing and token generation. Propose a policy and explain how you would measure tail-latency regressions."
+    ],
+    "row_selection": "Flatten valid non-padding token positions in prompt order and deterministically choose 64 evenly spaced unique positions.",
+    "minimum_selected_rows_per_prompt": 4,
+    "prior_development_prompts_must_be_disjoint": true,
+    "fresh_activations_may_not_change_artifact_or_gate": true
+  },
+  "frozen_candidate": {
+    "producer": "qwen38_27b_calibration_optimal_cell_scale_v75",
+    "v75_receipt_sha256": "7028466f1798e425f2fa9a9574214aeef96864db754797590133115c7f8ef5e5",
+    "hybrid_payload_sha256": "a5ddaf51d97c3534e2ef2e4da2f9ad5702e0473951a7a29cbbd2b2efc4172ef9",
+    "hybrid_payload_bytes": 26307264,
+    "selected_cells": 10240,
+    "selected_groups_sha256": "111d42adb014c12e2ee8a503edb44e59ccd2d76c1a4e78f75592fc53c215e9ce",
+    "selected_scales_sha256": "b316d9022b3ee911d170bfbde6874e0384168fcbd39695c617fe4b307d11e4da",
+    "additional_runtime_bytes_vs_v74": 0,
+    "additional_runtime_operations_vs_v74": 0,
+    "additional_runtime_passes_vs_v74": 0
+  },
+  "authenticated_inputs": {
+    "full_context_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "prior_context_sha256": "7cf30c42c996b492e77544488e4815dd9a1dcc348a2fb4accf3bf31a1cd5abc7",
+    "v44_training_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+    "v44_payload_sha256": {
+      "gate": "ca349cd022d248a29fae502d523430b50fa5894f1e5deff549e222b159a02599",
+      "up": "1592cd2858371645fd8e236113caa1c39d733a959b3a54ab0bbe4f6d550de4bc",
+      "down": "faa8661738f9c0bdcadc2dcd7eac7723ca39c1d99486523b2e8b21e636c76356"
+    },
+    "source_tensor_sha256": {
+      "mlp.gate_proj.weight": "af5f1f3627acd6ed1a1e3ff71defaeb4433b1dc280efdb01b6d8ebf9086ab1c3",
+      "mlp.up_proj.weight": "2d3f11424f7705452380d1c7a2df4e625929ab9c460882e9c81ce5effadc7feb",
+      "mlp.down_proj.weight": "ce8eaece6fd48b996ff5328840d7b75d5d91dc23acf358711388973b5c9584ca"
+    }
+  },
+  "canonical_layout": {
+    "header_bytes": 64,
+    "cell_mode_bitmap_bytes": 10880,
+    "unselected_cq3_bytes": 20889600,
+    "selected_int4_bytes": 5406720,
+    "hybrid_down_payload_bytes": 26307264,
+    "baseline_three_cq3_mlp_payload_bytes": 71024640,
+    "hybrid_three_projection_mlp_payload_bytes": 73657024,
+    "relative_full_mlp_payload_increase": 0.037062968569780856,
+    "dispatch_cell_shape": [8, 128],
+    "high_precision_weight_materialization_at_runtime": false
+  },
+  "replication_gate": {
+    "required_fresh_rows": 64,
+    "minimum_selected_rows_per_prompt": 4,
+    "minimum_relative_fresh_complete_mlp_nmse_improvement": 0.7,
+    "minimum_fresh_to_v75_development_improvement_ratio": 0.75,
+    "minimum_fresh_positive_output_tile_fraction": 0.95,
+    "minimum_improved_prompt_fraction": 0.75,
+    "exact_layer_replay": true,
+    "frozen_payload_roundtrip_exact": true,
+    "all_values_finite": true
+  },
+  "restartability": {
+    "one_atomic_bfloat16_hidden_state_checkpoint": true,
+    "checkpoint_overwritten_after_each_exact_layer": true,
+    "maximum_checkpoint_states_retained": 1,
+    "resume_identity_checks_required": true
+  },
+  "resources": {
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "allowed_logical_cpus": [0, 2, 4, 6],
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "restart_on_failure": true,
+    "minimum_free_disk_bytes": 8589934592
+  },
+  "decision": {
+    "if_pass": "Treat the fixed-cell scale algebra as independently replicated at layer 59 and preregister the same representation family on representative early, middle, and late Qwen3.8-27B layers.",
+    "if_fail": "Reject v75 as a non-replicating development result; do not tune the artifact or rate on these fresh prompts.",
+    "no_whole_model_claim": true,
+    "no_benchmark_claim": true,
+    "no_throughput_claim": true,
+    "no_novelty_claim": true,
+    "no_breakthrough_claim": true
+  },
+  "claim_boundary": "Fresh-prompt layer-59 replication of one frozen complete-MLP approximation only. A pass establishes out-of-development-prompt replication of the local algebra, but not whole-model capability, benchmark retention, CPU throughput, energy, novelty, 100 tokens per second, or a scientific breakthrough."
+}
