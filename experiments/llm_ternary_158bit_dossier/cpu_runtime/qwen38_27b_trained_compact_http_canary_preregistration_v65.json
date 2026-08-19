@@ -1,0 +1,76 @@
+{
+  "schema": "qwen38_27b_trained_compact_http_canary_preregistration_v65",
+  "experiment_id": "qwen38_27b_trained_compact_http_canary_v65",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_after_terminal_v64_cli_harness_negative_before_any_http_model_observation",
+  "frozen_at_utc": "2026-08-19T17:31:29Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "objective": "Resolve the v64 CLI UI contamination without weakening its predicates by executing one bounded non-streaming HTTP chat completion through the same exact all-64-layer trained CQ3 plus AFF3 graph with thinking disabled.",
+  "frozen_parent": {
+    "v64_receipt_sha256": "4fc9d2f873979d038792d98d2ce5c34fd73c183f2cd34d0c5cd2ed40217c53c3",
+    "v64_stdout_sha256": "f55f184a7e33133711c0a7609768120d1c76c9cd41cddad43eb6c77e1ab90ce0",
+    "v64_adjudication_sha256": "6524a6b58bfd662f8e97d4347be3e344b119c61b9d2dc8aba8ddd59b540f1bf3",
+    "v64_terminal_negative_must_remain_unchanged": true,
+    "v64_all_layer_graph_execution_passed": true,
+    "v64_interactive_stream_gate_failed": true,
+    "v64_automatic_cli_timing_gate_failed": true,
+    "v64_printed_generation_tokens_per_second_is_inadmissible": true
+  },
+  "unchanged_candidate": {
+    "candidate_sha256": "506505935f82bade12ab4b51bd1ca9b6e1b5cc11eeae99a6e230b9a7b9044ffc",
+    "active_aff3_layers": "0-63",
+    "aff3_images": 64,
+    "trained_cq3_tensors": 192,
+    "post_block_residual_payload_bytes": 0,
+    "runtime_and_library_hashes_must_match_v63": true,
+    "high_precision_weight_materialization_forbidden": true
+  },
+  "http_protocol": {
+    "server": "llama-server",
+    "endpoint": "/v1/chat/completions",
+    "bind": "127.0.0.1",
+    "port": 8105,
+    "parallel_slots": 1,
+    "context": 128,
+    "batch": 128,
+    "ubatch": 64,
+    "threads": 4,
+    "threads_batch": 4,
+    "prompt": "Complete this sentence with a short factual answer: The capital of France is",
+    "max_tokens": 8,
+    "temperature": 0,
+    "seed": 20260819,
+    "stream": false,
+    "enable_thinking": false,
+    "server_logging_disabled": true
+  },
+  "resource_bounds": {
+    "physical_cpu_list": [0, 2, 4, 6],
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "runtime_max_seconds": 420,
+    "response_max_bytes": 1048576,
+    "no_overlapping_compute": true
+  },
+  "pass_gate": {
+    "server_reaches_healthy_state": true,
+    "http_status": 200,
+    "response_is_valid_openai_chat_completion_json": true,
+    "one_choice_exactly": true,
+    "assistant_content_nonempty": true,
+    "assistant_content_case_insensitively_contains": "Paris",
+    "response_contains_no_timing_or_tokens_per_second_fields": true,
+    "stream_bounds_respected": true,
+    "server_exits_cleanly_after_request": true,
+    "residual_environment_absent": true
+  },
+  "decision_rules": {
+    "retain_any_http_or_semantic_canary_failure": true,
+    "do_not_reclassify_or_overwrite_v64": true,
+    "full_frozen_v60_v61_quality_suite_may_start_only_after_v65_passes": true,
+    "no_throughput_claim_from_v65": true,
+    "no_novelty_claim_from_v65": true
+  },
+  "claim_boundary": "A pass establishes one non-interactive, thinking-disabled semantic canary through the exact trained all-layer graph. It is not the frozen CUTE, MATH-500, code, WikiText, MMLU, paired throughput, memory, energy, 100 tokens per second, or novelty result."
+}
