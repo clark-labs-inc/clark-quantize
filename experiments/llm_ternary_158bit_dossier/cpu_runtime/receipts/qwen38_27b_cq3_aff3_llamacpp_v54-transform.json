@@ -1,0 +1,84 @@
+{
+  "accepted_cq3_receipt_sha256": "dd63851b9480545fefc4dd77a8fdd117768c954c1f36c4005f1914dea5cc2d43",
+  "accepted_native_speedup": 1.30177569,
+  "aff3_transform": {
+    "base_sha256": {
+      "src/CMakeLists.txt": "3f9c9046c1bd19df660f644b164c81aa9f643ebe2d62a0174b7bb39af2af7170",
+      "src/models/models.h": "f56211fd74dc21fc35294ce93103ad3b4cbd29daf2aeea5462b9d762f6d6179b",
+      "src/models/qwen35.cpp": "b61c5813fc80c54269d45cbbdbbc34b090500e8017dc190483605b37249d007c"
+    },
+    "complete": true,
+    "llama_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "projection_seam_count": 2,
+    "schema": "qwen38_27b_aff3_llamacpp_transform_v49",
+    "tensor_skip_count": 2,
+    "terminal": true,
+    "transformed_sha256": {
+      "src/CMakeLists.txt": "8d24ff0114fe15a585499f07434c136d3ba652e0d4ece1c3904d1866847f516e",
+      "src/models/models.h": "67724d24225496ed52a36ea530307798d810fc2a60080870b0bca1dcef53e4ab",
+      "src/models/qwen35.cpp": "6953d033c467029db896efa528b6261eb04999b94d3e731952b75f4ffa5e36d5",
+      "src/models/qwen38-aff3-kernels/qwen38_aff3_rotated_avx2_v47.cpp": "66478809168aabba3d6fa86d17d8888583a965c8a8c336095aac8506c28ad681",
+      "src/models/qwen38-aff3-kernels/qwen38_affine_avx2_register_lookup_v18.cpp": "ccdb4d9f4b283e1db54d9a9be3a17e1fbf2e33d382f8d32748d15447b4e64683",
+      "src/models/qwen38-aff3-kernels/qwen38_affine_avx2_x16_fused_v17.cpp": "dbdc320d47401a889e3501f70882543e26723020ccdb9f447e20614f443338b3",
+      "src/models/qwen38-aff3-runtime.cpp": "51ae1057964ad24e48a48e1408e68a4c55137a9d52124483c5201a5dcce3a05c",
+      "src/models/qwen38-aff3-runtime.h": "a31132f2e4605e5db8f1dcc922f695624809734cd6b539615a47561c27be12ea"
+    }
+  },
+  "complete": true,
+  "high_precision_weight_materialization": false,
+  "llama_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+  "model": "Qwen/Qwen3.8-27B",
+  "patches": [
+    {
+      "path": "llama_cpp_4df29be_cq3.patch",
+      "sha256": "b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1"
+    },
+    {
+      "path": "llama_cpp_4df29be_cq3_x86_pair_v1.patch",
+      "sha256": "684568733cd3cc3464fa55ba0def22ed05e33684352c1f8ee5215c95afc832ad"
+    },
+    {
+      "path": "kernels/llama_cpp_cq3_avx2_x8_repack_v15.patch",
+      "sha256": "0c0fb98d3b74686a1e42c6e4da1b6eb0b46519a3775eb2d5de21ba38d66160fc"
+    },
+    {
+      "path": "kernels/llama_cpp_cq3_avx2_x8_repack_integration_v15.patch",
+      "sha256": "ae86805c0bc159f8d20f55fac785e234710ca9bf80af7b9e1cb4d3e62592f41f"
+    }
+  ],
+  "schema": "qwen38_27b_cq3_aff3_llamacpp_transform_v54",
+  "terminal": true,
+  "tracked_diff_sha256": "f76b42067337f35d8f5721b92faffcff90f4e1cd15afe8e4aa22ec4fdf67eb4a",
+  "working_tree_files_sha256": {
+    "ggml/include/ggml.h": "18235bbb947f62e1d4807ecdbffbf4b9a03ee5c92253a055a7983f7ba21e8339",
+    "ggml/src/ggml-common.h": "2b698a496eeeed29db045579fd46ad5c52738df10f78cb568f98e31921d0f147",
+    "ggml/src/ggml-cpu/arch-fallback.h": "618df37f0b63d20291c20eea2bdad0e89da8f89faf1b3f07e535ecda4ba6a058",
+    "ggml/src/ggml-cpu/arch/x86/quants.c": "2facc2d85b3b85aa5b197c7c49706f6016701273e88cc54635ee16af90b31a44",
+    "ggml/src/ggml-cpu/ggml-cpu.c": "54d571f108ef9533cea08b22064803e41a795e1989cf3ea3363275a1cc62e614",
+    "ggml/src/ggml-cpu/ops.cpp": "8d559df70c27a555d4987f7addfd841c1a8915228e72b26cc44f6113f74b82a9",
+    "ggml/src/ggml-cpu/quants.c": "98f58b50cad0011539c4ec863c5a22420a04cef54438493d36a7600924a14183",
+    "ggml/src/ggml-cpu/quants.h": "380abf50e132166352a7b2c8b54ca8625a66ba98d2d3567a5c30db633c2b1354",
+    "ggml/src/ggml-cpu/repack.cpp": "4a53dfdbbfb0495b41abe6c2b94de2cf45ef807d117a909382d809b919ac8e83",
+    "ggml/src/ggml-quants.c": "900752eceb1e3603783b90fb6e9365d1b708557d82afd7b351643cbd96c6e345",
+    "ggml/src/ggml-quants.h": "52d10c94d2f5f4a9e81f5080829aa351e61f722c1e481002cd5a9f68e2c3f43b",
+    "ggml/src/ggml.c": "254ee3ac78ee567ee1642085ecb4e2aadfce0b9c3b82712b141288c5a521d151",
+    "gguf-py/gguf/constants.py": "994cfb97e58879ac19f6cacf2330d0227e4b431e0cf8ec54ccc903e1b2c20da3",
+    "include/llama.h": "d4890709d367da6950d5ede704b9cec0ce4fc7996c36634729135536aa7a2829",
+    "src/CMakeLists.txt": "8d24ff0114fe15a585499f07434c136d3ba652e0d4ece1c3904d1866847f516e",
+    "src/llama-model-loader.cpp": "f0b473dbe2ab5b30ccb501b573f85693b3825fe14b15b5b93bd227bab8958727",
+    "src/llama-quant.cpp": "f1db13e8bb7983ad35dd371e2e48162b7472dfc9d5fd4a23df2deaf4b443dc26",
+    "src/models/models.h": "67724d24225496ed52a36ea530307798d810fc2a60080870b0bca1dcef53e4ab",
+    "src/models/qwen35.cpp": "6953d033c467029db896efa528b6261eb04999b94d3e731952b75f4ffa5e36d5",
+    "src/models/qwen38-aff3-kernels/qwen38_aff3_rotated_avx2_v47.cpp": "66478809168aabba3d6fa86d17d8888583a965c8a8c336095aac8506c28ad681",
+    "src/models/qwen38-aff3-kernels/qwen38_affine_avx2_register_lookup_v18.cpp": "ccdb4d9f4b283e1db54d9a9be3a17e1fbf2e33d382f8d32748d15447b4e64683",
+    "src/models/qwen38-aff3-kernels/qwen38_affine_avx2_x16_fused_v17.cpp": "dbdc320d47401a889e3501f70882543e26723020ccdb9f447e20614f443338b3",
+    "src/models/qwen38-aff3-runtime.cpp": "51ae1057964ad24e48a48e1408e68a4c55137a9d52124483c5201a5dcce3a05c",
+    "src/models/qwen38-aff3-runtime.h": "a31132f2e4605e5db8f1dcc922f695624809734cd6b539615a47561c27be12ea",
+    "tests/CMakeLists.txt": "f8b114ec8626b3ce6ca3165c44268a675845b1a0cb232b02dfc811651ebad660",
+    "tests/qwen38_27b_cq3_x8_repack_bench_v15.inc": "6c2ed998d96a59f01cc96dcc18d2422874542f6b8e8739043d2bc4e72963b079",
+    "tests/test-backend-ops.cpp": "da8af98a519fe75cbc4ecc2ad83079fa73bfa2868ad40d64080b3aef78f432bb",
+    "tests/test-cq3.cpp": "7be47d2a2666b6dee2f65dd497b953cf7ad2cd22fbda88b04481a43cf6dc5119",
+    "tests/test-quantize-fns.cpp": "f810a85b124f040d34064c8b80f8613b3f1a4e01bf302f1f613c9d5b00a0ed75",
+    "tools/quantize/quantize.cpp": "21b36c55be1310b1523938c416fae978eea2b8033da1c45867c9ca0ed0271110"
+  }
+}
