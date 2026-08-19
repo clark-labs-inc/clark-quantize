@@ -1,0 +1,309 @@
+{
+  "aggregate": {
+    "candidate_ab_repeat_exact_every_prompt": true,
+    "cross_build_candidate_parent_exact_prompts": 1,
+    "cross_build_candidate_parent_prompt_denominator": 4,
+    "parent_ab_repeat_exact_every_prompt": true,
+    "within_build_target_mtp3_exact_pairs": 16,
+    "within_build_target_mtp3_pair_denominator": 16
+  },
+  "classification": "candidate_mtp_acceptance_gain_is_sequence_confounded_and_cannot_be_attributed_as_a_clean_kernel_runtime_speedup",
+  "complete": true,
+  "evaluator_sha256": "e7e5b45a3afbbb313a38fb60f0b191e6001bfb45816bd2e06a946927aa338ed2",
+  "gate_effect": "diagnostic_only; does not alter the frozen v35 gates",
+  "interpretation": "Target-vs-MTP equality inside each build proves speculative parity for that build. It does not prove the candidate compiler/runtime matches the parent. A changed greedy sequence can change draft acceptance and therefore confound cross-build MTP throughput.",
+  "model": "Qwen/Qwen3.8-27B",
+  "posthoc_diagnostic": true,
+  "prompt_count": 4,
+  "prompts": [
+    {
+      "candidate_a_candidate_b_exact_parity": true,
+      "candidate_parent_exact_parity": true,
+      "candidate_parent_first_mismatch_token_index": null,
+      "parent_a_parent_b_exact_parity": true,
+      "prompt": 0,
+      "prompt_sha256": "22e1bb73395d10c55c24ab1fb8ca707ae7af236c779b0d043a83741cca233d51",
+      "tokens_per_response": 96,
+      "within_build_target_mtp3_exact_parity": {
+        "candidate_a": true,
+        "candidate_b": true,
+        "parent_a": true,
+        "parent_b": true
+      }
+    },
+    {
+      "candidate_a_candidate_b_exact_parity": true,
+      "candidate_parent_exact_parity": false,
+      "candidate_parent_first_mismatch_token_index": 47,
+      "parent_a_parent_b_exact_parity": true,
+      "prompt": 1,
+      "prompt_sha256": "61a0d3de81b5cfb0213b4ae9399757586699a471961867c365be21f4542320ab",
+      "tokens_per_response": 96,
+      "within_build_target_mtp3_exact_parity": {
+        "candidate_a": true,
+        "candidate_b": true,
+        "parent_a": true,
+        "parent_b": true
+      }
+    },
+    {
+      "candidate_a_candidate_b_exact_parity": true,
+      "candidate_parent_exact_parity": false,
+      "candidate_parent_first_mismatch_token_index": 44,
+      "parent_a_parent_b_exact_parity": true,
+      "prompt": 2,
+      "prompt_sha256": "adad5eb0fdbc9a2ff85fdf187aa6d15923910b922996f76e9a8891197c1279d4",
+      "tokens_per_response": 96,
+      "within_build_target_mtp3_exact_parity": {
+        "candidate_a": true,
+        "candidate_b": true,
+        "parent_a": true,
+        "parent_b": true
+      }
+    },
+    {
+      "candidate_a_candidate_b_exact_parity": true,
+      "candidate_parent_exact_parity": false,
+      "candidate_parent_first_mismatch_token_index": 40,
+      "parent_a_parent_b_exact_parity": true,
+      "prompt": 3,
+      "prompt_sha256": "49d199249f8801f4376ae29b8859c7d1585cc05c95b981458fa452749700d722",
+      "tokens_per_response": 96,
+      "within_build_target_mtp3_exact_parity": {
+        "candidate_a": true,
+        "candidate_b": true,
+        "parent_a": true,
+        "parent_b": true
+      }
+    }
+  ],
+  "schema": "qwen38_27b_cross_build_token_parity_diagnostic_v35",
+  "source_files": [
+    {
+      "arm": "parent_a",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_a/target/prompt-00.json",
+      "prompt": 0,
+      "sha256": "a86869d386432b1fd5ff7d32ad05c4275ce3ae6fba7e3eab97ff1d5b3f51e6f1"
+    },
+    {
+      "arm": "parent_a",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_a/target/prompt-01.json",
+      "prompt": 1,
+      "sha256": "9503cbde36de4d7ca14389150c514093fa8196009aaa087cd052e7172d8699af"
+    },
+    {
+      "arm": "parent_a",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_a/target/prompt-02.json",
+      "prompt": 2,
+      "sha256": "ff49a43a91b77537a2ad6582def55d577b68f849d31621f2deb23d2ea59e8d6c"
+    },
+    {
+      "arm": "parent_a",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_a/target/prompt-03.json",
+      "prompt": 3,
+      "sha256": "60deb14c21480321e6835071a3eb41d19aff2dba346a8c15b539444712f3da7b"
+    },
+    {
+      "arm": "parent_a",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_a/mtp3/prompt-00.json",
+      "prompt": 0,
+      "sha256": "a90f5bebfa38001d5daf58bdfb8f6eae1c3b148c50d4d4c4c361c5622ba715a3"
+    },
+    {
+      "arm": "parent_a",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_a/mtp3/prompt-01.json",
+      "prompt": 1,
+      "sha256": "6da4dcf07408978a1626f3f328f554d3700c910cbceae41e2b19a1abccd4930a"
+    },
+    {
+      "arm": "parent_a",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_a/mtp3/prompt-02.json",
+      "prompt": 2,
+      "sha256": "c228562ca99a0c842b47c37f593ef0672e40734e297c80e4fa6f5d5e1f128252"
+    },
+    {
+      "arm": "parent_a",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_a/mtp3/prompt-03.json",
+      "prompt": 3,
+      "sha256": "a0a863e169e0fb0396ba050ccc1d940d5ad3d546a707a0fc6625960594c3a25f"
+    },
+    {
+      "arm": "candidate_a",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_a/target/prompt-00.json",
+      "prompt": 0,
+      "sha256": "f124eb3703b82ebe5b8301db6624a1349b0f541400012d86cc549b2de92f5601"
+    },
+    {
+      "arm": "candidate_a",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_a/target/prompt-01.json",
+      "prompt": 1,
+      "sha256": "7ecaa6f92054e750070ba3f76f286b1acef320db4b0793cffb28a92a22d28041"
+    },
+    {
+      "arm": "candidate_a",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_a/target/prompt-02.json",
+      "prompt": 2,
+      "sha256": "21bf0c5fbcd60817057edcffe6645fe6b923a3274b1f38439544cf5030e89863"
+    },
+    {
+      "arm": "candidate_a",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_a/target/prompt-03.json",
+      "prompt": 3,
+      "sha256": "9c0c778a7a534d7e274ee8935e0d03bba2df15ca4320776b65148ec9e2e43597"
+    },
+    {
+      "arm": "candidate_a",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_a/mtp3/prompt-00.json",
+      "prompt": 0,
+      "sha256": "30ce379f6841fb7c446d7968766180119e925e8b5c16d7395bc59926bf56dcbc"
+    },
+    {
+      "arm": "candidate_a",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_a/mtp3/prompt-01.json",
+      "prompt": 1,
+      "sha256": "b0c21644ac9c85c4f338dff9a9ad906be5f55ccf504e2c6fb684fb1a65e2d182"
+    },
+    {
+      "arm": "candidate_a",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_a/mtp3/prompt-02.json",
+      "prompt": 2,
+      "sha256": "c0136b6fc49800324aeb59d2e498bc3adc878d3bd8074986df555ab707fb2ff6"
+    },
+    {
+      "arm": "candidate_a",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_a/mtp3/prompt-03.json",
+      "prompt": 3,
+      "sha256": "3c7895905a4d1d1b5daf4279546a287c4016ab3eab64858704a855467e69e573"
+    },
+    {
+      "arm": "candidate_b",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_b/target/prompt-00.json",
+      "prompt": 0,
+      "sha256": "0d7b33b0a80dd1f719daaf42beb2fb6583176287533a60e7c76d36c24f98912f"
+    },
+    {
+      "arm": "candidate_b",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_b/target/prompt-01.json",
+      "prompt": 1,
+      "sha256": "58083b2ff54b313769e13c408cc090d394a6b4dfc2d1f1d0ebffe4a13237d4fd"
+    },
+    {
+      "arm": "candidate_b",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_b/target/prompt-02.json",
+      "prompt": 2,
+      "sha256": "5e75e00f06eb0a36f8766334153c69b9bcd1abea4528f814fbf59f8817c40794"
+    },
+    {
+      "arm": "candidate_b",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_b/target/prompt-03.json",
+      "prompt": 3,
+      "sha256": "90180cf9fd4812ab33a96ba0bad7a4dc18465ba2d5f1653c9c51c112da095de5"
+    },
+    {
+      "arm": "candidate_b",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_b/mtp3/prompt-00.json",
+      "prompt": 0,
+      "sha256": "17e33c59ab2d95fa6ea924053adda447b78a4c3ef5efdea2dda6eb075eeee670"
+    },
+    {
+      "arm": "candidate_b",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_b/mtp3/prompt-01.json",
+      "prompt": 1,
+      "sha256": "95f851dce0b33103bc0af83703b6f88a6b08236023a61a202cf075f3dd89b30e"
+    },
+    {
+      "arm": "candidate_b",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_b/mtp3/prompt-02.json",
+      "prompt": 2,
+      "sha256": "ce6cfb702a917726578550538f93742d3ea1c8527069a22591ddcd0816f47960"
+    },
+    {
+      "arm": "candidate_b",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/candidate_b/mtp3/prompt-03.json",
+      "prompt": 3,
+      "sha256": "ac533efddbb21c2764d5529c514be53550eefe8fdf6ab9f1171e3c0cea501233"
+    },
+    {
+      "arm": "parent_b",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_b/target/prompt-00.json",
+      "prompt": 0,
+      "sha256": "127b0ccc127a00d552d4b7b6672a9a392419871b0f56c11612876b350e890019"
+    },
+    {
+      "arm": "parent_b",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_b/target/prompt-01.json",
+      "prompt": 1,
+      "sha256": "2520483f1f76354cab92adce2bced8e598c0cd3ac5ca87e7a459c6f9473d6417"
+    },
+    {
+      "arm": "parent_b",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_b/target/prompt-02.json",
+      "prompt": 2,
+      "sha256": "3148c6e238f22dce9a1f0adf1a6a06215fb77c45661490a2247b2285261d2806"
+    },
+    {
+      "arm": "parent_b",
+      "mode": "target",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_b/target/prompt-03.json",
+      "prompt": 3,
+      "sha256": "835c89b9d38e2b712630856cd1b24568603081da4a5c67e3b5855551d1503f54"
+    },
+    {
+      "arm": "parent_b",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_b/mtp3/prompt-00.json",
+      "prompt": 0,
+      "sha256": "f468820e298ec0966222d7b4316aec52ce3be8168251440bf75945b305a43238"
+    },
+    {
+      "arm": "parent_b",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_b/mtp3/prompt-01.json",
+      "prompt": 1,
+      "sha256": "59fc36c8501602723d36bed00e19c66e328bfb2c7adfcc00e7d7623813306fb8"
+    },
+    {
+      "arm": "parent_b",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_b/mtp3/prompt-02.json",
+      "prompt": 2,
+      "sha256": "e0373cea932295fbfeed117fcd08b361a3750838b67b30c78d8422a43228799d"
+    },
+    {
+      "arm": "parent_b",
+      "mode": "mtp3",
+      "path": "/workspace/quant-runs/qwen38-27b-clang21-serving-transfer-v35/parent_b/mtp3/prompt-03.json",
+      "prompt": 3,
+      "sha256": "232a5ad1c26646b5f85daf430bbd5ebb21a1a05ffcd7f1cfa2a2e8c88b7d2c7f"
+    }
+  ],
+  "terminal": true,
+  "tokens_per_prompt": 96
+}
