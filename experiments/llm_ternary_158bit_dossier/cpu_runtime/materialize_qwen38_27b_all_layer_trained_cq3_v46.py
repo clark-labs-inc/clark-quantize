@@ -16,11 +16,23 @@ import json
 import os
 import shutil
 import tempfile
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from dataclasses import dataclass
-from itertools import pairwise
 from pathlib import Path
 from typing import Any, BinaryIO
+
+try:
+    from itertools import pairwise
+except ImportError:  # Python 3.9 verification hosts
+    def pairwise(values: Iterable[Any]) -> Iterator[tuple[Any, Any]]:
+        iterator = iter(values)
+        try:
+            previous = next(iterator)
+        except StopIteration:
+            return
+        for value in iterator:
+            yield previous, value
+            previous = value
 
 MODEL_ID = "Qwen/Qwen3.8-27B"
 MODEL_REVISION = "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0"
