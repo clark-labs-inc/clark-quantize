@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 MODULE_PATH = RUNTIME / "run_qwen38_27b_cell_scale_covariate_shift_diagnostic_v77.py"
 PREREG = RUNTIME / "qwen38_27b_cell_scale_covariate_shift_diagnostic_preregistration_v77.json"
+RECEIPT = RUNTIME / "receipts/qwen38_27b_cell_scale_covariate_shift_diagnostic_v77/receipt.json"
 
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(RUNTIME))
@@ -54,3 +55,19 @@ def test_v77_preregistration_is_diagnostic_only_and_rule_is_frozen() -> None:
     assert rules["maximum_median_deployed_fraction_of_capacity_for_magnitude_shift"] == 0.8
     assert prereg["decision"]["new_untouched_prompts_required_for_any_future_promotion"] is True
     assert prereg["decision"]["no_breakthrough_claim"] is True
+
+
+def test_v77_terminal_diagnostic_identifies_support_direction_shift() -> None:
+    receipt = json.loads(RECEIPT.read_text())
+    aggregate = receipt["aggregate_geometry"]
+    summary = receipt["summary"]
+
+    assert receipt["complete"] is True
+    assert receipt["terminal"] is True
+    assert receipt["diagnostic_only"]["parameters_fit"] == 0
+    assert receipt["diagnostic_only"]["artifacts_written"] == 0
+    assert aggregate["unconstrained_optimal_scalar"] > 0.95
+    assert aggregate["unconstrained_optimal_scalar"] < 0.96
+    assert aggregate["deployed_fraction_of_nonnegative_directional_capacity"] > 0.997
+    assert summary["median_prompt_directional_capacity"] < 0.16
+    assert summary["classification"] == "cell_support_or_direction_shift"
