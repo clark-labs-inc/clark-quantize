@@ -1,0 +1,81 @@
+{
+  "schema": "qwen38_27b_trained_compact_factorial_diagnosis_preregistration_v66",
+  "experiment_id": "qwen38_27b_trained_compact_factorial_diagnosis_v66",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_after_v65_semantic_negative_before_any_factorial_arm_observation",
+  "frozen_at_utc": "2026-08-19T17:39:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "objective": "Locate the catastrophic-forgetting source by separating trained MLP CQ3 from trained attention-output AFF3 while keeping every other runtime and evaluation choice fixed, then quantify both intermediate arms on the frozen CUTE-Quick-20 slice.",
+  "terminal_parent": {
+    "v65_receipt_sha256": "96ddd46b37ad135193d11774fa214ee0430e9b81e15e6f1f29c28318a1284b9f",
+    "full_cq3_aff3_assistant_content": "........",
+    "full_cq3_aff3_contains_paris": false,
+    "full_candidate_rejected": true
+  },
+  "controls": {
+    "q4_model_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "q4_cute_correct": 9,
+    "q4_cute_denominator": 20,
+    "q4_baseline_summary_sha256": "1557f1aac13f6c557e89006427aa829e2707f07ad73aa29611763e754c409a64",
+    "full_candidate_sha256": "506505935f82bade12ab4b51bd1ca9b6e1b5cc11eeae99a6e230b9a7b9044ffc"
+  },
+  "factorial_arms": [
+    {
+      "name": "cq3_mlp_q4_attention",
+      "gguf": "trained all-MLP CQ3 candidate",
+      "gguf_sha256": "506505935f82bade12ab4b51bd1ca9b6e1b5cc11eeae99a6e230b9a7b9044ffc",
+      "aff3_layers": "none",
+      "purpose": "isolate all-layer trained MLP CQ3 with original Q4 attention projections"
+    },
+    {
+      "name": "q4_mlp_aff3_attention",
+      "gguf": "Q4_K_M control",
+      "gguf_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+      "aff3_layers": "0-63",
+      "purpose": "isolate all-layer trained attention-output AFF3 with original Q4 MLP projections"
+    }
+  ],
+  "evaluation": {
+    "server": "exact v63 llama-server and libraries",
+    "endpoint": "/v1/chat/completions",
+    "thinking": false,
+    "temperature": 0,
+    "seed": 20260819,
+    "france_canary_max_tokens": 8,
+    "france_canary_contains": "Paris",
+    "cute_manifest_sha256": "19dd73eedf737d11f7c94d039822de62314abf31e3fb739a9a875fe65c5bbd16",
+    "cute_evaluator_sha256": "9c40a48a0c3f0544156a20ccccdc12f7e90bbae8afd391bf640ead1ff234c8ab",
+    "cute_denominator_per_arm": 20,
+    "functional_arm_cute_correct_minimum": 7,
+    "cute_runs_even_if_france_canary_fails": true,
+    "cute_max_tokens": 48
+  },
+  "resource_bounds": {
+    "host": "quant",
+    "physical_cpu_list": [0, 2, 4, 6],
+    "threads": 4,
+    "context": 4096,
+    "parallel_slots": 1,
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "server_runtime_max_seconds_per_arm": 1800,
+    "no_overlapping_compute": true,
+    "restartable_between_arms": true
+  },
+  "interpretation": {
+    "cq3_fails_aff3_passes": "MLP CQ3 is the primary collapse source; move to sensitivity-selected or higher-bit MLP layers while retaining AFF3",
+    "cq3_passes_aff3_fails": "AFF3 attention-output approximation is the primary collapse source; retain Q4 attention for sensitive layers",
+    "both_pass_full_fails": "cross-component error interaction dominates; search mixed layer schedules rather than either component alone",
+    "both_fail": "both approximations independently require sensitivity selection or stronger training",
+    "no_arm_can_promote_the_rejected_full_candidate": true
+  },
+  "decision_rules": {
+    "all_40_cute_items_required": true,
+    "retain_terminal_results_regardless_of_score": true,
+    "do_not_run_mmlu_or_performance_in_v66": true,
+    "do_not_claim_quality_or_throughput_promotion": true,
+    "next_experiment_must_follow_the_observed_factorial_classification": true
+  },
+  "claim_boundary": "This is a causal catastrophic-forgetting diagnosis using one semantic canary and CUTE-Quick-20 per arm. It is not a promoted model, full benchmark, throughput, energy, 100 tokens per second, or novelty result."
+}
