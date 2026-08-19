@@ -1,0 +1,116 @@
+{
+  "schema": "qwen38_27b_prompt_robust_cell_support_preregistration_v78",
+  "experiment_id": "qwen38_27b_prompt_robust_cell_support_v78",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_development_screen_before_execution",
+  "frozen_at_utc": "2026-08-20T07:10:00Z",
+  "objective": "Replace aggregate-SSE cell routing with prompt-group distributionally robust support selection and prompt-normalized conditional scale fitting, while preserving v75's exact packed rate, bytes, codes, one-pass dispatch, and runtime operation count.",
+  "parent_finding": {
+    "v76_fresh_improvement": 0.6726854697504412,
+    "v76_positive_output_tile_fraction": 0.9921875,
+    "v77_aggregate_optimal_scalar": 0.9510352930597581,
+    "v77_aggregate_deployed_fraction_of_directional_capacity": 0.9973492238700165,
+    "v77_median_prompt_directional_capacity": 0.15430477785682797,
+    "v77_classification": "cell_support_or_direction_shift",
+    "conclusion": "Global scale shrinkage is already nearly optimal. The missing capacity is prompt-conditional correction direction, so select support under prompt-group risk rather than aggregate token SSE."
+  },
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "hidden_size": 5120,
+    "intermediate_size": 17408,
+    "layers": 64
+  },
+  "scope": {
+    "layer": 59,
+    "tensor": "mlp.down_proj.weight",
+    "fit_prompts": 8,
+    "fit_rows": 64,
+    "development_prompt_sets": [
+      "four original disjoint v42 validation prompts",
+      "eight now-open v76 diagnostic prompts"
+    ],
+    "whole_model_generation_forbidden": true,
+    "performance_timing_forbidden": true,
+    "fresh_holdout_claim_forbidden": true
+  },
+  "authenticated_inputs": {
+    "full_context_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "v44_training_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+    "v75_receipt_sha256": "7028466f1798e425f2fa9a9574214aeef96864db754797590133115c7f8ef5e5",
+    "v76_receipt_sha256": "444d249cf32b3a7a3f440250988b2fd44e191b80a62a1c6110ed3f5b87502fc8",
+    "v76_checkpoint_sha256": "cd05845eb77f7671adabae0113c4a6fc92b835f92d43378d582f51db5de1d0d8",
+    "v77_diagnostic_receipt_sha256": "39fc77889d7ff6f190b0b67289ad4738b0e8e688301c2c0cea22951ccd00a838",
+    "source_tensor_sha256": {
+      "mlp.gate_proj.weight": "af5f1f3627acd6ed1a1e3ff71defaeb4433b1dc280efdb01b6d8ebf9086ab1c3",
+      "mlp.up_proj.weight": "2d3f11424f7705452380d1c7a2df4e625929ab9c460882e9c81ce5effadc7feb",
+      "mlp.down_proj.weight": "ce8eaece6fd48b996ff5328840d7b75d5d91dc23acf358711388973b5c9584ca"
+    },
+    "v44_payload_sha256": {
+      "gate": "ca349cd022d248a29fae502d523430b50fa5894f1e5deff549e222b159a02599",
+      "up": "1592cd2858371645fd8e236113caa1c39d733a959b3a54ab0bbe4f6d550de4bc",
+      "down": "faa8661738f9c0bdcadc2dcd7eac7723ca39c1d99486523b2e8b21e636c76356"
+    }
+  },
+  "estimator": {
+    "fixed_int4_codes": "v75 signed INT4 source-weight codes in [-8, 7], group 128, from four deterministic weight-space scale iterations",
+    "output_tile_rows": 8,
+    "input_group_columns": 128,
+    "greedy_steps_per_output_tile": 16,
+    "fit_environments": "eight calibration prompts with deterministic row ownership",
+    "environment_loss": "per-prompt per-output-tile SSE divided by that prompt tile's initial CQ3 residual SSE",
+    "conditional_scale_fit": "shared nonnegative row scale minimizing the equally weighted normalized prompt-environment loss, rounded to FP16 before scoring",
+    "robust_marginal_score": "mean normalized marginal SSE reduction across prompts minus one population standard deviation",
+    "risk_radius": 1.0,
+    "selection": "at each step and output tile choose the unselected input cell with maximum robust marginal score, then update every prompt residual exactly",
+    "hyperparameter_sweep": false,
+    "v42_validation_used_for_fit_or_selection": false,
+    "v76_prompts_used_for_fit_or_selection": false
+  },
+  "canonical_layout": {
+    "header_bytes": 64,
+    "cell_mode_bitmap_bytes": 10880,
+    "unselected_cq3_bytes": 20889600,
+    "selected_int4_bytes": 5406720,
+    "hybrid_down_payload_bytes": 26307264,
+    "baseline_three_cq3_mlp_payload_bytes": 71024640,
+    "hybrid_three_projection_mlp_payload_bytes": 73657024,
+    "relative_full_mlp_payload_increase": 0.037062968569780856,
+    "selected_cells": 10240,
+    "additional_runtime_bytes_vs_v75": 0,
+    "additional_runtime_operations_vs_v75": 0,
+    "additional_runtime_passes_vs_v75": 0,
+    "high_precision_weight_materialization_at_runtime": false
+  },
+  "development_gate": {
+    "minimum_relative_fit_complete_mlp_nmse_improvement": 0.7,
+    "minimum_relative_v42_validation_complete_mlp_nmse_improvement": 0.7,
+    "minimum_relative_v76_development_complete_mlp_nmse_improvement": 0.7,
+    "minimum_absolute_v76_improvement_over_v75": 0.02,
+    "minimum_v76_positive_output_tile_fraction": 0.95,
+    "minimum_v76_improved_prompt_fraction": 1.0,
+    "minimum_v76_median_prompt_directional_capacity": 0.3,
+    "required_selected_cells": 10240,
+    "maximum_relative_full_mlp_payload_increase": 0.04,
+    "canonical_payload_bytes_exact": true,
+    "packed_roundtrip_exact": true,
+    "all_values_finite": true
+  },
+  "data_status": {
+    "v42_validation_is_architecture_contaminated": true,
+    "v76_development_is_architecture_contaminated": true,
+    "reason": "The estimator family was selected after v74-v77 diagnostics.",
+    "allowed_use": "Reject or admit the fixed estimator to a second newly authored prompt replication only.",
+    "promotion_or_scientific_claim_from_v78_forbidden": true
+  },
+  "decision": {
+    "if_pass": "Freeze the exact support, codes, and scales, then create a second untouched non-benchmark prompt cache for replication before representative-layer work.",
+    "if_fail": "Reject mean-minus-standard-deviation prompt-robust routing without relaxing this gate or sweeping risk radius on either development set.",
+    "no_holdout_claim": true,
+    "no_whole_model_claim": true,
+    "no_benchmark_claim": true,
+    "no_novelty_claim": true,
+    "no_breakthrough_claim": true
+  },
+  "claim_boundary": "Development-only layer-59 screen of a frozen prompt-group robust support estimator. Even a pass can only authorize a second new-prompt replication; it cannot establish whole-model quality, benchmark retention, CPU speed, energy, novelty, 100 tokens per second, or a breakthrough."
+}
