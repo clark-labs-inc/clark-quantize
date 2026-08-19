@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -11,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
 MODULE_PATH = RUNTIME / "run_qwen38_27b_optimal_cell_scale_fresh_replication_v76.py"
 PREREG = RUNTIME / "qwen38_27b_optimal_cell_scale_fresh_replication_preregistration_v76.json"
+RECEIPTS = RUNTIME / "receipts/qwen38_27b_optimal_cell_scale_fresh_replication_v76"
 
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(RUNTIME))
@@ -83,3 +85,25 @@ def test_v76_preregistration_is_fresh_frozen_and_not_a_benchmark_claim() -> None
     assert gate["minimum_fresh_positive_output_tile_fraction"] == 0.95
     assert gate["minimum_improved_prompt_fraction"] == 0.75
     assert prereg["decision"]["no_breakthrough_claim"] is True
+
+
+def test_v76_terminal_receipt_preserves_strict_near_miss() -> None:
+    receipt_path = RECEIPTS / "receipt.json"
+    receipt = json.loads(receipt_path.read_text())
+    marker = json.loads((RECEIPTS / "EXPERIMENT_COMPLETE.json").read_text())
+
+    assert receipt["complete"] is True
+    assert receipt["terminal"] is True
+    assert receipt["gate"] == {
+        "decision": "reject_v75_as_nonreplicating_development_result",
+        "passed": False,
+    }
+    assert receipt["fresh_data"]["artifact_fit_or_selection_operations_on_fresh_data"] == 0
+    assert receipt["fresh_data"]["prior_prompt_overlap_count"] == 0
+    assert receipt["checks"]["minimum_fresh_improvement_met"] is False
+    assert receipt["metrics"]["relative_fresh_complete_mlp_nmse_improvement"] > 0.67
+    assert receipt["metrics"]["relative_fresh_complete_mlp_nmse_improvement"] < 0.70
+    assert receipt["metrics"]["fresh_positive_output_tile_fraction"] > 0.99
+    assert receipt["metrics"]["improved_prompt_fraction"] == 1.0
+    assert marker["passed"] is False
+    assert marker["receipt_sha256"] == hashlib.sha256(receipt_path.read_bytes()).hexdigest()
