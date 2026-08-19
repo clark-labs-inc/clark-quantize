@@ -1,0 +1,83 @@
+{
+  "schema": "qwen38_27b_aff3_llamacpp_response_gate_preregistration_v52",
+  "experiment_id": "qwen38_27b_aff3_llamacpp_response_gate_v52",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_after_v51_bounded_predicate_failure_before_v52_execution",
+  "frozen_at_utc": "2026-08-19T13:22:18Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "parent_evidence": {
+    "v49_callback_lifetime_diagnosis_sha256": "935594544d3741706df48599f27ee5bb9d187da7b07e1130e926c9e2043646ee",
+    "v50_harness_incident_sha256": "cb04554a9316af13d59f970701ed42d8c9c1c2cdaa6382a4e26cdc54eacddc42",
+    "v51_terminal_receipt_sha256": "3bad2da6f1ed34b15f094eb1f3394475d0e46204940c10b1c2d3f50d9a368556",
+    "v51_service_result": "success",
+    "v51_service_exit_code": 0,
+    "v51_elapsed_seconds": 22.191617771,
+    "v51_bounded_stdout_bytes": 1070,
+    "v51_failed_predicate": "llama-cli UI banner remained present despite bounded single-turn natural exit"
+  },
+  "frozen_runtime": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "transformed_qwen35_cpp_sha256": "6953d033c467029db896efa528b6261eb04999b94d3e731952b75f4ffa5e36d5",
+    "llama_cli_sha256": "e55a49bfc03e7ae6346a7f3e8240a18cddd64a176a8cc6d61e9ab7f1a38ff92c",
+    "worker_sha256": "49975e98cdf7f021fa4b7dab1e984aca0e88e7e0ef2027f4a095007d8ac7c339",
+    "standalone_smoke_sha256": "b8033fe6c240ccef2e2f76d0d1249f7e24a33c929451ec565bf0b97f1ce3fe84",
+    "one_token_receipt_sha256": "8205a610522110f839787bdc82b36402ce85582929f076f9e52a6e45908231d6",
+    "eight_token_receipt_sha256": "6300e5ab7c8e6fec83b720dff9ed685986158d47c9ebb9aa3d50f8efc0fe7088",
+    "q4_control_gguf_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "direct_v43_layer0_aff3_sha256": "a4cec7372ac21a0093d047c1452277508583ebca1e3f4f66c73a8a74142ccf48",
+    "numerical_code_changes_permitted": false,
+    "kernel_changes_permitted": false,
+    "sidecar_changes_permitted": false
+  },
+  "execution": {
+    "host": "quant",
+    "physical_cpu_list": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "threads": 4,
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "runtime_max_seconds": 300,
+    "file_size_max_bytes_per_file": 1048576,
+    "bounded_files": [
+      "ui_stdout",
+      "ui_stderr",
+      "assistant_response"
+    ],
+    "generated_tokens": 8,
+    "seed": 20260819,
+    "greedy": true,
+    "required_cli_flags": [
+      "--no-conversation",
+      "--single-turn",
+      "--output",
+      "--no-show-timings",
+      "--no-warmup",
+      "--no-perf"
+    ]
+  },
+  "pass_predicate": {
+    "service_exit_code": 0,
+    "service_result": "success",
+    "assistant_response_nonempty": true,
+    "each_file_max_bytes": 1048576,
+    "ui_prompt_count_max": 1,
+    "ui_exit_count": 1,
+    "performance_markers_forbidden_in_all_files": true,
+    "v49_signal_failure_forbidden": true,
+    "standalone_algebra_receipts_must_remain_bit_exact": true
+  },
+  "promotion_rules": [
+    "v49, v50, and v51 evidence remain immutable",
+    "the v52 run must use the unchanged v50 runtime and layer-0 sidecar",
+    "the assistant response file is the generation result; llama-cli UI text is bounded transport evidence",
+    "the service must terminate naturally inside all file-size and runtime ceilings",
+    "one successful bounded run is only an integration gate",
+    "no semantic quality or performance claim may be inferred from this gate"
+  ],
+  "claim_boundary": "A v52 pass can establish only bounded one-shot actual-Qwen graph execution and response capture with the repaired AFF3 callback lifetime. It is not trained-v44 behavior, semantic quality, throughput, memory, energy, novelty, or scientific-breakthrough evidence."
+}
