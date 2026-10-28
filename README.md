@@ -1,5 +1,14 @@
 # Clark Air
 
+Research notes, protocols, negative results, and execution receipts are preserved
+in the [experiment registry](experiments/README.md). Start with the
+[LLM ternary research dossier](experiments/llm_ternary_158bit_dossier/README.md),
+[Swin2SR dossier](experiments/swin2sr_super_resolution_1_58bit/README.md),
+[Sana dossier](experiments/sana_image_generation_158bit_dossier/README.md), or
+[OmniVoiceGraph benchmark notes](experiments/omnivoicegraph_moss_bench/README.md).
+Model payloads, raw datasets, credentials, and machine-local staging files stay
+outside Git; artifact indexes record the relevant hashes and locations.
+
 **Low-bit weight compression for image-generation models.** **Clark Air** packs a
 Sana 1.6B diffusion transformer down to **ternary (~1.85 bits/weight)** — **8.6×
 smaller than FP16 at near-FP16 quality** (374 MB vs 3.21 GB).

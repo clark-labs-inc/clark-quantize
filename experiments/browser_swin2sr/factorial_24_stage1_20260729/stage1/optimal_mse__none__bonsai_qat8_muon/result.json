@@ -1,0 +1,28 @@
+{
+  "arm": {
+    "optimizer": "bonsai_qat8_muon",
+    "quantizer": "optimal_mse",
+    "rotation": "none"
+  },
+  "elapsed_seconds": 954.8146240711212,
+  "final": {
+    "attention_amount": 1.0,
+    "edge": 0.014134492725133896,
+    "event": "validation",
+    "examples_seen": 4000,
+    "feature": 0.024984210729599,
+    "ground_truth": 0.013206260278820992,
+    "loss": 0.010503588244318962,
+    "mlp_amount": 1.0,
+    "prox_rho": 0.05,
+    "psnr_vs_ground_truth": 41.54214607615554,
+    "psnr_vs_teacher": 45.37950337004532,
+    "redistribution": 1.0976261364703532e-05,
+    "seconds": 482.46656425,
+    "step": 500,
+    "teacher": 0.005897708237171173
+  },
+  "name": "optimal_mse__none__bonsai_qat8_muon",
+  "return_code": 0,
+  "status": "complete"
+}

@@ -44,6 +44,7 @@ constraint, and defines the safe consolidation gate.
 | BackdropKit Swin2SR browser super-resolution at 1.58 bits | [`swin2sr_super_resolution_1_58bit/`](swin2sr_super_resolution_1_58bit/) | [`browser_swin2sr/`](browser_swin2sr/) |
 | LLM ternary and 1.58-bit research | [`llm_ternary_158bit_dossier/`](llm_ternary_158bit_dossier/) | [`large_scale_ternary/`](large_scale_ternary/), [`qwen_agentworld/`](qwen_agentworld/), shared optimizer modules |
 | Sana image-generation ternary research | [`sana_image_generation_158bit_dossier/`](sana_image_generation_158bit_dossier/) | Historical Sana run roots recorded in its artifact index |
+| OmniVoiceGraph MOSS-style objective benchmark | [`omnivoicegraph_moss_bench/`](omnivoicegraph_moss_bench/) | External audio/reference stores and checkpoint identities documented in the benchmark notes |
 
 The Swin2SR program is the active BackdropKit objective. LLM and Sana work are
 retained as scientific references and must not redirect the BackdropKit
