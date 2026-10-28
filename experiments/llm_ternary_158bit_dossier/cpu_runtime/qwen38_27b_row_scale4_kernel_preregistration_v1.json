@@ -1,0 +1,51 @@
+{
+  "schema": "qwen38_27b_row_scale4_kernel_preregistration_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T13:56:00Z",
+  "objective": "Measure the isolated CPU cost of the exact row-anchor plus 4-bit ratio scale layout on a Qwen3.8-27B MLP projection before integrating it with a compressed direct weight decoder",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "matrix": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "groups_per_row": 40,
+    "group_size": 128,
+    "claim_boundary": "aligned two-bit weight compute image isolates scale-layout overhead; this is not a base-3 direct-decode or end-to-end token benchmark"
+  },
+  "candidate": {
+    "indices": "two 4-bit ratio indices per byte",
+    "row_anchors": "one FP16 factor per output row",
+    "ratio_codebook": "one 16-entry FP16 table per tensor with exact zero at entry zero",
+    "numeric_contract": "FP32 multiplication of the two stored FP16 factors",
+    "kernel": "single-thread AVX2 plus F16C plus FMA aligned-two-bit A8 GEMV with scale reconstruction fused before each row",
+    "seed": 20260817
+  },
+  "control": {
+    "kernel": "same aligned-two-bit AVX2 A8 GEMV with one materialized FP16 scale per group",
+    "difference": "the product of the two candidate FP16 factors is rounded once more to FP16 for the control API",
+    "purpose": "performance control only; candidate-vs-scalar candidate establishes the exact candidate numeric contract"
+  },
+  "measurement": {
+    "warmups": 3,
+    "paired_repetitions": 15,
+    "order": "alternating candidate-control and control-candidate pairs",
+    "scalar_correctness_rows": 128,
+    "standalone_decode_repetitions": 31,
+    "threads": 1,
+    "cpu_affinity": "one frozen physical core supplied by the watcher"
+  },
+  "gate": {
+    "maximum_candidate_avx2_vs_candidate_scalar_absolute_error": 0.00005,
+    "require_exact_scalar_and_avx2_scale_decode": true,
+    "minimum_candidate_throughput_fraction_of_materialized_fp16_control": 0.90,
+    "minimum_candidate_avx2_speedup_over_candidate_scalar_subset": 2.0,
+    "all_samples_must_be_finite_and_positive": true
+  },
+  "promotion_rules": [
+    "run only if the complete 666-tensor row-scale reconstruction and storage gate passes",
+    "a pass authorizes a compressed-code fused kernel experiment but proves neither base-3 direct speed nor model quality",
+    "CUTE, MATH, code, MMLU-type, WikiText, and end-to-end paired throughput remain mandatory for any exported model",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "no scientific breakthrough claim can come from this isolated microkernel"
+  ]
+}

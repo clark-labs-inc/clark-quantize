@@ -1,0 +1,35 @@
+{
+  "schema": "qwen38_27b_row_scale_orchestration_amendment_v2",
+  "frozen_at_utc": "2026-08-17T20:07:10Z",
+  "scope": "orchestration only; no scientific candidate, source scale, reconstruction threshold, storage threshold, or promotion rule changes",
+  "incident": {
+    "mapped_unit": "quant-qwen38-27b-row-normalized-scale-codebook4-watch-v1.service",
+    "full_unit": "quant-qwen38-27b-full-row-normalized-scale-codebook4-watch-v1.service",
+    "observed_at_utc": "2026-08-17T19:24:41Z",
+    "mapped_exit": 3,
+    "mapped_message": "parent Qwen3.8-27B paired watch lacks a terminal receipt",
+    "full_exit": 3,
+    "full_message": "parent Qwen3.8-27B row-scale watch lacks a terminal receipt",
+    "scientific_receipts_created": false,
+    "classification": "infrastructure-invalid; neither zero nor completed scientific work"
+  },
+  "root_cause": "systemctl is-active returns false for an inactive unit that still has a queued start job, so the v1 watchers interpreted queued prerequisites as completed prerequisites",
+  "repair": {
+    "terminal_wait": "wait while the parent is active or has a queued systemd job, then require a nonempty terminal receipt",
+    "mapped_serialization_parent": "quant-qwen38-27b-activation-hash-residual-v1.service",
+    "full_serialization_parent": "quant-qwen38-27b-row-normalized-scale-codebook4-watch-v1.service",
+    "order": [
+      "activation-hash terminal receipt",
+      "mapped 402-tensor row-normalized scale gate",
+      "conditional complete 666-tensor row-normalized scale gate",
+      "layer-0 activation QAT"
+    ],
+    "bundle_identity": "each repaired watcher resolves exactly one immutable branch head from its deployed Git bundle"
+  },
+  "unchanged_science": {
+    "mapped_preregistration": "qwen38_27b_row_normalized_scale_codebook4_preregistration_v1",
+    "full_preregistration": "qwen38_27b_full_row_normalized_scale_codebook4_preregistration_v1",
+    "mapped_result_receipt": "/workspace/quant-state/qwen38-27b-row-normalized-scale-codebook4-v1.json",
+    "full_result_receipt": "/workspace/quant-state/qwen38-27b-full-row-normalized-scale-codebook4-v1.json"
+  }
+}

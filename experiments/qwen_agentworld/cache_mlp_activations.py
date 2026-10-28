@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from collections import defaultdict
@@ -11,14 +12,16 @@ from pathlib import Path
 from typing import Any
 
 import torch
-from transformers import AutoModelForCausalLM
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-LAYER_RE = re.compile(r"^model\.layers\.(\d+)\.mlp$")
+from train_mlp_triplet_survival_qat import load_model
+
+
+LAYER_RE = re.compile(r"^model\.(?:language_model\.)?layers\.(\d+)\.mlp$")
 
 
 def parse_layers(value: str) -> set[int] | None:
@@ -37,6 +40,12 @@ def first_parameter_device(model: torch.nn.Module) -> torch.device:
     return next(model.parameters()).device
 
 
+def atomic_torch_save(payload: Any, path: Path) -> None:
+    temporary = path.with_name(f".{path.name}.tmp")
+    torch.save(payload, temporary)
+    os.replace(temporary, path)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-dir", default="/workspace/models/Qwen3.5-9B", type=Path)
@@ -45,20 +54,23 @@ def main() -> None:
     parser.add_argument("--layers", default="all", help="comma layer ids or all")
     parser.add_argument("--rows-limit", type=int, default=0)
     parser.add_argument("--positions", type=int, default=8)
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
+    parser.add_argument("--torch-threads", type=int, default=0)
     args = parser.parse_args()
+
+    if args.positions <= 0:
+        raise ValueError("positions must be positive")
+    if args.torch_threads < 0:
+        raise ValueError("torch-threads must be non-negative")
+    if args.torch_threads:
+        torch.set_num_threads(args.torch_threads)
 
     wanted_layers = parse_layers(args.layers)
     cache = torch.load(args.cache, map_location="cpu")
     if cache.get("format") != "qwen_agentworld_teacher_behavior_v1":
         raise ValueError(f"unsupported cache format: {cache.get('format')!r}")
 
-    model = AutoModelForCausalLM.from_pretrained(
-        args.model_dir,
-        dtype=torch.bfloat16,
-        device_map="auto",
-        trust_remote_code=True,
-        low_cpu_mem_usage=True,
-    )
+    model = load_model(args.model_dir, device=args.device)
     model.eval()
 
     captured: dict[int, dict[str, list[torch.Tensor]]] = defaultdict(lambda: {"x": [], "y": []})
@@ -120,11 +132,14 @@ def main() -> None:
         "format": "qwen_mlp_activation_cache_v1",
         "model_dir": str(args.model_dir),
         "source_cache": str(args.cache),
+        "source_label_semantics": cache.get("label_semantics"),
+        "runtime_device": str(device),
+        "torch_threads": torch.get_num_threads(),
         "rows": row_meta,
         "layers": layers,
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    torch.save(payload, args.out)
+    atomic_torch_save(payload, args.out)
     print(json.dumps({"out": str(args.out), "rows": len(row_meta), "layers": sorted(layers)}, indent=2))
 
 

@@ -1,0 +1,141 @@
+{
+  "aggregate_non_target_digest": {
+    "baseline": "deef2d996c29a01ac776478048c244d2aafd7944b0cdb71fb30d4a4322e302ae",
+    "candidate": "deef2d996c29a01ac776478048c244d2aafd7944b0cdb71fb30d4a4322e302ae",
+    "control": "deef2d996c29a01ac776478048c244d2aafd7944b0cdb71fb30d4a4322e302ae"
+  },
+  "checks": {
+    "all_non_target_types_sizes_and_payloads_identical": true,
+    "baseline_target_types_valid": true,
+    "candidate_and_control_target_types_valid": true,
+    "candidate_differs_from_control_on_at_least_one_target": true,
+    "exactly_one_or_more_targets": true,
+    "same_logical_shapes": true,
+    "same_tensor_names": true
+  },
+  "created_at": "2026-08-17T06:57:42.085573+00:00",
+  "expected_types": {
+    "baseline_target": 30,
+    "candidate_and_control_target": 43
+  },
+  "models": {
+    "baseline": {
+      "path": "/workspace/models/controls/Qwen3.5-4B-BF16.gguf",
+      "sha256": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974"
+    },
+    "candidate": {
+      "path": "/workspace/models/controls/Qwen3.5-4B-layer30-CPUQAT-v3-CQ3.gguf",
+      "sha256": "e3790341b0946801a881419e37beb02bf784653b336668f4366d28f7717de8e2"
+    },
+    "control": {
+      "path": "/workspace/models/controls/Qwen3.5-4B-layer30-DirectPTQ-CQ3.gguf",
+      "sha256": "3e1ba3a29a38de8ff67f7b508563a74b3ea84cdabfa385f0a0b3a749d75e7a9b"
+    }
+  },
+  "non_target_count": 438,
+  "receipt_content_sha256": "8d43785aa13b5f61c3629d57bd9ae2b42860c05952f0ada397953153a1565a9d",
+  "schema": "gguf_tensor_scope_verification_v1",
+  "target_candidate_control_differences": [
+    "blk.30.ffn_down.weight",
+    "blk.30.ffn_gate.weight",
+    "blk.30.ffn_up.weight"
+  ],
+  "target_count": 3,
+  "target_names": [
+    "blk.30.ffn_down.weight",
+    "blk.30.ffn_gate.weight",
+    "blk.30.ffn_up.weight"
+  ],
+  "target_regex": "blk[.]30[.]ffn_(gate|up|down)[.]weight",
+  "targets": {
+    "blk.30.ffn_down.weight": {
+      "baseline": {
+        "payload_bytes": 47185920,
+        "payload_sha256": "27604001b225c8f98f5a9a093712f6a7b0a60c202066c4208bb6aed3666ea43d",
+        "shape": [
+          9216,
+          2560
+        ],
+        "type": 30
+      },
+      "candidate": {
+        "payload_bytes": 6266880,
+        "payload_sha256": "633247bd6f2e115df5e1e16bf3284cfed222993d940e669b37aa63611b9050e6",
+        "shape": [
+          9216,
+          2560
+        ],
+        "type": 43
+      },
+      "control": {
+        "payload_bytes": 6266880,
+        "payload_sha256": "55d740c1b6ded2684c6e910acd836fb584d78f8befb5d3b8e8e48108ac46e593",
+        "shape": [
+          9216,
+          2560
+        ],
+        "type": 43
+      }
+    },
+    "blk.30.ffn_gate.weight": {
+      "baseline": {
+        "payload_bytes": 47185920,
+        "payload_sha256": "5b56883d12c74bb0ab8fee243d0fbc4d9209f61d377d02fe909c64e5d29ab0a5",
+        "shape": [
+          2560,
+          9216
+        ],
+        "type": 30
+      },
+      "candidate": {
+        "payload_bytes": 6266880,
+        "payload_sha256": "6e31ee9f1214fd0187e7cb63df97b11d12fe426490b03cd330ea1bc880e6a6fc",
+        "shape": [
+          2560,
+          9216
+        ],
+        "type": 43
+      },
+      "control": {
+        "payload_bytes": 6266880,
+        "payload_sha256": "9a5309e167d36cee7170a025a228675aeb068f9bcc8fe7e0096e70d9fd4e9f68",
+        "shape": [
+          2560,
+          9216
+        ],
+        "type": 43
+      }
+    },
+    "blk.30.ffn_up.weight": {
+      "baseline": {
+        "payload_bytes": 47185920,
+        "payload_sha256": "448389750b15e3c015f570ee772ac3eaffc9872a76efd352aefdddfc5a200270",
+        "shape": [
+          2560,
+          9216
+        ],
+        "type": 30
+      },
+      "candidate": {
+        "payload_bytes": 6266880,
+        "payload_sha256": "02a1cd91038d944d50561c863d13f7b00a73ff07ae48443171560ef2a9aa8896",
+        "shape": [
+          2560,
+          9216
+        ],
+        "type": 43
+      },
+      "control": {
+        "payload_bytes": 6266880,
+        "payload_sha256": "5998a91e738a7001263eaafba603a4a8f3865d2bb38e81e36da25676f848d030",
+        "shape": [
+          2560,
+          9216
+        ],
+        "type": 43
+      }
+    }
+  },
+  "tensor_count": 441,
+  "valid": true
+}

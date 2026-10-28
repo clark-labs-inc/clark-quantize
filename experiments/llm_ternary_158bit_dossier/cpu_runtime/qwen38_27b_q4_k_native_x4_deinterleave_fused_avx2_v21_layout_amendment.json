@@ -1,0 +1,22 @@
+{
+  "schema": "qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_layout_amendment_v21",
+  "experiment_id": "qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_v21",
+  "amended_at": "2026-08-18T21:42:47Z",
+  "stage": "pre_performance_property_test",
+  "performance_observations_available": false,
+  "reason": "The first execution of the frozen 1,024-block layout property test rejected the preregistered contiguous-row bsum formula at block 0, row 0, group16 4. Source-level reconstruction of ggml_quantize_mat_q8_K_4x8_generic and the AVX2 bsum stores shows a 4-row by 4-group tiled order within each 64-value quarter.",
+  "failed_preregistered_formula": "src[block].bsums[row * 16 + group16]",
+  "correct_formula": "src[block].bsums[(group16 / 4) * 16 + row * 4 + (group16 % 4)]",
+  "unchanged_contract": [
+    "Q8 code mapping is unchanged: (k / 8) * 32 + row * 8 + (k % 8).",
+    "Per-row float scale mapping is unchanged.",
+    "The source buffer must remain unchanged and the inverse roundtrip must be bit-exact.",
+    "All speed, stability, target-only, MTP3, CUTE, and WikiText thresholds remain frozen.",
+    "No performance or model generation was run before this correction."
+  ],
+  "evidence": {
+    "first_failure": "deinterleaved bsum does not match codes (block=0 row=0 index=4)",
+    "producer_index_expression": "(((j & 31) >> 3) << 2) + ((j >> 8) << 4) + ((j >> 6) & 3)",
+    "derived_group_expression": "(group16 / 4) * 16 + row * 4 + (group16 % 4)"
+  }
+}

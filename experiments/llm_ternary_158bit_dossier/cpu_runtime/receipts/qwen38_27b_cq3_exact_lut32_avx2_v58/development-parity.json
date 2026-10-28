@@ -1,0 +1,39 @@
+{
+  "binary": {
+    "sha256": "93783b326cfaed02a20e5275f952aa14eab8ab4b67db96bca70a8b3320790f3f",
+    "target": "x86_64-macos"
+  },
+  "claim_boundary": "Cross-compiled development parity for one 32x256 synthetic tile under x86-64 translation. This is not the preregistered Milan full-shape timing, native stability, graph throughput, model quality, energy, novelty, or scientific-breakthrough result.",
+  "completed_at": "2026-08-19T15:09:14Z",
+  "compiler": {
+    "command_contract": "zig cc -target x86_64-macos -std=c11 -O3 -DNDEBUG -mavx2 -mfma -mf16c -Wall -Wextra -Werror",
+    "zig_version": "0.16.0"
+  },
+  "host": {
+    "architecture": "arm64",
+    "execution": "x86_64 translation",
+    "macos_build": "25E253",
+    "macos_version": "26.4.1"
+  },
+  "parent_preregistration_commit": "1c353c3",
+  "result": {
+    "avx2_executed": true,
+    "avx2_scalar_bit_exact": true,
+    "columns": 256,
+    "complete": true,
+    "compute_bytes": 2176,
+    "rows": 32,
+    "scalar_direct_bit_exact": true,
+    "schema": "qwen38_cq3_exact_lut_native_v58",
+    "temporary_bytes": 2048,
+    "terminal": true
+  },
+  "schema": "qwen38_27b_cq3_exact_lut32_avx2_development_parity_v58",
+  "sources": {
+    "build_script_sha256": "d9c216952994c025cfddb74368b2c55ad1566236ed1063ceeb60993aa213b604",
+    "harness_sha256": "3380507aa247b85825ab69af017580eb7b4a0ded84127304bf53f491df24c05d",
+    "native_header_sha256": "46f028717bdce7343131c554aed98a9600af55cdbdc05dd7c96a543d19673308",
+    "native_source_sha256": "880386b55ce01c8457c258fa0d1c9b36e1503ca1c6541b0166a2206bf4b6d497"
+  },
+  "terminal": true
+}

@@ -1,0 +1,21 @@
+[Unit]
+Description=Run paired CPU throughput after Qwen3.8-27B activation-QAT quality promotion
+After=network-online.target quant-qwen38-27b-layer0-mlp-activation-qat-watch-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-activation-qat.bundle
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/tmp/watch_qwen38_27b_layer0_mlp_activation_qat_paired_v1.sh
+CPUQuota=400%
+MemoryMax=29G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

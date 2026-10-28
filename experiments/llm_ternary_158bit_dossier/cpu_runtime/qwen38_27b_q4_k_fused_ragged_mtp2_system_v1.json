@@ -1,0 +1,54 @@
+{
+  "schema": "qwen38_27b_q4_k_fused_ragged_mtp2_system_preregistration_v1",
+  "goal_id": "qwen38_27b_amd_100tps_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_fused_ragged_mtp2_system_v1",
+  "frozen_at": "2026-08-18T10:12:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "target_quantization": "Q4_K_M",
+    "official_mtp_draft_quantization": "Q4_0",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true
+  },
+  "shape_correction": {
+    "mtp_draft_width": 2,
+    "target_verification_rows": 3,
+    "reason": "The target evaluates the current token plus two MTP draft tokens. Draft width three produces four rows and routes through the existing GEMM4 kernel, bypassing the fused ragged GEMV."
+  },
+  "hypothesis": "Matching MTP draft width two to the fused three-row Q4_K AVX2 kernel will improve accepted end-to-end throughput over the same MTP2 configuration on the control runtime.",
+  "controls": {
+    "control_runtime": "Pinned llama.cpp plus cache-order ragged dispatch v1",
+    "candidate_runtime": "Same source and dispatch plus fused AVX2 Q4_K decode",
+    "cpu_affinity": "0,2,4,6",
+    "threads": 4,
+    "prompts": 4,
+    "tokens_per_prompt": 96,
+    "generation": "exact greedy, seed 42, ignore EOS"
+  },
+  "promotion_gate": {
+    "paired_mtp2": {
+      "minimum_candidate_over_control_accepted_tps": 1.05,
+      "cross_runtime_target_exact_token_parity": true,
+      "cross_runtime_mtp2_exact_token_parity": true,
+      "internal_parity_pattern_unchanged": true
+    },
+    "ordinary_decode": {
+      "maximum_candidate_target_only_regression_fraction": 0.02
+    },
+    "deployment_winner": {
+      "candidate_mtp2_must_exceed_control_mtp3_accepted_tps": true
+    }
+  },
+  "reuse_policy": "Target-only prompt receipts may be reused only from the already terminal 4 x 96 run of the identical runtime binary and frozen generation configuration; each MTP2 configuration must execute fresh.",
+  "stop_rules": [
+    "Reject on any cross-runtime exact-greedy token mismatch.",
+    "Reject paired MTP2 promotion below five percent end-to-end speedup.",
+    "Do not call MTP2 the serving winner unless it exceeds the measured control MTP3 accepted throughput.",
+    "Preserve infrastructure-invalid attempts without assigning a score."
+  ],
+  "claim_boundary": "A paired pass promotes the three-row kernel for MTP2 on this Milan host. The serving-winner gate is separate, and neither gate is final-node or 100 accepted tok/s evidence."
+}

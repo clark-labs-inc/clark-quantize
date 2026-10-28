@@ -1,0 +1,119 @@
+{
+  "claim_boundary": {
+    "real_weights_or_model_quality_proven": false,
+    "semi_lossless_or_breakthrough_proven": false,
+    "synthetic_full_Qwen_shape_load_time_only": true,
+    "token_throughput_proven": false
+  },
+  "comparison": {
+    "direct_speedup_vs_dense_control": 8.097970942087082,
+    "maximum_rss_saving_bytes": 179355648
+  },
+  "complete": true,
+  "created_at_utc": "2026-08-18T02:01:12Z",
+  "gate": {
+    "minimum_rss_saving_bytes": 67108864,
+    "minimum_speedup": 2.0,
+    "passed": true,
+    "require_exact_output_hashes": true
+  },
+  "host": {
+    "cpu_count": 18,
+    "machine": "arm64",
+    "platform": "macOS-26.4.1-arm64-arm-64bit"
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "repository_commit": "0fe91bd5ac0a29c49f0a8c202de19d64d462bf1c",
+  "schema": "qwen38_27b_gain_hash_layer_transcode_benchmark_v2",
+  "shape": {
+    "also_covers_down_projection": [
+      5120,
+      17408
+    ],
+    "columns": 5120,
+    "dense_INT8_intermediate_bytes": 89128960,
+    "expected_output_sha256": "2f04c86e73e9be0ec3d44e3d2b95cc07a0817db69c9280a006a5b1d11c307b83",
+    "groups": 696320,
+    "input_bytes": 16450560,
+    "output_bytes": 16711680,
+    "parameters": 89128960,
+    "rows": 17408
+  },
+  "sources": {
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_gain_hash_layer_transcode_v2.py",
+      "sha256": "36607057c676e7e43aca293b917d8eaf6a970f1f70022a05f9843ea75bfe4b3c"
+    },
+    "binding": {
+      "path": "clark_quantize/qwen38_gain_hash_layer_transcode.py",
+      "sha256": "83c427179653440cbb3b90439cdf89c0c55e8599eacdd515cedfcd4db06b5ef3"
+    },
+    "fixed_support_control": {
+      "path": "clark_quantize/qwen38_fixed_support_cpu.c",
+      "sha256": "e5ae5c4b63f3b0649955dc8115cc538031880dc3200a130cee4423be984932b2"
+    },
+    "frozen_worker": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_gain_hash_layer_transcode_v1.py",
+      "sha256": "e633b8e619c36ba408783f732777246971aa69e7cf57b16dcbcad5156bfb1caa"
+    },
+    "mask64_control": {
+      "path": "clark_quantize/qwen38_fixed_support_mask64_cpu.c",
+      "sha256": "af12f49bfb975541ff5030ec50ffe6abb7df96a203dbdd9a014e170bfce85644"
+    },
+    "optimized_native_transcode": {
+      "path": "clark_quantize/qwen38_gain_hash_layer_transcode_v2.c",
+      "sha256": "7496613221a063f2a87622d1596d4b90e9347fb7a93404fdf55ab4b02bd2d9bc"
+    },
+    "test": {
+      "path": "clark_quantize/test_qwen38_gain_hash_layer_transcode_v2.py",
+      "sha256": "5f34630bb07a446227df8df944c06cd25f9346967374edc91dc88fd621e7557a"
+    }
+  },
+  "terminal": true,
+  "workers": {
+    "dense": {
+      "columns": 5120,
+      "complete": true,
+      "durations_seconds": [
+        0.49787370799999997,
+        0.4896339580000002,
+        0.49971604199999975,
+        0.4997363749999999,
+        0.4924135829999998
+      ],
+      "input_MiB_per_second": 31.510956112789955,
+      "input_bytes": 16450560,
+      "maximum_rss_bytes": 429637632,
+      "median_seconds": 0.49787370799999997,
+      "mode": "dense",
+      "output_bytes": 16711680,
+      "output_sha256": "2f04c86e73e9be0ec3d44e3d2b95cc07a0817db69c9280a006a5b1d11c307b83",
+      "repeats": 5,
+      "rows": 17408,
+      "schema": "qwen38_27b_gain_hash_layer_transcode_worker_v1",
+      "terminal": true
+    },
+    "direct": {
+      "columns": 5120,
+      "complete": true,
+      "durations_seconds": [
+        0.061481290999999993,
+        0.06312616699999996,
+        0.063884583,
+        0.06135741699999997,
+        0.061456999999999984
+      ],
+      "input_MiB_per_second": 255.17480695875435,
+      "input_bytes": 16450560,
+      "maximum_rss_bytes": 250281984,
+      "median_seconds": 0.061481290999999993,
+      "mode": "direct",
+      "output_bytes": 16711680,
+      "output_sha256": "2f04c86e73e9be0ec3d44e3d2b95cc07a0817db69c9280a006a5b1d11c307b83",
+      "repeats": 5,
+      "rows": 17408,
+      "schema": "qwen38_27b_gain_hash_layer_transcode_worker_v1",
+      "terminal": true
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "qwen38_27b_dspark_q8_amd_cpu_feasibility_terminal_result_v1",
+  "experiment_id": "qwen38_27b_dspark_q8_amd_cpu_feasibility_v1",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "passed": false,
+  "decision": "reject_q8_configuration",
+  "reason": "The exact Qwen3.8-27B DSpark Q8_0 drafter loaded within memory and preserved target tokens, but its additional drafting work was not repaid: it was slower than target-only and missed the committed-length gate.",
+  "checks": {
+    "server_loads_without_oom": true,
+    "no_swap": true,
+    "maximum_vm_hwm_at_most_26_gib": true,
+    "exact_greedy_token_parity_3_of_3": true,
+    "candidate_weighted_tps_at_least_2_4": false,
+    "candidate_over_same_runtime_target_at_least_1_3": false,
+    "candidate_over_exact_dflash2_raw_at_least_1_05": false,
+    "mean_committed_tokens_per_target_call_at_least_3_2": false
+  },
+  "observed": {
+    "target_weighted_tps": 1.888904548696029,
+    "candidate_weighted_tps": 1.579166050596948,
+    "candidate_over_target": 0.8360221545800696,
+    "candidate_prompt_tps": [3.1825588500596504, 1.670132766541525, 1.0134078686777825],
+    "draft_n": 464,
+    "draft_n_accepted": 117,
+    "draft_acceptance_fraction": 0.2521551724137931,
+    "mean_committed_tokens_per_target_call": 2.625,
+    "maximum_vm_hwm_gib": 21.319023132324219,
+    "maximum_vm_swap_kib": 0,
+    "exact_prompt_parity": "3/3"
+  },
+  "provenance": {
+    "source_checkpoint_revision": "85ef153be924f17ce4bf62726954eeaa4a73e854",
+    "gguf_revision": "27b7a55fa4893d0c95abd4ec6e0c6e8b33802e18",
+    "draft_sha256": "b007a76b2ce57c1a3ecf36046543aebf60a763861624647d653f16d336c781d2",
+    "runtime_sha256": "3b95b902c3e1579c77dcc176a30660da88c63ed04041011011d32773cf6095f9",
+    "summary_sha256": "6250adbfff308c483a78d2b4395339cd29e24d4cced361873d6099c86fa01f71",
+    "server_log_sha256": "a337a191029b2a9f7a863435cf09bb0712825a5b8f2e61874486e8abdb5b5239"
+  },
+  "literature_boundary": "DSpark's GPU/SGLang and DeepSeek-V4 serving results are not transferable evidence for this Q8_0 raw-Q4 greedy CPU result.",
+  "next_hypothesis": "Return to official MTP3 and optimize its dominant exact four-row Q4_K verifier.",
+  "claim_boundary": "Three-prompt feasibility result on one four-core Milan node; no general rejection of BF16 DSpark, trained confidence scheduling, or GPU serving."
+}

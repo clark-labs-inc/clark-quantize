@@ -1,0 +1,122 @@
+{
+  "artifact_verification": {
+    "artifact_bytes_saved": 3367239360,
+    "candidate": {
+      "bytes": 15606631072,
+      "path": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-imatrix-Q4_K-v10.gguf"
+    },
+    "candidate_nonselected_payloads_sha256": "24bc0d8af954e0a004e698226e61cc66cb42def2c4a2580eb047b04480241a38",
+    "candidate_type_counts": {
+      "F32": 353,
+      "Q4_K": 481,
+      "Q6_K": 17
+    },
+    "checks": {
+      "artifact_bytes_saved_exact": true,
+      "nonselected_payloads_byte_identical": true,
+      "q8_count_exact": true,
+      "selected_payload_bytes_saved_exact": true,
+      "selected_tensor_count_exact": true,
+      "selected_types_exact": true,
+      "selected_weight_count_exact": true,
+      "target_count_increased_by_selected": true
+    },
+    "claim_boundary": "Container and payload integrity only; no model correctness or quality claim.",
+    "control": {
+      "bytes": 18973870432,
+      "path": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf"
+    },
+    "control_nonselected_payloads_sha256": "24bc0d8af954e0a004e698226e61cc66cb42def2c4a2580eb047b04480241a38",
+    "control_type_counts": {
+      "F32": 353,
+      "Q4_K": 193,
+      "Q6_K": 17,
+      "Q8_0": 288
+    },
+    "expected_selected_payload_bytes_saved": 3367239680,
+    "expected_target_type": "Q4_K",
+    "schema": "qwen38_27b_selective_gguf_verification_v1",
+    "selected_payload_bytes_saved": 3367239680,
+    "selected_tensor_count": 288,
+    "selected_weight_count": 6734479360,
+    "selection_profile": "all_q8_family",
+    "structural_mismatches": [],
+    "terminal": true,
+    "valid": true
+  },
+  "checks": {
+    "artifact_inventory_and_payload_valid": true,
+    "candidate_sha256_exact": true,
+    "candidate_size_exact": true,
+    "free_generation_noncollapsed_and_coarse_coherence": true,
+    "imatrix_sha256_exact": true,
+    "preregistration_and_amendment_match": true,
+    "stock_sha256_exact": true,
+    "v10_retained_rejection_exact": true,
+    "v21_graph_property_backend_and_speed_passed": true,
+    "v21_terminal_rejection_preserved": true,
+    "v22_receipt_hash_exact": true,
+    "v22_same_weights_quality_passed": true
+  },
+  "claim_boundary": "Artifact integrity and noncollapse only; no speed, capability, or breakthrough claim.",
+  "decision": "advance_to_three_arm_graph",
+  "free_generation": {
+    "checks": {
+      "content_length_floor": true,
+      "denominator_is_4x96": true,
+      "distinct_whitespace_token_floor": true,
+      "single_whitespace_token_fraction_below_0_8": true,
+      "unique_token_ids_at_least_32": true,
+      "zero_token_fraction_below_0_01": true
+    },
+    "response_metrics": [
+      {
+        "content_characters": 315,
+        "distinct_whitespace_tokens": 32,
+        "maximum_single_whitespace_token_fraction": 0.0851063829787234,
+        "prompt_index": 0,
+        "token_sha256": "d10b10e02779d1aa446c627431fcbc10ba8aded55a17563e5f970d2beeea2711"
+      },
+      {
+        "content_characters": 235,
+        "distinct_whitespace_tokens": 45,
+        "maximum_single_whitespace_token_fraction": 0.037037037037037035,
+        "prompt_index": 1,
+        "token_sha256": "35ecee7c2862ee78fbdeeee5603af4223ee22122f47e95e7e75cdfb07dc979f9"
+      },
+      {
+        "content_characters": 537,
+        "distinct_whitespace_tokens": 69,
+        "maximum_single_whitespace_token_fraction": 0.0963855421686747,
+        "prompt_index": 2,
+        "token_sha256": "66e42cb17d624350a7503a26fd87ca5c3f86ec633fc79695b5dbeb437f892a43"
+      },
+      {
+        "content_characters": 442,
+        "distinct_whitespace_tokens": 54,
+        "maximum_single_whitespace_token_fraction": 0.07936507936507936,
+        "prompt_index": 3,
+        "token_sha256": "bcda2d6fd0936f71c2c04b86816c9292698e409034b1d62c0be4cb493bdb0622"
+      }
+    ],
+    "summary_sha256": "50b95423a00597a7e2491571ea3bbe186c52f0a01db8b45778ea247fd1a8a5f7",
+    "unique_token_ids": 197,
+    "zero_token_fraction": 0.0
+  },
+  "infrastructure_valid": true,
+  "passed": true,
+  "provenance": {
+    "amendment_sha256": "1743e1ce887d9ba471a0a6681d9382166faecdaa7b02940592e8514670d39544",
+    "candidate_server_sha256": "2c9db28068c8cf92f92fa631e1667e5d1cb39c83e21ae3245bb655d69ec358fc",
+    "preregistration_sha256": "2957f4315c757b6d16036dce33eabab7a585809d83da9bf2fb14114fb55920a0",
+    "quantizer_sha256": "30c8e7234e1e3486077f238901df5f83accd49248e928b80586f93e84bb87b7d",
+    "v10_receipt_sha256": "e2b38e054e46df7ec4a99ef76d065d1a58ac113536eba4fa59c2deb54196185c",
+    "v21_graph_receipt_sha256": "fbe5721c40cb2b5752ff75fd89abefca540475b05f05d12b6eae285a16038795",
+    "v21_system_receipt_sha256": "ad73826a56cd903589c88277e8759f92623286d5428f9ad10d004f4be71779a5",
+    "v22_quality_receipt_sha256": "be8b4e77f5c516bb24c695f90207511e754a724784caa12d9005b79818bb1474",
+    "verification_sha256": "c1a3710db9cd3f4bc49661c74f03737ae330b557ec50debac88748feebe1e0a9"
+  },
+  "schema": "qwen38_27b_imatrix_q4_k_native_x4_artifact_result_v23",
+  "stage": "prerequisites_artifact_backend_and_free_generation",
+  "terminal": false
+}

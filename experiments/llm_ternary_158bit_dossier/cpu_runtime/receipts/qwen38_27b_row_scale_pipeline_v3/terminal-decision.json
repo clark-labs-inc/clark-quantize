@@ -1,0 +1,83 @@
+{
+  "schema": "qwen38_27b_row_scale_pipeline_terminal_decision_v1",
+  "created_at_utc": "2026-08-18T06:04:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "source_commit": "9d004a08fe94fcb2c4c8d4db873827e025ecd54f",
+  "service_terminal_observation": {
+    "unit": "quant-qwen38-27b-row-scale-pipeline-v3.service",
+    "active_state": "inactive",
+    "sub_state": "dead",
+    "result": "success",
+    "exec_main_status": 0
+  },
+  "scope": {
+    "text_graph_tensors": 851,
+    "text_graph_parameters": 26895998464,
+    "mapped_rank_ge_2_tensors": 402,
+    "mapped_parameters": 26869760000,
+    "mapped_scales": 209920000,
+    "supplemental_rank_ge_2_tensors": 144,
+    "supplemental_parameters": 25559040,
+    "retained_exact_tensors": 305,
+    "scope_receipt_valid": true
+  },
+  "receipts": {
+    "text_scope": {
+      "path": "results/text-scope.json",
+      "bytes": 4372,
+      "sha256": "9f2d9ce2bfd7da1b53dc54a7e19ce06ec4422e93c21a415c2723876c2a4beca9"
+    },
+    "mapped": {
+      "path": "results/mapped.json",
+      "bytes": 601627,
+      "sha256": "f054b2112b9c92fa9c2213fbd30d9048db305870c25077c857b7c062d3de40b8"
+    },
+    "full_skip": {
+      "path": "results/full-skip.json",
+      "bytes": 530,
+      "sha256": "7887da3ad9a0a43760827504f38396c1ec43df8cb8518fa9f48c1fce80586f88"
+    },
+    "pipeline": {
+      "path": "pipeline/receipt.json",
+      "bytes": 3328,
+      "sha256": "3db617080c7d6693d6931db36db618ca5e26b47d870156b7e1da616ed5630b6f"
+    }
+  },
+  "mapped_gate": {
+    "complete_tensors": 402,
+    "complete_scales": 209920000,
+    "combined_bytes": 113764928,
+    "maximum_combined_bytes": 125000000,
+    "observed_global_normalized_rmse": 0.058262637459374274,
+    "maximum_global_normalized_rmse": 0.02,
+    "observed_maximum_tensor_normalized_rmse": 0.1691715389875107,
+    "maximum_tensor_normalized_rmse": 0.05,
+    "observed_maximum_tensor_p99_relative_error": 0.1405607712957126,
+    "maximum_tensor_p99_relative_error": 0.1,
+    "tensors_over_normalized_rmse_limit": 190,
+    "tensors_over_p99_relative_error_limit": 6,
+    "storage_subgate_passed": true,
+    "reconstruction_subgate_passed": false,
+    "passed": false
+  },
+  "worst_tensor": {
+    "name": "model.language_model.layers.59.self_attn.v_proj.weight",
+    "normalized_rmse": 0.1691715389875107,
+    "p99_relative_error": 0.11998000641483667
+  },
+  "supplemental_gate": {
+    "launched": false,
+    "terminal_skip_receipt": true,
+    "reason": "The frozen 402-tensor mapped parent reconstruction gate rejected; fitting the remaining 144 tensors could not make the parent pass and was forbidden by the preregistered sequence"
+  },
+  "decision": {
+    "valid_terminal_nonpromotion": true,
+    "row_normalized_scale_codebook4": "rejected",
+    "complete_851_tensor_artifact_claimed": false,
+    "reason": "The payload met its mapped byte ceiling but failed all reconstruction-level promotion logic by wide margins",
+    "retuning_authorized": false,
+    "impact_on_affine_butterfly": "The same four-bit row-normalized alpha and mu storage must be included in held-out complete-block evaluation; uncompressed affine parameters cannot promote"
+  },
+  "claim_boundary": "Valid 402-tensor parent rejection and authenticated 851-tensor scope only; the 144 supplemental fit did not run, no complete artifact was exported, and no model-quality or runtime result is claimed"
+}

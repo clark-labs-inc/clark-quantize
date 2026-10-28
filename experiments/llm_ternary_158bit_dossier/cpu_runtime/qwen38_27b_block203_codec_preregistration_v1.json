@@ -1,0 +1,53 @@
+{
+  "schema": "clark_qwen38_27b_block203_codec_preregistration_v1",
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "ternary_parameters": 27780313088
+  },
+  "parent": {
+    "artifact_schema": "clark_chunked_base3_v1",
+    "pack_receipt": "/workspace/quant-state/qwen38-base3-full.json",
+    "artifact": "/workspace/quant-runs/qwen38-base3-full/artifacts/qwen38-optimal.cq3q"
+  },
+  "sample": {
+    "tensor": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "group_trits": 128,
+    "group_bits": 203,
+    "reference_row_indices": [0, 1, 127, 1024, 17407]
+  },
+  "performance": {
+    "warmups": 2,
+    "repetitions": 7,
+    "threads": 1,
+    "cache_eviction_bytes": 268435456,
+    "timed_scope": "Python public API including validation, allocation, and native C codec"
+  },
+  "correctness": {
+    "require_full_tensor_exact_roundtrip": true,
+    "require_all_pack_payload_hashes_identical": true,
+    "require_all_unpack_output_hashes_identical": true,
+    "require_selected_rows_byte_identical_to_python_reference": true,
+    "require_noncanonical_rejection_in_focused_tests": true
+  },
+  "promotion": {
+    "maximum_projected_whole_model_pack_seconds": 600.0,
+    "maximum_projected_whole_model_unpack_seconds": 600.0,
+    "maximum_payload_bits_per_ternary_parameter": 1.5859375,
+    "interpretation": "Offline storage-codec gate only; it is not an inference-throughput or capability gate."
+  },
+  "claim_boundary": {
+    "allows": [
+      "exact native base-3 storage codec on a real Qwen3.8-27B tensor",
+      "single-core offline whole-model pack and unpack time projection"
+    ],
+    "forbids": [
+      "inference speedup",
+      "quality preservation",
+      "deployable whole-model artifact",
+      "scientific breakthrough"
+    ]
+  }
+}

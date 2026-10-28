@@ -1,0 +1,61 @@
+{
+  "claim_boundary": "This development smoke can establish only that the exact v49 llama.cpp binary loads the actual Qwen3.8-27B Q4 graph with one authenticated direct-v43 AFF3 projection and completes bounded free generation. It is not trained-v44, quality, throughput, memory, energy, novelty, or scientific-breakthrough evidence.",
+  "complete": true,
+  "execution": {
+    "actual_qwen_model_graph_execution_passed": false,
+    "batch": 128,
+    "bounded_free_generation_nonempty": false,
+    "context": 128,
+    "exit_code": 1,
+    "greedy": true,
+    "ignore_eos": true,
+    "no_warmup": true,
+    "performance_timing_ran": false,
+    "physical_cpu_list": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "requested_generated_tokens": 8,
+    "seed": 20260819,
+    "threads": 4,
+    "ubatch": 64
+  },
+  "inputs": {
+    "active_aff3_layers": [
+      0
+    ],
+    "direct_v43_layer0_aff3_sha256": "a4cec7372ac21a0093d047c1452277508583ebca1e3f4f66c73a8a74142ccf48",
+    "llama_cli_sha256": "1bd2b6d3d5f0b1b988508bb6682cd9af896b40da46422200a47b887a7c4ae600",
+    "prompt_sha256": "6a99a6c8bea78dbf96e4c9c7b64f1f7cf2535177b9a659523765bcd482a870fc",
+    "q4_control_gguf_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "runtime_library_sha256": {
+      "libggml-base.so": "024be97cceb2ad5a2fad3df57920cb4059d84230ae68044473fe434381a4f665",
+      "libggml-cpu.so": "4536aef1e89f0bfb31b533e2357d05f42e809cd3361ad30312c23260052a9178",
+      "libggml.so": "f7389605444d6bbbfa0c382eff64096116b8bd8105ebef79d596a1bd2c1c2a4a",
+      "libllama-cli-impl.so": "967255be4a091ba2f99ece091df90c11569f8215ff227cde706fe3a7fcf6e13f",
+      "libllama-common.so": "6df3874f00e21e38e0dd4bd0af5774a011dd073565b9422ea287f651b27d3396",
+      "libllama-server-impl.so": "732d0a61bd6c6d3fc5b6ae7adabb9e102709d57fb9015d6554c7c3f278d4cef5",
+      "libllama.so": "dc4860ba93c9e2df68e001aa7dba159b062edc7297555b80ad67651e978bd83f",
+      "libmtmd.so": "a14b1eba2029e3d50bfa89edd2ec8a1e45387c45539d71619987709f0c0ce64c"
+    }
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "passed": false,
+  "preregistration_sha256": "85dce05fb4306d4fd4974c64df7b478f1b949ced81cb3af0ab201e8d147cacfe",
+  "repository_commit": "9f3d0ff4cf899e337a9384c54963c6af357dce39",
+  "schema": "qwen38_27b_aff3_llamacpp_model_smoke_v49",
+  "stderr": {
+    "bytes": 0,
+    "path": "/workspace/quant-state/qwen38-aff3-llamacpp-model-smoke-v49/generation.stderr",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdout": {
+    "bytes": 0,
+    "path": "/workspace/quant-state/qwen38-aff3-llamacpp-model-smoke-v49/generation.stdout",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "terminal": true
+}

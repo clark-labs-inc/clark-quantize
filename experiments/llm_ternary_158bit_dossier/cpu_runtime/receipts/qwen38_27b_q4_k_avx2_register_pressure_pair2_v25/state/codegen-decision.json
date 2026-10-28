@@ -1,0 +1,41 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_register_pressure_pair2_codegen_result_v25",
+  "experiment_id": "qwen38_27b_q4_k_avx2_register_pressure_pair2_v25",
+  "infrastructure_valid": true,
+  "candidate_kernel_compiled": true,
+  "full_build_completed": false,
+  "full_build_stopped_after_terminal_gate": true,
+  "parent": {
+    "symbol": "ggml_gemv_q4_K_8x8_q8_K",
+    "symbol_bytes": 2756,
+    "stack_frame_bytes": 1472,
+    "lines_referencing_rsp": 154,
+    "vector_stack_moves": 63
+  },
+  "candidate": {
+    "symbol": "ggml_gemv_q4_K_8x8_q8_K_pair2_tile(int, float*, unsigned long, void const*, void const*)",
+    "symbol_bytes": 2430,
+    "stack_frame_bytes": 1024,
+    "lines_referencing_rsp": 94,
+    "vector_stack_moves": 67
+  },
+  "frozen_limits": {
+    "maximum_stack_frame_bytes": 768,
+    "maximum_vector_stack_moves": 24
+  },
+  "checks": {
+    "stack_frame_at_most_768": false,
+    "vector_stack_moves_at_most_24": false
+  },
+  "passed": false,
+  "decision": "reject_codegen_gate",
+  "interpretation": "Two-row specialization reduced total frame size and rsp references, but did not remove the decoded-weight live-range spills; vector stack moves increased from 63 to 67.",
+  "downstream": {
+    "property_backend": false,
+    "microbenchmark": false,
+    "real_model_graph": false,
+    "serving": false,
+    "quality": false
+  },
+  "claim_boundary": "Static AVX2 code-generation rejection only; no timing or quality conclusion."
+}

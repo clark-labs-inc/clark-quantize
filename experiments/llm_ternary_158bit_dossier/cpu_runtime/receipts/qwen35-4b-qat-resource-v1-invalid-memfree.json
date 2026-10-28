@@ -1,0 +1,101 @@
+{
+  "accounting": {
+    "checkpoint_retention_peak_bytes": 81481656832,
+    "components": {
+      "bf16_hard_forward_cache": 7130316800,
+      "bf16_muon_momentum": 7130316800,
+      "bf16_teacher": 9319730176,
+      "fp32_gradients": 14260633600,
+      "fp32_masters": 14260633600,
+      "trainable_norm_state": 1388544
+    },
+    "excluded_from_lower_bound": [
+      "activations",
+      "autograd saved tensors",
+      "allocator fragmentation",
+      "temporary model-surgery overlap",
+      "kernel workspaces",
+      "Python and framework overhead"
+    ],
+    "full_teacher_persistent_lower_bound_bytes": 54292440576,
+    "full_teacher_required_with_headroom_bytes": 59721684633,
+    "one_checkpoint_estimated_tensor_bytes": 23581412864,
+    "retained_source_bytes": 2189421056,
+    "source_model_bytes": 9319737856,
+    "teacher_cache_persistent_lower_bound_bytes": 44972710400,
+    "teacher_cache_required_with_headroom_bytes": 49469981440,
+    "ternary_master_parameters": 3565158400,
+    "total_parameters": 4659865088,
+    "trainable_norm_parameters": 173568
+  },
+  "checks": {
+    "checkpoint_disk": true,
+    "full_teacher_memory": false,
+    "model_hashes_complete": true,
+    "teacher_cache_memory": false
+  },
+  "created_at_unix": 1786935675.0974867,
+  "host": {
+    "available_memory_bytes": 10663596032,
+    "hostname": "ubuntu-32gb-hel1-1",
+    "logical_cpus": 8,
+    "platform": "Linux-7.0.0-29-generic-x86_64-with-glibc2.43",
+    "receipt_filesystem_free_bytes": 141612044288
+  },
+  "model": {
+    "config_sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670",
+    "directory": "/workspace/models/Qwen3.5-4B",
+    "files": [
+      {
+        "bytes": 5329398688,
+        "path": "model.safetensors-00001-of-00002.safetensors",
+        "sha256": "26a93f066e1916adb13453dae5a0c707c0fbc71299ed98779571a907b8e74c61"
+      },
+      {
+        "bytes": 3990429408,
+        "path": "model.safetensors-00002-of-00002.safetensors",
+        "sha256": "cb544bd9bfae93dc59b0f22b292f5933573854a7f9b97835c67060d7d910e188"
+      }
+    ],
+    "index_sha256": "cf3f798ee02ba45f9622aa8892a47369ab667d0afbf154ee7c2212de42e6302d",
+    "tensor_count": 738
+  },
+  "preregistration": {
+    "path": "/workspace/clark-quantize/experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen35_4b_qat_resource_preregistration_v1.json",
+    "rules": {
+      "admission": {
+        "failure_is_not_a_training_result": true,
+        "require_checkpoint_retention_peak_to_fit_available_disk": true,
+        "require_complete_model_file_sha256": true,
+        "require_full_teacher_recipe_lower_bound_to_fit_available_memory": true,
+        "require_teacher_cache_recipe_lower_bound_to_fit_available_memory": true
+      },
+      "checkpoint_accounting": {
+        "complete_checkpoints": 2,
+        "maximum_hidden_in_progress_saves": 1,
+        "reserve_bytes": 10737418240
+      },
+      "memory_accounting": {
+        "gradient_bytes_per_parameter": 4,
+        "hard_forward_cache_bytes_per_parameter": 2,
+        "interpretation": "persistent lower bound only; activations, allocator workspace, framework overhead, and transient model surgery require additional memory",
+        "minimum_headroom_fraction": 0.1,
+        "muon_momentum_bytes_per_parameter": 2,
+        "teacher_bytes_per_parameter": 2,
+        "ternary_master_bytes_per_parameter": 4
+      },
+      "model": "Qwen/Qwen3.5-4B",
+      "recipe": "NORMCOMP_fullKL_anchorDecay",
+      "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "schema": "clark_qwen35_4b_qat_resource_preregistration_v1"
+    },
+    "sha256": "ccdc43339f212d225939d1489f9f3e6a7411614c519e88a96861b0ea1947375c"
+  },
+  "promotion": {
+    "decision": "reject_host_before_model_load",
+    "passed": false,
+    "scope": "resource admission only; no training or model-quality claim"
+  },
+  "report_content_sha256": "ddd00d5d1e4f75497b78569ae5100da874356522d4975044132f386432f770f2",
+  "schema": "clark_qwen35_4b_qat_resource_gate_v1"
+}

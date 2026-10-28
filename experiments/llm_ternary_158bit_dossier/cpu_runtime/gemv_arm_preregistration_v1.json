@@ -1,0 +1,53 @@
+{
+  "schema": "clark_ternary_cpu_gemv_arm_preregistration_v1",
+  "status": "frozen_before_authoritative_real-matrix_run",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "fixture": {
+    "schema": "clark_qwen_ternary_tensor_fixture_v1",
+    "file_sha256": "681b501509a986f5f8bda2982d68f34397ef42e532b08a98b452fa9b0f8056e2",
+    "receipt_file_sha256": "2139ad567f571872b3f5d022dec8b029563e88a056875358fbc7e2efe810b8a2",
+    "codes_sha256": "d660e496eda4884dbca3d2479f0c1dd2124b9af79b8c787c8796b413f53b41ac",
+    "scales_sha256": "55fdcd7f4aa4b33d8fd5f1fd421ba440bc63cadb2be71a539d15f37013f731d1"
+  },
+  "tensor": {
+    "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "group_size": 128
+  },
+  "activation": {
+    "dtype": "float32_to_group128_int8",
+    "seed": 20260817,
+    "rounding": "C lrintf under default round-to-nearest mode",
+    "clip": [-127, 127]
+  },
+  "kernel": {
+    "implementation": "arm_dotprod",
+    "weight_layout": "group128-transposed aligned 2-bit",
+    "activation_isa": "AArch64 NEON signed dot product",
+    "accumulation": "four FP32 SIMD lanes with FMA across groups followed by one fixed pairwise reduction per output row"
+  },
+  "correctness": {
+    "rows": 256,
+    "maximum_absolute_error": 0.00005,
+    "require_exact_thread_determinism": true,
+    "require_exact_pack_roundtrip": true
+  },
+  "performance": {
+    "warmups": 3,
+    "repetitions": 11,
+    "threads": [1, 2, 4, 8],
+    "thread_placement": "persistent_workers_macos_scheduler_no_affinity_api",
+    "scalar_comparison_rows": 1024,
+    "cache_eviction_bytes": 536870912
+  },
+  "promotion": {
+    "minimum_arm_speedup_over_scalar": 20.0,
+    "minimum_four_thread_fraction_of_stream_read_bandwidth": 0.6,
+    "minimum_four_thread_effective_weight_gbytes_per_second": 50.0,
+    "minimum_eight_thread_effective_weight_gbytes_per_second": 55.0,
+    "maximum_compute_image_bits_per_weight_including_fp16_scales": 2.125,
+    "does_not_satisfy_full_graph_or_70_percent_k2_exit_gate": true,
+    "does_not_authorize_breakthrough_claim": true
+  }
+}

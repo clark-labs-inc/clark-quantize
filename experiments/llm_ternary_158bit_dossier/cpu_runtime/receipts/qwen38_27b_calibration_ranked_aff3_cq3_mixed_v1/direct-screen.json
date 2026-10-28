@@ -1,0 +1,239 @@
+{
+  "amendment_sha256": "ff330cdef2222bfa0e319dc95651c180a88a13c49335046143072838b5bf6139",
+  "claim_boundary": "terminal three-block step-zero mixed calibration screen only; no training, fresh-confirmation score, complete-model artifact, capability result, CPU runtime result, or breakthrough",
+  "complete": true,
+  "elapsed_seconds": 35.81352481202339,
+  "gate": {
+    "all_layers_below_maximum": true,
+    "all_layers_terminal": true,
+    "all_values_finite": true,
+    "calibration_rows_per_layer": 64,
+    "maximum_direct_mixed_calibration_complete_block_nmse_per_layer": 0.12,
+    "passed": true
+  },
+  "layers": [
+    {
+      "amendment_sha256": "ff330cdef2222bfa0e319dc95651c180a88a13c49335046143072838b5bf6139",
+      "attention_output_mode": "authenticated parent AFF3 PTQ payload",
+      "calibration_rows": 64,
+      "complete": true,
+      "cq3_payloads": [
+        {
+          "gguf_tensor": "blk.0.ffn_gate.weight",
+          "payload": {
+            "bytes": 23674880,
+            "complete": true,
+            "group_size": 128,
+            "row_shard": 128,
+            "sha256": "4a8addd0ced2d05c08bab2e6f72bfed06f5c09ac5dc8fc8cc7dd7e61eec89d0e",
+            "shape": [
+              17408,
+              5120
+            ],
+            "terminal": true
+          },
+          "source_sha256": "33f8e7677f361290d5f6a415c00cb56149a8fdbea20122bc13f0e1004b469565",
+          "state_tensor": "mlp.gate_proj.weight"
+        },
+        {
+          "gguf_tensor": "blk.0.ffn_up.weight",
+          "payload": {
+            "bytes": 23674880,
+            "complete": true,
+            "group_size": 128,
+            "row_shard": 128,
+            "sha256": "b14b11f9dacdcc6c6a4675542827e4b162ac9ef27648914517ccae4b66ee2af3",
+            "shape": [
+              17408,
+              5120
+            ],
+            "terminal": true
+          },
+          "source_sha256": "4f923e4b0b2d8b428c156f758dd67e94ee4bb0fbde8e823ac2c4d168753ec5f5",
+          "state_tensor": "mlp.up_proj.weight"
+        },
+        {
+          "gguf_tensor": "blk.0.ffn_down.weight",
+          "payload": {
+            "bytes": 23674880,
+            "complete": true,
+            "group_size": 128,
+            "row_shard": 128,
+            "sha256": "727f4aa24471d33b5bc49d34d040abde10d4a0478bba1e537d611b3b7bbd8e4a",
+            "shape": [
+              5120,
+              17408
+            ],
+            "terminal": true
+          },
+          "source_sha256": "dec9dc95995a34a6478bfcb8e080059bf311dcde959030eb8a55fa77603e4783",
+          "state_tensor": "mlp.down_proj.weight"
+        }
+      ],
+      "direct_mixed_calibration_complete_block_nmse": 0.008026277310677076,
+      "elapsed_seconds": 12.631046024005627,
+      "layer": 0,
+      "maximum_allowed_nmse": 0.12,
+      "model": "Qwen/Qwen3.8-27B",
+      "passed": true,
+      "preregistration_sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c",
+      "repository_commit": "cad340b35b0a1b182173aa0afd30b9e25541fe48",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_calibration_ranked_mixed_direct_layer_v1",
+      "terminal": true,
+      "training_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "type": "linear_attention"
+    },
+    {
+      "amendment_sha256": "ff330cdef2222bfa0e319dc95651c180a88a13c49335046143072838b5bf6139",
+      "attention_output_mode": "authenticated parent AFF3 PTQ payload",
+      "calibration_rows": 64,
+      "complete": true,
+      "cq3_payloads": [
+        {
+          "gguf_tensor": "blk.32.ffn_gate.weight",
+          "payload": {
+            "bytes": 23674880,
+            "complete": true,
+            "group_size": 128,
+            "row_shard": 128,
+            "sha256": "f6d8e3225a3a6c971e9309c316df15b192795d43bfad97d660d3ad3bb78c685d",
+            "shape": [
+              17408,
+              5120
+            ],
+            "terminal": true
+          },
+          "source_sha256": "97ea522efda8dc54d43c58e9a10781aafac4878da2ed4cbf22a9c04dda94904e",
+          "state_tensor": "mlp.gate_proj.weight"
+        },
+        {
+          "gguf_tensor": "blk.32.ffn_up.weight",
+          "payload": {
+            "bytes": 23674880,
+            "complete": true,
+            "group_size": 128,
+            "row_shard": 128,
+            "sha256": "508ed97352e8a76c58f730748292fb49345ba7c2049684343f104563f1523f53",
+            "shape": [
+              17408,
+              5120
+            ],
+            "terminal": true
+          },
+          "source_sha256": "9288a221e84f3ea4e7b7521317cc0627f41e968e343bccdccf349a55c4b96640",
+          "state_tensor": "mlp.up_proj.weight"
+        },
+        {
+          "gguf_tensor": "blk.32.ffn_down.weight",
+          "payload": {
+            "bytes": 23674880,
+            "complete": true,
+            "group_size": 128,
+            "row_shard": 128,
+            "sha256": "fd8f357ae5cc8c58fa17266c716ea7c93ca8e29492b0374137cb1d6fda50f1c4",
+            "shape": [
+              5120,
+              17408
+            ],
+            "terminal": true
+          },
+          "source_sha256": "f9e477a863dbd74dc86b614efdca597186cf7387af15a525f81a3db78a364d1e",
+          "state_tensor": "mlp.down_proj.weight"
+        }
+      ],
+      "direct_mixed_calibration_complete_block_nmse": 0.007745945129903145,
+      "elapsed_seconds": 11.530599648976931,
+      "layer": 32,
+      "maximum_allowed_nmse": 0.12,
+      "model": "Qwen/Qwen3.8-27B",
+      "passed": true,
+      "preregistration_sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c",
+      "repository_commit": "cad340b35b0a1b182173aa0afd30b9e25541fe48",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_calibration_ranked_mixed_direct_layer_v1",
+      "terminal": true,
+      "training_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "type": "linear_attention"
+    },
+    {
+      "amendment_sha256": "ff330cdef2222bfa0e319dc95651c180a88a13c49335046143072838b5bf6139",
+      "attention_output_mode": "authenticated parent AFF3 PTQ payload",
+      "calibration_rows": 64,
+      "complete": true,
+      "cq3_payloads": [
+        {
+          "gguf_tensor": "blk.63.ffn_gate.weight",
+          "payload": {
+            "bytes": 23674880,
+            "complete": true,
+            "group_size": 128,
+            "row_shard": 128,
+            "sha256": "3fe469b844d7ea309454ef8242ef648984d03fb307448f185ab4006adecb2249",
+            "shape": [
+              17408,
+              5120
+            ],
+            "terminal": true
+          },
+          "source_sha256": "a842d895d8f6389dc2502abaac7c427227d6ad2e7b3aac08a6d79c925c43cca1",
+          "state_tensor": "mlp.gate_proj.weight"
+        },
+        {
+          "gguf_tensor": "blk.63.ffn_up.weight",
+          "payload": {
+            "bytes": 23674880,
+            "complete": true,
+            "group_size": 128,
+            "row_shard": 128,
+            "sha256": "8b8d2def2da6abbd90c4e342fb8a80a28dc2f3cd3ae1b09a8c8f45729ee50e89",
+            "shape": [
+              17408,
+              5120
+            ],
+            "terminal": true
+          },
+          "source_sha256": "c197a391cc07c401cfcd696a74b4545dff40ec8167786ee6b7ec51b709805581",
+          "state_tensor": "mlp.up_proj.weight"
+        },
+        {
+          "gguf_tensor": "blk.63.ffn_down.weight",
+          "payload": {
+            "bytes": 23674880,
+            "complete": true,
+            "group_size": 128,
+            "row_shard": 128,
+            "sha256": "f47767aba00ddeecf64d4cb8825b95ac04481c0ccfbb5d6df684317ea537e2bc",
+            "shape": [
+              5120,
+              17408
+            ],
+            "terminal": true
+          },
+          "source_sha256": "ac1eb35a8380925e1f4d6dd91f534a0df58f2158eac4b189407e9f460f52cffd",
+          "state_tensor": "mlp.down_proj.weight"
+        }
+      ],
+      "direct_mixed_calibration_complete_block_nmse": 0.11622622538543384,
+      "elapsed_seconds": 11.206808832997922,
+      "layer": 63,
+      "maximum_allowed_nmse": 0.12,
+      "model": "Qwen/Qwen3.8-27B",
+      "passed": true,
+      "preregistration_sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c",
+      "repository_commit": "cad340b35b0a1b182173aa0afd30b9e25541fe48",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_calibration_ranked_mixed_direct_layer_v1",
+      "terminal": true,
+      "training_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "type": "full_attention"
+    }
+  ],
+  "model": "Qwen/Qwen3.8-27B",
+  "preregistration_sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c",
+  "repository_commit": "cad340b35b0a1b182173aa0afd30b9e25541fe48",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_calibration_ranked_mixed_direct_screen_v1",
+  "terminal": true,
+  "training_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19"
+}

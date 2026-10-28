@@ -1,0 +1,82 @@
+{
+  "schema": "qwen_cpu_qat_candidate_decision_v1",
+  "created_at": "2026-08-17T08:17:33.463280+00:00",
+  "status": "completed",
+  "pass": true,
+  "decision": "replicated_one_layer_gate_pass_no_depth_authorization",
+  "claim_boundary": "one-layer Qwen3.5-4B replication; not a whole-model result and not a breakthrough",
+  "depth_expansion_authorized": false,
+  "next_authorized_experiment": "distinct frozen capability replication such as a subject-balanced MMLU slice",
+  "candidate_model_sha256": "d6cbc5bf0e9804e49d26bd40ddb9972db40237fdb4f534545419eea56da02ebb",
+  "candidate_patch_sha256": "793cfc84332a6749a07cae2cb72ef16e4bc2b6e50577755b362cb2074f25182e",
+  "thresholds": {
+    "minimum_sealed_reconstruction_improvement_percent": 10.0,
+    "minimum_cute_correct": [
+      7,
+      20
+    ],
+    "minimum_math500_correct": [
+      5,
+      8
+    ],
+    "minimum_code_trace_correct": [
+      4,
+      6
+    ],
+    "maximum_wikitext_ppl": 8.6975
+  },
+  "observed": {
+    "sealed_test_positions": 231,
+    "sealed_reconstruction_improvement_percent": 27.567920536307966,
+    "cute_quick_correct": [
+      7,
+      20
+    ],
+    "math500_correct": [
+      5,
+      8
+    ],
+    "code_trace_correct": [
+      4,
+      6
+    ],
+    "wikitext_ppl": 8.6729,
+    "wikitext_uncertainty": 0.73876,
+    "gguf_target_tensors": 3,
+    "byte_identical_non_target_tensors": 438
+  },
+  "gates": {
+    "exact_ternary_patch": true,
+    "sealed_test_nonempty": true,
+    "sealed_reconstruction_improvement": true,
+    "gguf_scope": true,
+    "cute_quick": true,
+    "math500": true,
+    "code_trace": true,
+    "wikitext": true
+  },
+  "inputs": {
+    "reconstruction": {
+      "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/reconstruction-eval.json",
+      "sha256": "df1ae22b3d4ef0bcb58a6f53cea0b2fa0fd9da93f364fcab180a5ec949ebe1b0"
+    },
+    "scope": {
+      "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/gguf-tensor-scope.json",
+      "sha256": "bdc96e4e8e31bece3688a5ee8646cbaecf5cf973e4c77446366748f91d33b74c"
+    },
+    "cute": {
+      "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/eval/cute-qat-v4-l30.json",
+      "sha256": "22ff3f7779721877820387870b1a7527d4244944cefc2418a53302509c13da20"
+    },
+    "math_code": {
+      "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/eval/math-code-qat-v4-l30.json",
+      "sha256": "fbdb66e120726845d7d0729d21ae2be44f7a1825afee0c177e4b07cdef6a1cb7"
+    },
+    "ppl": {
+      "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/eval/ppl-qat-v4-l30.json",
+      "sha256": "cb09390f83d2ed7e479d55f395244e88321c31cf58f7a0d0a9880131e27e582d"
+    }
+  },
+  "evaluator_sha256": "69e479770d8446cba2ff9d9beef3c0d665c8f883a398e720a91f7bd7c85b0876",
+  "report_content_sha256": "85357d256c093d3d3a2bc09882b7f03971c9f92eae38e201ec3a6ec05445454c"
+}

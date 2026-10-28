@@ -1,0 +1,41 @@
+{
+  "schema": "qwen38_27b_dflash2_greedy_mismatch_diagnostic_preregistration_v1",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_speculative_program_v1",
+  "experiment_id": "qwen38_27b_dflash2_greedy_mismatch_diagnostic_v1",
+  "run_id": "qwen38_27b_dflash2_mismatch_20260819T023100Z",
+  "parent_run_id": "qwen38_27b_dflash2_smoke_20260819T022320Z",
+  "frozen_at": "2026-08-19T02:31:00Z",
+  "observed_trigger": {
+    "prompt_class": "technical_prose",
+    "first_zero_based_token_mismatch": 35,
+    "target_token": 33633,
+    "dflash2_token": 6937,
+    "parent_exact_parity_prompts": 2,
+    "parent_total_prompts": 3
+  },
+  "hypothesis": "The DFlash2 mismatch is caused by the target Q4_K_M batch-8 verification path using a different kernel or floating-point accumulation order than autoregressive batch-1 decode, not by an unverified draft token. If true, the target-only and DFlash2 top candidates at the divergence will be close and stable within each path, making an exact n=8 Q4_K kernel a correctness requirement as well as a speed target.",
+  "protocol": {
+    "target": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "draft": "/workspace/models/drafts/dflash2/Qwen3.8-27B-DFlash2-Q4_K_M.gguf",
+    "runtime_revision": "5ecbe1ac17ec0484c5b44af0bd580cdc9c428ed4",
+    "configurations": ["target", "dflash2"],
+    "prompt": "Explain in four sentences why CPU language-model decode is memory-bandwidth bound.",
+    "generated_tokens": 36,
+    "temperature": 0.0,
+    "top_k": 1,
+    "n_probs": 5,
+    "cache_prompt": false,
+    "dflash2_draft_n_max": 7,
+    "threads": 4,
+    "cpu_affinity": "0,2,4,6"
+  },
+  "required_receipts": [
+    "raw responses with token IDs and top-five pre-sampling probabilities",
+    "first mismatch index and both top-five candidate sets",
+    "server logs and artifact hashes"
+  ],
+  "decision_rule": "Classify the mismatch as target batch-path numerical divergence only if DFlash2's mismatching token is the top target-verification candidate returned by the runtime, not an accepted draft outside the target top candidate. Otherwise classify it as a speculative verification implementation defect.",
+  "stop_rule": "Run exactly one target-only and one DFlash2 completion and do not tune width, quantization, or kernels in this diagnostic.",
+  "claim_boundary": "One-prompt mismatch diagnosis only; no performance, quality, losslessness, or final-node claim."
+}

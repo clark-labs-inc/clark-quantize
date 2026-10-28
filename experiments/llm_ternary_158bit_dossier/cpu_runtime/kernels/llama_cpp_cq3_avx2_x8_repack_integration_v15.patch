@@ -1,0 +1,104 @@
+diff --git a/ggml/src/ggml-cpu/repack.cpp b/ggml/src/ggml-cpu/repack.cpp
+index 8206891..8db2b43 100644
+--- a/ggml/src/ggml-cpu/repack.cpp
++++ b/ggml/src/ggml-cpu/repack.cpp
+@@ -8,6 +8,7 @@
+ #include "ggml-cpu-impl.h"
+ #include "simd-mappings.h"
+ #include "traits.h"
++#include "quants.h"
+ 
+ #include "arch-fallback.h"
+ 
+@@ -327,6 +328,19 @@ template <> void ggml_quantize_mat_t<8, GGML_TYPE_Q8_0>(const float * GGML_RESTRI
+     ggml_quantize_mat_q8_0_4x8(x, vy, n_per_row);
+ }
+ 
++template <> void ggml_quantize_mat_t<8, GGML_TYPE_CQ8_0>(
++        const float * GGML_RESTRICT x,
++        void * GGML_RESTRICT vy,
++        int64_t nrow,
++        int64_t n_per_row) {
++    assert(nrow == 4);
++    const int64_t blocks_per_row = n_per_row/QK_CQ8_0;
++    block_cq8_0 * y = (block_cq8_0 *) vy;
++    for (int64_t row = 0; row < nrow; ++row) {
++        quantize_row_cq8_0(x + row*n_per_row, y + row*blocks_per_row, n_per_row);
++    }
++}
++
+ template <> void ggml_quantize_mat_t<4, GGML_TYPE_Q8_K>(const float * GGML_RESTRICT x, void * GGML_RESTRICT vy, int64_t nrow, int64_t n_per_row) {
+     assert(nrow == 4);
+     UNUSED(nrow);
+@@ -3877,6 +3889,16 @@ template <> int repack<block_q4_0, 8, 8>(struct ggml_tensor * t, const void * data
+     return repack_q4_0_to_q4_0_8_bl(t, 8, data, data_size);
+ }
+ 
++template <> int repack<block_cq3_0, 8, 8>(struct ggml_tensor * t, const void * data, size_t data_size) {
++    GGML_ASSERT(t->type == GGML_TYPE_CQ3_0);
++    const int rows = ggml_nrows(t);
++    const int blocks_per_row = t->ne[0]/QK_CQ3_0;
++    GGML_ASSERT(data_size == (size_t) rows*blocks_per_row*sizeof(block_cq3_0));
++    if (rows % 8 != 0) return -1;
++    ggml_repack_cq3_0_to_cq3_0x8((const block_cq3_0 *) data, (block_cq3_0x8 *) t->data, rows, blocks_per_row);
++    return 0;
++}
++
+ template <> int repack<block_q4_K, 8, 8>(struct ggml_tensor * t, const void * data, size_t data_size) {
+     return repack_q4_K_to_q4_K_8_bl(t, 8, data, data_size);
+ }
+@@ -3987,6 +4006,13 @@ template <> void gemv<block_q4_0, 8, 8, GGML_TYPE_Q8_0>(int n, float * s, size_t
+     ggml_gemv_q4_0_8x8_q8_0(n, s, bs, vx, vy, nr, nc);
+ }
+ 
++template <> void gemv<block_cq3_0, 8, 8, GGML_TYPE_CQ8_0>(
++        int n, float * s, size_t bs, const void * vx, const void * vy, int nr, int nc) {
++    GGML_ASSERT(nr == 1);
++    GGML_UNUSED(bs);
++    ggml_gemv_cq3_0x8_cq8_0(n, s, vx, vy, nc);
++}
++
+ template <>
+ void gemv<block_q2_K, 8, 8, GGML_TYPE_Q8_K>(int          n,
+                                             float *      s,
+@@ -4076,6 +4106,17 @@ template <> void gemm<block_q4_0, 8, 8, GGML_TYPE_Q8_0>(int          n,
+     ggml_gemm_q4_0_8x8_q8_0(n, s, bs, vx, vy, nr, nc);
+ }
+ 
++template <> void gemm<block_cq3_0, 8, 8, GGML_TYPE_CQ8_0>(
++        int n, float * s, size_t bs, const void * vx, const void * vy, int nr, int nc) {
++    GGML_ASSERT(nr > 0 && nr % 4 == 0);
++    const int blocks_per_row = n/QK_CQ8_0;
++    const block_cq8_0 * y = (const block_cq8_0 *) vy;
++    for (int row = 0; row < nr; ++row) {
++        ggml_gemv_cq3_0x8_cq8_0(n, s + (size_t) row*bs, vx,
++                y + (size_t) row*blocks_per_row, nc);
++    }
++}
++
+ template <> void gemm<block_q2_K, 8, 8, GGML_TYPE_Q8_K>(int n, float * s, size_t bs, const void * vx, const void * vy, int nr, int nc) {
+     ggml_gemm_q2_K_8x8_q8_K(n, s, bs, vx, vy, nr, nc);
+ }
+@@ -4531,6 +4574,9 @@ static const ggml::cpu::tensor_traits * ggml_repack_get_optimal_repack_type(const
+     static const ggml::cpu::repack::tensor_traits<block_q4_0, 8, 4, GGML_TYPE_Q8_0> q4_0_4x8_q8_0;
+     static const ggml::cpu::repack::tensor_traits<block_q4_0, 8, 8, GGML_TYPE_Q8_0> q4_0_8x8_q8_0;
+ 
++    // Clark storage-neutral CQ3 output-row interleave for AVX2.
++    static const ggml::cpu::repack::tensor_traits<block_cq3_0, 8, 8, GGML_TYPE_CQ8_0> cq3_0_8x8_cq8_0;
++
+     // instance for Q4_K
+     static const ggml::cpu::repack::tensor_traits<block_q4_K, 4, 8, GGML_TYPE_Q8_K> q4_K_8x4_q8_K;
+     static const ggml::cpu::repack::tensor_traits<block_q4_K, 8, 8, GGML_TYPE_Q8_K> q4_K_8x8_q8_K;
+@@ -4572,7 +4618,11 @@ static const ggml::cpu::tensor_traits * ggml_repack_get_optimal_repack_type(const
+     static const ggml::cpu::repack::tensor_traits<block_q2_K, 1, 16, GGML_TYPE_Q8_K> q2_K_16x1_q8_K;
+ #endif
+ 
+-    if (cur->type == GGML_TYPE_Q4_0) {
++    if (cur->type == GGML_TYPE_CQ3_0) {
++        if (ggml_cpu_has_avx2() && cur->ne[1] % 8 == 0) {
++            return &cq3_0_8x8_cq8_0;
++        }
++    } else if (cur->type == GGML_TYPE_Q4_0) {
+         if (ggml_cpu_has_avx2() || (ggml_cpu_has_sve() && ggml_cpu_has_matmul_int8() && ggml_cpu_get_sve_cnt() == QK8_0)) {
+             if (cur->ne[1] % 8 == 0) {
+                 return &q4_0_8x8_q8_0;

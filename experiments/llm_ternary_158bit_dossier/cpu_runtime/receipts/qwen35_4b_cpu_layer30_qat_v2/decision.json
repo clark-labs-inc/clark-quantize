@@ -1,0 +1,64 @@
+{
+  "schema": "qwen35_cpu_layer30_qat_decision_v2",
+  "status": "completed_negative_result",
+  "run_date_utc": "2026-08-17",
+  "candidate_sha256": "b1fa2c8323880fe386f6ec3923973ca4cb3b00e8d9593fea8eba574f758e052e",
+  "bf16_sha256": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974",
+  "direct_ptq_sha256": "3e1ba3a29a38de8ff67f7b508563a74b3ea84cdabfa385f0a0b3a749d75e7a9b",
+  "scope": {
+    "quantized_tensors": 3,
+    "byte_identical_non_target_tensors": 438,
+    "scope_receipt_valid": true
+  },
+  "training": {
+    "initial_local_loss": 0.37304896116256714,
+    "final_local_loss": 0.2552828788757324,
+    "relative_local_loss_reduction_percent": 31.568532430657182,
+    "survival_step_kl": [
+      0.021365607157349586,
+      0.005520056467503309
+    ],
+    "survival_export_changed_artifact": false
+  },
+  "quality": {
+    "bf16": {
+      "cute_correct": 8,
+      "cute_n": 20,
+      "math500_correct": 5,
+      "math500_n": 8,
+      "code_trace_correct": 4,
+      "code_trace_n": 6,
+      "wikitext_ppl": 8.496
+    },
+    "direct_ptq": {
+      "cute_correct": 6,
+      "cute_n": 20,
+      "math500_correct": 5,
+      "math500_n": 8,
+      "code_trace_correct": 4,
+      "code_trace_n": 6,
+      "wikitext_ppl": 8.6975
+    },
+    "corrected_qat": {
+      "cute_correct": 5,
+      "cute_n": 20,
+      "math500_correct": 5,
+      "math500_n": 8,
+      "code_trace_correct": 4,
+      "code_trace_n": 6,
+      "wikitext_ppl": 8.6848
+    },
+    "qat_vs_direct_ptq": {
+      "cute_exclusive_wins": 0,
+      "cute_exclusive_losses": 1,
+      "cute_exact_outputs": 17,
+      "math_code_exact_outputs": 14,
+      "wikitext_ppl_relative_delta_percent": -0.14601897096867544
+    }
+  },
+  "coarse_catastrophic_gate": "continue_to_full_evaluation",
+  "research_decision": "reject_training_value_and_do_not_expand_depth",
+  "reason": "QAT was worse than direct PTQ on CUTE and its 0.146 percent perplexity improvement was smaller than measurement uncertainty",
+  "next_discriminating_experiment": "held-out exact-artifact reconstruction selection with a broader non-evaluation calibration distribution at the same one-layer scope",
+  "report_content_sha256": "d3ff466936417932424ba3bf2002afca143c2363d54ed23200dfa0ddc8eef255"
+}

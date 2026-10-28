@@ -1,0 +1,75 @@
+{
+  "schema": "cpu_wikitext_quick_result_v1",
+  "status": "completed",
+  "valid": true,
+  "model_label": "bf16",
+  "model": "/workspace/models/controls/Qwen3.5-4B-BF16.gguf",
+  "model_sha256": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974",
+  "corpus": "/workspace/quant-runs/cq3-4b-ptq-scope-20260817/wikitext-2-raw/wiki.test.raw",
+  "corpus_sha256": "173c87a53759e0201f33e0ccf978e510c2042d7f2cb78229d9a50d79b9e7dd08",
+  "llama_perplexity": "/workspace/build/llama.cpp/bin/llama-perplexity",
+  "llama_perplexity_sha256": "9941787d0c8d35ed67dce640dc3c3a0cc55750f672d31dcb1e6dcd641fd15f78",
+  "evaluator_sha256": "54458dc377a1d07aaf26df90823f65f973b625f55a6ac73895d0c6ec9a666b07",
+  "parameters": {
+    "chunks": 4,
+    "context": 512,
+    "batch": 512,
+    "ubatch": 512,
+    "threads": 4,
+    "ppl_output_type": 1
+  },
+  "command": [
+    "/workspace/build/llama.cpp/bin/llama-perplexity",
+    "-m",
+    "/workspace/models/controls/Qwen3.5-4B-BF16.gguf",
+    "-f",
+    "/workspace/quant-runs/cq3-4b-ptq-scope-20260817/wikitext-2-raw/wiki.test.raw",
+    "-c",
+    "512",
+    "-b",
+    "512",
+    "-ub",
+    "512",
+    "-t",
+    "4",
+    "--chunks",
+    "4",
+    "--ppl-output-type",
+    "1"
+  ],
+  "returncode": 0,
+  "started_at": "2026-08-17T06:02:48.527450+00:00",
+  "finished_at": "2026-08-17T06:03:47.514619+00:00",
+  "elapsed_seconds": 58.98715309700128,
+  "maximum_resident_kib": 11549968,
+  "chunks": [
+    {
+      "offset": 0,
+      "running_ppl": 5.9787,
+      "running_log_ppl": 1.788204,
+      "running_uncertainty": 0.168581
+    },
+    {
+      "offset": 512,
+      "running_ppl": 8.4931,
+      "running_log_ppl": 2.13926,
+      "running_uncertainty": 0.12858
+    },
+    {
+      "offset": 1024,
+      "running_ppl": 8.6331,
+      "running_log_ppl": 2.155605,
+      "running_uncertainty": 0.101991
+    },
+    {
+      "offset": 1536,
+      "running_ppl": 8.496,
+      "running_log_ppl": 2.139597,
+      "running_uncertainty": 0.085144
+    }
+  ],
+  "final_ppl": 8.496,
+  "final_uncertainty": 0.72338,
+  "raw_output": "0.00.741.881 W model has unused tensor blk.32.attn_norm.weight (size = 10240 bytes) -- ignoring\n0.00.741.895 W model has unused tensor blk.32.post_attention_norm.weight (size = 10240 bytes) -- ignoring\n0.00.741.906 W model has unused tensor blk.32.attn_q.weight (size = 41943040 bytes) -- ignoring\n0.00.741.909 W model has unused tensor blk.32.attn_k.weight (size = 5242880 bytes) -- ignoring\n0.00.741.914 W model has unused tensor blk.32.attn_v.weight (size = 5242880 bytes) -- ignoring\n0.00.741.925 W model has unused tensor blk.32.attn_output.weight (size = 20971520 bytes) -- ignoring\n0.00.741.928 W model has unused tensor blk.32.attn_q_norm.weight (size = 1024 bytes) -- ignoring\n0.00.741.931 W model has unused tensor blk.32.attn_k_norm.weight (size = 1024 bytes) -- ignoring\n0.00.741.934 W model has unused tensor blk.32.ffn_gate.weight (size = 47185920 bytes) -- ignoring\n0.00.741.938 W model has unused tensor blk.32.ffn_down.weight (size = 47185920 bytes) -- ignoring\n0.00.741.942 W model has unused tensor blk.32.ffn_up.weight (size = 47185920 bytes) -- ignoring\n0.00.741.947 W model has unused tensor blk.32.nextn.eh_proj.weight (size = 26214400 bytes) -- ignoring\n0.00.741.951 W model has unused tensor blk.32.nextn.enorm.weight (size = 10240 bytes) -- ignoring\n0.00.741.955 W model has unused tensor blk.32.nextn.hnorm.weight (size = 10240 bytes) -- ignoring\n0.00.741.965 W model has unused tensor blk.32.nextn.shared_head_norm.weight (size = 10240 bytes) -- ignoring\n0.04.535.225 I cmn          init: llama threadpool init, n_threads = 4\n0.04.781.058 I \n0.04.781.181 I system_info: n_threads = 4 (n_threads_batch = 4) / 8 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | \n0.04.781.201 I perplexity: tokenizing the input ..\n0.05.270.964 I perplexity: tokenization took 489.755 ms\n0.05.271.073 I perplexity: calculating perplexity over 4 chunks, n_ctx=512, batch_size=512, n_seq=1\n0.18.102.427 I perplexity: 12.83 seconds per pass - ETA 0.85 minutes\n       0  5.9787  1.788204  0.168581\n     512  8.4931  2.139260  0.128580\n    1024  8.6331  2.155605  0.101991\n    1536  8.4960  2.139597  0.085144\n\n0.58.638.919 I Final estimate: PPL = 8.4960 +/- 0.72338\n\n",
+  "report_content_sha256": "f25e380b4633c0dc74e26d4c213b3133e1f8ea7ff4572a34be780cd27bbf67f5"
+}

@@ -1,0 +1,124 @@
+{
+  "schema": "qwen38_27b_dflash2_amd_cpu_feasibility_terminal_decision_v1",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_speculative_program_v1",
+  "experiment_id": "qwen38_27b_dflash2_amd_cpu_feasibility_v1",
+  "terminal_at": "2026-08-19T02:43:00Z",
+  "decision": "reject_as_drop_in_retain_as_exact_n8_kernel_and_admission_direction",
+  "public_evidence": {
+    "algorithm": "DFlash2 block-diffusion speculative drafter with a candidate path selector and two-tap dynamic depthwise convolutions",
+    "target_match": "Qwen/Qwen3.8-27B",
+    "draft_parameters": 2000000000,
+    "q4_draft_bytes": 1143006752,
+    "reported_h200_concurrency1_speedup_range": [2.67, 3.43],
+    "reported_apple_m5_pro_q4_speedup": 1.81,
+    "reported_apple_m5_pro_q4_acceptance": 5.03,
+    "llama_cpp_pull_request": 27342,
+    "llama_cpp_pull_request_state": "open_unmerged_awaiting_review",
+    "sources": [
+      "https://inco.ai/blog/dflash2/",
+      "https://huggingface.co/incoai/Qwen3.8-27B-DFlash2",
+      "https://huggingface.co/incoai/Qwen3.8-27B-DFlash2-GGUF",
+      "https://github.com/ggml-org/llama.cpp/pull/27342"
+    ]
+  },
+  "authenticated_artifacts": {
+    "llama_cpp_revision": "5ecbe1ac17ec0484c5b44af0bd580cdc9c428ed4",
+    "server_sha256": "e3de4a2856c5cae83a28e66f7ee007557936bb58c132b14e0c271c9ea43dbab7",
+    "target_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "dflash2_sha256": "18a380efc9b7ed8d88677fc895f5c11ae170653434ee378f7348f715c14d0594",
+    "target_bytes": 18973870432,
+    "dflash2_bytes": 1143006752
+  },
+  "repacked_smoke": {
+    "target_weighted_tps": 1.8922535983454853,
+    "dflash2_weighted_tps": 2.4352650499959916,
+    "dflash2_over_target": 1.2869654744614014,
+    "dflash2_over_existing_v23_mtp3": 0.674241817762724,
+    "per_prompt_dflash2_tps": [4.534194302460988, 2.8874664933575667, 1.503695977305361],
+    "draft_n": 307,
+    "draft_n_accepted": 143,
+    "mean_committed_tokens_per_target_call": 4.108695652173913,
+    "exact_greedy_parity": "2/3",
+    "first_mismatch_index": 35,
+    "maximum_vm_hwm_kib": 31362720,
+    "maximum_vm_hwm_gib": 29.909820556640625,
+    "swap_kib": 0,
+    "reported_cpu_repack_mib": 9180,
+    "terminal_gate_passed": false,
+    "failure_reasons": [
+      "mixed-prompt speedup 1.287x is below the frozen 1.40x diagnostic-retention floor",
+      "one deterministic greedy prompt diverged from target-only",
+      "29.91 GiB peak RSS exceeds the frozen 28.5 GiB safety gate"
+    ],
+    "remote_summary_sha256": "d5a07ab6f8879a81045ebd238992f2860364faa1c672bf0604e542c1170cfe8d",
+    "remote_trajectory_sha256": "f48582325a53b9b5fff51065540f76f795014ac03f7a1b7f7fa2b412d4b91a47",
+    "target_server_log_sha256": "01a36d730ef0b84f930f1c16bfd1d3130a42897de515a028b5255026e6d75ce8",
+    "dflash2_server_log_sha256": "1212579863e6dc8c05504596db98b6041f000d30457fea825d9e3e8aa74c6a80"
+  },
+  "mismatch_diagnostic": {
+    "prompt": "Explain in four sentences why CPU language-model decode is memory-bandwidth bound.",
+    "first_mismatch_index": 35,
+    "target_token_id": 33633,
+    "target_token_text": " arithmetic",
+    "dflash2_token_id": 6937,
+    "dflash2_token_text": " batch",
+    "target_logprob_target_token": -1.2897828817367554,
+    "target_logprob_dflash2_token": -1.4957345724105835,
+    "target_logprob_margin": 0.2059516906738281,
+    "classification": "consistent_with_batch_path_numerical_divergence_but_not_proven_by_one_prompt",
+    "remote_summary_sha256": "5287214a9e6e74b2ed509135656a001765b23d08a617441832bd7ffba34dc925",
+    "remote_trajectory_sha256": "93612585985720d3e0a2b54a6083b6c9f6ed592bda9f285e995632fc4dc2697c"
+  },
+  "no_repack_followup": {
+    "target_weighted_tps": 1.8887617278112472,
+    "dflash2_weighted_tps": 2.2443360439371176,
+    "dflash2_over_target": 1.188257899813504,
+    "dflash2_over_existing_v23_mtp3": 0.6213800891763521,
+    "per_prompt_dflash2_tps": [4.5389241928333846, 2.8549756651844054, 1.3052853344417623],
+    "draft_n": 330,
+    "draft_n_accepted": 139,
+    "mean_committed_tokens_per_target_call": 3.78,
+    "exact_greedy_parity": "3/3",
+    "maximum_vm_hwm_kib": 21985360,
+    "maximum_vm_hwm_gib": 20.966873168945312,
+    "rss_saved_vs_repacked_gib": 8.942947387695312,
+    "swap_kib": 0,
+    "infrastructure_and_parity_gate_passed": true,
+    "diagnostic_speed_retention_passed": false,
+    "classification": "retain_for_memory_and_exact_kernel_evidence_only",
+    "remote_summary_sha256": "ba39ea6e182ec104e0d2d3ad813f4d26aaeec1f1ae9f5821b7d8d39adaab712c",
+    "remote_trajectory_sha256": "e237efe5c90e0b3ade65dc9b14de0ea09bc102a0288825d995b5bd5c29ca36ab",
+    "target_server_log_sha256": "082eea704ee4f8e437b4ad67f36b0a17fa4ed337af6098c37a4778fdd520dbbc",
+    "dflash2_server_log_sha256": "397cc6c67364ae205d5054db271f15309b908ab9c163bb195304d742c506442a"
+  },
+  "interpretation": {
+    "confirmed": [
+      "DFlash2 is implemented for the exact Qwen3.8-27B target and runs on the AMD CPU backend.",
+      "Its gain is highly prompt-dependent because acceptance ranged from a full seven-token block to roughly two committed tokens per target call.",
+      "llama.cpp CPU repacking consumed about 9 GiB without improving target-only or high-acceptance DFlash2 throughput on this node.",
+      "Disabling repacking restored exact greedy parity in this three-prompt smoke and reduced peak RSS by 8.94 GiB.",
+      "Neither tested configuration beats the qualified 3.611857 tok/s v23 MTP3 result on the mixed prompt set."
+    ],
+    "inference": "The high-leverage kernel target is an exact, memory-lean Q4_K verification path for block widths up to eight. It must preserve batch-1 numerical behavior while retaining the high-acceptance speed seen with DFlash2. Admission or fallback must avoid full DFlash blocks when selector confidence predicts low acceptance.",
+    "not_established": [
+      "that the repack path alone caused the greedy mismatch",
+      "a paired six-rotation performance result",
+      "capability preservation beyond exact greedy smoke parity",
+      "100 tok/s or final-node scaling"
+    ]
+  },
+  "next_gate": {
+    "name": "exact_memory_lean_q4k_n8_verification_v1",
+    "requirements": [
+      "no global 9 GiB CPU repack allocation",
+      "bit-exact or deterministic-greedy-equivalent logits against batch-1 Q4_K decode on adversarial near-tie prefixes",
+      "support verification widths 2 through 8",
+      "DFlash2 exact parity on the frozen three-prompt smoke",
+      "mixed-prompt DFlash2 at least 1.40x target-only before full capability evaluation",
+      "admission or fallback for predicted mean committed length below the measured break-even point"
+    ]
+  },
+  "artifact_residency": "Raw GGUFs, responses, server logs, and trajectories remain on quant. This compact decision and authenticated hashes are Git-safe.",
+  "claim_boundary": "DFlash2 online audit plus two three-prompt AMD CPU feasibility smokes. This is not a full benchmark, quality adjudication, 100 tok/s result, or novelty claim."
+}

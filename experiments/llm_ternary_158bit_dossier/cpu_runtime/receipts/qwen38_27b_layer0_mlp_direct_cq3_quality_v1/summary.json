@@ -1,0 +1,41 @@
+{
+  "baseline": {
+    "code_trace_correct": 5,
+    "cute_correct": 9,
+    "math500_correct": 5,
+    "mmlu_correct": 52,
+    "summary_path": "/workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1/summary.json",
+    "wikitext_ppl": 5.7847
+  },
+  "candidate_model_sha256": "019c803e317625c2b1c3df8c3b4e2c63b28283599287ebff0f964ff71379e4e4",
+  "checks": {
+    "all_receipts_valid": true,
+    "code_trace": true,
+    "cute": true,
+    "math500": true,
+    "mmlu": true,
+    "wikitext": true
+  },
+  "claim_boundary": "one direct Q4-to-CQ3 Qwen3.8-27B layer-0 MLP triplet only",
+  "observed": {
+    "code_trace_correct": 5,
+    "cute_correct": 10,
+    "math500_correct": 5,
+    "mmlu_correct": 51,
+    "wikitext_ppl": 5.8297,
+    "wikitext_ppl_ratio": 1.0077791415285149
+  },
+  "preregistration": {
+    "path": "/workspace/clark-quantize-cpu-qat/experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_layer0_mlp_direct_cq3_quality_preregistration_v1.json",
+    "sha256": "0549ff2ea7ff20a63e5d37403b7556f93ebe1d45f890da8c6bf9ea100f31b899"
+  },
+  "promotion_pass": true,
+  "schema": "qwen38_27b_layer0_mlp_direct_cq3_quality_summary_v1",
+  "thresholds": {
+    "code_trace_correct": 4,
+    "cute_correct": 7,
+    "math500_correct": 4,
+    "mmlu_correct": 49,
+    "wikitext_ppl_ratio_max": 1.05
+  }
+}

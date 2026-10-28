@@ -1,0 +1,43 @@
+{
+  "schema": "qwen38_27b_calibration_ranked_aff3_cq3_mixed_pre_execution_amendment_v1",
+  "status": "frozen_before_any_mixed_training_or_confirmation_score",
+  "frozen_at_utc": "2026-08-18T19:41:36Z",
+  "parent_preregistration": "qwen38_27b_calibration_ranked_aff3_cq3_mixed_v1.json",
+  "parent_preregistration_sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c",
+  "execution_state_at_freeze": {
+    "mixed_training_started": false,
+    "mixed_payload_created": false,
+    "fresh_confirmation_scored": false,
+    "fresh_confirmation_receipt_existed": false,
+    "cache_collection_service_active": true,
+    "cache_collection_change": "none; the four frozen texts, 32-row denominator, source model, target layers, and collector remain byte-for-byte governed by the parent preregistration"
+  },
+  "corrections": [
+    {
+      "field": "data.fresh_confirmation.may_score_only_the_final_frozen_candidate",
+      "replacement": "After every pilot payload is terminal, score exactly two candidates: the already-frozen step-zero direct mixed representation and the final calibration-selected trained representation. Neither score may select a mode, hyperparameter, shard, step, exception, or checkpoint.",
+      "reason": "The already-preregistered no-regression gate explicitly compares the final candidate with the direct mixed baseline on fresh confirmation. This correction removes an internal contradiction without exposing or changing any confirmation result."
+    },
+    {
+      "field": "training.retain_completed_payloads",
+      "replacement": "Retain all three authenticated terminal pilot payloads until the paired fresh-confirmation receipt is complete; permit at most one in-progress block and never retain an optimizer state after its block becomes terminal.",
+      "reason": "The three-block gate requires all three final payloads. Their projected combined size is below 256 MB and does not threaten the disk bound."
+    },
+    {
+      "field": "execution_policy.checkpoint_limit",
+      "replacement": "At most one in-progress block checkpoint plus the three immutable terminal pilot payloads and receipts; no optimizer checkpoint is retained after a block becomes terminal.",
+      "reason": "Makes the checkpoint rule consistent with the complete three-block paired confirmation gate."
+    }
+  ],
+  "unchanged": [
+    "Qwen/Qwen3.8-27B-only scope and revision",
+    "calibration-only mode selection and all mode assignments",
+    "all four fresh confirmation texts and the exact 32-row denominator",
+    "all CQ3 and AFF3 training algorithms, steps, learning rates, radii, and seeds",
+    "all numeric, kernel, quality, storage, performance, energy, and claim gates",
+    "all stop rules and the ban on confirmation-guided selection"
+  ],
+  "claim_boundary": "Protocol-consistency amendment only; it contains no model output, training result, holdout result, quality score, runtime score, or breakthrough evidence.",
+  "complete": true,
+  "terminal": true
+}

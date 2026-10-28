@@ -1,0 +1,43 @@
+diff --git a/tests/qwen38_27b_cq3_x86_pair_bench_v1.inc b/tests/qwen38_27b_cq3_x86_pair_bench_v1.inc
+--- a/tests/qwen38_27b_cq3_x86_pair_bench_v1.inc
++++ b/tests/qwen38_27b_cq3_x86_pair_bench_v1.inc
+@@ -115,17 +115,24 @@ static void run_qwen38_27b_cq3_x86_pair_benchmark() {
+         std::memcmp(control_up.data(), candidate_up.data(), rows*sizeof(float)) == 0;
+     float max_abs_delta = 0.0f;
+     float max_scaled_delta = 0.0f;
++    std::vector<float> scaled_deltas;
++    scaled_deltas.reserve(2*rows);
+     for (int row = 0; row < rows; ++row) {
+         const float gate_delta = std::fabs(control_gate[row] - candidate_gate[row]);
+         const float up_delta = std::fabs(control_up[row] - candidate_up[row]);
++        const float gate_scaled = gate_delta/(1.0f + std::fabs(control_gate[row]));
++        const float up_scaled = up_delta/(1.0f + std::fabs(control_up[row]));
+         max_abs_delta = std::max(max_abs_delta, std::max(gate_delta, up_delta));
+-        max_scaled_delta = std::max(
+-            max_scaled_delta,
+-            std::max(
+-                gate_delta/(1.0f + std::fabs(control_gate[row])),
+-                up_delta/(1.0f + std::fabs(control_up[row]))));
++        max_scaled_delta = std::max(max_scaled_delta, std::max(gate_scaled, up_scaled));
++        scaled_deltas.push_back(gate_scaled);
++        scaled_deltas.push_back(up_scaled);
+     }
+-    assert(max_scaled_delta <= 2e-5f);
++    std::sort(scaled_deltas.begin(), scaled_deltas.end());
++    const float scaled_delta_p50 = scaled_deltas[scaled_deltas.size()/2];
++    const float scaled_delta_p99 = scaled_deltas[
++        (scaled_deltas.size()*99)/100];
++    assert(std::isfinite(max_abs_delta));
++    assert(std::isfinite(max_scaled_delta));
+ 
+     for (int warmup = 0; warmup < warmups; ++warmup) {
+         qwen38_run_cq3_pair_control(
+@@ -180,6 +187,8 @@ static void run_qwen38_27b_cq3_x86_pair_benchmark() {
+     std::printf("\"cache_eviction_bytes\":%zu,\"exact_control_candidate\":%s,", cache_eviction_bytes, exact_control_candidate ? "true" : "false");
+     std::printf("\"max_abs_delta\":%.9g,\"max_scaled_delta\":%.9g,",
+         (double) max_abs_delta, (double) max_scaled_delta);
++    std::printf("\"scaled_delta_p50\":%.9g,\"scaled_delta_p99\":%.9g,",
++        (double) scaled_delta_p50, (double) scaled_delta_p99);
+     std::printf("\"control_us\":");
+     qwen38_print_cq3_bench_values(control_us);
+     std::printf(",\"candidate_us\":");

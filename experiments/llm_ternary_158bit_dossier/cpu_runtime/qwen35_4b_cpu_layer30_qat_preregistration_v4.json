@@ -1,0 +1,106 @@
+{
+  "schema": "clark_qwen35_cpu_layerwise_qat_preregistration_v4",
+  "status": "frozen_before_teacher_cache_collection",
+  "created_at": "2026-08-17",
+  "objective": "replicate the v3 one-layer quality recovery with a four-times-larger, task-balanced calibration bank and independent exact-artifact test split",
+  "predecessor": {
+    "decision_receipt": "receipts/qwen35_4b_cpu_layer30_qat_v3/decision.json",
+    "decision_receipt_content_sha256": "d279edecaba394f7f039e26f30f38385936e5c2638f9c4cd8a288871cd31ff3a",
+    "v3_evidence": "independent reconstruction improved 27.67 percent over direct PTQ; CUTE was 7/20, MATH 5/8, code 4/6, and WikiText PPL 8.6523"
+  },
+  "model": {
+    "id": "Qwen/Qwen3.5-4B",
+    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "model_dir": "/workspace/models/Qwen3.5-4B",
+    "parameter_count_observed": 4659865088
+  },
+  "hardware": {
+    "host_alias": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "smt_threads": 8,
+    "ram_gib_usable": 30,
+    "accelerator": null,
+    "torch_threads": 4,
+    "service_memory_max": "28G"
+  },
+  "frozen_source": {
+    "prompt_bank": "qwen35_4b_cpu_layer30_train_v4.jsonl",
+    "prompt_bank_sha256": "e2a355b62c9e456aa22f0fa609705cf17eb66948d80a6470b49bc1132db40cb8",
+    "rows": 48,
+    "tasks": [
+      "knowledge",
+      "math",
+      "code",
+      "instruct",
+      "multilingual",
+      "reasoning"
+    ],
+    "rows_per_task": 8,
+    "split_manifest": "qwen35_4b_cpu_layer30_split_v4.json",
+    "split_manifest_file_sha256": "a253a051e7945e099d8e5057e51ff0935434f228b901e1c12b5ee6162ae823f2",
+    "split_manifest_content_sha256": "0fa79c91a45e50d05bed81274de0a6746fbb29cdbfb4f01610f5e59fde23e64e",
+    "split_rows": {
+      "train": 24,
+      "validation_selection": 12,
+      "independent_test": 12
+    },
+    "external_eval_overlap": "exact prompt overlap with CUTE-Quick-20 and pinned MATH/code manifests must be empty"
+  },
+  "teacher_cache": {
+    "label_semantics": "teacher_completion_next_token_v1",
+    "max_model_len": 256,
+    "generate_tokens": 24,
+    "top_k": 128,
+    "hidden_layers": [30],
+    "projection_dim": 64,
+    "greedy": true,
+    "checkpoint_every_rows": 2,
+    "restart_contract": "partial checkpoints pin every generation input and must match the frozen source prefix",
+    "acceptance": "all 48 rows complete and every generated target token appears in teacher top-k at its causal prediction position"
+  },
+  "candidate": {
+    "layer": 30,
+    "scope": [
+      "model.language_model.layers.30.mlp.gate_proj.weight",
+      "model.language_model.layers.30.mlp.up_proj.weight",
+      "model.language_model.layers.30.mlp.down_proj.weight"
+    ],
+    "quantization": "symmetric hard ternary",
+    "group_size": 128,
+    "gguf_type": "CQ3_0",
+    "all_other_tensors": "byte-identical to the frozen BF16 GGUF parent"
+  },
+  "training": {
+    "initialization": "fresh from BF16",
+    "steps": 64,
+    "batch_size": 32,
+    "optimizer": "AdamW",
+    "learning_rate": 0.00002,
+    "codebook_weight": 0.001,
+    "gradient_clip": 1.0,
+    "validation_every_steps": 4,
+    "artifact_selection": "minimum validation normalized reconstruction loss across exact hard artifacts, including step-zero direct PTQ",
+    "completion_survival_phase": "disabled because v2 showed no exported-value change",
+    "checkpoint_every_steps": 4,
+    "checkpoint_retention": 1
+  },
+  "mandatory_evaluation": {
+    "independent_reconstruction": "12 sealed rows across all six tasks",
+    "exact_gguf_generation": [
+      "CUTE-Quick-20",
+      "MATH-500 pinned quick 8",
+      "sealed code traces 6"
+    ],
+    "likelihood": "WikiText-2 first four 512-token chunks",
+    "invalid_run_rule": "missing, partial, or infrastructure-failed reports are invalid, never zero"
+  },
+  "decision_rules": {
+    "teacher_cache": "48/48 rows and exact top-k causal alignment at every generated position",
+    "training_value": "candidate must improve independent-test normalized reconstruction loss by at least 10 percent relative to direct PTQ",
+    "generation_non_regression": "candidate must score at least 7/20 CUTE, 5/8 MATH, and 4/6 code",
+    "likelihood_non_regression": "candidate WikiText perplexity must be no greater than direct PTQ 8.6975",
+    "depth_expansion": "forbidden from this rung alone; passing authorizes a distinct larger capability replication such as a pinned MMLU slice"
+  },
+  "claim_boundary": "this is a broader one-layer replication on Qwen3.5-4B, not whole-model ternary training and not a breakthrough"
+}

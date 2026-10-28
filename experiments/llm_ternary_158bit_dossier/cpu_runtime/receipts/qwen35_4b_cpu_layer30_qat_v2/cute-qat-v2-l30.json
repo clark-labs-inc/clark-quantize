@@ -1,0 +1,434 @@
+{
+  "schema": "cpu_cute_quick_result_v1",
+  "model_label": "qat-v2-l30",
+  "model_sha256": "b1fa2c8323880fe386f6ec3923973ca4cb3b00e8d9593fea8eba574f758e052e",
+  "manifest": "/workspace/clark-quantize-cpu-qat/experiments/llm_ternary_158bit_dossier/cpu_runtime/cute_quick_v1.json",
+  "manifest_content_sha256": "cbc71368d5be89d5610d55990f9de248a434c6bfbb11e5c130718fa0fac2714a",
+  "evaluator_sha256": "9c40a48a0c3f0544156a20ccccdc12f7e90bbae8afd391bf640ead1ff234c8ab",
+  "leaderboard_comparable": false,
+  "server": "http://127.0.0.1:8091",
+  "started_at": "2026-08-17T06:28:36.178858+00:00",
+  "finished_at": "2026-08-17T06:30:23.556633+00:00",
+  "elapsed_seconds": 107.377775,
+  "summaries": [
+    {
+      "task": "contains_char",
+      "correct": 4,
+      "n": 4,
+      "accuracy": 1.0
+    },
+    {
+      "task": "ins_char",
+      "correct": 0,
+      "n": 4,
+      "accuracy": 0.0
+    },
+    {
+      "task": "del_char",
+      "correct": 0,
+      "n": 4,
+      "accuracy": 0.0
+    },
+    {
+      "task": "swap_char",
+      "correct": 0,
+      "n": 4,
+      "accuracy": 0.0
+    },
+    {
+      "task": "sub_char",
+      "correct": 1,
+      "n": 4,
+      "accuracy": 0.25
+    },
+    {
+      "task": "cute_quick_20",
+      "correct": 5,
+      "n": 20,
+      "accuracy": 0.25
+    }
+  ],
+  "records": [
+    {
+      "task": "contains_char",
+      "id": "contains_char:line74",
+      "source_line": 74,
+      "correct": true,
+      "prediction": "Yes",
+      "gold": "Yes",
+      "output": "Yes",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 127,
+        "total_tokens": 129,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 5513.717886999075
+    },
+    {
+      "task": "contains_char",
+      "id": "contains_char:line233",
+      "source_line": 233,
+      "correct": true,
+      "prediction": "Yes",
+      "gold": "Yes",
+      "output": "Yes",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 127,
+        "total_tokens": 129,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 4855.635755000549
+    },
+    {
+      "task": "contains_char",
+      "id": "contains_char:line509",
+      "source_line": 509,
+      "correct": true,
+      "prediction": "No",
+      "gold": "No",
+      "output": "No",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 127,
+        "total_tokens": 129,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 4859.56766000163
+    },
+    {
+      "task": "contains_char",
+      "id": "contains_char:line887",
+      "source_line": 887,
+      "correct": true,
+      "prediction": "Yes",
+      "gold": "Yes",
+      "output": "Yes",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 127,
+        "total_tokens": 129,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 5008.846240998537
+    },
+    {
+      "task": "ins_char",
+      "id": "ins_char:line74",
+      "source_line": 74,
+      "correct": false,
+      "prediction": "bactack",
+      "gold": "btack",
+      "output": "bactack",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 163,
+        "total_tokens": 167,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 5934.975977001159
+    },
+    {
+      "task": "ins_char",
+      "id": "ins_char:line233",
+      "source_line": 233,
+      "correct": false,
+      "prediction": "icnxcex",
+      "gold": "indecx",
+      "output": "icnxcex",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 5,
+        "prompt_tokens": 163,
+        "total_tokens": 168,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 5612.743743000465
+    },
+    {
+      "task": "ins_char",
+      "id": "ins_char:line509",
+      "source_line": 509,
+      "correct": false,
+      "prediction": "optstionst",
+      "gold": "optionts",
+      "output": "optstionst",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 5,
+        "prompt_tokens": 163,
+        "total_tokens": 168,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 6467.615923000267
+    },
+    {
+      "task": "ins_char",
+      "id": "ins_char:line887",
+      "source_line": 887,
+      "correct": false,
+      "prediction": "purcharcer",
+      "gold": "purchaser",
+      "output": "purcharcer",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 163,
+        "total_tokens": 167,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 6809.413562001282
+    },
+    {
+      "task": "del_char",
+      "id": "del_char:line74",
+      "source_line": 74,
+      "correct": false,
+      "prediction": "bc",
+      "gold": "bck",
+      "output": "bc",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 140,
+        "total_tokens": 142,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 4495.9385430011025
+    },
+    {
+      "task": "del_char",
+      "id": "del_char:line233",
+      "source_line": 233,
+      "correct": false,
+      "prediction": "nex",
+      "gold": "inex",
+      "output": "nex",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 140,
+        "total_tokens": 142,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 4174.730826998712
+    },
+    {
+      "task": "del_char",
+      "id": "del_char:line509",
+      "source_line": 509,
+      "correct": false,
+      "prediction": "ptns",
+      "gold": "ptins",
+      "output": "ptns",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 140,
+        "total_tokens": 143,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 4731.129771000269
+    },
+    {
+      "task": "del_char",
+      "id": "del_char:line887",
+      "source_line": 887,
+      "correct": false,
+      "prediction": "urcase",
+      "gold": "purcase",
+      "output": "urcase",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 140,
+        "total_tokens": 143,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 4888.521701002901
+    },
+    {
+      "task": "swap_char",
+      "id": "swap_char:line74",
+      "source_line": 74,
+      "correct": false,
+      "prediction": "olepe",
+      "gold": "pelpoe",
+      "output": "olepe",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 148,
+        "total_tokens": 151,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 4821.012190001056
+    },
+    {
+      "task": "swap_char",
+      "id": "swap_char:line233",
+      "source_line": 233,
+      "correct": false,
+      "prediction": "kiln",
+      "gold": "kinl",
+      "output": "kiln",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 148,
+        "total_tokens": 151,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 4758.806381996692
+    },
+    {
+      "task": "swap_char",
+      "id": "swap_char:line509",
+      "source_line": 509,
+      "correct": false,
+      "prediction": "fideel",
+      "gold": "fidle",
+      "output": "fideel",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 148,
+        "total_tokens": 152,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 6616.570395999588
+    },
+    {
+      "task": "swap_char",
+      "id": "swap_char:line887",
+      "source_line": 887,
+      "correct": false,
+      "prediction": "neughh",
+      "gold": "ehougn",
+      "output": "neughh",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 149,
+        "total_tokens": 153,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 5890.551143998891
+    },
+    {
+      "task": "sub_char",
+      "id": "sub_char:line74",
+      "source_line": 74,
+      "correct": true,
+      "prediction": "bdck",
+      "gold": "bdck",
+      "output": "bdck",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 152,
+        "total_tokens": 155,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 6414.664992000326
+    },
+    {
+      "task": "sub_char",
+      "id": "sub_char:line233",
+      "source_line": 233,
+      "correct": false,
+      "prediction": "inxex",
+      "gold": "indxx",
+      "output": "inxex",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 152,
+        "total_tokens": 155,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 5023.722884001472
+    },
+    {
+      "task": "sub_char",
+      "id": "sub_char:line509",
+      "source_line": 509,
+      "correct": false,
+      "prediction": "odptions",
+      "gold": "opdions",
+      "output": "odptions",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 152,
+        "total_tokens": 155,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 4858.108017000632
+    },
+    {
+      "task": "sub_char",
+      "id": "sub_char:line887",
+      "source_line": 887,
+      "correct": false,
+      "prediction": "plcrchase",
+      "gold": "plrchase",
+      "output": "plcrchase",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 5,
+        "prompt_tokens": 152,
+        "total_tokens": 157,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 5638.441432001855
+    }
+  ],
+  "report_content_sha256": "a3b3c02853d08336e5ca5b43216142d7208d4acdd48097cd17c1449ae2f34133"
+}

@@ -1,0 +1,124 @@
+{
+  "schema": "qwen38_27b_exact_marginal_tile_mixed_down_preregistration_v73",
+  "experiment_id": "qwen38_27b_exact_marginal_tile_mixed_down_v73",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_before_execution",
+  "frozen_at_utc": "2026-08-20T04:45:00Z",
+  "objective": "Test whether the deployable error modes of the worst trained-CQ3 down projection are concentrated in a small set of x8-kernel-aligned output tiles, using the exact fixed-budget marginal-SSE optimum on training rows and an untouched interleaved confirmation split.",
+  "parent_finding": {
+    "v72_selected_gauge_step": 0,
+    "v72_train_relative_mlp_nmse_improvement": 0.0398741095175926,
+    "v72_confirmation_relative_mlp_nmse_improvement": -0.2559915129340654,
+    "conclusion": "The diagonal gauge optimizer did not improve its own hard-CQ3 training objective, and half-split payload retraining overfit confirmation. Reject diagonal gauges and target stable output-tile error modes directly."
+  },
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "hidden_size": 5120,
+    "intermediate_size": 17408,
+    "layers": 64
+  },
+  "scope": {
+    "layer": 59,
+    "tensor": "mlp.down_proj.weight",
+    "selection_reason": "same worst v44 down-projection layer used by v71 and v72; no layer reselection",
+    "training_rows": 32,
+    "confirmation_rows": 32,
+    "whole_model_generation_forbidden": true,
+    "performance_timing_forbidden": true,
+    "confirmation_rows_forbidden_during_quantizer_or_tile_selection": true
+  },
+  "authenticated_inputs": {
+    "full_context_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "v44_training_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+    "v71_negative_receipt_sha256": "1fe38e79ca68f018d45d95788b7fd34fcdc15532462ce82e99c3692a3e242e4f",
+    "v72_negative_receipt_sha256": "bdf17e3571b36586aea4fc3aa54c7454b95ac8b700a2644b2fba113f09abf4d7",
+    "source_tensor_sha256": {
+      "mlp.gate_proj.weight": "af5f1f3627acd6ed1a1e3ff71defaeb4433b1dc280efdb01b6d8ebf9086ab1c3",
+      "mlp.up_proj.weight": "2d3f11424f7705452380d1c7a2df4e625929ab9c460882e9c81ce5effadc7feb",
+      "mlp.down_proj.weight": "ce8eaece6fd48b996ff5328840d7b75d5d91dc23acf358711388973b5c9584ca"
+    },
+    "v44_payload_sha256": {
+      "gate": "ca349cd022d248a29fae502d523430b50fa5894f1e5deff549e222b159a02599",
+      "up": "1592cd2858371645fd8e236113caa1c39d733a959b3a54ab0bbe4f6d550de4bc",
+      "down": "faa8661738f9c0bdcadc2dcd7eac7723ca39c1d99486523b2e8b21e636c76356"
+    }
+  },
+  "row_split": {
+    "source_order": "the frozen 64 calibration_flat_rows from v42",
+    "train_start": 0,
+    "confirmation_start": 1,
+    "stride": 2,
+    "training_positions": "even positions 0 through 62",
+    "confirmation_positions": "odd positions 1 through 63",
+    "split_selected_before_execution": true
+  },
+  "int4_quantizer": {
+    "representation": "signed INT4 values in [-8, 7] with one FP16 scale per 32 weights",
+    "group_size": 32,
+    "scale_initialization": "group maximum absolute value divided by 7, with an exact-zero group mapped to scale zero",
+    "least_squares_scale_iterations": 4,
+    "iteration": "round and clamp integer codes, then replace scale by dot(weight, code) divided by dot(code, code)",
+    "final_scale_storage": "FP16 before reconstruction and scoring",
+    "code_packing": "two signed nibbles per byte, low coordinate first",
+    "bytes_per_group": 18,
+    "activation_training": false,
+    "sweep": false
+  },
+  "tile_selection": {
+    "output_tile_rows": 8,
+    "total_tiles": 640,
+    "int4_tiles": 80,
+    "int4_fraction": 0.125,
+    "candidate_inputs": "v44 trained-CQ3 gate and up SwiGLU activations",
+    "target_outputs": "exact BF16 MLP down outputs",
+    "marginal_benefit": "training SSE of the v44 CQ3 tile minus training SSE of the signed-INT4 tile",
+    "optimization": "choose the 80 largest marginal benefits; this is the exact uniform-cost fixed-cardinality optimum",
+    "tie_break": "ascending tile index",
+    "confirmation_rows_observed": 0,
+    "sweep": false
+  },
+  "canonical_layout": {
+    "header_bytes": 64,
+    "tile_mode_bitmap_bytes": 80,
+    "unselected_cq3_rows": 4480,
+    "cq3_bytes_per_row": 4624,
+    "selected_int4_rows": 640,
+    "int4_bytes_per_row": 9792,
+    "hybrid_down_payload_bytes": 26982544,
+    "baseline_three_cq3_mlp_payload_bytes": 71024640,
+    "hybrid_three_projection_mlp_payload_bytes": 74332304,
+    "relative_full_mlp_payload_increase": 0.046570654916378317,
+    "runtime_dispatch": "one mode decision per x8 output tile; mutually exclusive CQ3 or INT4 computation, never an additive residual pass",
+    "high_precision_weight_materialization_at_runtime": false
+  },
+  "pilot_gate": {
+    "required_selected_tiles": 80,
+    "all_selected_training_marginal_benefits_positive": true,
+    "minimum_relative_train_mlp_nmse_improvement": 0.15,
+    "minimum_relative_confirmation_mlp_nmse_improvement": 0.1,
+    "minimum_confirmation_gain_fraction_of_all_int4_gain": 0.25,
+    "maximum_relative_full_mlp_payload_increase": 0.05,
+    "packed_int4_roundtrip_exact": true,
+    "canonical_payload_bytes_exact": true,
+    "all_values_finite": true
+  },
+  "resources": {
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "allowed_logical_cpus": [0, 2, 4, 6],
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "restart_on_failure": true,
+    "minimum_free_disk_bytes": 8589934592
+  },
+  "decision": {
+    "if_pass": "replicate the unchanged 12.5-percent x8-tile rule on a preregistered representative layer set before any whole-model materialization",
+    "if_fail": "reject fixed-budget output-tile mixed precision at this rate and move to input-group correction or a higher-capacity structured transform without threshold tuning",
+    "no_whole_model_claim": true,
+    "no_novelty_claim": true,
+    "no_breakthrough_claim": true
+  },
+  "claim_boundary": "Frozen train-confirmation layer-59 representation pilot only. A pass cannot establish whole-model capability, perplexity, CUTE, MATH, code, MMLU, throughput, energy, novelty, 100 tokens per second, or a scientific breakthrough."
+}

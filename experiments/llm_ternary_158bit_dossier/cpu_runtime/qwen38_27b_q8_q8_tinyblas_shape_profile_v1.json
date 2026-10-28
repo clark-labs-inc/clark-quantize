@@ -1,0 +1,43 @@
+{
+  "schema": "qwen38_27b_q8_q8_tinyblas_shape_profile_preregistration_v1",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q8_q8_tinyblas_shape_profile_v1",
+  "frozen_at": "2026-08-18T12:02:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "runtime": "promoted Q4_K fused-ragged v2 control",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true
+  },
+  "profile_anchor": {
+    "mtp3_exclusive_cycle_fraction": 0.2399,
+    "symbol": "tinyBLAS_Q0_AVX<block_q8_0, block_q8_0, float>::gemm4xN<2>",
+    "q4_k_gemm_exclusive_cycle_fraction": 0.4498,
+    "reason": "The first algebra-preserving Q4_K instruction rewrite produced only 1.023x graph speedup; the Q8 hotspot is the next independent large share."
+  },
+  "method": {
+    "requests": 1,
+    "tokens": 96,
+    "draft_width": 3,
+    "instrumentation": "bounded per-shape counters at the tinyBLAS Q8_0 x Q8_0 dispatch, emitted once at process shutdown",
+    "required_fields": [
+      "m, n, k, lda, ldb, ldc",
+      "dispatch count",
+      "gemm4xN<2> tile count",
+      "wall and cycle share with instrumentation disabled"
+    ],
+    "maximum_distinct_shapes": 128,
+    "counter_overflow_is_infrastructure_invalid": true
+  },
+  "selection_rule": "Select only a shape family accounting for at least 70% of Q8 tinyBLAS calls or cycles and having an Amdahl whole-request ceiling above 1.10x.",
+  "correctness_boundary": "The profile build is not a candidate runtime. No speed, output, quality, or novelty claim may use instrumented timings.",
+  "stop_rules": [
+    "Do not optimize an assumed Q8 shape before the counted receipt is terminal.",
+    "Do not promote an activation approximation without exact target control plus CUTE and MATH gates.",
+    "Do not stack further sub-three-percent Q4_K instruction substitutions on the current node."
+  ]
+}

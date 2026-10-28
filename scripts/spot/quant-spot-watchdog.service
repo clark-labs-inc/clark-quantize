@@ -1,0 +1,14 @@
+[Unit]
+Description=Clark Quantize spot-node health receipts
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment=QUANT_REPO=/workspace/clark-quantize
+ExecStart=/workspace/clark-quantize/scripts/spot/watchdog.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

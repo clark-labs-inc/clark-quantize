@@ -1,0 +1,120 @@
+{
+  "schema": "qwen38_27b_affine_avx2_register_lookup_preregistration_v18",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_affine_avx2_register_lookup_v18",
+  "frozen_at": "2026-08-18T19:04:09Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "microbenchmark_cores": 1,
+    "qwen_4b_compute_forbidden": true,
+    "baseline_kernel": "AFF3_X16 v17",
+    "required_isa": [
+      "AVX2",
+      "SSSE3",
+      "F16C",
+      "FMA"
+    ],
+    "forbidden_isa_assumptions": [
+      "AVX512",
+      "AVX512_VNNI",
+      "AMX"
+    ]
+  },
+  "evidence_available_before_freeze": {
+    "v17_exact_shape_ordinary_over_x16_speedup": 1.7869129863562954,
+    "v17_exact_shape_x8_over_x16_speedup": 1.0945608353533482,
+    "v17_scale_decode": "Four AVX2 FP32 gathers are issued per sixteen-row group after the two FP16 codebooks are expanded to stack-resident FP32 tables.",
+    "v17_assembly_observation": "The compiler retained four vgatherdps-family operations and stack spills in the scale-decode path.",
+    "representation_status": "The three-block PTQ gate failed. The independently preregistered three-block QAT recovery was still running, with no terminal receipt, when v18 was frozen.",
+    "claim_boundary": "Kernel evidence cannot override a failed representation or quality gate."
+  },
+  "hypothesis": "A 16-entry FP16 codebook is exactly a byte-shuffle table, not a gather problem. Split each 32-byte FP16 codebook into register-resident low-byte and high-byte tables once per matrix call; use pshufb on the sixteen alpha or mu nibbles, interleave the selected bytes back into FP16 lanes, and convert with F16C. This removes four latency-heavy FP32 gathers and their stack tables from every row-tile/group while preserving every v17 output bit and adding zero artifact or compute-image bytes.",
+  "frozen_kernel_change": {
+    "allowed": [
+      "Replace only the AFF3_X16 v17 alpha/mu codebook gather path with register-resident FP16 byte shuffles.",
+      "Build four 16-byte low/high codebook tables once at GEMV entry from the existing two 16-entry FP16 codebooks.",
+      "Reuse the v17 AFF3_X16 weight layout, exact centered ternary dot, activation broadcasts, group order, anchors, FMA sequence, and output accumulation order unchanged."
+    ],
+    "forbidden": [
+      "Change any stored trit, index, anchor, or codebook value.",
+      "Add decoded per-group scales to the persistent or runtime compute image.",
+      "Change the row tile, group size, activation quantizer, accumulation order, or mathematical representation.",
+      "Retune thresholds after observing v18 timing."
+    ],
+    "lookup_algebra": {
+      "input": "sixteen 4-bit indices and one 16-entry FP16 codebook",
+      "low_bytes": "pshufb(codebook_low_byte_table, indices)",
+      "high_bytes": "pshufb(codebook_high_byte_table, indices)",
+      "fp16": "interleave(low_bytes, high_bytes)",
+      "fp32": "vcvtph2ps(fp16)",
+      "required_identity": "selected FP32 lane bits equal FP32(codebook_fp16[index]) for every index 0..15"
+    }
+  },
+  "runtime_contract": {
+    "layout": "AFF3_X16",
+    "rows_per_tile": 16,
+    "weights_per_group": 128,
+    "tile_bytes_per_group": 528,
+    "runtime_compute_image_bpw_at_5120_columns": 2.06875,
+    "additional_persistent_bytes": 0,
+    "additional_runtime_compute_image_bytes": 0,
+    "high_precision_weight_matrix_materialized": false,
+    "decoded_per_group_scale_matrix_materialized": false
+  },
+  "sequential_gates": {
+    "gate_0_static_contract": {
+      "v18_must_use_byte_shuffle": true,
+      "v18_must_not_use_i32_gather": true,
+      "v18_must_not_change_aff3_x16_layout": true,
+      "additional_runtime_compute_image_bytes": 0
+    },
+    "gate_1_native_correctness": {
+      "test_shapes": [
+        {"rows": 16, "columns": 128},
+        {"rows": 32, "columns": 512},
+        {"rows": 48, "columns": 5120}
+      ],
+      "all_16_codebook_indices_must_be_exercised": true,
+      "lookup_fp32_bits_must_match_scalar_fp16_replay": true,
+      "v17_v18_output_bits_must_match": true,
+      "actual_authenticated_qwen_tensor_required": true,
+      "integer_dot_must_remain_exact": true,
+      "all_outputs_finite": true
+    },
+    "gate_2_exact_shape_microbenchmark": {
+      "baseline": "AFF3_X16 v17",
+      "candidate": "AFF3_X16 register lookup v18",
+      "matrices": 2,
+      "rows_per_matrix": 17408,
+      "columns": 5120,
+      "warmups": 3,
+      "timed_batches": 11,
+      "inner_iterations_per_timed_batch": 8,
+      "cache_eviction_bytes": 268435456,
+      "alternating_order": true,
+      "pin_to_one_physical_core": true,
+      "minimum_v17_over_v18_speedup": 1.05,
+      "maximum_candidate_median_absolute_deviation_fraction": 0.03,
+      "maximum_candidate_p90_over_p10_ratio": 1.08
+    },
+    "gate_3_model_integration": {
+      "run_only_if_native_gates_pass_and_a_separately_preregistered_representation_gate_passes": true,
+      "minimum_tokens_per_second": 2.75,
+      "minimum_speedup_vs_same_harness_q4_k_m": 1.4,
+      "maximum_wikitext_perplexity_ratio_vs_q4_control": 1.05
+    }
+  },
+  "stop_rules": [
+    "Stop before timing on any codebook lookup bit mismatch, v17/v18 output mismatch, integer-dot mismatch, non-finite output, layout change, or added runtime-image byte.",
+    "Do not time while PTQ, QAT, evaluation, or another benchmark consumes the four-core host.",
+    "Reject v18 if the frozen 1.05 speedup or either stability threshold fails; retain the negative receipt.",
+    "Do not promote v18 into a whole model merely because the primitive passes.",
+    "Do not infer unrun model throughput or quality."
+  ],
+  "claim_boundary": "A pass establishes only a zero-bpw register-lookup improvement over the already-correct AFF3_X16 v17 primitive on the measured AMD Milan exact shape. Whole-model performance and quality require separate authenticated receipts."
+}

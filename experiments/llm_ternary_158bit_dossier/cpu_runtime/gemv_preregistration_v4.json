@@ -1,0 +1,38 @@
+{
+  "schema": "clark_ternary_cpu_gemv_preregistration_v4",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "artifact_schema": "clark_chunked_base3_v1",
+  "tensor": {
+    "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "group_size": 128
+  },
+  "activation": {
+    "dtype": "float32_to_group128_int8",
+    "seed": 20260817,
+    "rounding": "C lrintf under default round-to-nearest mode",
+    "clip": [-127, 127]
+  },
+  "correctness": {
+    "rows": 128,
+    "maximum_absolute_error": 0.00005,
+    "require_exact_thread_determinism": true,
+    "require_exact_pack_roundtrip": true,
+    "accumulation": "eight FP32 SIMD lanes across groups followed by one fixed pairwise reduction per output row"
+  },
+  "performance": {
+    "warmups": 2,
+    "repetitions": 7,
+    "threads": [1, 2, 4],
+    "thread_placement": "persistent_workers_on_distinct_physical_cores",
+    "scalar_comparison_rows": 1024,
+    "cache_eviction_bytes": 268435456
+  },
+  "promotion": {
+    "minimum_avx2_speedup_over_scalar": 2.0,
+    "minimum_fraction_of_stream_read_bandwidth": 0.7,
+    "maximum_compute_image_bits_per_weight_including_fp16_scales": 2.125,
+    "does_not_authorize_breakthrough_claim": true
+  }
+}

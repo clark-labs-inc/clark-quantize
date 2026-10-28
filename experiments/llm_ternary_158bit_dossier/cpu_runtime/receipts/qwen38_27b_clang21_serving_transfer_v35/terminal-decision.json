@@ -1,0 +1,186 @@
+{
+  "claim_boundary": "A pass establishes only a same-model, four-core Milan compiler/runtime composition. It does not establish 2.75 conventional tok/s, 1.40x over Q4, 100 tok/s, broad near-lossless quality, energy efficiency, novelty, DFlash3, or a scientific breakthrough.",
+  "decision": "reject_clang_serving_composition_before_mmlu",
+  "experiment_id": "qwen38_27b_clang21_serving_transfer_v35",
+  "infrastructure_valid": true,
+  "mmlu": null,
+  "mmlu_checks": null,
+  "next_lane": "Keep the representation/kernel lane independent of this rejected compiler composition.",
+  "passed": false,
+  "performance": {
+    "arms": {
+      "candidate": {
+        "mtp3_median_tps": 4.092448439154422,
+        "mtp3_run_median_mad_fraction": 0.0026613542179980227,
+        "mtp3_run_tps": [
+          4.103339894069905,
+          4.081556984238939
+        ],
+        "target_median_tps": 2.2935212338106212,
+        "target_run_median_mad_fraction": 0.002090586770006691,
+        "target_run_tps": [
+          2.298316038958755,
+          2.2887264286624873
+        ]
+      },
+      "parent": {
+        "mtp3_median_tps": 3.610109914735003,
+        "mtp3_run_median_mad_fraction": 0.0025472580272078893,
+        "mtp3_run_tps": [
+          3.6193057961944146,
+          3.6009140332755916
+        ],
+        "target_median_tps": 2.288275846472523,
+        "target_run_median_mad_fraction": 0.0019086379087642732,
+        "target_run_tps": [
+          2.29264333649881,
+          2.283908356446236
+        ]
+      }
+    },
+    "checks": {
+      "all_arm_run_median_mad_fractions_at_most_0_05": true,
+      "all_receipt_identities_and_denominators_exact": true,
+      "candidate_conventional_at_least_2_35_tps": false,
+      "candidate_mtp3_at_least_3_5_tps": true,
+      "candidate_over_parent_conventional_at_least_1_04": false,
+      "candidate_over_parent_mtp3_at_least_1_02": true,
+      "candidate_target_mtp3_exact_token_parity_every_prompt": true,
+      "frequency_range_at_most_100_mhz": true
+    },
+    "cross_runtime_target_token_parity_diagnostic": false,
+    "denominator": {
+      "configurations_per_run": 2,
+      "generated_tokens_per_prompt": 96,
+      "prompts_per_configuration": 4,
+      "runs": 4,
+      "runs_per_arm": 2
+    },
+    "frequency": {
+      "maximum_mhz": 2400.0,
+      "median_mhz": 2400.0,
+      "minimum_mhz": 2400.0,
+      "range_mhz": 0.0,
+      "samples": 1290,
+      "sha256": "e4e040b3b961ed6755a5183c2443c8e3302894698260d612f5e28bc23446f752"
+    },
+    "passed": false,
+    "program_target_diagnostics": {
+      "candidate_at_least_100_tps": false,
+      "candidate_conventional_at_least_2_75_tps": false,
+      "candidate_over_parent_at_least_1_40x": false
+    },
+    "ratios": {
+      "candidate_over_parent_conventional": 1.0022922880325746,
+      "candidate_over_parent_mtp3": 1.1336077116241556
+    },
+    "runs": {
+      "candidate_a": {
+        "arm": "candidate",
+        "mtp3_draft_n": 382,
+        "mtp3_draft_n_accepted": 251,
+        "mtp3_exact_token_parity_with_own_target": true,
+        "mtp3_speedup_vs_own_target": 1.785367993136797,
+        "mtp3_tps": 4.103339894069905,
+        "summary_sha256": "cb23e7fb0ea336ea98708c3db75fc37b19bade78f4fa012b2d81117cbdee06b6",
+        "target_token_sha256": [
+          "d10b10e02779d1aa446c627431fcbc10ba8aded55a17563e5f970d2beeea2711",
+          "20f77cf203a28d17100f82457d12fd268eae8279a0072cd90e7ae411f5337b7c",
+          "b0e655eafe7c70bbfe8813fee6f1e33c57d3b5735bc4d78299396fed19557002",
+          "f566db5186e73b35b33eafcb84400773a4a48a265aaeca97d3fca7a3c55b9424"
+        ],
+        "target_tps": 2.298316038958755
+      },
+      "candidate_b": {
+        "arm": "candidate",
+        "mtp3_draft_n": 382,
+        "mtp3_draft_n_accepted": 251,
+        "mtp3_exact_token_parity_with_own_target": true,
+        "mtp3_speedup_vs_own_target": 1.7833310845386476,
+        "mtp3_tps": 4.081556984238939,
+        "summary_sha256": "9871bcd022592901ce6d00e2b4e3fdae7733a897db7a4a6e0197fd9f263e95f4",
+        "target_token_sha256": [
+          "d10b10e02779d1aa446c627431fcbc10ba8aded55a17563e5f970d2beeea2711",
+          "20f77cf203a28d17100f82457d12fd268eae8279a0072cd90e7ae411f5337b7c",
+          "b0e655eafe7c70bbfe8813fee6f1e33c57d3b5735bc4d78299396fed19557002",
+          "f566db5186e73b35b33eafcb84400773a4a48a265aaeca97d3fca7a3c55b9424"
+        ],
+        "target_tps": 2.2887264286624873
+      },
+      "parent_a": {
+        "arm": "parent",
+        "mtp3_draft_n": 410,
+        "mtp3_draft_n_accepted": 241,
+        "mtp3_exact_token_parity_with_own_target": true,
+        "mtp3_speedup_vs_own_target": 1.5786606396970604,
+        "mtp3_tps": 3.6193057961944146,
+        "summary_sha256": "ef50b0c814fadbbf2fc6c0d048c159e064d9f079bda9558b7d235fb7b397bb2e",
+        "target_token_sha256": [
+          "d10b10e02779d1aa446c627431fcbc10ba8aded55a17563e5f970d2beeea2711",
+          "35ecee7c2862ee78fbdeeee5603af4223ee22122f47e95e7e75cdfb07dc979f9",
+          "66e42cb17d624350a7503a26fd87ca5c3f86ec633fc79695b5dbeb437f892a43",
+          "bcda2d6fd0936f71c2c04b86816c9292698e409034b1d62c0be4cb493bdb0622"
+        ],
+        "target_tps": 2.29264333649881
+      },
+      "parent_b": {
+        "arm": "parent",
+        "mtp3_draft_n": 410,
+        "mtp3_draft_n_accepted": 241,
+        "mtp3_exact_token_parity_with_own_target": true,
+        "mtp3_speedup_vs_own_target": 1.5766455878635244,
+        "mtp3_tps": 3.6009140332755916,
+        "summary_sha256": "63a54d57b530fe6c81f1e6762fd5cc3d8a204b4ec3e2ee8a70c75b984aaa03dd",
+        "target_token_sha256": [
+          "d10b10e02779d1aa446c627431fcbc10ba8aded55a17563e5f970d2beeea2711",
+          "35ecee7c2862ee78fbdeeee5603af4223ee22122f47e95e7e75cdfb07dc979f9",
+          "66e42cb17d624350a7503a26fd87ca5c3f86ec633fc79695b5dbeb437f892a43",
+          "bcda2d6fd0936f71c2c04b86816c9292698e409034b1d62c0be4cb493bdb0622"
+        ],
+        "target_tps": 2.283908356446236
+      }
+    }
+  },
+  "provenance": {
+    "baseline_sha256": "1557f1aac13f6c557e89006427aa829e2707f07ad73aa29611763e754c409a64",
+    "preregistration_sha256": "50bbbdd22dbc7afd5fb6f41fc0bfa86b19807a72256490f748a292d388e57615",
+    "sealed_inputs_sha256": "3804e7134ad913547cd878791b47a0f68b8db8c59b89376bf41981214ebb98c9"
+  },
+  "quick_quality": {
+    "denominator": {
+      "code_trace": 6,
+      "cute": 20,
+      "math500": 8,
+      "wikitext_chunks": 4
+    },
+    "observed": {
+      "code_trace_correct": 5,
+      "code_trace_n": 6,
+      "cute_correct": 9,
+      "cute_n": 20,
+      "math500_correct": 5,
+      "math500_n": 8,
+      "wikitext_ppl": 5.7426,
+      "wikitext_ppl_ratio_vs_stock": 0.9927221809255451
+    },
+    "passed": true,
+    "provenance": {
+      "cute_sha256": "cc885bdb362b11a946f86d8dbed2cc462cccfc156a96b94cedb42293e678c7ec",
+      "math_code_sha256": "6800a09facadff52bbe622dccfe2bd8774e69c6a261708e34db36379a98d18fa",
+      "wikitext_sha256": "36d8188f9d2c0e06801e952149a262e475a7c5a77b0383fba8aa3c03466cfc17"
+    },
+    "quality_checks": {
+      "code_trace_at_least_5_of_6": true,
+      "cute_at_least_9_of_20": true,
+      "math500_at_least_5_of_8": true,
+      "wikitext_ratio_at_most_1_01": true
+    },
+    "receipt_checks": {
+      "cute_receipt_valid_20": true,
+      "math_code_receipt_valid_8_plus_6": true,
+      "wikitext_receipt_valid_4_chunks": true
+    }
+  },
+  "schema": "qwen38_27b_clang21_serving_transfer_result_v35",
+  "terminal": true
+}

@@ -1,0 +1,114 @@
+{
+  "schema": "qwen38_27b_activation_learned_swiglu_gauge_preregistration_v72",
+  "experiment_id": "qwen38_27b_activation_learned_swiglu_gauge_v72",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_before_execution",
+  "frozen_at_utc": "2026-08-20T04:10:00Z",
+  "objective": "Learn the exact storage-neutral SwiGLU diagonal gauge from hard-CQ3 activation error on 32 frozen layer-59 rows, then require improvement on the untouched interleaved 32-row confirmation split.",
+  "parent_finding": {
+    "experiment": "qwen38_27b_swiglu_diagonal_gauge_pilot_v71",
+    "mechanics": "The exact gauge, code-preserving scale fold, storage neutrality, and topology-conditioned down training all executed successfully.",
+    "negative": "A fixed source-column-RMS gauge improved complete-MLP NMSE by only 0.33411777734710262 percent and missed its gate.",
+    "next_hypothesis": "The available gauge freedom must align with activation-weighted hard-quantization error rather than source-weight RMS."
+  },
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "hidden_size": 5120,
+    "intermediate_size": 17408,
+    "layers": 64
+  },
+  "scope": {
+    "layer": 59,
+    "selection_reason": "same worst-down-projection layer as v71; no layer reselection after observing v71",
+    "calibration_rows": 32,
+    "confirmation_rows": 32,
+    "whole_model_generation_forbidden": true,
+    "performance_timing_forbidden": true,
+    "confirmation_rows_forbidden_during_gauge_or_payload_selection": true
+  },
+  "authenticated_inputs": {
+    "full_context_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "v44_training_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+    "v71_negative_receipt_sha256": "1fe38e79ca68f018d45d95788b7fd34fcdc15532462ce82e99c3692a3e242e4f",
+    "source_tensor_sha256": {
+      "mlp.gate_proj.weight": "af5f1f3627acd6ed1a1e3ff71defaeb4433b1dc280efdb01b6d8ebf9086ab1c3",
+      "mlp.up_proj.weight": "2d3f11424f7705452380d1c7a2df4e625929ab9c460882e9c81ce5effadc7feb",
+      "mlp.down_proj.weight": "ce8eaece6fd48b996ff5328840d7b75d5d91dc23acf358711388973b5c9584ca"
+    },
+    "v44_payload_sha256": {
+      "gate": "ca349cd022d248a29fae502d523430b50fa5894f1e5deff549e222b159a02599",
+      "up": "1592cd2858371645fd8e236113caa1c39d733a959b3a54ab0bbe4f6d550de4bc",
+      "down": "faa8661738f9c0bdcadc2dcd7eac7723ca39c1d99486523b2e8b21e636c76356"
+    }
+  },
+  "row_split": {
+    "source_order": "the frozen 64 calibration_flat_rows from v42",
+    "train_start": 0,
+    "confirmation_start": 1,
+    "stride": 2,
+    "training_positions": "even positions 0 through 62",
+    "confirmation_positions": "odd positions 1 through 63",
+    "split_selected_before_execution": true
+  },
+  "gauge_optimization": {
+    "algebra": "up_prime = D up; down_prime = down D^-1",
+    "parameterization": "17408 FP32 log-gauge values initialized to zero; training-only",
+    "hard_forward": "CQ3 optimal ternary codes and scales recomputed for each 128-row down shard at every outer step",
+    "gradient": "straight-through gradient through the hard CQ3 down weight and both appearances of D",
+    "objective": "sum of normalized squared complete down-projection error on training rows plus log-gauge L2",
+    "global_scale_fix": "subtract median log D after each optimizer step",
+    "outer_steps": 12,
+    "learning_rate": 0.02,
+    "gradient_clip_norm": 1.0,
+    "log_l2_weight": 0.0001,
+    "minimum": 0.25,
+    "maximum": 4.0,
+    "row_shard": 128,
+    "group_size": 128,
+    "selection": "lowest hard-CQ3 training NMSE among step 0 through 12",
+    "confirmation_rows_observed": 0,
+    "sweep": false
+  },
+  "down_training": {
+    "method": "activation-aware row-sharded hard-forward straight-through CQ3 training after freezing D",
+    "training_rows": 32,
+    "confirmation_rows_observed": 0,
+    "row_shard": 128,
+    "steps_per_row_shard": 6,
+    "learning_rate": 0.0001,
+    "gradient_clip_norm": 1.0,
+    "weight_reconstruction_weight": 0.01,
+    "group_size": 128,
+    "restart_boundary": "one authenticated 128-row shard"
+  },
+  "pilot_gate": {
+    "maximum_unquantized_gauge_identity_nmse": 1e-5,
+    "maximum_up_scale_fold_nmse": 2e-5,
+    "up_codes_must_be_unchanged": true,
+    "up_and_down_payload_bytes_each": 23674880,
+    "runtime_sidecar_bytes": 0,
+    "additional_runtime_operations": 0,
+    "minimum_relative_train_mlp_nmse_improvement": 0.15,
+    "minimum_relative_confirmation_mlp_nmse_improvement": 0.1,
+    "all_values_finite": true
+  },
+  "resources": {
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "allowed_logical_cpus": [0, 2, 4, 6],
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "restart_on_failure": true,
+    "minimum_free_disk_bytes": 8589934592
+  },
+  "decision": {
+    "if_pass": "promote activation-learned gauge training to a preregistered multilayer set without changing the learned representation",
+    "if_fail": "reject the diagonal-gauge family at layer 59 and move to a richer block-local correction or mixed-bit sensitive-mode treatment",
+    "no_whole_model_claim": true,
+    "no_novelty_claim": true,
+    "no_breakthrough_claim": true
+  },
+  "claim_boundary": "Frozen train-confirmation layer-59 calibration pilot only. A pass cannot establish whole-model capability, perplexity, MATH, code, MMLU, throughput, energy, novelty, 100 tokens per second, or a scientific breakthrough."
+}

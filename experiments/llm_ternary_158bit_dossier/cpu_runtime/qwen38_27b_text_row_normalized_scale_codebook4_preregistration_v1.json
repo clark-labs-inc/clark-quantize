@@ -1,0 +1,77 @@
+{
+  "schema": "qwen38_27b_text_row_normalized_scale_codebook4_preregistration_v1",
+  "status": "frozen_before_authoritative_fit",
+  "frozen_at_utc": "2026-08-18T03:20:00Z",
+  "objective": "If the mapped row-normalized scale gate passes, fit every missing tensor in the exact Qwen3.8-27B llama.cpp text graph and measure honest complete-text-graph reconstruction and storage",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "full_checkpoint_inventory_sha256": "8533a0edfba093faf2a865391405408461613b92ef83e8d511436f2ed96bc14d",
+    "text_graph_inventory_sha256": "23a5c5137b7893b6d551fcc0085c4a994bf7ae158938d57974d32c7ed856361f",
+    "selection": "model.language_model.* plus lm_head.weight; exactly matches llama.cpp --no-nextn model_n_params",
+    "text_graph_tensors": 851,
+    "text_graph_parameters": 26895998464,
+    "rank_ge_2_tensors": 546,
+    "rank_ge_2_parameters": 26895319040,
+    "retained_exact_tensors": 305,
+    "retained_exact_parameters": 679424,
+    "group_128_scales": 210595840,
+    "output_rows": 4892160,
+    "excluded_vision_parameters": 460730096,
+    "excluded_mtp_nextn_parameters": 424699392
+  },
+  "scope_parent": {
+    "receipt": "/workspace/quant-state/qwen38-27b-text-graph-scope-v1.json",
+    "required_schema": "qwen38_27b_text_graph_scope_receipt_v1",
+    "valid_complete_terminal_required": true
+  },
+  "mapped_parent": {
+    "require_static_gate_pass": true,
+    "require_terminal_watch_receipt_authenticating_parent_manifest": true,
+    "tensors": 402,
+    "parameters": 26869760000,
+    "scales": 209920000,
+    "rows": 4396032
+  },
+  "supplemental_fit": {
+    "selection": "every rank-2-or-higher text-graph tensor absent from the authenticated 402-tensor parent",
+    "tensors": 144,
+    "parameters": 25559040,
+    "scales": 675840,
+    "rows": 496128,
+    "source": "pinned safetensors rows quantized with optimal group-128 ternary scales",
+    "row_batch": 128,
+    "algorithm": "one FP16 row geometric-mean anchor plus one per-tensor 16-entry FP16 log-ratio codebook",
+    "final_assignment": "minimum absolute error against frozen FP16 anchor times FP16 ratio",
+    "indices": "two 4-bit indices per byte",
+    "decoder_accumulation": "FP32 multiplication",
+    "iterations": 50
+  },
+  "reconstruction_gate": {
+    "maximum_global_normalized_rmse": 0.02,
+    "maximum_per_tensor_normalized_rmse": 0.05,
+    "maximum_per_tensor_p99_relative_error_nonzero_scales": 0.10
+  },
+  "storage_gate": {
+    "maximum_complete_bundle_bpw": 1.64,
+    "expected_projected_complete_bundle_bytes": 5471531964,
+    "expected_projected_complete_bundle_bpw": 1.6274634968688255,
+    "count_all_ternary_code_bytes": true,
+    "count_all_scale_indices": true,
+    "count_all_fp16_row_anchors": true,
+    "count_all_fp16_codebooks": true,
+    "count_retained_exact_text_tensors_metadata_alignment_and_auxiliary_files": true
+  },
+  "promotion_rules": [
+    "all 546 rank-2+ text tensors and all 210595840 group scales must be covered",
+    "the parameter denominator must equal llama.cpp model_n_params 26895998464",
+    "vision and MTP/NextN weights may be omitted only because both candidate and controls omit those graphs",
+    "all reconstruction thresholds and the complete-text-bundle storage threshold must pass",
+    "a pass authorizes text-representation export and direct decoder work only",
+    "CUTE, MATH, code, MMLU-type, WikiText, and paired CPU throughput remain mandatory after export",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "this gate cannot prove model capability or a scientific breakthrough"
+  ],
+  "claim_boundary": "Complete deployable Qwen3.8-27B text graph only; multimodal vision and MTP/NextN graphs are explicitly out of scope for both candidate and controls."
+}

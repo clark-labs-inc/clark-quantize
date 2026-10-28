@@ -1,0 +1,85 @@
+{
+  "schema": "qwen38_27b_layer0_mlp_direct_cq3_quality_preregistration_v1",
+  "created_at": "2026-08-17T10:56:00Z",
+  "purpose": "Measure whether the byte-scope-proven Qwen3.8-27B layer-0 MLP CQ3 candidate preserves the frozen Q4 control's CPU capability",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_work_frozen": true,
+    "candidate_path": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0.gguf",
+    "candidate_bytes": 18894489952,
+    "candidate_hash_source": "/workspace/quant-state/qwen38-27b-layer0-mlp-direct-cq3-v1/conversion-receipt.json",
+    "claim_boundary": "quality assessment of one direct Q4-to-CQ3 MLP triplet; not QAT, whole-model ternary quality, or a breakthrough"
+  },
+  "required_inputs": {
+    "candidate_ready_marker": "/workspace/quant-state/qwen38-27b-layer0-mlp-direct-cq3-v1/CANDIDATE_READY",
+    "candidate_scope_receipt": "/workspace/quant-state/qwen38-27b-layer0-mlp-direct-cq3-v1/gguf-scope.json",
+    "baseline_quality_marker": "/workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1/QUALITY_COMPLETE",
+    "baseline_summary": "/workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1/summary.json"
+  },
+  "runtime": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "candidate_build": "/workspace/build/llama.cpp-qwen38-selective-v1",
+    "server_launcher_sha256": "c972d6528779bf7630fb39a48d248239788a657c2f8530e6ff3a9e9cd2f19b57",
+    "threads": 4,
+    "parallel": 1,
+    "context": 8192,
+    "mmlu_timeout_seconds": 900,
+    "memory_max": "29G",
+    "cpu_quota": "800%"
+  },
+  "frozen_evaluations": {
+    "cute": {
+      "manifest": "cute_quick_v1.json",
+      "manifest_sha256": "19dd73eedf737d11f7c94d039822de62314abf31e3fb739a9a875fe65c5bbd16",
+      "evaluator_sha256": "9c40a48a0c3f0544156a20ccccdc12f7e90bbae8afd391bf640ead1ff234c8ab",
+      "items": 20
+    },
+    "math_code": {
+      "manifest": "math_code_canary_v1.json",
+      "manifest_sha256": "1ec0b41ce3ca3597d65013ac0c8a48c208c4e03b05f0109be61319252c09dab0",
+      "evaluator_sha256": "fa3d0f870b3b0ed1d7d907cc8d146854b164e6d75cfa9d2bd20743979af74677",
+      "math_items": 8,
+      "code_items": 6
+    },
+    "mmlu": {
+      "manifest": "qwen35_4b_cpu_layer30_mmlu_v1.json",
+      "manifest_filename_is_historical_but_content_is_model_agnostic": true,
+      "manifest_sha256": "e3e38ccb1bf35c56b600f1cf39bbd0ea38072f2b4bdd5fc36146c143fb658dba",
+      "evaluator_sha256": "a604ca9a528231fa17de78ab2a7ffed7c1b9a0b9a9ca74459c2d894f1f3612d3",
+      "items": 64,
+      "shots": 5,
+      "dataset_revision": "c30699e8356da336a370243923dbaf21066bb9fe"
+    },
+    "wikitext": {
+      "corpus": "/workspace/quant-runs/cq3-4b-ptq-scope-20260817/wikitext-2-raw/wiki.test.raw",
+      "corpus_sha256": "173c87a53759e0201f33e0ccf978e510c2042d7f2cb78229d9a50d79b9e7dd08",
+      "evaluator_sha256": "54458dc377a1d07aaf26df90823f65f973b625f55a6ac73895d0c6ec9a666b07",
+      "chunks": 4,
+      "context": 512
+    }
+  },
+  "execution_order": [
+    "validate_candidate_conversion_and_scope_receipts",
+    "single_turn_load_smoke",
+    "CUTE_Quick_20",
+    "MATH_500_quick_8_and_code_trace_6",
+    "MMLU_64_five_shot_exact_option_likelihood",
+    "WikiText_4x512",
+    "relative_gate_assessment"
+  ],
+  "relative_promotion_gate": {
+    "cute": "candidate_correct >= max(0, baseline_correct - 2)",
+    "math500": "candidate_correct >= max(0, baseline_correct - 1)",
+    "code_trace": "candidate_correct >= max(0, baseline_correct - 1)",
+    "mmlu": "candidate_correct >= max(baseline_correct - 3, ceil(0.90 * baseline_correct))",
+    "wikitext": "candidate_final_ppl / baseline_final_ppl <= 1.05",
+    "all_receipts_valid": true
+  },
+  "validity_rules": [
+    "All frozen evaluations run even if an earlier score misses its promotion threshold",
+    "Infrastructure-invalid work is neither a zero nor a completed score",
+    "The exact candidate SHA-256 from the conversion receipt must appear in every candidate evaluation receipt",
+    "A quality-complete marker records a valid finished measurement; a separate promotion marker records pass or rejection",
+    "Throughput comparison is forbidden until this quality suite is complete and passes promotion"
+  ]
+}

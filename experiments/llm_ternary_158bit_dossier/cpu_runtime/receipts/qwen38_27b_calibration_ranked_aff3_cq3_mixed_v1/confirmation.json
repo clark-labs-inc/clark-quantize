@@ -1,0 +1,82 @@
+{
+  "artifact_repository_commit": "46c044f0ce645056e9c31e73a7f90a44659077da",
+  "claim_boundary": "terminal fresh-confirmation three-block numeric gate only; no complete-model conversion, capability, native-kernel, runtime, energy, or breakthrough result",
+  "complete": true,
+  "confirmation_cache_receipt_sha256": "15089537080990660a83c2991e3460068383b7f2ebda10c205554fbde4bc401a",
+  "confirmation_cache_sha256": "97e0f2e5f3728541f96833550f9c29e46a5a0e096a655209206d2e4c57258c18",
+  "direct_receipt_sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320",
+  "elapsed_seconds": 82.93857566200313,
+  "gate": {
+    "all_final_layers_below_maximum": false,
+    "all_trained_layers_not_regressed_vs_direct_mixed": true,
+    "all_values_finite": true,
+    "exact_candidates_scored_per_layer": 2,
+    "layers": 3,
+    "maximum_final_fresh_confirmation_complete_block_nmse_per_layer": 0.05,
+    "mean_relative_fresh_confirmation_nmse_reduction_vs_direct_mixed": 0.26934062575715334,
+    "minimum_mean_relative_fresh_confirmation_nmse_reduction_vs_direct_mixed": 0.01,
+    "passed": false
+  },
+  "layers": [
+    {
+      "candidates_scored": [
+        "step_zero_direct_mixed",
+        "final_trained_mixed"
+      ],
+      "checkpoint_or_hyperparameter_selection_performed": false,
+      "complete": true,
+      "confirmation_rows": 32,
+      "direct_confirmation_complete_block_nmse": 0.019442585167053796,
+      "elapsed_seconds": 27.995812814013334,
+      "exact_bf16_cache_reproduction_nmse": 0.0,
+      "layer": 0,
+      "relative_confirmation_nmse_reduction_vs_direct": 0.22252297160782766,
+      "terminal": true,
+      "trained_confirmation_complete_block_nmse": 0.015116163339942713,
+      "type": "linear_attention"
+    },
+    {
+      "candidates_scored": [
+        "step_zero_direct_mixed",
+        "final_trained_mixed"
+      ],
+      "checkpoint_or_hyperparameter_selection_performed": false,
+      "complete": true,
+      "confirmation_rows": 32,
+      "direct_confirmation_complete_block_nmse": 0.01195473760322916,
+      "elapsed_seconds": 27.245711483992636,
+      "exact_bf16_cache_reproduction_nmse": 0.0,
+      "layer": 32,
+      "relative_confirmation_nmse_reduction_vs_direct": 0.13073898605825848,
+      "terminal": true,
+      "trained_confirmation_complete_block_nmse": 0.010391787330390444,
+      "type": "linear_attention"
+    },
+    {
+      "candidates_scored": [
+        "step_zero_direct_mixed",
+        "final_trained_mixed"
+      ],
+      "checkpoint_or_hyperparameter_selection_performed": false,
+      "complete": true,
+      "confirmation_rows": 32,
+      "direct_confirmation_complete_block_nmse": 0.1286854634253393,
+      "elapsed_seconds": 27.2344776270038,
+      "exact_bf16_cache_reproduction_nmse": 0.0,
+      "layer": 63,
+      "relative_confirmation_nmse_reduction_vs_direct": 0.4547599196053739,
+      "terminal": true,
+      "trained_confirmation_complete_block_nmse": 0.07016447242365172,
+      "type": "full_attention"
+    }
+  ],
+  "model": "Qwen/Qwen3.8-27B",
+  "pre_execution_amendment_sha256": "ff330cdef2222bfa0e319dc95651c180a88a13c49335046143072838b5bf6139",
+  "preregistration_sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c",
+  "repository_commit": "08187ed1fd24a6936d4998a5d660f3ae8ee1abff",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_calibration_ranked_mixed_confirmation_receipt_v1",
+  "terminal": true,
+  "training_amendment_sha256": "f5ac66e37f59fccec9aa7414a2af88f291d00724c7ee0505a1ca2f8bf0ea965e",
+  "training_receipt_sha256": "4454761a8519db03ca88a91c21cf8344cab12445266f1936767c04ebe3b76128"
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_dual_chain_result_v12",
+  "completed_at": "2026-08-18T16:31:23Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": false,
+  "kernel_promoted": false,
+  "decision": "reject_before_timing_on_full_shape_numerical_bound",
+  "classification": "numerical_contract_failure_not_a_performance_score",
+  "checks": {
+    "build_succeeded": true,
+    "small_native_vs_generic_tolerance_passed": true,
+    "small_pair_tolerance_passed": true,
+    "assembly_has_two_independent_accumulator_registers": true,
+    "full_shape_max_scaled_delta_at_most_2e_5": false,
+    "exact_shape_microbenchmark_required": false,
+    "selective_27b_integration_required": false,
+    "cute_required": false,
+    "mmlu_required": false
+  },
+  "failure": {
+    "exit_code": 134,
+    "assertion": "qwen38_27b_cq3_x86_pair_bench_v1.inc:128: max_scaled_delta <= 2e-5f",
+    "population": {
+      "gate_outputs": 17408,
+      "up_outputs": 17408,
+      "total_outputs": 34816,
+      "columns_per_output": 5120
+    },
+    "interpretation": "The bounded small-vector tests passed, but the exact Qwen3.8-27B MLP population contained at least one reassociated output beyond the frozen 2e-5 scaled error limit. The harness asserted before warmups or measured repetitions, so no timing result exists."
+  },
+  "assembly": {
+    "group0_accumulator": "ymm4",
+    "group1_accumulator": "ymm3",
+    "disassembly_sha256": "da0745e072c5fabddf670745c13e6541255ec48159ef081b9b2b4b2c1cf4869f"
+  },
+  "execution": {
+    "candidate_binary": "/workspace/build/qwen38-cq3-dual-chain-avx2-v11/bin/test-cq3",
+    "candidate_binary_sha256": "c22ee856fd3396ead0618d39396f6c138e8ca3de27c287b77327816d83f643ba",
+    "small_correctness_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "small_correctness_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "full_shape_stderr_sha256": "dc5eeed3dc9a2b46e77f12cd2e80bec7f6c3b490649c262196e34b0995e0ada1"
+  },
+  "performance": {
+    "ran": false,
+    "reason": "The full-shape numerical check failed before warmup and timing. No zero or inferred speed score is assigned."
+  },
+  "quality": {
+    "ran": false,
+    "reason": "No integrated runtime was promoted through the numerical and performance gates."
+  },
+  "next_lane": "Run a preregistered non-promotable v13 characterization that reports the exact 34,816-output absolute and scaled error distribution and the 9-repetition timing without imposing a post-hoc numerical threshold. Use its measurements only to decide whether a separately frozen model-level CUTE/MMLU experiment is justified.",
+  "claim_boundary": "v12 proves that the dual-chain instruction schedule exists and passes small tests but violates the frozen full-shape error bound. It contains no speed score, model quality, storage, energy, 100 accepted tok/s, novelty, or breakthrough result."
+}

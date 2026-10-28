@@ -1,0 +1,19 @@
+[Unit]
+Description=Run exact static entropy codec on frozen real Qwen3.8-27B chunks
+After=quant-qwen38-27b-ternary-type-class-rate-v1.service quant-qwen38-27b-hash-residual-screen-v1.service
+Before=quant-qwen38-27b-layer0-mlp-activation-qat-watch-v1.service
+
+[Service]
+Type=oneshot
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-static-entropy.bundle
+ExecStart=/workspace/tmp/watch_qwen38_27b_static_entropy_codec_sample_v1.sh
+CPUQuota=100%
+MemoryMax=2G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

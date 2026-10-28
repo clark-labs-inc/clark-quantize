@@ -1,0 +1,102 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_clang21_holdout_replication_preregistration_v31",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_avx2_clang21_holdout_replication_v31",
+  "frozen_at": "2026-08-19T04:05:36Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true,
+    "candidate_source_sha256": "02c71df73938ed97e965ae165c55c2a9c9c751a80e558495140722031be386e5",
+    "candidate_compiler_sha256": "412bbe8c60571a1eb06f48fde89635033621caeb01a9b4ee76d46711bae8e932",
+    "candidate_libggml_cpu_sha256": "02b27cf8dec0c43a62b680d81640a97b4caef45c28f8377524dd2f083b480a81",
+    "parent_verifier_sha256": "b6b011f1d2588247fdd74c2746405235965f9ab7b5be1f381ac2a6e35b6726d3",
+    "candidate_verifier_sha256": "12ad8648e2ed2e04d8b5b4e5b4e628dc93d2d67995d2120cec9488933d9d838f",
+    "runner_sha256": "f0742b53227c8b7bec49a9de90f6ab3fee761962c423a9ece448e7c0bd02d8fc"
+  },
+  "prior_evidence": {
+    "v30_terminal": "failed only the frozen stability cap and did not advance to a model graph",
+    "v30_geometric_mean_parent_over_candidate_latency_ratio": 1.1534291142859496,
+    "v30_minimum_shape_ratio_median": 1.141526589993119,
+    "v30_maximum_pairwise_ratio_mad_fraction": 0.03280011432011071,
+    "v30_exact_seeded_cases": 1024,
+    "v30_exact_special_cases": 5,
+    "v30_backend_tests": "3/3 passed"
+  },
+  "hypothesis": "The v30 Clang speedup is stable and the 3.28% MAD on the smallest shape was sampling dispersion. A fresh 63-pair-per-shape holdout using byte-identical binaries, fixed 2.4 GHz operation, and unchanged gates should reproduce at least 1.08x geometric gain with every shape stable below 3.00% MAD fraction.",
+  "implementation_contract": {
+    "reuse_byte_identical_v30_binaries": true,
+    "no_rebuild_or_source_change_before_replication": true,
+    "cpu_affinity": "0",
+    "threads": 1,
+    "alternating_parent_candidate_order": true,
+    "cache_eviction_bytes": 268435456,
+    "warmup_pairs_per_shape": 2,
+    "measured_pairs_per_shape": 63,
+    "shape_families": [
+      [10240, 4, 5120],
+      [6144, 4, 5120],
+      [5120, 4, 6144],
+      [12288, 4, 5120],
+      [1024, 4, 5120]
+    ]
+  },
+  "sequential_gates": {
+    "gate_0_inherited_exactness_and_codegen": {
+      "v30_stack_frame_bytes": 168,
+      "v30_vector_stack_moves": 14,
+      "v30_parent_candidate_fp32_output_sha256": "272d2b97c74109c571b31a891f032a4063f7ebb61192ecc55e9e58e9dc722db1",
+      "v30_backend_reference_tests_passed": 3,
+      "v30_backend_reference_tests_total": 3
+    },
+    "gate_1_paired_native_microkernel": {
+      "measured_pairs_per_shape": 63,
+      "minimum_geometric_mean_parent_over_candidate_latency_ratio": 1.08,
+      "no_shape_may_regress_below_ratio": 0.98,
+      "maximum_pairwise_ratio_mad_fraction": 0.03,
+      "all_output_hashes_must_match": true
+    },
+    "gate_2_paired_real_model_four_row_graph": {
+      "model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+      "cpu_affinity": "0,2,4,6",
+      "unscored_warmup_processes_per_runtime": 1,
+      "paired_processes_per_runtime": 6,
+      "samples_per_process": 7,
+      "minimum_parent_over_candidate_latency_ratio": 1.05,
+      "maximum_candidate_process_median_mad_fraction": 0.03,
+      "maximum_frequency_range_mhz": 100
+    },
+    "gate_3_target_and_mtp3_system": {
+      "target_model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+      "draft_model": "/workspace/models/controls/mtp-Qwen3.8-27B-Q4_0.gguf",
+      "prompts_per_runtime": 4,
+      "tokens_per_prompt": 96,
+      "candidate_target_tokens_must_match_parent": true,
+      "candidate_mtp3_tokens_must_match_its_own_target": true,
+      "minimum_candidate_over_parent_target_tps": 0.99,
+      "minimum_candidate_over_parent_mtp3_accepted_tps": 1.04
+    },
+    "gate_4_same_weights_capability_tripwire": {
+      "run_only_after_all_prior_gates_pass": true,
+      "cute_quick_minimum_correct": 9,
+      "cute_quick_denominator": 20,
+      "math500_minimum_correct": 5,
+      "math500_denominator": 8,
+      "code_trace_minimum_correct": 5,
+      "code_trace_denominator": 6,
+      "maximum_wikitext_ppl_ratio_vs_stock": 1.005,
+      "wikitext_chunks": 4
+    }
+  },
+  "stop_rules": [
+    "Freeze this replication after v30 terminalization and before generating any v31 measurement.",
+    "Reject before the model graph if any binary hash differs, output hashes differ, geometric gain is below 1.08, any shape is below 0.98, or any shape MAD fraction exceeds 0.03.",
+    "Do not pool v30 and v31 to override a failing v31 gate.",
+    "Do not change affinity, pair count, thresholds, binaries, or source after observing v31 measurements."
+  ],
+  "promotion_boundary": "A pass independently confirms the exact Clang 21 native-kernel speedup and authorizes the frozen real-model four-row graph gate. It does not itself establish serving speed, capability preservation, 100 tok/s, or novelty."
+}

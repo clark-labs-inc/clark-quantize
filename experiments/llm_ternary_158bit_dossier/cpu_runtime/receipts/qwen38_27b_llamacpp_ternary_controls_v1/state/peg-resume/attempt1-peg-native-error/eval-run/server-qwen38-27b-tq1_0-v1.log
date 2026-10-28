@@ -1,0 +1,24 @@
+0.00.002.128 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.003.791 W srv  llama_server: -----------------
+0.00.003.797 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.003.797 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.003.797 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.003.797 W srv  llama_server: -----------------
+0.00.005.043 I srv    load_model: loading model '/workspace/models/controls/Qwen3.8-27B-TQ1_0.gguf'
+0.01.461.410 I cmn          init: llama threadpool init, n_threads = 4
+0.02.067.958 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 8192, kv_unified = 'false'
+0.02.071.919 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.02.071.962 I srv  llama_server: model loaded
+0.02.071.966 I srv  llama_server: listening on http://127.0.0.1:8110
+0.02.272.761 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.02.272.815 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.27.639.201 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    123, progress = 0.97, t =  25.37 s / 4.85 tokens per second
+0.43.479.453 I slot print_timing: id  0 | task 0 | prompt eval time =   26390.20 ms /   127 tokens (  207.80 ms per token,     4.81 tokens per second)
+0.43.479.460 I slot print_timing: id  0 | task 0 |        eval time =   14816.40 ms /    48 tokens (  315.24 ms per token,     3.17 tokens per second)
+0.43.479.461 I slot print_timing: id  0 | task 0 |       total time =   41206.60 ms /   175 tokens
+0.43.479.467 I slot print_timing: id  0 | task 0 |    graphs reused =         46
+0.43.479.512 I slot      release: id  0 | task 0 | stop processing: n_tokens = 174, truncated = 0
+0.43.479.614 W common_chat_peg_parse: unparsed peg-native output: 老三矾erein槛anton� HaagbounceodesidiroppICOSinken-animationNSE Sands秀才umm皋点个واط_filepath_DXera�直的uperthores_DOCerspargoskeruala意辙tractor处的lassesCoachYTE_Desc本色�本网okenvoahas不觉
+0.43.481.914 W srv          stop: cancel task, id_task = 0
+0.43.481.979 W srv    operator(): got exception: {"error":{"code":500,"message":"The model produced output that does not match the expected peg-native format","type":"server_error"}}
+0.43.506.609 I srv    operator(): operator(): cleaning up before exit...

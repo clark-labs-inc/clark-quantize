@@ -1,0 +1,72 @@
+{
+  "schema": "qwen38_27b_aff3_llamacpp_development_preregistration_v49",
+  "experiment_id": "qwen38_27b_aff3_llamacpp_development_v49",
+  "created_at": "2026-08-19T10:27:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "repository_parent_commit": "8dd53052dcbd3e1e28f3eef75261eee6b65f9b70",
+  "purpose": "Attach the authenticated rotated-AFF3 operation to the real Qwen3.8-27B llama.cpp graph and prevent the replaced projection tensor from being loaded, without opening performance or whole-model quality measurements.",
+  "llama_cpp": {
+    "source": "https://github.com/ggml-org/llama.cpp.git",
+    "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "source_must_be_clean_before_transform": true,
+    "frozen_files": {
+      "src/CMakeLists.txt": "3f9c9046c1bd19df660f644b164c81aa9f643ebe2d62a0174b7bb39af2af7170",
+      "src/models/models.h": "f56211fd74dc21fc35294ce93103ad3b4cbd29daf2aeea5462b9d762f6d6179b",
+      "src/models/qwen35.cpp": "b61c5813fc80c54269d45cbbdbbc34b090500e8017dc190483605b37249d007c"
+    }
+  },
+  "development_artifact": {
+    "role": "authenticated direct-v43 layer-0 image used only to establish loader and graph attachment before trained-v44 exists",
+    "path": "/workspace/quant-runs/qwen38-aff3-rotated-v47/layer-00-direct.aff3x16",
+    "file_sha256": "a4cec7372ac21a0093d047c1452277508583ebca1e3f4f66c73a8a74142ccf48",
+    "root_sha256": "dbe0344332c188d971f2cb6586583c723ab70a33a428bfefb66eff95f77d0a24",
+    "shape": [
+      5120,
+      6144
+    ]
+  },
+  "integration_contract": {
+    "activation": "QWEN38_AFF3_DIR plus mandatory explicit QWEN38_AFF3_LAYERS; no sidecar environment means an unchanged upstream graph",
+    "development_partial_layer_mode": "an explicit comma/range layer set is permitted for structural validation but cannot satisfy promotion",
+    "promotion_layer_set": "exactly 0-63",
+    "full_attention_seam": "replace blk.N.attn_output/wo multiplication after the sigmoid gate",
+    "linear_attention_seam": "replace blk.N.ssm_out multiplication after gated normalization",
+    "input_shape": [
+      6144,
+      "tokens"
+    ],
+    "output_shape": [
+      5120,
+      "tokens"
+    ],
+    "projection_tensor_loading": "use TENSOR_SKIP for wo or ssm_out only when that exact layer has an authenticated AFF3 image",
+    "tasking": "four GGML CPU tasks partition the Cartesian token-by-16-row-tile space; each task owns rotation and A8 scratch",
+    "image_lifetime": "read-only mmap and derived FP32 cosine/sine coefficients live with the llama model",
+    "callback_lifetime": "per-node scratch and callback userdata live with the constructed Qwen graph",
+    "persistent_dense_weight_bytes": 0,
+    "decoded_group_scale_matrix_bytes": 0,
+    "lora_on_replaced_projection": "unsupported and must fail closed rather than silently bypass the adapter"
+  },
+  "development_gate": {
+    "exact_base_source_hashes_required": true,
+    "transformed_llama_tree_must_compile": true,
+    "unchanged_graph_when_environment_absent": true,
+    "missing_or_malformed_layer_declaration_rejected": true,
+    "wrong_layer_image_rejected": true,
+    "both_qwen35_projection_seams_replaced": true,
+    "original_projection_tensor_skipped_for_active_layer": true,
+    "one_and_eight_token_output_bit_exact_vs_v47": true,
+    "actual_qwen_model_load_and_graph_execution_deferred_until_v43_releases_memory": true,
+    "performance_timing_permitted": false
+  },
+  "promotion_sequence": [
+    "compile and validate the exact transformed llama.cpp tree without competing with v43",
+    "after v43 releases host memory, load the real Qwen3.8-27B model with one explicit development layer and prove graph execution parity",
+    "after v44 passes, materialize and authenticate all 64 trained AFF3 images",
+    "after v45 passes, attach the sensitivity-selected post-block residual operation",
+    "require the exact 0-63 AFF3 layer set before whole-model capability and performance gates"
+  ],
+  "claim_boundary": "A v49 development pass can prove exact source transformation, tensor-skip wiring, and real Qwen graph attachment. It cannot establish trained-v44 behavior, complete mixed-model correctness, throughput, quality, memory, energy, novelty, or a breakthrough.",
+  "frozen": true
+}

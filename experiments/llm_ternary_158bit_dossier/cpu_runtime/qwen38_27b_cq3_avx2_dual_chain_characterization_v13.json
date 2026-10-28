@@ -1,0 +1,60 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_dual_chain_characterization_preregistration_v13",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_cq3_avx2_dual_chain_characterization_v13",
+  "frozen_at": "2026-08-18T16:33:00Z",
+  "classification": "non_promotable_diagnostic",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "microbenchmark_cores": 1,
+    "qwen_4b_compute_forbidden": true,
+    "weight_type": "CQ3_0",
+    "activation_type": "CQ8_0",
+    "weight_bits_per_weight": 2.125
+  },
+  "anchors": {
+    "v11_receipt": "receipts/qwen38_27b_cq3_avx2_dual_chain_v11/terminal-decision.json",
+    "v12_receipt": "receipts/qwen38_27b_cq3_avx2_dual_chain_v12/terminal-decision.json",
+    "fresh_single_chain_control_median_us": 2585.92,
+    "fresh_single_chain_control_sha256": "a740b5a8b13dc82cd6a9616ff32cef8d0bd8eb7008a7c032e46a425d68c81d64"
+  },
+  "question": "Without changing or relaxing a promotion gate post hoc, what is the exact full-shape error distribution introduced by the two-chain FP reassociation, and what is its exact-shape timing effect?",
+  "implementation": {
+    "kernel_patch": "kernels/llama_cpp_cq3_avx2_dual_chain_v11.patch",
+    "base_harness_patch": "kernels/llama_cpp_cq3_avx2_dual_chain_tolerant_harness_v12.patch",
+    "diagnostic_patch": "kernels/llama_cpp_cq3_avx2_dual_chain_characterization_v13.patch",
+    "kernel_change_from_v12": "none",
+    "diagnostic_change": "Remove the v12 assertion only after preserving its terminal rejection; report exactness plus maximum, median, and p99 scaled error across all 34,816 outputs, then run the already frozen 9-repetition timing."
+  },
+  "measurement_contract": {
+    "gate_outputs": 17408,
+    "up_outputs": 17408,
+    "total_outputs": 34816,
+    "columns_per_output": 5120,
+    "warmups": 2,
+    "timed_repetitions": 9,
+    "cache_eviction_bytes": 268435456,
+    "report_exact_control_candidate": true,
+    "report_max_abs_delta": true,
+    "report_scaled_error_p50_p99_max": true,
+    "report_single_chain_over_dual_chain_speedup": true,
+    "report_candidate_sample_range_fraction": true
+  },
+  "decision_contract": {
+    "promotable": false,
+    "speed_reference_threshold_for_followup_only": 1.08,
+    "no_numerical_threshold_will_be_selected_from_this_run": true,
+    "next_if_speed_is_material_and_errors_are_finite": "Freeze a separate 27B model-level experiment using CUTE-20, MMLU-64, WikiText, MATH, and paired throughput.",
+    "next_otherwise": "Reject dual-chain reassociation and redesign the CQ3 integer microkernel without changing FP reduction order."
+  },
+  "stop_rules": [
+    "Stop if any error statistic is non-finite or any receipt denominator differs.",
+    "Do not promote v13 regardless of timing.",
+    "Do not run model quality from v13 without a new preregistration.",
+    "Do not convert partial or failed measurements into a score."
+  ],
+  "claim_boundary": "v13 can characterize one CQ3 AVX2 schedule on one exact Qwen3.8-27B MLP shape. It cannot establish an acceptable numerical bound, model quality, a production kernel, whole-model speed, 100 accepted tok/s, novelty, or a breakthrough."
+}

@@ -1,0 +1,61 @@
+{
+  "schema": "qwen38_27b_aff3_llamacpp_actual_model_failure_diagnosis_v49",
+  "created_at": "2026-08-19T12:31:42Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "classification": "callback_userdata_lifetime_violation",
+  "failed_smoke": {
+    "receipt_sha256": "f6de56cdcc5089f4a9d739c5835df6893dc9f7883b4bc18baac8184dc26cb8c4",
+    "exit_code": 1,
+    "generated_bytes": 0,
+    "performance_timing_ran": false,
+    "passed": false
+  },
+  "systemd": {
+    "result": "core-dump",
+    "signal": "SIGSEGV",
+    "signal_number": 11,
+    "wall_seconds": 10.582,
+    "cpu_seconds": 9.239,
+    "memory_peak_bytes": 13421772800,
+    "oom_observed": false,
+    "journal_sha256": "a8b0072d836b2541d94773f72db958c8dc2ad02a06c641b701f1dec75ab8a600"
+  },
+  "debugger": {
+    "stdout_sha256": "5ceb5e7204daf2578c53afe2559d62857cc2c8d3a8534d3b54da84b885bc361e",
+    "stderr_sha256": "eca669933fcaf66639689f06f2f88dbb275b18ba0a5fd4f00c5a1a80133c0f48",
+    "faulting_thread": 4,
+    "faulting_frame": "__memcpy_avx_unaligned_erms",
+    "caller": "qwen38 AFF3 graph_callback",
+    "upstream_path": [
+      "ggml_graph_compute_thread",
+      "llama_context::graph_compute",
+      "llama_context::process_ubatch",
+      "llama_context::decode"
+    ]
+  },
+  "source_evidence": {
+    "llama_model_cpp_sha256": "518506c4aaf12a8cbb44f9f12ce3d75e876753f8131d94d6507515cd3a57ff5a",
+    "models_h_sha256": "67724d24225496ed52a36ea530307798d810fc2a60080870b0bca1dcef53e4ab",
+    "qwen35_cpp_sha256": "8c85d1307842fa8adb5ded3622f5e6acb8b74f63514b1d24302bbe78c77e3bcd",
+    "aff3_runtime_cpp_sha256": "51ae1057964ad24e48a48e1408e68a4c55137a9d52124483c5201a5dcce3a05c",
+    "ownership_chain": [
+      "llama_model::build_graph creates the architecture builder in a local unique_ptr",
+      "build_graph returns only llm_graph_result::get_gf",
+      "the local architecture builder is destroyed before scheduled graph compute",
+      "v49 stored qwen38_aff3_node_state only in that architecture builder",
+      "the custom callback therefore dereferenced released scratch state"
+    ]
+  },
+  "repair_contract": {
+    "successor": "v50",
+    "required_owner": "llm_graph_result",
+    "required_lifetime": "graph allocation, execution, and reuse",
+    "model_global_scratch_forbidden": true,
+    "leaked_callback_state_forbidden": true,
+    "repeat_actual_model_smoke_required": true
+  },
+  "claim_boundary": "This receipt establishes the root cause of the failed v49 actual-model smoke. It is negative integration evidence, not a representation-quality, throughput, memory, energy, novelty, or scientific-breakthrough result.",
+  "complete": true,
+  "terminal": true
+}

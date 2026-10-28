@@ -1,0 +1,339 @@
+{
+  "activation": {
+    "q8_sha256": "0ade6ef1113d2497d511dc7908de0b487d7918c9002e277887495bf1a5482276",
+    "scale_sha256": "23e0c25244158e93108d58785c758b160fee6ba17d022caa31a9877d3609fa01",
+    "sum_sha256": "5435a00c6604143a84c6492a3e83cee889ca00040e7695d17db311bd4a991ffe"
+  },
+  "compute_image": {
+    "bits_per_weight_including_fp16_scales": 2.125,
+    "exact_pack_roundtrip": true,
+    "fp16_scale_bytes": 1392640,
+    "packed_code_bytes": 22282240,
+    "packed_sha256": "c3605f1d36b273ad3e42b53d4a81e94329b2aba794a8c6519ceaad5a8accf893",
+    "total_weight_bytes": 23674880
+  },
+  "controls": {
+    "arm_samples_seconds": [
+      9.30409999999604e-05,
+      9.516700000000711e-05,
+      9.04160000001486e-05,
+      9.479200000006571e-05,
+      9.024999999995842e-05,
+      8.795799999994358e-05,
+      9.049999999999336e-05,
+      8.89999999997837e-05,
+      8.758400000008493e-05,
+      0.0001510829999999963,
+      8.83750000000294e-05
+    ],
+    "arm_speedup_over_scalar": 28.375785259198462,
+    "cache_eviction_bytes": 536870912,
+    "cache_eviction_checksum": 68451041280,
+    "scalar_comparison_rows": 1024,
+    "scalar_samples_seconds": [
+      0.002444958000000108,
+      0.0025146249999998815,
+      0.0025497920000001617,
+      0.002625375000000041,
+      0.0025519170000001257,
+      0.0026281670000001256,
+      0.002581208000000057,
+      0.0026358340000001146,
+      0.002565624999999905,
+      0.002610750000000106,
+      0.0025463749999998786
+    ],
+    "stream_read": {
+      "1": {
+        "gbytes_per_second": 24.340849844999443,
+        "maximum_seconds": 0.022793167000000003,
+        "median_seconds": 0.022056375000000017,
+        "minimum_seconds": 0.022025542000000065,
+        "samples_seconds": [
+          0.022037792,
+          0.022050249999999938,
+          0.022029833000000054,
+          0.02205708400000006,
+          0.02204687499999991,
+          0.022056375000000017,
+          0.022025542000000065,
+          0.022279291000000034,
+          0.022793167000000003,
+          0.022516082999999965,
+          0.022174791999999943
+        ]
+      },
+      "2": {
+        "gbytes_per_second": 47.317381455781884,
+        "maximum_seconds": 0.011550958000000167,
+        "median_seconds": 0.011346166999999907,
+        "minimum_seconds": 0.011248707999999885,
+        "samples_seconds": [
+          0.011355540999999914,
+          0.011345249999999973,
+          0.011374500000000065,
+          0.011313666999999805,
+          0.011550958000000167,
+          0.011382082999999987,
+          0.01129420900000011,
+          0.011340500000000198,
+          0.011248707999999885,
+          0.011346166999999907,
+          0.011348458000000061
+        ]
+      },
+      "4": {
+        "gbytes_per_second": 89.86352056444358,
+        "maximum_seconds": 0.006074708000000095,
+        "median_seconds": 0.005974292000000103,
+        "minimum_seconds": 0.005952084000000024,
+        "samples_seconds": [
+          0.005973667000000127,
+          0.006048250000000088,
+          0.005968999999999891,
+          0.006053708999999907,
+          0.005959084000000114,
+          0.006074708000000095,
+          0.005952084000000024,
+          0.00604833299999985,
+          0.005972083000000072,
+          0.006061499999999942,
+          0.005974292000000103
+        ]
+      },
+      "8": {
+        "gbytes_per_second": 169.99451960410138,
+        "maximum_seconds": 0.0032357499999999817,
+        "median_seconds": 0.0031581659999999623,
+        "minimum_seconds": 0.0031165840000000333,
+        "samples_seconds": [
+          0.0032357499999999817,
+          0.003135208999999861,
+          0.0031196250000000703,
+          0.00315091699999992,
+          0.0031781250000000316,
+          0.0031165840000000333,
+          0.0031581659999999623,
+          0.0031655420000000767,
+          0.0031876669999999496,
+          0.0031249159999999776,
+          0.003163833000000116
+        ]
+      }
+    }
+  },
+  "correctness": {
+    "exact_across_thread_counts": true,
+    "maximum_absolute_error": 4.76837158203125e-07,
+    "maximum_relative_error": 0.00012271087325643748,
+    "rows": 256,
+    "subset_maximum_absolute_error": 7.152557373046875e-07
+  },
+  "fixture": {
+    "parent_artifact": {
+      "manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4",
+      "pack_receipt": "/workspace/quant-state/qwen38-base3-full.json",
+      "pack_receipt_sha256": "ef6b8608411ba48abc85b0da390e3e8dec2b8cfad8290739c0c17557bf14cef5",
+      "root": "/workspace/quant-runs/qwen38-base3-full/artifacts/qwen38-optimal.cq3q"
+    },
+    "path": "/Users/stan/.cache/clark-quantize/qwen38/qwen38-layer0-gate-proj-fixture-v1.npz",
+    "receipt": "/Users/stan/Documents/git/clark-quantize/experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38-layer0-gate-proj-fixture-v1.json",
+    "receipt_sha256": "2139ad567f571872b3f5d022dec8b029563e88a056875358fbc7e2efe810b8a2",
+    "sha256": "681b501509a986f5f8bda2982d68f34397ef42e532b08a98b452fa9b0f8056e2"
+  },
+  "host": {
+    "cpu_features": {
+      "avx2": false,
+      "dotprod": true,
+      "f16c": false,
+      "fma": false,
+      "neon": true
+    },
+    "hardware": {
+      "cpu_brand": "Apple M5 Max",
+      "efficiency_cpus": "12",
+      "memory_bytes": "68719476736",
+      "model": "Mac17,6",
+      "performance_cpus": "6",
+      "physical_cpus": "18"
+    },
+    "logical_cpus": 18,
+    "machine": "arm64",
+    "node": "stans-MacBook-Pro.local",
+    "platform": "macOS-26.4.1-arm64-arm-64bit",
+    "python": "3.9.6"
+  },
+  "hypothesis": "An aligned-2 A8-by-ternary NEON DOTPROD kernel can preserve the exact real Qwen code/scale contract, exceed 20x the scalar oracle, and sustain at least 50 GB/s on four M5 Max CPU workers.",
+  "implementation": {
+    "benchmark_sha256": "96fbe46b1b374a7a4530fe0866afcd144477b1f6b80b9a6ebdea30446bf73ffd",
+    "build_script_sha256": "273db81adcefce5525288927cbcdde5f4beff65b136e35235ba8c4909c22e75b",
+    "c_source_sha256": "5d48ff190c7e54dbba2430c26f2a2fdc1bfe8063a30152874bffd94d00f810fa",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+    "native_library_sha256": "c55ac64889a9c43a783925204c0f04fc751334b2a861643cea2bb755375d1c11",
+    "python_wrapper_sha256": "c630cc2fcab35ed8fb16292ce23bc3d85d799bab967411d6b0e3b5af8f337afc"
+  },
+  "kernel": {
+    "1": {
+      "effective_weight_gbytes_per_second": 21.1312105321888,
+      "fraction_of_stream_read_bandwidth": 0.8681377464940885,
+      "maximum_seconds": 0.0012262499999999843,
+      "median_seconds": 0.0011203749999999513,
+      "minimum_seconds": 0.0010823330000000464,
+      "output_sha256": "4ab1396f053d2f6d1474d41c2014c929fed64bcbc7c9516435a7a5027c42403f",
+      "samples_seconds": [
+        0.0011203749999999513,
+        0.0011304999999999232,
+        0.0012262499999999843,
+        0.0011252910000001393,
+        0.0011882920000001462,
+        0.0011139999999998373,
+        0.001117041999999957,
+        0.0011401250000000474,
+        0.0010823330000000464,
+        0.0011138330000000085,
+        0.0010957919999998733
+      ]
+    },
+    "2": {
+      "effective_weight_gbytes_per_second": 38.51402617177118,
+      "fraction_of_stream_read_bandwidth": 0.813950920081293,
+      "maximum_seconds": 0.0006255829999999296,
+      "median_seconds": 0.0006147080000000749,
+      "minimum_seconds": 0.0005897909999998951,
+      "output_sha256": "4ab1396f053d2f6d1474d41c2014c929fed64bcbc7c9516435a7a5027c42403f",
+      "samples_seconds": [
+        0.0006081250000000704,
+        0.0005897909999998951,
+        0.0006255829999999296,
+        0.0006182499999998203,
+        0.0006139999999998924,
+        0.0006106669999998982,
+        0.0006147080000000749,
+        0.0006190830000001313,
+        0.0006124169999999207,
+        0.0006210420000001271,
+        0.0006179159999999406
+      ]
+    },
+    "4": {
+      "effective_weight_gbytes_per_second": 60.38878586681706,
+      "fraction_of_stream_read_bandwidth": 0.6720055645217085,
+      "maximum_seconds": 0.0004673339999998749,
+      "median_seconds": 0.0003920409999997876,
+      "minimum_seconds": 0.0003801669999998758,
+      "output_sha256": "4ab1396f053d2f6d1474d41c2014c929fed64bcbc7c9516435a7a5027c42403f",
+      "samples_seconds": [
+        0.0003823339999999842,
+        0.00039441699999986923,
+        0.0003910830000000143,
+        0.0003920409999997876,
+        0.00038604100000005914,
+        0.00038199999999988243,
+        0.0004673339999998749,
+        0.00039958399999995287,
+        0.0003980419999998208,
+        0.0003940829999999895,
+        0.0003801669999998758
+      ]
+    },
+    "8": {
+      "effective_weight_gbytes_per_second": 59.81646925658671,
+      "fraction_of_stream_read_bandwidth": 0.3518729274090289,
+      "maximum_seconds": 0.0004537079999999971,
+      "median_seconds": 0.0003957919999999504,
+      "minimum_seconds": 0.0003733339999998364,
+      "output_sha256": "4ab1396f053d2f6d1474d41c2014c929fed64bcbc7c9516435a7a5027c42403f",
+      "samples_seconds": [
+        0.0003762910000000286,
+        0.00039041699999997626,
+        0.0003957919999999504,
+        0.0003794580000000547,
+        0.0004010410000001574,
+        0.00040287500000002474,
+        0.0003733339999998364,
+        0.0003885830000001089,
+        0.0004537079999999971,
+        0.00040200000000001346,
+        0.0004503330000000805
+      ]
+    }
+  },
+  "preregistration": {
+    "path": "/Users/stan/Documents/git/clark-quantize/experiments/llm_ternary_158bit_dossier/cpu_runtime/gemv_arm_preregistration_v1.json",
+    "rules": {
+      "activation": {
+        "clip": [
+          -127,
+          127
+        ],
+        "dtype": "float32_to_group128_int8",
+        "rounding": "C lrintf under default round-to-nearest mode",
+        "seed": 20260817
+      },
+      "correctness": {
+        "maximum_absolute_error": 5e-05,
+        "require_exact_pack_roundtrip": true,
+        "require_exact_thread_determinism": true,
+        "rows": 256
+      },
+      "fixture": {
+        "codes_sha256": "d660e496eda4884dbca3d2479f0c1dd2124b9af79b8c787c8796b413f53b41ac",
+        "file_sha256": "681b501509a986f5f8bda2982d68f34397ef42e532b08a98b452fa9b0f8056e2",
+        "receipt_file_sha256": "2139ad567f571872b3f5d022dec8b029563e88a056875358fbc7e2efe810b8a2",
+        "scales_sha256": "55fdcd7f4aa4b33d8fd5f1fd421ba440bc63cadb2be71a539d15f37013f731d1",
+        "schema": "clark_qwen_ternary_tensor_fixture_v1"
+      },
+      "kernel": {
+        "accumulation": "four FP32 SIMD lanes with FMA across groups followed by one fixed pairwise reduction per output row",
+        "activation_isa": "AArch64 NEON signed dot product",
+        "implementation": "arm_dotprod",
+        "weight_layout": "group128-transposed aligned 2-bit"
+      },
+      "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "performance": {
+        "cache_eviction_bytes": 536870912,
+        "repetitions": 11,
+        "scalar_comparison_rows": 1024,
+        "thread_placement": "persistent_workers_macos_scheduler_no_affinity_api",
+        "threads": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "warmups": 3
+      },
+      "promotion": {
+        "does_not_authorize_breakthrough_claim": true,
+        "does_not_satisfy_full_graph_or_70_percent_k2_exit_gate": true,
+        "maximum_compute_image_bits_per_weight_including_fp16_scales": 2.125,
+        "minimum_arm_speedup_over_scalar": 20.0,
+        "minimum_eight_thread_effective_weight_gbytes_per_second": 55.0,
+        "minimum_four_thread_effective_weight_gbytes_per_second": 50.0,
+        "minimum_four_thread_fraction_of_stream_read_bandwidth": 0.6
+      },
+      "schema": "clark_ternary_cpu_gemv_arm_preregistration_v1",
+      "status": "frozen_before_authoritative_real-matrix_run",
+      "tensor": {
+        "columns": 5120,
+        "group_size": 128,
+        "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+        "rows": 17408
+      }
+    },
+    "sha256": "1485d1abd073f3c346754441e3edbb9d1bf2f65befb8d00b6bfbf7b98d03ab26"
+  },
+  "promotion": {
+    "passed": true,
+    "scope": "K2 M5 Max aligned-2 ARM DOTPROD microkernel v1 only; the 70%-roofline/full-graph, quality, energy, and breakthrough gates remain open"
+  },
+  "schema": "clark_qwen38_ternary_gemv_arm_v1",
+  "tensor": {
+    "codes_sha256": "d660e496eda4884dbca3d2479f0c1dd2124b9af79b8c787c8796b413f53b41ac",
+    "columns": 5120,
+    "group_size": 128,
+    "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "scales_sha256": "55fdcd7f4aa4b33d8fd5f1fd421ba440bc63cadb2be71a539d15f37013f731d1"
+  }
+}

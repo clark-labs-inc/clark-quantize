@@ -19,6 +19,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from clark_air.quant.master_weight_qat import ste_quantized_weight
+from clark_quantize.qwen_qat import hard_ternary_ste
 from weight_patch import apply_weight_patch
 
 
@@ -31,7 +32,12 @@ MODEL_LOADER_CANDIDATES = (
 BLOCK_RE = re.compile(r"^model\.(?:language_model\.)?layers\.(\d+)$")
 
 
-def load_model(model_dir: Path) -> torch.nn.Module:
+def load_model(model_dir: Path, *, device: str = "auto") -> torch.nn.Module:
+    if device not in {"auto", "cpu", "cuda"}:
+        raise ValueError(f"unsupported device request: {device!r}")
+    if device == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError("CUDA was requested but is not available")
+    device_map: str | dict[str, str] = "auto" if device == "auto" else {"": device}
     errors = []
     for loader_name in MODEL_LOADER_CANDIDATES:
         loader = getattr(transformers, loader_name, None)
@@ -41,7 +47,7 @@ def load_model(model_dir: Path) -> torch.nn.Module:
             model = loader.from_pretrained(
                 model_dir,
                 dtype=torch.bfloat16,
-                device_map="auto",
+                device_map=device_map,
                 trust_remote_code=True,
                 low_cpu_mem_usage=True,
             )
@@ -78,15 +84,27 @@ def get_parent_and_attr(model: torch.nn.Module, module_name: str) -> tuple[torch
 
 
 class QuantSwiGLUMLP(torch.nn.Module):
-    def __init__(self, source: torch.nn.Module, *, mode: str, group_size: int) -> None:
+    def __init__(
+        self,
+        source: torch.nn.Module,
+        *,
+        mode: str,
+        group_size: int,
+        artifact_exact_ternary: bool = False,
+    ) -> None:
         super().__init__()
         self.gate = torch.nn.Parameter(source.gate_proj.weight.detach().float().clone())
         self.up = torch.nn.Parameter(source.up_proj.weight.detach().float().clone())
         self.down = torch.nn.Parameter(source.down_proj.weight.detach().float().clone())
         self.mode = mode
         self.group_size = group_size
+        self.artifact_exact_ternary = artifact_exact_ternary
 
     def quantized(self, master: torch.Tensor) -> torch.Tensor:
+        if self.mode == "ternary" and self.artifact_exact_ternary:
+            return hard_ternary_ste(
+                master, group_size=self.group_size, row_batch=128
+            ).to(torch.bfloat16).float()
         return ste_quantized_weight(master, mode=self.mode, group_size=self.group_size)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -98,7 +116,7 @@ class QuantSwiGLUMLP(torch.nn.Module):
         losses = []
         for master in (self.gate, self.up, self.down):
             with torch.no_grad():
-                quantized = ste_quantized_weight(master, mode=self.mode, group_size=self.group_size).detach()
+                quantized = self.quantized(master).detach()
             denom = master.detach().float().square().mean().clamp_min(1e-8)
             losses.append((master.float() - quantized.float()).square().mean() / denom)
         return torch.stack(losses).mean()
@@ -106,9 +124,9 @@ class QuantSwiGLUMLP(torch.nn.Module):
     @torch.no_grad()
     def hard_weights(self) -> dict[str, torch.Tensor]:
         return {
-            "gate": ste_quantized_weight(self.gate, mode=self.mode, group_size=self.group_size).detach().cpu().to(torch.bfloat16),
-            "up": ste_quantized_weight(self.up, mode=self.mode, group_size=self.group_size).detach().cpu().to(torch.bfloat16),
-            "down": ste_quantized_weight(self.down, mode=self.mode, group_size=self.group_size).detach().cpu().to(torch.bfloat16),
+            "gate": self.quantized(self.gate).detach().cpu().to(torch.bfloat16),
+            "up": self.quantized(self.up).detach().cpu().to(torch.bfloat16),
+            "down": self.quantized(self.down).detach().cpu().to(torch.bfloat16),
         }
 
 
@@ -128,10 +146,22 @@ class FrozenSwiGLUMLP(torch.nn.Module):
         return self.down_proj(F.silu(self.gate_proj(x)) * self.up_proj(x))
 
 
-def replace_mlp_with_quant(model: torch.nn.Module, layer_id: int, *, mode: str, group_size: int) -> QuantSwiGLUMLP:
+def replace_mlp_with_quant(
+    model: torch.nn.Module,
+    layer_id: int,
+    *,
+    mode: str,
+    group_size: int,
+    artifact_exact_ternary: bool = False,
+) -> QuantSwiGLUMLP:
     module_name = mlp_module_name(layer_id)
     source = model.get_submodule(module_name)
-    quant = QuantSwiGLUMLP(source, mode=mode, group_size=group_size).to(next(source.parameters()).device)
+    quant = QuantSwiGLUMLP(
+        source,
+        mode=mode,
+        group_size=group_size,
+        artifact_exact_ternary=artifact_exact_ternary,
+    ).to(next(source.parameters()).device)
     parent, attr = get_parent_and_attr(model, module_name)
     setattr(parent, attr, quant)
     return quant

@@ -1,0 +1,104 @@
+{
+  "schema": "qwen38_27b_swiglu_diagonal_gauge_pilot_preregistration_v71",
+  "experiment_id": "qwen38_27b_swiglu_diagonal_gauge_pilot_v71",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_before_execution",
+  "frozen_at_utc": "2026-08-20T03:35:00Z",
+  "objective": "Falsify or support a storage-neutral exact-gauge preconditioner for the dominant sensitive MLP mode by folding a fixed diagonal D into layer-59 up-projection CQ3 scales and topology-conditionally training down times D inverse.",
+  "scientific_hypothesis": {
+    "exact_algebra": "For positive diagonal D, down(silu(gate(x)) elementwise_multiply up(x)) equals (down D^-1)(silu(gate(x)) elementwise_multiply (D up)(x)).",
+    "quantization_hypothesis": "Normalizing persistent down-projection column RMS before CQ3 packing reduces within-group dynamic-range competition. Up-row CQ3 quantization is positively homogeneous, so the inverse transformation can be folded into its existing row scales without changing codes, bytes, or runtime operations.",
+    "topology_hypothesis": "Training down D^-1 against activations produced by the actual trained gate and gauged trained up payloads repairs the non-compositional reuse exposed by v69.",
+    "disconfirming_result": "Any exactness or storage check fails, or the complete-MLP calibration NMSE improves by less than 20 percent over the authenticated v44 mixed-topology control.",
+    "novelty_status": "unassessed; SmoothQuant, AWQ, cross-layer equalization, and SwiGLU gauge literature must be audited before any novelty claim"
+  },
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "architecture": "Qwen3.8 text model",
+    "hidden_size": 5120,
+    "intermediate_size": 17408,
+    "layers": 64
+  },
+  "scope": {
+    "layer": 59,
+    "selection_reason": "largest v44 trained down-projection selected calibration NMSE, 0.21852178603165218, while its up projection remained substantially safer at 0.04141285384839074",
+    "gate_payload": "reuse exact v44 trained CQ3 bytes",
+    "up_payload": "reuse exact v44 trained CQ3 codes and multiply only its FP16 row-group scales by D",
+    "down_payload": "train CQ3 for down D inverse against the actual gauged candidate topology",
+    "attention": "exact BF16 cached layer replay used only to recover the frozen MLP inputs; no AFF3 is trained or evaluated",
+    "calibration_rows": 64,
+    "confirmation_rows": 0,
+    "whole_model_generation_forbidden": true,
+    "performance_timing_forbidden": true
+  },
+  "authenticated_inputs": {
+    "full_context_receipt_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_full_context_block_cache_v42/receipt.json",
+    "full_context_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "layer59_context_shard_sha256": "bec10cdc2b4a4bd568bb3b2cc3e7ffe01b30b9f8dd91108d680c4db33f610cc1",
+    "v44_training_receipt_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_all_layer_mixed_train_v44/terminal-receipt.json",
+    "v44_training_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+    "source_tensor_sha256": {
+      "mlp.gate_proj.weight": "af5f1f3627acd6ed1a1e3ff71defaeb4433b1dc280efdb01b6d8ebf9086ab1c3",
+      "mlp.up_proj.weight": "2d3f11424f7705452380d1c7a2df4e625929ab9c460882e9c81ce5effadc7feb",
+      "mlp.down_proj.weight": "ce8eaece6fd48b996ff5328840d7b75d5d91dc23acf358711388973b5c9584ca"
+    },
+    "v44_payload_sha256": {
+      "gate": "ca349cd022d248a29fae502d523430b50fa5894f1e5deff549e222b159a02599",
+      "up": "1592cd2858371645fd8e236113caa1c39d733a959b3a54ab0bbe4f6d550de4bc",
+      "down": "faa8661738f9c0bdcadc2dcd7eac7723ca39c1d99486523b2e8b21e636c76356"
+    }
+  },
+  "gauge": {
+    "derivation": "D_j = clamp(rms over rows of source down column j divided by the median positive column RMS, 0.25, 4.0)",
+    "epsilon": 1e-12,
+    "minimum": 0.25,
+    "maximum": 4.0,
+    "selection_data": "source weight only",
+    "sweep": false,
+    "learned_parameters": 0,
+    "stored_runtime_sidecar": false
+  },
+  "training": {
+    "method": "activation-aware row-sharded hard-forward straight-through CQ3 training",
+    "candidate_inputs": "silu(v44_trained_gate(exact_cached_mlp_input)) times gauged_v44_trained_up(exact_cached_mlp_input)",
+    "teacher_inputs": "D times exact cached down input",
+    "target_source": "BF16 rounding of source down times D inverse",
+    "row_shard": 128,
+    "steps_per_row_shard": 6,
+    "learning_rate": 0.0001,
+    "gradient_clip_norm": 1.0,
+    "weight_reconstruction_weight": 0.01,
+    "group_size": 128,
+    "selection_data": "calibration only",
+    "restart_boundary": "one authenticated 128-row down-projection shard"
+  },
+  "pilot_gate": {
+    "maximum_unquantized_gauge_identity_nmse": 1e-5,
+    "maximum_up_scale_fold_nmse": 1e-5,
+    "up_codes_must_be_unchanged": true,
+    "up_and_down_payload_bytes_each": 23674880,
+    "runtime_sidecar_bytes": 0,
+    "additional_runtime_operations": 0,
+    "minimum_relative_complete_mlp_nmse_improvement": 0.2,
+    "all_values_finite": true
+  },
+  "resources": {
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "allowed_logical_cpus": [0, 2, 4, 6],
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "restart_on_failure": true,
+    "minimum_free_disk_bytes": 8589934592
+  },
+  "decision": {
+    "if_pass": "extend exact gauge training to a preregistered multilayer set, then materialize a whole-model candidate and restart quality gates from CUTE development screening",
+    "if_fail": "reject the fixed column-RMS diagonal gauge and retain v67 as the functional anchor",
+    "no_whole_model_claim": true,
+    "no_novelty_claim": true,
+    "no_breakthrough_claim": true
+  },
+  "claim_boundary": "Calibration-only layer-59 MLP gauge pilot. A pass cannot establish whole-model capability, perplexity, MATH, code, MMLU, throughput, energy, novelty, 100 tokens per second, or a scientific breakthrough."
+}

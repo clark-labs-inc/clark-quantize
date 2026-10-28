@@ -1,0 +1,210 @@
+{
+  "schema": "cpu_quick_variant_comparison_v1",
+  "created_at": "2026-08-17T06:33:49.094357+00:00",
+  "a": {
+    "label": "qat-v2-exact-l30",
+    "model_sha256": "b1fa2c8323880fe386f6ec3923973ca4cb3b00e8d9593fea8eba574f758e052e"
+  },
+  "b": {
+    "label": "bf16",
+    "model_sha256": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974"
+  },
+  "cute": {
+    "manifest_content_sha256": "cbc71368d5be89d5610d55990f9de248a434c6bfbb11e5c130718fa0fac2714a",
+    "n": 20,
+    "a_correct": 5,
+    "b_correct": 8,
+    "a_only_correct": 0,
+    "b_only_correct": 3,
+    "exact_output_equal": 10,
+    "normalized_prediction_equal": 10,
+    "correctness_equal": 17,
+    "differences": [
+      {
+        "task": "del_char",
+        "id": "del_char:line233",
+        "gold": "inex",
+        "a": {
+          "correct": false,
+          "prediction": "nex",
+          "output": "nex"
+        },
+        "b": {
+          "correct": true,
+          "prediction": "inex",
+          "output": "inex"
+        }
+      },
+      {
+        "task": "del_char",
+        "id": "del_char:line509",
+        "gold": "ptins",
+        "a": {
+          "correct": false,
+          "prediction": "ptns",
+          "output": "ptns"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "ptons",
+          "output": "ptons"
+        }
+      },
+      {
+        "task": "del_char",
+        "id": "del_char:line74",
+        "gold": "bck",
+        "a": {
+          "correct": false,
+          "prediction": "bc",
+          "output": "bc"
+        },
+        "b": {
+          "correct": true,
+          "prediction": "bck",
+          "output": "bck"
+        }
+      },
+      {
+        "task": "ins_char",
+        "id": "ins_char:line233",
+        "gold": "indecx",
+        "a": {
+          "correct": false,
+          "prediction": "icnxcex",
+          "output": "icnxcex"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "icnxcix",
+          "output": "icnxcix"
+        }
+      },
+      {
+        "task": "ins_char",
+        "id": "ins_char:line509",
+        "gold": "optionts",
+        "a": {
+          "correct": false,
+          "prediction": "optstionst",
+          "output": "optstionst"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "optontionst",
+          "output": "optontionst"
+        }
+      },
+      {
+        "task": "ins_char",
+        "id": "ins_char:line887",
+        "gold": "purchaser",
+        "a": {
+          "correct": false,
+          "prediction": "purcharcer",
+          "output": "purcharcer"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "purcaserchase",
+          "output": "purcaserchase"
+        }
+      },
+      {
+        "task": "sub_char",
+        "id": "sub_char:line233",
+        "gold": "indxx",
+        "a": {
+          "correct": false,
+          "prediction": "inxex",
+          "output": "inxex"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "inxix",
+          "output": "inxix"
+        }
+      },
+      {
+        "task": "sub_char",
+        "id": "sub_char:line887",
+        "gold": "plrchase",
+        "a": {
+          "correct": false,
+          "prediction": "plcrchase",
+          "output": "plcrchase"
+        },
+        "b": {
+          "correct": true,
+          "prediction": "plrchase",
+          "output": "plrchase"
+        }
+      },
+      {
+        "task": "swap_char",
+        "id": "swap_char:line509",
+        "gold": "fidle",
+        "a": {
+          "correct": false,
+          "prediction": "fideel",
+          "output": "fideel"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "fdeil",
+          "output": "fdeil"
+        }
+      },
+      {
+        "task": "swap_char",
+        "id": "swap_char:line887",
+        "gold": "ehougn",
+        "a": {
+          "correct": false,
+          "prediction": "neughh",
+          "output": "neughh"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "neugh",
+          "output": "neugh"
+        }
+      }
+    ]
+  },
+  "math_code": {
+    "manifest_content_sha256": "bb71cad0c51f0acc8167ef5df53ee629fd0660b8cad43e734427c3285ef6c130",
+    "n": 14,
+    "a_correct": 9,
+    "b_correct": 9,
+    "a_only_correct": 0,
+    "b_only_correct": 0,
+    "exact_output_equal": 13,
+    "normalized_prediction_equal": 13,
+    "correctness_equal": 14,
+    "differences": [
+      {
+        "task": "math500",
+        "id": "math500:18",
+        "gold": "28",
+        "a": {
+          "correct": false,
+          "prediction": "56",
+          "output": "\\boxed{56}"
+        },
+        "b": {
+          "correct": false,
+          "prediction": "52",
+          "output": "\\boxed{52}"
+        }
+      }
+    ]
+  },
+  "inputs": {
+    "a_math": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v2/eval/math-code-qat-v2-l30.json",
+    "a_cute": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v2/eval/cute-qat-v2-l30.json",
+    "b_math": "/workspace/quant-runs/cq3-4b-ptq-scope-20260817/canary-bf16.json",
+    "b_cute": "/workspace/quant-runs/cq3-4b-ptq-scope-20260817/cute-quick-bf16.json"
+  },
+  "report_content_sha256": "fc7527eb3796125c95fa54e0be9230f904b57af19ec69bfbecfdb0ec2beaf785"
+}

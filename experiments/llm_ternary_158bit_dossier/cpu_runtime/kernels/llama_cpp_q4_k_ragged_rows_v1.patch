@@ -1,0 +1,119 @@
+diff --git a/ggml/src/ggml-cpu/arch/x86/repack.cpp b/ggml/src/ggml-cpu/arch/x86/repack.cpp
+index af1cebad1..0e2e2b9d9 100644
+--- a/ggml/src/ggml-cpu/arch/x86/repack.cpp
++++ b/ggml/src/ggml-cpu/arch/x86/repack.cpp
+@@ -1501,17 +1501,14 @@ void ggml_gemv_q4_K_8x8_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const vo
+     const block_q4_Kx8 * b_ptr_start = (const block_q4_Kx8 *)vx;
+     const block_q8_K * a_ptr_start = (const block_q8_K *)vy;
+ 
+-    // Process Q8_K blocks one by one
+-    for (int64_t y = 0; y < nr; y++) {
+-
+-        // Pointers to LHS blocks of block_q8_K format
+-        const block_q8_K * a_ptr = a_ptr_start + (y * nb);
++    // Keep each repacked weight tile cache-resident across the 1--3 ragged
++    // verification rows.  This changes the traffic order from token-major
++    // (one full matrix stream per token) to weight-tile-major.
++    for (int64_t x = 0; x < nc / 8; x++) {
++        const block_q4_Kx8 * b_ptr = b_ptr_start + (x * b_nb);
+ 
+-        // Take group of eight interleaved block_q4_K structures at each pass of the loop and perform dot product operation
+-        for (int64_t x = 0; x < nc / 8; x++) {
+-
+-            // Pointers to RHS blocks
+-            const block_q4_Kx8 * b_ptr = b_ptr_start + (x * b_nb);
++        for (int64_t y = 0; y < nr; y++) {
++            const block_q8_K * a_ptr = a_ptr_start + (y * nb);
+ 
+             // Master FP accumulators
+             __m256 acc_row = _mm256_setzero_ps();
+@@ -1672,7 +1669,7 @@ void ggml_gemv_q4_K_8x8_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const vo
+ 
+             // Accumulated output values permuted so as to be stored in appropriate order post accumulation
+             acc_row = _mm256_permutevar8x32_ps(acc_row, finalpermutemask);
+-            _mm256_storeu_ps(s + (y * nr + x * 8), _mm256_sub_ps(acc_row, acc_min_rows));
++            _mm256_storeu_ps(s + (y * bs + x * 8), _mm256_sub_ps(acc_row, acc_min_rows));
+         }
+     }
+ 
+diff --git a/ggml/src/ggml-cpu/repack.cpp b/ggml/src/ggml-cpu/repack.cpp
+index 9689ca3ce..b308ed99a 100644
+--- a/ggml/src/ggml-cpu/repack.cpp
++++ b/ggml/src/ggml-cpu/repack.cpp
+@@ -967,9 +967,6 @@ void ggml_gemv_q4_K_8x8_q8_K_generic(int n, float * GGML_RESTRICT s, size_t bs,
+     assert (n % qk == 0);
+     assert (nc % ncols_interleaved == 0);
+ 
+-    UNUSED(bs);
+-    UNUSED(nr);
+-
+     float sumf[8];
+     float sum_minf[8];
+     uint32_t utmp[32];
+@@ -977,15 +974,20 @@ void ggml_gemv_q4_K_8x8_q8_K_generic(int n, float * GGML_RESTRICT s, size_t bs,
+     int sumi2;
+     int sumi;
+ 
+-    const block_q8_K * a_ptr = (const block_q8_K *) vy;
+     for (int x = 0; x < nc / ncols_interleaved; x++) {
+         const block_q4_Kx8 * b_ptr = (const block_q4_Kx8 *) vx + (x * nb);
+ 
+-        for (int j = 0; j < ncols_interleaved; j++) {
+-            sumf[j] = 0.0;
+-            sum_minf[j] = 0.0;
+-        }
+-        for (int l = 0; l < nb; l++) {
++        // Keep one repacked weight tile resident while evaluating all of the
++        // ragged speculative-verification rows.  The old caller issued one
++        // GEMV per row, which streamed the complete matrix once per token.
++        for (int y = 0; y < nr; y++) {
++            const block_q8_K * a_ptr = (const block_q8_K *) vy + y * nb;
++
++            for (int j = 0; j < ncols_interleaved; j++) {
++                sumf[j] = 0.0;
++                sum_minf[j] = 0.0;
++            }
++            for (int l = 0; l < nb; l++) {
+             for (int sb = 0; sb < 8; sb++) {
+                 memcpy(utmp + sb * 4, b_ptr[l].scales + sb * 12, 12);
+                 utmp[sb * 4 + 3] = ((utmp[sb * 4 + 2] >> 4) & kmask2) | (((utmp[sb * 4 + 1] >> 6) & kmask3) << 4);
+@@ -1019,9 +1021,10 @@ void ggml_gemv_q4_K_8x8_q8_K_generic(int n, float * GGML_RESTRICT s, size_t bs,
+                     sum_minf[j] += mins[j] * (a_ptr[l].bsums[sb * 2] + a_ptr[l].bsums[sb * 2 + 1]) * GGML_CPU_FP16_TO_FP32(b_ptr[l].dmin[j]) * a_ptr[l].d;
+                 }
+             }
+-        }
+-        for (int j = 0; j < ncols_interleaved; j++) {
+-            s[x * ncols_interleaved + j] = sumf[j] - sum_minf[j];
++            }
++            for (int j = 0; j < ncols_interleaved; j++) {
++                s[y * bs + x * ncols_interleaved + j] = sumf[j] - sum_minf[j];
++            }
+         }
+     }
+ }
+@@ -4243,10 +4246,21 @@ template <typename BLOC_TYPE, int64_t INTER_SIZE, int64_t NB_COLS, ggml_type PAR
+                                                              src0_ptr + src0_start * nb01, src1_ptr,
+                                                              nrows - (nrows % 4), ncols);
+         }
+-        for (int iter = nrows - (nrows % 4); iter < nrows; iter++) {
+-            gemv<BLOC_TYPE, INTER_SIZE, NB_COLS, PARAM_TYPE>(ne00, (float *) (dst_ptr + (iter * nb1)) + src0_start,
+-                                                             ne01, src0_ptr + src0_start * nb01,
+-                                                             src1_ptr + (src1_col_stride * iter), 1 /* nrows */, ncols);
++        const int64_t ragged_start = nrows - (nrows % 4);
++        if constexpr (std::is_same_v<BLOC_TYPE, block_q4_K> && INTER_SIZE == 8 && NB_COLS == 8) {
++            const int64_t ragged_rows = nrows - ragged_start;
++            if (ragged_rows > 0) {
++                gemv<BLOC_TYPE, INTER_SIZE, NB_COLS, PARAM_TYPE>(
++                    ne00, (float *) (dst_ptr + ragged_start * nb1) + src0_start, nb1 / nb0,
++                    src0_ptr + src0_start * nb01, src1_ptr + src1_col_stride * ragged_start,
++                    ragged_rows, ncols);
++            }
++        } else {
++            for (int iter = ragged_start; iter < nrows; iter++) {
++                gemv<BLOC_TYPE, INTER_SIZE, NB_COLS, PARAM_TYPE>(ne00, (float *) (dst_ptr + (iter * nb1)) + src0_start,
++                                                                 ne01, src0_ptr + src0_start * nb01,
++                                                                 src1_ptr + (src1_col_stride * iter), 1 /* nrows */, ncols);
++            }
+         }
+     }
+ 

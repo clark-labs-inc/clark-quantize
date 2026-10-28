@@ -1,0 +1,24 @@
+diff --git a/ggml/src/ggml-cpu/llamafile/sgemm.cpp b/ggml/src/ggml-cpu/llamafile/sgemm.cpp
+--- a/ggml/src/ggml-cpu/llamafile/sgemm.cpp
++++ b/ggml/src/ggml-cpu/llamafile/sgemm.cpp
+@@ -1428,7 +1428,20 @@ class tinyBLAS_Q0_AVX {
+ #endif
+             break;
+ #else
+         case 0x44:
++#if defined(__AVX2__) && defined(__F16C__)
++            if constexpr (std::is_same_v<TA, block_q8_0> &&
++                          std::is_same_v<TB, block_q8_0>) {
++                if (n - n0 == 4) {
++                    // Stream the large Q8 weight panel once; re-read only B.
++                    mc = 2;
++                    nc = 4;
++                    gemmMx4<2>(m0, m, n0, n);
++                    break;
++                }
++            }
++#endif
++            [[fallthrough]];
+         case 0x43:
+         case 0x42:
+             mc = 4;

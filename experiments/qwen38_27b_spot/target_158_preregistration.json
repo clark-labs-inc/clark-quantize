@@ -1,0 +1,117 @@
+{
+  "schema": "clark_qwen38_target_158_preregistration_v1",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "claim_boundary": "Storage-design and reconstruction gate only. No 1.58-bit quality or deployment claim is allowed without text, vision, and MTP-aware behavioral evaluation.",
+  "parameter_scope": {
+    "ternary": "every rank-2 parameter, including language, vision, MTP, convolution projections, and linear-attention A/B projections",
+    "retained_bf16": "rank-not-equal-to-2 parameters only",
+    "scale_accounting": "all scale bytes and retained BF16 bytes are included in effective bits per original checkpoint parameter"
+  },
+  "hypothesis": "All rank-2 matrices with ideal base-3 codes plus one FP16 scale per output row form a complete parameter payload below 1.60 effective bits per original parameter, and provide the storage target for a later train-aware quality-recovery rung.",
+  "fixed_inventory_expectations": {
+    "total_parameters": 27781427952,
+    "rank2_ternary_parameters": 27776577536,
+    "rank_not_2_bf16_parameters": 4850416,
+    "rank_not_2_bf16_tensor_count": 582,
+    "per_row_fp16_scale_count": 4748912,
+    "projected_complete_effective_bits_per_parameter": 1.5902142653453208
+  },
+  "comparison_candidates": [
+    {
+      "name": "all_rank2_group1024_fp8_scales",
+      "projected_complete_effective_bits_per_parameter": 1.595360135321731
+    },
+    {
+      "name": "all_rank2_group2048_fp8_scales",
+      "projected_complete_effective_bits_per_parameter": 1.5920198157326755
+    },
+    {
+      "name": "all_rank2_per_row_fp16_scales",
+      "projected_complete_effective_bits_per_parameter": 1.5902142653453208
+    }
+  ],
+  "reconstruction_samples": [
+    {
+      "category": "language_attention",
+      "tensor": "model.language_model.layers.3.self_attn.q_proj.weight",
+      "row_start": 0,
+      "row_count": 64
+    },
+    {
+      "category": "language_mlp",
+      "tensor": "model.language_model.layers.3.mlp.up_proj.weight",
+      "row_start": 0,
+      "row_count": 64
+    },
+    {
+      "category": "language_embedding",
+      "tensor": "model.language_model.embed_tokens.weight",
+      "row_start": 124160,
+      "row_count": 64
+    },
+    {
+      "category": "language_head",
+      "tensor": "lm_head.weight",
+      "row_start": 124160,
+      "row_count": 64
+    },
+    {
+      "category": "linear_attention_a",
+      "tensor": "model.language_model.layers.0.linear_attn.in_proj_a.weight",
+      "row_start": 0,
+      "row_count": 48
+    },
+    {
+      "category": "linear_attention_b",
+      "tensor": "model.language_model.layers.0.linear_attn.in_proj_b.weight",
+      "row_start": 0,
+      "row_count": 48
+    },
+    {
+      "category": "vision_attention",
+      "tensor": "model.visual.blocks.0.attn.qkv.weight",
+      "row_start": 0,
+      "row_count": 64
+    },
+    {
+      "category": "vision_mlp",
+      "tensor": "model.visual.blocks.0.mlp.linear_fc1.weight",
+      "row_start": 0,
+      "row_count": 64
+    },
+    {
+      "category": "mtp_attention",
+      "tensor": "mtp.layers.0.self_attn.q_proj.weight",
+      "row_start": 0,
+      "row_count": 64
+    },
+    {
+      "category": "mtp_mlp",
+      "tensor": "mtp.layers.0.mlp.up_proj.weight",
+      "row_start": 0,
+      "row_count": 64
+    }
+  ],
+  "retained_control": {
+    "category": "convolution_rank3",
+    "tensor": "model.language_model.layers.0.linear_attn.conv1d.weight",
+    "expected_rank": 3,
+    "storage_dtype": "bfloat16"
+  },
+  "selection_rule": "Among candidates whose independently recomputed complete rate is at most 1.60 bpp, select the finite candidate with minimum parameter-weighted sample relative-L2 reconstruction error; break ties by lower complete bpp, then candidate name.",
+  "promotion": {
+    "maximum_complete_effective_bits_per_parameter": 1.6,
+    "require_exact_code_roundtrip": true,
+    "require_exact_parameter_and_scale_ledgers": true,
+    "require_language_vision_mtp_reconstruction_samples": true,
+    "require_finite_reconstruction_metrics": true,
+    "does_not_authorize_full_pack": true
+  },
+  "sequence": [
+    "Finish the active group-128 conservative artifact and its quality/QAT pipeline as the protected anchor.",
+    "Run a fixed representative reconstruction ablation across language, vision, MTP, convolution, and linear-attention projections.",
+    "Do not launch a second full checkpoint pack until the reconstruction receipt identifies a candidate and the current pipeline is terminal.",
+    "Require separate text, multimodal, and MTP-aware behavioral gates before any complete-model quality claim."
+  ],
+  "stop_condition": "Stop on inventory drift, effective rate above 1.60, non-finite scales or reconstruction metrics, code mismatch, or missing modality coverage."
+}

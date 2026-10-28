@@ -1,0 +1,206 @@
+{
+  "schema": "qwen38_27b_all_layer_block_cache_preregistration_v41",
+  "experiment_id": "qwen38_27b_all_layer_block_cache_v41",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_before_all_layer_cache_execution",
+  "frozen_at_utc": "2026-08-19T07:40:04Z",
+  "objective": "Create one restartable, disk-bounded exact BF16 cache of the already-frozen 64 calibration and 32 internal-validation block-input and block-output rows for every Qwen3.8-27B text layer, with bit-exact reproduction of authenticated pilot layers 0, 32, and 63, so the successful mixed CQ3/AFF3 plus sensitivity-gated residual method can be expanded without another mode or hyperparameter search.",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "architecture": "Qwen3_5ForConditionalGeneration dense 27B text trunk",
+    "hidden_size": 5120,
+    "text_layers": 64,
+    "target_layers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63
+    ],
+    "layer_pattern": "three linear_attention blocks followed by one full_attention block, repeated sixteen times",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true
+  },
+  "parent_evidence": {
+    "pilot_cache": {
+      "path": "/workspace/quant-runs/qwen38-affine-butterfly-blocks-v1/block-cache.pt",
+      "bytes": 47199426,
+      "sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "receipt_path": "/workspace/quant-state/qwen38-affine-butterfly-block-cache-v1.json",
+      "receipt_sha256": "f07e1e9634a1a5282ecc40b6f7bf4c46be5927f2d9378ed3c4a10181bdd5eebb",
+      "pilot_layers": [
+        0,
+        32,
+        63
+      ]
+    },
+    "mixed_training_receipt": {
+      "path": "receipts/qwen38_27b_calibration_ranked_aff3_cq3_mixed_v1/training.json",
+      "sha256": "4454761a8519db03ca88a91c21cf8344cab12445266f1936767c04ebe3b76128",
+      "mean_relative_calibration_nmse_reduction": 0.807391442842145
+    },
+    "sensitivity_residual_decision": {
+      "path": "receipts/qwen38_27b_sensitivity_gated_residual_v37/terminal-decision.json",
+      "sha256": "26dae44ab53bf194b89c46e7a175808865b8c8eb40207dd83ef4edaefec7ba36",
+      "decision": "admit_exact_algebra_to_native_kernel_gate_only"
+    },
+    "semantic_placement_addendum": {
+      "path": "qwen38_27b_calibration_residual_v40_semantic_placement_addendum.json",
+      "sha256": "104ff6e06d5f9f72083e15ec3247c35a409402974afa1c0911b9bc55bc2a6c46",
+      "placement": "complete block output correction from complete block input"
+    }
+  },
+  "data_protocol": {
+    "source": "reuse the exact token IDs, attention mask, positions, calibration row ordinals, validation row ordinals, and text lists from the authenticated pilot cache",
+    "original_activation_preregistration_path": "qwen38_27b_affine_butterfly_blocks_preregistration_v1.json",
+    "original_activation_preregistration_sha256": "8fa0b3159a0b6b7bdea1b00a0373b946a73e4ce0cd860bb303d1eb8ad3d63b09",
+    "prompt_count": 12,
+    "sequence_tokens": 64,
+    "calibration_rows_per_layer": 64,
+    "internal_validation_rows_per_layer": 32,
+    "fresh_holdout_rows": 0,
+    "stored_tensors_per_layer": [
+      "calibration_input",
+      "calibration_output",
+      "validation_input",
+      "validation_output"
+    ],
+    "stored_dtype": "BF16",
+    "full_sequence_activations_persisted": false,
+    "benchmark_contamination_forbidden": "No CUTE, MATH-500, code, MMLU, WikiText, fresh-confirmation text, or generated model output enters this cache."
+  },
+  "execution": {
+    "seed": 20260819,
+    "threads": 4,
+    "streaming": "load one exact safetensors layer into a meta-instantiated Qwen3.5 decoder block, propagate the full hidden state, retain only the frozen selected rows, then release the layer",
+    "checkpoint_interval_layers": 8,
+    "checkpoint_contents": "next layer, exact full BF16 hidden state, selected rows completed so far, and per-layer execution receipts",
+    "resume": "a checkpoint is accepted only when model, revision, preregistration hash, parent-cache hash, layer prefix, shapes, dtypes, and finiteness all match",
+    "allocator_control": "run garbage collection and libc malloc_trim after every streamed layer",
+    "completion_order": "atomically save final cache, then terminal receipt, then completion marker; only then remove the superseded rolling checkpoint",
+    "expected_clean_wall_minutes_from_parent": 8
+  },
+  "gate": {
+    "required_layers": 64,
+    "required_calibration_rows_per_layer": 64,
+    "required_validation_rows_per_layer": 32,
+    "required_tensors_per_layer": 4,
+    "all_values_must_be_finite": true,
+    "pilot_layers_must_be_bit_exact": [
+      0,
+      32,
+      63
+    ],
+    "maximum_cache_bytes": 200000000,
+    "maximum_checkpoint_bytes": 220000000
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_bytes": 31000000000,
+    "memory_swap_max_bytes": 0,
+    "host_swap_must_remain_zero": true,
+    "minimum_free_disk_bytes": 21474836480,
+    "concurrent_training_or_benchmark_processes": 0,
+    "restart": "on-failure",
+    "restart_prevent_exit_status": 2,
+    "maximum_restarts": 2
+  },
+  "promotion_rules": [
+    "run the frozen all-layer stream and accept only a complete cache with all 64 contiguous layer records",
+    "any source, row, layer-pattern, shape, dtype, finite-value, pilot-parity, cache-size, or checkpoint identity failure is terminal or infrastructure-invalid as classified by the runner",
+    "pilot layers 0, 32, and 63 must reproduce the old selected inputs and outputs bit-for-bit",
+    "a pass admits one all-layer mixed CQ3/AFF3 training preregistration using the already-frozen mode map and hyperparameters",
+    "the cache is not a quantized model, quality result, runtime result, or scientific breakthrough",
+    "fresh confirmation remains sealed until a complete all-layer candidate and its sensitivity-selected residual payloads are frozen"
+  ],
+  "frozen_inputs": {
+    "collector": {
+      "path": "collect_qwen38_27b_all_layer_block_cache_v41.py",
+      "sha256": "530a3e5bca35ded4e25b4e0402af0833ab5fb716ca90323fc61d690edb116add"
+    },
+    "parent_collector": {
+      "path": "collect_qwen38_27b_affine_butterfly_block_cache_v1.py",
+      "sha256": "3cebd323b25e2e0d616fa72adeca58df667087aa3efd063bfd01885128c5aced"
+    },
+    "original_activation_preregistration": {
+      "path": "qwen38_27b_affine_butterfly_blocks_preregistration_v1.json",
+      "sha256": "8fa0b3159a0b6b7bdea1b00a0373b946a73e4ce0cd860bb303d1eb8ad3d63b09"
+    },
+    "mixed_training_receipt": {
+      "path": "receipts/qwen38_27b_calibration_ranked_aff3_cq3_mixed_v1/training.json",
+      "sha256": "4454761a8519db03ca88a91c21cf8344cab12445266f1936767c04ebe3b76128"
+    },
+    "sensitivity_residual_decision": {
+      "path": "receipts/qwen38_27b_sensitivity_gated_residual_v37/terminal-decision.json",
+      "sha256": "26dae44ab53bf194b89c46e7a175808865b8c8eb40207dd83ef4edaefec7ba36"
+    },
+    "semantic_placement_addendum": {
+      "path": "qwen38_27b_calibration_residual_v40_semantic_placement_addendum.json",
+      "sha256": "104ff6e06d5f9f72083e15ec3247c35a409402974afa1c0911b9bc55bc2a6c46"
+    }
+  },
+  "next_if_passed": "Preregister one restartable 64-layer expansion of the already-frozen CQ3 MLP and AFF3 attention-output training, then apply the unchanged validation-error sensitivity rule and rank-16 residual only to admitted layers before opening a new untouched all-layer confirmation set.",
+  "claim_boundary": "A pass proves only that exact frozen calibration and internal-validation block rows for all 64 Qwen3.8-27B text layers were streamed and cached with authenticated pilot parity under bounded CPU resources. It does not establish approximation quality, a complete model, end-to-end capability or speed, novelty, or a scientific breakthrough."
+}

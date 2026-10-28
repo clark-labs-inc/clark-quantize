@@ -1,0 +1,72 @@
+diff --git a/ggml/src/ggml-cpu/arch/x86/repack.cpp b/ggml/src/ggml-cpu/arch/x86/repack.cpp
+--- a/ggml/src/ggml-cpu/arch/x86/repack.cpp
++++ b/ggml/src/ggml-cpu/arch/x86/repack.cpp
+@@ -1501,7 +1501,7 @@ void ggml_gemv_q4_K_8x8_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const vo
+     const block_q4_Kx8 * b_ptr_start = (const block_q4_Kx8 *)vx;
+     const block_q8_K * a_ptr_start = (const block_q8_K *)vy;
+
+-    assert(nr > 0 && nr <= 3);
++    assert(nr > 0 && nr <= 4);
+
+     // Decode each Q4_K weight block once and reuse it across all ragged
+     // verification rows.  The row-dependent Q8 loads and dot products remain
+@@ -1510,11 +1510,11 @@ void ggml_gemv_q4_K_8x8_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const vo
+     for (int64_t x = 0; x < nc / 8; x++) {
+         const block_q4_Kx8 * b_ptr = b_ptr_start + (x * b_nb);
+
+-        __m256 acc_rows[3] = {
+-            _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(),
++        __m256 acc_rows[4] = {
++            _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(),
+         };
+-        __m256 acc_min_rows[3] = {
+-            _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(),
++        __m256 acc_min_rows[4] = {
++            _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(),
+         };
+
+         for (int64_t b = 0; b < nb; b++) {
+@@ -1526,13 +1526,13 @@ void ggml_gemv_q4_K_8x8_q8_K(int n, float * GGML_RESTRICT s, size_t bs, const vo
+                 const __m256 col_scale_f32 = GGML_F32Cx8_REARRANGE_LOAD(b_ptr[b].d, deltamask);
+                 const __m256 col_dmin_f32 = GGML_F32Cx8_LOAD(b_ptr[b].dmin);
+
+-                __m256i iacc_b[3] = {
+-                    _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(),
++                __m256i iacc_b[4] = {
++                    _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(),
+                 };
+-                __m256i iacc_min_b[3] = {
+-                    _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(),
++                __m256i iacc_min_b[4] = {
++                    _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(),
+                 };
+-                __m256i q8s[3];
++                __m256i q8s[4];
+                 for (int64_t y = 0; y < nr; ++y) {
+                     const block_q8_K * a_ptr = a_ptr_start + y * nb;
+                     const __m256i q8sums =
+diff --git a/ggml/src/ggml-cpu/repack.cpp b/ggml/src/ggml-cpu/repack.cpp
+--- a/ggml/src/ggml-cpu/repack.cpp
++++ b/ggml/src/ggml-cpu/repack.cpp
+@@ -4240,13 +4240,18 @@ struct tensor_traits : ggml::cpu::tensor_traits {
+
+         GGML_ASSERT(src1_ptr + src1_col_stride * nrows <= (const char *) params->wdata + params->wsize);
+
+-        // If there are more than three rows in src1, use gemm; otherwise, use gemv.
+-        if (nrows > 3) {
++        // The dedicated four-row Q4_K path reuses the same decoded weight tile
++        // across four independent Q8_K accumulators. Larger multiples retain
++        // the existing GEMM implementation.
++        constexpr bool q4_k_8x8 =
++            std::is_same_v<BLOC_TYPE, block_q4_K> && INTER_SIZE == 8 && NB_COLS == 8;
++        const bool fused_four_rows = q4_k_8x8 && nrows == 4;
++        if (nrows > 3 && !fused_four_rows) {
+             gemm<BLOC_TYPE, INTER_SIZE, NB_COLS, PARAM_TYPE>(ne00, (float *) (dst_ptr) + src0_start, nb1 / nb0,
+                                                              src0_ptr + src0_start * nb01, src1_ptr,
+                                                              nrows - (nrows % 4), ncols);
+         }
+-        const int64_t ragged_start = nrows - (nrows % 4);
++        const int64_t ragged_start = fused_four_rows ? 0 : nrows - (nrows % 4);
+         if constexpr (std::is_same_v<BLOC_TYPE, block_q4_K> && INTER_SIZE == 8 && NB_COLS == 8) {
+             const int64_t ragged_rows = nrows - ragged_start;
+             if (ragged_rows > 0) {

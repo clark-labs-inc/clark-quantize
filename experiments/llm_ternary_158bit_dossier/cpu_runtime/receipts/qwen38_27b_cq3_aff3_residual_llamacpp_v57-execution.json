@@ -1,0 +1,39 @@
+{
+  "schema": "qwen38_27b_cq3_aff3_residual_llamacpp_execution_v57",
+  "executed_at": "2026-08-19T14:34:59Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "repository_commit": "63d516b5b6d6bbd2458fccc155670c6203b1d89b",
+  "script_sha256": "b950168e2fad873837a8e76858a48fa074671b00b4ec51ac5069e7f6859d8cbd",
+  "host": "quant",
+  "llama_source": "/workspace/src/llama.cpp-qwen38-cq3-aff3-residual-v57",
+  "llama_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+  "transform_receipt": "/workspace/quant-runs/qwen38-cq3-aff3-residual-v57-source-transform.json",
+  "transform_receipt_bytes": 7321,
+  "transform_receipt_sha256": "479eb69d5b4490476108538393ea8a8414cb7350a11d3b240c063896e7d1857c",
+  "parent_v54_tracked_diff_sha256": "f76b42067337f35d8f5721b92faffcff90f4e1cd15afe8e4aa22ec4fdf67eb4a",
+  "v57_tracked_diff_sha256": "7153043563f397e644db1e7ca8ce5c2cececfcb30cd1dc6b48d67aa9de3a7661",
+  "transformed_sha256": {
+    "src/CMakeLists.txt": "233d5a18d93e4318d9e88ed9cd6a17c4085230ab3d876cd2b84b86af1a9bf2c8",
+    "src/models/models.h": "e60716d82129f76cc9b2de9d82543f33daf5ca4480591e8edc8e342f21b83f4a",
+    "src/models/qwen35.cpp": "34341d21dd9500be5a662da8c169e412cbf994ce2f1448b6b2da3124edf8f766",
+    "src/models/qwen38-residual-kernels/qwen38_calibration_residual_cpu.c": "dc99b3899c8c9946d4a9e38fe07bafd31161fc1df6ca62ebd99989aaf748137a",
+    "src/models/qwen38-residual-kernels/qwen38_calibration_residual_cpu.h": "d53f8c2d4c14f306da57c35f3efc3d93d27bc5a8969bf472ad8dbf8e50d1a4af",
+    "src/models/qwen38-residual-runtime.cpp": "eae93366e9b2b23fc33ea353a580a0aec6c23ab028452d59beffe628e0674169",
+    "src/models/qwen38-residual-runtime.h": "9eb335e357346c77b69be6bbd15ab7103444a236bcef0f119ddb70c1a555aa75"
+  },
+  "checks": {
+    "parent_v54_complete": true,
+    "post_complete_block_placement": true,
+    "placement_before_control_vector": true,
+    "active_layer_nodes_only": true,
+    "callback_lifetime_owned_by_graph_result": true,
+    "parent_hashes_required_at_load": true,
+    "persistent_dense_residual_bytes": 0,
+    "diff_check_exit_code": 0,
+    "transform_exit_code": 0
+  },
+  "classification": "source_composition_pass_compile_pending",
+  "claim_boundary": "This authenticates the exact v57 source composition and semantic placement only. Compilation, payload-backed graph parity, whole-model quality, throughput, memory, energy, novelty, and scientific-breakthrough gates remain unmeasured.",
+  "complete": true,
+  "terminal": true
+}

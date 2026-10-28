@@ -1,0 +1,27 @@
+{
+  "schema": "qwen38_27b_full_graph_profile_restart_storm_amendment_v1",
+  "recorded_at_utc": "2026-08-17T21:00:00Z",
+  "host": "ubuntu-32gb-hel1-1",
+  "unit": "quant-qwen38-27b-full-graph-profile-watch-v1.service",
+  "observation": {
+    "restart_counter_observed": 94,
+    "failure": "FileNotFoundError for /workspace/quant-state/qwen38-27b-aligned2-full-text-v1.json",
+    "service_state": "activating auto-restart",
+    "scientific_work_executed": false,
+    "terminal_profile_receipt_created": false
+  },
+  "classification": "infrastructure-invalid restart storm; neither a zero nor a completed profiling result",
+  "containment": {
+    "action": "stopped and disabled the service",
+    "reason": "prevent repeated shared-checkout fetches and restart noise while its required aligned2 full-text parent receipt is absent",
+    "data_deleted": false,
+    "reversible": true,
+    "reenable_condition": "the authenticated aligned2 full-text parent receipt exists and the watcher has receipt-aware waiting instead of restart-on-missing-parent behavior"
+  },
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "other_services_stopped": [],
+    "active_paired_throughput_process_touched": false,
+    "nucleus_touched": false
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "schema": "qwen38_27b_sensitivity_gated_residual_preregistration_v37",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_representation_kernel_codesign_v1",
+  "experiment_id": "qwen38_27b_sensitivity_gated_residual_v37",
+  "status": "frozen_after_terminal_v36_before_any_fresh_holdout_collection",
+  "frozen_at": "2026-08-19T06:06:00Z",
+  "objective": "Test the v36-derived sensitivity hypothesis without another search: apply one fixed rank-16 INT8 calibration-span residual to layers whose frozen base validation NMSE is at least 0.001, bypass lower-error layers exactly, and score the frozen candidate once on the still-unmaterialized holdout.",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "pilot_layers": [
+      0,
+      32,
+      63
+    ],
+    "pilot_layer_types": [
+      "linear_attention",
+      "linear_attention",
+      "full_attention"
+    ],
+    "hidden_size": 5120,
+    "qwen_4b_compute_forbidden": true,
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4
+  },
+  "parent_evidence": {
+    "v36_receipt": {
+      "path": "receipts/qwen38_27b_calibration_span_residual_v36/terminal-decision.json",
+      "sha256": "4afd259111d19993b1605ac9ae84947bcf775efe087d4174832128d3d8573969",
+      "terminal": true,
+      "gate_passed": false,
+      "reason": "no_global_rank_ridge_pair_avoids_validation_regression"
+    },
+    "v36_fresh_confirmation_cache_materialized": false,
+    "v36_fresh_confirmation_cache_absence_verified_at": "2026-08-19T06:05:00Z",
+    "v36_validation_base_nmse": {
+      "0": 0.0016349778743460774,
+      "32": 0.0007950235740281641,
+      "63": 0.03337296098470688
+    },
+    "v36_rank16_ridge0_01_relative_validation_reduction": {
+      "0": 0.19842651348908705,
+      "32": -0.05805211019942964,
+      "63": 0.36437786474187717
+    }
+  },
+  "base_candidate": {
+    "representation": "the exact frozen three-layer trained CQ3 MLP plus AFF3 attention-output payloads from the prior mixed experiment",
+    "training_receipt_sha256": "4454761a8519db03ca88a91c21cf8344cab12445266f1936767c04ebe3b76128",
+    "projected_complete_compute_image_bytes_before_residual": 12399040864,
+    "payload_mutation_forbidden": true
+  },
+  "sensitivity_rule": {
+    "input_statistic": "v36 frozen internal-validation base trained-mixed complete-block NMSE",
+    "minimum_base_nmse_for_residual": 0.001,
+    "active_layers": [
+      0,
+      63
+    ],
+    "exact_bypass_layers": [
+      32
+    ],
+    "selection_interpretation": "The residual is admitted only where the frozen base error is large enough to support a validation-stable correction. The low-error layer is not forced through a learned map.",
+    "post_freeze_layer_admission_changes_forbidden": true
+  },
+  "fixed_adapter": {
+    "rank": 16,
+    "ridge_fraction": 0.01,
+    "selection_from_v36_only": "Rank 16 is the smallest tested rank whose layer-63 relative validation reduction exceeds 0.35 while layer 0 exceeds 0.19. At rank 16, ridge 0.01 has the lowest arithmetic-mean corrected NMSE across the two sensitivity-admitted layers.",
+    "new_grid_or_hyperparameter_search_forbidden": true,
+    "fit_rows": 64,
+    "runtime_form": "candidate_output + input @ left_INT8 @ right_INT8 + bias_FP16",
+    "int8_quantization": "symmetric per-rank-component scales: per-column for left and per-row for right; recompute combined bias after factor quantization",
+    "native_kernel_target": "fused AVX2 INT8 rank-16 skinny residual with exact bypass for non-admitted layers"
+  },
+  "data": {
+    "training_cache": {
+      "path": "/workspace/quant-runs/qwen38-affine-butterfly-blocks-v1/block-cache.pt",
+      "sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "calibration_rows": 64
+    },
+    "fresh_confirmation": {
+      "provenance": "The exact four texts were frozen for v36 but the cache was never materialized or scored because v36 stopped at calibration. v37 reuses this untouched predeclared holdout.",
+      "texts": [
+        "A warehouse ships 128 boxes in equal groups to 8 stores. Compute the boxes per store and state one check on the result.",
+        "Give language-agnostic pseudocode for stable deduplication of a list while preserving the first occurrence of each value.",
+        "Explica en espanol, en dos frases, por que una medicion repetible es mas confiable que una sola anecdota.",
+        "A log record contains user_id, event_time, duration_ms, and outcome. Describe a deterministic filter for successful events slower than 750 milliseconds."
+      ],
+      "maximum_sequence_tokens": 64,
+      "selected_rows_per_layer": 32,
+      "target_layers": [
+        0,
+        32,
+        63
+      ],
+      "collected_after_preregistration": true,
+      "may_score_only_the_final_frozen_candidate": true,
+      "checkpoint_or_hyperparameter_selection_forbidden": true,
+      "prior_confirmation_cache_forbidden": true,
+      "evaluation_contamination_forbidden": "No CUTE, MATH-500, code-trace, MMLU, WikiText, prior confirmation tensor, or copied benchmark item may enter fitting or confirmation."
+    }
+  },
+  "training": {
+    "seed": 20260819,
+    "refit": "Fit rank-16 ridge-0.01 adapters on all 64 frozen calibration rows for layers 0 and 63 only, quantize and hash them, and create no payload for bypass layer 32.",
+    "fresh_confirmation_refit_forbidden": true,
+    "no_additional_optimizer": true,
+    "maximum_payloads": 2
+  },
+  "gates": {
+    "calibration_materialization": {
+      "both_active_layers_must_not_regress": true,
+      "minimum_mean_active_layer_relative_nmse_reduction": 0.2,
+      "bypass_layer_has_no_payload": true,
+      "all_payload_roundtrips_exact": true
+    },
+    "fresh_confirmation": {
+      "both_active_layers_must_not_regress": true,
+      "bypass_layer_must_be_exactly_identical": true,
+      "minimum_mean_relative_nmse_reduction_across_all_three_layers": 0.1,
+      "maximum_final_complete_block_nmse_per_layer": 0.05,
+      "exact_candidate_count_per_layer": 2
+    },
+    "deployment": {
+      "maximum_residual_bytes_complete_64_layer_conservative_projection": 12000000,
+      "maximum_complete_compute_image_bytes": 12420000000,
+      "maximum_residual_weight_traffic_fraction": 0.001,
+      "maximum_residual_macs_per_token_complete_64_layer_conservative_projection": 11000000
+    }
+  },
+  "storage_and_compute": {
+    "persistent_bytes_per_active_layer": 174144,
+    "macs_per_active_layer_per_token": 163840,
+    "pilot_two_active_layers": {
+      "persistent_bytes": 348288,
+      "macs_per_token": 327680
+    },
+    "conservative_all_64_layers_projection": {
+      "persistent_bytes": 11145216,
+      "macs_per_token": 10485760,
+      "complete_compute_image_bytes": 12410186080,
+      "weight_traffic_fraction_vs_base_compute_image": 0.0008988772698023427
+    }
+  },
+  "execution_policy": {
+    "systemd_restart": "on-failure",
+    "restart_prevent_exit_status": 2,
+    "memory_max_bytes": 30000000000,
+    "swap_forbidden": true,
+    "minimum_free_disk_bytes": 21474836480,
+    "concurrent_training_or_benchmark_processes": 0,
+    "terminal_scientific_rejection_exit_status": 2,
+    "checkpoint_limit": "two final adapter payloads plus terminal receipts and one small confirmation cache; retain no optimizer or grid checkpoints"
+  },
+  "sequential_rule": "Freeze v37, materialize and hash the two fixed adapters without a grid, then collect the previously declared but never materialized holdout and score exactly the frozen base and frozen sensitivity-gated candidate once.",
+  "next_if_passed": "Implement and benchmark the exact rank-16 fused AVX2 residual kernel with a zero-cost bypass, then expand sensitivity classification one restartable layer at a time before any whole-model conversion claim.",
+  "claim_boundary": "A pass establishes a three-block sensitivity-gated geometric correction signal and deployable projection only. It is not a whole-model quality or speed result, does not establish 2.75 or 100 tok/s, and does not support novelty, lossless, DFlash3, or scientific-breakthrough claims."
+}

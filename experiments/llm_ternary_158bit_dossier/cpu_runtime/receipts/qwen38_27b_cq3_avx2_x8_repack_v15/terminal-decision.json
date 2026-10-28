@@ -1,0 +1,125 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_x8_repack_result_v15",
+  "completed_at": "2026-08-18T17:08:53Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "classification": "native_kernel_pass_selective_model_gate_failure",
+  "passed": false,
+  "native_kernel_passed": true,
+  "selective_model_promoted": false,
+  "decision": "retain_storage_neutral_x8_primitive_for_deeper_cq3_coverage_but_reject_layer0_only_runtime_as_throughput_promotion",
+  "native_measurement": {
+    "matrices": 2,
+    "rows_per_matrix": 17408,
+    "columns": 5120,
+    "warmups": 2,
+    "repetitions": 9,
+    "cache_eviction_bytes": 268435456,
+    "control_samples_us": [
+      2564.058,
+      2597.478,
+      2574.988,
+      2569.648,
+      2590.778,
+      2575.558,
+      2579.527,
+      2564.537,
+      2582.367
+    ],
+    "candidate_samples_us": [
+      1966.716,
+      1988.236,
+      1991.106,
+      2004.146,
+      1968.846,
+      1995.826,
+      1978.496,
+      1970.835,
+      1970.476
+    ],
+    "control_median_us": 2575.558,
+    "candidate_median_us": 1978.496,
+    "control_over_candidate_speedup": 1.30177569,
+    "candidate_sample_range_fraction": 0.018918410752409943,
+    "maximum_absolute_delta": 0.0000762939453,
+    "maximum_scaled_delta": 0.0000349350776,
+    "source_bytes": 47349760,
+    "runtime_bytes": 47349760,
+    "storage_expansion_fraction": 0.0,
+    "one_time_repack_us_excluded_from_timing": 5364.356
+  },
+  "native_checks": {
+    "test_cq3_exit_code_zero": true,
+    "lossless_repack_mapping_passed": true,
+    "integer_group_dots_exact": true,
+    "maximum_scaled_float_error_0_00005_met": true,
+    "minimum_speedup_1_25_met": true,
+    "maximum_sample_range_fraction_0_05_met": true,
+    "runtime_bytes_equal_source_bytes": true
+  },
+  "model_integration": {
+    "model_path": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0.gguf",
+    "model_sha256": "019c803e317625c2b1c3df8c3b4e2c63b28283599287ebff0f964ff71379e4e4",
+    "changed_cq3_tensors": 3,
+    "base_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "threads": 4,
+    "logical_cpus": [0, 2, 4, 6],
+    "graph_shape": {
+      "prompt_tokens": 4,
+      "generated_tokens": 0,
+      "batch": 128,
+      "ubatch": 64,
+      "repetitions_per_run": 7,
+      "run_order": [
+        "control-1",
+        "candidate-1",
+        "candidate-2",
+        "control-2"
+      ]
+    },
+    "runs": {
+      "control_1_samples_tokens_per_second": [4.95658, 4.94361, 4.92129, 4.95544, 4.98294, 4.95491, 4.93361],
+      "control_1_median_tokens_per_second": 4.95491,
+      "candidate_1_samples_tokens_per_second": [4.95358, 4.91104, 4.92732, 4.86865, 4.9946, 4.98796, 4.94089],
+      "candidate_1_median_tokens_per_second": 4.94089,
+      "candidate_2_samples_tokens_per_second": [4.78808, 4.931, 4.96656, 5.02599, 4.98125, 5.01666, 4.95484],
+      "candidate_2_median_tokens_per_second": 4.96656,
+      "control_2_samples_tokens_per_second": [4.88999, 4.95295, 4.94684, 4.96847, 5.0085, 4.93863, 4.95636],
+      "control_2_median_tokens_per_second": 4.95295
+    },
+    "control_median_of_run_medians_tokens_per_second": 4.95393,
+    "candidate_median_of_run_medians_tokens_per_second": 4.953725,
+    "candidate_over_control_speedup": 0.9999586187128201,
+    "minimum_paired_shape_speedup_1_15_met": false,
+    "decode_smoke": {
+      "authoritative_gate": false,
+      "reason": "One no-warmup repetition with four generated tokens was a load and execution smoke, not the preregistered target diagnostic.",
+      "control_tokens_per_second": 1.799902,
+      "candidate_tokens_per_second": 1.801992
+    },
+    "target_diagnostic": {
+      "ran": false,
+      "reason": "The first selective-model performance gate failed, so the sequential protocol stopped before a scored target diagnostic."
+    }
+  },
+  "provenance": {
+    "native_benchmark_sha256": "85ddf3968376858e6daf0a5017a37505531495734e5ba1c8257d12c21f8fcb5c",
+    "native_benchmark_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native_patch_sha256": "0c0fb98d3b74686a1e42c6e4da1b6eb0b46519a3775eb2d5de21ba38d66160fc",
+    "integration_patch_sha256": "ae86805c0bc159f8d20f55fac785e234710ca9bf80af7b9e1cb4d3e62592f41f",
+    "candidate_test_binary_sha256": "99454036ae1524a0199291936ef0f35e8a50109cb430f062d403cf5c0798d2dd",
+    "candidate_llama_bench_sha256": "803fc96bb0e5c35339965da585c2b360d9d396d879e5958305ff8867bbec9e45",
+    "control_llama_bench_sha256": "155eb2f52f2b55429885d93bcb5cedae6ab68285d694d2f91ac8c3fd789e51f3",
+    "graph_control_1_sha256": "16d39036b786ae1d9990237e41307985d386bcc82df93a139c81264315ad834a",
+    "graph_candidate_1_sha256": "efafadeef3f854e14b14657d0d3cd6eec738aac62b0e7fa92fca958bd537b816",
+    "graph_candidate_2_sha256": "7be7a5e42a46f9b2c630eb0badb2dbde258c2533161e4aacd076e64e7370957c",
+    "graph_control_2_sha256": "c2fa43f1f5a2d823922d65e0de009d900919929c2259786c2aa541e98ed41837"
+  },
+  "quality": {
+    "ran": false,
+    "reason": "The selective-model speed gate failed. Existing capability evidence for the same three CQ3 tensors is not re-scored as a v15 quality result, and no capability score is inferred."
+  },
+  "next_lane": "Use CQ3_0x8 as the persistent compute substrate for sensitivity-trained expansion beyond one MLP triplet. The next experiment must select additional low-sensitivity Qwen3.8-27B tensors under frozen CUTE, MMLU, and WikiText gates, then test whether larger CQ3 graph coverage converts the 1.302x primitive gain into material decode throughput.",
+  "claim_boundary": "CQ3_0x8 is a storage-neutral, numerically bounded 1.302x AVX2 primitive win on the frozen two-matrix shape. With only one Qwen3.8-27B MLP triplet using CQ3, the established model graph remained at parity and failed promotion. This is not a whole-model throughput, target-floor, quality, energy, novelty, 100 accepted tok/s, or scientific-breakthrough result."
+}

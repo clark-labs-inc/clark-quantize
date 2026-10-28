@@ -56,9 +56,8 @@ def compare_case(*, mode: str, group_size: int, alpha: float) -> None:
     chunked_loss, stats_tensor = ChunkedTopKOtherHeadKL.apply(
         hidden,
         weight,
-        teacher_values,
+        teacher_values - teacher_logsumexp.reshape(-1, 1),
         teacher_indices,
-        teacher_logsumexp,
         format_ids,
         mode,
         group_size,

@@ -1,0 +1,87 @@
+{
+  "schema": "qwen38_27b_q4_k_ragged_rows_kernel_v1",
+  "frozen_at_utc": "2026-08-18T08:28:00Z",
+  "objective": "Remove repeated Q4_K weight streaming from the two- and three-row target-verification path used by Qwen3.8-27B MTP on x86 CPUs.",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "qwen_4b_compute_forbidden": true,
+    "cpu_only": true,
+    "target_format": "Q4_K_M",
+    "draft": "official Qwen3.8-27B MTP sidecar",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "patch": "kernels/llama_cpp_q4_k_ragged_rows_v1.patch"
+  },
+  "source_finding": {
+    "dispatcher_behavior": "The pinned repack dispatcher selects GEMM only when the activation row count exceeds three; remaining rows are issued as independent GEMVs.",
+    "existing_q4_k_repack": "Q4_K already uses block_q4_Kx8 on AVX2, so this experiment changes ragged-row dispatch and loop order rather than inventing another weight format.",
+    "observed_mtp_anchor": {
+      "speculative_width": 3,
+      "accepted_tokens_per_second": 2.952080894444324,
+      "exact_greedy_prompt_parity": "4/4",
+      "mean_committed_tokens_per_target_call": 2.7555555555555555
+    },
+    "hypothesis": "Passing all ragged rows in one call and making weight tiles the outer loop will fetch the complete Q4_K matrix from memory once per verification call rather than once per proposed token."
+  },
+  "qwen_shapes": {
+    "hidden_size": 5120,
+    "intermediate_size": 17408,
+    "layers": 64,
+    "primary_matrix_shapes_m_n_k": [
+      [17408, 3, 5120],
+      [5120, 3, 17408],
+      [5120, 3, 5120]
+    ],
+    "ragged_rows": [2, 3],
+    "controls": [1, 4, 8]
+  },
+  "protocol": {
+    "correctness": {
+      "oracle": "pinned upstream GGML CPU result on identical deterministic tensors",
+      "rows": [1, 2, 3, 4, 5, 7, 8],
+      "maximum_nmse": 0.0005,
+      "require_test_backend_ops_pass": true,
+      "require_whole_model_exact_greedy_token_parity": true
+    },
+    "microbenchmark": {
+      "warmups": 3,
+      "measured_repetitions": 10,
+      "threads": [1, 4],
+      "pinning": "physical cores only",
+      "report": [
+        "median wall time",
+        "tokens per second",
+        "cycles",
+        "instructions",
+        "LLC load misses",
+        "estimated weight bytes per call"
+      ]
+    },
+    "whole_model": {
+      "prompts": "the same four frozen prompts as qwen38_27b_mtp_parity_preflight_v1",
+      "generation_tokens_per_prompt": 96,
+      "controls": ["target only", "MTP width 3 upstream", "MTP width 3 patched"],
+      "run_alone": true
+    }
+  },
+  "promotion_gate": {
+    "correctness": {
+      "maximum_nmse": 0.0005,
+      "exact_greedy_token_parity": true
+    },
+    "performance": {
+      "minimum_width_2_microkernel_speedup_vs_upstream": 1.25,
+      "minimum_width_3_microkernel_speedup_vs_upstream": 1.5,
+      "minimum_width_3_whole_model_accepted_tps_speedup_vs_upstream": 1.15,
+      "no_material_target_only_regression": 0.02
+    },
+    "quality_speed_tradeoff_forbidden": true
+  },
+  "next_kernel_if_promoted": "Add the missing Q3_K repack/multi-row path only if the terminal Q3_K_L control passes the frozen practical quality gate; then implement an AVX-512 VNNI specialization and NUMA-local weight shards on the final Zen 5 node.",
+  "stop_rules": [
+    "reject this loop-order patch if it misses the width-three microkernel gate; do not hide a null result behind whole-model noise",
+    "reject immediately on any correctness or exact-token-parity failure",
+    "do not claim 100 accepted tokens per second from a four-core microbenchmark",
+    "do not benchmark concurrently with model materialization, quality evaluation, or another throughput arm"
+  ],
+  "claim_boundary": "Pinned source patch and falsification protocol only. Local compilation is not an AMD performance result, and the patch is not promoted until x86 correctness plus isolated microkernel and whole-model gates pass."
+}

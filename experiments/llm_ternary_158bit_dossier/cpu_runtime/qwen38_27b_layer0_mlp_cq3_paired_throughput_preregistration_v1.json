@@ -1,0 +1,77 @@
+{
+  "schema": "qwen38_27b_layer0_mlp_cq3_paired_throughput_preregistration_v1",
+  "created_at": "2026-08-17T11:07:00Z",
+  "objective": "Measure the CPU prefill and decode effect of replacing exactly the Qwen3.8-27B layer-0 MLP triplet with CQ3_0",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_work_frozen": true,
+    "baseline": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "baseline_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "candidate": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0.gguf",
+    "candidate_sha_source": "/workspace/quant-state/qwen38-27b-layer0-mlp-direct-cq3-v1/conversion-receipt.json",
+    "changed_tensors": 3,
+    "claim_boundary": "paired performance of one selectively ternarized 27B MLP triplet; not whole-model ternary throughput"
+  },
+  "admission_gate": {
+    "baseline_quality": "/workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1/QUALITY_COMPLETE",
+    "candidate_quality": "/workspace/quant-state/qwen38-27b-layer0-mlp-direct-cq3-quality-v1/QUALITY_COMPLETE",
+    "candidate_promotion": "/workspace/quant-state/qwen38-27b-layer0-mlp-direct-cq3-quality-v1/PROMOTION_PASS",
+    "candidate_scope": "/workspace/quant-state/qwen38-27b-layer0-mlp-direct-cq3-v1/gguf-scope.json",
+    "node_exclusivity": "no inference server, evaluator, QAT, cache, or other benchmark process may share the node"
+  },
+  "runtime": {
+    "same_binary_for_both_models": true,
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "llama_bench": "/workspace/build/llama.cpp-qwen38-selective-v1/bin/llama-bench",
+    "llama_bench_sha_source": "/workspace/quant-state/qwen38-27b-layer0-mlp-direct-cq3-v1/conversion-receipt.json",
+    "load_mode": "mmap",
+    "batch": 512,
+    "ubatch": 512,
+    "repetitions": 5,
+    "warmup": true,
+    "poll": 50
+  },
+  "cpu_lanes": [
+    {
+      "threads": 1,
+      "logical_cpus": [0],
+      "taskset": "0",
+      "cpu_mask": "0x1",
+      "order": ["baseline", "candidate"]
+    },
+    {
+      "threads": 2,
+      "logical_cpus": [0, 2],
+      "taskset": "0,2",
+      "cpu_mask": "0x5",
+      "order": ["candidate", "baseline"]
+    },
+    {
+      "threads": 4,
+      "logical_cpus": [0, 2, 4, 6],
+      "taskset": "0,2,4,6",
+      "cpu_mask": "0x55",
+      "order": ["baseline", "candidate"]
+    }
+  ],
+  "measurements_per_model": {
+    "prefill_tokens": [128, 512, 2048],
+    "generated_tokens": 128,
+    "rows": 12,
+    "samples_per_row": 5,
+    "primary_row_statistic": "median tokens per second"
+  },
+  "speed_promotion_gate": {
+    "quality_gate_already_passed": true,
+    "minimum_speedup_every_row": 1.0,
+    "minimum_geometric_mean_speedup": 1.05,
+    "note": "A valid measurement that misses this gate is a completed negative result, not an infrastructure failure"
+  },
+  "validity_rules": [
+    "Both models use the exact same llama-bench binary and CPU affinity",
+    "Every expected baseline and candidate row contains five finite positive samples",
+    "Model loading and hashing occur before the timed samples and are not reported as token throughput",
+    "Infrastructure-invalid work is neither a zero nor a completed score",
+    "No speed result expands ternary depth unless the candidate quality promotion gate passed"
+  ]
+}

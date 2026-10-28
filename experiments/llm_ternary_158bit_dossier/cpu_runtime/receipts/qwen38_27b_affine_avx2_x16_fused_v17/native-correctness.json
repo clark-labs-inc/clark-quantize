@@ -1,0 +1,122 @@
+{
+  "schema": "qwen38_27b_affine_avx2_x16_native_correctness_receipt_v17",
+  "experiment_id": "qwen38_27b_affine_avx2_x16_fused_v17",
+  "model": "Qwen/Qwen3.8-27B",
+  "implementation_commit": "9018217a4ce34e3ed20db749b450f5a87ce5139d",
+  "preregistration_commit": "a1e66955be9c990b5e72fbb2c5b5d87670ecfd80",
+  "host": {
+    "ssh_alias": "quant",
+    "architecture": "x86_64",
+    "cpu": "AMD EPYC-Milan Processor",
+    "physical_cores": 4,
+    "logical_cpus": 8,
+    "threading": "2 threads per core",
+    "required_features_observed": [
+      "avx2",
+      "f16c",
+      "fma"
+    ],
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+  },
+  "build": {
+    "command": "g++ -std=c++17 -O3 -DNDEBUG -march=znver3 -mavx2 -mf16c -mfma -fPIC -shared -Wall -Wextra -Werror qwen38_affine_avx2_x16_fused_v17.cpp -o libqwen38_affine_avx2_x16_v17.so",
+    "source_sha256": "dbdc320d47401a889e3501f70882543e26723020ccdb9f447e20614f443338b3",
+    "runner_sha256": "a0912ac1c1ac7935ac2641f48f5d1ff2798e2d8a75bede964dfc1be2b90c4039",
+    "library_sha256": "09bea12c46475dd01867657927676ab6b9d628d071c07e0f2f064f35f9492f13",
+    "remote_build_directory": "/workspace/build/qwen38-affine-avx2-x16-v17"
+  },
+  "execution": {
+    "command": "PYTHONPATH=/workspace/clark-quantize-row-scale-v3 taskset -c 3 /workspace/venvs/quant-cpu/bin/python run_qwen38_27b_affine_avx2_x16_fused_v17.py --library libqwen38_affine_avx2_x16_v17.so --mode self-test",
+    "infrastructure_valid": true,
+    "timing_used_for_claim": false,
+    "note": "The scientific PTQ service was active, so this invocation was used only for deterministic correctness and never for performance."
+  },
+  "measurement": {
+    "runtime_compute_image_bpw_at_5120_columns": 2.06875,
+    "runtime_sizes": {
+      "row_group_bytes": 33,
+      "x8_group_bytes": 264,
+      "x16_group_bytes": 528
+    },
+    "reserved_two_bit_code_rejected": true,
+    "shapes": [
+      {
+        "rows": 16,
+        "columns": 128,
+        "canonical_base3_round_trip_exact": true,
+        "integer_dot_exact": true,
+        "alpha_mu_scale_decode_bit_exact": true,
+        "x8_x16_output_bit_exact": true,
+        "maximum_scaled_float_error": 9.313225746154785e-10,
+        "all_outputs_finite": true
+      },
+      {
+        "rows": 32,
+        "columns": 512,
+        "canonical_base3_round_trip_exact": true,
+        "integer_dot_exact": true,
+        "alpha_mu_scale_decode_bit_exact": true,
+        "x8_x16_output_bit_exact": true,
+        "maximum_scaled_float_error": 3.026798367500305e-09,
+        "all_outputs_finite": true
+      },
+      {
+        "rows": 48,
+        "columns": 5120,
+        "canonical_base3_round_trip_exact": true,
+        "integer_dot_exact": true,
+        "alpha_mu_scale_decode_bit_exact": true,
+        "x8_x16_output_bit_exact": true,
+        "maximum_scaled_float_error": 7.450580596923828e-09,
+        "all_outputs_finite": true
+      }
+    ]
+  },
+  "actual_qwen_artifact": {
+    "manifest": "/workspace/quant-runs/qwen38-affine-butterfly-blocks-v1/artifact/layers/0/sites/attention_input/manifest.json",
+    "manifest_repository_commit": "1e524a9eb48e223b259a4d3714afc765bb107dcd",
+    "manifest_preregistration_sha256": "8fa0b3159a0b6b7bdea1b00a0373b946a73e4ce0cd860bb303d1eb8ad3d63b09",
+    "tensor": "layers.0.linear_attn.in_proj_a.weight",
+    "shape": [
+      48,
+      5120
+    ],
+    "canonical_codes_sha256": "34581b913e3696f0d2095f4a295c9e05a773afd440b90141bc58f0d0aa954b9e",
+    "all_source_blobs_authenticated": true,
+    "rotation_authenticated": true,
+    "canonical_base3_reencoded_identically": true,
+    "integer_dot_exact": true,
+    "x8_x16_output_bit_exact": true,
+    "maximum_scaled_float_error": 1.2665987014770508e-07,
+    "all_outputs_finite": true,
+    "passed": true,
+    "complete": true,
+    "terminal": true
+  },
+  "checks": {
+    "artifact_and_repack_contract_met": true,
+    "integer_trit_dot_exact": true,
+    "integer_group_sum_exact": true,
+    "decoded_alpha_and_mu_bit_exact": true,
+    "maximum_scaled_float_error_0_0001_met": true,
+    "all_outputs_finite": true,
+    "native_correctness_gate_passed": true,
+    "actual_qwen_artifact_correctness_passed": true
+  },
+  "performance": {
+    "ran": false,
+    "reason": "Frozen protocol forbids timing while the affine PTQ or QAT service consumes the four-core host."
+  },
+  "model_integration": {
+    "ran": false,
+    "reason": "Three-block PTQ and QAT representation gates are not terminal."
+  },
+  "quality": {
+    "ran": false,
+    "reason": "Integrated performance has not passed."
+  },
+  "passed": true,
+  "complete": true,
+  "terminal": true,
+  "claim_boundary": "Native correctness pass only. This is not a performance, full-model, quality, energy, 100-token-per-second, novelty, or breakthrough result."
+}

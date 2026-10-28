@@ -1,0 +1,72 @@
+{
+  "schema": "qwen38_27b_q4_k_fused_four_row_avx2_preregistration_v3",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_fused_four_row_avx2_v3",
+  "frozen_at": "2026-08-18T10:39:32Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "target_quantization": "Q4_K_M",
+    "official_mtp_draft_quantization": "Q4_0",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true
+  },
+  "profile_anchor": {
+    "receipt": "receipts/qwen38_27b_mtp3_four_row_profile_v1/terminal-decision.json",
+    "four_row_q4_k_cycle_fraction": 0.4498,
+    "q8_matmul_cycle_fraction": 0.2399,
+    "draft_q4_0_gemv_cycle_fraction": 0.0693,
+    "decision": "optimize the four-row Q4_K target-verification kernel before draft proposal fusion"
+  },
+  "hypothesis": "For exactly four target-verification rows, extending the proven weight-decode-shared AVX2 Q4_K multi-accumulator kernel will outperform llama.cpp's current four-row tail GEMM by avoiding its Q4/Q8 lane-rearrangement network while retaining one Q4 decode per weight tile.",
+  "implementation": {
+    "control": "Pinned llama.cpp plus cache-order ragged dispatch v1 and fused one-to-three-row AVX2 v2",
+    "candidate": "The identical source plus a v3 patch that extends the fused kernel to four accumulators and dispatches exactly four Q8_K rows through it",
+    "candidate_patch": "kernels/llama_cpp_q4_k_fused_four_row_avx2_v3.patch",
+    "unchanged_paths": [
+      "single-row ordinary decode",
+      "two- and three-row ragged verification",
+      "batches larger than four rows",
+      "all non-Q4_K tensor types"
+    ]
+  },
+  "controls": {
+    "cpu_affinity": "0,2,4,6",
+    "threads": 4,
+    "context": 512,
+    "batch": 128,
+    "ubatch": 64,
+    "paired_order": "control,candidate,candidate,control",
+    "target_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "draft_sha256": "051a1764cff8c4f3ee6ae8b00593a0364c7539c67fa50ffc58f3f96509fca38e"
+  },
+  "promotion_gate": {
+    "kernel_correctness": {
+      "backend_reference_cases_pass": true,
+      "real_model_mtp3_control_vs_candidate_exact_greedy_tokens": true,
+      "prompts": 4,
+      "tokens_per_prompt": 96
+    },
+    "performance": {
+      "minimum_real_model_four_row_graph_speedup": 1.10,
+      "minimum_whole_model_mtp3_accepted_tps_speedup": 1.05,
+      "maximum_target_only_tps_regression_fraction": 0.02
+    },
+    "quality": {
+      "cute_quick_required_after_performance_pass": true,
+      "candidate_must_match_q4_control_score_and_item_outputs": true
+    }
+  },
+  "stop_rules": [
+    "Reject on any control-versus-candidate exact-greedy token mismatch.",
+    "Reject if the paired four-row real-model graph improves by less than ten percent.",
+    "Reject if four-prompt MTP3 accepted throughput improves by less than five percent.",
+    "Reject if target-only accepted throughput regresses by more than two percent.",
+    "Do not run CUTE when a correctness or throughput gate has already rejected the candidate.",
+    "Preserve a terminal negative receipt instead of tuning thresholds after observing results."
+  ],
+  "claim_boundary": "A pass promotes one AVX2 Q4_K four-row verification kernel on four Milan cores. It is not evidence for a trained approximation, final-node scaling, broad capability preservation, 100 accepted tokens per second, or scientific novelty."
+}

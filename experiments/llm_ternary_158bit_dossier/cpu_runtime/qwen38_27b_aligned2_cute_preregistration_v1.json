@@ -1,0 +1,147 @@
+{
+  "schema": "qwen38_27b_aligned2_cute_preregistration_v1",
+  "receipt_schema": "qwen38_27b_aligned2_cute_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T16:58:00Z",
+  "objective": "Measure catastrophic forgetting and multi-token CPU execution in the complete Qwen3.8-27B aligned2 graph using the frozen CUTE-Quick-20 character-level tripwire, with an atomic restart point after every item and the verified Q4_K_M control as the comparison",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "benchmark": "CUTE-Quick-20",
+    "denominator": 20,
+    "leaderboard_comparable": false,
+    "batch": 1,
+    "maximum_generated_tokens_per_item": 48,
+    "temperature": 0,
+    "full_64_layer_graph_per_token": true
+  },
+  "evaluation": {
+    "manifest_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/cute_quick_v1.json",
+    "manifest_content_sha256": "cbc71368d5be89d5610d55990f9de248a434c6bfbb11e5c130718fa0fac2714a",
+    "selection": "four frozen rows from each of five official CUTE character tasks",
+    "scoring": "case-sensitive exact match after the existing strict wrapper normalization",
+    "chat_template": "container-authenticated Qwen3.8 tokenizer template with enable_thinking false",
+    "decoding": "deterministic greedy top-1",
+    "transformers_version": "5.15.0"
+  },
+  "parent": {
+    "full_text_receipt": "/workspace/quant-state/qwen38-27b-aligned2-full-text-v1.json",
+    "required_schema": "qwen38_27b_aligned2_full_text_receipt_v1",
+    "must_pass": true,
+    "source_container_cache_and_manifest_must_match": true
+  },
+  "control": {
+    "name": "Qwen3.8-27B Q4_K_M",
+    "q4_report_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_cpu_q4_baseline_v1/cute.json",
+    "q4_report_sha256": "b67b4237ab9d5428aeb295794bdaeadc873f7b8c2474ea5ce9005e2d548fae68",
+    "q4_summary_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_cpu_q4_baseline_v1/summary.json",
+    "q4_summary_sha256": "1557f1aac13f6c557e89006427aa829e2707f07ad73aa29611763e754c409a64",
+    "q4_model_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "q4_correct": 9,
+    "q4_denominator": 20
+  },
+  "candidate": {
+    "representation": "canonical near-base-3 CQ3 storage plus authenticated aligned group128 2-bit row-scale4 working cache",
+    "gemv_implementation": "avx2",
+    "elementwise_implementation": "avx2",
+    "physical_threads": 4,
+    "streaming_topk_count": 1,
+    "streaming_row_chunk": 4096,
+    "full_logits_materialized": false,
+    "fresh_state_per_item": true
+  },
+  "measurement": {
+    "physical_threads": 4,
+    "reuse_one_thread_pool_and_one_read_only_model_mapping": true,
+    "record_per_item_prompt_completion_and_forward_token_counts": true,
+    "record_per_item_and_aggregate_observed_tokens_per_second": true,
+    "elapsed_model_time_includes_token_graph_LM_head_and_Python_dispatch": true,
+    "elapsed_model_time_excludes_artifact_authentication_tokenization_scoring_and_checkpoint_writes": true,
+    "atomic_progress_checkpoint_after_each_item": true,
+    "resume_requires_exact_model_manifest_and_item_prefix_identity": true
+  },
+  "gate": {
+    "required_denominator": 20,
+    "minimum_correct": 7,
+    "maximum_correct_loss_vs_q4": 2,
+    "required_authenticated_aligned_tensor_count": 666,
+    "maximum_process_peak_rss_bytes": 10737418240,
+    "require_all_measurements_finite": true
+  },
+  "frozen_inputs": {
+    "evaluator": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_qwen38_27b_aligned2_cute_v1.py",
+      "sha256": "dee3ad29332073b94e81ac4ae1d488ece15474a924429f8fd0c195a1494f42d3"
+    },
+    "scorer": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_cute_quick.py",
+      "sha256": "9c40a48a0c3f0544156a20ccccdc12f7e90bbae8afd391bf640ead1ff234c8ab"
+    },
+    "manifest": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/cute_quick_v1.json",
+      "sha256": "19dd73eedf737d11f7c94d039822de62314abf31e3fb739a9a875fe65c5bbd16"
+    },
+    "q4_cute_control": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_cpu_q4_baseline_v1/cute.json",
+      "sha256": "b67b4237ab9d5428aeb295794bdaeadc873f7b8c2474ea5ce9005e2d548fae68"
+    },
+    "q4_summary": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_cpu_q4_baseline_v1/summary.json",
+      "sha256": "1557f1aac13f6c557e89006427aa829e2707f07ad73aa29611763e754c409a64"
+    },
+    "parent_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_aligned2_full_text_preregistration_v1.json",
+      "sha256": "f44f32a496cdf65e2c21e67c6aa3272a59fae2f5932ddc2d98257ed097a0839d"
+    },
+    "aligned_cache_runtime": {
+      "path": "clark_quantize/qwen38_aligned2_cache.py",
+      "sha256": "714d0c6ef3e1d3fe53036651f2d733cbd848e5811e61b1c6989501a1a6042ef4"
+    },
+    "model_runtime": {
+      "path": "clark_quantize/qwen38_cq3_runtime.py",
+      "sha256": "0c0353d8b82ac8924724449ba0b7b53fa049cd6b2ca1fb6137d81c9dcaeb6cb2"
+    },
+    "aligned_cache_tests": {
+      "path": "clark_quantize/test_qwen38_aligned2_cache.py",
+      "sha256": "1644e9e77a188e63305f3c6e04b59066eebd0d00a66e9b2ad6186565b2b5975b"
+    },
+    "model_runtime_tests": {
+      "path": "clark_quantize/test_qwen38_cq3_runtime.py",
+      "sha256": "c35735e33ce4226c2381de7e7d717fd26ccfe04f1455cb57aa8708437e3742c6"
+    },
+    "native_wrapper": {
+      "path": "clark_quantize/ternary_cpu.py",
+      "sha256": "ce706e66ac61d2919a80f0c838432b9df31ff469412ce95a3d61c56c15bed7a9"
+    },
+    "native_source": {
+      "path": "clark_quantize/ternary_cpu.c",
+      "sha256": "00acb5674e1ae2de188d7d7dfefcf5cf33776ca634c597469dc5e3b168248488"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_ternary_cpu.py",
+      "sha256": "b2da7716b78c5094360299a635ac2ac030412f9bea7ca726cc4c0856170e4a03"
+    },
+    "native_build": {
+      "path": "scripts/cpu/build_ternary_cpu.sh",
+      "sha256": "273db81adcefce5525288927cbcdde5f4beff65b136e35235ba8c4909c22e75b"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 12,
+    "swap_must_remain_zero": true,
+    "restart_on_interruption_or_failure": true,
+    "enabled_service_resumes_after_node_reboot": true,
+    "maximum_new_persistent_bytes": 10485760,
+    "run_only_after_full_text_gate_is_terminal_and_passed": true
+  },
+  "promotion_rules": [
+    "an exact 20-item denominator is mandatory; infrastructure-invalid work is neither zero nor complete",
+    "a valid quality memory or numerical threshold miss is retained as a negative result",
+    "a pass means only that this frozen non-leaderboard catastrophic-forgetting tripwire stayed within two items of the Q4 control",
+    "a pass authorizes the frozen MATH-500 quick-8 or subject-balanced MMLU follow-up but does not prove broad capability",
+    "observed custom-runtime tokens per second is recorded continuously but does not replace the separate paired throughput gate",
+    "no scientific breakthrough claim can come from CUTE-Quick-20 alone",
+    "Qwen 4B compute is forbidden in this research lane"
+  ]
+}

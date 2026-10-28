@@ -1,0 +1,127 @@
+{
+  "schema": "qwen38_27b_aligned2_real_layers_preregistration_v1",
+  "receipt_schema": "qwen38_27b_aligned2_real_layers_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T16:45:00Z",
+  "objective": "Establish that one complete real-weight DeltaNet decoder layer and one complete real-weight full-attention decoder layer from Qwen3.8-27B execute with four-core AVX2 output and state parity against the scalar implementation before attempting the 64-layer text graph",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "layers": [0, 3],
+    "expected_layer_types": {
+      "0": "linear_attention",
+      "3": "full_attention"
+    },
+    "layer_zero": "input RMSNorm, all five DeltaNet projections, causal convolution, model-correct recurrent update, post-recurrence RMSNorm and SiLU gate, output projection, residual, post-attention RMSNorm, three-projection SwiGLU MLP, residual",
+    "layer_three": "input RMSNorm, four full-attention projections, Q and K RMSNorm, partial RoPE, one-token GQA and KV append, sigmoid gate, output projection, residual, post-attention RMSNorm, three-projection SwiGLU MLP, residual",
+    "actual_aligned_weight_tensors": 16,
+    "full_text_graph_out_of_scope": true
+  },
+  "input": {
+    "kind": "authenticated aligned2 embedding row",
+    "token_id": 248045,
+    "token": "<|im_start|>",
+    "position": 0,
+    "batch": 1,
+    "state": "fresh zeros",
+    "context_capacity": 1
+  },
+  "parent": {
+    "complete_aligned2_cache_receipt": "/workspace/quant-state/qwen38-27b-aligned2-full-cache-v1.json",
+    "required_schema": "qwen38_27b_aligned2_full_cache_receipt_v1",
+    "must_pass": true,
+    "source_container_cache_and_manifest_paths_must_match": true,
+    "manifest_sha256_must_be_reverified": true,
+    "executed_aligned_tensor_sha256_must_be_reverified": true,
+    "full_source_and_cache_sha256_may_be_reused_from_the_immediate_parent": true
+  },
+  "candidate": {
+    "weight_representation": "authenticated group128 aligned 2-bit working cache with canonical row-scale4 factors",
+    "gemv_implementation": "avx2",
+    "elementwise_implementation": "avx2",
+    "physical_threads": 4,
+    "reference_gemv_implementation": "scalar",
+    "reference_elementwise_implementation": "scalar",
+    "reference_threads": 1,
+    "numeric_comparison": "fresh identical input and zero state for every call"
+  },
+  "measurement": {
+    "warmups_per_implementation": 1,
+    "paired_repetitions": 3,
+    "paired_order": "alternating scalar then AVX2-four and AVX2-four then scalar",
+    "physical_threads": 4,
+    "reuse_thread_pool": true,
+    "include_A8_quantization_Python_dispatch_and_all_layer_operators": true,
+    "exclude_artifact_authentication_and_layer_construction_from_timing": true,
+    "page_faults_measured_after_each_layer_warmup": true
+  },
+  "gate": {
+    "maximum_scalar_avx2_relative_tolerance": 0.0001,
+    "maximum_scalar_avx2_absolute_tolerance": 0.001,
+    "maximum_avx2_seconds_per_layer": 60.0,
+    "minimum_authenticated_aligned_tensor_count": 16,
+    "maximum_process_peak_rss_bytes": 2147483648,
+    "require_zero_major_page_faults_during_paired_regions": true,
+    "require_all_outputs_and_states_finite": true,
+    "performance_speedup_is_diagnostic_not_a_pass_condition": true
+  },
+  "frozen_inputs": {
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_aligned2_real_layers_v1.py",
+      "sha256": "2a33ae0ea37d990dc706a5ea0ddfeeebdc84f7badec59bba3ce8646742ce33c1"
+    },
+    "aligned_cache_runtime": {
+      "path": "clark_quantize/qwen38_aligned2_cache.py",
+      "sha256": "714d0c6ef3e1d3fe53036651f2d733cbd848e5811e61b1c6989501a1a6042ef4"
+    },
+    "model_runtime": {
+      "path": "clark_quantize/qwen38_cq3_runtime.py",
+      "sha256": "0c0353d8b82ac8924724449ba0b7b53fa049cd6b2ca1fb6137d81c9dcaeb6cb2"
+    },
+    "aligned_cache_tests": {
+      "path": "clark_quantize/test_qwen38_aligned2_cache.py",
+      "sha256": "1644e9e77a188e63305f3c6e04b59066eebd0d00a66e9b2ad6186565b2b5975b"
+    },
+    "model_runtime_tests": {
+      "path": "clark_quantize/test_qwen38_cq3_runtime.py",
+      "sha256": "c35735e33ce4226c2381de7e7d717fd26ccfe04f1455cb57aa8708437e3742c6"
+    },
+    "native_wrapper": {
+      "path": "clark_quantize/ternary_cpu.py",
+      "sha256": "ce706e66ac61d2919a80f0c838432b9df31ff469412ce95a3d61c56c15bed7a9"
+    },
+    "native_source": {
+      "path": "clark_quantize/ternary_cpu.c",
+      "sha256": "00acb5674e1ae2de188d7d7dfefcf5cf33776ca634c597469dc5e3b168248488"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_ternary_cpu.py",
+      "sha256": "b2da7716b78c5094360299a635ac2ac030412f9bea7ca726cc4c0856170e4a03"
+    },
+    "native_build": {
+      "path": "scripts/cpu/build_ternary_cpu.sh",
+      "sha256": "273db81adcefce5525288927cbcdde5f4beff65b136e35235ba8c4909c22e75b"
+    },
+    "parent_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_aligned2_full_cache_preregistration_v1.json",
+      "sha256": "e4280390bd1ee1f2b26bd12d0045099e2adb12e6e9d9938b409186ffea9ba288"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 4,
+    "swap_must_remain_zero": true,
+    "new_persistent_artifact_bytes": 0,
+    "run_only_after_complete_aligned2_cache_is_terminal": true
+  },
+  "promotion_rules": [
+    "a pass establishes only real-weight one-token zero-state scalar-versus-AVX2 parity for one layer of each mixer type",
+    "a valid parity latency memory or fault threshold miss is retained as a negative result",
+    "a pass authorizes a frozen 64-layer single-token text-graph smoke but is not a capability or throughput result",
+    "the next runnable-graph stage must run quick CUTE and MMLU-type or MATH-500 gates",
+    "teacher or reference-logit parity and multi-token state correctness remain open",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "no scientific breakthrough claim can come from this staged layer gate",
+    "Qwen 4B compute is forbidden in this research lane"
+  ]
+}

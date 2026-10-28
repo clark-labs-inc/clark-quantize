@@ -1,0 +1,76 @@
+{
+  "schema": "qwen38_27b_cpu_throughput_preregistration_v1",
+  "created_at": "2026-08-17T10:33:53Z",
+  "objective": "Establish the permanent Qwen3.8-27B CPU prompt-prefill and decode tokens-per-second baseline without weakening correctness gates",
+  "model": {
+    "scope": "Qwen/Qwen3.8-27B only",
+    "artifact": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "bytes": 18973870432,
+    "source_repository": "ggml-org/Qwen3.8-27B-GGUF",
+    "source_revision": "0669b98607d47046c7c2b3f801011d54a08cfccf"
+  },
+  "admission_gate": {
+    "required_marker": "/workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1/QUALITY_COMPLETE",
+    "required_receipts": [
+      "CUTE-Quick-20",
+      "MATH-500 quick 8",
+      "sealed code traces 6",
+      "WikiText four 512-token chunks",
+      "MMLU 64 five-shot exact-option likelihood"
+    ],
+    "node_exclusivity": "No QAT, cache, quality-evaluation, inference-server, or other throughput process may share the node"
+  },
+  "runtime": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "llama_bench": "/workspace/build/llama.cpp/bin/llama-bench",
+    "llama_bench_sha256": "01f85116456ffd6dbe4723801c86c2b75ed1b920a60416aef4f21d376114f7a9",
+    "load_mode": "mmap",
+    "batch": 512,
+    "ubatch": 512,
+    "repetitions": 5,
+    "warmup": true,
+    "poll": 50
+  },
+  "cpu_lanes": [
+    {
+      "threads": 1,
+      "logical_cpus": [0],
+      "taskset": "0",
+      "cpu_mask": "0x1"
+    },
+    {
+      "threads": 2,
+      "logical_cpus": [0, 2],
+      "taskset": "0,2",
+      "cpu_mask": "0x5"
+    },
+    {
+      "threads": 4,
+      "logical_cpus": [0, 2, 4, 6],
+      "taskset": "0,2,4,6",
+      "cpu_mask": "0x55"
+    }
+  ],
+  "measurements": {
+    "prefill_tokens": [128, 512, 2048],
+    "generated_tokens": 128,
+    "report_prefill_and_decode_separately": true,
+    "authoritative_metric": "llama-bench avg_ts with all five raw samples retained",
+    "statistics": [
+      "mean_tokens_per_second",
+      "standard_deviation_tokens_per_second",
+      "median_tokens_per_second",
+      "minimum_tokens_per_second",
+      "maximum_tokens_per_second"
+    ]
+  },
+  "validity_rules": [
+    "Every result row must bind the exact 27B artifact and runtime binary",
+    "CPU masks select one hardware thread from each physical core before SMT is explored",
+    "All expected 12 rows must exist: nine prefill and three decode",
+    "Each row must contain exactly five finite positive samples",
+    "This baseline is descriptive and does not itself promote a runtime change",
+    "Any later speed promotion requires identical model bytes, valid quality receipts, at least 5 percent paired median gain, and no authoritative pair below 1.0x"
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "schema": "qwen38_27b_q4_k_ragged_kernel_terminal_decision_v1",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "decision": "reject_cache_reordering_only",
+  "reason": "Keeping a repacked Q4_K weight tile cache-resident across ragged verification rows produced only 1.028x and 1.031x microkernel speedups for widths two and three and no measurable whole-model MTP improvement. The branch does not meet any material speed gate and must not be promoted.",
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "target_quantization": "Q4_K_M",
+    "target_bytes": 18973870432,
+    "target_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "mtp_draft_bytes": 1680271648,
+    "mtp_draft_sha256": "051a1764cff8c4f3ee6ae8b00593a0364c7539c67fa50ffc58f3f96509fca38e"
+  },
+  "provenance": {
+    "repository_commit": "6e1d74d50827872e5b782a0bfdfdc807de4b3ecd",
+    "llama_cpp_commit": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "patch_sha256": "7ed408aaa908f070f95ba2a567175b196c0e1619fb0b987fc1faded282e211d3",
+    "control_test_backend_ops_sha256": "5bfb84b20a5e1329693bdfc1a8f9a990e503c6ec74b5ec34e3aecdb0b15df9f8",
+    "candidate_test_backend_ops_sha256": "aff42b035770d5d2302ea3b04d05e1ffbfe207b456b33f7599e4acdb2cb93c0c",
+    "control_server_sha256": "f46979f9a3ebea22f8e2451eb4309cbd3287e224e7e345f800837aaf0226d3a8",
+    "candidate_server_sha256": "b80f5a7e042d938756cf84608b6fc95c6b4d9cf6acc3545ebd5c6799c8e84fd2",
+    "service": "quant-qwen38-q4-k-ragged-kernel-v1.service",
+    "service_terminal_status": 2,
+    "service_restarts": 0,
+    "status_interpretation": "Exit status two is the preregistered scientific rejection emitted after KERNEL_COMPLETE and a terminal summary; it is not an infrastructure failure."
+  },
+  "microbenchmark": {
+    "shape": "Q4_K by F32, m=4096, k=14336, four physical Milan cores",
+    "paired_order": "control,candidate,candidate,control",
+    "width_1": {
+      "control_median_microseconds": 599.395,
+      "candidate_median_microseconds": 597.77,
+      "speedup": 1.002718436856985
+    },
+    "width_2": {
+      "control_median_microseconds": 986.86,
+      "candidate_median_microseconds": 959.59,
+      "speedup": 1.0284183870194563,
+      "required_speedup": 1.25,
+      "passed": false
+    },
+    "width_3": {
+      "control_median_microseconds": 1362.2,
+      "candidate_median_microseconds": 1321.68,
+      "speedup": 1.0306579504872588,
+      "required_speedup": 1.5,
+      "passed": false
+    },
+    "width_4_speedup": 1.0052563572916573,
+    "width_5_speedup": 1.0032935275853834,
+    "width_8_speedup": 1.0028629199894177
+  },
+  "whole_model": {
+    "prompt_count": 4,
+    "tokens_per_prompt": 96,
+    "control_target_accepted_tokens_per_second": 1.7943114575555081,
+    "candidate_target_accepted_tokens_per_second": 1.794886925453684,
+    "target_only_candidate_over_control": 1.0003207179532587,
+    "control_mtp3_accepted_tokens_per_second": 3.059713612416253,
+    "candidate_mtp3_accepted_tokens_per_second": 3.059646036152471,
+    "mtp3_candidate_over_control": 0.999977914186639,
+    "required_mtp3_speedup": 1.15,
+    "speed_passed": false,
+    "cross_runtime_target_exact_token_parity": true,
+    "cross_runtime_mtp3_exact_token_parity": true,
+    "control_internal_target_vs_mtp3_prompt_parity": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "candidate_internal_target_vs_mtp3_prompt_parity": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "internal_parity_interpretation": "The same one-prompt target-versus-MTP divergence occurs in the unmodified control and candidate, while candidate output exactly matches control output in both modes. It is an upstream speculative batching property, not a candidate-kernel correctness regression."
+  },
+  "gates": {
+    "micro_width_2_passed": false,
+    "micro_width_3_passed": false,
+    "whole_model_mtp3_speed_passed": false,
+    "target_only_regression_passed": true,
+    "candidate_matches_control_passed": true,
+    "promotion_passed": false
+  },
+  "next_kernel": "Fuse Q4_K unpack and scale extraction across two or three activation rows so each weight block is decoded once. Do not continue cache-order-only variants.",
+  "claim_boundary": "Terminal negative paired result on four physical AMD EPYC Milan cores. It rejects only this cache-order implementation; it is not a final-node, capability, or 100 accepted tokens per second result."
+}

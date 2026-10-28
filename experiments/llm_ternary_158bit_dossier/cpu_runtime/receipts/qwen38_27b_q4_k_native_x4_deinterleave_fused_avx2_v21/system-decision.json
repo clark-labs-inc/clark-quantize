@@ -1,0 +1,82 @@
+{
+  "checks": {
+    "candidate_mtp3_denominator_is_4x96": true,
+    "candidate_mtp3_zero_fraction_below_0_01": true,
+    "candidate_target_denominator_is_4x96": true,
+    "graph_gate_passed": true,
+    "mtp3_candidate_over_control_at_least_1_05": true,
+    "target_only_cross_runtime_tokens_exact": false,
+    "target_only_regression_at_most_0_02": true,
+    "target_only_zero_fraction_below_0_01": true
+  },
+  "claim_boundary": "A pass admits the same-weights kernel to frozen CUTE and WikiText. It is not a conventional-decode breakthrough, trained approximation, final-node, energy, 100 tok/s, novelty, or scientific-breakthrough result.",
+  "decision": "reject_system_gate",
+  "denominator": {
+    "prompts": 4,
+    "tokens_per_prompt": 96
+  },
+  "graph_gate": {
+    "paired_control_over_candidate_ratio_median": 1.137261437618061,
+    "receipt_sha256": "29080d1c98587c5b3a27711aa7cf4a6982bbbfedc72a995518ceeb7085f4edce"
+  },
+  "host_scope": "four physical AMD EPYC Milan cores",
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "mtp3": {
+    "candidate_accepted_tokens_per_second": 3.444548529233525,
+    "candidate_draft_n": 385,
+    "candidate_draft_n_accepted": 249,
+    "candidate_mean_committed_tokens_per_target_call": 2.900763358778626,
+    "candidate_over_control": 1.146572084561092,
+    "candidate_zero_token_fraction": 0.0,
+    "control_accepted_tokens_per_second": 3.0042145414277193,
+    "control_draft_n": 384,
+    "control_draft_n_accepted": 250,
+    "control_mean_committed_tokens_per_target_call": 2.923076923076923,
+    "cross_runtime_tokens_exact": false,
+    "first_mismatch_index_by_prompt": [null, null, null, 54]
+  },
+  "next_stage": null,
+  "passed": false,
+  "provenance": {
+    "candidate_mtp3_token_sha256": [
+      "d10b10e02779d1aa446c627431fcbc10ba8aded55a17563e5f970d2beeea2711",
+      "20f77cf203a28d17100f82457d12fd268eae8279a0072cd90e7ae411f5337b7c",
+      "bcbb977dedc7f901fc74fc96958e61ee67e843164c5efe69d8d7592df99171d5",
+      "8ed094f7d62ac7ba110cca268dfc394f5b9a205bad241398bf1866ebc405d3fd"
+    ],
+    "candidate_server_sha256": "2c9db28068c8cf92f92fa631e1667e5d1cb39c83e21ae3245bb655d69ec358fc",
+    "candidate_summary_sha256": "ba1c3599ce180e71d8af6a65874a3c9b2203b256a468033d86b08609341f5741",
+    "candidate_target_token_sha256": [
+      "d10b10e02779d1aa446c627431fcbc10ba8aded55a17563e5f970d2beeea2711",
+      "20f77cf203a28d17100f82457d12fd268eae8279a0072cd90e7ae411f5337b7c",
+      "bcbb977dedc7f901fc74fc96958e61ee67e843164c5efe69d8d7592df99171d5",
+      "8ed094f7d62ac7ba110cca268dfc394f5b9a205bad241398bf1866ebc405d3fd"
+    ],
+    "control_mtp3_token_sha256": [
+      "d10b10e02779d1aa446c627431fcbc10ba8aded55a17563e5f970d2beeea2711",
+      "20f77cf203a28d17100f82457d12fd268eae8279a0072cd90e7ae411f5337b7c",
+      "bcbb977dedc7f901fc74fc96958e61ee67e843164c5efe69d8d7592df99171d5",
+      "ae3c8ac0ba3af4cc66e0af3580272026c735921d375bbf0bf2c9cf63c85529c0"
+    ],
+    "control_server_sha256": "fae5927f440f6342e3de14f17ecc1ddb73e1b13def31aca5fa714dbf6bea129d",
+    "control_summary_sha256": "47dd91e2880a033da655f2a935b5f823096408db01900833db866c9533f6ae58",
+    "control_target_token_sha256": [
+      "d10b10e02779d1aa446c627431fcbc10ba8aded55a17563e5f970d2beeea2711",
+      "20f77cf203a28d17100f82457d12fd268eae8279a0072cd90e7ae411f5337b7c",
+      "55a10b3af48d24e8f3a0f4fc0e969b402f7ab100bdcdfba0104bd075be9ed805",
+      "ae3c8ac0ba3af4cc66e0af3580272026c735921d375bbf0bf2c9cf63c85529c0"
+    ]
+  },
+  "schema": "qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_system_result_v21",
+  "stage": "target_and_mtp3_system",
+  "target_only": {
+    "candidate_accepted_tokens_per_second": 1.8831415892137138,
+    "candidate_over_control": 1.0660429054186784,
+    "candidate_zero_token_fraction": 0.0,
+    "control_accepted_tokens_per_second": 1.7664782342640586,
+    "cross_runtime_tokens_exact": false,
+    "first_mismatch_index_by_prompt": [null, null, 35, 54]
+  },
+  "terminal": true
+}

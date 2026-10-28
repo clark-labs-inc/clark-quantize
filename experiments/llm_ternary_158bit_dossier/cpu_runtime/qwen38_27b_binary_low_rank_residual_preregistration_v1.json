@@ -1,0 +1,72 @@
+{
+  "schema": "qwen38_27b_binary_low_rank_residual_preregistration_v1",
+  "status": "frozen_before_full_real_weight_run",
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "hypothesis": "A rank-40 binary-right residual factor shared by the complete layer-0 gate and up projections will materially outperform the same-rate learned gain-hash correction while retaining a complete component rate below 1.55 bits per weight",
+  "scope": {
+    "tensors": [
+      {
+        "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+        "shape": [17408, 5120],
+        "shard": "model-00001-of-00018.safetensors"
+      },
+      {
+        "name": "model.language_model.layers.0.mlp.up_proj.weight",
+        "shape": [17408, 5120],
+        "shard": "model-00001-of-00018.safetensors"
+      }
+    ],
+    "all_rows_and_columns_required": true,
+    "sampled_row_spans_forbidden": true,
+    "shared_input_factor": true
+  },
+  "candidate": {
+    "representation": "W approximately equals T plus A C; T is exact-64-of-128 ternary with row-normalized four-bit scale indices, A is signed per-row INT4, and each row of shared C is an FP16 scale times 5120 binary signs",
+    "group_size": 128,
+    "nonzero_per_group": 64,
+    "rank": 40,
+    "randomized_pca_iterations": 2,
+    "alternating_iterations": 4,
+    "relative_ridge": 0.00001,
+    "seed": 11631182,
+    "probe_seed": 15804031,
+    "storage_contract": "all ternary codes, four-bit group-scale indices, row anchors, ratio codebooks, INT4 left factors, FP16 left scales, shared binary right signs, FP16 right scales, and headers counted"
+  },
+  "control": {
+    "representation": "same frozen exported ternary residual plus rank-40 learned one-sparse bucket sign and three-bit gain route with signed per-row INT4 coefficients",
+    "gain_bits": 3,
+    "routing_iterations": 6,
+    "same_full_residual_matrix": true,
+    "same_rank_and_left_INT4_export": true
+  },
+  "gate": {
+    "required_full_tensors": 2,
+    "minimum_error_reduction_vs_gain_hash": 0.02,
+    "minimum_error_reduction_vs_direct_ternary": 0.03,
+    "maximum_component_bits_per_weight": 1.55,
+    "maximum_kernel_identity_error": 0.0005
+  },
+  "decision_policy": [
+    "a pass advances directly to activation-weighted fitting and the complete gate-up-down layer, not another sampled weight-space route screen",
+    "a rejection is terminal for this exact rank-40 binary-right family and does not authorize seed or threshold tuning",
+    "the factor artifact is a research checkpoint and is excluded from the canonical storage claim until a codec roundtrip exists",
+    "CUTE MMLU-type MATH WikiText code and paired CPU throughput remain mandatory before any model or breakthrough claim",
+    "prior art includes LQ-LoRA, ASVD, SVDQuant, and ExTernD; this experiment cannot establish novelty"
+  ],
+  "frozen_inputs": {
+    "module": {
+      "path": "clark_quantize/qwen38_binary_low_rank_residual.py",
+      "sha256": "b7f2a2c3ea4ea191fabfe9ea23bb62b66d2d4a9f094e91b4affb862fbff5200e"
+    },
+    "tests": {
+      "path": "clark_quantize/test_qwen38_binary_low_rank_residual.py",
+      "sha256": "7e618b1f30db35956b958907832effa5c6ec2d1fac47ebf8ae2272a02f1dbf45"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_binary_low_rank_residual_v1.py",
+      "sha256": "92920e5d0993d0007672f60fe7c402670e9a7fbb1fcba41de2df71a9a436fad3"
+    }
+  },
+  "claim_boundary": "full real gate-up weight-space screen only; not a complete MLP layer, activation, model capability, runtime, whole-model rate, novelty, or breakthrough result"
+}

@@ -1,0 +1,61 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_dual_decode_result_v14",
+  "completed_at": "2026-08-18T16:44:02Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "classification": "bit_exact_performance_and_stability_rejection",
+  "passed": false,
+  "kernel_promoted": false,
+  "decision": "reject_dual_integer_decode_and_move_to_multi_row_repack",
+  "measurement": {
+    "rows": 17408,
+    "columns": 5120,
+    "warmups": 2,
+    "repetitions": 9,
+    "cache_eviction_bytes": 268435456,
+    "exact_control_candidate": true,
+    "fresh_single_chain_control_median_us": 2585.92,
+    "dual_decode_candidate_samples_us": [
+      2534.71,
+      2970.601,
+      2530.34,
+      2571.481,
+      2659.531,
+      2720.34,
+      2662.24,
+      2578.601,
+      2682.691
+    ],
+    "dual_decode_candidate_median_us": 2659.531,
+    "control_over_candidate_speedup": 0.9723218116276893,
+    "candidate_regression_fraction": 0.02846607783690125,
+    "candidate_sample_range_fraction": 0.1655408415995151
+  },
+  "checks": {
+    "test_cq3_exit_code_zero": true,
+    "full_shape_exact_control_candidate": true,
+    "nine_candidate_repetitions_complete": true,
+    "minimum_speedup_1_05_met": false,
+    "maximum_sample_range_fraction_0_05_met": false,
+    "model_integration_required": false,
+    "cute_required": false,
+    "mmlu_required": false
+  },
+  "provenance": {
+    "candidate_benchmark_sha256": "3696dda1b60a16e61b7774b8de994a2c980a47692563d6f44415b020517dd334",
+    "candidate_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "test_binary_sha256": "b8971a80c31c47271dc4d4a8f4efbb5f223e37347625706fef428eea3db4cb74",
+    "control_library_sha256": "18fc42c69f7a00ee214a938ee618821e9e474067a7b75b80fbe88405d771f813",
+    "candidate_library_sha256": "9a631db85b952510a21d30247662f4ef99baeb344c6ee8762be50ce11b9c6308",
+    "control_disassembly_sha256": "cf8559ee80ee2b0ca221aa9c07590740bdd89ea49c3141ddf3aac80f1ba8d820",
+    "candidate_disassembly_sha256": "3b9fd3ca439589166487deb7db851f8d8e1723cec2aa3be49012c25fd4dcf759",
+    "candidate_patch_sha256": "db4a6994cbc640aae7fb2731408e9352833017898825cd80283aafe6b52e12f0"
+  },
+  "quality": {
+    "ran": false,
+    "reason": "The exact-shape kernel failed both preregistered performance gates, so no integrated 27B runtime was created and no capability score is inferred."
+  },
+  "next_lane": "Replace per-output CQ3 dispatch with an output-row-interleaved CQ3_0x8 runtime repack and AVX2 kernel that computes eight output rows per activation traversal. Share CQ8 activation loads and amortize loop, address, and scale-decode overhead; require a materially larger standalone gain before any 27B integration.",
+  "claim_boundary": "The v14 scheduling change is bit exact but 2.85% slower at the frozen median and unstable under the frozen sampling rule. This is a kernel rejection, not a model-quality result, whole-model speed result, energy result, novelty result, or breakthrough."
+}

@@ -1,0 +1,63 @@
+{
+  "schema": "qwen38_27b_dflash2_no_repack_amd_cpu_preregistration_v1",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_speculative_program_v1",
+  "experiment_id": "qwen38_27b_dflash2_no_repack_amd_cpu_v1",
+  "run_id": "qwen38_27b_dflash2_no_repack_20260819T023428Z",
+  "parent_run_id": "qwen38_27b_dflash2_smoke_20260819T022320Z",
+  "frozen_at": "2026-08-19T02:34:28Z",
+  "parent_evidence": {
+    "repacked_target_tps": 1.8922535983454853,
+    "repacked_dflash2_tps": 2.4352650499959916,
+    "repacked_dflash2_over_target": 1.2869654744614014,
+    "mean_committed_tokens_per_target_call": 4.108695652173913,
+    "exact_prompt_parity": "2/3",
+    "first_mismatch_index_on_technical_prompt": 35,
+    "target_top1_logprob_margin_over_dflash2_token": 0.2059516906738281,
+    "peak_vm_hwm_kib": 31362720,
+    "llama_cpp_reported_cpu_repack_mib": 9180
+  },
+  "hypothesis": "Disabling llama.cpp CPU weight repacking will eliminate the 9,180 MiB repack allocation and may restore batch-1 versus batch-8 numerical parity by routing both autoregressive and speculative verification through the raw Q4_K kernels. The speed result is unknown and must be measured rather than inferred.",
+  "frozen_change": {
+    "only_runtime_change": "append --no-repack to both target-only and DFlash2 server commands",
+    "target": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "draft": "/workspace/models/drafts/dflash2/Qwen3.8-27B-DFlash2-Q4_K_M.gguf",
+    "runtime_revision": "5ecbe1ac17ec0484c5b44af0bd580cdc9c428ed4",
+    "runner_sha256": "2e1a0ce86762aa88e04d8db7142d064aab346e3dd6f0cdba58ca29affaf061f2",
+    "prompts": 3,
+    "tokens_per_prompt": 64,
+    "temperature": 0.0,
+    "top_k": 1,
+    "dflash2_draft_n_max": 7,
+    "threads": 4,
+    "cpu_affinity": "0,2,4,6"
+  },
+  "gates": {
+    "infrastructure": {
+      "server_loads_without_oom": true,
+      "no_swap": true,
+      "maximum_dflash2_vm_hwm_gib": 24.5
+    },
+    "correctness": {
+      "exact_greedy_token_parity_prompts": 3,
+      "total_prompts": 3
+    },
+    "diagnostic_retention": {
+      "minimum_dflash2_over_same_runtime_target": 1.25,
+      "minimum_dflash2_absolute_tps": 2.4,
+      "minimum_mean_committed_tokens_per_target_call": 4.0
+    }
+  },
+  "decision_rules": {
+    "retain_for_exact_n8_kernel": "Retain if memory and parity pass and DFlash2 reaches all diagnostic-retention thresholds.",
+    "retain_for_memory_only": "If memory and parity pass but speed fails, retain --no-repack only as evidence that a custom exact n=8 kernel must avoid the stock repack allocation.",
+    "reject": "Reject no-repack as a solution if parity still fails or the memory gate fails."
+  },
+  "stop_rules": [
+    "Run exactly the same three prompts once for target-only and DFlash2.",
+    "Do not change draft width, quantization, prompts, or sampling in this run.",
+    "Do not enter the six-rotation performance gate automatically."
+  ],
+  "artifact_residency": "Raw responses and logs remain on quant; synchronize only compact reviewed receipts and hashes.",
+  "claim_boundary": "Focused memory and greedy-parity follow-up only; no quality, final-node, 100 tok/s, or novelty claim."
+}

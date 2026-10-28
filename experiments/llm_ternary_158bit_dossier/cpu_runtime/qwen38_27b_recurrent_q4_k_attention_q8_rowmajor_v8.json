@@ -1,0 +1,79 @@
+{
+  "schema": "qwen38_27b_recurrent_q4_k_attention_q8_rowmajor_preregistration_v8",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_recurrent_q4_k_attention_q8_rowmajor_v8",
+  "frozen_at": "2026-08-18T14:32:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true,
+    "control": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "candidate": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-recurrent-Q4_K-attention-Q8-v8.gguf",
+    "runtime": "/workspace/build/llama.cpp-q4k-fused-four-row-rowmajor-avx2-v5"
+  },
+  "hypothesis": "The 16 full-attention blocks are more quality-sensitive than the 48 recurrent/SSM blocks on exact character transformations. Keeping their 48 attn_q, attn_k, and attn_v tensors in Q8_0 while converting the 240 recurrent attention/SSM tensors to Q4_K retains 82.6% of the prior byte savings and most n=4 kernel coverage, while potentially restoring the one CUTE item lost by the blanket transcode.",
+  "artifact_contract": {
+    "selection_profile": "recurrent_only",
+    "source_type": "Q8_0",
+    "target_type": "Q4_K",
+    "selected_tensor_count": 240,
+    "selected_weight_count": 5560074240,
+    "remaining_q8_tensor_count": 48,
+    "expected_bytes_saved": 2780037120,
+    "expected_candidate_bytes": 16193833312,
+    "all_nonselected_tensor_payloads_must_be_byte_identical": true,
+    "maximum_retained_candidates": 1
+  },
+  "sequential_gates": {
+    "gate_1_artifact_and_backend": {
+      "exact_selected_tensor_count": 240,
+      "exact_remaining_q8_tensor_count": 48,
+      "nonselected_payload_hash_parity": true,
+      "backend_reference_cases_required": "3/3"
+    },
+    "gate_2_free_generation": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "minimum_unique_token_ids": 32,
+      "coherent_outputs_required": true
+    },
+    "gate_3_graph": {
+      "warmup_processes_per_model": 1,
+      "measured_processes_per_model": 4,
+      "samples_per_process": 7,
+      "minimum_candidate_over_control_speedup": 1.15,
+      "minimum_candidate_over_all_q4_k_v7_fraction": 0.95,
+      "maximum_process_median_range_fraction": 0.05
+    },
+    "gate_4_paired_serving": {
+      "prompts_per_system": 4,
+      "tokens_per_prompt": 96,
+      "minimum_candidate_over_control_target_tps": 1.15,
+      "minimum_candidate_over_control_mtp3_tps": 1.18,
+      "minimum_candidate_mtp3_exact_parity_with_own_target": true
+    },
+    "gate_5_quick_quality": {
+      "cute_quick_denominator": 20,
+      "minimum_candidate_correct": 9,
+      "minimum_candidate_correct_relative_to_control": 0,
+      "wikitext_chunks": 4,
+      "maximum_candidate_over_control_ppl": 1.05
+    },
+    "gate_6_capability": {
+      "run_only_if_all_prior_gates_pass": true,
+      "mmlu_denominator": 64,
+      "maximum_correct_loss_vs_control": 1,
+      "paired_frozen_math500_subset_required": true
+    }
+  },
+  "stop_rules": [
+    "Reject invalid or collapsed artifacts before timing.",
+    "Reject before paired serving if graph speed is below 1.15x control or loses more than 5% of the all-Q4_K v7 graph speed.",
+    "Reject before MMLU and MATH if target, MTP3, CUTE, or WikiText fails.",
+    "Do not retain more than one derived full-model candidate on the node."
+  ],
+  "claim_boundary": "A pass would identify a quality-preserving mixed-precision boundary for the validated n=4 kernel. It would not establish final-node throughput, energy gains, 100 accepted tok/s, novelty, or a scientific breakthrough."
+}

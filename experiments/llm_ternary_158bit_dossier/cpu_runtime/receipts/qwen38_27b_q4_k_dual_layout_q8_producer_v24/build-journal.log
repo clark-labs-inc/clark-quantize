@@ -1,0 +1,416 @@
+2026-08-19T00:22:52.800261+00:00 ubuntu-32gb-hel1-1 systemd[1]: Starting quant-qwen38-q4k-v24-build.service - [systemd-run] /bin/bash -lc "set -euo pipefail; parent=/workspace/src/llama.cpp-q4k-native-x4-deinterleave-v21; source=/workspace/src/llama.cpp-q4k-dual-layout-producer-v24; build=/workspace/build/llama.cpp-q4k-dual-layout-producer-v24; patch=/workspace/clark-quantize-row-scale-v3/experiments/llm_ternary_158bit_dossier/cpu_runtime/kernels/llama_cpp_q4_k_dual_layout_q8_producer_avx2_v24.patch; cp -a \"\$parent\" \"\$source\"; git -C \"\$source\" apply \"\$patch\"; git -C \"\$source\" diff --check; git -C \"\$source\" apply --reverse --check \"\$patch\"; cmake -S \"\$source\" -B \"\$build\" -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=ON -DGGML_OPENMP=ON -DLLAMA_BUILD_SERVER=ON -DLLAMA_BUILD_TESTS=ON -DLLAMA_CURL=OFF; cmake --build \"\$build\" -j4 --target llama-bench llama-server llama-perplexity test-backend-ops"...
+2026-08-19T00:22:55.102473+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- The C compiler identification is GNU 15.2.0
+2026-08-19T00:22:55.293881+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- The CXX compiler identification is GNU 15.2.0
+2026-08-19T00:22:55.317275+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Detecting C compiler ABI info
+2026-08-19T00:22:55.487747+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Detecting C compiler ABI info - done
+2026-08-19T00:22:55.516006+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Check for working C compiler: /usr/bin/cc - skipped
+2026-08-19T00:22:55.516863+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Detecting C compile features
+2026-08-19T00:22:55.517784+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Detecting C compile features - done
+2026-08-19T00:22:55.544358+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Detecting CXX compiler ABI info
+2026-08-19T00:22:55.697894+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Detecting CXX compiler ABI info - done
+2026-08-19T00:22:55.712802+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Check for working CXX compiler: /usr/bin/c++ - skipped
+2026-08-19T00:22:55.713133+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Detecting CXX compile features
+2026-08-19T00:22:55.713669+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Detecting CXX compile features - done
+2026-08-19T00:22:55.726800+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- llama.cpp version: 0.1.0-dev
+2026-08-19T00:22:55.726800+00:00 ubuntu-32gb-hel1-1 bash[1199246]: CMAKE_BUILD_TYPE=Release
+2026-08-19T00:22:55.733317+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Found Git: /usr/bin/git (found version "2.53.0")
+2026-08-19T00:22:55.787218+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- The ASM compiler identification is GNU
+2026-08-19T00:22:55.791557+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Found assembler: /usr/bin/cc
+2026-08-19T00:22:55.815773+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+2026-08-19T00:22:55.960108+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+2026-08-19T00:22:55.961050+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Found Threads: TRUE
+2026-08-19T00:22:55.967552+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- ccache found, compilation results will be cached. Disable with GGML_CCACHE=OFF.
+2026-08-19T00:22:55.988279+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- CMAKE_SYSTEM_PROCESSOR: x86_64
+2026-08-19T00:22:55.988454+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- GGML_SYSTEM_ARCH: x86
+2026-08-19T00:22:56.469508+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Found OpenMP_C: -fopenmp (found version "4.5")
+2026-08-19T00:22:56.633391+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Found OpenMP_CXX: -fopenmp (found version "4.5")
+2026-08-19T00:22:56.633695+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Found OpenMP: TRUE (found version "4.5")
+2026-08-19T00:22:56.636115+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Including CPU backend
+2026-08-19T00:22:56.636399+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- x86 detected
+2026-08-19T00:22:56.636429+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Adding CPU backend variant ggml-cpu: -march=native
+2026-08-19T00:22:56.641342+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- ggml version: 0.20.0
+2026-08-19T00:22:56.641342+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- ggml commit:  4df29be4f-dirty
+2026-08-19T00:22:56.673022+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Could NOT find OpenSSL, try to set the path to OpenSSL root folder in the system variable OPENSSL_ROOT_DIR (missing: OPENSSL_CRYPTO_LIBRARY OPENSSL_INCLUDE_DIR)
+2026-08-19T00:22:56.673143+00:00 ubuntu-32gb-hel1-1 bash[1199246]: CMake Warning at vendor/cpp-httplib/CMakeLists.txt:152 (message):
+2026-08-19T00:22:56.673143+00:00 ubuntu-32gb-hel1-1 bash[1199246]:   OpenSSL not found, HTTPS support disabled
+2026-08-19T00:22:56.709331+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Generating embedded license file for target: llama-app
+2026-08-19T00:22:56.715543+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Configuring done (1.8s)
+2026-08-19T00:22:56.942661+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Generating done (0.2s)
+2026-08-19T00:22:56.943159+00:00 ubuntu-32gb-hel1-1 bash[1199246]: -- Build files have been written to: /workspace/build/llama.cpp-q4k-dual-layout-producer-v24
+2026-08-19T00:22:57.071932+00:00 ubuntu-32gb-hel1-1 bash[1199407]: [  0%] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml.cpp.o
+2026-08-19T00:22:57.080196+00:00 ubuntu-32gb-hel1-1 bash[1199408]: [  2%] Building C object ggml/src/CMakeFiles/ggml-base.dir/ggml.c.o
+2026-08-19T00:22:57.084114+00:00 ubuntu-32gb-hel1-1 bash[1199413]: [  2%] Building CXX object common/CMakeFiles/llama-common-base.dir/build-info.cpp.o
+2026-08-19T00:22:57.085839+00:00 ubuntu-32gb-hel1-1 bash[1199416]: [  2%] Building CXX object vendor/cpp-httplib/CMakeFiles/cpp-httplib.dir/httplib.cpp.o
+2026-08-19T00:22:57.424905+00:00 ubuntu-32gb-hel1-1 bash[1199442]: [  2%] Building C object ggml/src/CMakeFiles/ggml-base.dir/ggml-alloc.c.o
+2026-08-19T00:22:57.427778+00:00 ubuntu-32gb-hel1-1 bash[1199444]: [  2%] Linking CXX static library libllama-common-base.a
+2026-08-19T00:22:57.712132+00:00 ubuntu-32gb-hel1-1 bash[1199458]: [  2%] Built target llama-common-base
+2026-08-19T00:22:57.725786+00:00 ubuntu-32gb-hel1-1 bash[1199460]: [  2%] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-backend.cpp.o
+2026-08-19T00:22:57.832633+00:00 ubuntu-32gb-hel1-1 bash[1199468]: [  2%] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-backend-meta.cpp.o
+2026-08-19T00:22:58.844853+00:00 ubuntu-32gb-hel1-1 bash[1199479]: [  4%] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-opt.cpp.o
+2026-08-19T00:22:58.856437+00:00 ubuntu-32gb-hel1-1 bash[1199485]: [  4%] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-threading.cpp.o
+2026-08-19T00:22:58.993980+00:00 ubuntu-32gb-hel1-1 bash[1199496]: [  4%] Building C object ggml/src/CMakeFiles/ggml-base.dir/ggml-quants.c.o
+2026-08-19T00:22:59.854839+00:00 ubuntu-32gb-hel1-1 bash[1199505]: [  4%] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/gguf.cpp.o
+2026-08-19T00:23:04.498337+00:00 ubuntu-32gb-hel1-1 bash[1199516]: [  4%] Linking CXX shared library ../../bin/libggml-base.so
+2026-08-19T00:23:04.613836+00:00 ubuntu-32gb-hel1-1 bash[1199526]: [  4%] Built target ggml-base
+2026-08-19T00:23:04.643361+00:00 ubuntu-32gb-hel1-1 bash[1199534]: [  4%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/repack.cpp.o
+2026-08-19T00:23:04.650353+00:00 ubuntu-32gb-hel1-1 bash[1199535]: [  6%] Building C object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.o
+2026-08-19T00:23:04.651127+00:00 ubuntu-32gb-hel1-1 bash[1199536]: [  6%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.cpp.o
+2026-08-19T00:23:05.773854+00:00 ubuntu-32gb-hel1-1 bash[1199560]: [  6%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/hbm.cpp.o
+2026-08-19T00:23:05.806982+00:00 ubuntu-32gb-hel1-1 bash[1199570]: [  6%] Building C object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/quants.c.o
+2026-08-19T00:23:05.871411+00:00 ubuntu-32gb-hel1-1 bash[1199578]: [  8%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/traits.cpp.o
+2026-08-19T00:23:06.678921+00:00 ubuntu-32gb-hel1-1 bash[1199590]: [  8%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/amx.cpp.o
+2026-08-19T00:23:07.215860+00:00 ubuntu-32gb-hel1-1 bash[1199600]: [  8%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/mmq.cpp.o
+2026-08-19T00:23:07.544138+00:00 ubuntu-32gb-hel1-1 bash[1199610]: [  8%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/binary-ops.cpp.o
+2026-08-19T00:23:08.099639+00:00 ubuntu-32gb-hel1-1 bash[1199620]: [  8%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/unary-ops.cpp.o
+2026-08-19T00:23:09.404792+00:00 ubuntu-32gb-hel1-1 bash[1199632]: [  8%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/vec.cpp.o
+2026-08-19T00:23:10.314859+00:00 ubuntu-32gb-hel1-1 bash[1199643]: [ 10%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ops.cpp.o
+2026-08-19T00:23:10.362692+00:00 ubuntu-32gb-hel1-1 bash[1199650]: [ 10%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile/sgemm.cpp.o
+2026-08-19T00:23:10.639865+00:00 ubuntu-32gb-hel1-1 bash[1199662]: [ 10%] Building C object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/x86/quants.c.o
+2026-08-19T00:23:11.655206+00:00 ubuntu-32gb-hel1-1 bash[1199672]: [ 10%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/x86/repack.cpp.o
+2026-08-19T00:23:14.008406+00:00 ubuntu-32gb-hel1-1 bash[1199683]: [ 10%] Linking CXX static library libcpp-httplib.a
+2026-08-19T00:23:14.081629+00:00 ubuntu-32gb-hel1-1 bash[1199691]: [ 10%] Built target cpp-httplib
+2026-08-19T00:23:17.887001+00:00 ubuntu-32gb-hel1-1 bash[1199696]: [ 10%] Linking CXX shared library ../../bin/libggml-cpu.so
+2026-08-19T00:23:18.003007+00:00 ubuntu-32gb-hel1-1 bash[1199706]: [ 10%] Built target ggml-cpu
+2026-08-19T00:23:18.031475+00:00 ubuntu-32gb-hel1-1 bash[1199713]: [ 10%] Building CXX object ggml/src/CMakeFiles/ggml.dir/ggml-backend-reg.cpp.o
+2026-08-19T00:23:18.032104+00:00 ubuntu-32gb-hel1-1 bash[1199714]: [ 10%] Building CXX object ggml/src/CMakeFiles/ggml.dir/ggml-backend-dl.cpp.o
+2026-08-19T00:23:19.217319+00:00 ubuntu-32gb-hel1-1 bash[1199731]: [ 10%] Linking CXX shared library ../../bin/libggml.so
+2026-08-19T00:23:19.313540+00:00 ubuntu-32gb-hel1-1 bash[1199741]: [ 10%] Built target ggml
+2026-08-19T00:23:19.339940+00:00 ubuntu-32gb-hel1-1 bash[1199749]: [ 12%] Building CXX object src/CMakeFiles/llama.dir/llama.cpp.o
+2026-08-19T00:23:19.340644+00:00 ubuntu-32gb-hel1-1 bash[1199751]: [ 12%] Building CXX object src/CMakeFiles/llama.dir/llama-batch.cpp.o
+2026-08-19T00:23:19.347974+00:00 ubuntu-32gb-hel1-1 bash[1199752]: [ 12%] Building CXX object src/CMakeFiles/llama.dir/llama-adapter.cpp.o
+2026-08-19T00:23:19.348307+00:00 ubuntu-32gb-hel1-1 bash[1199753]: [ 12%] Building CXX object src/CMakeFiles/llama.dir/llama-arch.cpp.o
+2026-08-19T00:23:19.980240+00:00 ubuntu-32gb-hel1-1 bash[1199780]: [ 12%] Building CXX object src/CMakeFiles/llama.dir/llama-chat.cpp.o
+2026-08-19T00:23:20.572784+00:00 ubuntu-32gb-hel1-1 bash[1199789]: [ 14%] Building CXX object src/CMakeFiles/llama.dir/llama-context.cpp.o
+2026-08-19T00:23:20.975568+00:00 ubuntu-32gb-hel1-1 bash[1199798]: [ 14%] Building CXX object src/CMakeFiles/llama.dir/llama-cparams.cpp.o
+2026-08-19T00:23:21.139603+00:00 ubuntu-32gb-hel1-1 bash[1199807]: [ 14%] Building CXX object src/CMakeFiles/llama.dir/llama-grammar.cpp.o
+2026-08-19T00:23:21.280860+00:00 ubuntu-32gb-hel1-1 bash[1199816]: [ 14%] Building CXX object src/CMakeFiles/llama.dir/llama-graph.cpp.o
+2026-08-19T00:23:21.738237+00:00 ubuntu-32gb-hel1-1 bash[1199825]: [ 14%] Building CXX object src/CMakeFiles/llama.dir/llama-hparams.cpp.o
+2026-08-19T00:23:22.056795+00:00 ubuntu-32gb-hel1-1 bash[1199834]: [ 17%] Building CXX object src/CMakeFiles/llama.dir/llama-impl.cpp.o
+2026-08-19T00:23:22.603480+00:00 ubuntu-32gb-hel1-1 bash[1199843]: [ 17%] Building CXX object src/CMakeFiles/llama.dir/llama-io.cpp.o
+2026-08-19T00:23:22.846593+00:00 ubuntu-32gb-hel1-1 bash[1199852]: [ 17%] Building CXX object src/CMakeFiles/llama.dir/llama-kv-cache.cpp.o
+2026-08-19T00:23:24.184809+00:00 ubuntu-32gb-hel1-1 bash[1199861]: [ 17%] Building CXX object src/CMakeFiles/llama.dir/llama-kv-cache-iswa.cpp.o
+2026-08-19T00:23:24.996039+00:00 ubuntu-32gb-hel1-1 bash[1199870]: [ 17%] Building CXX object src/CMakeFiles/llama.dir/llama-kv-cache-dsa.cpp.o
+2026-08-19T00:23:25.511717+00:00 ubuntu-32gb-hel1-1 bash[1199879]: [ 17%] Building CXX object src/CMakeFiles/llama.dir/llama-kv-cache-msa.cpp.o
+2026-08-19T00:23:26.338612+00:00 ubuntu-32gb-hel1-1 bash[1199888]: [ 19%] Building CXX object src/CMakeFiles/llama.dir/llama-kv-cache-dsv4.cpp.o
+2026-08-19T00:23:26.361176+00:00 ubuntu-32gb-hel1-1 bash[1199895]: [ 19%] Building CXX object src/CMakeFiles/llama.dir/llama-memory.cpp.o
+2026-08-19T00:23:26.872157+00:00 ubuntu-32gb-hel1-1 bash[1199906]: [ 19%] Building CXX object src/CMakeFiles/llama.dir/llama-memory-hybrid.cpp.o
+2026-08-19T00:23:27.004360+00:00 ubuntu-32gb-hel1-1 bash[1199915]: [ 19%] Building CXX object src/CMakeFiles/llama.dir/llama-memory-hybrid-iswa.cpp.o
+2026-08-19T00:23:27.721107+00:00 ubuntu-32gb-hel1-1 bash[1199924]: [ 19%] Building CXX object src/CMakeFiles/llama.dir/llama-memory-recurrent.cpp.o
+2026-08-19T00:23:28.223821+00:00 ubuntu-32gb-hel1-1 bash[1199933]: [ 21%] Building CXX object src/CMakeFiles/llama.dir/llama-mmap.cpp.o
+2026-08-19T00:23:28.584233+00:00 ubuntu-32gb-hel1-1 bash[1199942]: [ 21%] Building CXX object src/CMakeFiles/llama.dir/llama-model-loader.cpp.o
+2026-08-19T00:23:28.841373+00:00 ubuntu-32gb-hel1-1 bash[1199951]: [ 21%] Building CXX object src/CMakeFiles/llama.dir/llama-model-saver.cpp.o
+2026-08-19T00:23:29.364249+00:00 ubuntu-32gb-hel1-1 bash[1199960]: [ 21%] Building CXX object src/CMakeFiles/llama.dir/llama-model.cpp.o
+2026-08-19T00:23:29.725689+00:00 ubuntu-32gb-hel1-1 bash[1199969]: [ 21%] Building CXX object src/CMakeFiles/llama.dir/llama-quant.cpp.o
+2026-08-19T00:23:30.109060+00:00 ubuntu-32gb-hel1-1 bash[1199978]: [ 23%] Building CXX object src/CMakeFiles/llama.dir/llama-sampler.cpp.o
+2026-08-19T00:23:34.632705+00:00 ubuntu-32gb-hel1-1 bash[1199987]: [ 23%] Building CXX object src/CMakeFiles/llama.dir/llama-vocab.cpp.o
+2026-08-19T00:23:34.706190+00:00 ubuntu-32gb-hel1-1 bash[1199994]: [ 23%] Building CXX object src/CMakeFiles/llama.dir/unicode-data.cpp.o
+2026-08-19T00:23:35.369482+00:00 ubuntu-32gb-hel1-1 bash[1200005]: [ 23%] Building CXX object src/CMakeFiles/llama.dir/unicode.cpp.o
+2026-08-19T00:23:35.887583+00:00 ubuntu-32gb-hel1-1 bash[1200014]: [ 23%] Building CXX object src/CMakeFiles/llama.dir/models/afmoe.cpp.o
+2026-08-19T00:23:36.461020+00:00 ubuntu-32gb-hel1-1 bash[1200023]: [ 25%] Building CXX object src/CMakeFiles/llama.dir/models/apertus.cpp.o
+2026-08-19T00:23:36.691695+00:00 ubuntu-32gb-hel1-1 bash[1200032]: [ 25%] Building CXX object src/CMakeFiles/llama.dir/models/arcee.cpp.o
+2026-08-19T00:23:37.237547+00:00 ubuntu-32gb-hel1-1 bash[1200041]: [ 25%] Building CXX object src/CMakeFiles/llama.dir/models/arctic.cpp.o
+2026-08-19T00:23:37.455091+00:00 ubuntu-32gb-hel1-1 bash[1200050]: [ 25%] Building CXX object src/CMakeFiles/llama.dir/models/arwkv7.cpp.o
+2026-08-19T00:23:38.014022+00:00 ubuntu-32gb-hel1-1 bash[1200059]: [ 25%] Building CXX object src/CMakeFiles/llama.dir/models/baichuan.cpp.o
+2026-08-19T00:23:38.255731+00:00 ubuntu-32gb-hel1-1 bash[1200068]: [ 25%] Building CXX object src/CMakeFiles/llama.dir/models/bailingmoe.cpp.o
+2026-08-19T00:23:38.766307+00:00 ubuntu-32gb-hel1-1 bash[1200077]: [ 27%] Building CXX object src/CMakeFiles/llama.dir/models/bailingmoe2.cpp.o
+2026-08-19T00:23:39.035896+00:00 ubuntu-32gb-hel1-1 bash[1200086]: [ 27%] Building CXX object src/CMakeFiles/llama.dir/models/bert.cpp.o
+2026-08-19T00:23:39.598507+00:00 ubuntu-32gb-hel1-1 bash[1200095]: [ 27%] Building CXX object src/CMakeFiles/llama.dir/models/bitnet.cpp.o
+2026-08-19T00:23:39.768723+00:00 ubuntu-32gb-hel1-1 bash[1200104]: [ 27%] Building CXX object src/CMakeFiles/llama.dir/models/bloom.cpp.o
+2026-08-19T00:23:39.865722+00:00 ubuntu-32gb-hel1-1 bash[1200111]: [ 27%] Building CXX object src/CMakeFiles/llama.dir/models/chameleon.cpp.o
+2026-08-19T00:23:40.377476+00:00 ubuntu-32gb-hel1-1 bash[1200122]: [ 29%] Building CXX object src/CMakeFiles/llama.dir/models/chatglm.cpp.o
+2026-08-19T00:23:40.587917+00:00 ubuntu-32gb-hel1-1 bash[1200131]: [ 29%] Building CXX object src/CMakeFiles/llama.dir/models/clip.cpp.o
+2026-08-19T00:23:40.641025+00:00 ubuntu-32gb-hel1-1 bash[1200138]: [ 29%] Building CXX object src/CMakeFiles/llama.dir/models/codeshell.cpp.o
+2026-08-19T00:23:41.142820+00:00 ubuntu-32gb-hel1-1 bash[1200149]: [ 29%] Building CXX object src/CMakeFiles/llama.dir/models/cogvlm.cpp.o
+2026-08-19T00:23:41.340407+00:00 ubuntu-32gb-hel1-1 bash[1200158]: [ 29%] Building CXX object src/CMakeFiles/llama.dir/models/cohere2.cpp.o
+2026-08-19T00:23:41.398523+00:00 ubuntu-32gb-hel1-1 bash[1200165]: [ 31%] Building CXX object src/CMakeFiles/llama.dir/models/cohere2moe.cpp.o
+2026-08-19T00:23:41.934171+00:00 ubuntu-32gb-hel1-1 bash[1200176]: [ 31%] Building CXX object src/CMakeFiles/llama.dir/models/command-r.cpp.o
+2026-08-19T00:23:42.170873+00:00 ubuntu-32gb-hel1-1 bash[1200185]: [ 31%] Building CXX object src/CMakeFiles/llama.dir/models/dbrx.cpp.o
+2026-08-19T00:23:42.322765+00:00 ubuntu-32gb-hel1-1 bash[1200194]: [ 31%] Building CXX object src/CMakeFiles/llama.dir/models/deci.cpp.o
+2026-08-19T00:23:42.363832+00:00 ubuntu-32gb-hel1-1 bash[1200201]: [ 31%] Building CXX object src/CMakeFiles/llama.dir/models/deepseek.cpp.o
+2026-08-19T00:23:42.715042+00:00 ubuntu-32gb-hel1-1 bash[1200212]: [ 34%] Building CXX object src/CMakeFiles/llama.dir/models/deepseek2.cpp.o
+2026-08-19T00:23:43.009712+00:00 ubuntu-32gb-hel1-1 bash[1200221]: [ 34%] Building CXX object src/CMakeFiles/llama.dir/models/deepseek2ocr.cpp.o
+2026-08-19T00:23:43.132640+00:00 ubuntu-32gb-hel1-1 bash[1200228]: [ 34%] Building CXX object src/CMakeFiles/llama.dir/models/deepseek32.cpp.o
+2026-08-19T00:23:43.156697+00:00 ubuntu-32gb-hel1-1 bash[1200237]: [ 34%] Building CXX object src/CMakeFiles/llama.dir/models/deepseek4.cpp.o
+2026-08-19T00:23:43.780058+00:00 ubuntu-32gb-hel1-1 bash[1200248]: [ 34%] Building CXX object src/CMakeFiles/llama.dir/models/delta-net-base.cpp.o
+2026-08-19T00:23:43.819761+00:00 ubuntu-32gb-hel1-1 bash[1200255]: [ 34%] Building CXX object src/CMakeFiles/llama.dir/models/dflash.cpp.o
+2026-08-19T00:23:44.263798+00:00 ubuntu-32gb-hel1-1 bash[1200266]: [ 36%] Building CXX object src/CMakeFiles/llama.dir/models/dots1.cpp.o
+2026-08-19T00:23:44.512380+00:00 ubuntu-32gb-hel1-1 bash[1200275]: [ 36%] Building CXX object src/CMakeFiles/llama.dir/models/dream.cpp.o
+2026-08-19T00:23:44.674291+00:00 ubuntu-32gb-hel1-1 bash[1200284]: [ 36%] Building CXX object src/CMakeFiles/llama.dir/models/eagle3.cpp.o
+2026-08-19T00:23:45.056291+00:00 ubuntu-32gb-hel1-1 bash[1200293]: [ 36%] Building CXX object src/CMakeFiles/llama.dir/models/ernie4-5-moe.cpp.o
+2026-08-19T00:23:45.100048+00:00 ubuntu-32gb-hel1-1 bash[1200300]: [ 36%] Building CXX object src/CMakeFiles/llama.dir/models/ernie4-5.cpp.o
+2026-08-19T00:23:45.283089+00:00 ubuntu-32gb-hel1-1 bash[1200311]: [ 38%] Building CXX object src/CMakeFiles/llama.dir/models/eurobert.cpp.o
+2026-08-19T00:23:45.515792+00:00 ubuntu-32gb-hel1-1 bash[1200320]: [ 38%] Building CXX object src/CMakeFiles/llama.dir/models/exaone-moe.cpp.o
+2026-08-19T00:23:45.826244+00:00 ubuntu-32gb-hel1-1 bash[1200329]: [ 38%] Building CXX object src/CMakeFiles/llama.dir/models/exaone.cpp.o
+2026-08-19T00:23:45.958452+00:00 ubuntu-32gb-hel1-1 bash[1200338]: [ 38%] Building CXX object src/CMakeFiles/llama.dir/models/exaone4.cpp.o
+2026-08-19T00:23:46.045466+00:00 ubuntu-32gb-hel1-1 bash[1200345]: [ 38%] Building CXX object src/CMakeFiles/llama.dir/models/falcon-h1.cpp.o
+2026-08-19T00:23:46.334059+00:00 ubuntu-32gb-hel1-1 bash[1200356]: [ 40%] Building CXX object src/CMakeFiles/llama.dir/models/falcon.cpp.o
+2026-08-19T00:23:46.620662+00:00 ubuntu-32gb-hel1-1 bash[1200365]: [ 40%] Building CXX object src/CMakeFiles/llama.dir/models/gemma-embedding.cpp.o
+2026-08-19T00:23:46.842124+00:00 ubuntu-32gb-hel1-1 bash[1200375]: [ 40%] Building CXX object src/CMakeFiles/llama.dir/models/gemma.cpp.o
+2026-08-19T00:23:46.866411+00:00 ubuntu-32gb-hel1-1 bash[1200381]: [ 40%] Building CXX object src/CMakeFiles/llama.dir/models/gemma2.cpp.o
+2026-08-19T00:23:47.115096+00:00 ubuntu-32gb-hel1-1 bash[1200392]: [ 40%] Building CXX object src/CMakeFiles/llama.dir/models/gemma3.cpp.o
+2026-08-19T00:23:47.418467+00:00 ubuntu-32gb-hel1-1 bash[1200401]: [ 42%] Building CXX object src/CMakeFiles/llama.dir/models/gemma3n.cpp.o
+2026-08-19T00:23:47.640781+00:00 ubuntu-32gb-hel1-1 bash[1200410]: [ 42%] Building CXX object src/CMakeFiles/llama.dir/models/gemma4-assistant.cpp.o
+2026-08-19T00:23:47.675760+00:00 ubuntu-32gb-hel1-1 bash[1200417]: [ 42%] Building CXX object src/CMakeFiles/llama.dir/models/gemma4.cpp.o
+2026-08-19T00:23:47.935906+00:00 ubuntu-32gb-hel1-1 bash[1200428]: [ 42%] Building CXX object src/CMakeFiles/llama.dir/models/glm-dsa.cpp.o
+2026-08-19T00:23:48.333751+00:00 ubuntu-32gb-hel1-1 bash[1200437]: [ 42%] Building CXX object src/CMakeFiles/llama.dir/models/glm4-moe.cpp.o
+2026-08-19T00:23:48.469803+00:00 ubuntu-32gb-hel1-1 bash[1200446]: [ 42%] Building CXX object src/CMakeFiles/llama.dir/models/glm4.cpp.o
+2026-08-19T00:23:48.690618+00:00 ubuntu-32gb-hel1-1 bash[1200455]: [ 44%] Building CXX object src/CMakeFiles/llama.dir/models/gpt2.cpp.o
+2026-08-19T00:23:49.071364+00:00 ubuntu-32gb-hel1-1 bash[1200464]: [ 44%] Building CXX object src/CMakeFiles/llama.dir/models/gptneox.cpp.o
+2026-08-19T00:23:49.219330+00:00 ubuntu-32gb-hel1-1 bash[1200473]: [ 44%] Building CXX object src/CMakeFiles/llama.dir/models/granite-hybrid.cpp.o
+2026-08-19T00:23:49.267366+00:00 ubuntu-32gb-hel1-1 bash[1200480]: [ 44%] Building CXX object src/CMakeFiles/llama.dir/models/granite-moe.cpp.o
+2026-08-19T00:23:49.533349+00:00 ubuntu-32gb-hel1-1 bash[1200491]: [ 44%] Building CXX object src/CMakeFiles/llama.dir/models/granite-switch.cpp.o
+2026-08-19T00:23:49.859021+00:00 ubuntu-32gb-hel1-1 bash[1200500]: [ 46%] Building CXX object src/CMakeFiles/llama.dir/models/granite.cpp.o
+2026-08-19T00:23:50.033377+00:00 ubuntu-32gb-hel1-1 bash[1200509]: [ 46%] Building CXX object src/CMakeFiles/llama.dir/models/grok.cpp.o
+2026-08-19T00:23:50.079844+00:00 ubuntu-32gb-hel1-1 bash[1200516]: [ 46%] Building CXX object src/CMakeFiles/llama.dir/models/grovemoe.cpp.o
+2026-08-19T00:23:50.628210+00:00 ubuntu-32gb-hel1-1 bash[1200527]: [ 46%] Building CXX object src/CMakeFiles/llama.dir/models/hunyuan-dense.cpp.o
+2026-08-19T00:23:50.826105+00:00 ubuntu-32gb-hel1-1 bash[1200537]: [ 46%] Building CXX object src/CMakeFiles/llama.dir/models/hunyuan-moe.cpp.o
+2026-08-19T00:23:50.836482+00:00 ubuntu-32gb-hel1-1 bash[1200542]: [ 48%] Building CXX object src/CMakeFiles/llama.dir/models/hunyuan-vl.cpp.o
+2026-08-19T00:23:50.876815+00:00 ubuntu-32gb-hel1-1 bash[1200550]: [ 48%] Building CXX object src/CMakeFiles/llama.dir/models/hy-v3.cpp.o
+2026-08-19T00:23:51.402341+00:00 ubuntu-32gb-hel1-1 bash[1200563]: [ 48%] Building CXX object src/CMakeFiles/llama.dir/models/internlm2.cpp.o
+2026-08-19T00:23:51.603411+00:00 ubuntu-32gb-hel1-1 bash[1200572]: [ 48%] Building CXX object src/CMakeFiles/llama.dir/models/jais.cpp.o
+2026-08-19T00:23:51.623704+00:00 ubuntu-32gb-hel1-1 bash[1200579]: [ 48%] Building CXX object src/CMakeFiles/llama.dir/models/jais2.cpp.o
+2026-08-19T00:23:51.810531+00:00 ubuntu-32gb-hel1-1 bash[1200590]: [ 51%] Building CXX object src/CMakeFiles/llama.dir/models/jamba.cpp.o
+2026-08-19T00:23:52.212492+00:00 ubuntu-32gb-hel1-1 bash[1200599]: [ 51%] Building CXX object src/CMakeFiles/llama.dir/models/jina-bert-v2.cpp.o
+2026-08-19T00:23:52.362504+00:00 ubuntu-32gb-hel1-1 bash[1200608]: [ 51%] Building CXX object src/CMakeFiles/llama.dir/models/jina-bert-v3.cpp.o
+2026-08-19T00:23:52.414817+00:00 ubuntu-32gb-hel1-1 bash[1200615]: [ 51%] Building CXX object src/CMakeFiles/llama.dir/models/kimi-k3.cpp.o
+2026-08-19T00:23:52.623918+00:00 ubuntu-32gb-hel1-1 bash[1200626]: [ 51%] Building CXX object src/CMakeFiles/llama.dir/models/kimi-linear.cpp.o
+2026-08-19T00:23:53.027909+00:00 ubuntu-32gb-hel1-1 bash[1200635]: [ 53%] Building CXX object src/CMakeFiles/llama.dir/models/laguna.cpp.o
+2026-08-19T00:23:53.093401+00:00 ubuntu-32gb-hel1-1 bash[1200642]: [ 53%] Building CXX object src/CMakeFiles/llama.dir/models/lfm2.cpp.o
+2026-08-19T00:23:53.347735+00:00 ubuntu-32gb-hel1-1 bash[1200653]: [ 53%] Building CXX object src/CMakeFiles/llama.dir/models/lfm2moe.cpp.o
+2026-08-19T00:23:53.530939+00:00 ubuntu-32gb-hel1-1 bash[1200662]: [ 53%] Building CXX object src/CMakeFiles/llama.dir/models/llada-moe.cpp.o
+2026-08-19T00:23:53.927101+00:00 ubuntu-32gb-hel1-1 bash[1200671]: [ 53%] Building CXX object src/CMakeFiles/llama.dir/models/llada.cpp.o
+2026-08-19T00:23:54.117179+00:00 ubuntu-32gb-hel1-1 bash[1200680]: [ 53%] Building CXX object src/CMakeFiles/llama.dir/models/llama-embed.cpp.o
+2026-08-19T00:23:54.232361+00:00 ubuntu-32gb-hel1-1 bash[1200687]: [ 55%] Building CXX object src/CMakeFiles/llama.dir/models/llama.cpp.o
+2026-08-19T00:23:54.307432+00:00 ubuntu-32gb-hel1-1 bash[1200696]: [ 55%] Building CXX object src/CMakeFiles/llama.dir/models/llama4.cpp.o
+2026-08-19T00:23:54.789401+00:00 ubuntu-32gb-hel1-1 bash[1200707]: [ 55%] Building CXX object src/CMakeFiles/llama.dir/models/maincoder.cpp.o
+2026-08-19T00:23:54.811456+00:00 ubuntu-32gb-hel1-1 bash[1200714]: [ 55%] Building CXX object src/CMakeFiles/llama.dir/models/mamba-base.cpp.o
+2026-08-19T00:23:55.093812+00:00 ubuntu-32gb-hel1-1 bash[1200725]: [ 55%] Building CXX object src/CMakeFiles/llama.dir/models/mamba.cpp.o
+2026-08-19T00:23:55.210945+00:00 ubuntu-32gb-hel1-1 bash[1200732]: [ 57%] Building CXX object src/CMakeFiles/llama.dir/models/mamba2.cpp.o
+2026-08-19T00:23:55.635436+00:00 ubuntu-32gb-hel1-1 bash[1200744]: [ 57%] Building CXX object src/CMakeFiles/llama.dir/models/mellum.cpp.o
+2026-08-19T00:23:55.643312+00:00 ubuntu-32gb-hel1-1 bash[1200748]: [ 57%] Building CXX object src/CMakeFiles/llama.dir/models/mimo2.cpp.o
+2026-08-19T00:23:55.847126+00:00 ubuntu-32gb-hel1-1 bash[1200761]: [ 57%] Building CXX object src/CMakeFiles/llama.dir/models/minicpm.cpp.o
+2026-08-19T00:23:55.977560+00:00 ubuntu-32gb-hel1-1 bash[1200769]: [ 57%] Building CXX object src/CMakeFiles/llama.dir/models/minicpm3.cpp.o
+2026-08-19T00:23:56.548900+00:00 ubuntu-32gb-hel1-1 bash[1200779]: [ 59%] Building CXX object src/CMakeFiles/llama.dir/models/minimax-01.cpp.o
+2026-08-19T00:23:56.597476+00:00 ubuntu-32gb-hel1-1 bash[1200786]: [ 59%] Building CXX object src/CMakeFiles/llama.dir/models/minimax-m2.cpp.o
+2026-08-19T00:23:56.636017+00:00 ubuntu-32gb-hel1-1 bash[1200793]: [ 59%] Building CXX object src/CMakeFiles/llama.dir/models/minimax-m3.cpp.o
+2026-08-19T00:23:56.791996+00:00 ubuntu-32gb-hel1-1 bash[1200806]: [ 59%] Building CXX object src/CMakeFiles/llama.dir/models/mistral3.cpp.o
+2026-08-19T00:23:57.360007+00:00 ubuntu-32gb-hel1-1 bash[1200815]: [ 59%] Building CXX object src/CMakeFiles/llama.dir/models/mistral4.cpp.o
+2026-08-19T00:23:57.629336+00:00 ubuntu-32gb-hel1-1 bash[1200824]: [ 61%] Building CXX object src/CMakeFiles/llama.dir/models/modern-bert.cpp.o
+2026-08-19T00:23:57.663956+00:00 ubuntu-32gb-hel1-1 bash[1200831]: [ 61%] Building CXX object src/CMakeFiles/llama.dir/models/mpt.cpp.o
+2026-08-19T00:23:57.690545+00:00 ubuntu-32gb-hel1-1 bash[1200838]: [ 61%] Building CXX object src/CMakeFiles/llama.dir/models/muse-glimmer.cpp.o
+2026-08-19T00:23:58.062685+00:00 ubuntu-32gb-hel1-1 bash[1200851]: [ 61%] Building CXX object src/CMakeFiles/llama.dir/models/nanbeige.cpp.o
+2026-08-19T00:23:58.427352+00:00 ubuntu-32gb-hel1-1 bash[1200860]: [ 61%] Building CXX object src/CMakeFiles/llama.dir/models/nemotron-h-moe.cpp.o
+2026-08-19T00:23:58.469061+00:00 ubuntu-32gb-hel1-1 bash[1200867]: [ 61%] Building CXX object src/CMakeFiles/llama.dir/models/nemotron-h.cpp.o
+2026-08-19T00:23:58.520681+00:00 ubuntu-32gb-hel1-1 bash[1200874]: [ 63%] Building CXX object src/CMakeFiles/llama.dir/models/nemotron.cpp.o
+2026-08-19T00:23:58.864495+00:00 ubuntu-32gb-hel1-1 bash[1200887]: [ 63%] Building CXX object src/CMakeFiles/llama.dir/models/neo-bert.cpp.o
+2026-08-19T00:23:59.234669+00:00 ubuntu-32gb-hel1-1 bash[1200896]: [ 63%] Building CXX object src/CMakeFiles/llama.dir/models/nomic-bert-moe.cpp.o
+2026-08-19T00:23:59.297845+00:00 ubuntu-32gb-hel1-1 bash[1200903]: [ 63%] Building CXX object src/CMakeFiles/llama.dir/models/nomic-bert.cpp.o
+2026-08-19T00:23:59.357105+00:00 ubuntu-32gb-hel1-1 bash[1200910]: [ 63%] Building CXX object src/CMakeFiles/llama.dir/models/olmo.cpp.o
+2026-08-19T00:23:59.620987+00:00 ubuntu-32gb-hel1-1 bash[1200923]: [ 65%] Building CXX object src/CMakeFiles/llama.dir/models/olmo2.cpp.o
+2026-08-19T00:23:59.988383+00:00 ubuntu-32gb-hel1-1 bash[1200932]: [ 65%] Building CXX object src/CMakeFiles/llama.dir/models/olmoe.cpp.o
+2026-08-19T00:24:00.053896+00:00 ubuntu-32gb-hel1-1 bash[1200939]: [ 65%] Building CXX object src/CMakeFiles/llama.dir/models/openai-moe.cpp.o
+2026-08-19T00:24:00.187040+00:00 ubuntu-32gb-hel1-1 bash[1200948]: [ 65%] Building CXX object src/CMakeFiles/llama.dir/models/openelm.cpp.o
+2026-08-19T00:24:00.443144+00:00 ubuntu-32gb-hel1-1 bash[1200959]: [ 65%] Building CXX object src/CMakeFiles/llama.dir/models/orion.cpp.o
+2026-08-19T00:24:00.771345+00:00 ubuntu-32gb-hel1-1 bash[1200968]: [ 68%] Building CXX object src/CMakeFiles/llama.dir/models/paddleocr.cpp.o
+2026-08-19T00:24:00.840576+00:00 ubuntu-32gb-hel1-1 bash[1200975]: [ 68%] Building CXX object src/CMakeFiles/llama.dir/models/pangu-embed.cpp.o
+2026-08-19T00:24:01.035923+00:00 ubuntu-32gb-hel1-1 bash[1200986]: [ 68%] Building CXX object src/CMakeFiles/llama.dir/models/phi2.cpp.o
+2026-08-19T00:24:01.207794+00:00 ubuntu-32gb-hel1-1 bash[1200995]: [ 68%] Building CXX object src/CMakeFiles/llama.dir/models/phi3.cpp.o
+2026-08-19T00:24:01.525025+00:00 ubuntu-32gb-hel1-1 bash[1201004]: [ 68%] Building CXX object src/CMakeFiles/llama.dir/models/phimoe.cpp.o
+2026-08-19T00:24:01.633670+00:00 ubuntu-32gb-hel1-1 bash[1201011]: [ 70%] Building CXX object src/CMakeFiles/llama.dir/models/plamo.cpp.o
+2026-08-19T00:24:01.875439+00:00 ubuntu-32gb-hel1-1 bash[1201022]: [ 70%] Building CXX object src/CMakeFiles/llama.dir/models/plamo2.cpp.o
+2026-08-19T00:24:02.020171+00:00 ubuntu-32gb-hel1-1 bash[1201031]: [ 70%] Building CXX object src/CMakeFiles/llama.dir/models/plamo3.cpp.o
+2026-08-19T00:24:02.277388+00:00 ubuntu-32gb-hel1-1 bash[1201040]: [ 70%] Building CXX object src/CMakeFiles/llama.dir/models/plm.cpp.o
+2026-08-19T00:24:02.408209+00:00 ubuntu-32gb-hel1-1 bash[1201049]: [ 70%] Building CXX object src/CMakeFiles/llama.dir/models/pockettts.cpp.o
+2026-08-19T00:24:02.844673+00:00 ubuntu-32gb-hel1-1 bash[1201059]: [ 70%] Building CXX object src/CMakeFiles/llama.dir/models/qwen.cpp.o
+2026-08-19T00:24:02.848051+00:00 ubuntu-32gb-hel1-1 bash[1201061]: [ 72%] Building CXX object src/CMakeFiles/llama.dir/models/qwen2.cpp.o
+2026-08-19T00:24:03.061894+00:00 ubuntu-32gb-hel1-1 bash[1201076]: [ 72%] Building CXX object src/CMakeFiles/llama.dir/models/qwen2moe.cpp.o
+2026-08-19T00:24:03.190260+00:00 ubuntu-32gb-hel1-1 bash[1201083]: [ 72%] Building CXX object src/CMakeFiles/llama.dir/models/qwen2vl.cpp.o
+2026-08-19T00:24:03.632852+00:00 ubuntu-32gb-hel1-1 bash[1201094]: [ 72%] Building CXX object src/CMakeFiles/llama.dir/models/qwen3.cpp.o
+2026-08-19T00:24:03.666271+00:00 ubuntu-32gb-hel1-1 bash[1201101]: [ 72%] Building CXX object src/CMakeFiles/llama.dir/models/qwen35.cpp.o
+2026-08-19T00:24:03.855612+00:00 ubuntu-32gb-hel1-1 bash[1201112]: [ 74%] Building CXX object src/CMakeFiles/llama.dir/models/qwen35moe.cpp.o
+2026-08-19T00:24:03.966028+00:00 ubuntu-32gb-hel1-1 bash[1201119]: [ 74%] Building CXX object src/CMakeFiles/llama.dir/models/qwen3moe.cpp.o
+2026-08-19T00:24:04.417173+00:00 ubuntu-32gb-hel1-1 bash[1201130]: [ 74%] Building CXX object src/CMakeFiles/llama.dir/models/qwen3next.cpp.o
+2026-08-19T00:24:04.755645+00:00 ubuntu-32gb-hel1-1 bash[1201139]: [ 74%] Building CXX object src/CMakeFiles/llama.dir/models/qwen3tts.cpp.o
+2026-08-19T00:24:04.765285+00:00 ubuntu-32gb-hel1-1 bash[1201144]: [ 74%] Building CXX object src/CMakeFiles/llama.dir/models/qwen3vl.cpp.o
+2026-08-19T00:24:04.857637+00:00 ubuntu-32gb-hel1-1 bash[1201153]: [ 76%] Building CXX object src/CMakeFiles/llama.dir/models/qwen3vlmoe.cpp.o
+2026-08-19T00:24:05.430588+00:00 ubuntu-32gb-hel1-1 bash[1201166]: [ 76%] Building CXX object src/CMakeFiles/llama.dir/models/refact.cpp.o
+2026-08-19T00:24:05.477161+00:00 ubuntu-32gb-hel1-1 bash[1201173]: [ 76%] Building CXX object src/CMakeFiles/llama.dir/models/rnd1.cpp.o
+2026-08-19T00:24:05.565390+00:00 ubuntu-32gb-hel1-1 bash[1201182]: [ 76%] Building CXX object src/CMakeFiles/llama.dir/models/rwkv6-base.cpp.o
+2026-08-19T00:24:05.639217+00:00 ubuntu-32gb-hel1-1 bash[1201191]: [ 76%] Building CXX object src/CMakeFiles/llama.dir/models/rwkv6.cpp.o
+2026-08-19T00:24:06.221919+00:00 ubuntu-32gb-hel1-1 bash[1201202]: [ 78%] Building CXX object src/CMakeFiles/llama.dir/models/rwkv6qwen2.cpp.o
+2026-08-19T00:24:06.310627+00:00 ubuntu-32gb-hel1-1 bash[1201209]: [ 78%] Building CXX object src/CMakeFiles/llama.dir/models/rwkv7-base.cpp.o
+2026-08-19T00:24:06.335721+00:00 ubuntu-32gb-hel1-1 bash[1201216]: [ 78%] Building CXX object src/CMakeFiles/llama.dir/models/rwkv7.cpp.o
+2026-08-19T00:24:06.444244+00:00 ubuntu-32gb-hel1-1 bash[1201225]: [ 78%] Building CXX object src/CMakeFiles/llama.dir/models/seed-oss.cpp.o
+2026-08-19T00:24:06.994800+00:00 ubuntu-32gb-hel1-1 bash[1201240]: [ 78%] Building CXX object src/CMakeFiles/llama.dir/models/smallthinker.cpp.o
+2026-08-19T00:24:07.146538+00:00 ubuntu-32gb-hel1-1 bash[1201250]: [ 78%] Building CXX object src/CMakeFiles/llama.dir/models/smollm3.cpp.o
+2026-08-19T00:24:07.148128+00:00 ubuntu-32gb-hel1-1 bash[1201252]: [ 80%] Building CXX object src/CMakeFiles/llama.dir/models/stablelm.cpp.o
+2026-08-19T00:24:07.211718+00:00 ubuntu-32gb-hel1-1 bash[1201263]: [ 80%] Building CXX object src/CMakeFiles/llama.dir/models/starcoder.cpp.o
+2026-08-19T00:24:07.848764+00:00 ubuntu-32gb-hel1-1 bash[1201294]: [ 80%] Building CXX object src/CMakeFiles/llama.dir/models/starcoder2.cpp.o
+2026-08-19T00:24:07.934789+00:00 ubuntu-32gb-hel1-1 bash[1201301]: [ 80%] Building CXX object src/CMakeFiles/llama.dir/models/step35.cpp.o
+2026-08-19T00:24:07.995374+00:00 ubuntu-32gb-hel1-1 bash[1201310]: [ 80%] Building CXX object src/CMakeFiles/llama.dir/models/t5.cpp.o
+2026-08-19T00:24:08.077391+00:00 ubuntu-32gb-hel1-1 bash[1201320]: [ 82%] Building CXX object src/CMakeFiles/llama.dir/models/t5encoder.cpp.o
+2026-08-19T00:24:08.634634+00:00 ubuntu-32gb-hel1-1 bash[1201368]: [ 82%] Building CXX object src/CMakeFiles/llama.dir/models/talkie.cpp.o
+2026-08-19T00:24:08.819512+00:00 ubuntu-32gb-hel1-1 bash[1201377]: [ 82%] Building CXX object src/CMakeFiles/llama.dir/models/wavtokenizer-dec.cpp.o
+2026-08-19T00:24:08.908260+00:00 ubuntu-32gb-hel1-1 bash[1201384]: [ 82%] Building CXX object src/CMakeFiles/llama.dir/models/xverse.cpp.o
+2026-08-19T00:24:09.651825+00:00 ubuntu-32gb-hel1-1 bash[1201398]: [ 82%] Linking CXX shared library ../bin/libllama.so
+2026-08-19T00:24:09.869625+00:00 ubuntu-32gb-hel1-1 bash[1201408]: [ 82%] Built target llama
+2026-08-19T00:24:09.898045+00:00 ubuntu-32gb-hel1-1 bash[1201419]: [ 85%] Building CXX object common/CMakeFiles/llama-common.dir/chat-auto-parser-helpers.cpp.o
+2026-08-19T00:24:09.898794+00:00 ubuntu-32gb-hel1-1 bash[1201416]: [ 85%] Building CXX object common/CMakeFiles/llama-common.dir/chat-auto-parser-generator.cpp.o
+2026-08-19T00:24:09.905988+00:00 ubuntu-32gb-hel1-1 bash[1201418]: [ 85%] Building CXX object common/CMakeFiles/llama-common.dir/arg.cpp.o
+2026-08-19T00:24:09.906892+00:00 ubuntu-32gb-hel1-1 bash[1201420]: [ 85%] Building CXX object common/CMakeFiles/llama-common.dir/chat-diff-analyzer.cpp.o
+2026-08-19T00:24:12.620046+00:00 ubuntu-32gb-hel1-1 bash[1201447]: [ 85%] Building CXX object common/CMakeFiles/llama-common.dir/chat-peg-parser.cpp.o
+2026-08-19T00:24:14.077906+00:00 ubuntu-32gb-hel1-1 bash[1201458]: [ 85%] Building CXX object common/CMakeFiles/llama-common.dir/chat.cpp.o
+2026-08-19T00:24:17.964514+00:00 ubuntu-32gb-hel1-1 bash[1201467]: [ 87%] Building CXX object common/CMakeFiles/llama-common.dir/common.cpp.o
+2026-08-19T00:24:18.824420+00:00 ubuntu-32gb-hel1-1 bash[1201476]: [ 87%] Building CXX object common/CMakeFiles/llama-common.dir/console.cpp.o
+2026-08-19T00:24:20.035333+00:00 ubuntu-32gb-hel1-1 bash[1201485]: [ 87%] Building CXX object common/CMakeFiles/llama-common.dir/debug.cpp.o
+2026-08-19T00:24:23.304592+00:00 ubuntu-32gb-hel1-1 bash[1201494]: [ 87%] Building CXX object common/CMakeFiles/llama-common.dir/download.cpp.o
+2026-08-19T00:24:23.417387+00:00 ubuntu-32gb-hel1-1 bash[1201501]: [ 87%] Building CXX object common/CMakeFiles/llama-common.dir/fit.cpp.o
+2026-08-19T00:24:25.315728+00:00 ubuntu-32gb-hel1-1 bash[1201512]: [ 87%] Building CXX object common/CMakeFiles/llama-common.dir/hf-cache.cpp.o
+2026-08-19T00:24:25.965168+00:00 ubuntu-32gb-hel1-1 bash[1201521]: [ 89%] Building CXX object common/CMakeFiles/llama-common.dir/imatrix-loader.cpp.o
+2026-08-19T00:24:26.987722+00:00 ubuntu-32gb-hel1-1 bash[1201530]: [ 89%] Building CXX object common/CMakeFiles/llama-common.dir/json-schema-to-grammar.cpp.o
+2026-08-19T00:24:28.742978+00:00 ubuntu-32gb-hel1-1 bash[1201539]: [ 89%] Building CXX object common/CMakeFiles/llama-common.dir/llguidance.cpp.o
+2026-08-19T00:24:29.223564+00:00 ubuntu-32gb-hel1-1 bash[1201548]: [ 89%] Building CXX object common/CMakeFiles/llama-common.dir/log.cpp.o
+2026-08-19T00:24:29.921475+00:00 ubuntu-32gb-hel1-1 bash[1201557]: [ 89%] Building CXX object common/CMakeFiles/llama-common.dir/ngram-cache.cpp.o
+2026-08-19T00:24:30.055487+00:00 ubuntu-32gb-hel1-1 bash[1201566]: [ 91%] Building CXX object common/CMakeFiles/llama-common.dir/ngram-map.cpp.o
+2026-08-19T00:24:30.819472+00:00 ubuntu-32gb-hel1-1 bash[1201575]: [ 91%] Building CXX object common/CMakeFiles/llama-common.dir/ngram-mod.cpp.o
+2026-08-19T00:24:30.974696+00:00 ubuntu-32gb-hel1-1 bash[1201584]: [ 91%] Building CXX object common/CMakeFiles/llama-common.dir/peg-parser.cpp.o
+2026-08-19T00:24:31.041705+00:00 ubuntu-32gb-hel1-1 bash[1201591]: [ 91%] Building CXX object common/CMakeFiles/llama-common.dir/preset.cpp.o
+2026-08-19T00:24:31.695420+00:00 ubuntu-32gb-hel1-1 bash[1201602]: [ 91%] Building CXX object common/CMakeFiles/llama-common.dir/reasoning-budget.cpp.o
+2026-08-19T00:24:32.571657+00:00 ubuntu-32gb-hel1-1 bash[1201611]: [ 93%] Building CXX object common/CMakeFiles/llama-common.dir/sampling.cpp.o
+2026-08-19T00:24:34.567922+00:00 ubuntu-32gb-hel1-1 bash[1201620]: [ 93%] Building CXX object common/CMakeFiles/llama-common.dir/speculative.cpp.o
+2026-08-19T00:24:35.387607+00:00 ubuntu-32gb-hel1-1 bash[1201629]: [ 93%] Building CXX object common/CMakeFiles/llama-common.dir/subproc.cpp.o
+2026-08-19T00:24:35.774877+00:00 ubuntu-32gb-hel1-1 bash[1201638]: [ 93%] Building CXX object common/CMakeFiles/llama-common.dir/trie.cpp.o
+2026-08-19T00:24:36.387923+00:00 ubuntu-32gb-hel1-1 bash[1201647]: [ 93%] Building CXX object common/CMakeFiles/llama-common.dir/unicode.cpp.o
+2026-08-19T00:24:36.691764+00:00 ubuntu-32gb-hel1-1 bash[1201656]: [ 95%] Building CXX object common/CMakeFiles/llama-common.dir/jinja/lexer.cpp.o
+2026-08-19T00:24:37.121250+00:00 ubuntu-32gb-hel1-1 bash[1201665]: [ 95%] Building CXX object common/CMakeFiles/llama-common.dir/jinja/parser.cpp.o
+2026-08-19T00:24:38.080499+00:00 ubuntu-32gb-hel1-1 bash[1201674]: [ 95%] Building CXX object common/CMakeFiles/llama-common.dir/jinja/runtime.cpp.o
+2026-08-19T00:24:38.653095+00:00 ubuntu-32gb-hel1-1 bash[1201683]: [ 95%] Building CXX object common/CMakeFiles/llama-common.dir/jinja/value.cpp.o
+2026-08-19T00:24:40.120618+00:00 ubuntu-32gb-hel1-1 bash[1201692]: [ 95%] Building CXX object common/CMakeFiles/llama-common.dir/jinja/string.cpp.o
+2026-08-19T00:24:41.135820+00:00 ubuntu-32gb-hel1-1 bash[1201701]: [ 97%] Building CXX object common/CMakeFiles/llama-common.dir/jinja/caps.cpp.o
+2026-08-19T00:24:45.968558+00:00 ubuntu-32gb-hel1-1 bash[1201713]: [ 97%] Linking CXX shared library ../bin/libllama-common.so
+2026-08-19T00:24:46.207266+00:00 ubuntu-32gb-hel1-1 bash[1201723]: [ 97%] Built target llama-common
+2026-08-19T00:24:46.242643+00:00 ubuntu-32gb-hel1-1 bash[1201729]: [ 97%] Building CXX object tools/llama-bench/CMakeFiles/llama-bench-impl.dir/llama-bench.cpp.o
+2026-08-19T00:24:54.524961+00:00 ubuntu-32gb-hel1-1 bash[1201788]: [ 97%] Linking CXX shared library ../../bin/libllama-bench-impl.so
+2026-08-19T00:24:54.640196+00:00 ubuntu-32gb-hel1-1 bash[1201796]: [ 97%] Built target llama-bench-impl
+2026-08-19T00:24:54.664682+00:00 ubuntu-32gb-hel1-1 bash[1201802]: [ 97%] Building CXX object tools/llama-bench/CMakeFiles/llama-bench.dir/main.cpp.o
+2026-08-19T00:24:54.698788+00:00 ubuntu-32gb-hel1-1 bash[1201811]: [100%] Linking CXX executable ../../bin/llama-bench
+2026-08-19T00:24:54.776637+00:00 ubuntu-32gb-hel1-1 bash[1201818]: [100%] Built target llama-bench
+2026-08-19T00:24:54.829146+00:00 ubuntu-32gb-hel1-1 bash[1201839]: [  0%] Built target llama-common-base
+2026-08-19T00:24:54.831574+00:00 ubuntu-32gb-hel1-1 bash[1201841]: [  0%] Built target cpp-httplib
+2026-08-19T00:24:54.835937+00:00 ubuntu-32gb-hel1-1 bash[1201844]: [  3%] Built target ggml-base
+2026-08-19T00:24:54.838604+00:00 ubuntu-32gb-hel1-1 bash[1201847]: [  3%] Building CXX object tools/ui/CMakeFiles/llama-ui-embed.dir/embed.cpp.o
+2026-08-19T00:24:54.870809+00:00 ubuntu-32gb-hel1-1 bash[1201857]: [  8%] Built target ggml-cpu
+2026-08-19T00:24:54.911347+00:00 ubuntu-32gb-hel1-1 bash[1201863]: [  8%] Built target ggml
+2026-08-19T00:24:55.095949+00:00 ubuntu-32gb-hel1-1 bash[1201871]: [ 65%] Built target llama
+2026-08-19T00:24:55.117504+00:00 ubuntu-32gb-hel1-1 bash[1201881]: [ 66%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/mtmd.cpp.o
+2026-08-19T00:24:55.125917+00:00 ubuntu-32gb-hel1-1 bash[1201882]: [ 66%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/mtmd-audio.cpp.o
+2026-08-19T00:24:55.150590+00:00 ubuntu-32gb-hel1-1 bash[1201893]: [ 78%] Built target llama-common
+2026-08-19T00:24:55.158663+00:00 ubuntu-32gb-hel1-1 bash[1201895]: [ 78%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/mtmd-image.cpp.o
+2026-08-19T00:24:56.324883+00:00 ubuntu-32gb-hel1-1 bash[1201908]: [ 78%] Linking CXX executable llama-ui-embed
+2026-08-19T00:24:56.388517+00:00 ubuntu-32gb-hel1-1 bash[1201915]: [ 78%] Built target llama-ui-embed
+2026-08-19T00:24:56.395855+00:00 ubuntu-32gb-hel1-1 bash[1201917]: [ 78%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/mtmd-helper.cpp.o
+2026-08-19T00:24:57.309828+00:00 ubuntu-32gb-hel1-1 bash[1201926]: [ 78%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/mtmd-helper-gen.cpp.o
+2026-08-19T00:24:57.765848+00:00 ubuntu-32gb-hel1-1 bash[1201935]: [ 80%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/clip.cpp.o
+2026-08-19T00:24:58.566963+00:00 ubuntu-32gb-hel1-1 bash[1201944]: [ 80%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/cogvlm.cpp.o
+2026-08-19T00:24:59.415857+00:00 ubuntu-32gb-hel1-1 bash[1201953]: [ 80%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/conformer.cpp.o
+2026-08-19T00:24:59.781023+00:00 ubuntu-32gb-hel1-1 bash[1201962]: [ 80%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/dotsocr.cpp.o
+2026-08-19T00:25:00.299813+00:00 ubuntu-32gb-hel1-1 bash[1201971]: [ 80%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/exaone4_5.cpp.o
+2026-08-19T00:25:00.638655+00:00 ubuntu-32gb-hel1-1 bash[1201980]: [ 81%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/gemma4a.cpp.o
+2026-08-19T00:25:01.170881+00:00 ubuntu-32gb-hel1-1 bash[1201989]: [ 81%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/gemma4v.cpp.o
+2026-08-19T00:25:01.554193+00:00 ubuntu-32gb-hel1-1 bash[1201998]: [ 81%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/gemma4ua.cpp.o
+2026-08-19T00:25:02.069666+00:00 ubuntu-32gb-hel1-1 bash[1202007]: [ 81%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/gemma4uv.cpp.o
+2026-08-19T00:25:02.404294+00:00 ubuntu-32gb-hel1-1 bash[1202016]: [ 81%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/glm4v.cpp.o
+2026-08-19T00:25:02.915897+00:00 ubuntu-32gb-hel1-1 bash[1202025]: [ 83%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/granite-speech.cpp.o
+2026-08-19T00:25:03.278571+00:00 ubuntu-32gb-hel1-1 bash[1202034]: [ 83%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/granite4-vision.cpp.o
+2026-08-19T00:25:03.868248+00:00 ubuntu-32gb-hel1-1 bash[1202043]: [ 83%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/hunyuanvl.cpp.o
+2026-08-19T00:25:04.611024+00:00 ubuntu-32gb-hel1-1 bash[1202052]: [ 83%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/internvl.cpp.o
+2026-08-19T00:25:04.750025+00:00 ubuntu-32gb-hel1-1 bash[1202059]: [ 83%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/kimivl.cpp.o
+2026-08-19T00:25:05.453481+00:00 ubuntu-32gb-hel1-1 bash[1202070]: [ 85%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/kimik25.cpp.o
+2026-08-19T00:25:05.634048+00:00 ubuntu-32gb-hel1-1 bash[1202079]: [ 85%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/nemotron-v2-vl.cpp.o
+2026-08-19T00:25:06.334420+00:00 ubuntu-32gb-hel1-1 bash[1202088]: [ 85%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/muse-glimmer.cpp.o
+2026-08-19T00:25:06.500354+00:00 ubuntu-32gb-hel1-1 bash[1202097]: [ 85%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/llama4.cpp.o
+2026-08-19T00:25:07.230439+00:00 ubuntu-32gb-hel1-1 bash[1202106]: [ 85%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/llava.cpp.o
+2026-08-19T00:25:07.376757+00:00 ubuntu-32gb-hel1-1 bash[1202115]: [ 85%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/minicpmv.cpp.o
+2026-08-19T00:25:07.773999+00:00 ubuntu-32gb-hel1-1 bash[1202124]: [ 86%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/paddleocr.cpp.o
+2026-08-19T00:25:08.171116+00:00 ubuntu-32gb-hel1-1 bash[1202133]: [ 86%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/pixtral.cpp.o
+2026-08-19T00:25:08.298112+00:00 ubuntu-32gb-hel1-1 bash[1202140]: [ 86%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/qwen2vl.cpp.o
+2026-08-19T00:25:08.641286+00:00 ubuntu-32gb-hel1-1 bash[1202151]: [ 86%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/minimax-m3.cpp.o
+2026-08-19T00:25:09.018095+00:00 ubuntu-32gb-hel1-1 bash[1202160]: [ 86%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/qwen3vl.cpp.o
+2026-08-19T00:25:09.192006+00:00 ubuntu-32gb-hel1-1 bash[1202169]: [ 88%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/mimovl.cpp.o
+2026-08-19T00:25:09.308680+00:00 ubuntu-32gb-hel1-1 bash[1202176]: [ 88%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/qwen3a.cpp.o
+2026-08-19T00:25:09.525644+00:00 ubuntu-32gb-hel1-1 bash[1202187]: [ 88%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/mimo-audio.cpp.o
+2026-08-19T00:25:09.879585+00:00 ubuntu-32gb-hel1-1 bash[1202196]: [ 88%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/qwen3tts-spkenc.cpp.o
+2026-08-19T00:25:10.077313+00:00 ubuntu-32gb-hel1-1 bash[1202205]: [ 88%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/qwen3tts-gen.cpp.o
+2026-08-19T00:25:10.223716+00:00 ubuntu-32gb-hel1-1 bash[1202214]: [ 90%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/pockettts-seanet.cpp.o
+2026-08-19T00:25:10.487425+00:00 ubuntu-32gb-hel1-1 bash[1202223]: [ 90%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/pockettts-spkenc.cpp.o
+2026-08-19T00:25:10.786399+00:00 ubuntu-32gb-hel1-1 bash[1202232]: [ 90%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/pockettts-gen.cpp.o
+2026-08-19T00:25:11.271202+00:00 ubuntu-32gb-hel1-1 bash[1202241]: [ 90%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/step3vl.cpp.o
+2026-08-19T00:25:11.376510+00:00 ubuntu-32gb-hel1-1 bash[1202248]: [ 90%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/siglip.cpp.o
+2026-08-19T00:25:11.738321+00:00 ubuntu-32gb-hel1-1 bash[1202259]: [ 91%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/whisper-enc.cpp.o
+2026-08-19T00:25:12.090887+00:00 ubuntu-32gb-hel1-1 bash[1202268]: [ 91%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/deepseekocr.cpp.o
+2026-08-19T00:25:12.204276+00:00 ubuntu-32gb-hel1-1 bash[1202275]: [ 91%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/deepseekocr2.cpp.o
+2026-08-19T00:25:12.236226+00:00 ubuntu-32gb-hel1-1 bash[1202284]: [ 91%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/mobilenetv5.cpp.o
+2026-08-19T00:25:12.606098+00:00 ubuntu-32gb-hel1-1 bash[1202295]: [ 91%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/youtuvl.cpp.o
+2026-08-19T00:25:13.022828+00:00 ubuntu-32gb-hel1-1 bash[1202304]: [ 91%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/yasa2.cpp.o
+2026-08-19T00:25:13.133304+00:00 ubuntu-32gb-hel1-1 bash[1202311]: [ 93%] Building CXX object tools/mtmd/CMakeFiles/mtmd.dir/models/parakeet.cpp.o
+2026-08-19T00:25:13.184172+00:00 ubuntu-32gb-hel1-1 bash[1202324]: [ 93%] Provisioning UI assets
+2026-08-19T00:25:13.192243+00:00 ubuntu-32gb-hel1-1 bash[1202326]: -- UI: npm not found, skipping npm build
+2026-08-19T00:25:13.192643+00:00 ubuntu-32gb-hel1-1 bash[1202326]: -- UI: downloading from b1: https://huggingface.co/buckets/ggml-org/llama-ui/resolve/b1/dist.tar.gz
+2026-08-19T00:25:13.335079+00:00 ubuntu-32gb-hel1-1 bash[1202326]: -- UI: download dist.tar.gz from b1 failed: "HTTP response code said error"
+2026-08-19T00:25:13.335079+00:00 ubuntu-32gb-hel1-1 bash[1202326]: -- UI: downloading from latest: https://huggingface.co/buckets/ggml-org/llama-ui/resolve/latest/dist.tar.gz
+2026-08-19T00:25:14.124402+00:00 ubuntu-32gb-hel1-1 bash[1202336]: [ 93%] Linking CXX shared library ../../bin/libmtmd.so
+2026-08-19T00:25:14.262094+00:00 ubuntu-32gb-hel1-1 bash[1202347]: [ 93%] Built target mtmd
+2026-08-19T00:25:14.287757+00:00 ubuntu-32gb-hel1-1 bash[1202356]: [ 93%] Building CXX object tools/server/CMakeFiles/server-context.dir/server-chat.cpp.o
+2026-08-19T00:25:14.294009+00:00 ubuntu-32gb-hel1-1 bash[1202355]: [ 93%] Building CXX object tools/server/CMakeFiles/server-context.dir/server-task.cpp.o
+2026-08-19T00:25:14.295590+00:00 ubuntu-32gb-hel1-1 bash[1202357]: [ 93%] Building CXX object tools/server/CMakeFiles/server-context.dir/server-queue.cpp.o
+2026-08-19T00:25:14.738819+00:00 ubuntu-32gb-hel1-1 bash[1202326]: -- UI: archive verified and extracted
+2026-08-19T00:25:14.739299+00:00 ubuntu-32gb-hel1-1 bash[1202326]: -- UI: HF download succeeded, stamp updated (latest)
+2026-08-19T00:25:15.140516+00:00 ubuntu-32gb-hel1-1 bash[1202326]: -- UI: gzip compression applied (/workspace/build/llama.cpp-q4k-dual-layout-producer-v24/tools/ui/dist/_gzip)
+2026-08-19T00:25:15.180492+00:00 ubuntu-32gb-hel1-1 bash[1202326]: embed: write output file /workspace/build/llama.cpp-q4k-dual-layout-producer-v24/tools/ui/ui.h
+2026-08-19T00:25:15.180492+00:00 ubuntu-32gb-hel1-1 bash[1202326]: embed: write output file /workspace/build/llama.cpp-q4k-dual-layout-producer-v24/tools/ui/ui.cpp
+2026-08-19T00:25:15.191870+00:00 ubuntu-32gb-hel1-1 bash[1202454]: [ 93%] Built target llama-ui-assets
+2026-08-19T00:25:15.208622+00:00 ubuntu-32gb-hel1-1 bash[1202460]: [ 93%] Building CXX object tools/ui/CMakeFiles/llama-ui.dir/ui.cpp.o
+2026-08-19T00:25:16.548611+00:00 ubuntu-32gb-hel1-1 bash[1202469]: [ 95%] Linking CXX static library libllama-ui.a
+2026-08-19T00:25:16.611152+00:00 ubuntu-32gb-hel1-1 bash[1202477]: [ 95%] Built target llama-ui
+2026-08-19T00:25:16.618697+00:00 ubuntu-32gb-hel1-1 bash[1202479]: [ 96%] Building CXX object tools/server/CMakeFiles/server-context.dir/server-common.cpp.o
+2026-08-19T00:25:19.120799+00:00 ubuntu-32gb-hel1-1 bash[1202488]: [ 96%] Building CXX object tools/server/CMakeFiles/server-context.dir/server-context.cpp.o
+2026-08-19T00:25:20.418893+00:00 ubuntu-32gb-hel1-1 bash[1202498]: [ 96%] Building CXX object tools/server/CMakeFiles/server-context.dir/server-stream.cpp.o
+2026-08-19T00:25:24.662047+00:00 ubuntu-32gb-hel1-1 bash[1202507]: [ 96%] Building CXX object tools/server/CMakeFiles/server-context.dir/server-tools.cpp.o
+2026-08-19T00:25:26.009721+00:00 ubuntu-32gb-hel1-1 bash[1202516]: [ 96%] Building CXX object tools/server/CMakeFiles/server-context.dir/server-mcp.cpp.o
+2026-08-19T00:25:26.163366+00:00 ubuntu-32gb-hel1-1 bash[1202523]: [ 98%] Building CXX object tools/server/CMakeFiles/server-context.dir/server-schema.cpp.o
+2026-08-19T00:25:38.487953+00:00 ubuntu-32gb-hel1-1 bash[1202595]: [ 98%] Linking CXX static library libserver-context.a
+2026-08-19T00:25:38.587177+00:00 ubuntu-32gb-hel1-1 bash[1202603]: [ 98%] Built target server-context
+2026-08-19T00:25:38.612712+00:00 ubuntu-32gb-hel1-1 bash[1202611]: [ 98%] Building CXX object tools/server/CMakeFiles/llama-server-impl.dir/server.cpp.o
+2026-08-19T00:25:38.613439+00:00 ubuntu-32gb-hel1-1 bash[1202612]: [ 98%] Building CXX object tools/server/CMakeFiles/llama-server-impl.dir/server-http.cpp.o
+2026-08-19T00:25:38.620852+00:00 ubuntu-32gb-hel1-1 bash[1202613]: [ 98%] Building CXX object tools/server/CMakeFiles/llama-server-impl.dir/server-models.cpp.o
+2026-08-19T00:25:51.031332+00:00 ubuntu-32gb-hel1-1 bash[1202636]: [ 98%] Linking CXX shared library ../../bin/libllama-server-impl.so
+2026-08-19T00:25:51.230134+00:00 ubuntu-32gb-hel1-1 bash[1202643]: [ 98%] Built target llama-server-impl
+2026-08-19T00:25:51.256393+00:00 ubuntu-32gb-hel1-1 bash[1202649]: [100%] Building CXX object tools/server/CMakeFiles/llama-server.dir/main.cpp.o
+2026-08-19T00:25:51.295805+00:00 ubuntu-32gb-hel1-1 bash[1202658]: [100%] Linking CXX executable ../../bin/llama-server
+2026-08-19T00:25:51.393732+00:00 ubuntu-32gb-hel1-1 bash[1202665]: [100%] Built target llama-server
+2026-08-19T00:25:51.486801+00:00 ubuntu-32gb-hel1-1 bash[1202682]: [  0%] Built target cpp-httplib
+2026-08-19T00:25:51.499952+00:00 ubuntu-32gb-hel1-1 bash[1202688]: [  4%] Built target ggml-base
+2026-08-19T00:25:51.502775+00:00 ubuntu-32gb-hel1-1 bash[1202686]: [  4%] Built target llama-common-base
+2026-08-19T00:25:51.542299+00:00 ubuntu-32gb-hel1-1 bash[1202694]: [ 10%] Built target ggml-cpu
+2026-08-19T00:25:51.584639+00:00 ubuntu-32gb-hel1-1 bash[1202700]: [ 10%] Built target ggml
+2026-08-19T00:25:51.731029+00:00 ubuntu-32gb-hel1-1 bash[1202706]: [ 82%] Built target llama
+2026-08-19T00:25:51.773506+00:00 ubuntu-32gb-hel1-1 bash[1202712]: [ 97%] Built target llama-common
+2026-08-19T00:25:51.792722+00:00 ubuntu-32gb-hel1-1 bash[1202718]: [ 97%] Building CXX object tools/perplexity/CMakeFiles/llama-perplexity-impl.dir/perplexity.cpp.o
+2026-08-19T00:25:55.430061+00:00 ubuntu-32gb-hel1-1 bash[1202728]: [ 97%] Linking CXX shared library ../../bin/libllama-perplexity-impl.so
+2026-08-19T00:25:55.524641+00:00 ubuntu-32gb-hel1-1 bash[1202735]: [ 97%] Built target llama-perplexity-impl
+2026-08-19T00:25:55.543409+00:00 ubuntu-32gb-hel1-1 bash[1202741]: [ 97%] Building CXX object tools/perplexity/CMakeFiles/llama-perplexity.dir/main.cpp.o
+2026-08-19T00:25:55.585553+00:00 ubuntu-32gb-hel1-1 bash[1202750]: [100%] Linking CXX executable ../../bin/llama-perplexity
+2026-08-19T00:25:55.695012+00:00 ubuntu-32gb-hel1-1 bash[1202757]: [100%] Built target llama-perplexity
+2026-08-19T00:25:55.778164+00:00 ubuntu-32gb-hel1-1 bash[1202774]: [  0%] Built target cpp-httplib
+2026-08-19T00:25:55.779643+00:00 ubuntu-32gb-hel1-1 bash[1202778]: [  0%] Built target llama-common-base
+2026-08-19T00:25:55.795588+00:00 ubuntu-32gb-hel1-1 bash[1202780]: [  4%] Built target ggml-base
+2026-08-19T00:25:55.844561+00:00 ubuntu-32gb-hel1-1 bash[1202786]: [ 10%] Built target ggml-cpu
+2026-08-19T00:25:55.876020+00:00 ubuntu-32gb-hel1-1 bash[1202792]: [ 10%] Built target ggml
+2026-08-19T00:25:55.970500+00:00 ubuntu-32gb-hel1-1 bash[1202798]: [ 82%] Built target llama
+2026-08-19T00:25:56.012295+00:00 ubuntu-32gb-hel1-1 bash[1202804]: [ 97%] Built target llama-common
+2026-08-19T00:25:56.039393+00:00 ubuntu-32gb-hel1-1 bash[1202810]: [ 97%] Building CXX object tests/CMakeFiles/test-backend-ops.dir/test-backend-ops.cpp.o
+2026-08-19T00:26:14.635469+00:00 ubuntu-32gb-hel1-1 bash[1202819]: [100%] Linking CXX executable ../bin/test-backend-ops
+2026-08-19T00:26:14.748356+00:00 ubuntu-32gb-hel1-1 bash[1202826]: [100%] Built target test-backend-ops
+2026-08-19T00:26:14.761788+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-q4k-v24-build.service: Deactivated successfully.
+2026-08-19T00:26:14.762082+00:00 ubuntu-32gb-hel1-1 systemd[1]: Finished quant-qwen38-q4k-v24-build.service - [systemd-run] /bin/bash -lc "set -euo pipefail; parent=/workspace/src/llama.cpp-q4k-native-x4-deinterleave-v21; source=/workspace/src/llama.cpp-q4k-dual-layout-producer-v24; build=/workspace/build/llama.cpp-q4k-dual-layout-producer-v24; patch=/workspace/clark-quantize-row-scale-v3/experiments/llm_ternary_158bit_dossier/cpu_runtime/kernels/llama_cpp_q4_k_dual_layout_q8_producer_avx2_v24.patch; cp -a \"\$parent\" \"\$source\"; git -C \"\$source\" apply \"\$patch\"; git -C \"\$source\" diff --check; git -C \"\$source\" apply --reverse --check \"\$patch\"; cmake -S \"\$source\" -B \"\$build\" -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=ON -DGGML_OPENMP=ON -DLLAMA_BUILD_SERVER=ON -DLLAMA_BUILD_TESTS=ON -DLLAMA_CURL=OFF; cmake --build \"\$build\" -j4 --target llama-bench llama-server llama-perplexity test-backend-ops".
+2026-08-19T00:26:14.762332+00:00 ubuntu-32gb-hel1-1 systemd[1]: quant-qwen38-q4k-v24-build.service: Consumed 10min 24.634s CPU time over 3min 21.961s wall clock time, 2.8G memory peak.

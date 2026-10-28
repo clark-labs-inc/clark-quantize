@@ -1,0 +1,523 @@
+{
+  "authenticated_inputs": {
+    "prior_context_sha256": "7cf30c42c996b492e77544488e4815dd9a1dcc348a2fb4accf3bf31a1cd5abc7",
+    "source_tensor_sha256": {
+      "mlp.down_proj.weight": "ce8eaece6fd48b996ff5328840d7b75d5d91dc23acf358711388973b5c9584ca",
+      "mlp.gate_proj.weight": "af5f1f3627acd6ed1a1e3ff71defaeb4433b1dc280efdb01b6d8ebf9086ab1c3",
+      "mlp.up_proj.weight": "2d3f11424f7705452380d1c7a2df4e625929ab9c460882e9c81ce5effadc7feb"
+    },
+    "v42_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "v44_payload_sha256": {
+      "down": "faa8661738f9c0bdcadc2dcd7eac7723ca39c1d99486523b2e8b21e636c76356",
+      "gate": "ca349cd022d248a29fae502d523430b50fa5894f1e5deff549e222b159a02599",
+      "up": "1592cd2858371645fd8e236113caa1c39d733a959b3a54ab0bbe4f6d550de4bc"
+    },
+    "v44_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+    "v75_hybrid_payload_sha256": "a5ddaf51d97c3534e2ef2e4da2f9ad5702e0473951a7a29cbbd2b2efc4172ef9",
+    "v75_receipt_sha256": "7028466f1798e425f2fa9a9574214aeef96864db754797590133115c7f8ef5e5"
+  },
+  "checks": {
+    "all_parent_artifacts_authenticated": true,
+    "all_values_finite": true,
+    "exact_layer_replay": true,
+    "fresh_activations_did_not_change_artifact_or_gate": true,
+    "fresh_prompts_disjoint_from_prior_development_prompts": true,
+    "frozen_payload_sha256_exact": true,
+    "minimum_fresh_improvement_met": false,
+    "minimum_improved_prompt_fraction_met": true,
+    "minimum_positive_output_tile_fraction_met": true,
+    "minimum_replication_ratio_met": true,
+    "minimum_rows_per_prompt_met": true,
+    "packed_cq3_roundtrip_exact": true,
+    "required_fresh_rows_met": true
+  },
+  "claim_boundary": "Fresh-prompt layer-59 replication of one frozen complete-MLP approximation only. A pass establishes out-of-development-prompt replication of the local algebra, but not whole-model capability, benchmark retention, CPU throughput, energy, novelty, 100 tokens per second, or a scientific breakthrough.",
+  "complete": true,
+  "exact_propagation": {
+    "checkpoint": {
+      "bytes": 5245161,
+      "next_layer": 59,
+      "path": "/workspace/quant-state/qwen38-optimal-cell-scale-fresh-replication-v76/layer59-input-checkpoint.pt",
+      "retained_states": 1,
+      "sha256": "cd05845eb77f7671adabae0113c4a6fc92b835f92d43378d582f51db5de1d0d8"
+    },
+    "elapsed_seconds": 288.0922016359982,
+    "layer59_input_sha256": "d5ca48993ff72a93b8bef363bf6d07860a2083cf87f15c0f1d8a6bd4fe32f7a3",
+    "layer59_output_sha256": "581f9df2beb033bd21dd3a99b3bd40856ac01b34fb3dcdd5b3241083f654ead3",
+    "layer59_parameters": 372255232,
+    "newly_propagated_layers": [
+      {
+        "elapsed_seconds": 4.719091088016285,
+        "layer": 0,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.847539396985667,
+        "layer": 1,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.703651065006852,
+        "layer": 2,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.60537563500111,
+        "layer": 3,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.694835564005189,
+        "layer": 4,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.722063007997349,
+        "layer": 5,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.932141093973769,
+        "layer": 6,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.473084525001468,
+        "layer": 7,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.718970497982809,
+        "layer": 8,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.833511501987232,
+        "layer": 9,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.521070444985526,
+        "layer": 10,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.38739188699401,
+        "layer": 11,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.543178969994187,
+        "layer": 12,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.521302776003722,
+        "layer": 13,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.480901367991464,
+        "layer": 14,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.554418643005192,
+        "layer": 15,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.5017260710010305,
+        "layer": 16,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.545395721012028,
+        "layer": 17,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.511676404013997,
+        "layer": 18,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.3296232749999035,
+        "layer": 19,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.670966437988682,
+        "layer": 20,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.669177987991134,
+        "layer": 21,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.587077650008723,
+        "layer": 22,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.447609569004271,
+        "layer": 23,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.494209030002821,
+        "layer": 24,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.523617475992069,
+        "layer": 25,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.4546157119912095,
+        "layer": 26,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.3557408300112,
+        "layer": 27,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.456476102001034,
+        "layer": 28,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.603022772993427,
+        "layer": 29,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.551586221990874,
+        "layer": 30,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.441316977987299,
+        "layer": 31,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.613942124997266,
+        "layer": 32,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.506022651999956,
+        "layer": 33,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.458983303018613,
+        "layer": 34,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.462544014008017,
+        "layer": 35,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.619054776005214,
+        "layer": 36,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.5785251279885415,
+        "layer": 37,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.65461647399934,
+        "layer": 38,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.461051174002932,
+        "layer": 39,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.497860080999089,
+        "layer": 40,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.552799832978053,
+        "layer": 41,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.518609435996041,
+        "layer": 42,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.333580695005367,
+        "layer": 43,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.486068967991741,
+        "layer": 44,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.5715052080049645,
+        "layer": 45,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.60405790398363,
+        "layer": 46,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.468459504016209,
+        "layer": 47,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.535624518000986,
+        "layer": 48,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.554452953016153,
+        "layer": 49,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.572684826998739,
+        "layer": 50,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.3024485490168445,
+        "layer": 51,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.779896210995503,
+        "layer": 52,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.613325774000259,
+        "layer": 53,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.621426336001605,
+        "layer": 54,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.408730961004039,
+        "layer": 55,
+        "parameters": 372255232,
+        "type": "full_attention"
+      },
+      {
+        "elapsed_seconds": 4.567283686017618,
+        "layer": 56,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.595744071993977,
+        "layer": 57,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      },
+      {
+        "elapsed_seconds": 4.543546291009989,
+        "layer": 58,
+        "parameters": 383273184,
+        "type": "linear_attention"
+      }
+    ],
+    "resumed_at_layer": 0
+  },
+  "fresh_data": {
+    "artifact_fit_or_selection_operations_on_fresh_data": 0,
+    "attention_mask_sha256": "976b8d84682ecceb158f9e3ad94cded616ee4f3b811a835dde2b7f1521013582",
+    "benchmark_items_used": false,
+    "input_ids_sha256": "ac42d7fce2c87235701740d9331d80ef783c5484a630201d3cae7a7f63fb5a49",
+    "prior_prompt_overlap_count": 0,
+    "prompt_count": 8,
+    "prompt_sha256": "a31c82f15c4b206d13987206548dcb936e21d82fa4c9da0f99fe572618af52be",
+    "rows_per_prompt": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      7,
+      9
+    ],
+    "selected_rows": 64,
+    "selected_rows_sha256": "9118b2eac42fa53a051219bfaed851a0434ad79525783786956aea25bbb27c60"
+  },
+  "gate": {
+    "decision": "reject_v75_as_nonreplicating_development_result",
+    "passed": false
+  },
+  "metrics": {
+    "baseline_fresh_complete_mlp_nmse": 0.3305761218070984,
+    "candidate_fresh_complete_mlp_nmse": 0.10820236802101135,
+    "fresh_positive_output_tile_fraction": 0.9921875,
+    "fresh_to_v75_development_improvement_ratio": 0.8165572106534497,
+    "improved_prompt_fraction": 1.0,
+    "per_prompt": [
+      {
+        "baseline_complete_mlp_nmse": 0.3931940793991089,
+        "candidate_complete_mlp_nmse": 0.16071900725364685,
+        "prompt_index": 0,
+        "relative_improvement": 0.5912476416245572,
+        "selected_rows": 8
+      },
+      {
+        "baseline_complete_mlp_nmse": 0.3340575098991394,
+        "candidate_complete_mlp_nmse": 0.3137686550617218,
+        "prompt_index": 1,
+        "relative_improvement": 0.06073461675369409,
+        "selected_rows": 8
+      },
+      {
+        "baseline_complete_mlp_nmse": 0.34593483805656433,
+        "candidate_complete_mlp_nmse": 0.28750839829444885,
+        "prompt_index": 2,
+        "relative_improvement": 0.16889435042261364,
+        "selected_rows": 8
+      },
+      {
+        "baseline_complete_mlp_nmse": 0.35187235474586487,
+        "candidate_complete_mlp_nmse": 0.33235543966293335,
+        "prompt_index": 3,
+        "relative_improvement": 0.055465895003395056,
+        "selected_rows": 8
+      },
+      {
+        "baseline_complete_mlp_nmse": 0.3448604643344879,
+        "candidate_complete_mlp_nmse": 0.34323790669441223,
+        "prompt_index": 4,
+        "relative_improvement": 0.004704968553605868,
+        "selected_rows": 8
+      },
+      {
+        "baseline_complete_mlp_nmse": 0.3338695764541626,
+        "candidate_complete_mlp_nmse": 0.0718747079372406,
+        "prompt_index": 5,
+        "relative_improvement": 0.7847221999063806,
+        "selected_rows": 8
+      },
+      {
+        "baseline_complete_mlp_nmse": 0.3427770137786865,
+        "candidate_complete_mlp_nmse": 0.2973865270614624,
+        "prompt_index": 6,
+        "relative_improvement": 0.13241986741424389,
+        "selected_rows": 7
+      },
+      {
+        "baseline_complete_mlp_nmse": 0.31221112608909607,
+        "candidate_complete_mlp_nmse": 0.03788834810256958,
+        "prompt_index": 7,
+        "relative_improvement": 0.878645106030727,
+        "selected_rows": 9
+      }
+    ],
+    "relative_fresh_complete_mlp_nmse_improvement": 0.6726854697504412,
+    "v75_development_improvement_reference": 0.8238069065756273
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "preregistration_sha256": "118f4a48201df6eae5973334f894fd6f9cf24eb093a4b5b97ebba79cb962e544",
+  "repository_commit": "c6b026cd1a6dd102b7cfcbd1b9312ad71a40c0ae",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_optimal_cell_scale_fresh_replication_receipt_v76",
+  "storage": {
+    "additional_runtime_bytes_vs_v75": 0,
+    "additional_runtime_operations_vs_v75": 0,
+    "additional_runtime_passes_vs_v75": 0,
+    "baseline_three_cq3_mlp_payload_bytes": 71024640,
+    "cell_mode_bitmap_bytes": 10880,
+    "dispatch_cell_shape": [
+      8,
+      128
+    ],
+    "header_bytes": 64,
+    "high_precision_weight_materialization_at_runtime": false,
+    "hybrid_down_payload_bytes": 26307264,
+    "hybrid_three_projection_mlp_payload_bytes": 73657024,
+    "relative_full_mlp_payload_increase": 0.037062968569780856,
+    "selected_cells": 10240,
+    "selected_int4_bytes": 5406720,
+    "unselected_cq3_bytes": 20889600
+  },
+  "terminal": true
+}

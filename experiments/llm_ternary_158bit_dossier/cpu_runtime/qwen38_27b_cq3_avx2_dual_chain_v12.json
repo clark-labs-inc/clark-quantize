@@ -1,0 +1,88 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_dual_chain_preregistration_v12",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_cq3_avx2_dual_chain_v12",
+  "frozen_at": "2026-08-18T16:26:01Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "microbenchmark_cores": 1,
+    "qwen_4b_compute_forbidden": true,
+    "weight_type": "CQ3_0",
+    "activation_type": "CQ8_0",
+    "weight_bits_per_weight": 2.125,
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "v11_amendment_basis": {
+    "receipt": "receipts/qwen38_27b_cq3_avx2_dual_chain_v11/terminal-decision.json",
+    "observed_before_v12_freeze": "At least one FP32 output differed bitwise between the reassociated standard kernel and the already rejected pair kernel. No v11 performance measurement was run.",
+    "correction": "Use the existing native-vs-generic relative error tolerance as the arithmetic contract, report pair deltas, and require model-level CUTE and MMLU rather than bit identity across different legal reduction orders."
+  },
+  "fresh_control": {
+    "binary_sha256": "b8971a80c31c47271dc4d4a8f4efbb5f223e37347625706fef428eea3db4cb74",
+    "benchmark_sha256": "a740b5a8b13dc82cd6a9616ff32cef8d0bd8eb7008a7c032e46a425d68c81d64",
+    "median_us": 2585.92,
+    "rows": 17408,
+    "columns": 5120,
+    "repetitions": 9,
+    "cache_eviction_bytes": 268435456
+  },
+  "hypothesis": "The v11 performance hypothesis remains unobserved: separating CQ3's two independently scaled 128-weight groups into two AVX2 FP accumulation chains should reduce dependency latency. The reassociation is admissible only if native-vs-generic error remains within 2e-5*(1+abs(reference)) and frozen model capability is preserved.",
+  "implementation": {
+    "kernel_patch": "kernels/llama_cpp_cq3_avx2_dual_chain_v11.patch",
+    "harness_patch": "kernels/llama_cpp_cq3_avx2_dual_chain_tolerant_harness_v12.patch",
+    "kernel_change_from_v11": "none",
+    "harness_change": "Replace pair bit identity with the existing 2e-5 relative-plus-absolute tolerance and report exactness, maximum absolute delta, and maximum scaled delta.",
+    "unchanged": [
+      "CQ3_0 storage and weights",
+      "CQ8_0 activation quantization",
+      "integer ternary digit decoding and dot products",
+      "per-group scales",
+      "fresh control timing",
+      "8% microbenchmark speed threshold",
+      "CUTE and MMLU denominators"
+    ]
+  },
+  "sequential_gates": {
+    "gate_1_build_and_correctness": {
+      "test_cq3_exit_code": 0,
+      "maximum_scaled_error": 0.00002,
+      "native_vs_generic_tolerance_must_pass": true,
+      "pair_delta_must_be_reported": true
+    },
+    "gate_2_exact_shape_microbenchmark": {
+      "rows": 17408,
+      "columns": 5120,
+      "warmups": 2,
+      "repetitions": 9,
+      "cache_eviction_bytes": 268435456,
+      "fresh_control_median_us": 2585.92,
+      "minimum_control_over_candidate_speedup": 1.08,
+      "maximum_candidate_sample_range_fraction": 0.05
+    },
+    "gate_3_selective_27b_integration": {
+      "run_only_if_microbenchmark_passes": true,
+      "model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0.gguf",
+      "paired_shape_rows": 12,
+      "repetitions_per_row": 5,
+      "minimum_geometric_mean_over_current_cq3_runtime": 1.03
+    },
+    "gate_4_quality": {
+      "run_only_if_all_performance_gates_pass": true,
+      "cute_quick_denominator": 20,
+      "minimum_correct": 9,
+      "mmlu_denominator": 64,
+      "maximum_correct_loss_vs_q4_control": 1
+    }
+  },
+  "stop_rules": [
+    "Stop before timing if the bounded numerical tests fail.",
+    "Reject before model integration if the exact Qwen3.8-27B MLP shape improves by less than 8% or is unstable.",
+    "Run CUTE after any integrated model performance result, with the exact denominator preserved.",
+    "Do not infer a score for a gate that did not run."
+  ],
+  "claim_boundary": "A pass would establish a faster bounded-error 2.125-bit CQ3 AVX2 primitive and justify selective 27B integration. It would not establish a whole-model ternary speedup, final-node throughput, energy gains, 100 accepted tok/s, novelty, or a breakthrough."
+}

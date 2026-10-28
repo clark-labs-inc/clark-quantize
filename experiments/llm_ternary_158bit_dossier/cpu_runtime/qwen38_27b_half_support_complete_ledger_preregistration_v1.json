@@ -1,0 +1,83 @@
+{
+  "schema": "qwen38_27b_half_support_complete_ledger_preregistration_v1",
+  "receipt_schema": "qwen38_27b_half_support_complete_ledger_receipt_v1",
+  "status": "frozen_before_authoritative_checkpoint_inventory_run",
+  "frozen_at_utc": "2026-08-17T22:15:00Z",
+  "hypothesis": "A runtime-oriented fixed-half-support ternary representation generalized to every even Qwen tensor tail, plus conservative per-tensor learned-route and ratio-128 INT4 correction storage, can project the complete pinned Qwen3.8-27B checkpoint at or below 1.58 bits per total parameter after independently aligning every component and counting exact retained tensors metadata tokenizer configuration and auxiliary model files",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_compute_forbidden": true,
+    "complete_parameter_denominator": 27781427952,
+    "claim_boundary": "authenticated byte-accounting projection only; not an exported artifact, real-weight quality, capability, token-throughput, semi-lossless, or breakthrough result"
+  },
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "shards": 18,
+    "source_shard_bytes": 55563006776
+  },
+  "expected_inventory": {
+    "tensor_count": 1199,
+    "total_parameters": 27781427952,
+    "compressed_tensors": 618,
+    "compressed_parameters": 27778347008,
+    "retained_tensors": 581,
+    "retained_parameters": 3080944,
+    "compressed_tail_tensors": 27
+  },
+  "representation": {
+    "full_group": "128 support bits plus 64 support-ordered sign bits for exactly 64 nonzeros",
+    "even_tail": "n support bits plus n/2 support-ordered sign bits for exactly n/2 nonzeros",
+    "raw_mask_rate": "exactly 1.5 bits per compressed parameter for observed widths",
+    "scale_metadata": "packed 4-bit group indices one FP16 row anchor and one 16-entry FP16 ratio codebook per tensor",
+    "correction": "one signed INT4 coefficient per output-row/sketch coordinate plus one FP16 row scale",
+    "learned_route": "one bitpacked bucket and sign per input coordinate counted independently per tensor",
+    "retained_policy": "rank-one and flattened input widths below 128 remain exact in source dtype",
+    "alignment": "every code scale correction route header and retained section independently aligned to 64 bytes",
+    "auxiliary": "every non-safetensors file in the pinned model directory counted byte-for-byte"
+  },
+  "gate": {
+    "maximum_effective_bits_per_total_parameter": 1.58,
+    "required_route_sharing_assumption": false,
+    "required_complete_parameter_denominator": 27781427952
+  },
+  "resources": {
+    "cpu_quota_percent": 100,
+    "memory_max_mib": 512,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 10,
+    "persistent_output_bytes": "less than 1 MiB",
+    "run_after_existing_serialized_Qwen38_kernel_gates": true
+  },
+  "promotion_rules": [
+    "the real safetensors headers and pinned download receipt must authenticate all tensor shapes dtypes and the complete denominator",
+    "no gate/up or attention-route sharing savings may be assumed",
+    "all short convolution and rank-one tensors must remain exact and be counted",
+    "all tokenizer config license index and other auxiliary model files must be counted",
+    "a pass establishes byte feasibility only and does not establish that tail codecs or kernels exist",
+    "a pass does not establish that fixed-half-support plus learned correction preserves real weights or capability",
+    "artifact export kernel integration CUTE MMLU-style MATH-500 WikiText and code gates remain mandatory",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "this ledger cannot by itself establish semi-lossless compression or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "ledger": {
+      "path": "clark_quantize/qwen38_half_support_ledger.py",
+      "sha256": "81742f6303563c41e6b9ab4667bc593ce340109cee1fd6b632454149bf11ab22"
+    },
+    "inventory_and_layout": {
+      "path": "clark_quantize/qwen38_storage_budget.py",
+      "sha256": "eed77a1e32009f0c6be607c168bd840482712a535949737877c6584f0ce2f706"
+    },
+    "ledger_tests": {
+      "path": "clark_quantize/test_qwen38_half_support_ledger.py",
+      "sha256": "1b525217fdd0c3190729025af8b8ad65e7d7c2e6b91e084b48643b052d2e7463"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_half_support_complete_ledger_v1.py",
+      "sha256": "2bfc01c93009eeba589e26ac88fc327b2d7a8abe24b854407b7c06650fa58315"
+    }
+  }
+}

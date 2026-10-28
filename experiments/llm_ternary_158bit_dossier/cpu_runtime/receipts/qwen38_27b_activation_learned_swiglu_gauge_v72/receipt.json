@@ -1,0 +1,284 @@
+{
+  "authenticated_inputs": {
+    "full_context_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "layer59_context_shard_sha256": "bec10cdc2b4a4bd568bb3b2cc3e7ffe01b30b9f8dd91108d680c4db33f610cc1",
+    "source_tensor_sha256": {
+      "mlp.down_proj.weight": "ce8eaece6fd48b996ff5328840d7b75d5d91dc23acf358711388973b5c9584ca",
+      "mlp.gate_proj.weight": "af5f1f3627acd6ed1a1e3ff71defaeb4433b1dc280efdb01b6d8ebf9086ab1c3",
+      "mlp.up_proj.weight": "2d3f11424f7705452380d1c7a2df4e625929ab9c460882e9c81ce5effadc7feb"
+    },
+    "v44_payload_sha256": {
+      "down": "faa8661738f9c0bdcadc2dcd7eac7723ca39c1d99486523b2e8b21e636c76356",
+      "gate": "ca349cd022d248a29fae502d523430b50fa5894f1e5deff549e222b159a02599",
+      "up": "1592cd2858371645fd8e236113caa1c39d733a959b3a54ab0bbe4f6d550de4bc"
+    },
+    "v44_training_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+    "v71_negative_receipt_sha256": "1fe38e79ca68f018d45d95788b7fd34fcdc15532462ce82e99c3692a3e242e4f"
+  },
+  "checks": {
+    "all_parent_artifacts_authenticated": true,
+    "down_payload_storage_neutral": true,
+    "exact_layer_replay": true,
+    "gauge_finite_and_bounded": true,
+    "gauge_selected_without_confirmation_rows": true,
+    "minimum_confirmation_improvement_met": false,
+    "minimum_train_improvement_met": false,
+    "training_all_finite": true,
+    "unquantized_gauge_identity_nmse_within_maximum": true,
+    "up_codes_unchanged": true,
+    "up_payload_storage_neutral": true,
+    "up_scale_fold_nmse_within_maximum": true
+  },
+  "claim_boundary": "Frozen train-confirmation layer-59 calibration pilot only. A pass cannot establish whole-model capability, perplexity, MATH, code, MMLU, throughput, energy, novelty, 100 tokens per second, or a scientific breakthrough.",
+  "complete": true,
+  "down_training": {
+    "aggregate_calibration_metrics": {
+      "accepted_shards": 40,
+      "all_finite": true,
+      "calibration_target_squared_sum": 301927.6398925781,
+      "relative_calibration_nmse_improvement": 0.26480214756308285,
+      "rows": 5120,
+      "selected_calibration_nmse": 0.22085268588237483,
+      "selected_calibration_squared_error_sum": 66681.53021240234,
+      "selection_data": "calibration_only",
+      "shards": 40,
+      "step_zero_calibration_nmse": 0.3003989812406652,
+      "step_zero_calibration_squared_error_sum": 90698.7554321289,
+      "weighted_selected_code_churn_fraction": 0.02512448248453438
+    },
+    "descriptor": "blk.59.ffn_down_activation_gauged.weight.json"
+  },
+  "exactness": {
+    "unquantized_gauge_identity_nmse": 0.0,
+    "up_codes_unchanged": true,
+    "up_scale_fold_nmse": 0.0
+  },
+  "gate": {
+    "decision": "reject_activation_learned_diagonal_gauge_before_model_integration",
+    "passed": false
+  },
+  "gauge_optimization": {
+    "confirmation_rows_observed_during_selection": 0,
+    "elapsed_seconds_including_down_training": 61.179883264005184,
+    "history": [
+      {
+        "gradient_norm_before_clip": null,
+        "hard_calibration_nmse": 0.3003989812406652,
+        "log_gauge_std": 0.0,
+        "maximum_gauge": 1.0,
+        "minimum_gauge": 1.0,
+        "selected_as_best": true,
+        "step": 0
+      },
+      {
+        "gradient_norm_before_clip": 0.027352072298526764,
+        "hard_calibration_nmse": 0.30073058466489444,
+        "log_gauge_std": 0.015458391048014164,
+        "maximum_gauge": 1.0406732559204102,
+        "minimum_gauge": 0.9998698830604553,
+        "selected_as_best": false,
+        "step": 1
+      },
+      {
+        "gradient_norm_before_clip": 0.027299456298351288,
+        "hard_calibration_nmse": 0.3012904039063653,
+        "log_gauge_std": 0.02972547337412834,
+        "maximum_gauge": 1.0829461812973022,
+        "minimum_gauge": 0.9996420741081238,
+        "selected_as_best": false,
+        "step": 2
+      },
+      {
+        "gradient_norm_before_clip": 0.027001773938536644,
+        "hard_calibration_nmse": 0.301588148958688,
+        "log_gauge_std": 0.04342387989163399,
+        "maximum_gauge": 1.1268980503082275,
+        "minimum_gauge": 0.999315619468689,
+        "selected_as_best": false,
+        "step": 3
+      },
+      {
+        "gradient_norm_before_clip": 0.026842378079891205,
+        "hard_calibration_nmse": 0.30222183459787205,
+        "log_gauge_std": 0.05664319545030594,
+        "maximum_gauge": 1.1726617813110352,
+        "minimum_gauge": 0.9988863468170166,
+        "selected_as_best": false,
+        "step": 4
+      },
+      {
+        "gradient_norm_before_clip": 0.0268422681838274,
+        "hard_calibration_nmse": 0.3027318226607148,
+        "log_gauge_std": 0.06938277184963226,
+        "maximum_gauge": 1.2203367948532104,
+        "minimum_gauge": 0.9983315467834473,
+        "selected_as_best": false,
+        "step": 5
+      },
+      {
+        "gradient_norm_before_clip": 0.026769114658236504,
+        "hard_calibration_nmse": 0.3033604053869964,
+        "log_gauge_std": 0.08165571093559265,
+        "maximum_gauge": 1.269927740097046,
+        "minimum_gauge": 0.997643768787384,
+        "selected_as_best": false,
+        "step": 6
+      },
+      {
+        "gradient_norm_before_clip": 0.026732198894023895,
+        "hard_calibration_nmse": 0.3037122595501598,
+        "log_gauge_std": 0.09345413744449615,
+        "maximum_gauge": 1.321394681930542,
+        "minimum_gauge": 0.9968029856681824,
+        "selected_as_best": false,
+        "step": 7
+      },
+      {
+        "gradient_norm_before_clip": 0.026607120409607887,
+        "hard_calibration_nmse": 0.3043905871363352,
+        "log_gauge_std": 0.10480063408613205,
+        "maximum_gauge": 1.3752493858337402,
+        "minimum_gauge": 0.9958009123802185,
+        "selected_as_best": false,
+        "step": 8
+      },
+      {
+        "gradient_norm_before_clip": 0.02653292380273342,
+        "hard_calibration_nmse": 0.30487051505373136,
+        "log_gauge_std": 0.11570415645837784,
+        "maximum_gauge": 1.4315587282180786,
+        "minimum_gauge": 0.9946696758270264,
+        "selected_as_best": false,
+        "step": 9
+      },
+      {
+        "gradient_norm_before_clip": 0.026560809463262558,
+        "hard_calibration_nmse": 0.3054869234019026,
+        "log_gauge_std": 0.12614069879055023,
+        "maximum_gauge": 1.4903992414474487,
+        "minimum_gauge": 0.9933954477310181,
+        "selected_as_best": false,
+        "step": 10
+      },
+      {
+        "gradient_norm_before_clip": 0.02638060599565506,
+        "hard_calibration_nmse": 0.30595883560395554,
+        "log_gauge_std": 0.13611413538455963,
+        "maximum_gauge": 1.5518087148666382,
+        "minimum_gauge": 0.9919332265853882,
+        "selected_as_best": false,
+        "step": 11
+      },
+      {
+        "gradient_norm_before_clip": 0.026289792731404305,
+        "hard_calibration_nmse": 0.3066093252972508,
+        "log_gauge_std": 0.14562687277793884,
+        "maximum_gauge": 1.6160070896148682,
+        "minimum_gauge": 0.9903361797332764,
+        "selected_as_best": false,
+        "step": 12
+      }
+    ],
+    "log_std": 0.0,
+    "maximum": 1.0,
+    "mean": 1.0,
+    "median": 1.0,
+    "method": "hard-CQ3 straight-through activation-error descent",
+    "minimum": 1.0,
+    "selected_step": 0,
+    "sha256": "f836d7379d4ea168e2bdcbba9b47a87f2347ab1e61c7f12fb9643d2aea91d2de"
+  },
+  "metrics": {
+    "baseline_confirmation_complete_mlp_nmse": 0.2273625284433365,
+    "baseline_train_complete_mlp_nmse": 0.22998526692390442,
+    "candidate_confirmation_complete_mlp_nmse": 0.28556540608406067,
+    "candidate_train_complete_mlp_nmse": 0.2208148092031479,
+    "relative_confirmation_complete_mlp_nmse_improvement": -0.2559915129340654,
+    "relative_train_complete_mlp_nmse_improvement": 0.0398741095175926,
+    "v44_recorded_down_projection_nmse": 0.21852178603165218
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "preregistration_sha256": "10118ff476a77a34ec0e14943aa488bb81a01f5f5bcdfaab08df90c0758c0d62",
+  "repository_commit": "e2edc3b4a4af6fb886e4b56635de24293034dbbd",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "row_split": {
+    "confirmation_count": 32,
+    "confirmation_rows": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13,
+      15,
+      17,
+      19,
+      21,
+      23,
+      25,
+      27,
+      29,
+      31,
+      33,
+      35,
+      37,
+      39,
+      41,
+      43,
+      45,
+      47,
+      49,
+      51,
+      53,
+      55,
+      57,
+      59,
+      61,
+      63
+    ],
+    "training_count": 32,
+    "training_rows": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10,
+      12,
+      14,
+      16,
+      18,
+      20,
+      22,
+      24,
+      26,
+      28,
+      30,
+      32,
+      34,
+      36,
+      38,
+      40,
+      42,
+      44,
+      46,
+      48,
+      50,
+      52,
+      54,
+      56,
+      58,
+      60,
+      62
+    ]
+  },
+  "schema": "qwen38_27b_activation_learned_swiglu_gauge_receipt_v72",
+  "storage": {
+    "additional_runtime_operations": 0,
+    "baseline_up_down_payload_bytes": 47349760,
+    "gauged_up_down_payload_bytes": 47349760,
+    "runtime_sidecar_bytes": 0
+  },
+  "terminal": true
+}

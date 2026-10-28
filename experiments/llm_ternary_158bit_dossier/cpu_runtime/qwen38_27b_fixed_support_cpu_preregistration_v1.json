@@ -1,0 +1,102 @@
+{
+  "schema": "qwen38_27b_fixed_support_cpu_preregistration_v1",
+  "receipt_schema": "qwen38_27b_fixed_support_cpu_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T21:25:00Z",
+  "hypothesis": "The canonical exact fixed-support ternary bitstream can be packed and unpacked on one x86 CPU core at at least 20 million Qwen-shaped weights per second with exact code recovery and no more than 1.48 raw code bits per weight",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_compute_forbidden": true,
+    "claim_boundary": "native load-time codec only; not a fused GEMV, token-throughput, model-quality, semi-lossless, or breakthrough result"
+  },
+  "representation": {
+    "group_size": 128,
+    "state_count": "binomial(128,k) times 2^k",
+    "ordering": "lexicographic support rank with support-ordered signs in the low bits",
+    "bitstream": "fixed-width group codes concatenated least-significant-bit first with zero terminal padding",
+    "binomial_table": "thread-safe one-time Pascal table for n 0 through 128 and canonical k 0 through 64; process metadata only",
+    "decode_target": "dense signed int8 ternary codes for load-time validation"
+  },
+  "cases": [
+    {
+      "name": "gate_k54",
+      "rows": 64,
+      "columns": 5120,
+      "nonzero_per_group": 54
+    },
+    {
+      "name": "gate_k60",
+      "rows": 64,
+      "columns": 5120,
+      "nonzero_per_group": 60
+    },
+    {
+      "name": "gate_k64",
+      "rows": 64,
+      "columns": 5120,
+      "nonzero_per_group": 64
+    },
+    {
+      "name": "down_k64",
+      "rows": 20,
+      "columns": 17408,
+      "nonzero_per_group": 64
+    }
+  ],
+  "measurement": {
+    "seed": 158027,
+    "codes": "deterministic synthetic exact-support {-1,0,+1} groups",
+    "warmups": 3,
+    "repetitions": 11,
+    "statistic": "median monotonic wall-clock nanoseconds",
+    "compiler": "system C compiler with C11 O3 Wall Wextra Werror shared PIC and mtune=native",
+    "threading": "one process pinned to one physical CPU; codec itself is single-threaded",
+    "timed_path": "safe C ABI with preallocated input payload and output buffers",
+    "full_model_projection": "diagnostic only; divide 27,781,427,952 weights by observed one-core throughput"
+  },
+  "gate": {
+    "required_cases": 4,
+    "minimum_pack_mweights_per_second": 20.0,
+    "minimum_unpack_mweights_per_second": 20.0,
+    "maximum_code_bits_per_weight": 1.48
+  },
+  "resources": {
+    "cpu_quota_percent": 100,
+    "memory_max_mib": 512,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 10,
+    "persistent_output_bytes": "less than 1 MiB",
+    "run_after_existing_serialized_Qwen38_chain": true
+  },
+  "promotion_rules": [
+    "a pass establishes only exact native load-time coding at the frozen x86 floor",
+    "raw code bits exclude scales correction retained tensors metadata and alignment, which remain in the complete model ledger",
+    "Pascal-table process metadata is not model storage but must be disclosed",
+    "on-the-fly inference requires a separately preregistered fused compressed GEMV and cannot be inferred from dense decode throughput",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "this benchmark cannot establish semi-lossless compression or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "native_c": {
+      "path": "clark_quantize/qwen38_fixed_support_cpu.c",
+      "sha256": "e5ae5c4b63f3b0649955dc8115cc538031880dc3200a130cee4423be984932b2"
+    },
+    "python_binding": {
+      "path": "clark_quantize/qwen38_fixed_support_cpu.py",
+      "sha256": "ba75e930bf06521040a3f626d712552be17bf9948d0399e84253c1b1153ce375"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_qwen38_fixed_support_cpu.py",
+      "sha256": "de681a42c9df77d64b341e267eca06f3977e720f5e7556ecd1be00d919f5eb75"
+    },
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_fixed_support_cpu_v1.py",
+      "sha256": "3a45b779e54e030bad2a68b66995de844791b28994559b234f02d7b04163ab44"
+    },
+    "build_script": {
+      "path": "scripts/cpu/build_qwen38_fixed_support_cpu.sh",
+      "sha256": "b62c54a9e724a68fad3e773ce995f568c21e50084d5d7c3a79f92e43a293e098"
+    }
+  }
+}

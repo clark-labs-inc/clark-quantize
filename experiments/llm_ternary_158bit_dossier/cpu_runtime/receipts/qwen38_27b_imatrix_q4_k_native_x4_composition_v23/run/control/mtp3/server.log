@@ -1,0 +1,54 @@
+warning: no usable GPU found, --gpu-layers option will be ignored
+warning: one possible reason is that llama.cpp was compiled without GPU support
+warning: consult docs/build.md for compilation instructions
+warning: no usable GPU found, --gpu-layers-draft option will be ignored
+warning: one possible reason is that llama.cpp was compiled without GPU support
+warning: consult docs/build.md for compilation instructions
+0.00.004.969 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.005.601 I srv          init: The UI is disabled
+0.00.005.606 I srv          init: Use --ui/--no-ui (or deprecated --webui/--no-webui) to enable/disable
+0.00.005.651 W srv  llama_server: -----------------
+0.00.005.654 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.005.654 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.005.655 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.005.655 W srv  llama_server: -----------------
+0.00.006.887 I srv    load_model: loading model '/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf'
+0.09.333.943 I cmn          init: llama threadpool init, n_threads = 4
+0.09.928.499 I common_speculative_init_result: loading draft model '/workspace/models/controls/mtp-Qwen3.8-27B-Q4_0.gguf'
+0.14.299.391 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 512, kv_unified = 'false'
+0.14.345.090 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.14.345.136 I srv  llama_server: model loaded
+0.14.345.141 I srv  llama_server: listening on http://127.0.0.1:19601
+0.14.515.539 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.14.515.586 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.40.793.475 I slot print_timing: id  0 | task 0 | prompt eval time =    2053.43 ms /    10 tokens (  205.34 ms per token,     4.87 tokens per second)
+0.40.793.484 I slot print_timing: id  0 | task 0 |        eval time =   24224.42 ms /    96 tokens (  254.99 ms per token,     3.92 tokens per second)
+0.40.793.485 I slot print_timing: id  0 | task 0 |       total time =   26277.85 ms /   106 tokens
+0.40.793.491 I slot print_timing: id  0 | task 0 |    graphs reused =         25
+0.40.793.496 I slot print_timing: id  0 | task 0 | draft acceptance = 0.92000 (   69 accepted /    75 generated), mean len =  3.76
+0.40.795.457 I slot      release: id  0 | task 0 | stop processing: n_tokens = 105, truncated = 0
+0.40.799.186 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 186084429575
+0.41.035.652 I slot launch_slot_: id  0 | task 29 | processing task, is_child = 0
+1.08.743.269 I slot print_timing: id  0 | task 29 | prompt eval time =    3346.45 ms /    18 tokens (  185.91 ms per token,     5.38 tokens per second)
+1.08.743.278 I slot print_timing: id  0 | task 29 |        eval time =   24361.12 ms /    96 tokens (  256.43 ms per token,     3.90 tokens per second)
+1.08.743.278 I slot print_timing: id  0 | task 29 |       total time =   27707.57 ms /   114 tokens
+1.08.743.279 I slot print_timing: id  0 | task 29 |    graphs reused =         49
+1.08.743.283 I slot print_timing: id  0 | task 29 | draft acceptance = 0.90789 (   69 accepted /    76 generated), mean len =  3.65
+1.08.743.313 I slot      release: id  0 | task 29 | stop processing: n_tokens = 113, truncated = 0
+1.08.745.464 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 186112377404
+1.08.891.348 I slot launch_slot_: id  0 | task 58 | processing task, is_child = 0
+1.50.161.523 I slot print_timing: id  0 | task 58 | prompt eval time =    3029.14 ms /    16 tokens (  189.32 ms per token,     5.28 tokens per second)
+1.50.161.533 I slot print_timing: id  0 | task 58 |        eval time =   38240.97 ms /    96 tokens (  402.54 ms per token,     2.48 tokens per second)
+1.50.161.534 I slot print_timing: id  0 | task 58 |       total time =   41270.12 ms /   112 tokens
+1.50.161.535 I slot print_timing: id  0 | task 58 |    graphs reused =         87
+1.50.161.539 I slot print_timing: id  0 | task 58 | draft acceptance = 0.46218 (   55 accepted /   119 generated), mean len =  2.38
+1.50.161.569 I slot      release: id  0 | task 58 | stop processing: n_tokens = 111, truncated = 0
+1.50.165.085 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 186153795661
+1.50.309.803 I slot launch_slot_: id  0 | task 101 | processing task, is_child = 0
+2.30.491.733 I slot print_timing: id  0 | task 101 | prompt eval time =    2863.88 ms /    12 tokens (  238.66 ms per token,     4.19 tokens per second)
+2.30.491.743 I slot print_timing: id  0 | task 101 |        eval time =   37318.00 ms /    96 tokens (  392.82 ms per token,     2.55 tokens per second)
+2.30.491.743 I slot print_timing: id  0 | task 101 |       total time =   40181.88 ms /   108 tokens
+2.30.491.744 I slot print_timing: id  0 | task 101 |    graphs reused =        124
+2.30.491.748 I slot print_timing: id  0 | task 101 | draft acceptance = 0.50000 (   57 accepted /   114 generated), mean len =  2.50
+2.30.491.777 I slot      release: id  0 | task 101 | stop processing: n_tokens = 107, truncated = 0
+2.30.494.544 I srv    operator(): operator(): cleaning up before exit...

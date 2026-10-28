@@ -1,0 +1,60 @@
+{
+  "bytes": 8245376,
+  "claim_boundary": "direct v43 layer-0 AFF3 compute-image authentication only; not trained v44 algebra, graph integration, quality, or performance",
+  "complete": true,
+  "decoded_group_scale_matrix_bytes": 0,
+  "group_size": 128,
+  "layer": 0,
+  "pairs_per_stage": 3072,
+  "path": "/workspace/quant-runs/qwen38-aff3-rotated-v47/layer-00-direct.aff3x16",
+  "persistent_dense_weight_bytes": 0,
+  "root_sha256": "dbe0344332c188d971f2cb6586583c723ab70a33a428bfefb66eff95f77d0a24",
+  "rows_per_tile": 16,
+  "runtime_compute_image_bytes": 8241216,
+  "schema": "qwen38_aff3_x16_runtime_image_v1",
+  "sections": {
+    "alpha_anchors": {
+      "bytes": 10240,
+      "offset": 8114176,
+      "sha256": "e215f0d20708dd16dc59a7585dabd487664f179bc600d0fb27dc77c05ecb29d5"
+    },
+    "alpha_codebook": {
+      "bytes": 32,
+      "offset": 8134656,
+      "sha256": "83825872ee3f8de491875b726e62e1d173430793b84baa70f14a9639020a2e9e"
+    },
+    "angles": {
+      "bytes": 36864,
+      "offset": 8134784,
+      "sha256": "a1041db1dc228278d4ade5b382a20d598cc27335e231c97882d0d4cff0e005d9"
+    },
+    "mu_anchors": {
+      "bytes": 10240,
+      "offset": 8124416,
+      "sha256": "bbeea86a88bb19a9fd125a4484b7392fd4d4ae6f4b098217b9b6ad940978222b"
+    },
+    "mu_codebook": {
+      "bytes": 32,
+      "offset": 8134720,
+      "sha256": "ebf972cf2352cd3279d4cfe1a1f7440a4ac01e85bd6715bea51cd4977054414e"
+    },
+    "pairings": {
+      "bytes": 73728,
+      "offset": 8171648,
+      "sha256": "c7283a838d5eae8a0be968bee5eb6d08e4e20a94224fa434c8be8f97c42ffa1f"
+    },
+    "weights_x16": {
+      "bytes": 8110080,
+      "offset": 4096,
+      "sha256": "2999e20f39a2995c517c8d9cb568b66f8f46e9b1bcaf83d681e3b84257f661c7"
+    }
+  },
+  "shape": [
+    5120,
+    6144
+  ],
+  "source_manifest": "/workspace/quant-runs/qwen38-all-layer-mixed-direct-v43/aff3-base/layers/0/sites/attention_output/manifest.json",
+  "source_manifest_repository_commit": "71f80ca83e8a462d548ed3e83a0d0ed572935412",
+  "stages": 6,
+  "terminal": true
+}

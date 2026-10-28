@@ -1,0 +1,89 @@
+{
+  "schema": "qwen38_27b_q8_family_q4_0_fastpath_result_v2",
+  "completed_at": "2026-08-18T14:07:00Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": false,
+  "candidate_promoted": false,
+  "decision": "reject_before_paired_serving_on_both_graph_speed_gates",
+  "checks": {
+    "artifact_valid": true,
+    "free_generation_canary_passed": true,
+    "graph_speedup_over_control_at_least_1_10": false,
+    "graph_speedup_over_prior_q4_k_at_least_1_03": false,
+    "candidate_process_median_range_at_most_0_05": true,
+    "paired_serving_required": false,
+    "wikitext_required": false,
+    "mmlu_required": false,
+    "math500_required": false
+  },
+  "artifact": {
+    "control_bytes": 18973870432,
+    "candidate_bytes": 15606630752,
+    "bytes_saved": 3367239680,
+    "candidate_sha256": "6d60dc1502bd989cba78e18ad3171a2e25af219b6073e10300020fcc8988088a",
+    "selected_tensor_count": 288,
+    "selected_weight_count": 6734479360,
+    "control_type_counts": {"F32": 353, "Q4_K": 193, "Q6_K": 17, "Q8_0": 288},
+    "candidate_type_counts": {"F32": 353, "Q4_0": 288, "Q4_K": 193, "Q6_K": 17},
+    "nonselected_payloads_sha256": "24bc0d8af954e0a004e698226e61cc66cb42def2c4a2580eb047b04480241a38",
+    "nonselected_payloads_byte_identical": true
+  },
+  "transcode": {
+    "dry_run_selected_tensor_count": 288,
+    "dry_run_q8_to_q4_0_rows": 288,
+    "elapsed_seconds": 22,
+    "quantizer_sha256": "30c8e7234e1e3486077f238901df5f83accd49248e928b80586f93e84bb87b7d",
+    "dry_run_stdout_sha256": "ea8862301ba16f93acfadfa95c5ede26eeed9394cb9f4d0e72d057a9e663b271",
+    "dry_run_stderr_sha256": "21cf530d264a4c07747fb79bff39b7334efa73a23b4a0772993b09a6175ccc64",
+    "stdout_sha256": "90e6f011edb6fade7f8b062233bb205285461bfa09a9fb0b8af32c9c442da242",
+    "stderr_sha256": "95f6721f6451b1d19971be23e956c0a918b2dbfca4ac2a8c5eb77da11113448c"
+  },
+  "free_generation_canary": {
+    "prompts": 4,
+    "tokens_per_prompt": 96,
+    "total_tokens": 384,
+    "unique_token_ids": 194,
+    "per_prompt_unique_token_ids": [42, 51, 73, 68],
+    "zero_token_count": 0,
+    "coherent_outputs": true,
+    "target_tps_weighted": 2.302127492341534
+  },
+  "real_model_four_token_graph": {
+    "unscored_warmup_processes_per_model": 1,
+    "measured_processes_per_model": 4,
+    "samples_per_process": 7,
+    "control_sample_count": 28,
+    "candidate_sample_count": 28,
+    "control_median_ns": 787732700,
+    "candidate_median_ns": 736651370,
+    "control_over_candidate": 1.069342611824641,
+    "prior_q4_k_candidate_median_ns": 729426281,
+    "prior_q4_k_over_candidate": 0.9901919832172442,
+    "control_process_medians_ns": [789006859, 788135890, 784650350, 783117188],
+    "candidate_process_medians_ns": [736640610, 736662130, 737430170, 734714480],
+    "candidate_process_median_range_fraction": 0.0036865335633598294
+  },
+  "quick_quality_diagnostic": {
+    "classification": "post-rejection diagnostic required by the standing quick-eval practice; it does not override the sequential graph rejection",
+    "cute_quick": {
+      "candidate_correct": 8,
+      "candidate_denominator": 20,
+      "control_correct": 9,
+      "prior_q4_k_candidate_correct": 8,
+      "task_correct": {"contains_char": 4, "ins_char": 0, "del_char": 2, "swap_char": 0, "sub_char": 2},
+      "sha256": "95c36bf8183c26d7b50b228574056b2c52d448023069630fa1846276b63b231b"
+    },
+    "wikitext": {"ran": false, "reason": "The terminal graph gate had already failed."},
+    "mmlu": {"ran": false, "reason": "The terminal graph gate had already failed."},
+    "math500": {"ran": false, "reason": "The terminal graph gate had already failed."}
+  },
+  "provenance": {
+    "artifact_verification_sha256": "eac22074728272b19a560724294096dc3e1e22e7c919eb8a9a4380527acfa358",
+    "canary_summary_sha256": "ed2a00f1cbcc727d9872dfdb6f4938d059bd13f51d03587d8009bb99fcfed16c",
+    "graph_gate_sha256": "e59da272b4f7549bba933adf5f18ec6a1ccf555a9572c2a83ca1641e7a876e39"
+  },
+  "next_lane": "Combine the better Q4_K transcode with the previously faster row-major four-row Q4_K kernel, replacing exact greedy-token parity with frozen CUTE, WikiText, MMLU, and MATH capability gates.",
+  "claim_boundary": "Q4_0 saves 3.37 GB and gives a stable 6.9% four-token graph improvement over the Q8 control, but it is slower than Q4_K and scores only 8/20 on CUTE. It is rejected and does not establish serving speed, near-lossless quality, a trained approximation, final-node behavior, energy gains, 100 accepted tok/s, novelty, or a breakthrough."
+}

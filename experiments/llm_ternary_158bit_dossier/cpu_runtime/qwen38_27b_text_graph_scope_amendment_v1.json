@@ -1,0 +1,67 @@
+{
+  "schema": "qwen38_27b_text_graph_scope_amendment_v1",
+  "frozen_at_utc": "2026-08-18T03:20:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "reason": "The HF checkpoint includes vision and MTP/NextN weights, while every current CPU capability and throughput control uses llama.cpp --no-nextn and reports the deployable text graph. Clark storage, quality, and runtime Pareto comparisons must use the identical logical graph and parameter denominator.",
+  "observed_checkpoint_scope": {
+    "tensors": 1199,
+    "parameters": 27781427952,
+    "inventory_sha256": "8533a0edfba093faf2a865391405408461613b92ef83e8d511436f2ed96bc14d"
+  },
+  "selected_text_graph_scope": {
+    "selection": "tensor name starts with model.language_model. or equals lm_head.weight",
+    "tensors": 851,
+    "parameters": 26895998464,
+    "inventory_sha256": "23a5c5137b7893b6d551fcc0085c4a994bf7ae158938d57974d32c7ed856361f",
+    "rank_ge_2_tensors": 546,
+    "rank_ge_2_parameters": 26895319040,
+    "retained_exact_tensors": 305,
+    "retained_exact_parameters": 679424,
+    "output_rows": 4892160,
+    "group_128_scales": 210595840,
+    "mapped_rank_ge_2_tensors": 402,
+    "mapped_rank_ge_2_parameters": 26869760000,
+    "mapped_output_rows": 4396032,
+    "mapped_group_128_scales": 209920000,
+    "supplemental_rank_ge_2_tensors": 144,
+    "supplemental_rank_ge_2_parameters": 25559040,
+    "supplemental_output_rows": 496128,
+    "supplemental_group_128_scales": 675840,
+    "projected_complete_bundle_bytes": 5471531964,
+    "projected_complete_bundle_bpw": 1.6274634968688255
+  },
+  "excluded_non_text_scopes": {
+    "vision": {
+      "selection": "tensor name starts with model.visual.",
+      "tensors": 333,
+      "parameters": 460730096,
+      "reason": "not loaded by the text-only llama.cpp control or text evaluation graph"
+    },
+    "mtp_nextn": {
+      "selection": "tensor name starts with mtp.",
+      "tensors": 15,
+      "parameters": 424699392,
+      "reason": "explicitly excluded by the converter --no-nextn flag and not used for autoregressive text inference"
+    }
+  },
+  "llama_cpp_control_scope": {
+    "converter_flag": "--no-nextn",
+    "parameters": 26895998464,
+    "evidence": "llama-bench model_n_params on the authenticated Q4_K_M text control",
+    "identity_check": "26895998464 + 460730096 + 424699392 = 27781427952"
+  },
+  "storage_policy": {
+    "count_every_selected_text_weight_scale_metadata_alignment_and_auxiliary_byte": true,
+    "retain_the_full_hf_checkpoint_ledger_as_historical_multimodal_accounting": true,
+    "do_not_divide_text_artifact_bytes_by_the_larger_multimodal_checkpoint_denominator": true,
+    "maximum_text_bundle_bpw": 1.64
+  },
+  "evidence_runner": "run_qwen38_27b_text_graph_scope_v1.py",
+  "terminal_receipt": "/workspace/quant-state/qwen38-27b-text-graph-scope-v1.json",
+  "supersedes_for_active_pareto_work": [
+    "complete 666-rank-ge-2-tensor full-checkpoint row-scale gate",
+    "27781427952-parameter denominator for text-only CPU comparisons"
+  ],
+  "claim_boundary": "Scope reconciliation and projected byte accounting only; no reconstruction, artifact, capability, throughput, novelty, or breakthrough result."
+}

@@ -1,0 +1,138 @@
+{
+  "checkpoint": {
+    "manifest": {
+      "complete": true,
+      "metadata": {
+        "estimated_tensor_bytes": 6656,
+        "free_bytes_before_save": 141611630592,
+        "global_state_schema": "clark_qwen35_global_qat_state_v1",
+        "required_bytes_before_save": 7321,
+        "run_identity": {
+          "checkpoint_source_sha256": "47749a34e17387e458d55e02d3d4aba5d4a6a819c76d4e17146a64a3691fa9a8",
+          "optimizer_source_sha256": "1e543957474b6caab2b338cb96392228d81d33a3bf2ce03089f88fc07a21a1e4",
+          "preregistration_sha256": "62fa1d09378141f5b36bd537485f19948cb6e04bfbd3fd3bb748338525580bf0",
+          "schema": "clark_qwen_global_qat_resume_smoke_identity_v1",
+          "source_sha256": "c973ebc3d19730f7606f6cc93ea060ddf0d7207a67427dd20b19c3d69bbaa304",
+          "torch_version": "2.13.0+cpu"
+        },
+        "run_identity_sha256": "9dac8ef878ae775e53ef4ad58637b7b731ab8cb163b626c70c9af3832afd6036"
+      },
+      "schema": "clark_qwen38_qat_checkpoint_v1",
+      "state_file": "state.pt",
+      "state_sha256": "a064986ab0514165275d86f8bf9c8cefb557429544563f3434ba7868135232f6",
+      "step": 3,
+      "tensor_metadata": {
+        "layer.weight_master": {
+          "dtype": "torch.float32",
+          "shape": [
+            16,
+            16
+          ]
+        }
+      }
+    },
+    "path": "/workspace/quant-runs/qwen-global-resume-smoke-v1-source-complete/checkpoints/checkpoint-3",
+    "state_sha256": "a064986ab0514165275d86f8bf9c8cefb557429544563f3434ba7868135232f6"
+  },
+  "checks": {
+    "controller_and_history_exact": true,
+    "model_after_next_step_exact": true,
+    "observation_exact": true,
+    "optimizer_after_next_step_exact": true,
+    "optimizer_load_exact": true
+  },
+  "created_at_unix": 1786936172.4896712,
+  "expected_next_step": {
+    "arm": "math",
+    "loss": 14.131169319152832,
+    "numpy_values_sha256": "312aea94ab1dbda211475e9fe496cb73f6944c73420c9aca9a987e8fe1c3f8a3",
+    "python_value": 0.31599876041324515,
+    "torch_values_sha256": "55253f2257398f922d6c26128d9bf10b0ff8b311e49e8f32b3af928cd2638ec8"
+  },
+  "prefix_observations": [
+    {
+      "arm": "math",
+      "loss": 63.932613372802734,
+      "numpy_values_sha256": "31f37f358a497d5ad91d6eea8e534bfc095600bf0d385b2adf43797a9286a6ba",
+      "python_value": 0.4893183889691112,
+      "torch_values_sha256": "e2943b1328c68b746eec7221e35ed2cf8553b2c5c64447211523229650584a1d"
+    },
+    {
+      "arm": "math",
+      "loss": 51.48563003540039,
+      "numpy_values_sha256": "4bc387a6ed517b63a9ecc0b1904978ee3f19f043b0cca34799985c7647c72d31",
+      "python_value": 0.5359501982792404,
+      "torch_values_sha256": "f0b29d89684a975059b69ff1c9f41c166f5956f57f00be6072e37b8080f98c8d"
+    },
+    {
+      "arm": "math",
+      "loss": 73.54231262207031,
+      "numpy_values_sha256": "600816db2de7e99294a4435cd74345e52acef2b737ba223b306baf398a863d97",
+      "python_value": 0.6194869886958603,
+      "torch_values_sha256": "36f361e1e9c82f8eacd3c2b0e898fa625e7f543eb4d999ddf69a3dbc45e1800f"
+    }
+  ],
+  "preregistration": {
+    "path": "/workspace/clark-quantize/experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen_global_qat_resume_preregistration_v1.json",
+    "rules": {
+      "arms": [
+        "math",
+        "code"
+      ],
+      "checkpoint_after_step": 3,
+      "comparison_step": 4,
+      "matrix_shape": [
+        16,
+        16
+      ],
+      "optimizer": {
+        "master_dtype": "torch.float32",
+        "momentum_dtype": "torch.bfloat16",
+        "name": "BonsaiMuonFast"
+      },
+      "promotion": {
+        "require_all_exact_matches": true,
+        "require_atomic_checkpoint_manifest": true,
+        "require_state_sha256_validation": true,
+        "scope": "restart harness only; no model-quality claim"
+      },
+      "required_exact_matches": [
+        "next sampled arm",
+        "next NumPy arm sample",
+        "next Python random value",
+        "next Torch random tensor",
+        "next loss",
+        "complete model state",
+        "complete optimizer state",
+        "bandit state",
+        "servo state",
+        "KL history"
+      ],
+      "schema": "clark_qwen_global_qat_resume_preregistration_v1",
+      "seed": 20260817
+    },
+    "sha256": "62fa1d09378141f5b36bd537485f19948cb6e04bfbd3fd3bb748338525580bf0"
+  },
+  "promotion": {
+    "passed": true,
+    "scope": "restart harness only; no model-quality claim"
+  },
+  "report_content_sha256": "1dc3800ea000926a90c547cd743d7241e1061743b40e69962d605e1475ac3a9c",
+  "resumed_next_step": {
+    "arm": "math",
+    "loss": 14.131169319152832,
+    "numpy_values_sha256": "312aea94ab1dbda211475e9fe496cb73f6944c73420c9aca9a987e8fe1c3f8a3",
+    "python_value": 0.31599876041324515,
+    "torch_values_sha256": "55253f2257398f922d6c26128d9bf10b0ff8b311e49e8f32b3af928cd2638ec8"
+  },
+  "run_identity": {
+    "checkpoint_source_sha256": "47749a34e17387e458d55e02d3d4aba5d4a6a819c76d4e17146a64a3691fa9a8",
+    "optimizer_source_sha256": "1e543957474b6caab2b338cb96392228d81d33a3bf2ce03089f88fc07a21a1e4",
+    "preregistration_sha256": "62fa1d09378141f5b36bd537485f19948cb6e04bfbd3fd3bb748338525580bf0",
+    "schema": "clark_qwen_global_qat_resume_smoke_identity_v1",
+    "source_sha256": "c973ebc3d19730f7606f6cc93ea060ddf0d7207a67427dd20b19c3d69bbaa304",
+    "torch_version": "2.13.0+cpu"
+  },
+  "run_identity_sha256": "9dac8ef878ae775e53ef4ad58637b7b731ab8cb163b626c70c9af3832afd6036",
+  "schema": "clark_qwen_global_qat_resume_smoke_v1"
+}

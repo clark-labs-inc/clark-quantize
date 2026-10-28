@@ -1,0 +1,43 @@
+{
+  "schema": "qwen38_27b_trained_compact_model_graph_v64_adjudication",
+  "observed_at_utc": "2026-08-19T17:28:46Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "receipt_sha256": "4fc9d2f873979d038792d98d2ce5c34fd73c183f2cd34d0c5cd2ed40217c53c3",
+  "stdout_sha256": "f55f184a7e33133711c0a7609768120d1c76c9cd41cddad43eb6c77e1ab90ce0",
+  "candidate_sha256": "506505935f82bade12ab4b51bd1ca9b6e1b5cc11eeae99a6e230b9a7b9044ffc",
+  "valid_observations": {
+    "all_64_aff3_layers_active": true,
+    "trained_cq3_candidate_loaded": true,
+    "process_exit_code": 0,
+    "all_layer_model_graph_execution_passed": true,
+    "requested_tokens_completed": 8,
+    "stream_bounds_respected": true,
+    "stderr_empty": true,
+    "elapsed_seconds": 18.00367564
+  },
+  "failed_frozen_gates": {
+    "interactive_mode_absent": false,
+    "performance_markers_absent": false,
+    "details": [
+      "stdout contains available commands and a UI prompt despite --no-conversation and --single-turn",
+      "stdout contains an automatic [ Prompt: 9.9 t/s | Generation: 2.9 t/s ] line despite --no-perf",
+      "the v64 detector caught the interactive marker but its performance marker set did not include the bracketed CLI timing format"
+    ]
+  },
+  "generated_text_warning": {
+    "bounded_output": ".FCFC.FCFC..",
+    "semantic_answer_present": false,
+    "adjudication": "warning_only_because_v64_was_structural_and_generated_only_eight_default_thinking_tokens",
+    "quality_pass": false,
+    "quality_failure_claimed": false
+  },
+  "inadmissible_performance_observation": {
+    "prompt_tokens_per_second_printed_by_cli": 9.9,
+    "generation_tokens_per_second_printed_by_cli": 2.9,
+    "may_satisfy_frozen_throughput_gate": false,
+    "reason": "unplanned one-prompt CLI timing with UI mode, only eight tokens, no paired Q4 control, and no quality pass"
+  },
+  "classification": "terminal_harness_negative_with_valid_all_layer_graph_execution",
+  "required_next_action": "retain v64 unchanged and use a separately frozen bounded HTTP chat-completions gate with enable_thinking false; do not weaken the v64 predicates",
+  "terminal": true
+}

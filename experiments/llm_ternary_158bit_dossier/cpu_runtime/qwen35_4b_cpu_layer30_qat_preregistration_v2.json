@@ -1,0 +1,94 @@
+{
+  "schema": "clark_qwen35_cpu_layerwise_qat_preregistration_v2",
+  "status": "frozen_before_corrected_training_launch",
+  "created_at": "2026-08-17",
+  "objective": "repeat the layer-30 CPU QAT rung with the hard forward, exported BF16 patch, and downstream CQ3 GGUF pack on one exact value contract",
+  "supersedes_for_artifact_exact_claim": "qwen35_4b_cpu_layer30_qat_preregistration_v1.json",
+  "v1_preregistration_sha256": "372b734bbe2ec8c633bf946cb9134d78326408f6d5386d50e2831976e4ce3917",
+  "correction_reason": {
+    "observed_after_v1": "the phase-1 and survival exporters used the generic ternary reconstruction even when the training forward used the CQ3-compatible operator; phase-1 also computed with unrounded FP16-scale values although the export bridge materializes BF16 before GGUF packing",
+    "v1_evidence_boundary": "v1 generation scores remain valid for their exact GGUF files, but they cannot support an artifact-exact-QAT claim",
+    "required_fix_commit": "679dc24afe7a5b1e47f96907247711922729385f",
+    "corrected_contract": "derive group-128 optimal ternary support and FP16 scale, round the dequantized hard value through BF16 in every hard forward, export those same BF16 values, then selectively pack the exact three matrices as CQ3_0"
+  },
+  "model": {
+    "id": "Qwen/Qwen3.5-4B",
+    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "model_dir": "/workspace/models/Qwen3.5-4B",
+    "parameter_count_observed": 4659865088
+  },
+  "hardware": {
+    "host_alias": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "smt_threads": 8,
+    "ram_gib_usable": 30,
+    "accelerator": null,
+    "torch_threads": 4,
+    "service_memory_max": "28G"
+  },
+  "frozen_inputs": {
+    "prompt_source": "qwen35_4b_cpu_layer30_train_v1.jsonl",
+    "prompt_source_sha256": "89542ace1ac7496f82727cc82985b70decb757dff4be9350d25d135cb594a31c",
+    "teacher_cache_sha256": "074209fd094cb83393e64143c799dc616dc570aba56d3ba7819a1e9656206138",
+    "activation_cache_sha256": "9a3daa21df6fe627245cf17917404cae190b43726a58d781bb81e13a08bf4d9e",
+    "model_inventory_sha256": "793d872a2b75fb51e640afec9472fba2c605e03b610ffae9c5d171d33851f344",
+    "eval_overlap_policy": "no CUTE-Quick-20 or MATH-500 evaluation row appears in the training source"
+  },
+  "candidate": {
+    "layer": 30,
+    "scope": [
+      "model.language_model.layers.30.mlp.gate_proj.weight",
+      "model.language_model.layers.30.mlp.up_proj.weight",
+      "model.language_model.layers.30.mlp.down_proj.weight"
+    ],
+    "quantization": "symmetric hard ternary",
+    "group_size": 128,
+    "gguf_type": "CQ3_0",
+    "all_other_tensors": "byte-identical to the frozen BF16 GGUF parent"
+  },
+  "training": {
+    "initialization": "fresh from the BF16 parent; do not resume the v1 checkpoint",
+    "phase_1": {
+      "name": "cached MLP reconstruction",
+      "steps": 8,
+      "batch_size": 32,
+      "optimizer": "AdamW",
+      "learning_rate": 0.00002,
+      "codebook_weight": 0.001,
+      "gradient_clip": 1.0,
+      "checkpoint_every_steps": 2,
+      "checkpoint_retention": 1
+    },
+    "phase_2": {
+      "name": "full-model completion-survival polish",
+      "steps": 2,
+      "rows": 2,
+      "learning_rate": 0.000005,
+      "hidden_weight": 0.05,
+      "anti_collapse_weight": 0.1,
+      "codebook_weight": 0.002,
+      "train_projections": false,
+      "train_norms": false
+    }
+  },
+  "controls": [
+    "exact BF16 parent",
+    "the same layer-30 triplet quantized directly to CQ3_0 without training",
+    "the v1 exported candidate, retained only as a forensic control"
+  ],
+  "mandatory_quality_gate": {
+    "policy": "QUALITY_PREFLIGHT.md",
+    "generation": [
+      "CUTE-Quick-20",
+      "MATH-500 pinned quick 8",
+      "sealed code traces 6"
+    ],
+    "likelihood": "WikiText-2 first four 512-token chunks",
+    "quick_minimum_retention_vs_bf16": 0.6,
+    "promotion_limit": "no more than five absolute percentage points below BF16 on a sufficiently powered follow-up; the tiny quick slices only authorize further evaluation",
+    "training_value_rule": "do not expand depth unless corrected QAT is measurably better than direct PTQ on at least one frozen capability or likelihood signal without becoming worse on another",
+    "invalid_run_rule": "missing or infrastructure-failed reports are invalid, never zero"
+  },
+  "claim_boundary": "a passing corrected layer-30 result validates only the CPU training/export ladder; it is neither a whole-model ternary result nor a breakthrough"
+}

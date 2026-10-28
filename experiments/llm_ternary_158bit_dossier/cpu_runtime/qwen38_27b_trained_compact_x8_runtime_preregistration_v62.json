@@ -1,0 +1,100 @@
+{
+  "schema": "qwen38_27b_trained_compact_x8_runtime_preregistration_v62",
+  "experiment_id": "qwen38_27b_trained_compact_x8_runtime_v62",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_after_v45_and_v58_negatives_before_trained_materialization_or_whole_model_observation",
+  "frozen_at_utc": "2026-08-19T16:35:00Z",
+  "objective": "Materialize and compile one residual-free trained CQ3 plus AFF3 Qwen3.8-27B candidate using the already-passed storage-neutral CQ3 x8 AVX2 dataflow, then subject it to every unchanged v60 and v61 whole-model gate as the measured baseline for any subsequent Milan kernel redesign.",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "cpu_set": [0, 2, 4, 6],
+    "qwen_4b_compute_forbidden": true,
+    "v55_structural_template_is_not_a_model_observation": true
+  },
+  "frozen_outcomes": {
+    "v44_training": {
+      "required_pass": true,
+      "receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f"
+    },
+    "v45_residual": {
+      "required_rejection": true,
+      "incident_sha256": "c88dac6c4c12cfa7533fb032f2a4bb8fa147123c5c182788627a2bfb3ab6fbe2",
+      "payload_materialization_forbidden": true,
+      "runtime_environment_must_be_unset": true
+    },
+    "v58_lut32": {
+      "required_negative": true,
+      "terminal_decision_sha256": "ff68248c7e2a7d205345f95917a9c97ef9dac244c4dc124951e97339299e7c76",
+      "geometric_mean_x8_over_lut32": 0.5993599004150747,
+      "geometric_mean_ordinary_over_lut32": 0.8129220709447724,
+      "v59_implementation_forbidden": true
+    }
+  },
+  "accepted_runtime_parent": {
+    "cq3_x8_v15_receipt_sha256": "dd63851b9480545fefc4dd77a8fdd117768c954c1f36c4005f1914dea5cc2d43",
+    "cq3_x8_native_speedup": 1.30177569,
+    "cq3_x8_storage_expansion_fraction": 0.0,
+    "cq3_native_patch_sha256": "0c0fb98d3b74686a1e42c6e4da1b6eb0b46519a3775eb2d5de21ba38d66160fc",
+    "cq3_integration_patch_sha256": "ae86805c0bc159f8d20f55fac785e234710ca9bf80af7b9e1cb4d3e62592f41f",
+    "v54_execution_sha256": "d39ea1addfdec7758cd39ac0fa55d6f5732ee622ebff85499249fab3b7a58b3c",
+    "v54_transform_sha256": "6f2fc0d2877e430926c5dce039e44e59a6acb6994217f43a6a3e70773d739401",
+    "v54_tracked_diff_sha256": "f76b42067337f35d8f5721b92faffcff90f4e1cd15afe8e4aa22ec4fdf67eb4a",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "materialization": {
+    "v55_template_must_pass_before_overlay": true,
+    "trained_cq3_overlay": {
+      "script": "materialize_qwen38_27b_all_layer_trained_cq3_v46.py",
+      "sha256": "ee09826e009a6ec00e50e618f67cbf88cc750b1663dbe067c0295fedd5fd8482",
+      "target_tensors": 192,
+      "decode_or_requantization_forbidden": true,
+      "all_non_target_bytes_must_remain_identical": true
+    },
+    "trained_aff3_images": {
+      "script": "materialize_qwen38_27b_all_layer_trained_aff3_v53.py",
+      "sha256": "348429e8dad39e7635d2c917e641861afce36395fe917760fde2fd7ab98ab0bc",
+      "target_layers": 64,
+      "decoded_dense_weight_materialization_forbidden": true
+    },
+    "post_block_residual_payload_bytes": 0,
+    "partial_then_atomic_rename_required": true,
+    "retain_only_terminal_candidate_and_bounded_receipts": true
+  },
+  "runtime_gate": {
+    "source_composition_script_sha256": "0daf80b7690cd8d682e18a4f694af02501fe599152ab901aa07dfa564e7ea7a5",
+    "compile_from_authenticated_v54_source": true,
+    "test_cq3_must_pass": true,
+    "trained_cq3_tensor_payload_parity_required": true,
+    "trained_aff3_image_load_and_graph_parity_required": true,
+    "residual_nodes_must_be_absent": true,
+    "ordinary_non_avx2_fallback_must_remain_available": true,
+    "no_high_precision_weight_materialization": true
+  },
+  "whole_model_gate_inheritance": {
+    "v60_preregistration_sha256": "cdf92c6746520e62bb834b463eed0ac16a627cc4c788b70136a5728d21d2930c",
+    "v61_amendment_sha256": "786a31c4c4f321f82f1a19b4c35311695f35101609d1e544579fa977541ac22b",
+    "all_prompts_manifests_denominators_quality_thresholds_and_performance_thresholds_unchanged": true,
+    "cute_correct_minimum": 7,
+    "math500_correct_minimum": 4,
+    "code_correct_minimum": 5,
+    "mmlu_correct_minimum": 51,
+    "candidate_over_q4_wikitext_ppl_ratio_maximum": 1.05,
+    "conventional_weighted_tokens_per_second_minimum": 2.75,
+    "candidate_over_q4_weighted_decode_speedup_minimum": 1.4,
+    "conventional_weighted_tokens_per_second_stretch": 3.2,
+    "resident_memory_and_energy_receipts_required": true,
+    "mtp_cannot_rescue_conventional_failure": true
+  },
+  "decision_rules": {
+    "reject_on_any_materialization_compile_parity_quality_or_performance_failure": true,
+    "retain_negative_results": true,
+    "profile_only_after_one_terminal_whole_model_result": true,
+    "do_not_modify_evaluators_or_thresholds_after_observation": true,
+    "a_baseline_pass_or_failure_does_not_establish_novelty": true
+  },
+  "claim_boundary": "A pass can qualify only the exact residual-free trained CQ3 plus AFF3 x8 runtime on the frozen four-core Milan node. It does not establish 100 tokens per second, broader hardware scaling, or novelty."
+}

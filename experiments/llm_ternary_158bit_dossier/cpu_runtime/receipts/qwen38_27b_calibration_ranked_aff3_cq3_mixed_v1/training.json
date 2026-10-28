@@ -1,0 +1,870 @@
+{
+  "artifact_repository_commit": "46c044f0ce645056e9c31e73a7f90a44659077da",
+  "claim_boundary": "terminal calibration-only three-block training subgate; fresh confirmation remains sealed and there is no complete-model quality, runtime, energy, or breakthrough result",
+  "complete": true,
+  "direct_receipt_sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320",
+  "elapsed_seconds": 16.446732721000444,
+  "gate": {
+    "all_code_churn_within_maximum": true,
+    "all_layers_calibration_not_regressed_vs_direct": true,
+    "all_layers_terminal": true,
+    "all_payload_roundtrips_exact": true,
+    "all_values_finite": true,
+    "layers": 3,
+    "maximum_complete_compute_image_bytes": 12500000000,
+    "mean_relative_calibration_nmse_reduction_vs_direct": 0.807391442842145,
+    "minimum_mean_relative_calibration_nmse_reduction_vs_direct_mixed": 0.01,
+    "passed": true,
+    "pilot_persistent_payload_bytes": 232691904,
+    "projected_complete_compute_image_bytes_before_alignment": 12399040864,
+    "storage_projection_within_maximum": true
+  },
+  "layers": [
+    {
+      "actual_persistent_payload_bytes": 77563968,
+      "aff3_training": {
+        "accepted_steps": 8,
+        "all_values_finite": true,
+        "final_hard_forward_calibration_nmse": 0.0016303611919283867,
+        "history": [
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.002101332414895296,
+            "global_gradient_l2_norm": 0.06406001169583903,
+            "global_l2_radius": 0.02,
+            "outer_step": 1,
+            "prior_accepted_hard_forward_calibration_nmse": 0.0029805179219692945,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.002101332414895296
+              }
+            ]
+          },
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.001945513067767024,
+            "global_gradient_l2_norm": 0.03241722211040104,
+            "global_l2_radius": 0.02,
+            "outer_step": 2,
+            "prior_accepted_hard_forward_calibration_nmse": 0.002101332414895296,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.001945513067767024
+              }
+            ]
+          },
+          {
+            "accepted_factor": 0.5,
+            "accepted_hard_forward_calibration_nmse": 0.0018077418208122253,
+            "global_gradient_l2_norm": 0.056137599523541505,
+            "global_l2_radius": 0.02,
+            "outer_step": 3,
+            "prior_accepted_hard_forward_calibration_nmse": 0.001945513067767024,
+            "proposals": [
+              {
+                "accepted": false,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.002661010017618537
+              },
+              {
+                "accepted": true,
+                "factor": 0.5,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0018077418208122253
+              }
+            ]
+          },
+          {
+            "accepted_factor": 0.25,
+            "accepted_hard_forward_calibration_nmse": 0.001718492596410215,
+            "global_gradient_l2_norm": 0.04334722835554828,
+            "global_l2_radius": 0.02,
+            "outer_step": 4,
+            "prior_accepted_hard_forward_calibration_nmse": 0.0018077418208122253,
+            "proposals": [
+              {
+                "accepted": false,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.002734916750341654
+              },
+              {
+                "accepted": false,
+                "factor": 0.5,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.00183189962990582
+              },
+              {
+                "accepted": true,
+                "factor": 0.25,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.001718492596410215
+              }
+            ]
+          },
+          {
+            "accepted_factor": 0.25,
+            "accepted_hard_forward_calibration_nmse": 0.0016887970268726349,
+            "global_gradient_l2_norm": 0.01629985369616888,
+            "global_l2_radius": 0.02,
+            "outer_step": 5,
+            "prior_accepted_hard_forward_calibration_nmse": 0.001718492596410215,
+            "proposals": [
+              {
+                "accepted": false,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0021980127785354853
+              },
+              {
+                "accepted": false,
+                "factor": 0.5,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0017461511306464672
+              },
+              {
+                "accepted": true,
+                "factor": 0.25,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0016887970268726349
+              }
+            ]
+          },
+          {
+            "accepted_factor": 0.25,
+            "accepted_hard_forward_calibration_nmse": 0.001671023084782064,
+            "global_gradient_l2_norm": 0.024059270893832363,
+            "global_l2_radius": 0.02,
+            "outer_step": 6,
+            "prior_accepted_hard_forward_calibration_nmse": 0.0016887970268726349,
+            "proposals": [
+              {
+                "accepted": false,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0027412394993007183
+              },
+              {
+                "accepted": false,
+                "factor": 0.5,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0018522056052461267
+              },
+              {
+                "accepted": true,
+                "factor": 0.25,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.001671023084782064
+              }
+            ]
+          },
+          {
+            "accepted_factor": 0.25,
+            "accepted_hard_forward_calibration_nmse": 0.0016646352596580982,
+            "global_gradient_l2_norm": 0.02694643231778899,
+            "global_l2_radius": 0.02,
+            "outer_step": 7,
+            "prior_accepted_hard_forward_calibration_nmse": 0.001671023084782064,
+            "proposals": [
+              {
+                "accepted": false,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0029797148890793324
+              },
+              {
+                "accepted": false,
+                "factor": 0.5,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0018106723437085748
+              },
+              {
+                "accepted": true,
+                "factor": 0.25,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0016646352596580982
+              }
+            ]
+          },
+          {
+            "accepted_factor": 0.25,
+            "accepted_hard_forward_calibration_nmse": 0.0016303611919283867,
+            "global_gradient_l2_norm": 0.025047930388202508,
+            "global_l2_radius": 0.02,
+            "outer_step": 8,
+            "prior_accepted_hard_forward_calibration_nmse": 0.0016646352596580982,
+            "proposals": [
+              {
+                "accepted": false,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.002742425072938204
+              },
+              {
+                "accepted": false,
+                "factor": 0.5,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0017905633430927992
+              },
+              {
+                "accepted": true,
+                "factor": 0.25,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0016303611919283867
+              }
+            ]
+          }
+        ],
+        "initial_hard_forward_calibration_nmse": 0.0029805179219692945,
+        "outer_steps_completed": 8,
+        "outer_steps_requested": 8,
+        "relative_calibration_nmse_improvement": 0.45299399815345825,
+        "selection_data": "calibration_only"
+      },
+      "calibration_not_regressed": true,
+      "calibration_rows": 64,
+      "code_churn_within_maximum": true,
+      "complete": true,
+      "cq3_descriptors": [
+        "layers/0/cq3/blk.0.ffn_gate.weight.json",
+        "layers/0/cq3/blk.0.ffn_up.weight.json",
+        "layers/0/cq3/blk.0.ffn_down.weight.json"
+      ],
+      "cq3_training": [
+        {
+          "aggregate_calibration_metrics": {
+            "accepted_shards": 136,
+            "all_finite": true,
+            "calibration_target_squared_sum": 12690.038414001465,
+            "relative_calibration_nmse_improvement": 0.7298841125873472,
+            "rows": 17408,
+            "selected_calibration_nmse": 0.03713609681216033,
+            "selected_calibration_squared_error_sum": 471.25849509239197,
+            "selection_data": "calibration_only",
+            "shards": 136,
+            "step_zero_calibration_nmse": 0.13748209025346206,
+            "step_zero_calibration_squared_error_sum": 1744.65300655365,
+            "weighted_selected_code_churn_fraction": 0.031139082015108538
+          },
+          "all_pack_unpack_mappings_exact": true,
+          "gguf_tensor": "blk.0.ffn_gate.weight",
+          "payload": {
+            "bytes": 23674880,
+            "sha256": "5144808d3d306fa743c8b58a6901e878bc874b69793f5def1cf15bef8c710a60"
+          },
+          "state_tensor": "mlp.gate_proj.weight"
+        },
+        {
+          "aggregate_calibration_metrics": {
+            "accepted_shards": 136,
+            "all_finite": true,
+            "calibration_target_squared_sum": 11142.698333740234,
+            "relative_calibration_nmse_improvement": 0.7466603474250146,
+            "rows": 17408,
+            "selected_calibration_nmse": 0.03580206271838698,
+            "selected_calibration_squared_error_sum": 398.9315845966339,
+            "selection_data": "calibration_only",
+            "shards": 136,
+            "step_zero_calibration_nmse": 0.14132040663389644,
+            "step_zero_calibration_squared_error_sum": 1574.6906595230103,
+            "weighted_selected_code_churn_fraction": 0.03174237633014426
+          },
+          "all_pack_unpack_mappings_exact": true,
+          "gguf_tensor": "blk.0.ffn_up.weight",
+          "payload": {
+            "bytes": 23674880,
+            "sha256": "9abddadbe326d771c9f6591d099b5a1c2f626f5cd6cc66ce6cf84bac581acf0d"
+          },
+          "state_tensor": "mlp.up_proj.weight"
+        },
+        {
+          "aggregate_calibration_metrics": {
+            "accepted_shards": 40,
+            "all_finite": true,
+            "calibration_target_squared_sum": 389.0504698753357,
+            "relative_calibration_nmse_improvement": 0.4522527051602279,
+            "rows": 5120,
+            "selected_calibration_nmse": 0.06791169430883412,
+            "selected_calibration_squared_error_sum": 26.421076580882072,
+            "selection_data": "calibration_only",
+            "shards": 40,
+            "step_zero_calibration_nmse": 0.12398362337635964,
+            "step_zero_calibration_squared_error_sum": 48.23588693141937,
+            "weighted_selected_code_churn_fraction": 0.028472350677475333
+          },
+          "all_pack_unpack_mappings_exact": true,
+          "gguf_tensor": "blk.0.ffn_down.weight",
+          "payload": {
+            "bytes": 23674880,
+            "sha256": "1caa5698ae95a9e9fd91292a3102ee432c779926e4a056373c3f7f944c7bc2b9"
+          },
+          "state_tensor": "mlp.down_proj.weight"
+        }
+      ],
+      "direct_receipt_sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320",
+      "elapsed_seconds": 133.33409211598337,
+      "exact_bf16_cache_reproduction_nmse": 0.0,
+      "final_trained_calibration_complete_block_nmse": 0.001630361231485326,
+      "frozen_direct_calibration_complete_block_nmse": 0.008026277310677076,
+      "layer": 0,
+      "maximum_tensor_weighted_code_churn_fraction": 0.03174237633014426,
+      "model": "Qwen/Qwen3.8-27B",
+      "parent_receipt_sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320",
+      "passed": true,
+      "pre_execution_amendment_sha256": "ff330cdef2222bfa0e319dc95651c180a88a13c49335046143072838b5bf6139",
+      "preregistration_sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c",
+      "relative_calibration_nmse_improvement_vs_direct": 0.7968720530853683,
+      "repository_commit": "46c044f0ce645056e9c31e73a7f90a44659077da",
+      "reproduced_direct_calibration_complete_block_nmse": 0.008026277310677076,
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_calibration_ranked_mixed_trained_layer_v1",
+      "site_manifests": [
+        "layers/0/sites/attention_output/manifest.json"
+      ],
+      "terminal": true,
+      "training_amendment_sha256": "f5ac66e37f59fccec9aa7414a2af88f291d00724c7ee0505a1ca2f8bf0ea965e",
+      "training_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "type": "linear_attention"
+    },
+    {
+      "actual_persistent_payload_bytes": 77563968,
+      "aff3_training": {
+        "accepted_steps": 8,
+        "all_values_finite": true,
+        "final_hard_forward_calibration_nmse": 0.0006913114339113235,
+        "history": [
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.0007109809084795415,
+            "global_gradient_l2_norm": 0.0018195791929177098,
+            "global_l2_radius": 0.02,
+            "outer_step": 1,
+            "prior_accepted_hard_forward_calibration_nmse": 0.0007390102837234735,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0007109809084795415
+              }
+            ]
+          },
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.0007016540039330721,
+            "global_gradient_l2_norm": 0.0009027098426247025,
+            "global_l2_radius": 0.02,
+            "outer_step": 2,
+            "prior_accepted_hard_forward_calibration_nmse": 0.0007109809084795415,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0007016540039330721
+              }
+            ]
+          },
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.0006969479727558792,
+            "global_gradient_l2_norm": 0.0005193106794048735,
+            "global_l2_radius": 0.02,
+            "outer_step": 3,
+            "prior_accepted_hard_forward_calibration_nmse": 0.0007016540039330721,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0006969479727558792
+              }
+            ]
+          },
+          {
+            "accepted_factor": 0.5,
+            "accepted_hard_forward_calibration_nmse": 0.0006931310635991395,
+            "global_gradient_l2_norm": 0.0005955132077307094,
+            "global_l2_radius": 0.02,
+            "outer_step": 4,
+            "prior_accepted_hard_forward_calibration_nmse": 0.0006969479727558792,
+            "proposals": [
+              {
+                "accepted": false,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0007034693844616413
+              },
+              {
+                "accepted": true,
+                "factor": 0.5,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0006931310635991395
+              }
+            ]
+          },
+          {
+            "accepted_factor": 0.5,
+            "accepted_hard_forward_calibration_nmse": 0.0006922139436937869,
+            "global_gradient_l2_norm": 0.00039898143734125877,
+            "global_l2_radius": 0.02,
+            "outer_step": 5,
+            "prior_accepted_hard_forward_calibration_nmse": 0.0006931310635991395,
+            "proposals": [
+              {
+                "accepted": false,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.000700013421010226
+              },
+              {
+                "accepted": true,
+                "factor": 0.5,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0006922139436937869
+              }
+            ]
+          },
+          {
+            "accepted_factor": 0.5,
+            "accepted_hard_forward_calibration_nmse": 0.0006914339610375464,
+            "global_gradient_l2_norm": 0.000607168719069457,
+            "global_l2_radius": 0.02,
+            "outer_step": 6,
+            "prior_accepted_hard_forward_calibration_nmse": 0.0006922139436937869,
+            "proposals": [
+              {
+                "accepted": false,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0007053388981148601
+              },
+              {
+                "accepted": true,
+                "factor": 0.5,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0006914339610375464
+              }
+            ]
+          },
+          {
+            "accepted_factor": 0.5,
+            "accepted_hard_forward_calibration_nmse": 0.0006913330289535224,
+            "global_gradient_l2_norm": 0.0005364900170630758,
+            "global_l2_radius": 0.02,
+            "outer_step": 7,
+            "prior_accepted_hard_forward_calibration_nmse": 0.0006914339610375464,
+            "proposals": [
+              {
+                "accepted": false,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0006940010352991521
+              },
+              {
+                "accepted": true,
+                "factor": 0.5,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0006913330289535224
+              }
+            ]
+          },
+          {
+            "accepted_factor": 0.5,
+            "accepted_hard_forward_calibration_nmse": 0.0006913114339113235,
+            "global_gradient_l2_norm": 0.0006015287798648769,
+            "global_l2_radius": 0.02,
+            "outer_step": 8,
+            "prior_accepted_hard_forward_calibration_nmse": 0.0006913330289535224,
+            "proposals": [
+              {
+                "accepted": false,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0007017200696282089
+              },
+              {
+                "accepted": true,
+                "factor": 0.5,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0006913114339113235
+              }
+            ]
+          }
+        ],
+        "initial_hard_forward_calibration_nmse": 0.0007390102837234735,
+        "outer_steps_completed": 8,
+        "outer_steps_requested": 8,
+        "relative_calibration_nmse_improvement": 0.06454423011791023,
+        "selection_data": "calibration_only"
+      },
+      "calibration_not_regressed": true,
+      "calibration_rows": 64,
+      "code_churn_within_maximum": true,
+      "complete": true,
+      "cq3_descriptors": [
+        "layers/32/cq3/blk.32.ffn_gate.weight.json",
+        "layers/32/cq3/blk.32.ffn_up.weight.json",
+        "layers/32/cq3/blk.32.ffn_down.weight.json"
+      ],
+      "cq3_training": [
+        {
+          "aggregate_calibration_metrics": {
+            "accepted_shards": 136,
+            "all_finite": true,
+            "calibration_target_squared_sum": 435268.8596191406,
+            "relative_calibration_nmse_improvement": 0.705276644658844,
+            "rows": 17408,
+            "selected_calibration_nmse": 0.041563479339215816,
+            "selected_calibration_squared_error_sum": 18091.28825378418,
+            "selection_data": "calibration_only",
+            "shards": 136,
+            "step_zero_calibration_nmse": 0.14102540089197935,
+            "step_zero_calibration_squared_error_sum": 61383.965423583984,
+            "weighted_selected_code_churn_fraction": 0.029592233504552173
+          },
+          "all_pack_unpack_mappings_exact": true,
+          "gguf_tensor": "blk.32.ffn_gate.weight",
+          "payload": {
+            "bytes": 23674880,
+            "sha256": "33da9d5482dfeac2db061ee00609c45abd1f1813d0a54a9c053cefe17cbc90ff"
+          },
+          "state_tensor": "mlp.gate_proj.weight"
+        },
+        {
+          "aggregate_calibration_metrics": {
+            "accepted_shards": 136,
+            "all_finite": true,
+            "calibration_target_squared_sum": 270246.0089111328,
+            "relative_calibration_nmse_improvement": 0.7385283832508516,
+            "rows": 17408,
+            "selected_calibration_nmse": 0.048932354993046843,
+            "selected_calibration_squared_error_sum": 13223.773643493652,
+            "selection_data": "calibration_only",
+            "shards": 136,
+            "step_zero_calibration_nmse": 0.1871421288529062,
+            "step_zero_calibration_squared_error_sum": 50574.41342163086,
+            "weighted_selected_code_churn_fraction": 0.02804626017699347
+          },
+          "all_pack_unpack_mappings_exact": true,
+          "gguf_tensor": "blk.32.ffn_up.weight",
+          "payload": {
+            "bytes": 23674880,
+            "sha256": "780f8733a8e50c7d7ffbab4e3b96f264a4f7783ddcc535ad742f1ee3454becaa"
+          },
+          "state_tensor": "mlp.up_proj.weight"
+        },
+        {
+          "aggregate_calibration_metrics": {
+            "accepted_shards": 40,
+            "all_finite": true,
+            "calibration_target_squared_sum": 13351.470031738281,
+            "relative_calibration_nmse_improvement": 0.8434620952328158,
+            "rows": 5120,
+            "selected_calibration_nmse": 0.03815904853879524,
+            "selected_calibration_squared_error_sum": 509.4793930053711,
+            "selection_data": "calibration_only",
+            "shards": 40,
+            "step_zero_calibration_nmse": 0.2437687446727261,
+            "step_zero_calibration_squared_error_sum": 3254.6710891723633,
+            "weighted_selected_code_churn_fraction": 0.027726689539849757
+          },
+          "all_pack_unpack_mappings_exact": true,
+          "gguf_tensor": "blk.32.ffn_down.weight",
+          "payload": {
+            "bytes": 23674880,
+            "sha256": "a22b46b4e172c06e9b21f75138b699cd15b30e29c7c362f35b77d739b7044ecb"
+          },
+          "state_tensor": "mlp.down_proj.weight"
+        }
+      ],
+      "direct_receipt_sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320",
+      "elapsed_seconds": 117.68899221997708,
+      "exact_bf16_cache_reproduction_nmse": 0.0,
+      "final_trained_calibration_complete_block_nmse": 0.0006913114335251582,
+      "frozen_direct_calibration_complete_block_nmse": 0.007745945129903145,
+      "layer": 32,
+      "maximum_tensor_weighted_code_churn_fraction": 0.029592233504552173,
+      "model": "Qwen/Qwen3.8-27B",
+      "parent_receipt_sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320",
+      "passed": true,
+      "pre_execution_amendment_sha256": "ff330cdef2222bfa0e319dc95651c180a88a13c49335046143072838b5bf6139",
+      "preregistration_sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c",
+      "relative_calibration_nmse_improvement_vs_direct": 0.9107518292562702,
+      "repository_commit": "46c044f0ce645056e9c31e73a7f90a44659077da",
+      "reproduced_direct_calibration_complete_block_nmse": 0.007745945129903145,
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_calibration_ranked_mixed_trained_layer_v1",
+      "site_manifests": [
+        "layers/32/sites/attention_output/manifest.json"
+      ],
+      "terminal": true,
+      "training_amendment_sha256": "f5ac66e37f59fccec9aa7414a2af88f291d00724c7ee0505a1ca2f8bf0ea965e",
+      "training_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "type": "linear_attention"
+    },
+    {
+      "actual_persistent_payload_bytes": 77563968,
+      "aff3_training": {
+        "accepted_steps": 8,
+        "all_values_finite": true,
+        "final_hard_forward_calibration_nmse": 0.0331767238676548,
+        "history": [
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.04742385819554329,
+            "global_gradient_l2_norm": 0.2125368301148482,
+            "global_l2_radius": 0.02,
+            "outer_step": 1,
+            "prior_accepted_hard_forward_calibration_nmse": 0.05129087716341019,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.04742385819554329
+              }
+            ]
+          },
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.044061314314603806,
+            "global_gradient_l2_norm": 0.18050747128174485,
+            "global_l2_radius": 0.02,
+            "outer_step": 2,
+            "prior_accepted_hard_forward_calibration_nmse": 0.04742385819554329,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.044061314314603806
+              }
+            ]
+          },
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.04144410416483879,
+            "global_gradient_l2_norm": 0.15182982207965992,
+            "global_l2_radius": 0.02,
+            "outer_step": 3,
+            "prior_accepted_hard_forward_calibration_nmse": 0.044061314314603806,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.04144410416483879
+              }
+            ]
+          },
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.039133716374635696,
+            "global_gradient_l2_norm": 0.1279099972211662,
+            "global_l2_radius": 0.02,
+            "outer_step": 4,
+            "prior_accepted_hard_forward_calibration_nmse": 0.04144410416483879,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.039133716374635696
+              }
+            ]
+          },
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.03716573491692543,
+            "global_gradient_l2_norm": 0.1085345809042639,
+            "global_l2_radius": 0.02,
+            "outer_step": 5,
+            "prior_accepted_hard_forward_calibration_nmse": 0.039133716374635696,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.03716573491692543
+              }
+            ]
+          },
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.03557754307985306,
+            "global_gradient_l2_norm": 0.09329142667048121,
+            "global_l2_radius": 0.02,
+            "outer_step": 6,
+            "prior_accepted_hard_forward_calibration_nmse": 0.03716573491692543,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.03557754307985306
+              }
+            ]
+          },
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.034267980605363846,
+            "global_gradient_l2_norm": 0.08135634242426326,
+            "global_l2_radius": 0.02,
+            "outer_step": 7,
+            "prior_accepted_hard_forward_calibration_nmse": 0.03557754307985306,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.034267980605363846
+              }
+            ]
+          },
+          {
+            "accepted_factor": 1.0,
+            "accepted_hard_forward_calibration_nmse": 0.0331767238676548,
+            "global_gradient_l2_norm": 0.07164764633661459,
+            "global_l2_radius": 0.02,
+            "outer_step": 8,
+            "prior_accepted_hard_forward_calibration_nmse": 0.034267980605363846,
+            "proposals": [
+              {
+                "accepted": true,
+                "factor": 1.0,
+                "finite": true,
+                "hard_forward_calibration_nmse": 0.0331767238676548
+              }
+            ]
+          }
+        ],
+        "initial_hard_forward_calibration_nmse": 0.05129087716341019,
+        "outer_steps_completed": 8,
+        "outer_steps_requested": 8,
+        "relative_calibration_nmse_improvement": 0.3531652078798456,
+        "selection_data": "calibration_only"
+      },
+      "calibration_not_regressed": true,
+      "calibration_rows": 64,
+      "code_churn_within_maximum": true,
+      "complete": true,
+      "cq3_descriptors": [
+        "layers/63/cq3/blk.63.ffn_gate.weight.json",
+        "layers/63/cq3/blk.63.ffn_up.weight.json",
+        "layers/63/cq3/blk.63.ffn_down.weight.json"
+      ],
+      "cq3_training": [
+        {
+          "aggregate_calibration_metrics": {
+            "accepted_shards": 136,
+            "all_finite": true,
+            "calibration_target_squared_sum": 8141336.26953125,
+            "relative_calibration_nmse_improvement": 0.6492147633908611,
+            "rows": 17408,
+            "selected_calibration_nmse": 0.024530436555522932,
+            "selected_calibration_squared_error_sum": 199710.53283691406,
+            "selection_data": "calibration_only",
+            "shards": 136,
+            "step_zero_calibration_nmse": 0.06993007115306818,
+            "step_zero_calibration_squared_error_sum": 569324.224609375,
+            "weighted_selected_code_churn_fraction": 0.025436984772300896
+          },
+          "all_pack_unpack_mappings_exact": true,
+          "gguf_tensor": "blk.63.ffn_gate.weight",
+          "payload": {
+            "bytes": 23674880,
+            "sha256": "f21d4e7ea3cacfbce635f6ad1077de2a6dc12b4f8d5df56ea53252ebf8014859"
+          },
+          "state_tensor": "mlp.gate_proj.weight"
+        },
+        {
+          "aggregate_calibration_metrics": {
+            "accepted_shards": 136,
+            "all_finite": true,
+            "calibration_target_squared_sum": 4839120.083984375,
+            "relative_calibration_nmse_improvement": 0.6860769340026337,
+            "rows": 17408,
+            "selected_calibration_nmse": 0.022396937711579936,
+            "selected_calibration_squared_error_sum": 108381.47109985352,
+            "selection_data": "calibration_only",
+            "shards": 136,
+            "step_zero_calibration_nmse": 0.07134530761676443,
+            "step_zero_calibration_squared_error_sum": 345248.5109863281,
+            "weighted_selected_code_churn_fraction": 0.025354576160145158
+          },
+          "all_pack_unpack_mappings_exact": true,
+          "gguf_tensor": "blk.63.ffn_up.weight",
+          "payload": {
+            "bytes": 23674880,
+            "sha256": "a966c55ad74ff7ee87a02c07fa16fb8ecbaf0495a313b34fb56c9157ed24db29"
+          },
+          "state_tensor": "mlp.up_proj.weight"
+        },
+        {
+          "aggregate_calibration_metrics": {
+            "accepted_shards": 40,
+            "all_finite": true,
+            "calibration_target_squared_sum": 5826296.59765625,
+            "relative_calibration_nmse_improvement": 0.32408612553080585,
+            "rows": 5120,
+            "selected_calibration_nmse": 0.1428945140520019,
+            "selected_calibration_squared_error_sum": 832545.8210449219,
+            "selection_data": "calibration_only",
+            "shards": 40,
+            "step_zero_calibration_nmse": 0.2114093517672192,
+            "step_zero_calibration_squared_error_sum": 1231733.5869140625,
+            "weighted_selected_code_churn_fraction": 0.024440855020657182
+          },
+          "all_pack_unpack_mappings_exact": true,
+          "gguf_tensor": "blk.63.ffn_down.weight",
+          "payload": {
+            "bytes": 23674880,
+            "sha256": "79aaacf45ad1ab5637108a623f1babe5abdad1fafadf5d0bf6b854af8d4cd271"
+          },
+          "state_tensor": "mlp.down_proj.weight"
+        }
+      ],
+      "direct_receipt_sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320",
+      "elapsed_seconds": 110.51398119999794,
+      "exact_bf16_cache_reproduction_nmse": 0.0,
+      "final_trained_calibration_complete_block_nmse": 0.03317672417789738,
+      "frozen_direct_calibration_complete_block_nmse": 0.11622622538543384,
+      "layer": 63,
+      "maximum_tensor_weighted_code_churn_fraction": 0.025436984772300896,
+      "model": "Qwen/Qwen3.8-27B",
+      "parent_receipt_sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320",
+      "passed": true,
+      "pre_execution_amendment_sha256": "ff330cdef2222bfa0e319dc95651c180a88a13c49335046143072838b5bf6139",
+      "preregistration_sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c",
+      "relative_calibration_nmse_improvement_vs_direct": 0.7145504461847964,
+      "repository_commit": "46c044f0ce645056e9c31e73a7f90a44659077da",
+      "reproduced_direct_calibration_complete_block_nmse": 0.11622622538543384,
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "schema": "qwen38_27b_calibration_ranked_mixed_trained_layer_v1",
+      "site_manifests": [
+        "layers/63/sites/attention_output/manifest.json"
+      ],
+      "terminal": true,
+      "training_amendment_sha256": "f5ac66e37f59fccec9aa7414a2af88f291d00724c7ee0505a1ca2f8bf0ea965e",
+      "training_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "type": "full_attention"
+    }
+  ],
+  "model": "Qwen/Qwen3.8-27B",
+  "pre_execution_amendment_sha256": "ff330cdef2222bfa0e319dc95651c180a88a13c49335046143072838b5bf6139",
+  "preregistration_sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c",
+  "repository_commit": "83c4454a68c3df1472b132682232e5ed613ca5ef",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_calibration_ranked_mixed_training_receipt_v1",
+  "terminal": true,
+  "training_amendment_sha256": "f5ac66e37f59fccec9aa7414a2af88f291d00724c7ee0505a1ca2f8bf0ea965e",
+  "training_cache_sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19"
+}

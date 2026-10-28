@@ -1,0 +1,57 @@
+{
+  "schema": "qwen38_27b_q3_k_l_baseline_v1",
+  "frozen_at_utc": "2026-08-18T08:04:00Z",
+  "objective": "Test one adjacent, stronger stock K-quant point after Q3_K_M missed the frozen CUTE admission floor, while retaining a target byte budget compatible with the Qwen3.8-27B 100 accepted tok/s MTP architecture.",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "qwen_4b_compute_forbidden": true,
+    "cpu_only": true,
+    "quantization": "Q3_K_L",
+    "one_adjacent_stock_format_only": true,
+    "no_iq3_or_additional_stock_three_bit_sweep_after_this_run": true
+  },
+  "trigger": {
+    "q3_k_m_sha256": "aa4d1df596360a425c9b5b9356ee8f43909376d831359916dea5e8cc5f18679a",
+    "q3_k_m_bytes": 13301442912,
+    "q3_k_m_cute_correct_of_20": 6,
+    "q3_k_m_cute_floor": 7,
+    "terminal_fact": "CUTE denominator is complete and cannot recover; remaining Q3_K_M quick metrics are still running and must be preserved"
+  },
+  "source": {
+    "bf16_sha256": "5a3eedc837bcbd1365cdbf5b71e698df3122e76586ba872f07ce3ed4a9bfa97e",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "runner": "run_qwen38_27b_q3_k_m_baseline_v1.sh",
+    "runner_environment": {
+      "Q3_MODEL": "/workspace/models/controls/Qwen3.8-27B-Q3_K_L.gguf",
+      "QUANT_TYPE": "Q3_K_L",
+      "BASELINE_VARIANT": "q3_k_l",
+      "MODEL_LABEL": "qwen38-q3-k-l-baseline-v1",
+      "RUN_DIR": "/workspace/quant-runs/qwen38-27b-q3-k-l-baseline-v1",
+      "STATE_DIR": "/workspace/quant-state/qwen38-27b-q3-k-l-baseline-v1"
+    }
+  },
+  "practical_admission_gate": {
+    "minimum_cute_correct_of_20": 7,
+    "minimum_math500_correct_of_8": 4,
+    "minimum_code_correct_of_6": 4,
+    "maximum_wikitext_ppl_ratio_vs_q4": 1.1,
+    "minimum_mmlu_correct_of_64": 49,
+    "minimum_four_core_decode_tokens_per_second": 2.25,
+    "minimum_decode_speedup_vs_q4": 1.15,
+    "minimum_prefill_fraction_vs_q4": 0.9
+  },
+  "near_lossless_gate_remains": {
+    "minimum_cute_correct_of_20": 8,
+    "minimum_math500_correct_of_8": 4,
+    "minimum_code_correct_of_6": 4,
+    "maximum_wikitext_ppl_ratio_vs_q4": 1.05,
+    "minimum_mmlu_correct_of_64": 50
+  },
+  "stop_rules": [
+    "if Q3_K_L misses practical admission, stop stock three-bit format exploration",
+    "do not reinterpret a quick quality miss as a zero or as infrastructure-invalid",
+    "do not run MTP promotion on a target that fails practical admission",
+    "retain a rejected target only long enough to preserve its authenticated receipt or a preregistered runtime-ceiling measurement"
+  ],
+  "claim_boundary": "Frozen adjacent stock-format baseline only; not post-training, a final target, 100 tok/s, or a scientific breakthrough."
+}

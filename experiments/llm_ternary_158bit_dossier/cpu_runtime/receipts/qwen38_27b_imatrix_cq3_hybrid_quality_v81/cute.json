@@ -1,0 +1,434 @@
+{
+  "schema": "cpu_cute_quick_result_v1",
+  "model_label": "qwen38-v80-imatrix-cq3",
+  "model_sha256": "09880f4d1b740f29b5e0cf0daf70ea649b7f5d2b57fb27df064fc1d03c9fab7d",
+  "manifest": "/workspace/src/clark-quantize-qwen38-v68/experiments/llm_ternary_158bit_dossier/cpu_runtime/cute_quick_v1.json",
+  "manifest_content_sha256": "cbc71368d5be89d5610d55990f9de248a434c6bfbb11e5c130718fa0fac2714a",
+  "evaluator_sha256": "9c40a48a0c3f0544156a20ccccdc12f7e90bbae8afd391bf640ead1ff234c8ab",
+  "leaderboard_comparable": false,
+  "server": "http://127.0.0.1:8111",
+  "started_at": "2026-08-19T21:46:05.525719+00:00",
+  "finished_at": "2026-08-19T21:49:55.529471+00:00",
+  "elapsed_seconds": 230.003752,
+  "summaries": [
+    {
+      "task": "contains_char",
+      "correct": 4,
+      "n": 4,
+      "accuracy": 1.0
+    },
+    {
+      "task": "ins_char",
+      "correct": 1,
+      "n": 4,
+      "accuracy": 0.25
+    },
+    {
+      "task": "del_char",
+      "correct": 2,
+      "n": 4,
+      "accuracy": 0.5
+    },
+    {
+      "task": "swap_char",
+      "correct": 0,
+      "n": 4,
+      "accuracy": 0.0
+    },
+    {
+      "task": "sub_char",
+      "correct": 2,
+      "n": 4,
+      "accuracy": 0.5
+    },
+    {
+      "task": "cute_quick_20",
+      "correct": 9,
+      "n": 20,
+      "accuracy": 0.45
+    }
+  ],
+  "records": [
+    {
+      "task": "contains_char",
+      "id": "contains_char:line74",
+      "source_line": 74,
+      "correct": true,
+      "prediction": "Yes",
+      "gold": "Yes",
+      "output": "Yes",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 127,
+        "total_tokens": 129,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 14751.479986007325
+    },
+    {
+      "task": "contains_char",
+      "id": "contains_char:line233",
+      "source_line": 233,
+      "correct": true,
+      "prediction": "Yes",
+      "gold": "Yes",
+      "output": "Yes",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 127,
+        "total_tokens": 129,
+        "prompt_tokens_details": {
+          "cached_tokens": 59
+        }
+      },
+      "latency_ms": 8148.467467020964
+    },
+    {
+      "task": "contains_char",
+      "id": "contains_char:line509",
+      "source_line": 509,
+      "correct": true,
+      "prediction": "No",
+      "gold": "No",
+      "output": "No",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 127,
+        "total_tokens": 129,
+        "prompt_tokens_details": {
+          "cached_tokens": 59
+        }
+      },
+      "latency_ms": 8080.803211982129
+    },
+    {
+      "task": "contains_char",
+      "id": "contains_char:line887",
+      "source_line": 887,
+      "correct": true,
+      "prediction": "Yes",
+      "gold": "Yes",
+      "output": "Yes",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 127,
+        "total_tokens": 129,
+        "prompt_tokens_details": {
+          "cached_tokens": 59
+        }
+      },
+      "latency_ms": 8106.304579006974
+    },
+    {
+      "task": "ins_char",
+      "id": "ins_char:line74",
+      "source_line": 74,
+      "correct": false,
+      "prediction": "bactk",
+      "gold": "btack",
+      "output": "bactk",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 163,
+        "total_tokens": 167,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 19764.400093990844
+    },
+    {
+      "task": "ins_char",
+      "id": "ins_char:line233",
+      "source_line": 233,
+      "correct": false,
+      "prediction": "The word is \"index\".",
+      "gold": "indecx",
+      "output": "The word is \"index\".\nThe letter to find is \"e\".\nThe letter to add is \"c\".\n\nLet's look at the letters in \"index\":\ni - n - d - e - x\n\nThere is",
+      "finish_reason": "length",
+      "usage": {
+        "completion_tokens": 48,
+        "prompt_tokens": 163,
+        "total_tokens": 211,
+        "prompt_tokens_details": {
+          "cached_tokens": 95
+        }
+      },
+      "latency_ms": 24866.238363989396
+    },
+    {
+      "task": "ins_char",
+      "id": "ins_char:line509",
+      "source_line": 509,
+      "correct": false,
+      "prediction": "opttions",
+      "gold": "optionts",
+      "output": "opttions",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 163,
+        "total_tokens": 166,
+        "prompt_tokens_details": {
+          "cached_tokens": 95
+        }
+      },
+      "latency_ms": 8432.120849989587
+    },
+    {
+      "task": "ins_char",
+      "id": "ins_char:line887",
+      "source_line": 887,
+      "correct": true,
+      "prediction": "purchaser",
+      "gold": "purchaser",
+      "output": "purchaser",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 163,
+        "total_tokens": 167,
+        "prompt_tokens_details": {
+          "cached_tokens": 95
+        }
+      },
+      "latency_ms": 8791.5379779879
+    },
+    {
+      "task": "del_char",
+      "id": "del_char:line74",
+      "source_line": 74,
+      "correct": true,
+      "prediction": "bck",
+      "gold": "bck",
+      "output": "bck",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 140,
+        "total_tokens": 143,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 16726.747318985872
+    },
+    {
+      "task": "del_char",
+      "id": "del_char:line233",
+      "source_line": 233,
+      "correct": false,
+      "prediction": "ine",
+      "gold": "inex",
+      "output": "ine",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 140,
+        "total_tokens": 142,
+        "prompt_tokens_details": {
+          "cached_tokens": 72
+        }
+      },
+      "latency_ms": 8054.4813470041845
+    },
+    {
+      "task": "del_char",
+      "id": "del_char:line509",
+      "source_line": 509,
+      "correct": true,
+      "prediction": "ptins",
+      "gold": "ptins",
+      "output": "ptins",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 140,
+        "total_tokens": 143,
+        "prompt_tokens_details": {
+          "cached_tokens": 72
+        }
+      },
+      "latency_ms": 8418.735465995269
+    },
+    {
+      "task": "del_char",
+      "id": "del_char:line887",
+      "source_line": 887,
+      "correct": false,
+      "prediction": "purchse",
+      "gold": "purcase",
+      "output": "purchse",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 140,
+        "total_tokens": 144,
+        "prompt_tokens_details": {
+          "cached_tokens": 72
+        }
+      },
+      "latency_ms": 8802.251340996008
+    },
+    {
+      "task": "swap_char",
+      "id": "swap_char:line74",
+      "source_line": 74,
+      "correct": false,
+      "prediction": "pepole",
+      "gold": "pelpoe",
+      "output": "pepole",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 148,
+        "total_tokens": 151,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 17418.506790010724
+    },
+    {
+      "task": "swap_char",
+      "id": "swap_char:line233",
+      "source_line": 233,
+      "correct": false,
+      "prediction": "kiln",
+      "gold": "kinl",
+      "output": "kiln",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 148,
+        "total_tokens": 151,
+        "prompt_tokens_details": {
+          "cached_tokens": 80
+        }
+      },
+      "latency_ms": 8434.043190005468
+    },
+    {
+      "task": "swap_char",
+      "id": "swap_char:line509",
+      "source_line": 509,
+      "correct": false,
+      "prediction": "fielhd",
+      "gold": "fidle",
+      "output": "fielhd",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 148,
+        "total_tokens": 152,
+        "prompt_tokens_details": {
+          "cached_tokens": 80
+        }
+      },
+      "latency_ms": 8822.765294986311
+    },
+    {
+      "task": "swap_char",
+      "id": "swap_char:line887",
+      "source_line": 887,
+      "correct": false,
+      "prediction": "neough",
+      "gold": "ehougn",
+      "output": "neough",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 149,
+        "total_tokens": 152,
+        "prompt_tokens_details": {
+          "cached_tokens": 80
+        }
+      },
+      "latency_ms": 8789.265487983357
+    },
+    {
+      "task": "sub_char",
+      "id": "sub_char:line74",
+      "source_line": 74,
+      "correct": true,
+      "prediction": "bdck",
+      "gold": "bdck",
+      "output": "bdck",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 152,
+        "total_tokens": 155,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 17986.600215983344
+    },
+    {
+      "task": "sub_char",
+      "id": "sub_char:line233",
+      "source_line": 233,
+      "correct": false,
+      "prediction": "indx",
+      "gold": "indxx",
+      "output": "indx",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 152,
+        "total_tokens": 154,
+        "prompt_tokens_details": {
+          "cached_tokens": 84
+        }
+      },
+      "latency_ms": 8072.262239991687
+    },
+    {
+      "task": "sub_char",
+      "id": "sub_char:line509",
+      "source_line": 509,
+      "correct": false,
+      "prediction": "odpions",
+      "gold": "opdions",
+      "output": "odpions",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 152,
+        "total_tokens": 156,
+        "prompt_tokens_details": {
+          "cached_tokens": 84
+        }
+      },
+      "latency_ms": 8749.567388993455
+    },
+    {
+      "task": "sub_char",
+      "id": "sub_char:line887",
+      "source_line": 887,
+      "correct": true,
+      "prediction": "plrchase",
+      "gold": "plrchase",
+      "output": "plrchase",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 152,
+        "total_tokens": 156,
+        "prompt_tokens_details": {
+          "cached_tokens": 84
+        }
+      },
+      "latency_ms": 8784.565377020044
+    }
+  ],
+  "report_content_sha256": "34d2570478755e556c7ec6c6696eacc758adf8d6952a7425773537023c325a28"
+}

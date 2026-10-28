@@ -1,0 +1,101 @@
+{
+  "schema": "qwen_cpu_cache_summary_v1",
+  "created_at": "2026-08-17T07:53:55.263934+00:00",
+  "valid": true,
+  "teacher_cache": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/teacher-completions.pt",
+  "teacher_cache_sha256": "79cc7281cb5d64ac08b636e9ca542346ba0c5f6ed95037b9f05df3c25654a00c",
+  "activation_cache": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/layer30-activations.pt",
+  "activation_cache_sha256": "343cb5e4ce786d4f7b65ee58c6519c83c420fe8c9bb623db0bca0f5ed1a25c10",
+  "split_manifest": "/workspace/clark-quantize-cpu-qat/experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen35_4b_cpu_layer30_split_v4.json",
+  "split_manifest_content_sha256": "0fa79c91a45e50d05bed81274de0a6746fbb29cdbfb4f01610f5e59fde23e64e",
+  "rows": 48,
+  "task_counts": {
+    "knowledge": 8,
+    "math": 8,
+    "code": 8,
+    "instruct": 8,
+    "multilingual": 8,
+    "reasoning": 8
+  },
+  "total_generated_tokens": 1029,
+  "greedy_alignment_matches": 1019,
+  "greedy_alignment_fraction": 0.9902818270165209,
+  "topk_alignment_matches": 1029,
+  "topk_alignment_total": 1029,
+  "layer": 30,
+  "positions_per_row": 24,
+  "activation_shape": [
+    1029,
+    2560
+  ],
+  "activation_dtype": "torch.bfloat16",
+  "splits": {
+    "train": {
+      "rows": 24,
+      "positions": 532,
+      "ids": [
+        "knowledge-v4-01",
+        "knowledge-v4-02",
+        "knowledge-v4-03",
+        "knowledge-v4-04",
+        "math-v4-01",
+        "math-v4-02",
+        "math-v4-03",
+        "math-v4-04",
+        "code-v4-01",
+        "code-v4-02",
+        "code-v4-03",
+        "code-v4-04",
+        "instruct-v4-01",
+        "instruct-v4-02",
+        "instruct-v4-03",
+        "instruct-v4-04",
+        "multilingual-v4-01",
+        "multilingual-v4-02",
+        "multilingual-v4-03",
+        "multilingual-v4-04",
+        "reasoning-v4-01",
+        "reasoning-v4-02",
+        "reasoning-v4-03",
+        "reasoning-v4-04"
+      ]
+    },
+    "validation_selection": {
+      "rows": 12,
+      "positions": 266,
+      "ids": [
+        "knowledge-v4-05",
+        "knowledge-v4-06",
+        "math-v4-05",
+        "math-v4-06",
+        "code-v4-05",
+        "code-v4-06",
+        "instruct-v4-05",
+        "instruct-v4-06",
+        "multilingual-v4-05",
+        "multilingual-v4-06",
+        "reasoning-v4-05",
+        "reasoning-v4-06"
+      ]
+    },
+    "independent_test": {
+      "rows": 12,
+      "positions": 231,
+      "ids": [
+        "knowledge-v4-07",
+        "knowledge-v4-08",
+        "math-v4-07",
+        "math-v4-08",
+        "code-v4-07",
+        "code-v4-08",
+        "instruct-v4-07",
+        "instruct-v4-08",
+        "multilingual-v4-07",
+        "multilingual-v4-08",
+        "reasoning-v4-07",
+        "reasoning-v4-08"
+      ]
+    }
+  },
+  "report_content_sha256": "3dc1884b2888a789aed471c83f67887378c699476976e0b73c667690d6ddc670"
+}

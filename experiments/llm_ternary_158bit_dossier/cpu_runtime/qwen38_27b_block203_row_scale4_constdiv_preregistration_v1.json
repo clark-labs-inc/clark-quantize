@@ -1,0 +1,59 @@
+{
+  "schema": "qwen38_27b_block203_row_scale4_constdiv_preregistration_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T14:24:00Z",
+  "objective": "Measure an exact constant-divisor block203 decoder that removes repeated 128-bit division helpers from the direct Qwen3.8-27B row-scale4 GEMV",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "matrix": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "groups_per_row": 40,
+    "group_size": 128,
+    "base3_bits_per_group": 203,
+    "base3_weight_payload_bytes": 17669120
+  },
+  "candidate": {
+    "implementation": "avx2_constdiv",
+    "numeric_contract": "bit-exact ternary decode, Q8 integer dots, and FP32 multiplication of stored FP16 row-scale4 factors",
+    "division_identity": "for B=2^64 and small d, B=floor(B/d)*d+(B mod d); propagate each high-limb remainder with only constant 64-bit quotient/remainder operations",
+    "chunking": "25 radix-243 chunks followed by one radix-27 tail for exactly 128 trits",
+    "four_row_vectorization": "decode four independent packed rows and use AVX2 maddubs against one shared activation vector",
+    "seed": 20260817
+  },
+  "controls": {
+    "generic_direct": "the separately named direct decoder using repeated unsigned-128 divmod by a runtime small divisor in the same native build",
+    "aligned_two_bit": "the aligned two-bit row-scale4 AVX2 kernel with identical factors and arithmetic contract",
+    "freeze_boundary": "the authoritative generic-direct v1 result had not been observed when this gate and its thresholds were frozen"
+  },
+  "static_compiler_evidence": {
+    "compiler": "Apple clang x86_64 cross-object at -O3",
+    "generic_direct_observation": "the generic direct region contains repeated __udivti3 calls",
+    "constdiv_observation": "the constdiv AVX2 inner region and scalar dot helper contain no __udivti3 calls and no integer divide instructions",
+    "interpretation": "assembly structure motivates an empirical gate but is not a throughput result"
+  },
+  "measurement": {
+    "warmups_each": 1,
+    "rotating_three_way_repetitions": 7,
+    "scalar_correctness_rows": 8,
+    "scalar_repetitions": 3,
+    "threads": 1,
+    "cpu_affinity": "one frozen physical core supplied by the watcher"
+  },
+  "gate": {
+    "maximum_constdiv_avx2_vs_generic_scalar_absolute_error": 0.00005,
+    "minimum_constdiv_speedup_over_generic_direct": 1.20,
+    "minimum_constdiv_throughput_fraction_of_aligned_two_bit_control": 0.50,
+    "require_exact_constdiv_scalar_equivalence_to_generic_scalar": true,
+    "require_exact_constdiv_avx2_equivalence_to_generic_avx2": true,
+    "all_samples_and_outputs_must_be_finite": true
+  },
+  "promotion_rules": [
+    "run only after the full 666-tensor row-scale reconstruction and storage gate and the generic direct-kernel watcher are terminal",
+    "a valid threshold miss is retained as a direct decoder negative",
+    "a pass authorizes container-integration work but proves neither model quality nor token throughput",
+    "CUTE, MATH, code, MMLU-type, WikiText, and paired end-to-end throughput remain mandatory",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "no scientific breakthrough claim can come from this isolated kernel"
+  ]
+}

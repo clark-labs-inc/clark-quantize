@@ -1,0 +1,106 @@
+{
+  "schema": "qwen38_27b_shared_residual_eigenmodes_preregistration_v1",
+  "status": "frozen_before_factor_fit_or_candidate_measurement",
+  "frozen_at_utc": "2026-08-18T07:08:00Z",
+  "objective": "Falsify whether activation-optimal shared residual eigenmodes can make the dominant Qwen3.8-27B MLP weights nearly lossless while retaining a fast AMD TQ2 execution path.",
+  "program_role": "subordinate target-compression lane for the qwen38_27b_amd_100tps_goal_v1 multi-token verification program",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "pilot_layers": [0, 32, 63],
+    "complete_block_output_required": true,
+    "candidate_weight_scope": [
+      "mlp.gate_proj.weight",
+      "mlp.up_proj.weight",
+      "mlp.down_proj.weight"
+    ],
+    "non_mlp_block_weights": "exact BF16 during the mathematical pilot; Q3 or Q4 in the eventual runtime allocation",
+    "qwen_4b_compute_forbidden": true
+  },
+  "parents": {
+    "exact_activation_cache": "/workspace/quant-runs/qwen38-affine-butterfly-blocks-v1/block-cache.pt",
+    "cache_receipt": "/workspace/quant-state/qwen38-affine-butterfly-block-cache-v1.json",
+    "q4_quality_anchor": "/workspace/quant-state/qwen38-27b-cpu-q4-baseline-v1/summary.json",
+    "q3_practical_baseline": "/workspace/quant-state/qwen38-27b-q3-k-m-baseline-v1/summary.json",
+    "q3_baseline_must_be_terminal_before_candidate_execution": true
+  },
+  "approximation": {
+    "formula": "W_i x ~= TQ2(W_i) x + A_i (B x)",
+    "shared_bundles": {
+      "mlp_input": ["gate_proj", "up_proj"],
+      "mlp_down": ["down_proj"]
+    },
+    "rank": 64,
+    "ridge_fraction_of_mean_activation_variance": 0.0001,
+    "continuous_initializer": "rank-64 truncated SVD of the stacked TQ2 residual under the ridge-regularized activation covariance metric",
+    "stored_factor_type": "symmetric INT8 group128 with FP16 scales",
+    "base_type": "exact upstream TQ2_0 blocks",
+    "hard_forward_training": true,
+    "trainable_state": [
+      "TQ2 code shadows and stored scales",
+      "INT8 factor shadows and stored scales",
+      "continuous norms and registered block-local scalar parameters"
+    ],
+    "forbidden_deployed_state": [
+      "BF16 or FP16 dense residual",
+      "optimizer state",
+      "calibration activations",
+      "unquantized factor matrices",
+      "runtime reconstruction of a dense weight"
+    ]
+  },
+  "fit": {
+    "calibration_rows": 64,
+    "validation_rows": 32,
+    "disjoint_rows_required": true,
+    "steps": 12,
+    "optimizer": "AdamW",
+    "learning_rate": 0.0002,
+    "weight_decay": 0.0,
+    "gradient_clip_norm": 1.0,
+    "loss": "normalized complete-block output MSE plus 0.10 normalized MLP-site output MSE",
+    "teacher": "exact pinned BF16 block",
+    "checkpoint_every_steps": 2,
+    "best_validation_state_only": true
+  },
+  "falsification_gate": {
+    "minimum_complete_block_validation_nmse_reduction_vs_raw_tq2_mlp": 0.7,
+    "maximum_candidate_complete_block_validation_nmse": 0.0001,
+    "every_selected_block_must_pass": true,
+    "maximum_projected_residual_kernel_fraction_of_block_wall_time": 0.1,
+    "minimum_same_shape_decode_kernel_speedup_vs_q4": 1.25,
+    "exact_packed_restart_output_tolerance": 0.0001,
+    "all_stored_bytes_and_factor_scales_counted": true,
+    "fixed_bits_per_weight_ceiling": null
+  },
+  "promotion_sequence": {
+    "if_passed": [
+      "materialize one restartable whole-model Q4-scaffold plus trained-TQ2-MLP candidate",
+      "run CUTE MATH code and WikiText before MMLU or full throughput",
+      "run MMLU only after quick quality passes",
+      "run paired Q4 Q3 and candidate AMD throughput only after quality passes",
+      "profile and fuse only measured dominant residual and base kernels"
+    ],
+    "if_rejected": "close the exact rank-64 INT8 shared-eigenmode family without rank learning-rate layer or threshold sweeps"
+  },
+  "novelty_boundary": {
+    "known_adjacent_work": [
+      "LQ-LoRA low-rank plus quantized decomposition",
+      "SVDQuant fused low-rank residual branches",
+      "CoQuant joint weight-activation subspace projection",
+      "TwinQuant learned quantization-friendly subspaces",
+      "ExTernD expanded-rank ternary decomposition",
+      "FGMP Fisher-weighted mixed precision",
+      "bitnet.cpp ternary CPU kernels"
+    ],
+    "claim": "No novelty or breakthrough claim is authorized by the mathematical pilot alone."
+  },
+  "resources": {
+    "cpu_threads": 4,
+    "memory_max_gib": 30,
+    "max_wall_hours": 12,
+    "checkpoint_retention": "one best plus one latest per active layer",
+    "accuracy_and_performance_must_run_alone": true
+  },
+  "claim_boundary": "Frozen subordinate falsification design only; no quality, speed, storage, 100 accepted tokens per second, novelty, or breakthrough result."
+}

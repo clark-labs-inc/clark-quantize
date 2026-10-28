@@ -1,0 +1,111 @@
+{
+  "schema": "qwen38_27b_full_scale_codebook4_preregistration_v1",
+  "status": "frozen_before_authoritative_fit",
+  "frozen_at_utc": "2026-08-17T12:22:00Z",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_work_frozen": true,
+    "purpose": "close the 264-tensor gap between the prior 402-tensor language artifact and the honest 666-tensor complete-checkpoint storage projection"
+  },
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "inventory_sha256": "8533a0edfba093faf2a865391405408461613b92ef83e8d511436f2ed96bc14d",
+    "rank_ge_2_tensors": 666,
+    "rank_ge_2_parameters": 27780313088,
+    "group_128_scales": 217521520
+  },
+  "mapped_parent": {
+    "ternary_artifact": "/workspace/quant-runs/qwen38-base3-full/artifacts/qwen38-optimal.cq3q",
+    "code_manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4",
+    "scale_codebooks": "/workspace/quant-runs/qwen38-scale-codebook4-v1",
+    "require_parent_gate_pass": true,
+    "tensors": 402,
+    "parameters": 26869760000,
+    "scales": 209920000
+  },
+  "supplemental_fit": {
+    "selection": "every rank-2-or-higher checkpoint tensor absent from the authenticated 402-tensor mapped parent",
+    "tensors": 264,
+    "parameters": 910553088,
+    "scales": 7601520,
+    "source": "pinned safetensors rows quantized with the existing optimal group-128 ternary rule",
+    "row_batch": 128,
+    "entries_per_tensor": 16,
+    "zero_entry": "fixed exact zero",
+    "positive_entries": 15,
+    "algorithm": "deterministic unweighted chunked Lloyd k-means",
+    "iterations": 50,
+    "stored_codebook_dtype": "float16",
+    "stored_indices": "two 4-bit indices per byte",
+    "exact_index_pack_roundtrip_required": true,
+    "restart": "one authenticated index and codebook file per supplemental tensor plus an atomically replaced prefix manifest"
+  },
+  "frozen_inputs": {
+    "full_scale_implementation": {
+      "path": "clark_quantize/qwen38_full_scale_codebook.py",
+      "sha256": "bfd3ffa900e8c6e456374619e7fc2c20dd82c7e06b3d59c9472379ffe0e441b2"
+    },
+    "full_scale_tests": {
+      "path": "clark_quantize/test_qwen38_full_scale_codebook.py",
+      "sha256": "41b47f225eeab6b4b547c4c4f1ce20e59d9b5d1778b92c8fdbc28dfbf53c4eee"
+    },
+    "scale_codebook_implementation": {
+      "path": "clark_quantize/scale_codebook.py",
+      "sha256": "806b46c18c5caa1597031696f9d0433c20b33c785f0a9c18caa9fd14e8ac1ae7"
+    },
+    "ternary_quantizer": {
+      "path": "clark_quantize/ternary.py",
+      "sha256": "c431723ac92eaf0ff315808bf18f17710060aad526cc677185c756b0ade33750"
+    },
+    "inventory_implementation": {
+      "path": "clark_quantize/qwen38_storage_budget.py",
+      "sha256": "eed77a1e32009f0c6be607c168bd840482712a535949737877c6584f0ce2f706"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_full_scale_codebook4_v1.py",
+      "sha256": "b1865daf236ddd34d60565d2ee82b335f4e2c0112772c107c788d221b84aa401"
+    },
+    "watcher": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/watch_qwen38_27b_full_scale_codebook4_v1.sh",
+      "sha256": "09779e96103afb8d1ca6847c5dc0af9292a7b6fce006a685957da2fd14a811d4"
+    },
+    "storage_projection_receipt": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38-27b-storage-budget-v1.json",
+      "sha256": "1e37e00ff6736e6614d77f7dd1a1f69aecae96503e1659b0d027df9a37caec92"
+    }
+  },
+  "gate": {
+    "maximum_global_normalized_rmse": 0.02,
+    "maximum_per_tensor_normalized_rmse": 0.05,
+    "maximum_per_tensor_p99_relative_error_nonzero_scales": 0.10,
+    "require_all_217521520_scales": true,
+    "require_all_666_tensor_outputs_authenticated_or_authenticated_by_parent": true,
+    "valid_threshold_miss_is_a_negative_result": true,
+    "infrastructure_invalid_is_neither_a_zero_nor_a_completed_result": true
+  },
+  "resources": {
+    "run_only_after_all_prior_qwen38_quality_throughput_kernel_and_codec_services_are_terminal": true,
+    "minimum_available_memory_gib": 8,
+    "minimum_free_disk_gib": 4,
+    "swap_must_remain_zero": true,
+    "threads": 4,
+    "output": "/workspace/quant-runs/qwen38-full-scale-codebook4-v1",
+    "receipt": "/workspace/quant-state/qwen38-27b-full-scale-codebook4-v1.json"
+  },
+  "promotion": {
+    "next_if_passed": "export and independently verify the complete approximately 5.64 GB Qwen3.8-27B CQ3 container, then require paired 27B capability and runtime gates",
+    "next_if_rejected": "retain the receipt as a valid negative result and do not export or claim the 4-bit-scale candidate"
+  },
+  "claim_boundary": {
+    "this_gate_can_prove": "complete Qwen3.8-27B group-scale coverage and static 4-bit scale reconstruction within the frozen error thresholds",
+    "this_gate_cannot_prove": [
+      "model capability retention",
+      "full artifact correctness",
+      "direct-decode speed",
+      "end-to-end token throughput",
+      "a scientific breakthrough"
+    ]
+  }
+}

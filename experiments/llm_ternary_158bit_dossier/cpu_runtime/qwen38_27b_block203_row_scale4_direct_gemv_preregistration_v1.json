@@ -1,0 +1,52 @@
+{
+  "schema": "qwen38_27b_block203_row_scale4_direct_gemv_preregistration_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T14:07:00Z",
+  "objective": "Test direct single-token GEMV from the exact 203-bit base-3 block layout and row-normalized scale4 factors at an authentic Qwen3.8-27B MLP projection shape",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "matrix": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "groups_per_row": 40,
+    "group_size": 128,
+    "base3_bits_per_group": 203,
+    "base3_weight_payload_bytes": 17669120
+  },
+  "candidate": {
+    "weight_layout": "40 contiguous canonical 203-bit little-endian base-3 integers per row",
+    "scale_layout": "one FP16 row anchor, one 16-entry FP16 ratio codebook, and two 4-bit indices per byte",
+    "numeric_contract": "Q8 activation integer dots, exact ternary digits, and FP32 multiplication of stored FP16 scale factors",
+    "avx2_strategy": "decode four output rows in parallel; extract base-243 chunks from independent 203-bit integers; use AVX2 maddubs for four shared-activation dots",
+    "seed": 20260817
+  },
+  "control": {
+    "weight_layout": "group-128 aligned two-bit compute image",
+    "scale_layout": "the identical row-scale4 factors and numeric contract",
+    "purpose": "isolates the direct base-3 decode cost from scale reconstruction"
+  },
+  "measurement": {
+    "warmups": 1,
+    "paired_repetitions": 7,
+    "order": "alternating direct-control and control-direct pairs",
+    "scalar_correctness_rows": 8,
+    "scalar_repetitions": 3,
+    "threads": 1,
+    "cpu_affinity": "one frozen physical core supplied by the watcher"
+  },
+  "gate": {
+    "maximum_direct_avx2_vs_direct_scalar_absolute_error": 0.00005,
+    "minimum_direct_avx2_speedup_over_direct_scalar_subset": 1.25,
+    "minimum_direct_throughput_fraction_of_aligned_two_bit_control": 0.50,
+    "require_exact_scalar_equivalence_to_aligned_two_bit_scalar": true,
+    "all_samples_and_outputs_must_be_finite": true
+  },
+  "promotion_rules": [
+    "run only after the full 666-tensor row-scale reconstruction and storage gate passes",
+    "a valid threshold miss is retained as the first direct block203 kernel negative and guides the next decoder",
+    "a pass authorizes end-to-end container integration but cannot prove model quality or token throughput",
+    "CUTE, MATH, code, MMLU-type, WikiText, and paired end-to-end throughput remain mandatory",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "no scientific breakthrough claim can come from this isolated kernel alone"
+  ]
+}

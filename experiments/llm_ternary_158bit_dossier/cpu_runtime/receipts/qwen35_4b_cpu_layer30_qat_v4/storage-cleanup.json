@@ -1,0 +1,54 @@
+{
+  "schema": "qwen35_4b_cpu_layer30_qat_v4_storage_cleanup_v1",
+  "created_at": "2026-08-17T08:21:00Z",
+  "reason": "retain only durable scientific artifacts and avoid reconstructible export intermediates inflating the CPU node disk",
+  "available_bytes_before": 50770829312,
+  "available_bytes_after": 64765845504,
+  "available_bytes_reclaimed": 13995016192,
+  "removed": [
+    {
+      "path": "/workspace/models/Qwen3.5-4B-layer30-CPUQAT-v4",
+      "logical_bytes_before": 9342907469,
+      "reconstructible_from": [
+        "/workspace/models/Qwen3.5-4B",
+        "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/layer30-heldout-selected.safetensors",
+        "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/materialize.json"
+      ]
+    },
+    {
+      "path": "/workspace/models/controls/Qwen3.5-4B-layer30-CPUQAT-v4-BF16-full.gguf",
+      "logical_bytes_before": 8665620288,
+      "reconstructible_from": [
+        "/workspace/models/Qwen3.5-4B",
+        "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/layer30-heldout-selected.safetensors",
+        "/workspace/src/llama.cpp@4df29be4f4c3673f428170fda944a5b19f743bb8"
+      ]
+    }
+  ],
+  "retained": [
+    {
+      "path": "/workspace/models/controls/Qwen3.5-4B-layer30-CPUQAT-v4-CQ3.gguf",
+      "bytes": 8542863168,
+      "sha256": "d6cbc5bf0e9804e49d26bd40ddb9972db40237fdb4f534545419eea56da02ebb"
+    },
+    {
+      "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/layer30-heldout-selected.safetensors",
+      "bytes": 141558144,
+      "sha256": "793cfc84332a6749a07cae2cb72ef16e4bc2b6e50577755b362cb2074f25182e"
+    },
+    {
+      "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/checkpoints/layer-30-latest.pt",
+      "bytes": 990919547,
+      "sha256": "650e83e932e312b5a087aee0a6255bbbd2387983effde5c52e431dbbfaa47853"
+    },
+    {
+      "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/teacher-completions.pt",
+      "sha256": "79cc7281cb5d64ac08b636e9ca542346ba0c5f6ed95037b9f05df3c25654a00c"
+    },
+    {
+      "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/layer30-activations.pt",
+      "sha256": "343cb5e4ce786d4f7b65ee58c6519c83c420fe8c9bb623db0bca0f5ed1a25c10"
+    }
+  ],
+  "recoverability": "removed files are deterministic/reconstructible intermediates; retained candidate, patch, checkpoint, caches, and receipts remain directly usable"
+}

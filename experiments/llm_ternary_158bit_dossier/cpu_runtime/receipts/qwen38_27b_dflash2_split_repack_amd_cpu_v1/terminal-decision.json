@@ -1,0 +1,41 @@
+{
+  "schema": "qwen38_27b_dflash2_split_repack_amd_cpu_terminal_result_v1",
+  "experiment_id": "qwen38_27b_dflash2_split_repack_amd_cpu_v1",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "passed": false,
+  "decision": "partial_retain_mechanism_reject_hypothesis",
+  "reason": "Independent draft repacking preserved the raw target's exact token path and low memory but did not recover proposal speed or accepted block length. The earlier fully-repacked gain therefore came from the target batch-verification path, not from draft repacking.",
+  "checks": {
+    "unit_test_for_inherit_enable_disable": true,
+    "server_loads_without_oom": true,
+    "no_swap": true,
+    "maximum_vm_hwm_at_most_23_gib": true,
+    "exact_greedy_token_parity_3_of_3": true,
+    "candidate_weighted_tps_at_least_2_34": false,
+    "candidate_over_same_runtime_target_at_least_1_24": true,
+    "candidate_over_prior_fully_raw_at_least_1_04": false,
+    "mean_committed_tokens_per_target_call_at_least_4": false
+  },
+  "observed": {
+    "target_weighted_tps": 1.7546408626148697,
+    "candidate_weighted_tps": 2.193140126893927,
+    "candidate_over_same_runtime_target": 1.249908271043899,
+    "candidate_over_prior_fully_raw": 0.9771888669093849,
+    "draft_n": 330,
+    "draft_n_accepted": 139,
+    "mean_committed_tokens_per_target_call": 3.78,
+    "maximum_vm_hwm_gib": 21.764434814453125,
+    "maximum_vm_swap_kib": 0,
+    "exact_prompt_parity": "3/3",
+    "tokens_identical_to_prior_fully_raw_per_prompt": [true, true, true]
+  },
+  "provenance": {
+    "runtime_sha256": "3b95b902c3e1579c77dcc176a30660da88c63ed04041011011d32773cf6095f9",
+    "summary_sha256": "4663858fffc7f9fdcc20e4a0d3da280cf05ea72ada5c96770b625a85e95bb871",
+    "server_log_sha256": "16baffded264257fc6d55904b3d7e281464b5438897ebf24320d8ad406ced532",
+    "patch_sha256": "ff387ded9c161f062fed68af334dae13612e47d2a171cf1590a0171f1c1f5ced"
+  },
+  "next_hypothesis": "Optimize the target's exact batched Q4_K verifier; draft-side repacking is not the bottleneck.",
+  "claim_boundary": "Three-prompt causal systems result on one four-core Milan node; no broad throughput, quality, or novelty claim."
+}

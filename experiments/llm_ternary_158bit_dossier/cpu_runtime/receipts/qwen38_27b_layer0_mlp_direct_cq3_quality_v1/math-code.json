@@ -1,0 +1,281 @@
+{
+  "schema": "cpu_math_code_canary_result_v1",
+  "model_label": "qwen38-27b-q4-layer0-mlp-cq3-v1",
+  "model_sha256": "019c803e317625c2b1c3df8c3b4e2c63b28283599287ebff0f964ff71379e4e4",
+  "evaluator_sha256": "fa3d0f870b3b0ed1d7d907cc8d146854b164e6d75cfa9d2bd20743979af74677",
+  "manifest": "/workspace/clark-quantize-cpu-qat/experiments/llm_ternary_158bit_dossier/cpu_runtime/math_code_canary_v1.json",
+  "manifest_content_sha256": "bb71cad0c51f0acc8167ef5df53ee629fd0660b8cad43e734427c3285ef6c130",
+  "server": "http://127.0.0.1:8095",
+  "started_at": "2026-08-17T17:32:51.668820+00:00",
+  "finished_at": "2026-08-17T17:36:49.453821+00:00",
+  "elapsed_seconds": 237.785001,
+  "summaries": [
+    {
+      "task": "math500",
+      "correct": 5,
+      "n": 8,
+      "accuracy": 0.625
+    },
+    {
+      "task": "code_trace",
+      "correct": 5,
+      "n": 6,
+      "accuracy": 0.8333333333333334
+    }
+  ],
+  "records": [
+    {
+      "task": "math500",
+      "id": "math500:18",
+      "correct": false,
+      "prediction": null,
+      "gold": "28",
+      "output": "To find the value of $x$, we analyze the geometric properties given in the problem and the diagram.\n\n1.  **Identify Parallel Lines and Transversals**:\n    The problem states that segment $\\overline{BC}$ is parallel to the segment through $A$. Let's call the horizontal line through $A$ line $L_A$ and the horizontal line containing $B$ and $C$ line $L_{BC}$. So, $L_A",
+      "finish_reason": "length",
+      "usage": {
+        "completion_tokens": 96,
+        "prompt_tokens": 190,
+        "total_tokens": 286,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 76607.95231699012
+    },
+    {
+      "task": "math500",
+      "id": "math500:38",
+      "correct": true,
+      "prediction": "2000",
+      "gold": "2000",
+      "output": "\\boxed{2000}",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 9,
+        "prompt_tokens": 71,
+        "total_tokens": 80,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 14555.76492100954
+    },
+    {
+      "task": "math500",
+      "id": "math500:86",
+      "correct": true,
+      "prediction": "240",
+      "gold": "240",
+      "output": "\\boxed{240}",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 8,
+        "prompt_tokens": 67,
+        "total_tokens": 75,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 13784.837914994569
+    },
+    {
+      "task": "math500",
+      "id": "math500:237",
+      "correct": false,
+      "prediction": "21",
+      "gold": "22",
+      "output": "\\boxed{21}",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 74,
+        "total_tokens": 81,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 18411.32466000272
+    },
+    {
+      "task": "math500",
+      "id": "math500:387",
+      "correct": true,
+      "prediction": "18",
+      "gold": "18",
+      "output": "\\boxed{18}",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 55,
+        "total_tokens": 62,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 11328.379907994531
+    },
+    {
+      "task": "math500",
+      "id": "math500:406",
+      "correct": true,
+      "prediction": "0",
+      "gold": "0",
+      "output": "\\boxed{0}",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 6,
+        "prompt_tokens": 45,
+        "total_tokens": 51,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 9442.034808002063
+    },
+    {
+      "task": "math500",
+      "id": "math500:474",
+      "correct": true,
+      "prediction": "3",
+      "gold": "3",
+      "output": "\\boxed{3}",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 6,
+        "prompt_tokens": 86,
+        "total_tokens": 92,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 14662.261531993863
+    },
+    {
+      "task": "math500",
+      "id": "math500:487",
+      "correct": false,
+      "prediction": "0",
+      "gold": "2",
+      "output": "\\boxed{0}",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 6,
+        "prompt_tokens": 82,
+        "total_tokens": 88,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 14459.541021991754
+    },
+    {
+      "task": "code_trace",
+      "id": "code_trace:odd_squares",
+      "correct": true,
+      "prediction": "[1, 9, 25]",
+      "gold": "[1, 9, 25]",
+      "output": "[1, 9, 25]",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 11,
+        "prompt_tokens": 63,
+        "total_tokens": 74,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 14499.579648996587
+    },
+    {
+      "task": "code_trace",
+      "id": "code_trace:gcd",
+      "correct": true,
+      "prediction": "6",
+      "gold": "6",
+      "output": "6",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 62,
+        "total_tokens": 64,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 9562.66365198826
+    },
+    {
+      "task": "code_trace",
+      "id": "code_trace:loop_sum",
+      "correct": true,
+      "prediction": "30",
+      "gold": "30",
+      "output": "30",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 46,
+        "total_tokens": 49,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 7992.443504990661
+    },
+    {
+      "task": "code_trace",
+      "id": "code_trace:slicing",
+      "correct": false,
+      "prediction": "uatie",
+      "gold": "unia",
+      "output": "uatie",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 3,
+        "prompt_tokens": 42,
+        "total_tokens": 45,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 7343.144593003672
+    },
+    {
+      "task": "code_trace",
+      "id": "code_trace:closure",
+      "correct": true,
+      "prediction": "[7, 9, 12]",
+      "gold": "[7, 9, 12]",
+      "output": "[7, 9, 12]",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 11,
+        "prompt_tokens": 63,
+        "total_tokens": 74,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 14771.230913000181
+    },
+    {
+      "task": "code_trace",
+      "id": "code_trace:dict_count",
+      "correct": true,
+      "prediction": "6",
+      "gold": "6",
+      "output": "6",
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 67,
+        "total_tokens": 69,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "latency_ms": 10354.027861001668
+    }
+  ],
+  "report_content_sha256": "119944a9db733519bf5a9f7d3348d2facb4f9f9f003b1e5b02e64a119f45b9fc"
+}

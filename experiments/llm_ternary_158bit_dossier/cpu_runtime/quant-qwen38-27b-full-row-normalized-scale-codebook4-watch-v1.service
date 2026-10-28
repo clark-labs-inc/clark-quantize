@@ -1,0 +1,22 @@
+[Unit]
+Description=Close all 666 Qwen3.8-27B row-normalized scale tensors
+After=network-online.target quant-qwen38-27b-row-normalized-scale-codebook4-watch-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-c850054.bundle
+Environment=EXPECTED_COMMIT=c8500541b1c32e6d47afd9d1b0747c291e9472f3
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/tmp/watch-qwen38-27b-full-row-normalized-scale-codebook4-v1-c850054.sh
+CPUQuota=400%
+MemoryMax=20G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

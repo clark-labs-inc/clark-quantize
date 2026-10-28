@@ -1,0 +1,125 @@
+{
+  "schema": "qwen38_27b_imatrix_q4_k_clang21_graph_profile_result_v33",
+  "experiment_id": "qwen38_27b_imatrix_q4_k_clang21_graph_profile_v33",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "passed": true,
+  "decision": "select_q4_k_as_the_only_material_profiled_group_but_require_long_process_replication_before_any_speed_claim",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "artifact": "activation-calibrated all-Q4_K v10 quality anchor",
+    "artifact_sha256": "6176472b7d039a6d911b34eea78dd4507256b4a22b3003d40b8587b711014f2a",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4
+  },
+  "checks": {
+    "artifact_and_binary_identities_exact": true,
+    "both_profiles_have_minimum_samples": true,
+    "zero_lost_samples": true,
+    "bench_denominators_exact": true,
+    "frequency_range_within_limit": true,
+    "service_result_success": true,
+    "raw_perf_data_hashed_then_deleted": true
+  },
+  "quality_anchor_from_v23": {
+    "cute": "9/20 versus stock 9/20",
+    "wikitext_ppl": 5.7219,
+    "wikitext_ppl_ratio_vs_stock": 0.9891437758224281,
+    "math500": "5/8",
+    "code_trace": "5/6",
+    "conventional_decode_tps": 2.2852360287690288,
+    "mtp3_accepted_tps": 3.611857030874639,
+    "classification": "retained prior receipt; no v33 capability inference"
+  },
+  "profiles": {
+    "parent_gcc_v21": {
+      "perf_samples": 96000,
+      "lost_samples": 0,
+      "bench_samples": 32,
+      "bench_median_ns": 631191647.0,
+      "bench_mean_ns": 632431230.21875,
+      "minimum_ns": 622404395,
+      "maximum_ns": 656571434,
+      "exclusive_cycle_fractions": {
+        "q4_k_verifier": 0.7065,
+        "q8_x_q8_tinyblas": 0.0,
+        "q6_k": 0.0591,
+        "openmp": 0.0605,
+        "load_repack": 0.0238
+      }
+    },
+    "candidate_clang21_v30": {
+      "perf_samples": 96000,
+      "lost_samples": 0,
+      "bench_samples": 32,
+      "bench_median_ns": 603584969.5,
+      "bench_mean_ns": 632073275.4375,
+      "minimum_ns": 585886594,
+      "maximum_ns": 703099117,
+      "exclusive_cycle_fractions": {
+        "q4_k_verifier": 0.6641,
+        "q8_x_q8_tinyblas": 0.0,
+        "q6_k": 0.0565,
+        "openmp": 0.0866,
+        "load_repack": 0.0144
+      }
+    }
+  },
+  "aggregate_diagnostic": {
+    "parent_over_candidate_median": 1.0457378478507655,
+    "parent_over_candidate_mean": 1.0005663184873657,
+    "speed_claim_authorized": false
+  },
+  "post_profile_phase_change_diagnostic": {
+    "classification": "observed heteroscedasticity; diagnostic only and not a preregistered speed statistic",
+    "candidate_maximum_median_changepoint_with_minimum_8_samples_per_side": 19,
+    "candidate_pre_changepoint_median_ns": 593901796.0,
+    "candidate_post_changepoint_median_ns": 691999704.0,
+    "candidate_post_over_pre": 1.1651753011368229,
+    "fixed_split_after_sample_20": {
+      "parent_first_20_median_ns": 629382586.5,
+      "parent_last_12_median_ns": 634319397.5,
+      "parent_last_over_first": 1.0078438951218107,
+      "candidate_first_20_median_ns": 594110396.0,
+      "candidate_last_12_median_ns": 692117929.0,
+      "candidate_last_over_first": 1.1649651877157188,
+      "parent_over_candidate_first": 1.0593697581080537,
+      "parent_over_candidate_last": 0.9164903420671248
+    },
+    "interpretation": "The Q4_K cycle share is usable for bottleneck selection, but neither the 1.0457x median nor the 1.0006x mean is a stable throughput result. The Clang binary links libomp while the parent links libgomp, and OpenMP's exclusive share rises from 6.05% to 8.66%; a no-perf long-process replication and OpenMP-runtime isolation are required."
+  },
+  "target_analysis": {
+    "conventional_decode_target_tps": 2.75,
+    "required_speedup_from_v23_anchor": 1.2033768730698555,
+    "material_profiled_groups_at_least_10_percent": {
+      "q4_k_verifier": 0.6641
+    },
+    "q4_k_zero_cost_ceiling": 2.9770765108663295,
+    "representation_kernel_implication": "After runtime isolation, the only material route measured by v33 is a Q4_K representation/kernel co-design. Stock-model Q8xQ8 work is absent from the quality anchor."
+  },
+  "service": {
+    "unit": "quant-qwen38-v33-quality-graph-profile",
+    "result": "success",
+    "exec_main_status": 0,
+    "wall_clock": "3min 3.257s",
+    "cpu_time": "5min 3.314s",
+    "memory_peak": "27.4G"
+  },
+  "provenance": {
+    "preregistration_sha256": "1a705058105cc3cefe29fdf653f978ca1ab9e5409ee441bb51e8a74968ebc41d",
+    "runner_sha256": "5d5fa7db4127d0717f162cdb76076a90ed722a92375e178f06e0acf539b916ed",
+    "summarizer_sha256": "d1484eeaff51086dfc4baa66c0ceef036d49447c171e156ec5408c6224f1a825",
+    "remote_terminal_decision_sha256": "7673ba2c897819ca4b28f669d1c667efd21964c52245f208419c3134ad8079a9",
+    "sealed_inputs_sha256": "c940a5d39ecf3139f2f4d56d85b623e63a8d69e136725560e002709da5d119fe",
+    "frequency_sha256": "a2a252f98d770b55c93196720b08fefcf2dd325cab2b513e4cd1df193f4f2e23",
+    "parent_bench_sha256": "bf6db8a1a7d0afbe8ef59c0c9e26142bf93dafddc6a4654d3e53593d0d72b84f",
+    "candidate_bench_sha256": "c528932ef4f9b0b07e71d591d3842d4f3eafea5c956d781e5f5d4ee20235b1be",
+    "parent_report_sha256": "ff28298a5b1b648e1d76ac548a8e33e3bd5d61825b3d4b5a3145d521950e2f7d",
+    "candidate_report_sha256": "3d4789139851a1c1b9efcdbc47b823480f3912ca3f0ece71956fe908af233e75",
+    "parent_perf_data_sha256": "0096af939e6b01b71a5dc289024b72a70e6c7f6009bcb10d15bb44d3d669647a",
+    "candidate_perf_data_sha256": "8e59835a805e2de6261ad6649e74ff0778b60746f1465f504ed884bab49d8915"
+  },
+  "next_lane": "Replicate the long-process phase change without perf and isolate Clang code generation from the libomp runtime. If a stable Clang composition survives, use it as the exact Q4 parent for a trained three-bit or residual-assisted format targeting the 66.4% Q4_K share.",
+  "claim_boundary": "Infrastructure-valid profile and bottleneck selection only. The within-process phase change blocks a steady-state speed claim. No new quality, serving-speed, 2.75 tok/s, 100 tok/s, energy, novelty, or breakthrough result is established."
+}

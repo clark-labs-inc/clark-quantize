@@ -1,0 +1,393 @@
+{
+  "schema": "qwen_mlp_triplet_reconstruction_eval_v1",
+  "created_at": "2026-08-17T08:03:00.528164+00:00",
+  "candidate_label": "heldout-selected-v4",
+  "candidate_patch": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/layer30-heldout-selected.safetensors",
+  "candidate_patch_sha256": "793cfc84332a6749a07cae2cb72ef16e4bc2b6e50577755b362cb2074f25182e",
+  "activation_cache": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/layer30-activations.pt",
+  "activation_cache_sha256": "343cb5e4ce786d4f7b65ee58c6519c83c420fe8c9bb623db0bca0f5ed1a25c10",
+  "inventory_sha256": "793d872a2b75fb51e640afec9472fba2c605e03b610ffae9c5d171d33851f344",
+  "model_index_sha256": "cf3f798ee02ba45f9622aa8892a47369ab667d0afbf154ee7c2212de42e6302d",
+  "layer": 30,
+  "group_size": 128,
+  "candidate_exact_ternary": true,
+  "splits": {
+    "train": {
+      "row_indices": [
+        0,
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        11,
+        16,
+        17,
+        18,
+        19,
+        24,
+        25,
+        26,
+        27,
+        32,
+        33,
+        34,
+        35,
+        40,
+        41,
+        42,
+        43
+      ],
+      "rows": [
+        {
+          "task": "knowledge",
+          "id": "knowledge-v4-01",
+          "tokens": 56,
+          "positions": 24
+        },
+        {
+          "task": "knowledge",
+          "id": "knowledge-v4-02",
+          "tokens": 54,
+          "positions": 24
+        },
+        {
+          "task": "knowledge",
+          "id": "knowledge-v4-03",
+          "tokens": 51,
+          "positions": 24
+        },
+        {
+          "task": "knowledge",
+          "id": "knowledge-v4-04",
+          "tokens": 53,
+          "positions": 24
+        },
+        {
+          "task": "math",
+          "id": "math-v4-01",
+          "tokens": 63,
+          "positions": 19
+        },
+        {
+          "task": "math",
+          "id": "math-v4-02",
+          "tokens": 66,
+          "positions": 24
+        },
+        {
+          "task": "math",
+          "id": "math-v4-03",
+          "tokens": 69,
+          "positions": 24
+        },
+        {
+          "task": "math",
+          "id": "math-v4-04",
+          "tokens": 61,
+          "positions": 24
+        },
+        {
+          "task": "code",
+          "id": "code-v4-01",
+          "tokens": 54,
+          "positions": 24
+        },
+        {
+          "task": "code",
+          "id": "code-v4-02",
+          "tokens": 61,
+          "positions": 24
+        },
+        {
+          "task": "code",
+          "id": "code-v4-03",
+          "tokens": 53,
+          "positions": 24
+        },
+        {
+          "task": "code",
+          "id": "code-v4-04",
+          "tokens": 58,
+          "positions": 24
+        },
+        {
+          "task": "instruct",
+          "id": "instruct-v4-01",
+          "tokens": 55,
+          "positions": 23
+        },
+        {
+          "task": "instruct",
+          "id": "instruct-v4-02",
+          "tokens": 58,
+          "positions": 23
+        },
+        {
+          "task": "instruct",
+          "id": "instruct-v4-03",
+          "tokens": 53,
+          "positions": 18
+        },
+        {
+          "task": "instruct",
+          "id": "instruct-v4-04",
+          "tokens": 55,
+          "positions": 24
+        },
+        {
+          "task": "multilingual",
+          "id": "multilingual-v4-01",
+          "tokens": 43,
+          "positions": 14
+        },
+        {
+          "task": "multilingual",
+          "id": "multilingual-v4-02",
+          "tokens": 48,
+          "positions": 24
+        },
+        {
+          "task": "multilingual",
+          "id": "multilingual-v4-03",
+          "tokens": 42,
+          "positions": 13
+        },
+        {
+          "task": "multilingual",
+          "id": "multilingual-v4-04",
+          "tokens": 43,
+          "positions": 14
+        },
+        {
+          "task": "reasoning",
+          "id": "reasoning-v4-01",
+          "tokens": 61,
+          "positions": 24
+        },
+        {
+          "task": "reasoning",
+          "id": "reasoning-v4-02",
+          "tokens": 59,
+          "positions": 24
+        },
+        {
+          "task": "reasoning",
+          "id": "reasoning-v4-03",
+          "tokens": 63,
+          "positions": 24
+        },
+        {
+          "task": "reasoning",
+          "id": "reasoning-v4-04",
+          "tokens": 62,
+          "positions": 24
+        }
+      ],
+      "positions": 532,
+      "normalized_loss": {
+        "bf16": 1.3092807008154778e-05,
+        "direct_ptq": 0.3686187648270638,
+        "candidate": 0.11783088153854969
+      },
+      "candidate_relative_improvement_vs_direct_ptq_percent": 68.03448636321332
+    },
+    "validation": {
+      "row_indices": [
+        4,
+        5,
+        12,
+        13,
+        20,
+        21,
+        28,
+        29,
+        36,
+        37,
+        44,
+        45
+      ],
+      "rows": [
+        {
+          "task": "knowledge",
+          "id": "knowledge-v4-05",
+          "tokens": 50,
+          "positions": 24
+        },
+        {
+          "task": "knowledge",
+          "id": "knowledge-v4-06",
+          "tokens": 59,
+          "positions": 24
+        },
+        {
+          "task": "math",
+          "id": "math-v4-05",
+          "tokens": 71,
+          "positions": 24
+        },
+        {
+          "task": "math",
+          "id": "math-v4-06",
+          "tokens": 62,
+          "positions": 24
+        },
+        {
+          "task": "code",
+          "id": "code-v4-05",
+          "tokens": 68,
+          "positions": 24
+        },
+        {
+          "task": "code",
+          "id": "code-v4-06",
+          "tokens": 53,
+          "positions": 24
+        },
+        {
+          "task": "instruct",
+          "id": "instruct-v4-05",
+          "tokens": 54,
+          "positions": 24
+        },
+        {
+          "task": "instruct",
+          "id": "instruct-v4-06",
+          "tokens": 58,
+          "positions": 22
+        },
+        {
+          "task": "multilingual",
+          "id": "multilingual-v4-05",
+          "tokens": 43,
+          "positions": 18
+        },
+        {
+          "task": "multilingual",
+          "id": "multilingual-v4-06",
+          "tokens": 37,
+          "positions": 10
+        },
+        {
+          "task": "reasoning",
+          "id": "reasoning-v4-05",
+          "tokens": 61,
+          "positions": 24
+        },
+        {
+          "task": "reasoning",
+          "id": "reasoning-v4-06",
+          "tokens": 78,
+          "positions": 24
+        }
+      ],
+      "positions": 266,
+      "normalized_loss": {
+        "bf16": 1.2778550073139857e-05,
+        "direct_ptq": 0.3590984162815898,
+        "candidate": 0.2694470801551567
+      },
+      "candidate_relative_improvement_vs_direct_ptq_percent": 24.96567293578156
+    },
+    "test": {
+      "row_indices": [
+        6,
+        7,
+        14,
+        15,
+        22,
+        23,
+        30,
+        31,
+        38,
+        39,
+        46,
+        47
+      ],
+      "rows": [
+        {
+          "task": "knowledge",
+          "id": "knowledge-v4-07",
+          "tokens": 48,
+          "positions": 24
+        },
+        {
+          "task": "knowledge",
+          "id": "knowledge-v4-08",
+          "tokens": 55,
+          "positions": 24
+        },
+        {
+          "task": "math",
+          "id": "math-v4-07",
+          "tokens": 65,
+          "positions": 24
+        },
+        {
+          "task": "math",
+          "id": "math-v4-08",
+          "tokens": 55,
+          "positions": 17
+        },
+        {
+          "task": "code",
+          "id": "code-v4-07",
+          "tokens": 67,
+          "positions": 24
+        },
+        {
+          "task": "code",
+          "id": "code-v4-08",
+          "tokens": 54,
+          "positions": 24
+        },
+        {
+          "task": "instruct",
+          "id": "instruct-v4-07",
+          "tokens": 55,
+          "positions": 24
+        },
+        {
+          "task": "instruct",
+          "id": "instruct-v4-08",
+          "tokens": 52,
+          "positions": 14
+        },
+        {
+          "task": "multilingual",
+          "id": "multilingual-v4-07",
+          "tokens": 41,
+          "positions": 13
+        },
+        {
+          "task": "multilingual",
+          "id": "multilingual-v4-08",
+          "tokens": 36,
+          "positions": 8
+        },
+        {
+          "task": "reasoning",
+          "id": "reasoning-v4-07",
+          "tokens": 47,
+          "positions": 11
+        },
+        {
+          "task": "reasoning",
+          "id": "reasoning-v4-08",
+          "tokens": 61,
+          "positions": 24
+        }
+      ],
+      "positions": 231,
+      "normalized_loss": {
+        "bf16": 1.303238061461354e-05,
+        "direct_ptq": 0.36938846832645966,
+        "candidate": 0.26755574890793615
+      },
+      "candidate_relative_improvement_vs_direct_ptq_percent": 27.567920536307966
+    }
+  },
+  "independent_test_improves_direct_ptq": true,
+  "report_content_sha256": "e380bb7920f6551c6eec4c1348764c8eb5a83a825abdadaa20a6eddb92ec4a3f"
+}

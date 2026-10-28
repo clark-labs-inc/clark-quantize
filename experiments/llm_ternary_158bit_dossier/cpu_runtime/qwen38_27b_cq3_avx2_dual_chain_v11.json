@@ -1,0 +1,89 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_dual_chain_preregistration_v11",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_cq3_avx2_dual_chain_v11",
+  "frozen_at": "2026-08-18T16:14:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "microbenchmark_cores": 1,
+    "qwen_4b_compute_forbidden": true,
+    "weight_type": "CQ3_0",
+    "activation_type": "CQ8_0",
+    "weight_bits_per_weight": 2.125,
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "negative_anchor": {
+    "receipt": "receipts/qwen38_27b_cq3_x86_pair_v1/receipt.json",
+    "standard_cq3_control_median_us_original": 2593.318,
+    "paired_kernel_median_us_original": 4906.497,
+    "paired_kernel_over_standard": 0.52854776,
+    "interpretation": "Reusing activation loads across four rows and two projections increased register pressure and instruction count enough to erase CQ3's bandwidth advantage. The standard row kernel remains the correct optimization target."
+  },
+  "fresh_control": {
+    "binary": "/workspace/build/qwen38-27b-cq3-x86-pair-v1/bin/test-cq3",
+    "binary_sha256": "b8971a80c31c47271dc4d4a8f4efbb5f223e37347625706fef428eea3db4cb74",
+    "benchmark_sha256": "a740b5a8b13dc82cd6a9616ff32cef8d0bd8eb7008a7c032e46a425d68c81d64",
+    "median_us": 2585.92,
+    "rows": 17408,
+    "columns": 5120,
+    "repetitions": 9,
+    "cache_eviction_bytes": 268435456
+  },
+  "hypothesis": "The generated AVX2 loop serializes all 40 scaled block contributions through one YMM floating-point accumulator. CQ3 has two independently scaled 128-weight groups per 256-weight block. Accumulating group 0 and group 1 through separate YMM dependency chains and combining them once at the end should overlap FMA latency without changing packing, decoded ternary digits, integer dot products, scales, or storage.",
+  "implementation": {
+    "base": "Pinned llama.cpp plus CQ3 v1 and the rejected x86 pair-kernel test harness",
+    "candidate_patch": "kernels/llama_cpp_cq3_avx2_dual_chain_v11.patch",
+    "single_independent_change": "Replace the single CQ3 FP accumulator with one compile-time group-0 chain and one compile-time group-1 chain in ggml_vec_dot_cq3_0_cq8_0.",
+    "unchanged": [
+      "CQ3_0 2.125-bit storage",
+      "CQ8_0 activation quantization",
+      "all integer digit decoding and dot-product operations",
+      "all per-group FP16 and activation scales",
+      "generic non-AVX2 oracle",
+      "model weights and evaluation prompts"
+    ]
+  },
+  "sequential_gates": {
+    "gate_1_build_and_correctness": {
+      "test_cq3_exit_code": 0,
+      "existing_native_vs_generic_tolerance_must_pass": true,
+      "all_existing_pair_exactness_tests_must_pass": true,
+      "executed_patch_sha256_must_match_repository": true
+    },
+    "gate_2_exact_shape_microbenchmark": {
+      "rows": 17408,
+      "columns": 5120,
+      "warmups": 2,
+      "repetitions": 9,
+      "cache_eviction_bytes": 268435456,
+      "fresh_control_median_us": 2585.92,
+      "minimum_control_over_candidate_speedup": 1.08,
+      "maximum_candidate_sample_range_fraction": 0.05
+    },
+    "gate_3_selective_27b_integration": {
+      "run_only_if_microbenchmark_passes": true,
+      "model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0.gguf",
+      "paired_shape_rows": 12,
+      "repetitions_per_row": 5,
+      "minimum_geometric_mean_over_current_cq3_runtime": 1.03
+    },
+    "gate_4_quality": {
+      "run_only_if_all_performance_gates_pass": true,
+      "cute_quick_denominator": 20,
+      "minimum_correct": 9,
+      "mmlu_denominator": 64,
+      "maximum_correct_loss_vs_q4_control": 1
+    }
+  },
+  "stop_rules": [
+    "Stop before timing if any CQ3 correctness test fails.",
+    "Reject before model integration if the exact Qwen3.8-27B MLP shape improves by less than 8% or is unstable.",
+    "Run the exact 20-item CUTE diagnostic even after a performance rejection, but do not let it override the performance decision.",
+    "Do not change storage, scales, weights, or evaluation data in this experiment."
+  ],
+  "claim_boundary": "A pass would establish a faster exact-shape 2.125-bit CQ3 AVX2 primitive and justify selective 27B integration. It would not establish a whole-model ternary speedup, broad quality, final-node throughput, energy gains, 100 accepted tok/s, novelty, or a breakthrough."
+}

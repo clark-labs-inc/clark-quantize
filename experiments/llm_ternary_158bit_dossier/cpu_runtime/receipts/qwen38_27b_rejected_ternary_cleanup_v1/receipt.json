@@ -1,0 +1,31 @@
+{
+  "classification": "successful bounded artifact cleanup",
+  "deleted_artifacts": [
+    {
+      "bytes": 10243615104,
+      "disposition": "scientifically rejected; reproducible from the pinned BF16 parent",
+      "path": "/workspace/models/controls/Qwen3.8-27B-TQ1_0.gguf",
+      "sha256_verified_before_deletion": "68896f948b0ac299e8f1e67101fffcc84f04eda2d716fac15f78c52008b645d3"
+    },
+    {
+      "bytes": 11385047424,
+      "disposition": "scientifically rejected; reproducible from the pinned BF16 parent",
+      "path": "/workspace/models/controls/Qwen3.8-27B-TQ2_0.gguf",
+      "sha256_verified_before_deletion": "51dfbc9b889d42086b2ac588805fec2c4fad4333894d7a33856a52c07cdcc3d3"
+    }
+  ],
+  "deleted_bytes_total": 21628662528,
+  "host": "quant",
+  "postcondition": {
+    "artifacts_absent": true,
+    "df_available_human": "97G",
+    "df_filesystem": "/dev/sda1",
+    "df_mount": "/workspace",
+    "df_use_percent": 56,
+    "related_hash_or_model_processes_running": false
+  },
+  "recovery": "Not recoverable locally; redownload or requantize from the pinned source and committed manifests.",
+  "redundant_service_note": "A second validation-and-cleanup unit lost the race after the primary command had already verified and removed both files. Its missing-file failure is not evidence of corruption or a failed primary cleanup.",
+  "schema": "qwen38_27b_rejected_ternary_cleanup_receipt_v1",
+  "terminal": true
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "qwen38_27b_calibration_residual_v40_semantic_placement_addendum",
+  "experiment_id": "qwen38_27b_calibration_residual_ggml_v40",
+  "status": "frozen_after_terminal_v40_before_any_loader_or_model_graph_edit",
+  "frozen_at_utc": "2026-08-19T07:30:16Z",
+  "reason": "A post-v40 audit of the v37 training target showed that the compact map predicts exact complete-block output minus frozen trained-mixed complete-block output from the exact block-input hidden state. It is a layer-output corrector, not a per-weight LoRA and must not be attached to an individual linear matmul.",
+  "evidence": {
+    "v37_preregistration": {
+      "path": "qwen38_27b_sensitivity_gated_residual_v37.json",
+      "sha256": "4d5b8646887ccee1959fcd12fb8056deaa57ce06941a0f721c57843ba15dbd36",
+      "fit_target": "complete trained-mixed block output versus exact BF16 block output",
+      "runtime_form": "candidate_output + correction(block_input)"
+    },
+    "v40_terminal_decision": {
+      "path": "receipts/qwen38_27b_calibration_residual_ggml_v40/terminal-decision.json",
+      "sha256": "b7aa3de3137795cd1ef8f777cb88d876e0513a82853b20b6e8f12aceab4b0ce7",
+      "passed": true
+    },
+    "v40_receipt": {
+      "path": "receipts/qwen38_27b_calibration_residual_ggml_v40/receipt.json",
+      "sha256": "8d4bab4e636582a2235035a6969a55046c49538d73e6284db479113b34ae3f7a"
+    }
+  },
+  "original_v40_wording_correction": {
+    "superseded_next_stage_phrase": "attach the node at llama.cpp build_lora_mm",
+    "correct_next_stage": "load one compact payload per selected layer and apply the proven binary graph node after the selected complete block as candidate_block_output + correction(saved_block_input)",
+    "build_lora_mm_attachment_forbidden": true,
+    "weight_name_keying_forbidden": true,
+    "layer_index_keying_required": true,
+    "v40_measurements_changed": false,
+    "v40_gate_result_changed": false,
+    "v40_claim_boundary_changed": false
+  },
+  "correct_graph_semantics": {
+    "saved_input": "the exact hidden-state tensor entering the selected transformer block",
+    "base_output": "the complete output tensor produced by the exact frozen trained CQ3-MLP plus AFF3-attention candidate block",
+    "result": "base_output + bias_FP16 + ((saved_input_FP32 @ left_INT8) * left_scale_FP16 * right_scale_FP16) @ right_INT8",
+    "placement": "after the full candidate block and before the next block consumes its hidden state",
+    "bypass": "layers below the frozen sensitivity threshold have no payload and retain the candidate output exactly",
+    "payload_lifetime": "persistent for the model context and directly referenced by the ggml custom-node userdata",
+    "supported_graph_case_first": "one-token decode; eight-token microbatch tasking was also authenticated by v40"
+  },
+  "base_candidate_dependency": {
+    "required_base": "the same trained mixed CQ3 MLP plus AFF3 attention-output block representation used to fit v37",
+    "applying_payload_to_q4_or_bf16_base_forbidden": true,
+    "applying_payload_to_a_differently_trained_mixed_base_forbidden": true,
+    "current_payload_coverage": "pilot layers 0 and 63 only; layer 32 is an exact sensitivity bypass",
+    "whole_model_export_exists": false
+  },
+  "next_gate": {
+    "name": "layer-keyed compact block-residual loader and graph-placement parity",
+    "requirements": [
+      "define a versioned file descriptor that authenticates model revision, mixed-base identity, layer index, dimensions, rank, payload bytes, and payload SHA-256",
+      "load without converting either INT8 factor to FP16 or FP32",
+      "retain the selected block input until the complete candidate block output exists",
+      "apply exactly one post-block custom binary node for an admitted layer and zero nodes for a bypass layer",
+      "prove graph placement parity against the frozen v37 block tensors before any whole-model execution",
+      "reject model revision, base identity, layer, shape, rank, byte-count, or hash mismatch fail-closed"
+    ]
+  },
+  "claim_boundary": "This addendum corrects only semantic placement for the next implementation stage. It does not alter or upgrade v40 evidence, create a complete mixed model, establish whole-model quality or speed, or support novelty or breakthrough claims."
+}

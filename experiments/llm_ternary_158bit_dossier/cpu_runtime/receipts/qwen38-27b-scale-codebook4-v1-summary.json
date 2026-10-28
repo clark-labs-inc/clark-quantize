@@ -1,0 +1,91 @@
+{
+  "schema": "qwen38_27b_scale_codebook4_summary_receipt_v1",
+  "created_at_utc": "2026-08-17T12:49:13Z",
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df"
+  },
+  "source": {
+    "repository_commit": "ea58eb2a5735a1cf17016595e509dfb238649232",
+    "preregistration_sha256": "d76316b797981e70289779f45ea584bf926e63d36379cc3321c0a5469bba8768",
+    "code_manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4",
+    "remote_manifest": "/workspace/quant-runs/qwen38-scale-codebook4-v1/manifest.json",
+    "remote_receipt": "/workspace/quant-state/qwen38-27b-scale-codebook4-v1.json",
+    "manifest_and_receipt_sha256": "16c9cadaa8411006a78ec65a55a2100b77f7e74b6c3f7a8c73e8131feeab4763",
+    "manifest_and_receipt_identical": true,
+    "manifest_bytes": 574220
+  },
+  "coverage": {
+    "mapped_tensors": 402,
+    "scales": 209920000,
+    "source_fp16_scale_bytes": 419840000,
+    "packed_index_bytes": 104960000,
+    "fp16_codebook_bytes": 12864,
+    "combined_output_bytes": 104972864,
+    "authenticated_output_files": 804
+  },
+  "gate": {
+    "maximum_global_normalized_rmse": 0.02,
+    "observed_global_normalized_rmse": 0.042784640043328735,
+    "maximum_per_tensor_normalized_rmse": 0.05,
+    "observed_maximum_per_tensor_normalized_rmse": 0.10913625999857615,
+    "maximum_per_tensor_p99_relative_error_nonzero_scales": 0.1,
+    "observed_maximum_per_tensor_p99_relative_error_nonzero_scales": 0.1667670934858706,
+    "passed": false,
+    "classification": "valid negative result"
+  },
+  "worst_tensors": {
+    "normalized_rmse": [
+      {
+        "tensor": "model.language_model.layers.63.self_attn.v_proj.weight",
+        "value": 0.10913625999857615,
+        "scales": 40960
+      },
+      {
+        "tensor": "model.language_model.layers.59.self_attn.v_proj.weight",
+        "value": 0.09808795066917574,
+        "scales": 40960
+      },
+      {
+        "tensor": "model.language_model.layers.2.mlp.down_proj.weight",
+        "value": 0.09553689319561683,
+        "scales": 696320
+      }
+    ],
+    "p99_relative_error_nonzero_scales": [
+      {
+        "tensor": "model.language_model.layers.31.self_attn.o_proj.weight",
+        "value": 0.1667670934858706,
+        "scales": 245760
+      },
+      {
+        "tensor": "model.language_model.layers.35.self_attn.o_proj.weight",
+        "value": 0.16159860990443092,
+        "scales": 245760
+      },
+      {
+        "tensor": "model.language_model.layers.59.self_attn.v_proj.weight",
+        "value": 0.15816239614375982,
+        "scales": 40960
+      }
+    ],
+    "maximum_absolute_error": {
+      "tensor": "model.language_model.layers.2.mlp.down_proj.weight",
+      "value": 1.015869140625,
+      "scales": 696320
+    }
+  },
+  "decision": {
+    "promote_base3_group128_codebook4": false,
+    "fit_remaining_264_tensors": false,
+    "export_complete_1_624562_bpw_candidate": false,
+    "reason": "all three frozen static reconstruction thresholds were exceeded on the authenticated mapped 402-tensor parent"
+  },
+  "claim_boundary": {
+    "static_scale_reconstruction_only": true,
+    "model_quality_proven": false,
+    "artifact_exported": false,
+    "scientific_breakthrough_proven": false
+  }
+}

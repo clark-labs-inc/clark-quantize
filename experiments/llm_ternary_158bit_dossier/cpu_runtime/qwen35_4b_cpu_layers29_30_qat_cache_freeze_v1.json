@@ -1,0 +1,43 @@
+{
+  "schema": "clark_qwen35_cpu_two_mlp_qat_cache_freeze_v1",
+  "status": "frozen_after_cache_before_optimizer",
+  "created_at": "2026-08-17T10:01:00Z",
+  "preregistration": {
+    "path": "qwen35_4b_cpu_layers29_30_qat_preregistration_v1.json",
+    "sha256": "7c150b23475029df2e64e4731aa34945e0c2a30cb5d69fc532f377792fd7b5c0"
+  },
+  "source_commit": "c9e78ec89106f0438fb00b2fe0d11a78887e5202",
+  "invalid_launch": {
+    "status": "infrastructure_invalid",
+    "reason": "systemd rejected the non-executable worker before Python or experiment data started",
+    "optimizer_steps": 0,
+    "cache_rows": 0
+  },
+  "cache": {
+    "activation_path": "/workspace/quant-runs/qwen35-4b-cpu-layers29-30-qat-v1/layer29-activations.pt",
+    "activation_sha256": "e4685b8a225cf2aa72a2b0cae60703f0ae5a81706c391d82b237b38535ea340d",
+    "summary_path": "/workspace/quant-runs/qwen35-4b-cpu-layers29-30-qat-v1/cache-summary.json",
+    "summary_sha256": "cd8a9a955707ffc317add217e32cf00fcd991027c1383295e9e2221c2f7f6fd1",
+    "summary_content_sha256": "43c1f9a0dbb2bbf9b8cf5885a40c827af2d5cc042d57598d36312e9d7365de20",
+    "layer": 29,
+    "shape": [
+      1029,
+      2560
+    ],
+    "rows": 48,
+    "causal_topk_alignment": [
+      1029,
+      1029
+    ],
+    "wall_seconds": 272.91,
+    "maximum_resident_kib": 8693084,
+    "swaps": 0
+  },
+  "optimizer_contract_completion": {
+    "seed": 20260817,
+    "reason": "inherit the exact successful v4 training seed; this value is frozen before any layer-29 optimizer step",
+    "all_other_training_fields": "unchanged from the parent preregistration"
+  },
+  "claim_boundary": "input and restart freeze for the layer-29 optimizer; no training or model-quality result"
+}
+

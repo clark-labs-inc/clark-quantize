@@ -1,0 +1,51 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_dual_chain_characterization_result_v13",
+  "completed_at": "2026-08-18T16:35:53Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "classification": "non_promotable_diagnostic",
+  "passed": false,
+  "kernel_promoted": false,
+  "decision": "reject_dual_fp_chain_as_slower_and_redesign_integer_schedule",
+  "measurement": {
+    "gate_outputs": 17408,
+    "up_outputs": 17408,
+    "total_outputs": 34816,
+    "columns_per_output": 5120,
+    "exact_control_candidate": false,
+    "max_abs_delta": 0.0000610351562,
+    "scaled_delta_p50": 0.000000184407412,
+    "scaled_delta_p99": 0.00000550032337,
+    "max_scaled_delta": 0.0000283321515,
+    "fresh_single_chain_control_median_us": 2585.92,
+    "dual_chain_candidate_median_us": 2621.64,
+    "single_chain_over_dual_chain_speedup": 0.9863749408767032,
+    "candidate_regression_fraction": 0.01381323174967286,
+    "dual_chain_sample_range_fraction": 0.038609420057673746,
+    "followup_speed_reference_1_08_met": false
+  },
+  "checks": {
+    "all_denominators_exact": true,
+    "all_error_statistics_finite": true,
+    "nine_candidate_repetitions_complete": true,
+    "candidate_range_fraction_at_most_0_05": true,
+    "followup_speed_reference_at_least_1_08": false,
+    "promotable_by_contract": false,
+    "model_integration_required": false,
+    "cute_required": false,
+    "mmlu_required": false
+  },
+  "provenance": {
+    "characterization_sha256": "52ea4ed2a272269a5a2b022aa0816c54d83bddaabe5de683503b8160074d3a4a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "candidate_binary_sha256": "2467ed8341bed904a48f71f6667ffc316812b7eb3fe875bb776ff82f3641b050",
+    "diagnostic_patch_sha256": "18f7e76fe733d8f33ae12a1b70c95f100f3299da1e1e71dae8905bc98e6c8140"
+  },
+  "quality": {
+    "ran": false,
+    "reason": "v13 was non-promotable and failed the frozen follow-up speed reference; no integrated model runtime was created."
+  },
+  "next_lane": "Preserve the original bit-exact FP reduction order and expose both independent CQ3 integer group decodes to the compiler before the two ordered FMAs. This targets integer unpack and dot-product scheduling without the slower FP reassociation.",
+  "claim_boundary": "The dual-FP-chain schedule is a stable 1.36% exact-shape regression and is rejected. The result characterizes numerical drift and timing only; it provides no model quality, whole-model speed, storage, energy, 100 accepted tok/s, novelty, or breakthrough claim."
+}

@@ -1,0 +1,126 @@
+{
+  "schema": "qwen38_27b_q8_family_q4_k_transcode_result_v1",
+  "completed_at": "2026-08-18T13:33:03Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": false,
+  "candidate_promoted": false,
+  "decision": "reject_mtp_speed_and_cute_quality_gates",
+  "checks": {
+    "artifact_valid": true,
+    "free_generation_canary_passed": true,
+    "graph_speedup_at_least_1_08": true,
+    "candidate_process_median_range_at_most_0_05": true,
+    "target_only_no_regression": true,
+    "mtp3_accepted_tps_speedup_at_least_1_08": false,
+    "cute_quick_at_least_9_of_20": false,
+    "wikitext_ppl_ratio_at_most_1_05": true,
+    "mmlu_required": false,
+    "math500_required": false
+  },
+  "artifact": {
+    "control_bytes": 18973870432,
+    "candidate_bytes": 15606630752,
+    "bytes_saved": 3367239680,
+    "candidate_sha256": "464ab3406cfbd13eec5033e6176ec222321f7145ee1b2c2f1630180589b672e6",
+    "selected_tensor_count": 288,
+    "selected_weight_count": 6734479360,
+    "control_type_counts": {"F32": 353, "Q4_K": 193, "Q6_K": 17, "Q8_0": 288},
+    "candidate_type_counts": {"F32": 353, "Q4_K": 481, "Q6_K": 17},
+    "nonselected_payloads_sha256": "24bc0d8af954e0a004e698226e61cc66cb42def2c4a2580eb047b04480241a38",
+    "nonselected_payloads_byte_identical": true
+  },
+  "invalid_dry_run": {
+    "terminal": true,
+    "classification": "infrastructure-invalid preflight; not an experiment score",
+    "selected_tensor_count": 0,
+    "reason": "The vanilla quantizer ignored manual tensor overrides when the base mode was COPY. No candidate file was written."
+  },
+  "valid_transcode": {
+    "quantizer_sha256": "30c8e7234e1e3486077f238901df5f83accd49248e928b80586f93e84bb87b7d",
+    "dry_run_selected_tensor_count": 288,
+    "dry_run_q8_to_q4_rows": 288,
+    "dry_run_stderr_sha256": "dfaed61f792312030124d638cb2794f5d563cb6add3578a1bba20bdf90adb650",
+    "transcode_stdout_sha256": "d26d4bd46efdda8c57edb9740f11c721b43c081f7e08da255c231a694d6c2290",
+    "transcode_stderr_sha256": "86de88715d7e31d5e6047c5dc1abc92462b73f51985f5758b338eda9f301b737"
+  },
+  "free_generation_canary": {
+    "prompts": 4,
+    "tokens_per_prompt": 96,
+    "total_tokens": 384,
+    "unique_token_ids": 193,
+    "per_prompt_unique_token_ids": [42, 47, 73, 68],
+    "zero_token_count": 0,
+    "coherent_outputs": true
+  },
+  "real_model_four_token_graph": {
+    "unscored_warmup_processes_per_model": 1,
+    "measured_processes_per_model": 4,
+    "samples_per_process": 7,
+    "control_sample_count": 28,
+    "candidate_sample_count": 28,
+    "control_median_ns": 790907959,
+    "candidate_median_ns": 729426281,
+    "control_over_candidate": 1.0842877198168843,
+    "control_process_medians_ns": [791872449, 785911229, 782972027, 795149980],
+    "candidate_process_medians_ns": [729937866, 732672647, 727264094, 724053915],
+    "candidate_process_median_range_fraction": 0.011829152357165373
+  },
+  "paired_serving": {
+    "prompts_per_configuration": 4,
+    "tokens_per_prompt": 96,
+    "accepted_decode_tokens_per_configuration": 380,
+    "control_target_tps_weighted": 1.916623595174799,
+    "candidate_target_tps_weighted": 2.272463261968518,
+    "candidate_over_control_target": 1.18565965048618,
+    "control_mtp3_tps_weighted": 3.141130583824583,
+    "candidate_mtp3_tps_weighted": 3.3012480402966324,
+    "candidate_over_control_mtp3": 1.0509744667402823,
+    "control_draft_n": 384,
+    "control_draft_n_accepted": 250,
+    "candidate_draft_n": 388,
+    "candidate_draft_n_accepted": 246,
+    "control_estimated_target_verification_calls": 130,
+    "candidate_estimated_target_verification_calls": 134,
+    "target_mtp_token_parity_note": "Both control and candidate MTP3 differed from their own target-only stream on at least one prompt. The preregistration treated draft behavior as evidence, not an exactness gate."
+  },
+  "quality": {
+    "cute_quick": {
+      "candidate_correct": 8,
+      "candidate_denominator": 20,
+      "control_correct": 9,
+      "control_denominator": 20,
+      "score_delta": -1,
+      "item_prediction_differences": 5,
+      "candidate_sha256": "44874020d2fe1f801a09e0ed7a7a2e188e90b35d2bc30e328b5caaa2444ce9b0",
+      "control_sha256": "695c2cb79a533eedff4c5d506ed4a1c933ffc315210bf2030fa3e1ddf1233659"
+    },
+    "wikitext_quick": {
+      "chunks": 4,
+      "control_ppl": 5.7847,
+      "candidate_ppl": 5.7314,
+      "candidate_over_control": 0.9907860390340034,
+      "candidate_uncertainty": 0.44484,
+      "candidate_sha256": "54cc288ac93586014412b5962c93308075a67914b0ca166091abb05f8da4f192"
+    },
+    "mmlu": {
+      "ran": false,
+      "reason": "The MTP speed and CUTE gates had already failed; the frozen 64-item run takes about 95 minutes on this node."
+    },
+    "math500": {
+      "ran": false,
+      "reason": "The MTP speed and CUTE gates had already failed."
+    }
+  },
+  "provenance": {
+    "artifact_verification_sha256": "4c1b327721f7c970c0aa58d06e707997949ac06ed06e64048e55d10bf6e24014",
+    "canary_summary_sha256": "ed4160f66d737dd297b35ef774c70bbc169fc6f8ad52d38e6cfe015e75d897ac",
+    "graph_gate_sha256": "9775fed246f2215b689485cc7e36616ead7ae5a1d2b36a8350a8b38130ec6f00",
+    "control_paired_summary_sha256": "e284d53d8ad86601e2c70d128499eb51548611017cbf5aa1e11992b643a9e71b",
+    "candidate_paired_summary_sha256": "5167a752b47384d039b31ade88de2742a9fa89c3defa6a1f5455644016079fc4",
+    "cute_item_diff_sha256": "92fe9796c5b1ff1c57eeec7e6c9d74ff09fbbf423d7d021a337493cadf83d3c3"
+  },
+  "next_lane": "Screen symmetric Q4_0 as the simpler AVX2 fast path. Require it to improve over both the Q8 control and this Q4_K ceiling; otherwise train a sensitivity-selected Q4_K/Q5/Q8 mixture and align the MTP draft to the compressed target.",
+  "claim_boundary": "This PTQ artifact saves 3.37 GB, improves target-only decode by 18.6%, and passes WikiText-4, but it fails the preregistered MTP3 and CUTE gates. It is not promoted and does not establish near-lossless quality, a trained approximation, final-node behavior, energy gains, 100 accepted tok/s, novelty, or a breakthrough."
+}

@@ -1,0 +1,89 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+
+REPO = Path(__file__).resolve().parents[1]
+RUNTIME = REPO / "experiments/llm_ternary_158bit_dossier/cpu_runtime"
+PREREG = RUNTIME / "qwen38_27b_mtp_parity_preflight_v1.json"
+RUNNER = RUNTIME / "run_qwen38_27b_mtp_parity_v1.py"
+RECEIPT = RUNTIME / "receipts/qwen38_27b_mtp_parity_preflight_v1/summary.json"
+COST_STOPPING = RUNTIME / "qwen38_27b_mtp_cost_aware_stopping_v1.json"
+
+
+def test_mtp_preflight_is_qwen38_cpu_only_and_hash_pinned() -> None:
+    payload = json.loads(PREREG.read_text())
+    assert payload["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert payload["scope"]["qwen_4b_compute_forbidden"] is True
+    assert payload["scope"]["cpu_only"] is True
+    assert len(payload["target"]["sha256"]) == 64
+    assert len(payload["draft"]["sha256"]) == 64
+    assert len(payload["runtime"]["llama_server_sha256"]) == 64
+
+
+def test_mtp_preflight_requires_exact_ids_and_counts_only_accepted_output() -> None:
+    payload = json.loads(PREREG.read_text())
+    assert payload["gate"]["exact_committed_token_id_parity_on_every_prompt"] is True
+    assert payload["gate"]["target_only_control_required"] is True
+    assert payload["gate"]["speedup_does_not_override_parity_failure"] is True
+    assert payload["generation"]["return_tokens"] is True
+    assert payload["claim_boundary"].startswith("Four-prompt development preflight")
+
+
+def test_mtp_runner_is_restartable_and_terminates_its_server() -> None:
+    source = RUNNER.read_text()
+    assert "completed_response" in source
+    assert '"return_tokens": True' in source
+    assert '"ignore_eos": True' in source
+    assert "start_new_session=True" in source
+    assert "os.killpg(process.pid, signal.SIGTERM)" in source
+    assert 'return 0 if summary["passed"] else 2' in source
+
+
+def test_mtp_runner_reports_parity_acceptance_and_weighted_speed() -> None:
+    source = RUNNER.read_text()
+    assert '"exact_token_parity": config_parity' in source
+    assert '"draft_n_accepted": draft_accepted' in source
+    assert '"accepted_tokens_per_second_weighted": weighted_tps' in source
+    assert '"accepted_decode_speedup_vs_target"' in source
+    assert 'int(timing["predicted_n"]) - 1' in source
+    assert "target_calls = accepted_decode_tokens - draft_accepted" in source
+    assert '"mean_committed_tokens_per_target_call"' in source
+    assert '"minimum_weight_bandwidth_bytes_per_second_at_100_tps"' in source
+    assert '"--spec-draft-p-min"' in source
+    assert '"draft_p_min": args.draft_p_min' in source
+    assert "0.0 <= args.draft_p_min <= 1.0" in source
+    assert 'env["LLAMA_TRACE"] = "1"' in source
+    assert '"trace_speculative": args.trace_speculative' in source
+    assert '"server_verbosity": args.server_verbosity' in source
+
+
+def test_mtp_receipt_preserves_exact_parity_and_100_tps_roofline() -> None:
+    payload = json.loads(RECEIPT.read_text())
+    assert payload["terminal"] is True
+    assert payload["passed"] is True
+    rows = {row["configuration"]: row for row in payload["configurations"]}
+    assert set(rows) == {"target", "mtp1", "mtp2", "mtp3"}
+    assert all(row["exact_token_parity"] for row in rows.values())
+    assert all(row["prompt_token_parity"] == [True] * 4 for row in rows.values())
+    assert rows["mtp3"]["accepted_tokens_per_second_weighted"] == 2.952080894444324
+    assert rows["mtp3"]["mean_committed_tokens_per_target_call"] == 2.7555555555555555
+    assert (
+        rows["mtp3"]["minimum_weight_bandwidth_bytes_per_second_at_100_tps"]
+        == 857950101161.2904
+    )
+    assert "no stochastic, capability" in payload["claim_boundary"]
+
+
+def test_mtp_cost_stopping_is_qwen38_only_and_heldout_gated() -> None:
+    payload = json.loads(COST_STOPPING.read_text())
+    assert payload["scope"]["model"] == "Qwen/Qwen3.8-27B"
+    assert payload["scope"]["qwen_4b_compute_forbidden"] is True
+    assert payload["scope"]["exact_target_semantics_required"] is True
+    assert payload["decision_rule"]["q4_weight_only_threshold"] == 0.08855713724945499
+    assert payload["protocol"]["heldout"]["prompts"] == 32
+    assert payload["protocol"]["heldout"]["refit_forbidden"] is True
+    assert payload["promotion_gate"]["exact_greedy_parity"] is True
+    assert payload["promotion_gate"]["maximum_combined_weight_bytes_per_accepted_token_lower_bound"] == 7_000_000_000
+    assert "not a 100 tok/s" in payload["claim_boundary"]

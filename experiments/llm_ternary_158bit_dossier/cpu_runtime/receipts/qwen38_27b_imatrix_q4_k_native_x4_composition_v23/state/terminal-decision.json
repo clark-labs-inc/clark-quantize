@@ -1,0 +1,80 @@
+{
+  "claim_boundary": "A pass establishes the preregistered four-core Milan composition only. It does not meet the 2.75 tok/s conventional-decode breakthrough gate, establish final-node scaling, reach 100 tok/s, or support novelty claims.",
+  "decision": "reject_composition_before_mmlu",
+  "experiment_id": "qwen38_27b_imatrix_q4_k_native_x4_composition_v23",
+  "graph_ratios": {
+    "b_over_a_by_rotation": [
+      1.1263449557799141,
+      1.1491589657367303,
+      1.1387728276690752,
+      1.1110119065698867,
+      1.1203667335732839,
+      1.134695767481115
+    ],
+    "b_over_a_median": 1.1305203616305146,
+    "c_over_a_by_rotation": [
+      1.2863470743712382,
+      1.3248410840301317,
+      1.3046648387494097,
+      1.280350367244888,
+      1.2906126782853562,
+      1.2787068464375126
+    ],
+    "c_over_a_median": 1.2884798763282972,
+    "c_over_b_by_rotation": [
+      1.142054277217883,
+      1.152878864919068,
+      1.1456761234985686,
+      1.152418223129411,
+      1.1519555513479875,
+      1.1269160272590817
+    ],
+    "c_over_b_median": 1.1488158374232782
+  },
+  "infrastructure_valid": true,
+  "mmlu": null,
+  "mmlu_checks": null,
+  "passed": false,
+  "prior_checks": {
+    "artifact_gate_passed": true,
+    "graph_gate_passed": true,
+    "quick_quality_gate_passed": true,
+    "serving_gate_passed": false
+  },
+  "provenance": {
+    "artifact_decision_sha256": "aff25a83998fadfe147148bfe9e7c3eeba9a3b79cc30a0e8552fc1b710880b9a",
+    "graph_decision_sha256": "9e488c32e39607517d3a63666078d9f73b12930f91f14136cc328828a1bae7e4",
+    "quick_quality_decision_sha256": "4f7aa1d967a43c3f3afc8522ef9f1ed23a2b2e621a697c84638638433dc6126a",
+    "system_decision_sha256": "1e345ada607d98b6dfc81c588e2007fd55d5aaa7c38a9a8d2f14413ba5c64486"
+  },
+  "quick_quality": {
+    "code_trace_correct": 5,
+    "code_trace_n": 6,
+    "cute_correct": 9,
+    "cute_n": 20,
+    "math500_correct": 5,
+    "math500_n": 8,
+    "wikitext_ppl": 5.7219,
+    "wikitext_ppl_ratio_vs_stock": 0.9891437758224281
+  },
+  "schema": "qwen38_27b_imatrix_q4_k_native_x4_composition_result_v23",
+  "serving": {
+    "mtp3": {
+      "candidate_accepted_tps": 3.611857030874639,
+      "candidate_draft_n": 410,
+      "candidate_draft_n_accepted": 241,
+      "candidate_exact_parity_with_own_target": true,
+      "candidate_over_control": 1.1799795867345504,
+      "candidate_zero_token_fraction": 0.0,
+      "control_accepted_tps": 3.060948741384597,
+      "control_draft_n": 384,
+      "control_draft_n_accepted": 250
+    },
+    "target": {
+      "candidate_accepted_tps": 2.2852360287690288,
+      "candidate_over_control": 1.2084234425453442,
+      "control_accepted_tps": 1.8910887924811826
+    }
+  },
+  "terminal": true
+}

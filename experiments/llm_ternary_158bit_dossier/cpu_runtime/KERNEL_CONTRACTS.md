@@ -1,0 +1,302 @@
+# Qwen CPU Kernel Contracts
+
+Status: implementation contract v2
+Date: 2026-08-17
+
+These are operator contracts, not implementation promises. Each optimized
+kernel must retain a scalar reference and must be testable independently of the
+full model.
+
+The optimized primitives live in a small C-ABI library and are integrated as a
+GGML weight type and operator path in a pinned llama.cpp revision. Upstream
+Qwen3.5 CPU operators are correctness and performance controls; they are
+replaced only where profiling shows a material end-to-end gain.
+
+The complete storage ledger covers all 1,199 checkpoint tensors and all
+27,781,427,952 parameters, including the 26,895,998,464-parameter text model,
+424,699,392 MTP parameters, and 460,730,096 vision parameters. The first CPU
+generation graph is the text causal-LM path. It must be called text-only until
+the vision encoder and MTP execution paths receive their own correctness and
+performance gates; complete storage is not proof of complete multimodal
+execution.
+
+## Common numeric contract
+
+- Weight codes are exactly `{-1, 0, +1}`.
+- Matmul weights use groups of 128 consecutive input features.
+- Each group scale is reconstructed as one little-endian FP16 row anchor times
+  one little-endian FP16 ratio selected by a 4-bit index from the tensor's
+  16-entry ratio codebook. This is the Qwen3.8-27B row-normalized scale4
+  contract; older per-group FP16-scale receipts remain historical controls.
+- The A16 reference accumulates group partials in FP32.
+- The A8 path uses group-128 max-absolute scales, `lrintf` under the default
+  round-to-nearest mode, clipping to `[-127, 127]`, and a unit scale for an
+  all-zero group. Integer dots are exact. The promoted AVX2 path accumulates
+  eight lanes in FP32 with FMA across groups and performs one fixed pairwise
+  reduction per output row; deployment-aware QAT must emulate this order.
+- Tail groups are zero-padded and cannot change the logical tensor shape.
+- Optimized kernels must consume the same codes and scales as the scalar oracle.
+
+## Kernel inventory and order
+
+| ID | Kernel | Decode | Prefill | First optimized ISA | Priority |
+| --- | --- | --- | --- | --- | ---: |
+| K0 | canonical pack/transcode/verify | load | load | portable scalar | 0 |
+| K1 | RMSNorm + A8 quantize + residual staging | every block | every block | x86 AVX2 | 0 |
+| K2 | group-128 ternary GEMV | dominant | fallback | x86 AVX2/F16C/FMA | 0 |
+| K3 | group-128 ternary GEMM | small batches | dominant | x86 AVX2 | 1 |
+| K4 | fused gate/up projection + SwiGLU | every block | every block | ARM64 | 1 |
+| K5 | depthwise causal-conv4 update | 48 layers | 48 layers | ARM64 | 0 |
+| K6 | recurrent Gated DeltaNet update | 48 layers | tail | ARM64 | 0 |
+| K7 | chunked Gated DeltaNet | no | 48 layers | portable tiled | 1 |
+| K8 | GQA attention + partial RoPE + q/k norm + q gate | 16 layers | 16 layers | ARM64 | 1 |
+| K9 | KV quantize/dequantize and paged storage | 16 layers | 16 layers | ARM64 | 1 |
+| K10 | embedding lookup and LM-head logits/top-k | once/token | once/token | ARM64 | 1 |
+| K11 | GGML integration, mmap, thread pool, NUMA scheduling | whole graph | whole graph | portable | 0 |
+
+## K0: canonical pack and compute-image transcode
+
+Input is canonical bit-contiguous block203 base-3 codes, row-normalized scale4
+factors, tensor metadata, and checksums.
+Output is an aligned, mmap-safe compute image containing the same logical codes
+and scales. Candidate physical layouts are:
+
+1. five-trit bytes plus register LUTs;
+2. group-128-transposed 2-bit codes, where byte `j` stores logical positions
+   `j`, `j+32`, `j+64`, and `j+96`;
+3. separate positive and negative bitplanes.
+
+The transcode receipt includes source and output hashes, selected ISA, tile
+shape, padding count, and an exact decoded-code comparison. Runtime selection
+is by measured matrix families, not one global winner assumed in advance.
+
+## K1-K3: normalization and ternary linear algebra
+
+K1 emits both the normalized floating activation and, where enabled, an int8
+activation plus its scale. This prevents every projection in a block from
+re-reading and requantizing the same input.
+
+K2 specializes single-token matrix-vector work. It should fuse group-scale
+application into FP32 accumulation and avoid materializing unpacked weights.
+The first promoted AVX2 implementation uses A8 activations, an authenticated
+2.125-bit/weight compute image including FP16 scales, and reaches 79.44% of the
+measured four-core memory-read roofline on the CCX33 Milan control. This is a
+microkernel result. The same code/scale contract is now integrated as GGML
+`CQ3_0`/`CQ8_0`, including `MUL_MAT` and embedding `GET_ROWS`, and executes the
+full Qwen3.5-4B graph. That runtime milestone does not promote the PTQ model:
+the frozen perplexity, MATH-500, code, and CUTE tripwire rejected its quality.
+QAT-to-runtime numerical agreement remains a separate gate.
+The first ARM64 implementation uses the identical aligned-2 compute image and
+NEON signed DOTPROD. On the real Qwen3.8-27B `17408 x 5120` gate projection it
+is 28.38x faster than the scalar oracle, sustains 60.39 GB/s with four M5 Max
+workers, and reaches 67.20% of the paired NEON read roofline with maximum
+absolute error `7.15e-7`. The preregistered ARM v1 milestone passed, but the
+70% K2 exit gate and full-graph gate remain open. Eight workers add no
+throughput, motivating native fused gate/up dispatch rather than more Python
+worker fan-out.
+For the Qwen3.8-27B row-normalized artifact, the canonical complete-container
+target is at most 1.64 bits per model parameter. The optional aligned-2 CPU
+working representation is separately budgeted at approximately 2.035 bits per
+model parameter: 6,945,078,272 aligned weight bytes, 119,265,240 shared
+row-scale bytes, and 2,229,728 exactly retained bytes across 27,781,427,952
+parameters. Canonical storage rate and active compute rate must never be
+reported as the same number.
+The v2 ARM path is now wired into GGML's real single-token `MUL_MAT` dispatch.
+It blocks 16 output rows so each `CQ8_0` activation load feeds 16 `CQ3_0`
+rows. On the exact `17408 x 5120` Qwen projection shape, a frozen nine-pair
+M5 Max run measured `139.32 us/run` versus `175.92 us/run` for GGML's scalar
+fallback, a `1.263x` median speedup. All four backend reference cases pass,
+including a 16-row-plus-tail test, and the same two-patch source builds and
+passes on the AVX2 Milan node. This promotes K2/K11 ARM graph arithmetic only;
+the benchmark uses deterministic exact-shape weights rather than a model GGUF,
+so token parity and capability gates remain open.
+The benchmark matrix families are the exact Qwen shapes:
+
+- `5120 -> 17408` and `17408 -> 5120` for the MLP;
+- `5120 -> 10240` for DeltaNet q/k/v, `5120 -> 6144` for z, two
+  separate `5120 -> 48` projections for a and b, and `6144 -> 5120`
+  for the DeltaNet output;
+- `5120 -> 12288`, `5120 -> 1024`, `6144 -> 5120` for full attention;
+- `5120 -> 248320` for the LM head.
+
+K3 specializes prompt batches and amortizes decode/unpack work across activation
+rows. Its tile search is separate from K2. At minimum test prompt blocks of 8,
+32, 128, and 512 tokens.
+
+## K4: fused SwiGLU
+
+The gate and up weights are physically adjacent or interleaved so one scheduled
+operation produces both projections. Apply SiLU to the gate, multiply by the up
+activation, and write only the final 17,408-wide intermediate. Do not duplicate
+activation quantization or store two avoidable full-width temporary buffers.
+The first ARM64 native operator now executes both real Qwen3.8-27B layer-0
+projections and SwiGLU with bit-exact agreement against two separate DOTPROD
+projections plus the same native SwiGLU control. It improves median latency by
+8.1% with four M5 Max workers and 27.6% with eight, while the one-worker result
+is 1.4% slower. This passes the frozen K4 operator gate; graph dispatch, token
+parity, capability, and end-to-end performance remain open.
+
+## K5-K7: Gated DeltaNet
+
+K5 maintains a three-sample history for the width-4 depthwise convolution over
+10,240 channels, applies the trained convolution weights, and applies SiLU.
+The single-token path updates state in place.
+The native FP32 scalar oracle and AVX2 channel-vectorized implementation now
+exist and cover the exact 10,240-channel shape. Randomized state/output tests
+pass locally; the AVX2 performance and x86 parity gate remains open.
+
+K6 consumes raw q/k, value, sigmoid beta, and FP32 decay `g`. It fuses the
+reference q/k L2 normalization with epsilon `1e-6` and the additional query
+scale `1/sqrt(128)`. Per value head it updates an FP32 `128 x 128` recurrent
+matrix and emits one 128-wide value. The implementation must not allocate a
+new 3 MiB state per layer per token. Q and K heads are logically repeated from
+16 to 48 heads, but the kernel indexes them rather than materializing repeats.
+The dependency-free FP32 scalar C oracle now implements the exact 16-to-48
+head mapping and mutates the real `48 x 128 x 128` state in place. It matches a
+NumPy equation-level control on the full Qwen shape. An AVX2 implementation
+vectors eight adjacent state columns while preserving the scalar accumulation
+order and avoiding FMA contraction. Safe public entries validate every input;
+trusted graph entries retain pointer, shape, and finite-output checks while
+avoiding a redundant 3 MiB finite-state scan after the enclosing graph has
+already established state validity. The authoritative x86 gate is frozen to
+require bit-exact scalar parity, at least 3x one-layer speedup, and at least 2
+recurrence-only tokens/s while streaming all 48 independent states (144 MiB),
+not repeatedly timing one cache-resident state. That x86 gate, thread placement
+across heads/layers, and full-layer parity remain open.
+
+K7 is a distinct chunked-prefill algorithm. It uses bounded tiles and returns
+the same final recurrent state as the scalar token-by-token oracle. Numerical
+comparison includes both every output token and the final FP32 state.
+
+The post-recurrence fused operation is FP32 RMS normalization over each
+128-wide value head, multiplication by learned norm weights, SiLU gating from
+`z`, conversion to the activation dtype, and the `6144 -> 5120` output
+projection. Dependency-free scalar and AVX2 implementations now cover the
+exact `48 x 128` RMSNorm-plus-SiLU-gate shape. The AVX2 implementation keeps
+the scalar 128-value variance accumulation order and scalar `expf` gate so its
+FP32 result is bit-exact with the scalar oracle; a faster approximate vector
+exponential is not authorized without a separately frozen error and
+full-layer parity gate. Fusion into activation quantization and the output
+projection remains open.
+The preceding 48-wide parameter transform is also native and numerically
+stable: `beta = sigmoid(b)` and
+`g = -exp(A_log) * softplus(a + dt_bias)`, with the reference softplus
+threshold of 20. These small retained-precision operations are not candidates
+for ternary approximation.
+The direct block203 and authenticated aligned-cache runtimes now compose these
+pieces into a real-shape single-token DeltaNet path: one shared A8 hidden-state
+quantization feeds qkv/z/a/b, compact three-sample conv state and the 3 MiB
+recurrent state mutate in place, post-recurrence gating is applied, and one A8
+quantization feeds the `6144 -> 5120` output projection. This is graph code,
+not yet a promoted layer: real-container execution, teacher parity, and frozen
+layer throughput remain open.
+
+## K8-K9: full attention
+
+The query projection emits 24 query heads and 24 output-gate heads. K8 performs
+head-dimension RMSNorm for Q and K, applies partial multimodal RoPE, executes
+causal GQA with 24 query heads and 4 KV heads, applies the sigmoid output gate,
+and feeds the output projection.
+
+K9 stores KV per full-attention layer. The first correctness format is BF16;
+the product format target is int8 with explicit per-head or per-block scales.
+At batch one, total BF16 KV growth is 64 KiB/token and int8 target growth is
+about 32 KiB/token before scale metadata. Cache quantization is evaluated for
+quality separately from ternary weight error.
+Dependency-free scalar and AVX2 decode primitives now implement the actual
+24-query/4-KV/256-dimension GQA shape. Q/K preprocessing applies the model's
+`(1 + weight)` per-head RMSNorm and partial 64-dimension RoPE; the cache stays
+head-major so each historical 256-value K/V row is contiguous, and q heads
+index the six-way shared KV head without materializing repeats. The canonical
+and aligned-cache runtimes compose q/k/v/o projections, the fused q-projection
+sigmoid gate, sequential text RoPE, and mutable FP32 KV state. FP32 KV is the
+correctness format in this implementation; BF16/int8 cache formats, real-layer
+parity, context-length scaling, and end-to-end capability remain open.
+
+The canonical and aligned-cache runtimes also compose one complete decoder
+layer: learned-offset input RMSNorm, the selected DeltaNet or full-attention
+mixer, residual addition, learned-offset post-attention RMSNorm, the existing
+three-projection MLP, and the second residual. This closes the operator topology
+for one layer at batch-one decode. Authenticated real-tensor execution and
+teacher/capability parity are still required before stacking 64 layers.
+
+## K10: lexical tensors
+
+Embedding and LM head are untied and each contains about 1.27B parameters.
+The first graph may use Q6/Q8 embedding rows and an int4/Q6 head. A ternary head
+is promoted only if QAT recovers the lexical quality loss. The LM-head kernel
+must fuse or stream top-k selection so it does not materialize avoidable copies
+of the 248,320-way logit vector.
+Both canonical block203 and aligned-cache tensor views can now decode one
+byte-addressable embedding row with its row-anchor/codebook scales without
+materializing the vocabulary matrix. The text-only runtime composes that row,
+64 authenticated decoder layers and their compact states, final learned-offset
+RMSNorm, the 248,320-row LM-head GEMV, and deterministic top-k. It currently
+offers both a full-logit correctness path and a row-streamed deterministic
+top-k path whose scratch is bounded by the configured row chunk. The streaming
+path avoids the full FP32 logits allocation; a single fused native top-k kernel
+and its context-level throughput gate remain open.
+
+## K11: execution system
+
+- reuse pinned llama.cpp graph, tokenizer, sampling, cache, and server surfaces;
+- keep the Clark GGML patch narrow enough to rebase and test independently;
+- mmap the compute image and report cold versus warm page faults;
+- pin worker threads and separate physical-core from SMT results;
+- shard weights according to NUMA ownership on multi-socket systems;
+- use bounded reusable arenas for activations and attention scratch;
+- expose prompt ingestion, token streaming, cancellation, and signal-safe state;
+- emit per-operator time, bytes read, and selected kernel implementation.
+
+The first promoted speculative-verification optimization is the AVX2 Q4_K
+ragged-row kernel in `llama_cpp_q4_k_fused_ragged_avx2_v2.patch`. For two or
+three target rows it decodes each repacked Q4 block once and maintains one Q8
+accumulator per row. On the complete Qwen3.8-27B Q4_K_M graph it improves
+three-row latency by 1.156x and shape-matched MTP2 accepted throughput by
+1.148x with exact cross-runtime token parity. It does not alter the four-row
+GEMM path used by MTP3, which remains the measured serving winner. Synthetic
+`test-backend-ops` results are not valid evidence for this repack path; the
+kernel contract requires real-model repacking and whole-server measurement.
+
+The first attempt to extend that implementation to exactly four rows is a
+terminal negative. Merely enlarging its runtime-indexed AVX2 accumulator arrays
+from three to four made the real four-row graph appear 1.113x faster, but it
+also collapsed every candidate target token to ID zero. MTP3 accepted 0 of
+1,116 draft proposals and fell to 1.136 accepted tok/s. Three small backend
+reference cases passed, demonstrating that synthetic tolerance tests did not
+cover the real model-load/repack failure. The speed number is invalid for
+promotion. Source-level follow-up found the contract violation: groups of four
+activations are quantized into interleaved `block_q8_Kx4`, while v3 routed that
+buffer into a kernel that casts it as contiguous `block_q8_K` rows. An
+accumulator-only specialization cannot fix the layout, so v4 was cancelled
+before build. The next isolated experiment changes only exact-four-row
+activation packing to ordinary row-major Q8_K and retains a free-generation
+canary before any throughput claim.
+
+That isolated row-major v5 repair removed the token-zero collapse and improved
+the full MTP3 throughput diagnostic from 3.058 to 3.452 accepted tok/s. It is
+still rejected: target-only exact parity was 2/4, MTP3 exact parity was 3/4,
+draft counts changed, and the predeclared first 14 graph samples reached only
+1.046x. The next kernel leaves interleaved `block_q8_Kx4` and every arithmetic
+operation intact. It replaces a variable half-swap plus blend pair with the
+equivalent immediate `vperm2i128` concatenation inside native Q4_K GEMM.
+
+That exact byte-lane rewrite was stable but stopped at its graph gate: 28
+control and 28 candidate samples measured 1.0231x, below the predeclared
+1.03x threshold, with only 0.84% candidate process-median spread. It was not
+run through generation or CUTE. The program now moves to the independent Q8_0
+x Q8_0 tinyBLAS hotspot, which accounts for 23.99% of profiled MTP3 cycles.
+
+## Required tests for every optimized kernel
+
+1. scalar-versus-optimized randomized property tests;
+2. real tensor-shape tests with tail groups and adversarial scale values;
+3. exact code/scale identity after transcode;
+4. deterministic output under repeated runs and thread counts;
+5. finite-value and NaN propagation policy tests;
+6. microbenchmarks with compiler, ISA, clocks, threads, and bandwidth receipt;
+7. full-layer comparison before full-graph promotion.
+
+Speed without graph-level quality parity is a failed kernel. Correctness without
+measured end-to-end impact remains a reference implementation, not a promoted
+optimization.

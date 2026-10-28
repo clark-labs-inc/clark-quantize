@@ -1,0 +1,131 @@
+{
+  "schema": "qwen38_27b_greedy_input_cell_mixed_down_preregistration_v74",
+  "experiment_id": "qwen38_27b_greedy_input_cell_mixed_down_v74",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_before_layer59_validation_open",
+  "frozen_at_utc": "2026-08-20T05:05:00Z",
+  "objective": "Test whether trained-CQ3 compensation can be preserved while replacing only greedily selected x8-output by 128-input cells with signed INT4, using all 64 calibration rows for selection and the previously unopened 32 layer-59 validation rows from four separate prompts for confirmation.",
+  "parent_finding": {
+    "v73_mixed_confirmation_improvement": 0.05537637498811283,
+    "v73_all_int4_confirmation_regressed": true,
+    "v73_selected_confirmation_positive_fraction": 0.4124999940395355,
+    "conclusion": "Sparse higher-precision replacement has a real aggregate confirmation signal, but replacing complete output tiles discards useful trained-CQ3 compensation in unrelated input groups. Route at the x8-by-128 kernel-cell granularity instead."
+  },
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "hidden_size": 5120,
+    "intermediate_size": 17408,
+    "layers": 64
+  },
+  "scope": {
+    "layer": 59,
+    "tensor": "mlp.down_proj.weight",
+    "selection_reason": "same frozen worst v44 down-projection layer; no layer reselection",
+    "selection_rows": 64,
+    "selection_prompts": 8,
+    "confirmation_rows": 32,
+    "confirmation_prompts": 4,
+    "whole_model_generation_forbidden": true,
+    "performance_timing_forbidden": true,
+    "confirmation_rows_forbidden_during_quantizer_or_cell_selection": true
+  },
+  "authenticated_inputs": {
+    "full_context_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "v44_training_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+    "v73_negative_receipt_sha256": "b676da09abed95efff2b8b0499267d9deb198ef233a4234dc8ee853a90a2af16",
+    "source_tensor_sha256": {
+      "mlp.gate_proj.weight": "af5f1f3627acd6ed1a1e3ff71defaeb4433b1dc280efdb01b6d8ebf9086ab1c3",
+      "mlp.up_proj.weight": "2d3f11424f7705452380d1c7a2df4e625929ab9c460882e9c81ce5effadc7feb",
+      "mlp.down_proj.weight": "ce8eaece6fd48b996ff5328840d7b75d5d91dc23acf358711388973b5c9584ca"
+    },
+    "v44_payload_sha256": {
+      "gate": "ca349cd022d248a29fae502d523430b50fa5894f1e5deff549e222b159a02599",
+      "up": "1592cd2858371645fd8e236113caa1c39d733a959b3a54ab0bbe4f6d550de4bc",
+      "down": "faa8661738f9c0bdcadc2dcd7eac7723ca39c1d99486523b2e8b21e636c76356"
+    }
+  },
+  "data_split": {
+    "selection": "context.calibration_flat_rows over sequences 0 through 7",
+    "confirmation": "context.validation_flat_rows over sequences 8 through 11",
+    "selection_row_count": 64,
+    "confirmation_row_count": 32,
+    "confirmation_layer59_activations_opened_before_v74": false,
+    "selection_and_confirmation_prompts_disjoint": true,
+    "benchmark_items_used": false
+  },
+  "int4_quantizer": {
+    "representation": "signed INT4 values in [-8, 7] with one FP16 scale per 128 weights",
+    "group_size": 128,
+    "scale_initialization": "group maximum absolute value divided by 7, with an exact-zero group mapped to scale zero",
+    "least_squares_scale_iterations": 4,
+    "iteration": "round and clamp integer codes, then replace scale by dot(weight, code) divided by dot(code, code)",
+    "final_scale_storage": "FP16 before reconstruction and scoring",
+    "code_packing": "two signed nibbles per byte, low coordinate first",
+    "bytes_per_group_per_row": 66,
+    "activation_training": false,
+    "sweep": false
+  },
+  "cell_selection": {
+    "output_tile_rows": 8,
+    "input_group_columns": 128,
+    "output_tiles": 640,
+    "input_groups": 136,
+    "total_cells": 87040,
+    "steps_per_output_tile": 16,
+    "selected_cells": 10240,
+    "selected_weight_fraction": 0.11764705882352941,
+    "base": "v44 trained CQ3 down projection",
+    "alternative": "signed-INT4 quantization of the source BF16 weights for the same x8-by-128 cell",
+    "cell_delta": "alternative cell output minus base cell output on the v44 trained-CQ3 gate/up activation",
+    "greedy_step": "for each output tile independently, choose the unselected input group maximizing the exact current calibration residual-SSE reduction, then subtract that cell delta from the residual",
+    "tie_break": "ascending input-group index",
+    "learned_coefficients": 0,
+    "confirmation_rows_observed": 0,
+    "sweep": false
+  },
+  "canonical_layout": {
+    "header_bytes": 64,
+    "cell_mode_bitmap_bytes": 10880,
+    "cq3_bytes_per_cell": 272,
+    "int4_bytes_per_cell": 528,
+    "unselected_cells": 76800,
+    "selected_cells": 10240,
+    "hybrid_down_payload_bytes": 26307264,
+    "baseline_three_cq3_mlp_payload_bytes": 71024640,
+    "hybrid_three_projection_mlp_payload_bytes": 73657024,
+    "relative_full_mlp_payload_increase": 0.037062968569780856,
+    "runtime_dispatch": "one mode bit per x8-output by 128-input cell; mutually exclusive CQ3 or INT4 computation inside one down-projection pass",
+    "high_precision_weight_materialization_at_runtime": false
+  },
+  "pilot_gate": {
+    "required_selected_cells": 10240,
+    "all_selected_calibration_marginal_benefits_positive": true,
+    "minimum_relative_calibration_mlp_nmse_improvement": 0.15,
+    "minimum_relative_confirmation_mlp_nmse_improvement": 0.1,
+    "minimum_confirmation_to_calibration_improvement_ratio": 0.5,
+    "minimum_confirmation_positive_output_tile_fraction": 0.6,
+    "maximum_relative_full_mlp_payload_increase": 0.04,
+    "packed_int4_roundtrip_exact": true,
+    "canonical_payload_bytes_exact": true,
+    "all_values_finite": true
+  },
+  "resources": {
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "allowed_logical_cpus": [0, 2, 4, 6],
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "restart_on_failure": true,
+    "minimum_free_disk_bytes": 8589934592
+  },
+  "decision": {
+    "if_pass": "replicate the unchanged 16-cells-per-tile rule on a preregistered representative layer set before whole-model materialization",
+    "if_fail": "reject source-INT4 cell substitution and move to a trainable cell codebook or structured rotation without rate or threshold tuning on this confirmation split",
+    "no_whole_model_claim": true,
+    "no_novelty_claim": true,
+    "no_breakthrough_claim": true
+  },
+  "claim_boundary": "Frozen layer-59 calibration-to-disjoint-prompt confirmation representation pilot only. A pass cannot establish whole-model capability, perplexity, CUTE, MATH, code, MMLU, throughput, energy, novelty, 100 tokens per second, or a scientific breakthrough."
+}

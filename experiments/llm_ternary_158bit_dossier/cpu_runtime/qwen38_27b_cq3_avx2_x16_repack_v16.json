@@ -1,0 +1,88 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_x16_repack_preregistration_v16",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_cq3_avx2_x16_repack_v16",
+  "frozen_at": "2026-08-18T17:12:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "microbenchmark_cores": 1,
+    "qwen_4b_compute_forbidden": true,
+    "source_weight_type": "CQ3_0",
+    "control_runtime_layout": "CQ3_0x8",
+    "candidate_runtime_layout": "CQ3_0x16",
+    "activation_type": "CQ8_0",
+    "weight_bits_per_weight": 2.125,
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "positive_anchor": {
+    "receipt": "receipts/qwen38_27b_cq3_avx2_x8_repack_v15/terminal-decision.json",
+    "finding": "CQ3_0x8 was storage neutral, met the numerical bound, and accelerated the frozen two-matrix primitive by 1.3018x, but one CQ3 MLP triplet was insufficient to move the complete graph."
+  },
+  "hypothesis": "Process sixteen output rows as two independent AVX2 row vectors inside one input traversal. Both vectors reuse the same four broadcast CQ8 activation words for each sixteen-weight chunk, while weight unpack, integer dots, row scales, and FP accumulation remain independent. This removes half of x8 activation loads and broadcasts without changing storage or arithmetic.",
+  "runtime_layout": {
+    "rows_per_tile": 16,
+    "source_blocks_per_tile": 16,
+    "source_bytes_per_tile": 1088,
+    "runtime_bytes_per_tile": 1088,
+    "scale_layout": "group-major: 16 fp16 scales per group",
+    "trit_layout": "group-major, then 4-byte input chunk, then output row; each chunk is two adjacent 32-byte AVX2 row vectors",
+    "repack_is_lossless": true,
+    "storage_expansion_fraction": 0.0,
+    "tail_policy": "Use CQ3_0x8 for an aligned 8-row remainder and ordinary CQ3 for smaller tails."
+  },
+  "kernel_algebra": {
+    "output_vectors_per_tile": 2,
+    "rows_per_output_vector": 8,
+    "chunk_weights_per_row": 16,
+    "chunks_per_128_weight_group": 8,
+    "shared_across_output_vectors": [
+      "four CQ8 activation word loads",
+      "four AVX2 broadcasts",
+      "activation sum",
+      "activation scale"
+    ],
+    "must_match_x8_output_bits": true,
+    "high_precision_weights_materialized": false
+  },
+  "sequential_gates": {
+    "gate_0_repack_and_correctness": {
+      "runtime_bytes_must_equal_source_bytes": true,
+      "byte_for_byte_inverse_to_source_blocks": true,
+      "integer_dot_must_match_scalar_exactly": true,
+      "x16_output_must_match_x8_bits": true,
+      "maximum_scaled_float_error_vs_ordinary_cq3": 0.00005,
+      "all_outputs_finite": true
+    },
+    "gate_1_exact_shape_microbenchmark": {
+      "matrices": 2,
+      "rows_per_matrix": 17408,
+      "columns": 5120,
+      "warmups": 2,
+      "repetitions": 9,
+      "cache_eviction_bytes": 268435456,
+      "repack_time_excluded": true,
+      "minimum_x8_over_x16_speedup": 1.08,
+      "minimum_ordinary_over_x16_speedup": 1.4,
+      "maximum_x16_sample_range_fraction": 0.05
+    },
+    "gate_2_model_deployment": {
+      "run_in_this_experiment": false,
+      "reason": "v15 proved that one CQ3 MLP triplet cannot expose a primitive gain at graph level. Deploy x16 only after separately gated deeper CQ3 coverage exists."
+    },
+    "gate_3_quality": {
+      "run_in_this_experiment": false,
+      "reason": "The candidate must be bit-identical to the already integrated x8 algebra. Capability tests remain mandatory when deeper CQ3 weights are introduced."
+    }
+  },
+  "stop_rules": [
+    "Stop before timing on any x8 bit mismatch, source mapping mismatch, storage expansion, or integer-dot mismatch.",
+    "Reject if x16 improves x8 by less than 8%, improves ordinary CQ3 by less than 40%, or exceeds 5% sample spread.",
+    "Do not run model or capability evaluation in this primitive-only experiment.",
+    "Do not infer a score for an unrun gate."
+  ],
+  "claim_boundary": "A pass would establish a faster storage-neutral CQ3 primitive by widening output-row activation sharing. It would not establish model-level throughput, target-floor performance, quality, energy, novelty, 100 accepted tok/s, or a scientific breakthrough."
+}

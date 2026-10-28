@@ -1,0 +1,35 @@
+-- llama.cpp version: 0.1.0-dev
+CMAKE_BUILD_TYPE=Release
+-- ccache found, compilation results will be cached. Disable with GGML_CCACHE=OFF.
+-- CMAKE_SYSTEM_PROCESSOR: x86_64
+-- GGML_SYSTEM_ARCH: x86
+-- Including CPU backend
+-- x86 detected
+-- Adding CPU backend variant ggml-cpu: -march=native 
+-- ggml version: 0.20.0
+-- ggml commit:  4df29be4f-dirty
+-- Could NOT find OpenSSL, try to set the path to OpenSSL root folder in the system variable OPENSSL_ROOT_DIR (missing: OPENSSL_CRYPTO_LIBRARY OPENSSL_INCLUDE_DIR) 
+CMake Warning at vendor/cpp-httplib/CMakeLists.txt:152 (message):
+  OpenSSL not found, HTTPS support disabled
+
+
+-- Generating embedded license file for target: llama-app
+-- Configuring done (0.3s)
+-- Generating done (0.1s)
+-- Build files have been written to: /workspace/build/llama.cpp-qwen38-cq3-aff3-v63
+[1/12] Linking CXX executable bin/llama-perplexity
+[2/12] Building CXX object tests/CMakeFiles/test-cq3.dir/test-cq3.cpp.o
+[3/12] Linking CXX executable bin/test-cq3
+[4/12] Provisioning UI assets
+-- UI: npm not found, skipping npm build
+-- UI: downloading from b1: https://huggingface.co/buckets/ggml-org/llama-ui/resolve/b1/dist.tar.gz
+-- UI: download dist.tar.gz from b1 failed: "HTTP response code said error"
+-- UI: downloading from latest: https://huggingface.co/buckets/ggml-org/llama-ui/resolve/latest/dist.tar.gz
+-- UI: archive verified and extracted
+-- UI: HF download succeeded, stamp updated (latest)
+-- UI: gzip compression applied (/workspace/build/llama.cpp-qwen38-cq3-aff3-v63/tools/ui/dist/_gzip)
+[5/9] Building CXX object tools/server/CMakeFiles/llama-server.dir/main.cpp.o
+[6/9] Linking CXX shared library bin/libllama-server-impl.so
+[7/9] Linking CXX executable bin/llama-server
+[8/9] Linking CXX shared library bin/libllama-cli-impl.so
+[9/9] Linking CXX executable bin/llama-cli

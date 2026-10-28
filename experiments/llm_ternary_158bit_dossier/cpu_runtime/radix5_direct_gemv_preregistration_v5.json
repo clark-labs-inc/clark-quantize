@@ -1,0 +1,52 @@
+{
+  "schema": "clark_radix5_direct_gemv_preregistration_v5",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "artifact_schema": "clark_chunked_base3_v1",
+  "predecessor": {
+    "best_receipt": "receipts/radix5-direct-gemv-v2.json",
+    "best_receipt_sha256": "381c328c24cfc915f31bfcec6e72d9db32243fc7fd33173b30484b86dec75ee6",
+    "best_four_core_throughput_fraction_of_aligned2": 0.6821671810986987,
+    "promotion_passed": false
+  },
+  "hypothesis": "Interleaving two output rows will expose independent lookup and dot-product work and reuse each activation vector, preserving the v2 no-gather algorithm and 1.75-bit image while lifting four-core throughput above the 70% retention gate.",
+  "kernel": {
+    "implementation": "avx2_nogather_pair",
+    "only_registered_change": "compute two output rows together with independent accumulators and one shared activation load per four radix-5 segments",
+    "odd_row_tail": "fall back to the v2 no-gather single-row kernel"
+  },
+  "tensor": {
+    "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "group_size": 128
+  },
+  "formats": {
+    "aligned2": {"code_bytes_per_group": 32, "fp16_scale_bytes_per_group": 2, "bits_per_weight": 2.125},
+    "radix5_group128": {"code_bytes_per_group": 26, "fp16_scale_bytes_per_group": 2, "bits_per_weight": 1.75, "padding_trits_per_group": 2}
+  },
+  "activation": {
+    "dtype": "float32_to_group128_int8",
+    "seed": 20260817,
+    "radix5_layout": "28 eight-byte segments per group; five live A8 values and three zero lanes per segment"
+  },
+  "correctness": {
+    "rows": 128,
+    "maximum_absolute_error_vs_aligned2": 0.00005,
+    "require_exact_radix5_roundtrip": true,
+    "require_exact_thread_determinism": true
+  },
+  "performance": {
+    "warmups": 2,
+    "repetitions": 7,
+    "threads": [1, 2, 4],
+    "thread_placement": "persistent_workers_pinned_once_to_distinct_physical_cores",
+    "cache_eviction_bytes": 268435456,
+    "comparison_order": "alternate which format runs first on every repetition"
+  },
+  "promotion": {
+    "maximum_radix5_compute_image_bits_per_weight_including_fp16_scales": 1.75,
+    "minimum_radix5_throughput_fraction_of_aligned2": 0.70,
+    "pareto_speed_threshold": 1.0,
+    "does_not_authorize_model_quality_or_breakthrough_claim": true
+  }
+}

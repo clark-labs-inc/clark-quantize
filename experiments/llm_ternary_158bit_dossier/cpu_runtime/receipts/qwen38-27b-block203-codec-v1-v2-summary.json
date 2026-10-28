@@ -1,0 +1,83 @@
+{
+  "schema": "qwen38_27b_block203_codec_v1_v2_summary_v1",
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "ternary_parameters": 27780313088
+  },
+  "sample": {
+    "tensor": "model.language_model.layers.0.mlp.gate_proj.weight",
+    "rows": 17408,
+    "columns": 5120,
+    "trits": 89128960,
+    "source_codes_sha256": "d660e496eda4884dbca3d2479f0c1dd2124b9af79b8c787c8796b413f53b41ac",
+    "source_artifact_manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4"
+  },
+  "format": {
+    "group_trits": 128,
+    "group_bits": 203,
+    "row_bits": 8120,
+    "payload_bits": 141352960,
+    "payload_bytes": 17669120,
+    "payload_bits_per_trit": 1.5859375,
+    "pack_payload_sha256": "83bc35ad168daec78ad6a17f1cea4c6cc8462c21b12194f5b82cc441bb7169f3"
+  },
+  "host": {
+    "hostname": "ubuntu-32gb-hel1-1",
+    "machine": "x86_64",
+    "affinity": [
+      0
+    ],
+    "threads": 1,
+    "cache_eviction_bytes": 268435456,
+    "repetitions": 7
+  },
+  "v1": {
+    "repository_commit": "55658ddb4058901e7218ba02dfc7c8be76681edd",
+    "remote_receipt": "/workspace/quant-state/qwen38-27b-block203-codec-v1.json",
+    "receipt_bytes": 8418,
+    "receipt_sha256": "25dfda9da9f76a926019d9a40d59716376361d1698f9940c3c4e9cb3a64db066",
+    "full_tensor_exact_roundtrip": true,
+    "selected_rows_match_python_reference": true,
+    "all_repetition_hashes_identical": true,
+    "pack_median_seconds": 0.2844112429957022,
+    "pack_median_mtrits_per_second": 313.38057898557423,
+    "unpack_median_seconds": 0.5306557810035883,
+    "unpack_median_mtrits_per_second": 167.96002830957062,
+    "projected_whole_model_pack_seconds": 88.64720710493934,
+    "projected_whole_model_unpack_seconds": 165.39835916672703,
+    "offline_codec_gate_passed": true
+  },
+  "v2_radix243": {
+    "repository_commit": "0aa046f4b03bf25783c42264b9b3e3f61ae934f4",
+    "remote_receipt": "/workspace/quant-state/qwen38-27b-block203-codec-v2.json",
+    "receipt_bytes": 10281,
+    "receipt_sha256": "7f7acbd421cb78277cdc2d4b7d5a7fa485a1aa02c5d6682d2db00ae83d29f71c",
+    "full_tensor_exact_roundtrip": true,
+    "selected_rows_match_python_reference": true,
+    "payload_sha256_matches_v1": true,
+    "same_hostname_machine_and_affinity_as_v1": true,
+    "pack_median_seconds": 0.18531055800121976,
+    "pack_median_mtrits_per_second": 480.9707604431979,
+    "pack_speedup_over_v1": 1.53478164473408,
+    "unpack_median_seconds": 0.3082696869969368,
+    "unpack_median_mtrits_per_second": 289.1265789648843,
+    "unpack_speedup_over_v1": 1.7214011087923198,
+    "projected_whole_model_pack_seconds": 57.75883977313175,
+    "projected_whole_model_unpack_seconds": 96.08356723016476,
+    "promotion_thresholds": {
+      "minimum_pack_speedup": 1.25,
+      "minimum_unpack_speedup": 2.0
+    },
+    "promotion_passed": false,
+    "classification": "valid negative result because unpack speedup missed the frozen 2x threshold"
+  },
+  "decision": {
+    "retain_v1_as_exact_reference": true,
+    "retain_v2_as_faster_exact_implementation_evidence": true,
+    "promote_v2_under_composite_gate": false,
+    "inference_speed_claim": false,
+    "quality_claim": false,
+    "breakthrough_claim": false
+  }
+}

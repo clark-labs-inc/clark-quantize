@@ -1,0 +1,69 @@
+{
+  "schema": "qwen38_27b_calibration_residual_cpu_terminal_decision_v38",
+  "experiment_id": "qwen38_27b_calibration_residual_cpu_v38",
+  "decision": "reject_v38_on_preregistered_full_range_stability_gate",
+  "terminal": true,
+  "gate_passed": false,
+  "repository_commit": "e97c04524791d2c2333d69d24586964d889938e1",
+  "preregistration": {
+    "path": "../../qwen38_27b_calibration_residual_cpu_v38.json",
+    "sha256": "bf4a1f6cc30479548646e19c47eb070c4f15c09cd822ef132f7e7d5ba668ec45"
+  },
+  "receipt": {
+    "path": "receipt.json",
+    "sha256": "81b52eb7ad64240feab5c49b8c73dd6001272c93288a350c845067cfc54bf126"
+  },
+  "passed_checks": {
+    "both_exact_v37_payloads_executed": true,
+    "maximum_absolute_error_within_5e_4": true,
+    "minimum_avx2_speedup_at_least_1_25x": true,
+    "conservative_64_layer_latency_at_most_7272727_ns": true,
+    "payload_bytes_exact": true,
+    "scratch_is_rank16_fp32_only": true
+  },
+  "failed_checks": {
+    "candidate_sample_range_fraction_at_most_0_2": {
+      "observed": 0.36604117476492276,
+      "limit": 0.2,
+      "failing_layer": 0
+    }
+  },
+  "positive_nonpromotion_evidence": {
+    "maximum_absolute_error": 0.0000019073486328125,
+    "minimum_avx2_speedup_vs_scalar": 9.915807588409,
+    "maximum_projected_all_64_layers_avx2_ns": 784582.5,
+    "layer0_avx2_median_ns": 12259.1015625,
+    "layer63_avx2_median_ns": 12107.58984375,
+    "layer0_first_half_median_ns": 12145.58984375,
+    "layer0_second_half_median_ns": 12551.0234375,
+    "layer0_half_median_ratio": 1.0333811366072625,
+    "layer63_first_half_median_ns": 12094.7734375,
+    "layer63_second_half_median_ns": 12114.73828125,
+    "layer63_half_median_ratio": 1.0016507001022523
+  },
+  "denominators": {
+    "exact_trained_payloads": 2,
+    "timing_halves_per_arm_per_payload": 2,
+    "samples_per_half": 16,
+    "samples_per_arm_per_payload": 32,
+    "inner_native_calls_per_sample": 128,
+    "total_timed_native_calls": 32768
+  },
+  "execution_receipt": {
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "allowed_cpu": 0,
+    "memory_max_bytes": 1073741824,
+    "memory_swap_max_bytes": 0,
+    "systemd_invocation_id": "96a7a79f5c4e4d96b8be5edb89342cd2",
+    "started_at": "2026-08-19T06:48:03Z",
+    "finished_at": "2026-08-19T06:48:06Z",
+    "wall_seconds": 2.441,
+    "cpu_seconds": 2.427,
+    "peak_memory": "147.2M",
+    "exit_status": 2,
+    "classification": "terminal_scientific_rejection"
+  },
+  "next_hypothesis": "Without changing the kernel, payloads, numerical gate, speed gate, or latency gate, measure stability using seven independently interleaved timing blocks and gate the range of block medians rather than the maximum and minimum of all scheduler-exposed samples.",
+  "claim_boundary": "v38 is rejected. Its numerical and median performance measurements are retained as nonpromotion evidence only; they do not prove a promoted native kernel, llama.cpp integration, whole-model speed, quality, energy, or a breakthrough."
+}

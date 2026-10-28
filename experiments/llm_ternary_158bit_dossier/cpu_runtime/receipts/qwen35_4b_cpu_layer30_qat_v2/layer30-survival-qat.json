@@ -1,0 +1,133 @@
+{
+  "cache": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v1/teacher-completions.pt",
+  "base_patches": [
+    "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v2/layer30-local-qat.safetensors"
+  ],
+  "included_base_in_output": false,
+  "out_patch": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v2/layer30-survival-qat.safetensors",
+  "patch_reports": [
+    {
+      "patch": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v2/layer30-local-qat.safetensors",
+      "applied_count": 3,
+      "missing_count": 0,
+      "skipped_count": 0,
+      "applied": [
+        {
+          "tensor": "model.language_model.layers.30.mlp.down_proj.weight",
+          "parameter": "model.language_model.layers.30.mlp.down_proj.weight",
+          "shape": [
+            2560,
+            9216
+          ],
+          "dtype": "torch.bfloat16",
+          "params": 23592960
+        },
+        {
+          "tensor": "model.language_model.layers.30.mlp.gate_proj.weight",
+          "parameter": "model.language_model.layers.30.mlp.gate_proj.weight",
+          "shape": [
+            9216,
+            2560
+          ],
+          "dtype": "torch.bfloat16",
+          "params": 23592960
+        },
+        {
+          "tensor": "model.language_model.layers.30.mlp.up_proj.weight",
+          "parameter": "model.language_model.layers.30.mlp.up_proj.weight",
+          "shape": [
+            9216,
+            2560
+          ],
+          "dtype": "torch.bfloat16",
+          "params": 23592960
+        }
+      ],
+      "missing": [],
+      "skipped": []
+    }
+  ],
+  "layers": [
+    30
+  ],
+  "hidden_layers": [
+    30
+  ],
+  "mode": "ternary",
+  "group_size": 128,
+  "artifact_exact_ternary": true,
+  "steps_per_layer": 2,
+  "lr": 5e-06,
+  "projection_regex": null,
+  "runtime_device": "cpu",
+  "torch_threads": 4,
+  "train_rows": [
+    {
+      "index": 0,
+      "task": "knowledge",
+      "id": "knowledge-01",
+      "tokens": 57,
+      "keep": 24
+    },
+    {
+      "index": 1,
+      "task": "knowledge",
+      "id": "knowledge-02",
+      "tokens": 54,
+      "keep": 24
+    }
+  ],
+  "shuffle_rows": false,
+  "interleave_tasks": false,
+  "row_seed": 20260816,
+  "max_rows_per_task": null,
+  "reports": [
+    {
+      "layer": 30,
+      "linears": [],
+      "norms": [],
+      "history": [
+        {
+          "layer": 30,
+          "step": 1,
+          "task": "knowledge",
+          "id": "knowledge-01",
+          "tokens": 57,
+          "loss": 0.0226160679012537,
+          "hidden": 0.025008518248796463,
+          "anti": 0.0,
+          "code": 0.0,
+          "kl": 0.021365607157349586,
+          "weighted_kl": 0.021365642547607422,
+          "format_mass": 4.3157476170563314e-07,
+          "top1": 0.9583333134651184,
+          "mass": 0.9997064471244812,
+          "teacher_top_mass": 0.9996830821037292,
+          "student_top_mass": 0.9997063279151917,
+          "other_bucket": 1.0
+        },
+        {
+          "layer": 30,
+          "step": 2,
+          "task": "knowledge",
+          "id": "knowledge-02",
+          "tokens": 54,
+          "loss": 0.006746572908014059,
+          "hidden": 0.024518029764294624,
+          "anti": 0.0,
+          "code": 2.8218528314027935e-07,
+          "kl": 0.005520056467503309,
+          "weighted_kl": 0.0055206711404025555,
+          "format_mass": 1.7666361600277014e-05,
+          "top1": 0.9583333134651184,
+          "mass": 0.9999842643737793,
+          "teacher_top_mass": 0.9999904632568359,
+          "student_top_mass": 0.9999840259552002,
+          "other_bucket": 1.0
+        }
+      ]
+    }
+  ],
+  "patch_size_bytes": 141558144,
+  "patch_sha256": "168f9debb63a4e0822e3c6659912ec83a78904158965b97fb4e159a0da5f9cfe"
+}

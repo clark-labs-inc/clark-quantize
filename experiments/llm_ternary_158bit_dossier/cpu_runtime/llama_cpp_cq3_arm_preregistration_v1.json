@@ -1,0 +1,122 @@
+{
+  "schema": "clark_llama_cpp_cq3_arm_preregistration_v1",
+  "status": "frozen_before_authoritative_paired_run",
+  "frozen_at_utc": "2026-08-17T04:12:00Z",
+  "upstream": {
+    "repository": "https://github.com/ggml-org/llama.cpp.git",
+    "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "benchmark_sha256": "952b081596883ca561f78957047b2b7e0cdb2659fffa79843895461f2a225d76",
+  "patches": {
+    "base": {
+      "path": "llama_cpp_4df29be_cq3.patch",
+      "sha256": "b5c584a338018ff7e509bc160c195693102fb6e265b6cbe4935d6e54d7cd67c1"
+    },
+    "arm_delta": {
+      "path": "llama_cpp_4df29be_cq3_arm_v2.patch",
+      "sha256": "f646aef73c5623af4f325f6923d9855cd698b71f4784e6795a8b658162661127"
+    }
+  },
+  "sources": {
+    "candidate": {
+      "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+      "full_diff_sha256": "3a3a96cad42f2dad689c59e6942e2268bde8f01d9e2af063c3679e2b8c0a48f4",
+      "file_sha256": {
+        "ggml/src/ggml-cpu/arch-fallback.h": "0a45381d9209213d3c30ec5134e64d83139b1a7633d383e4991e4c7ffe763ed0",
+        "ggml/src/ggml-cpu/arch/arm/quants.c": "5a0d91b730d7155d55dfd88a0b99796708d48b2e48f29b1f271cb8e21fea8f11",
+        "ggml/src/ggml-cpu/ggml-cpu.c": "a4b902acdcc7efb7f5bcd20ad81ad8951b3fc976ca2ae281c51a16507c2037d6",
+        "ggml/src/ggml-cpu/quants.h": "200149a502a9fb2d180843f5e98ed8acd9eefe5cdf633bf239b5ca9958790e31",
+        "tests/test-backend-ops.cpp": "0c1f2132a3f0b45d8d5ba23474a54e2bc2952b463a81a5de118fa3a4e5b2a164",
+        "tests/test-cq3.cpp": "8a9e58dd133b55eae6ef5086f01cdfdc318bbd6120414ede06cf79c64364e6f1"
+      }
+    },
+    "control": {
+      "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+      "full_diff_sha256": "2aa68af50a404b9281563435ee51d301d0744994fa58a9b62355700cddd2f29d",
+      "file_sha256": {
+        "ggml/src/ggml-cpu/arch-fallback.h": "618df37f0b63d20291c20eea2bdad0e89da8f89faf1b3f07e535ecda4ba6a058",
+        "ggml/src/ggml-cpu/arch/arm/quants.c": "9fccd3897db24c9df89b8431b588175894e5f54697cf45768d0c6e6c5544093e",
+        "ggml/src/ggml-cpu/ggml-cpu.c": "54d571f108ef9533cea08b22064803e41a795e1989cf3ea3363275a1cc62e614",
+        "ggml/src/ggml-cpu/quants.h": "199ee3b5a66f950679e2c6834d6be6932509f8a916779c97d0d694889c79682d",
+        "tests/test-backend-ops.cpp": "58a022e4f0a55339920a3e6f1b1a5a5844480bb520531dd9a4cabd39d87605c7",
+        "tests/test-cq3.cpp": "c1ebb7aae9df65453e7b957b77c0bc983ed695b646edf688b44e0c3305cba6b2"
+      }
+    }
+  },
+  "builds": {
+    "cmake_flags": [
+      "-DGGML_NATIVE=ON",
+      "-DLLAMA_BUILD_TESTS=ON",
+      "-DLLAMA_BUILD_EXAMPLES=OFF",
+      "-DLLAMA_BUILD_TOOLS=OFF",
+      "-DLLAMA_BUILD_SERVER=OFF",
+      "-DCMAKE_BUILD_TYPE=Release"
+    ],
+    "candidate": {
+      "cmake_cache_sha256": "5df9a55fbc28ee0c8b4f062ac5f1f72be0f8f5012bb528a69c9dd0580a9aa332"
+    },
+    "control": {
+      "cmake_cache_sha256": "2111db23aa5c0dc8d57a53b18fecf069331c022b54085ba608b126f2179aecc8"
+    }
+  },
+  "operator": {
+    "name": "GGML_OP_MUL_MAT",
+    "weight_type": "CQ3_0",
+    "activation_input_type": "F32",
+    "activation_compute_type": "CQ8_0",
+    "m": 17408,
+    "n": 1,
+    "k": 5120,
+    "model_shape": "Qwen3.8-27B single-token gate or up projection",
+    "compute_image_bits_per_weight_including_fp16_group_scales": 2.125,
+    "benchmark_weights": "llama.cpp deterministic synthetic initialization at the exact operator shape; not real model artifact bytes"
+  },
+  "candidate": {
+    "isa": "AArch64 NEON DOTPROD",
+    "row_block": 16,
+    "design": "reuse each CQ8_0 activation group across up to sixteen CQ3_0 rows before advancing",
+    "dispatch": "ARM-only fast path inside ggml_compute_forward_mul_mat_one_chunk for one activation column"
+  },
+  "control": {
+    "implementation": "GGML CQ3_0 scalar generic row dot product",
+    "same_upstream_revision_base_patch_build_type_native_flags_shape_and_thread_count": true
+  },
+  "correctness": {
+    "run_test_cq3": true,
+    "cq3_filter": ".*type_a=cq3_0.*",
+    "expected_backend_cases": 4,
+    "includes_real_shape_reference_comparison": true,
+    "includes_sixteen_row_block_and_one_row_tail": true,
+    "ggml_backend_nmse_limit": 0.0005
+  },
+  "performance": {
+    "warmups": 2,
+    "repetitions": 9,
+    "paired_order": "alternate control-first and candidate-first at process granularity",
+    "test_filter": ".*type_a=cq3_0.*m=17408,n=1,k=5120.*",
+    "ggml_cpu_threads": 18,
+    "thread_source": "test-backend-ops N_THREADS equals std::thread::hardware_concurrency()",
+    "measurement": "each process runs duplicated graph operators for at least one second and reports normalized microseconds per run",
+    "host_scope": "Darwin arm64 Apple M5 Max"
+  },
+  "promotion": {
+    "minimum_median_speedup": 1.15,
+    "maximum_candidate_median_microseconds": 150.0,
+    "require_all_correctness_tests": true,
+    "scope": "K2/K11 ARM CQ3_0 GGML graph dispatch only",
+    "does_not_promote_fused_gate_up_swiglu_graph_dispatch": true,
+    "does_not_satisfy_full_model_quality_energy_or_breakthrough_gates": true,
+    "requires_cute_math_or_mmlu_after_model_graph_integration": true
+  },
+  "exploratory_basis": {
+    "naive_per_row_arm_dotprod_speedup": 1.03,
+    "row_block_candidates": {
+      "4": 147.6,
+      "8": 126.45,
+      "16": 123.68,
+      "32": 179.47
+    },
+    "units": "single exploratory test-backend-ops microseconds per run; non-authoritative and subject to process noise",
+    "selection": "sixteen rows retained; thirty-two rows rejected for register-spill regression"
+  }
+}

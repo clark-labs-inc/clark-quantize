@@ -1,0 +1,62 @@
+{
+  "schema": "cpu_cute_quick_v1",
+  "seed": 20260817,
+  "source": {
+    "benchmark": "CUTE: Character-Level Understanding of Tokens Evaluation",
+    "repository": "https://github.com/Leukas/CUTE",
+    "revision": "4238eaa301abb698d8850f42297564362d4e9032",
+    "license": "MIT",
+    "prompt_sha256": "f30ef6b18dd00cb568eb34232ae5b9ae80214b2845b32ec1047561be068de5a1",
+    "data_sha256": {
+      "contains_char.tsv": "bbdcc14954df8d2f748da1e82ead3cd594f89c8611de167af562ab23d2df4086",
+      "ins_char.tsv": "9977f6210655b2c72bca619e1cf690dcc43cf2ce7cf5daed80b749b18568553a",
+      "del_char.tsv": "c83b2afa2997303b733770b7aa796b7ed9ba10e30f61fde67097ac8d923b1805",
+      "swap_char.tsv": "021b86699458dfe84653db4c99fcd464a596f7893e120a33985b3e341a9fd260",
+      "sub_char.tsv": "96ca0acfe79c685b011d33a465d587e2ee1db3845f208aa0da1b45c835387e68"
+    }
+  },
+  "selection": {
+    "name": "CUTE-Quick-20",
+    "status": "frozen development tripwire",
+    "leaderboard_comparable": false,
+    "method": "four fixed rows from each official character task",
+    "source_lines": [74, 233, 509, 887],
+    "note": "This small slice detects catastrophic forgetting; it is not a substitute for full CUTE."
+  },
+  "items": [
+    {"id": "contains_char:line74", "task": "contains_char", "source_line": 74, "inputs": ["b", "back"], "label": "Yes"},
+    {"id": "contains_char:line233", "task": "contains_char", "source_line": 233, "inputs": ["i", "index"], "label": "Yes"},
+    {"id": "contains_char:line509", "task": "contains_char", "source_line": 509, "inputs": ["k", "options"], "label": "No"},
+    {"id": "contains_char:line887", "task": "contains_char", "source_line": 887, "inputs": ["h", "purchase"], "label": "Yes"},
+
+    {"id": "ins_char:line74", "task": "ins_char", "source_line": 74, "inputs": ["t", "b", "back"], "label": "btack"},
+    {"id": "ins_char:line233", "task": "ins_char", "source_line": 233, "inputs": ["c", "e", "index"], "label": "indecx"},
+    {"id": "ins_char:line509", "task": "ins_char", "source_line": 509, "inputs": ["t", "n", "options"], "label": "optionts"},
+    {"id": "ins_char:line887", "task": "ins_char", "source_line": 887, "inputs": ["r", "e", "purchase"], "label": "purchaser"},
+
+    {"id": "del_char:line74", "task": "del_char", "source_line": 74, "inputs": ["a", "back"], "label": "bck"},
+    {"id": "del_char:line233", "task": "del_char", "source_line": 233, "inputs": ["d", "index"], "label": "inex"},
+    {"id": "del_char:line509", "task": "del_char", "source_line": 509, "inputs": ["o", "options"], "label": "ptins"},
+    {"id": "del_char:line887", "task": "del_char", "source_line": 887, "inputs": ["h", "purchase"], "label": "purcase"},
+
+    {"id": "swap_char:line74", "task": "swap_char", "source_line": 74, "inputs": ["l", "o", "people"], "label": "pelpoe"},
+    {"id": "swap_char:line233", "task": "swap_char", "source_line": 233, "inputs": ["l", "k", "link"], "label": "kinl"},
+    {"id": "swap_char:line509", "task": "swap_char", "source_line": 509, "inputs": ["e", "d", "field"], "label": "fidle"},
+    {"id": "swap_char:line887", "task": "swap_char", "source_line": 887, "inputs": ["h", "n", "enough"], "label": "ehougn"},
+
+    {"id": "sub_char:line74", "task": "sub_char", "source_line": 74, "inputs": ["a", "d", "back"], "label": "bdck"},
+    {"id": "sub_char:line233", "task": "sub_char", "source_line": 233, "inputs": ["e", "x", "index"], "label": "indxx"},
+    {"id": "sub_char:line509", "task": "sub_char", "source_line": 509, "inputs": ["t", "d", "options"], "label": "opdions"},
+    {"id": "sub_char:line887", "task": "sub_char", "source_line": 887, "inputs": ["u", "l", "purchase"], "label": "plrchase"}
+  ],
+  "prompt_contract": {
+    "template": "official CUTE few-shot task prompt",
+    "suffix": "Return only the exact answer text, without quotes or explanation.",
+    "temperature": 0,
+    "seed": 20260817,
+    "max_tokens": 48,
+    "thinking": false,
+    "scoring": "case-sensitive exact match after strict wrapper removal"
+  },
+  "content_sha256": "cbc71368d5be89d5610d55990f9de248a434c6bfbb11e5c130718fa0fac2714a"
+}

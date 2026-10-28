@@ -1,0 +1,21 @@
+[Unit]
+Description=Build and characterize complete Qwen3.8-27B llama.cpp ternary controls
+After=network-online.target quant-qwen38-27b-activation-binary-mlp-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-tq-controls-v1
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-tq-controls.bundle
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/tmp/watch_qwen38_27b_llamacpp_ternary_controls_v1.sh
+CPUQuota=800%
+MemoryMax=30G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,121 @@
+{
+  "schema": "qwen38_27b_hierarchical_cell_subspace_residual_preregistration_v79",
+  "experiment_id": "qwen38_27b_hierarchical_cell_subspace_residual_v79",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_development_screen_before_execution",
+  "frozen_at_utc": "2026-08-20T07:35:00Z",
+  "objective": "Compose v75's high-capacity one-pass mixed-cell down projection with a compact rank-16 INT8 activation-subspace adapter fitted only to its remaining MLP residual, so the cell path captures common local structure and the skinny path captures prompt-varying correction directions.",
+  "parent_findings": {
+    "v75_v42_development_improvement": 0.8238069065756273,
+    "v76_fresh_improvement": 0.6726854697504412,
+    "v77_aggregate_optimal_scalar": 0.9510352930597581,
+    "v77_aggregate_deployed_fraction_of_directional_capacity": 0.9973492238700165,
+    "v77_median_prompt_directional_capacity": 0.15430477785682797,
+    "v78_v76_development_improvement": 0.5617980374483402,
+    "v78_zero_selected_scales": 6261,
+    "conclusion": "Static cell support already uses its global scale well, while forcing prompt-robust substitutions destroys CQ3 cells. Preserve v75 and represent only its remaining prompt-varying error in a shared low-rank activation subspace."
+  },
+  "prior_exact_kernel_evidence": {
+    "v37_terminal_decision_sha256": "26dae44ab53bf194b89c46e7a175808865b8c8eb40207dd83ef4edaefec7ba36",
+    "v39_stability_receipt_sha256": "52949a764b1e940ecf6171b07e592bc08244ef4509ce91ce6f1df8f4fd264a9a",
+    "v40_ggml_receipt_sha256": "8d4bab4e636582a2235035a6969a55046c49538d73e6284db479113b34ae3f7a",
+    "boundary": "The existing kernel establishes exact packed rank-16 INT8 algebra and bounded isolated execution for 5120-by-5120 adapters. v79 must still validate the new 17408-by-5120 payload and later integrate and time the composition end to end."
+  },
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "hidden_size": 5120,
+    "intermediate_size": 17408,
+    "layers": 64
+  },
+  "scope": {
+    "layer": 59,
+    "base_candidate": "frozen v75 three-projection MLP with its byte-identical hybrid down payload",
+    "adapter_input": "the 17408-dimensional BF16 output of the frozen v44 CQ3 gate/up SwiGLU",
+    "adapter_target": "exact BF16 down-projection MLP output minus the frozen v75 hybrid MLP output",
+    "fit_prompts": 8,
+    "fit_rows": 64,
+    "development_sets": [
+      "four original v42 validation prompts",
+      "eight now-open v76 prompts"
+    ],
+    "whole_model_generation_forbidden": true,
+    "performance_timing_forbidden": true,
+    "fresh_holdout_claim_forbidden": true
+  },
+  "authenticated_inputs": {
+    "full_context_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "v44_training_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+    "v75_receipt_sha256": "7028466f1798e425f2fa9a9574214aeef96864db754797590133115c7f8ef5e5",
+    "v75_hybrid_payload_sha256": "a5ddaf51d97c3534e2ef2e4da2f9ad5702e0473951a7a29cbbd2b2efc4172ef9",
+    "v76_receipt_sha256": "444d249cf32b3a7a3f440250988b2fd44e191b80a62a1c6110ed3f5b87502fc8",
+    "v76_checkpoint_sha256": "cd05845eb77f7671adabae0113c4a6fc92b835f92d43378d582f51db5de1d0d8",
+    "v77_receipt_sha256": "39fc77889d7ff6f190b0b67289ad4738b0e8e688301c2c0cea22951ccd00a838",
+    "v78_receipt_sha256": "ce26ac4e9e4e0b7f98b8cdc881489abca4a18297a75cee2912ecad949017b0a3",
+    "source_tensor_sha256": {
+      "mlp.gate_proj.weight": "af5f1f3627acd6ed1a1e3ff71defaeb4433b1dc280efdb01b6d8ebf9086ab1c3",
+      "mlp.up_proj.weight": "2d3f11424f7705452380d1c7a2df4e625929ab9c460882e9c81ce5effadc7feb",
+      "mlp.down_proj.weight": "ce8eaece6fd48b996ff5328840d7b75d5d91dc23acf358711388973b5c9584ca"
+    },
+    "v44_payload_sha256": {
+      "gate": "ca349cd022d248a29fae502d523430b50fa5894f1e5deff549e222b159a02599",
+      "up": "1592cd2858371645fd8e236113caa1c39d733a959b3a54ab0bbe4f6d550de4bc",
+      "down": "faa8661738f9c0bdcadc2dcd7eac7723ca39c1d99486523b2e8b21e636c76356"
+    }
+  },
+  "adapter": {
+    "rank": 16,
+    "ridge_fraction": 0.01,
+    "fit": "dual ridge regression from centered gate/up activation rows to the residual remaining after the frozen v75 hybrid output, followed by exact thin QR/SVD truncation",
+    "storage": "INT8 left and right factors with one FP16 scale per rank direction and FP16 output bias recentered after factor quantization",
+    "input_features": 17408,
+    "output_features": 5120,
+    "persistent_bytes": 370752,
+    "macs_per_token": 360448,
+    "rank_scratch_bytes_per_task": 64,
+    "rank_or_ridge_sweep": false,
+    "v42_validation_refit_forbidden": true,
+    "v76_refit_forbidden": true,
+    "high_precision_factor_materialization_at_runtime": false
+  },
+  "canonical_composition": {
+    "v75_three_projection_mlp_payload_bytes": 73657024,
+    "adapter_payload_bytes": 370752,
+    "composed_three_projection_mlp_payload_bytes": 74027776,
+    "baseline_three_cq3_mlp_payload_bytes": 71024640,
+    "relative_full_mlp_payload_increase": 0.04228301614763552,
+    "additional_macs_per_token_vs_v75": 360448,
+    "additional_runtime_passes_vs_v75": 2,
+    "execution": "one existing mixed-cell down pass followed by INT8-times-FP16 skinny projection to rank 16, INT8-times-FP16 expansion to 5120, and fused bias add"
+  },
+  "development_gate": {
+    "minimum_relative_fit_complete_mlp_nmse_improvement": 0.92,
+    "minimum_relative_v42_validation_complete_mlp_nmse_improvement": 0.84,
+    "minimum_absolute_v42_validation_improvement_over_v75": 0.02,
+    "minimum_relative_v76_development_complete_mlp_nmse_improvement": 0.72,
+    "minimum_absolute_v76_improvement_over_v75": 0.04,
+    "minimum_v76_positive_output_tile_fraction": 0.95,
+    "minimum_v76_improved_prompt_fraction": 1.0,
+    "minimum_v76_median_prompt_directional_capacity": 0.3,
+    "required_adapter_bytes": 370752,
+    "maximum_relative_full_mlp_payload_increase": 0.043,
+    "payload_roundtrip_exact": true,
+    "all_values_finite": true
+  },
+  "data_status": {
+    "both_development_sets_are_architecture_contaminated": true,
+    "allowed_use": "Reject or admit this exact composition to a second untouched prompt cache only.",
+    "promotion_or_scientific_claim_from_v79_forbidden": true
+  },
+  "decision": {
+    "if_pass": "Freeze both payload hashes and collect a second newly authored prompt cache before representative-layer or kernel-integration promotion.",
+    "if_fail": "Reject rank-16 residual composition without sweeping rank or ridge on either development set.",
+    "no_holdout_claim": true,
+    "no_whole_model_claim": true,
+    "no_benchmark_claim": true,
+    "no_throughput_claim": true,
+    "no_novelty_claim": true,
+    "no_breakthrough_claim": true
+  },
+  "claim_boundary": "Development-only layer-59 screen of a hierarchical mixed-cell plus rank-16 INT8 activation-subspace residual. A pass only authorizes a new-prompt replication; it does not establish whole-model quality, benchmark retention, CPU throughput, energy, novelty, 100 tokens per second, or a breakthrough."
+}

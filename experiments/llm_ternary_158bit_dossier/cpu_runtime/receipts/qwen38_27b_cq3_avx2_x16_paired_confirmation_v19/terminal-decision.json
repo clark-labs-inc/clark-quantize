@@ -1,0 +1,69 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_x16_paired_confirmation_result_v19",
+  "completed_at": "2026-08-18T20:56:10.055817Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "classification": "correct_and_stable_but_frozen_speed_threshold_failure",
+  "passed": false,
+  "kernel_promoted": false,
+  "decision": "reject_x16_and_return_to_x8_as_the_stronger_storage_neutral_primitive",
+  "measurement": {
+    "matrices": 2,
+    "rows_per_matrix": 17408,
+    "columns": 5120,
+    "warmup_pairs": 2,
+    "measured_pairs_per_comparison": 21,
+    "cache_eviction_bytes": 268435456,
+    "x8_x16_bit_exact": true,
+    "maximum_scaled_delta_vs_ordinary": 0.0000349350776,
+    "source_bytes": 47349760,
+    "x8_bytes": 47349760,
+    "x16_bytes": 47349760,
+    "x8_over_x16_pairwise_ratios": [1.064, 1.032, 1.016, 1.038, 1.069, 1.085, 1.102, 1.016, 1.027, 1.067, 1.071, 1.083, 1.046, 1.039, 1.099, 1.051, 1.099, 1.091, 1.087, 1.092, 1.033],
+    "ordinary_over_x16_pairwise_ratios": [1.371, 1.353, 1.381, 1.285, 1.389, 1.361, 1.377, 1.433, 1.365, 1.397, 1.412, 1.405, 1.363, 1.409, 1.449, 1.404, 1.397, 1.367, 1.423, 1.376, 1.386],
+    "x8_over_x16_pairwise_ratio_median": 1.066740326,
+    "ordinary_over_x16_pairwise_ratio_median": 1.386481505,
+    "x8_over_x16_pairwise_ratio_mad_fraction": 0.024089808,
+    "ordinary_over_x16_pairwise_ratio_mad_fraction": 0.013789348,
+    "frequency_samples": 84,
+    "minimum_frequency_mhz": 2400.0,
+    "maximum_frequency_mhz": 2400.0
+  },
+  "checks": {
+    "service_exit_code_zero": true,
+    "candidate_patch_sha256_matched": true,
+    "loaded_ggml_cpu_library_sha256_matched_v16": true,
+    "runtime_bytes_equal_source_bytes": true,
+    "x16_output_matches_x8_bits": true,
+    "maximum_scaled_float_error_0_00005_met": true,
+    "median_x8_over_x16_pairwise_ratio_1_08_met": false,
+    "median_ordinary_over_x16_pairwise_ratio_1_40_met": false,
+    "x8_over_x16_pairwise_ratio_mad_fraction_0_03_met": true,
+    "ordinary_over_x16_pairwise_ratio_mad_fraction_0_03_met": true,
+    "all_frequency_samples_positive": true,
+    "host_idle_precondition_met": true
+  },
+  "provenance": {
+    "preregistration": "qwen38_27b_cq3_avx2_x16_paired_confirmation_v19.json",
+    "repo_preregistration_commit": "6f746b8",
+    "benchmark": "benchmark.json",
+    "benchmark_sha256": "5c0d9baf3d6781e3947b298cd06f6a7f443ad43b622c988b6ff12434aa18e44b",
+    "execution": "execution.json",
+    "candidate_patch_sha256": "8e8ad180217a761c8f4931dd90036164330a090e95b8f61716e2611fc970c6d5",
+    "paired_harness_sha256": "0d180724131dfbb5c05e529f2aac2f06578a019819a04230a7d3bc7dbf3b7b7a",
+    "paired_harness_patch_sha256": "2e13eebfdcd2b8a1319581536ea87e31a31190db7f919fc5a283390f9d7632c7",
+    "test_binary_sha256": "fd0ff2d9886d72df086793775886d79b6847e9c4edbba2e1189c1afeb6a89b42",
+    "loaded_ggml_cpu_library_sha256": "e830a2bc9c5cfc095319c6991622e683850b40b73f579ce0fa21b7ef2496d1b8"
+  },
+  "model_deployment": {
+    "ran": false,
+    "reason": "The harness-only confirmation failed both frozen speed thresholds."
+  },
+  "quality": {
+    "ran": false,
+    "reason": "No model weights or arithmetic changed, and the preregistration forbade capability scoring."
+  },
+  "next_lane": "Do not retune or widen x16. Synthesize the prior kernel receipts, retain storage-neutral CQ3_0x8 as the positive primitive, and freeze a new kernel whose reuse axis targets the actual remaining bottleneck rather than more output rows.",
+  "claim_boundary": "The paired run establishes that x16 is stable and correct but too small a gain under the frozen contract. No model-level throughput, target-floor, quality, energy, novelty, 100 accepted tokens per second, or breakthrough claim follows."
+}

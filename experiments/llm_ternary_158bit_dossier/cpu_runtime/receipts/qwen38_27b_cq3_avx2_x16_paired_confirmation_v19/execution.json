@@ -1,0 +1,45 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_x16_paired_confirmation_execution_v19",
+  "completed_at": "2026-08-18T20:56:10.055817Z",
+  "host": "quant",
+  "service": "quant-qwen38-cq3-x16-paired-v19.service",
+  "invocation_id": "a2b1a650ac054f5f8c43587223b015a1",
+  "service_result": "success",
+  "exit_status": 0,
+  "restart_count": 0,
+  "wall_seconds": 5.834,
+  "cpu_seconds": 5.822,
+  "maximum_resident_set_bytes": 417026048,
+  "voluntary_context_switches": 1,
+  "involuntary_context_switches": 30,
+  "major_page_faults": 0,
+  "minor_page_faults": 101122,
+  "pinned_logical_cpu": 0,
+  "smt_sibling_logical_cpu": 1,
+  "smt_sibling_idle_at_launch": true,
+  "host_idle_precondition_met": true,
+  "processes_at_or_above_one_percent_cpu_at_launch": 0,
+  "environment": {
+    "OMP_NUM_THREADS": "1",
+    "CLARK_QWEN38_27B_CQ3_X16_PAIRED_V19": "1",
+    "LD_LIBRARY_PATH": "/workspace/build/qwen38-27b-cq3-x86-pair-v1/bin"
+  },
+  "provenance": {
+    "repo_preregistration_commit": "6f746b8",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "candidate_patch_sha256": "8e8ad180217a761c8f4931dd90036164330a090e95b8f61716e2611fc970c6d5",
+    "paired_harness_sha256": "0d180724131dfbb5c05e529f2aac2f06578a019819a04230a7d3bc7dbf3b7b7a",
+    "paired_harness_patch_sha256": "2e13eebfdcd2b8a1319581536ea87e31a31190db7f919fc5a283390f9d7632c7",
+    "test_binary_sha256": "fd0ff2d9886d72df086793775886d79b6847e9c4edbba2e1189c1afeb6a89b42",
+    "loaded_ggml_cpu_library_sha256": "e830a2bc9c5cfc095319c6991622e683850b40b73f579ce0fa21b7ef2496d1b8",
+    "benchmark_sha256": "5c0d9baf3d6781e3947b298cd06f6a7f443ad43b622c988b6ff12434aa18e44b"
+  },
+  "candidate_integrity": {
+    "newly_built_library_was_used": false,
+    "reason": "Its byte hash differed from the frozen v16 library, so the harness executable was explicitly loaded against the original v16 shared libraries.",
+    "ldd_resolved_frozen_ggml_cpu_library": true,
+    "untimed_correctness_exit_status_with_frozen_library": 0,
+    "kernel_or_layout_code_changed": false,
+    "harness_only_changed": true
+  }
+}

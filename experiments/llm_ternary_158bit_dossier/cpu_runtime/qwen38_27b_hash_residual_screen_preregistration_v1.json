@@ -1,0 +1,120 @@
+{
+  "schema": "qwen38_27b_hash_residual_screen_preregistration_v1",
+  "receipt_schema": "qwen38_27b_hash_residual_screen_receipt_v1",
+  "status": "frozen_before_authoritative_real_weight_run",
+  "frozen_at_utc": "2026-08-17T19:03:00Z",
+  "hypothesis": "A fixed Clark Hash sparse signed projection plus an int4 least-squares correction can pay for a sparser ternary residual and reduce exported Qwen3.8-27B layer weight error by at least 0.1% at no more than 1.57 projected component bits per sampled weight",
+  "clark_hash_source": {
+    "repository": "clark-labs-inc/clark-hash",
+    "paper_path": "arxiv_submission/main.tex",
+    "paper_blob_sha": "4a7c7ffa06ac9c650c6b822cd0bc111d501c3818",
+    "publication_commit": "de609c2c55dcbf727deea8bdf7bcc657743ce120",
+    "method_reused": "SplitMix64-derived sparse signed Johnson-Lindenstrauss buckets and signs with s updates per input coordinate",
+    "important_change": "the layer experiment trains the sketch coefficients by exact least squares and adds a sparse ternary residual; it does not apply the embedding codec unchanged"
+  },
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "sampled_parameters": 442368,
+    "tensors": [
+      {
+        "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+        "shape": [17408, 5120],
+        "shard": "model-00001-of-00018.safetensors",
+        "row_span": [8704, 8720]
+      },
+      {
+        "name": "model.language_model.layers.0.mlp.up_proj.weight",
+        "shape": [17408, 5120],
+        "shard": "model-00001-of-00018.safetensors",
+        "row_span": [8704, 8720]
+      },
+      {
+        "name": "model.language_model.layers.0.mlp.down_proj.weight",
+        "shape": [5120, 17408],
+        "shard": "model-00001-of-00018.safetensors",
+        "row_span": [2560, 2576]
+      }
+    ]
+  },
+  "candidate_family": {
+    "representation": "W approximately equals T plus A R",
+    "group_size": 128,
+    "hashes_per_input": 4,
+    "seed": 6840346601621575288,
+    "alternating_iterations": 3,
+    "training_step": "alternate exact fixed-support ternary residual projection and exact ridge-stabilized least-squares fit of A",
+    "hash_coefficient_export": "signed per-output-row int4 with one FP16 scale",
+    "ternary_scale_export_for_error": "FP16 per group",
+    "ternary_scale_storage_projection": "one FP16 row anchor plus 4-bit group ratio index and a 16-entry tensor codebook",
+    "candidates": [
+      {
+        "name": "hash128_sparse64",
+        "input_to_sketch_ratio": 128,
+        "nonzero_per_group": 64
+      },
+      {
+        "name": "hash64_sparse60",
+        "input_to_sketch_ratio": 64,
+        "nonzero_per_group": 60
+      },
+      {
+        "name": "hash32_sparse54",
+        "input_to_sketch_ratio": 32,
+        "nonzero_per_group": 54
+      }
+    ],
+    "candidate_selection": "lowest aggregate int4-hash plus FP16-ternary-scale squared error across all three frozen spans"
+  },
+  "measurement": {
+    "authenticate_model_and_every_tensor_name_shape_shard": true,
+    "compare_against_closed_form_symmetric_optimal_group128_ternary_FP16_scale_baseline": true,
+    "retain_every_FP32_coordinate_objective": true,
+    "measure_int4_hash_coefficient_export_error": true,
+    "measure_exact_ternary_histograms_and_entropy": true,
+    "count_hash_codes_hash_scales_ternary_codes_row_anchors_and_scale_indices": true,
+    "verify_Tx_plus_A_times_Rx_CPU_algebra_on_frozen_random_probes": true
+  },
+  "gate": {
+    "required_tensor_spans": 3,
+    "minimum_exported_squared_error_reduction": 0.001,
+    "maximum_projected_component_bits_per_weight": 1.57
+  },
+  "frozen_inputs": {
+    "prototype": {
+      "path": "clark_quantize/qwen38_hash_residual.py",
+      "sha256": "896583e383b2b94128934903ff2015ee40bbfdfcd48b35e3540121ef7bca62cf"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_hash_residual_screen_v1.py",
+      "sha256": "abb18c46d5a24b23ff1fd4e2d4f5cd8c955964e0c032db353ab53cd4ea5a7afa"
+    },
+    "symmetric_quantizer": {
+      "path": "clark_quantize/ternary.py",
+      "sha256": "c431723ac92eaf0ff315808bf18f17710060aad526cc677185c756b0ade33750"
+    },
+    "entropy_ledger": {
+      "path": "clark_quantize/qwen38_ternary_entropy.py",
+      "sha256": "dae2052666d3e2922e3c23653e25fc60a77bd53b6c3a492fb331e73903a9196e"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 4,
+    "swap_must_remain_zero": true,
+    "persistent_output_bytes": "less than 2 MiB",
+    "run_after_full_ternary_rate_analysis_and_before_longer_QAT": true
+  },
+  "promotion_rules": [
+    "plain Clark Hash is not called lossless or semi-lossless for a layer because an m less than d JL sketch cannot recover an arbitrary dense weight row",
+    "semi-lossless means capability and layer-output preservation under frozen activation distributions and evals, not exact dense-weight recovery",
+    "a pass advances to real-activation least squares and a short distillation-QAT screen",
+    "a fail is a valid negative result for the frozen data-free family and does not authorize seed or span tuning",
+    "row-normalized scale-codebook quality and complete-layout bytes must be proven separately",
+    "CUTE MMLU-type MATH WikiText and paired CPU throughput remain mandatory",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "this sampled screen alone cannot establish a scientific breakthrough"
+  ]
+}

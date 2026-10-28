@@ -1,0 +1,25 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_clang21_holdout_micro_result_v31",
+  "experiment_id": "qwen38_27b_q4_k_avx2_clang21_holdout_replication_v31",
+  "passed": true,
+  "pairs": 315,
+  "geometric_mean_parent_over_candidate_latency_ratio": 1.15252916728253,
+  "minimum_shape_ratio_median": 1.1397994455948166,
+  "maximum_pairwise_ratio_mad_fraction": 0.028240079262940768,
+  "frequency_mhz_minimum": 2400.0,
+  "frequency_mhz_maximum": 2400.0,
+  "checks": {
+    "all_expected_pairs_present": true,
+    "outputs_bit_exact": true,
+    "geometric_mean_at_least_minimum": true,
+    "no_shape_regresses_below_floor": true,
+    "paired_ratio_stability": true
+  },
+  "shape_ratio_medians": [
+    1.1582856306386127,
+    1.157768370506097,
+    1.1397994455948166,
+    1.1515798749527926,
+    1.1601262856720027
+  ]
+}

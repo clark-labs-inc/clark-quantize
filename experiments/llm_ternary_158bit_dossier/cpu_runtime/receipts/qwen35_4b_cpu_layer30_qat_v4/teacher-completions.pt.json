@@ -1,0 +1,511 @@
+{
+  "schema": "qwen_teacher_rollout_cache_v1",
+  "path": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/teacher-completions.pt",
+  "sha256": "79cc7281cb5d64ac08b636e9ca542346ba0c5f6ed95037b9f05df3c25654a00c",
+  "size_bytes": 1094655,
+  "rows": 48,
+  "task_counts": {
+    "code": 8,
+    "instruct": 8,
+    "knowledge": 8,
+    "math": 8,
+    "multilingual": 8,
+    "reasoning": 8
+  },
+  "total_generated_tokens": 1029,
+  "greedy_alignment_matches": 1019,
+  "greedy_alignment_total": 1029,
+  "topk_alignment_matches": 1029,
+  "topk_alignment_total": 1029,
+  "label_semantics": "teacher_completion_next_token_v1",
+  "hidden_layers": [
+    30
+  ],
+  "hidden_projection_dim": 64,
+  "runtime_device": "cpu",
+  "torch_threads": 4,
+  "resumed_from_rows": 0,
+  "checkpoint_every": 2,
+  "rows_summary": [
+    {
+      "index": 0,
+      "task": "knowledge",
+      "id": "knowledge-v4-01",
+      "tokens": 56,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "Plate tectonics generates earthquakes when the friction between colliding or sliding tectonic plates causes stress to build up"
+    },
+    {
+      "index": 1,
+      "task": "knowledge",
+      "id": "knowledge-v4-02",
+      "tokens": 54,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "Computer RAM is volatile, temporary memory that holds data for immediate access by the CPU while the system is running, whereas persistent"
+    },
+    {
+      "index": 2,
+      "task": "knowledge",
+      "id": "knowledge-v4-03",
+      "tokens": 51,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "Photosynthesis and cellular respiration move carbon in opposite directions by acting as complementary cycles within an ecosystem:\n\n*   **"
+    },
+    {
+      "index": 3,
+      "task": "knowledge",
+      "id": "knowledge-v4-04",
+      "tokens": 53,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "**DNS (Domain Name System)** acts as the internet's phonebook, translating human-readable domain names (like `www"
+    },
+    {
+      "index": 4,
+      "task": "knowledge",
+      "id": "knowledge-v4-05",
+      "tokens": 50,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "Correlation simply indicates that two variables change together, but it does not reveal whether one actually causes the other. A third"
+    },
+    {
+      "index": 5,
+      "task": "knowledge",
+      "id": "knowledge-v4-06",
+      "tokens": 59,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 23,
+      "topk_alignment_matches": 24,
+      "completion_preview": "The Moon is much closer to Earth, so its gravitational pull is stronger. This proximity outweighs the Sun's greater mass"
+    },
+    {
+      "index": 6,
+      "task": "knowledge",
+      "id": "knowledge-v4-07",
+      "tokens": 48,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "**Weather** refers to the short-term atmospheric conditions in a specific place at a given time, such as temperature, humidity"
+    },
+    {
+      "index": 7,
+      "task": "knowledge",
+      "id": "knowledge-v4-08",
+      "tokens": 55,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "Metal feels colder than wood at the same temperature because it has a much higher thermal conductivity, allowing it to draw heat away"
+    },
+    {
+      "index": 8,
+      "task": "math",
+      "id": "math-v4-01",
+      "tokens": 63,
+      "generated_tokens": 19,
+      "greedy_alignment_matches": 18,
+      "topk_alignment_matches": 19,
+      "completion_preview": "5x + 17 = 32; x = 5.\n"
+    },
+    {
+      "index": 9,
+      "task": "math",
+      "id": "math-v4-02",
+      "tokens": 66,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "To find the final price, apply the discounts sequentially as a single multiplication: $120 \\times (1 -"
+    },
+    {
+      "index": 10,
+      "task": "math",
+      "id": "math-v4-03",
+      "tokens": 69,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 22,
+      "topk_alignment_matches": 24,
+      "completion_preview": "To find the amount of water needed, we can set up a proportion based on the given ratio of flour to water ("
+    },
+    {
+      "index": 11,
+      "task": "math",
+      "id": "math-v4-04",
+      "tokens": 61,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "**Step 1: Find the width**\nThe formula for the perimeter of a rectangle is $P = 2"
+    },
+    {
+      "index": 12,
+      "task": "math",
+      "id": "math-v4-05",
+      "tokens": 71,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "The sum of the four scores is $82 \\times 4 = 328$. Adding the known scores"
+    },
+    {
+      "index": 13,
+      "task": "math",
+      "id": "math-v4-06",
+      "tokens": 62,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "### Step-by-Step Deduction\n\n1.  **Determine the total number of possible outcomes**:\n    When"
+    },
+    {
+      "index": 14,
+      "task": "math",
+      "id": "math-v4-07",
+      "tokens": 65,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "**Formula:**\n$$ \\text{Time} = \\frac{\\text{Distance}}{\\text{Speed}} $$"
+    },
+    {
+      "index": 15,
+      "task": "math",
+      "id": "math-v4-08",
+      "tokens": 55,
+      "generated_tokens": 17,
+      "greedy_alignment_matches": 17,
+      "topk_alignment_matches": 17,
+      "completion_preview": "500 \u00d7 1.08 = 540\n"
+    },
+    {
+      "index": 16,
+      "task": "code",
+      "id": "code-v4-01",
+      "tokens": 54,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "```python\ndef is_palindrome(s: str) -> bool:\n    \"\"\"Return True if s is a palindrome"
+    },
+    {
+      "index": 17,
+      "task": "code",
+      "id": "code-v4-02",
+      "tokens": 61,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "The definition is flawed because the mutable default argument `[]` is created once when the function is defined, causing all calls"
+    },
+    {
+      "index": 18,
+      "task": "code",
+      "id": "code-v4-03",
+      "tokens": 53,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "```python\ndef count_words(words):\n    counts = {}\n    for word in words:\n        counts[word"
+    },
+    {
+      "index": 19,
+      "task": "code",
+      "id": "code-v4-04",
+      "tokens": 58,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 23,
+      "topk_alignment_matches": 24,
+      "completion_preview": "The average-case lookup complexity of a Python dictionary is **$O(1)$**.\n\nLookup can become slower (de"
+    },
+    {
+      "index": 20,
+      "task": "code",
+      "id": "code-v4-05",
+      "tokens": 68,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "The loop currently stops before reaching 5 because `range(1, 5)` excludes the upper bound, so you"
+    },
+    {
+      "index": 21,
+      "task": "code",
+      "id": "code-v4-06",
+      "tokens": 53,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "```python\ncubes = (x**3 for x in range(1, 10) if x %"
+    },
+    {
+      "index": 22,
+      "task": "code",
+      "id": "code-v4-07",
+      "tokens": 67,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "Output: `[1, 2, 3]`\n\n**Reason:** In Python, `y=x` creates"
+    },
+    {
+      "index": 23,
+      "task": "code",
+      "id": "code-v4-08",
+      "tokens": 54,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "```python\ndef unique_preserve_order(seq):\n    \"\"\"Return a list with duplicates removed, preserving first-seen"
+    },
+    {
+      "index": 24,
+      "task": "instruct",
+      "id": "instruct-v4-01",
+      "tokens": 55,
+      "generated_tokens": 23,
+      "greedy_alignment_matches": 23,
+      "topk_alignment_matches": 23,
+      "completion_preview": "Despite noisy logs and a stable error rate, latency has improved, so we will continue monitoring overnight.\n"
+    },
+    {
+      "index": 25,
+      "task": "instruct",
+      "id": "instruct-v4-02",
+      "tokens": 58,
+      "generated_tokens": 23,
+      "greedy_alignment_matches": 23,
+      "topk_alignment_matches": 23,
+      "completion_preview": "1. take backup\n2. verify backup checksum\n3. deploy\n4. run smoke test\n"
+    },
+    {
+      "index": 26,
+      "task": "instruct",
+      "id": "instruct-v4-03",
+      "tokens": 53,
+      "generated_tokens": 18,
+      "greedy_alignment_matches": 18,
+      "topk_alignment_matches": 18,
+      "completion_preview": "{\"name\":\"Mira\",\"role\":\"analyst\",\"active\":\"yes\"}\n"
+    },
+    {
+      "index": 27,
+      "task": "instruct",
+      "id": "instruct-v4-04",
+      "tokens": 55,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 23,
+      "topk_alignment_matches": 24,
+      "completion_preview": "Conduct a formal risk assessment before execution to identify potential failure points and mitigation strategies.\n*   Define clear success criteria"
+    },
+    {
+      "index": 28,
+      "task": "instruct",
+      "id": "instruct-v4-05",
+      "tokens": 54,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 23,
+      "topk_alignment_matches": 24,
+      "completion_preview": "Could you please send the report as soon as possible? I'd appreciate it if we could avoid further delays.\n"
+    },
+    {
+      "index": 29,
+      "task": "instruct",
+      "id": "instruct-v4-06",
+      "tokens": 58,
+      "generated_tokens": 22,
+      "greedy_alignment_matches": 22,
+      "topk_alignment_matches": 22,
+      "completion_preview": "High priority: database unavailable\nLow priority: typo in footer\nHigh priority: expired TLS certificate\n"
+    },
+    {
+      "index": 30,
+      "task": "instruct",
+      "id": "instruct-v4-07",
+      "tokens": 55,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "Here is the four-item checklist:\n\n- [ ] Freeze writes\n- [ ] Export data\n- [ ] Verify"
+    },
+    {
+      "index": 31,
+      "task": "instruct",
+      "id": "instruct-v4-08",
+      "tokens": 52,
+      "generated_tokens": 14,
+      "greedy_alignment_matches": 14,
+      "topk_alignment_matches": 14,
+      "completion_preview": "The trial reduced response time without altering the error rate.\n"
+    },
+    {
+      "index": 32,
+      "task": "multilingual",
+      "id": "multilingual-v4-01",
+      "tokens": 43,
+      "generated_tokens": 14,
+      "greedy_alignment_matches": 14,
+      "topk_alignment_matches": 14,
+      "completion_preview": "Por favor, cierre la ventana antes de irse.\n"
+    },
+    {
+      "index": 33,
+      "task": "multilingual",
+      "id": "multilingual-v4-02",
+      "tokens": 48,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "Le sommeil r\u00e9gulier est essentiel car il permet au corps et \u00e0 l'esprit de se reposer, de consolider"
+    },
+    {
+      "index": 34,
+      "task": "multilingual",
+      "id": "multilingual-v4-03",
+      "tokens": 42,
+      "generated_tokens": 13,
+      "greedy_alignment_matches": 13,
+      "topk_alignment_matches": 13,
+      "completion_preview": "Der Zug kommt um sieben Uhr f\u00fcnfzehn an.\n"
+    },
+    {
+      "index": 35,
+      "task": "multilingual",
+      "id": "multilingual-v4-04",
+      "tokens": 43,
+      "generated_tokens": 14,
+      "greedy_alignment_matches": 14,
+      "topk_alignment_matches": 14,
+      "completion_preview": "Ci incontreremo vicino all'antico ponte.\n"
+    },
+    {
+      "index": 36,
+      "task": "multilingual",
+      "id": "multilingual-v4-05",
+      "tokens": 43,
+      "generated_tokens": 18,
+      "greedy_alignment_matches": 18,
+      "topk_alignment_matches": 18,
+      "completion_preview": "Caminhar ajuda a fortalecer os ossos e melhorar a sa\u00fade cardiovascular.\n"
+    },
+    {
+      "index": 37,
+      "task": "multilingual",
+      "id": "multilingual-v4-06",
+      "tokens": 37,
+      "generated_tokens": 10,
+      "greedy_alignment_matches": 10,
+      "topk_alignment_matches": 10,
+      "completion_preview": "\u4eca\u65e5\u306f\u56f3\u66f8\u9928\u304c\u9759\u304b\u3067\u3059\u3002\n"
+    },
+    {
+      "index": 38,
+      "task": "multilingual",
+      "id": "multilingual-v4-07",
+      "tokens": 41,
+      "generated_tokens": 13,
+      "greedy_alignment_matches": 13,
+      "topk_alignment_matches": 13,
+      "completion_preview": "Mijn broer kookt op zondag.\n"
+    },
+    {
+      "index": 39,
+      "task": "multilingual",
+      "id": "multilingual-v4-08",
+      "tokens": 36,
+      "generated_tokens": 8,
+      "greedy_alignment_matches": 8,
+      "topk_alignment_matches": 8,
+      "completion_preview": "The door is open.\n"
+    },
+    {
+      "index": 40,
+      "task": "reasoning",
+      "id": "reasoning-v4-01",
+      "tokens": 61,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "No.\n\n**Explanation:** While all cedar trees are plants and some plants are indoors, the \"some\" plants that"
+    },
+    {
+      "index": 41,
+      "task": "reasoning",
+      "id": "reasoning-v4-02",
+      "tokens": 59,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "Sam is the shortest because the statement \"Eli is taller than Sam\" places Sam at the bottom of the height hierarchy"
+    },
+    {
+      "index": 42,
+      "task": "reasoning",
+      "id": "reasoning-v4-03",
+      "tokens": 63,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "The card is **not blue**.\n\n**Explanation:**\nThe statement \"If a card is blue, then it is"
+    },
+    {
+      "index": 43,
+      "task": "reasoning",
+      "id": "reasoning-v4-04",
+      "tokens": 62,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 23,
+      "topk_alignment_matches": 24,
+      "completion_preview": "No, a square cannot be a circle because the set of squares is a proper subset of rectangles, while circles are entirely"
+    },
+    {
+      "index": 44,
+      "task": "reasoning",
+      "id": "reasoning-v4-05",
+      "tokens": 61,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 24,
+      "topk_alignment_matches": 24,
+      "completion_preview": "Based on the information provided, here is the step-by-step logical deduction:\n\n1.  **Analyze the timeline"
+    },
+    {
+      "index": 45,
+      "task": "reasoning",
+      "id": "reasoning-v4-06",
+      "tokens": 78,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 23,
+      "topk_alignment_matches": 24,
+      "completion_preview": "To solve this logic puzzle, let's analyze the statements and the possible locations of the coin step by step.\n\n###"
+    },
+    {
+      "index": 46,
+      "task": "reasoning",
+      "id": "reasoning-v4-07",
+      "tokens": 47,
+      "generated_tokens": 11,
+      "greedy_alignment_matches": 11,
+      "topk_alignment_matches": 11,
+      "completion_preview": "Each term is double the previous one.\n"
+    },
+    {
+      "index": 47,
+      "task": "reasoning",
+      "id": "reasoning-v4-08",
+      "tokens": 61,
+      "generated_tokens": 24,
+      "greedy_alignment_matches": 23,
+      "topk_alignment_matches": 24,
+      "completion_preview": "We cannot attribute the growth to light alone because the experiment described contains **confounding variables**.\n\nIn scientific experimentation, to"
+    }
+  ]
+}

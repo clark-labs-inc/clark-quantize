@@ -800,6 +800,27 @@ class BonsaiMuonFast(torch.optim.Optimizer):
                             state_dtype=torch.bfloat16, ns_dtype=torch.bfloat16)
         super().__init__(params, defaults)
 
+    def load_state_dict(self, state_dict):
+        """Restore reduced-precision Muon state without PyTorch upcasting it.
+
+        ``Optimizer.load_state_dict`` normally casts floating state tensors to
+        the parameter dtype. QAT masters are FP32 while their momentum contract
+        is BF16, so an uncorrected resume silently doubles optimizer memory and
+        changes the experiment's resource state.
+        """
+        result = super().load_state_dict(state_dict)
+        for group in self.param_groups:
+            if group.get("role", "muon") != "muon":
+                continue
+            state_dtype = group.get("state_dtype", torch.bfloat16)
+            for parameter in group["params"]:
+                state = self.state.get(parameter)
+                if state and "momentum_buffer" in state:
+                    state["momentum_buffer"] = state["momentum_buffer"].to(
+                        device=parameter.device, dtype=state_dtype
+                    )
+        return result
+
     @torch.no_grad()
     def step(self, closure=None):
         loss = None

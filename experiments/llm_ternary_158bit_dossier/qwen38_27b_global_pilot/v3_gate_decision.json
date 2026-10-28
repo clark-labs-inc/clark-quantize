@@ -1,0 +1,45 @@
+{
+  "schema": "qwen38_ternary_depth_gate_v1",
+  "created_at": "2026-08-16T10:44:42Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0e8f5fccd42e6efbc05b30b680ae4aeeef9",
+  "method": "sequential_layer_hard_ternary_qat_with_teacher_completion_distillation",
+  "converted_layers": [0, 1, 2, 3, 4, 5, 6, 7],
+  "converted_parameters": 3043819520,
+  "teacher_cache": {
+    "remote_path": "/workspace/quant-state/qwen38-global-pilot-v1/teacher-rollout-cache-v1/teacher_cache.pt",
+    "sha256": "dbca4fd48e630189fcfd4af6f8ee15fde3a8e363a9de72a328a3983b2511ab23",
+    "rows": 224,
+    "answer_tokens": 20886,
+    "topk_alignment": [20886, 20886],
+    "greedy_alignment": [20809, 20886]
+  },
+  "patch": {
+    "remote_path": "/workspace/quant-state/qwen38-global-pilot-v1/sequential-layer-v3-rollout/layers0-7-32steps/layer-patch.safetensors",
+    "sha256": "f910b488d659f7f3d17c59d004b22a56608f6906b0dd5eda656d6ebf9258ab2b",
+    "size_bytes": 6087647264
+  },
+  "frozen_eval": {
+    "bf16": {"math500": [10, 32], "gsm8k": [14, 32], "mmlu": [53, 64]},
+    "v1_layers_0_7": {"math500": [4, 32], "gsm8k": [8, 32], "mmlu": [41, 64]},
+    "v2_layers_0_7": {"math500": [6, 32], "gsm8k": [7, 32], "mmlu": [41, 64]},
+    "v3_layers_0_7": {"math500": [6, 32], "gsm8k": [12, 32], "mmlu": [47, 64]}
+  },
+  "advance_gate": {"math500_min": 8, "gsm8k_min": 12, "mmlu_min": 48},
+  "decision": "stop_before_layer_8",
+  "decision_reason": "v3 recovered GSM8K and MMLU materially but missed the conservative MATH gate and MMLU gate by one item",
+  "next_hypothesis": "use non-eval concise advanced-math teacher trajectories that place the final answer before the 96-token evaluation ceiling, then rerun only the same-depth layers 0-7 gate",
+  "retention": {
+    "kept": [
+      "/workspace/quant-state/qwen38-global-pilot-v1/sequential-layer-v3-rollout/layers0-7-32steps/layer-patch.safetensors",
+      "/workspace/quant-runs/qwen38-global-pilot-v1/checkpoints/qwen38-hard-ternary-step224.safetensors",
+      "/workspace/quant-runs/qwen38-qat/checkpoints/checkpoint-10"
+    ],
+    "removed_superseded_patch_tensors": [
+      "/workspace/quant-state/qwen38-global-pilot-v1/sequential-layer-v1/layers0-7-32steps/layer-patch.safetensors",
+      "/workspace/quant-state/qwen38-global-pilot-v1/sequential-layer-v1/layers0-15-32steps/layer-patch.safetensors",
+      "/workspace/quant-state/qwen38-global-pilot-v1/sequential-layer-v2-interleaved/layers0-7-32steps/layer-patch.safetensors"
+    ],
+    "json_evidence_preserved": true
+  }
+}

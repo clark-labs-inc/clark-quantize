@@ -1,0 +1,108 @@
+{
+  "schema": "qwen38_27b_gain_hash_layer_transcode_preregistration_v1",
+  "receipt_schema": "qwen38_27b_gain_hash_layer_transcode_benchmark_v1",
+  "status": "frozen_before_authoritative_x86_run_after_disclosed_arm64_pilot",
+  "frozen_at_utc": "2026-08-18T01:46:00Z",
+  "hypothesis": "For one complete Qwen3.8-27B MLP projection shape, directly transcoding the canonical 189-bit 64-of-128 enumerative ternary groups into the 192-bit mask64 compute image will remain byte-identical to dense decode followed by mask64 packing while reducing peak process RSS by at least 64 MiB, using no dense 89,128,960-byte INT8 layer intermediate, finishing within five seconds, and costing no more than 1.75 times the dense control's one-time load latency on the pinned x86 CPU node",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "qwen_4b_compute_forbidden": true,
+    "primary_shape": [17408, 5120],
+    "also_covers_shape": [5120, 17408],
+    "reason_shapes_share_work": "both shapes contain exactly 696320 groups of 128 weights",
+    "input": "a canonical synthetic full-shape enumerative payload with rank-zero first-half support and alternating signs",
+    "input_bytes": 16450560,
+    "output_bytes": 16711680,
+    "dense_INT8_intermediate_bytes_avoided": 89128960,
+    "claim_boundary": "full-shape synthetic load-time transcode only; not real weights, model quality, token throughput, semi-lossless compression, or a scientific breakthrough"
+  },
+  "comparison": {
+    "candidate": "direct native enumerative-to-mask64 transcode without materializing dense ternary codes",
+    "control": "frozen native enumerative decode to a dense INT8 matrix followed by the frozen native mask64 packer",
+    "identical_inputs": true,
+    "identical_expected_output_sha256": "2f04c86e73e9be0ec3d44e3d2b95cc07a0817db69c9280a006a5b1d11c307b83",
+    "warmups_per_worker": 1,
+    "measured_repetitions_per_worker": 5,
+    "workers_run_in_separate_processes": true,
+    "peak_rss_source": "getrusage RUSAGE_SELF",
+    "timing_source": "perf_counter around the complete public Python binding operation"
+  },
+  "gate": {
+    "require_direct_output_hash_exact": true,
+    "require_dense_control_output_hash_exact": true,
+    "minimum_peak_rss_saving_bytes": 67108864,
+    "maximum_direct_peak_rss_bytes": 268435456,
+    "maximum_direct_median_seconds": 5.0,
+    "maximum_direct_slowdown_ratio_vs_dense_control": 1.75
+  },
+  "disclosed_non_authoritative_arm64_pilot": {
+    "purpose": "bound a realistic x86 preregistration after discovering that the memory-saving path is not a load-time speed win on the development Mac",
+    "host": "Apple arm64 macOS",
+    "repetitions": 3,
+    "direct_median_seconds": 0.759814208,
+    "dense_control_median_seconds": 0.495870041,
+    "direct_slowdown_ratio": 1.5322849641565661,
+    "direct_peak_rss_bytes": 250265600,
+    "dense_control_peak_rss_bytes": 428867584,
+    "peak_rss_saving_bytes": 178601984,
+    "both_output_hashes_exact": true,
+    "scientific_status": "engineering pilot only; not the authoritative x86 gate and not evidence of a speed improvement"
+  },
+  "resources": {
+    "authoritative_architecture": "x86_64",
+    "cpu_threads": 1,
+    "cpu_affinity": [0],
+    "cpu_quota_percent": 100,
+    "memory_max_gib": 1,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 10,
+    "persistent_output_bytes": "less than 1 MiB",
+    "run_after_service": "quant-qwen38-27b-infrastructure-retry-v1.service",
+    "concurrent_llama_or_training_processes": 0
+  },
+  "promotion_rules": [
+    "an exact-output failure is a representation failure regardless of speed or memory",
+    "a gate pass establishes only a lower-peak-memory bounded-latency load-time transcode",
+    "the direct path is not described as faster unless its measured median is lower than the dense control",
+    "a gate rejection is retained as a valid negative result and does not authorize threshold tuning",
+    "real-weight layer materialization remains conditional on the gain-route quality gates",
+    "CUTE MMLU-type MATH WikiText code and paired CPU throughput remain mandatory before any model-quality or breakthrough claim",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane"
+  ],
+  "frozen_inputs": {
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_gain_hash_layer_transcode_v1.py",
+      "sha256": "e633b8e619c36ba408783f732777246971aa69e7cf57b16dcbcad5156bfb1caa"
+    },
+    "watcher": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/watch_qwen38_27b_gain_hash_layer_transcode_v1.sh",
+      "sha256": "b01573070d12821d8644f497aaf9cd0fdfb1c56c86aa3d4b21af3a1d4246f9d2"
+    },
+    "service": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/quant-qwen38-27b-gain-hash-layer-transcode-v1.service",
+      "sha256": "6e0f9bc90c5c85f965c0dcec86fee438d0f3aadab3ab7fae6b1465c7287d295a"
+    },
+    "native_transcode": {
+      "path": "clark_quantize/qwen38_gain_hash_layer_transcode.c",
+      "sha256": "fb12239a713354ad01846a204f6724b326ef56e8a816c8c7cc5f35bf39433627"
+    },
+    "binding": {
+      "path": "clark_quantize/qwen38_gain_hash_layer_transcode.py",
+      "sha256": "83c427179653440cbb3b90439cdf89c0c55e8599eacdd515cedfcd4db06b5ef3"
+    },
+    "fixed_support_control": {
+      "path": "clark_quantize/qwen38_fixed_support_cpu.c",
+      "sha256": "e5ae5c4b63f3b0649955dc8115cc538031880dc3200a130cee4423be984932b2"
+    },
+    "mask64_control": {
+      "path": "clark_quantize/qwen38_fixed_support_mask64_cpu.c",
+      "sha256": "af12f49bfb975541ff5030ec50ffe6abb7df96a203dbdd9a014e170bfce85644"
+    },
+    "correctness_receipt": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38-gain-hash-layer-transcode-v1.json",
+      "sha256": "85dff7395977cecdd7cd92ce10f155ce41e48059b3c2cb9e2546a64bb764820e"
+    }
+  }
+}

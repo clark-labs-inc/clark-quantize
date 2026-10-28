@@ -1,0 +1,22 @@
+[Unit]
+Description=Gate the real Qwen3.8-27B layer-0 MLP from direct CQ3 storage
+After=network-online.target quant-qwen38-27b-cq3-runtime-mmap-watch-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-7e17343.bundle
+Environment=EXPECTED_COMMIT=7e1734308d3d920f4ba2a53f38a8df004dd89552
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/tmp/watch-qwen38-27b-cq3-layer0-mlp-v1-7e17343.sh
+CPUQuota=400%
+MemoryMax=4G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

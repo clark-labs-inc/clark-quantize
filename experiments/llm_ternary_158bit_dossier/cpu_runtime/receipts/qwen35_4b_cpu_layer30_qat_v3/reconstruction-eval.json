@@ -1,0 +1,141 @@
+{
+  "schema": "qwen_mlp_triplet_reconstruction_eval_v1",
+  "created_at": "2026-08-17T06:55:01.105285+00:00",
+  "candidate_label": "heldout-selected-v3",
+  "candidate_patch": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v3/layer30-heldout-selected.safetensors",
+  "candidate_patch_sha256": "9f1c71d44c3eec637a6eb929ecf197282a51f00c17d7bb2b5485b77f0ada7013",
+  "activation_cache": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v1/layer30-activations.pt",
+  "activation_cache_sha256": "9a3daa21df6fe627245cf17917404cae190b43726a58d781bb81e13a08bf4d9e",
+  "inventory_sha256": "793d872a2b75fb51e640afec9472fba2c605e03b610ffae9c5d171d33851f344",
+  "model_index_sha256": "cf3f798ee02ba45f9622aa8892a47369ab667d0afbf154ee7c2212de42e6302d",
+  "layer": 30,
+  "group_size": 128,
+  "candidate_exact_ternary": true,
+  "splits": {
+    "train": {
+      "row_indices": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "rows": [
+        {
+          "task": "knowledge",
+          "id": "knowledge-01",
+          "tokens": 57,
+          "positions": 24
+        },
+        {
+          "task": "math",
+          "id": "math-01",
+          "tokens": 63,
+          "positions": 24
+        },
+        {
+          "task": "code",
+          "id": "code-01",
+          "tokens": 62,
+          "positions": 24
+        },
+        {
+          "task": "instruct",
+          "id": "instruct-01",
+          "tokens": 60,
+          "positions": 24
+        },
+        {
+          "task": "multilingual",
+          "id": "multilingual-01",
+          "tokens": 57,
+          "positions": 24
+        },
+        {
+          "task": "reasoning",
+          "id": "reasoning-01",
+          "tokens": 61,
+          "positions": 24
+        }
+      ],
+      "positions": 144,
+      "normalized_loss": {
+        "bf16": 1.3387712907369798e-05,
+        "direct_ptq": 0.3631899195246481,
+        "candidate": 0.0972499187647759
+      },
+      "candidate_relative_improvement_vs_direct_ptq_percent": 73.22339813504213
+    },
+    "validation": {
+      "row_indices": [
+        1,
+        5,
+        9
+      ],
+      "rows": [
+        {
+          "task": "knowledge",
+          "id": "knowledge-02",
+          "tokens": 54,
+          "positions": 24
+        },
+        {
+          "task": "code",
+          "id": "code-02",
+          "tokens": 78,
+          "positions": 24
+        },
+        {
+          "task": "multilingual",
+          "id": "multilingual-02",
+          "tokens": 50,
+          "positions": 24
+        }
+      ],
+      "positions": 72,
+      "normalized_loss": {
+        "bf16": 1.3339169634884118e-05,
+        "direct_ptq": 0.3868153845274225,
+        "candidate": 0.3444310472833866
+      },
+      "candidate_relative_improvement_vs_direct_ptq_percent": 10.957252203352096
+    },
+    "test": {
+      "row_indices": [
+        3,
+        7,
+        11
+      ],
+      "rows": [
+        {
+          "task": "math",
+          "id": "math-02",
+          "tokens": 65,
+          "positions": 24
+        },
+        {
+          "task": "instruct",
+          "id": "instruct-02",
+          "tokens": 53,
+          "positions": 24
+        },
+        {
+          "task": "reasoning",
+          "id": "reasoning-02",
+          "tokens": 68,
+          "positions": 24
+        }
+      ],
+      "positions": 72,
+      "normalized_loss": {
+        "bf16": 1.2600079564589268e-05,
+        "direct_ptq": 0.3462574009037044,
+        "candidate": 0.250436115559057
+      },
+      "candidate_relative_improvement_vs_direct_ptq_percent": 27.67342592376696
+    }
+  },
+  "independent_test_improves_direct_ptq": true,
+  "report_content_sha256": "1d5ffab480f2dbb73b48bcf9a6e437b23bc2443fc3d784efaf0ee10b4e4c6dd7"
+}

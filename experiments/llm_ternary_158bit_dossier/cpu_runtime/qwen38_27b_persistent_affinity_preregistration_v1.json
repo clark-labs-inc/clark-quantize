@@ -1,0 +1,109 @@
+{
+  "schema": "qwen38_27b_persistent_affinity_preregistration_v1",
+  "receipt_schema": "qwen38_27b_persistent_affinity_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T17:58:00Z",
+  "objective": "Measure whether pinning four persistent workers once removes per-GEMV Linux affinity syscall overhead from an exact full-graph Qwen3.8-27B decode token",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "operator": "batch-one complete 64-layer text decode plus streaming top-64 LM head",
+    "full_graph": true,
+    "state_dtype": "FP32",
+    "aligned_tensor_count": 666,
+    "Python_dispatch_included": true
+  },
+  "input": {
+    "token_id": 248045,
+    "token_text": "<|im_start|>",
+    "position": 0,
+    "context_capacity": 1,
+    "fresh_state_per_run": true,
+    "streaming_topk_count": 64,
+    "streaming_row_chunk": 4096,
+    "semantic_capability_interpretation": false
+  },
+  "parent": {
+    "full_text_receipt": "/workspace/quant-state/qwen38-27b-aligned2-full-text-v1.json",
+    "required_schema": "qwen38_27b_aligned2_full_text_receipt_v1",
+    "must_pass": true,
+    "source_container_cache_and_manifest_must_match": true
+  },
+  "control": {
+    "executor": "standard persistent ThreadPoolExecutor with four workers",
+    "affinity": "each GEMV task calls sched_getaffinity, sched_setaffinity to one core, and restores the prior mask",
+    "gemv_implementation": "avx2",
+    "physical_threads": 4
+  },
+  "candidate": {
+    "executor": "eager persistent ThreadPoolExecutor with four uniquely pinned workers",
+    "affinity": "each worker calls sched_setaffinity exactly once in its initializer; GEMV tasks omit affinity syscalls",
+    "worker_affinity_must_be_proven": true,
+    "gemv_implementation": "avx2",
+    "physical_threads": 4
+  },
+  "measurement": {
+    "physical_threads": 4,
+    "warmups_per_arm": 1,
+    "paired_repetitions": 3,
+    "paired_order": "alternating control-candidate and candidate-control",
+    "state_allocation_excluded_from_timing": true,
+    "executor_creation_and_worker_pinning_excluded_from_timing": true,
+    "all_64_layers_streaming_LM_head_and_Python_dispatch_included_in_timing": true,
+    "page_faults_measured_after_warmups": true
+  },
+  "gate": {
+    "require_exact_topk_values": true,
+    "require_exact_topk_indices": true,
+    "require_exact_full_state": true,
+    "minimum_speedup": 1.05,
+    "minimum_each_paired_speedup": 1.0,
+    "required_authenticated_aligned_tensor_count": 666,
+    "maximum_process_peak_rss_bytes": 10737418240,
+    "require_zero_major_page_faults": true,
+    "require_all_outputs_states_and_timings_finite": true
+  },
+  "frozen_inputs": {
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_persistent_affinity_v1.py",
+      "sha256": "6a5e2163dcc8f7a5798464dc3449e00678fb3975a92e1ccff013de49730dda14"
+    },
+    "full_text_helpers": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_aligned2_full_text_v1.py",
+      "sha256": "d15e5a44f8eb9bf02866393bbf13e0874322ad6daba86549ddbac6cb9ab23533"
+    },
+    "aligned_cache_runtime": {
+      "path": "clark_quantize/qwen38_aligned2_cache.py",
+      "sha256": "714d0c6ef3e1d3fe53036651f2d733cbd848e5811e61b1c6989501a1a6042ef4"
+    },
+    "model_runtime": {
+      "path": "clark_quantize/qwen38_cq3_runtime.py",
+      "sha256": "652412365666430108e4642db2e871632f6ab34957d718e195bec4d1e7693ec6"
+    },
+    "native_wrapper": {
+      "path": "clark_quantize/ternary_cpu.py",
+      "sha256": "ce706e66ac61d2919a80f0c838432b9df31ff469412ce95a3d61c56c15bed7a9"
+    },
+    "native_source": {
+      "path": "clark_quantize/ternary_cpu.c",
+      "sha256": "00acb5674e1ae2de188d7d7dfefcf5cf33776ca634c597469dc5e3b168248488"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 12,
+    "swap_must_remain_zero": true,
+    "new_persistent_artifact_bytes": 0,
+    "run_after_the_existing_capability_and_prefill_queue": true
+  },
+  "promotion_rules": [
+    "a pass promotes only the exact persistent-worker-affinity implementation on the measured x86 host",
+    "a valid parity speed memory or fault miss is retained as a negative result",
+    "the benchmark has no semantic capability interpretation",
+    "the Qwen3.8 CUTE MATH MMLU and perplexity receipts remain the quality authority",
+    "one-token batch-one throughput is not a batched prefill or long-context claim",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "no scientific breakthrough claim can come from this optimization alone",
+    "Qwen 4B compute is forbidden in this research lane"
+  ]
+}

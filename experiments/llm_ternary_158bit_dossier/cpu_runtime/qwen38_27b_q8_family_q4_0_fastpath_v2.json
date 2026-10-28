@@ -1,0 +1,74 @@
+{
+  "schema": "qwen38_27b_q8_family_q4_0_fastpath_preregistration_v2",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q8_family_q4_0_fastpath_v2",
+  "frozen_at": "2026-08-18T13:37:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "control": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "prior_q4_k_candidate_receipt": "receipts/qwen38_27b_q8_family_q4_k_transcode_v1/terminal-decision.json",
+    "candidate": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-q8-family-Q4_0-v2.gguf",
+    "runtime": "promoted fused-ragged AVX2 v2",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true
+  },
+  "hypothesis": "Symmetric Q4_0 has the same 18-byte-per-32-weight payload as Q4_K but a simpler block decode and dot-product path on AVX2. Replacing the same 288 Q8_0 tensors with Q4_0 may convert the Q4_K candidate's 18.6% target-only gain into at least 20% while clearing the 8% MTP3 gate. Because Q4_0 has weaker scale geometry, this remains a PTQ fast-path ceiling screen and must beat the Q4_K result before any training is justified.",
+  "artifact_contract": {
+    "source_type": "Q8_0",
+    "target_type": "Q4_0",
+    "selected_tensor_count": 288,
+    "selected_weight_count": 6734479360,
+    "expected_bytes_saved": 3367239680,
+    "all_nonselected_tensor_payloads_must_be_byte_identical": true,
+    "maximum_retained_candidates": 1,
+    "prior_q4_k_candidate_is_regenerable_from_control_and_terminal_receipt": true
+  },
+  "sequential_gates": {
+    "gate_1_artifact": {
+      "load_smoke_required": true,
+      "exact_selected_tensor_count": 288,
+      "q8_tensor_count_after_transcode": 0,
+      "q4_0_tensor_count_increase": 288,
+      "nonselected_payload_hash_parity": true
+    },
+    "gate_2_free_generation_canary": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "minimum_unique_token_ids_across_prompts": 32,
+      "no_all_zero_or_single_token_collapse": true
+    },
+    "gate_3_real_model_four_token_graph": {
+      "warmup_processes_per_model": 1,
+      "measured_processes_per_model": 4,
+      "samples_per_process": 7,
+      "minimum_candidate_over_control_speedup": 1.10,
+      "minimum_candidate_over_prior_q4_k_speedup": 1.03,
+      "maximum_candidate_process_median_range_fraction": 0.05
+    },
+    "gate_4_target_and_mtp3": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "minimum_candidate_over_control_target_tps": 1.20,
+      "minimum_candidate_over_control_mtp3_tps": 1.08,
+      "minimum_candidate_over_prior_q4_k_target_tps": 1.03,
+      "minimum_candidate_over_prior_q4_k_mtp3_tps": 1.03
+    },
+    "gate_5_quality": {
+      "cute_quick_candidate_correct_minimum": 9,
+      "cute_quick_denominator": 20,
+      "maximum_wikitext_ppl_ratio": 1.05,
+      "mmlu64_and_paired_math_required_only_if_all_prior_gates_pass": true
+    }
+  },
+  "stop_rules": [
+    "Reject invalid or collapsed artifacts before timing.",
+    "Reject before paired serving if graph speed is below 1.10x control or below 1.03x the prior Q4_K candidate.",
+    "Reject before MMLU and MATH if target, MTP3, CUTE, or WikiText gates fail.",
+    "Do not retain both full-model derived candidates on the 225 GB node."
+  ],
+  "recovery_boundary": "If Q4_0 is faster but fails quality, do not promote it. Use its measured ceiling to justify trained per-channel scales, QAT, or a sensitivity-selected Q4_0/Q4_K/Q5/Q8 mixture plus MTP-draft alignment.",
+  "claim_boundary": "A pass would identify a CPU fast-path format for the formerly Q8 matrices. It would not establish a trained approximation, final-node throughput, energy gains, 100 accepted tok/s, novelty, or a breakthrough."
+}

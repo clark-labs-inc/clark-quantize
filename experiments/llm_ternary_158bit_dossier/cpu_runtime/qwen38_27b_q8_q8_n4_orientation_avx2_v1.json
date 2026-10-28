@@ -1,0 +1,78 @@
+{
+  "schema": "qwen38_27b_q8_q8_n4_orientation_avx2_preregistration_v1",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q8_q8_n4_orientation_avx2_v1",
+  "frozen_at": "2026-08-18T12:25:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "target_quantization": "Q4_K_M",
+    "official_mtp_draft_quantization": "Q4_0",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true
+  },
+  "profile_anchor": {
+    "receipt": "receipts/qwen38_27b_q8_q8_tinyblas_shape_profile_v1/terminal-decision.json",
+    "q8_gemm4xn2_exclusive_cycle_fraction": 0.2399,
+    "n4_call_fraction": 0.896551724137931,
+    "n4_tile_fraction": 0.9122807017543859,
+    "n4_zero_cost_whole_request_ceiling": 1.2801739239801282,
+    "n4_two_x_subkernel_whole_request_projection": 1.1228739268674182
+  },
+  "hypothesis": "On 16-register AVX2, the generic Q8_0 x Q8_0 dispatcher handles an exact four-column matrix as two 4-row x 2-column tiles. That streams every large Q8 weight block twice. For the selected n=4 family, two 2-row x 4-column tiles stream each weight block once and re-read only the tiny activation panel. Existing gemmMx4<2> uses the same Q8 codes, scale products, integer dot products, per-output l order, and hsum, so the orientation change should be bit-exact while approaching a two-fold subkernel speedup in a bandwidth-bound regime.",
+  "candidate": {
+    "base": "Pinned llama.cpp plus cache-order v1 and promoted fused one-to-three-row v2",
+    "patch": "kernels/llama_cpp_q8_q8_n4_orientation_avx2_v1.patch",
+    "required_scope": [
+      "tinyBLAS_Q0_AVX instantiated with TA=block_q8_0 and TB=block_q8_0 only",
+      "exact remaining n == 4 only",
+      "VECTOR_REGISTERS == 16 AVX2/F16C case 0x44 only",
+      "route mc=2,nc=4 to gemmMx4<2> instead of mc=4,nc=2 to gemm4xN<2>"
+    ],
+    "forbidden_changes": [
+      "quantized values, scales, or tensor layouts",
+      "per-output integer dot-product or floating accumulation order",
+      "Q4_K kernels",
+      "target-only n=1 dispatch",
+      "activation approximations or training"
+    ]
+  },
+  "sequential_gates": {
+    "gate_1_static_and_backend": {
+      "q8_n4_backend_reference_passed": 3,
+      "q8_n4_backend_reference_denominator": 3,
+      "exact_output_bytes_against_control_required": true
+    },
+    "gate_2_real_model_four_token_graph": {
+      "warmup_processes_per_runtime": 1,
+      "measured_processes_per_runtime": 4,
+      "samples_per_process": 7,
+      "include_all_28_measured_samples": true,
+      "minimum_candidate_over_control_speedup": 1.08,
+      "maximum_candidate_process_median_range_fraction": 0.05
+    },
+    "gate_3_terminal_generation": {
+      "prompts": 4,
+      "tokens_per_prompt": 96,
+      "target_and_mtp3_exact_control_parity": true,
+      "draft_counts_must_equal_control": true,
+      "minimum_candidate_over_control_mtp3_accepted_tps": 1.08,
+      "maximum_target_only_tps_regression_fraction": 0.02
+    },
+    "gate_4_quality": {
+      "cute_quick_required_only_after_all_prior_gates_pass": true,
+      "candidate_must_match_q4_control_score_and_item_outputs": true,
+      "math_or_mmlu_style_gate_required_before_promotion": true
+    }
+  },
+  "stop_rules": [
+    "Reject before real-model timing if any selected backend output differs from the control.",
+    "Reject before generation if graph speedup is below eight percent or process medians are unstable.",
+    "Reject before CUTE if any committed token or aggregate draft count differs from control.",
+    "Do not use instrumented profile-build timings as a score."
+  ],
+  "claim_boundary": "A pass would promote one exact AVX2 Q8 tile-orientation optimization for Qwen3.8-27B MTP verification on four Milan cores. It would not satisfy the trained approximation, final-node, energy, 100 accepted tok/s, or novelty gates."
+}

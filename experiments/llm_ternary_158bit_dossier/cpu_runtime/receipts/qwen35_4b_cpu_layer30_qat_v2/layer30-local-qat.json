@@ -1,0 +1,77 @@
+{
+  "out": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v2/layer30-local-qat.safetensors",
+  "activation_cache": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v1/layer30-activations.pt",
+  "base_patch": null,
+  "layers": [
+    30
+  ],
+  "mode": "ternary",
+  "group_size": 128,
+  "artifact_exact_ternary": true,
+  "runtime_device": "cpu",
+  "torch_threads": 4,
+  "activation_cache_sha256": "9a3daa21df6fe627245cf17917404cae190b43726a58d781bb81e13a08bf4d9e",
+  "inventory_sha256": "793d872a2b75fb51e640afec9472fba2c605e03b610ffae9c5d171d33851f344",
+  "base_patch_sha256": null,
+  "checkpoint_dir": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v2/checkpoints",
+  "checkpoint_every": 2,
+  "reports": [
+    {
+      "layer": 30,
+      "samples": 288,
+      "history": [
+        {
+          "step": 1,
+          "loss": 0.3732413649559021,
+          "local_loss": 0.37304896116256714,
+          "codebook_loss": 0.19241376221179962
+        },
+        {
+          "step": 2,
+          "loss": 0.3635517954826355,
+          "local_loss": 0.36335936188697815,
+          "codebook_loss": 0.192429780960083
+        },
+        {
+          "step": 3,
+          "loss": 0.3362663984298706,
+          "local_loss": 0.33607396483421326,
+          "codebook_loss": 0.19244606792926788
+        },
+        {
+          "step": 4,
+          "loss": 0.3097786605358124,
+          "local_loss": 0.30958619713783264,
+          "codebook_loss": 0.19246236979961395
+        },
+        {
+          "step": 5,
+          "loss": 0.2909851372241974,
+          "local_loss": 0.29079264402389526,
+          "codebook_loss": 0.19247908890247345
+        },
+        {
+          "step": 6,
+          "loss": 0.2902490496635437,
+          "local_loss": 0.2900565564632416,
+          "codebook_loss": 0.1924957036972046
+        },
+        {
+          "step": 7,
+          "loss": 0.3040156066417694,
+          "local_loss": 0.3038230836391449,
+          "codebook_loss": 0.19251251220703125
+        },
+        {
+          "step": 8,
+          "loss": 0.25547540187835693,
+          "local_loss": 0.2552828788757324,
+          "codebook_loss": 0.1925293207168579
+        }
+      ],
+      "resumed": false,
+      "checkpoint": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v2/checkpoints/layer-30-latest.pt",
+      "checkpoint_sha256": "62cf59fa67333209a51e62d4cd585145cef076a805689f4a1bdd37e3c4d8ad36"
+    }
+  ]
+}

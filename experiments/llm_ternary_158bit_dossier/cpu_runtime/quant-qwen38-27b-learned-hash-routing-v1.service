@@ -1,0 +1,21 @@
+[Unit]
+Description=Screen learned Clark-Hash routing on disjoint Qwen3.8-27B rows
+After=network-online.target quant-qwen38-27b-layer0-mlp-activation-qat-paired-watch-v1.service quant-qwen38-27b-fixed-support-cpu-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-learned-hash.bundle
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/tmp/watch_qwen38_27b_learned_hash_routing_v1.sh
+CPUQuota=400%
+MemoryMax=2G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

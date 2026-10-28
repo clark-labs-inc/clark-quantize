@@ -1,0 +1,91 @@
+{
+  "schema": "qwen38_27b_ternary_type_class_rate_preregistration_v1",
+  "receipt_schema": "qwen38_27b_ternary_type_class_rate_receipt_v1",
+  "status": "frozen_before_authoritative_full_code_decode",
+  "frozen_at_utc": "2026-08-17T18:45:00Z",
+  "hypothesis": "The authenticated nonuniform ternary symbols already produced for Qwen3.8-27B have a finite-block achievable type-class rate sufficiently below uniform log2(3) to move a complete row-normalized deployable projection below 1.59 bits per total parameter",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "mapped_code_manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4",
+    "mapped_tensors": 402,
+    "mapped_chunks": 34344,
+    "mapped_ternary_codes": 26869760000,
+    "complete_rank_ge_2_tensors": 666,
+    "complete_ternary_parameters": 27780313088,
+    "complete_parameters": 27781427952
+  },
+  "coding_bound": {
+    "method": "fixed-composition enumerative type-class code independently per existing chunk",
+    "mathematical_basis": "the multinomial type-class cardinality is at most 2^(n H(p)), so a fixed-length rank code of ceil(n H(p)) bits exists",
+    "numerical_guard_bits_per_chunk": 64,
+    "header_bytes_per_chunk": 16,
+    "header_contents": "two independent ternary counts, payload byte length, and integrity field; the third count follows from the authenticated trit count",
+    "payload_byte_alignment": "each chunk rounded up to a whole byte",
+    "section_alignment": "each tensor code section rounded up to 64 bytes",
+    "random_access": "existing independently decodable chunk boundaries are retained",
+    "important_boundary": "log2(3) is the uniform or worst-case ternary-symbol rate, not a lower bound for this fixed nonuniform model instance"
+  },
+  "storage_projection": {
+    "parent": "base3 group-128 row-normalized 4-bit scale-codebook complete-model layout",
+    "replace_only": "the 402 authenticated mapped tensor code sections",
+    "supplemental_264_tensor_codes": "retain conservative uniform base-3 sections",
+    "unchanged": "all row anchors, scale indices, codebooks, retained exact tensors, model metadata, auxiliary files, and alignment rules"
+  },
+  "measurement": {
+    "authenticate_every_frame_SHA256": true,
+    "authenticate_every_frame_metadata_record": true,
+    "decode_every_frame_with_the_existing_native_uniform_base3_decoder": true,
+    "authenticate_every_decoded_raw_code_SHA256": true,
+    "count_every_ternary_symbol": true,
+    "apply_the_frozen_finite_block_bound_per_chunk": true,
+    "reconcile_every_tensor_parameter_count_and_section": true,
+    "recompute_the_complete_Qwen38_storage_inventory": true
+  },
+  "gate": {
+    "required_chunks": 34344,
+    "required_mapped_tensors": 402,
+    "required_mapped_trits": 26869760000,
+    "maximum_projected_complete_bundle_bpw": 1.59,
+    "minimum_effective_saving_bits_per_mapped_trit": 0.04
+  },
+  "frozen_inputs": {
+    "analyzer": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/analyze_qwen38_27b_ternary_type_class_rate_v1.py",
+      "sha256": "ab538a6cb4325636ebaf1d0a674bbec9d8c068921906ebbd80fcac7c63debf62"
+    },
+    "rate_bound": {
+      "path": "clark_quantize/qwen38_ternary_entropy.py",
+      "sha256": "dae2052666d3e2922e3c23653e25fc60a77bd53b6c3a492fb331e73903a9196e"
+    },
+    "source_decoder": {
+      "path": "clark_quantize/base3.py",
+      "sha256": "0abd5bca61dbc1ce5c30a4cc17c5fe19431147d06201883763a0e147e445c50b"
+    },
+    "row_scale_storage": {
+      "path": "clark_quantize/qwen38_row_scale_storage.py",
+      "sha256": "73f8969e6a34d9f4c43d7dc89418d0d12c8057bd955f6f018ab9376be62bffb0"
+    },
+    "storage_budget": {
+      "path": "clark_quantize/qwen38_storage_budget.py",
+      "sha256": "eed77a1e32009f0c6be607c168bd840482712a535949737877c6584f0ce2f706"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 4,
+    "swap_must_remain_zero": true,
+    "new_persistent_artifact_bytes": "less than 4 MiB",
+    "run_after_geometric_ablation_and_before_longer_QAT": true
+  },
+  "promotion_rules": [
+    "a pass proves an authenticated source-specific achievable-rate upper bound and complete-layout projection, not an encoded artifact",
+    "a pass authorizes an enumerative or static-probability native codec prototype with exact roundtrip and load-time transcode benchmarks",
+    "actual exported bytes must reconcile with the projection before a representation result is promoted",
+    "CUTE MMLU-type MATH WikiText and paired CPU throughput gates remain mandatory",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "this rate result alone cannot establish a scientific breakthrough"
+  ]
+}

@@ -1,0 +1,26 @@
+diff --git a/ggml/src/ggml-cpu/repack.cpp b/ggml/src/ggml-cpu/repack.cpp
+--- a/ggml/src/ggml-cpu/repack.cpp
++++ b/ggml/src/ggml-cpu/repack.cpp
+@@ -4312,16 +4312,20 @@ struct tensor_traits : ggml::cpu::tensor_traits {
+         // INFO: Quantization is done in planes to avoid extra complexity in chunking.
+         // Flattening dimensions not multiple of INTER_SIZE would require extra handling depending on how
+         // the planes are broadcast.
++        constexpr bool q4_k_8x8 =
++            std::is_same_v<BLOC_TYPE, block_q4_K> && INTER_SIZE == 8 && NB_COLS == 8;
++        const bool row_major_four_rows = q4_k_8x8 && ne11 == 4;
++        const int64_t i11_processed = row_major_four_rows ? 0 : ne11 - ne11 % 4;
++
+         for (int64_t i12 = 0; i12 < ne12; i12++) {
+             char * data_ptr  = (char *) src1->data + i12 * nb12;
+             char * wdata_ptr = wdata + i12 * nbw2;
+
+-            for (int64_t i11 = ith * 4; i11 < ne11 - ne11 % 4; i11 += nth * 4) {
++            for (int64_t i11 = ith * 4; i11 < i11_processed; i11 += nth * 4) {
+                 ggml_quantize_mat_t<INTER_SIZE, PARAM_TYPE>((float *) (data_ptr + i11 * nb11),
+                                                             (void *) (wdata_ptr + i11 * nbw1), 4, ne10);
+             }
+
+-            const int64_t i11_processed = ne11 - ne11 % 4;
+             for (int64_t i11 = i11_processed + ith; i11 < ne11; i11 += nth) {
+                 from_float((float *) (data_ptr + i11 * nb11), (void *) (wdata_ptr + i11 * nbw1), ne10);
+             }

@@ -1,0 +1,101 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_x8_repack_preregistration_v15",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_cq3_avx2_x8_repack_v15",
+  "frozen_at": "2026-08-18T16:48:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "microbenchmark_cores": 1,
+    "qwen_4b_compute_forbidden": true,
+    "source_weight_type": "CQ3_0",
+    "runtime_weight_layout": "CQ3_0x8",
+    "activation_type": "CQ8_0",
+    "source_weight_bits_per_weight": 2.125,
+    "runtime_weight_bits_per_weight": 2.125,
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "negative_anchor": {
+    "receipt": "receipts/qwen38_27b_cq3_avx2_dual_decode_v14/terminal-decision.json",
+    "finding": "Instruction scheduling within one output row was bit exact but 2.85% slower and unstable. The kernel must change its vectorization axis, not merely reorder the same work."
+  },
+  "hypothesis": "Interleave eight CQ3 output rows without expanding their 2-bit trits, then map one AVX2 int32/FP32 lane to each output row. A 32-byte weight load contains four packed bytes from each of eight rows; four broadcast activation words decode sixteen input weights per row. This shares activation traversal, performs row reduction directly in lanes, removes eight horizontal reductions, and amortizes loop/address/scale overhead while preserving the exact CQ3 algebra.",
+  "runtime_layout": {
+    "rows_per_tile": 8,
+    "source_block_weights": 256,
+    "source_blocks_per_tile": 8,
+    "source_bytes_per_tile": 544,
+    "runtime_bytes_per_tile": 544,
+    "scale_layout": "group-major: 8 fp16 scales for group 0 followed by 8 for group 1",
+    "trit_layout": "group-major, then 4-byte input chunk, then output row; each 32-byte AVX2 load holds four original packed bytes from every row",
+    "repack_is_lossless": true,
+    "repack_is_one_time_and_untimed": true,
+    "storage_expansion_fraction": 0.0,
+    "tail_policy": "Fallback to ordinary CQ3_0 rows when the output-row count is not divisible by eight."
+  },
+  "kernel_algebra": {
+    "lane_mapping": "AVX2 lane r accumulates output row r for r in [0, 7]",
+    "chunk_weights_per_row": 16,
+    "chunks_per_128_weight_group": 8,
+    "decode": "Extract four 2-bit digits from each packed byte; use four maddubs operations against four broadcast activation words; madd adjacent int16 partials to one int32 result per output row.",
+    "centering": "Subtract the exact CQ8 group activation sum independently from all eight row lanes.",
+    "scaling": "Convert eight fp16 row scales with F16C, multiply by the shared CQ8 scale, and apply group 0 then group 1 in source order.",
+    "high_precision_weights_materialized": false
+  },
+  "sequential_gates": {
+    "gate_0_repack_contract": {
+      "required": true,
+      "byte_for_byte_inverse_to_source_blocks": true,
+      "runtime_bytes_must_equal_source_bytes": true,
+      "all_reserved_trit_codes_rejected": true
+    },
+    "gate_1_native_correctness": {
+      "required": true,
+      "test_shapes": [
+        {"rows": 8, "columns": 256},
+        {"rows": 16, "columns": 512},
+        {"rows": 24, "columns": 5120}
+      ],
+      "integer_dot_must_match_scalar_exactly": true,
+      "maximum_scaled_float_error": 0.00005,
+      "all_outputs_finite": true
+    },
+    "gate_2_exact_shape_microbenchmark": {
+      "matrices": 2,
+      "rows_per_matrix": 17408,
+      "columns": 5120,
+      "warmups": 2,
+      "repetitions": 9,
+      "cache_eviction_bytes": 268435456,
+      "alternating_order": true,
+      "repack_time_excluded": true,
+      "minimum_control_over_candidate_speedup": 1.25,
+      "maximum_candidate_sample_range_fraction": 0.05
+    },
+    "gate_3_selective_27b_integration": {
+      "run_only_if_all_native_gates_pass": true,
+      "model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M-layer0-MLP-CQ3_0.gguf",
+      "minimum_paired_shape_geometric_mean_speedup": 1.15,
+      "minimum_target_diagnostic_tokens_per_second": 2.25
+    },
+    "gate_4_quality": {
+      "run_only_if_all_performance_gates_pass": true,
+      "cute_quick_denominator": 20,
+      "minimum_correct": 9,
+      "mmlu_denominator": 64,
+      "maximum_correct_loss_vs_q4_control": 1,
+      "maximum_wikitext_perplexity_ratio_vs_same_cq3_weights": 1.01
+    }
+  },
+  "stop_rules": [
+    "Stop before timing if repack is lossy, changes storage size, or produces an incorrect integer dot.",
+    "Reject before model integration if exact-shape speedup is below 25% or candidate timing spread exceeds 5%.",
+    "Do not tune the numerical threshold after observing candidate output.",
+    "Do not score CUTE, MMLU, or perplexity unless the performance gates pass.",
+    "Do not infer a score for an unrun gate."
+  ],
+  "claim_boundary": "A native pass would establish a materially faster, storage-neutral AVX2 CQ3 GEMV primitive for Qwen3.8-27B shapes. It would not by itself establish whole-model throughput, near-Q4 capability, energy gains, 100 accepted tok/s, novelty, or a scientific breakthrough."
+}

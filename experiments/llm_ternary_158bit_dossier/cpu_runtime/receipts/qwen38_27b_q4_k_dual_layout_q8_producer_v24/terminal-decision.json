@@ -1,0 +1,763 @@
+{
+  "candidate_process_median_mad_fraction": 0.0034828925153783993,
+  "checks": {
+    "backend_reference_3_of_3": true,
+    "candidate_process_median_mad_at_most_0_03": true,
+    "control_over_v24_graph_at_least_1_18": false,
+    "frequency_range_at_most_100_mhz": true,
+    "micro_candidate_mad_at_most_0_03_each_width": false,
+    "micro_each_width_has_31_paired_samples": true,
+    "micro_parent_over_dual_geomean_at_least_1_10": false,
+    "property_bsums_match_codes": true,
+    "property_native_matches_parent_bit_exact": true,
+    "property_rows_match_parent_bridge_bit_exact": true,
+    "property_seeded_blocks_1024": true,
+    "property_source_f32_unchanged": true,
+    "property_special_cases_6": true,
+    "v21_over_v24_graph_at_least_1_05": false
+  },
+  "claim_boundary": "This stage measures a byte-exact Q8 producer and one four-row Q4_K Qwen graph. It is not target serving, a quality result, conventional decode, 100 tok/s, trained approximation, novelty, or breakthrough evidence.",
+  "decision": "reject_pre_system_gate",
+  "denominator": {
+    "candidate_graph_processes_total": 12,
+    "graph_processes_per_runtime_per_comparison": 6,
+    "graph_samples_per_process": 7,
+    "micro_paired_samples_per_width": 31,
+    "micro_widths": [
+      2048,
+      4096,
+      8192,
+      16384
+    ],
+    "property_seeded_blocks": 1024,
+    "property_special_cases": 6
+  },
+  "frequency": {
+    "maximum_mhz": 2400.0,
+    "median_mhz": 2400.0,
+    "minimum_mhz": 2400.0,
+    "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/frequency.log",
+    "range_mhz": 0.0,
+    "sample_count": 322,
+    "sha256": "f6082e5f3979af8fc0c19cc239ad7e7f2e31fc496a66b6ba0f7d0978ef1ad3cd"
+  },
+  "host_scope": "four physical AMD EPYC Milan cores",
+  "infrastructure_valid": true,
+  "micro_candidate_mad_fraction_by_width": {
+    "16384": 0.016034078399463934,
+    "2048": 0.13513604440264415,
+    "4096": 0.014542912250124345,
+    "8192": 0.015565765666583683
+  },
+  "microbenchmark": {
+    "output_guard": 11696105203125193036,
+    "paired_samples_per_width": 31,
+    "parent_over_dual_geomean": 0.996216569,
+    "schema": "q8_k_dual_layout_producer_microbenchmark_v24",
+    "widths": [
+      {
+        "calls_per_sample": 128,
+        "dual_median_ns": 4012.734,
+        "dual_ns_per_call": [
+          4117.258,
+          4309.922,
+          4961.867,
+          4018.281,
+          4874.289,
+          4356.633,
+          4085.547,
+          4668.5,
+          4170.859,
+          4624.68,
+          4439.688,
+          4020.539,
+          4321.25,
+          4012.734,
+          4372.5,
+          4691.641,
+          3401.242,
+          3604.062,
+          3216.016,
+          3924.758,
+          3497.805,
+          3341.25,
+          3430.227,
+          3340.312,
+          3207.578,
+          3507.57,
+          3340.938,
+          3470.469,
+          1659.836,
+          1614.766,
+          1696.016
+        ],
+        "parent_median_ns": 4108.672,
+        "parent_ns_per_call": [
+          4509.453,
+          4253.125,
+          4262.492,
+          4655.469,
+          4025.625,
+          4122.109,
+          4450.703,
+          4175.781,
+          5071.25,
+          4810.148,
+          4225.391,
+          4691.398,
+          4165.469,
+          4692.336,
+          4509.367,
+          4621.633,
+          4108.672,
+          3422.109,
+          3705.539,
+          3309.688,
+          3437.812,
+          3527.891,
+          3347.109,
+          3688.195,
+          3504.609,
+          3332.891,
+          3699.68,
+          3456.016,
+          3260.312,
+          1584.133,
+          1605.0
+        ],
+        "parent_over_dual": 1.023908261,
+        "width": 2048
+      },
+      {
+        "calls_per_sample": 64,
+        "dual_median_ns": 3255.469,
+        "dual_ns_per_call": [
+          3257.344,
+          3211.562,
+          3255.469,
+          3206.391,
+          3208.125,
+          3259.844,
+          3649.375,
+          3266.094,
+          3367.344,
+          3386.094,
+          3387.812,
+          3458.906,
+          3210.312,
+          3255.0,
+          3210.312,
+          3205.922,
+          3210.781,
+          3257.812,
+          3435.469,
+          3220.469,
+          3461.562,
+          3207.797,
+          3205.922,
+          3414.531,
+          3361.094,
+          3224.688,
+          3210.609,
+          3214.375,
+          3254.688,
+          3421.391,
+          3402.188
+        ],
+        "parent_median_ns": 3182.031,
+        "parent_ns_per_call": [
+          3164.531,
+          3494.531,
+          3167.969,
+          3166.859,
+          3420.156,
+          3165.0,
+          3166.562,
+          3164.062,
+          3267.5,
+          3170.125,
+          3165.625,
+          3182.031,
+          3214.844,
+          3530.0,
+          3165.938,
+          3213.109,
+          3388.438,
+          3166.719,
+          3215.156,
+          3217.344,
+          3167.969,
+          3215.0,
+          3168.75,
+          3221.094,
+          3165.781,
+          3417.188,
+          3168.594,
+          3216.719,
+          3597.5,
+          3166.719,
+          3273.75
+        ],
+        "parent_over_dual": 0.977441805,
+        "width": 4096
+      },
+      {
+        "calls_per_sample": 32,
+        "dual_median_ns": 6685.312,
+        "dual_ns_per_call": [
+          6578.719,
+          7705.312,
+          6685.938,
+          6799.031,
+          6678.125,
+          6578.438,
+          6679.375,
+          6577.812,
+          6685.312,
+          6582.5,
+          6934.688,
+          6784.375,
+          7478.75,
+          6585.938,
+          6689.062,
+          7033.75,
+          6584.375,
+          6853.75,
+          6585.938,
+          6581.25,
+          6586.25,
+          7216.875,
+          6588.438,
+          6576.531,
+          6981.25,
+          6898.125,
+          7031.875,
+          6688.125,
+          6582.469,
+          7459.375,
+          6581.875
+        ],
+        "parent_median_ns": 6529.375,
+        "parent_ns_per_call": [
+          6550.625,
+          6441.875,
+          6447.5,
+          7140.938,
+          6435.312,
+          6877.188,
+          6442.156,
+          6525.312,
+          6871.562,
+          6439.656,
+          6627.812,
+          6530.312,
+          6443.094,
+          6443.75,
+          6443.75,
+          6438.719,
+          6541.562,
+          6689.969,
+          6442.5,
+          6976.562,
+          6441.875,
+          6438.125,
+          6986.219,
+          6536.875,
+          7024.688,
+          6531.25,
+          6713.75,
+          6439.688,
+          6526.531,
+          6529.375,
+          7545.938
+        ],
+        "parent_over_dual": 0.976674613,
+        "width": 8192
+      },
+      {
+        "calls_per_sample": 16,
+        "dual_median_ns": 13058.125,
+        "dual_ns_per_call": [
+          12845.0,
+          14343.125,
+          13047.5,
+          13120.625,
+          12848.75,
+          12845.0,
+          12865.625,
+          13040.0,
+          13701.875,
+          13227.5,
+          14461.875,
+          13053.125,
+          13423.75,
+          14483.062,
+          13087.5,
+          13913.125,
+          12856.25,
+          13050.625,
+          12844.312,
+          13033.75,
+          12843.062,
+          13058.125,
+          13066.875,
+          12850.0,
+          15405.0,
+          13255.0,
+          13886.875,
+          13410.625,
+          13029.375,
+          14087.5,
+          12847.5
+        ],
+        "parent_median_ns": 13158.125,
+        "parent_ns_per_call": [
+          13151.25,
+          13154.25,
+          12941.25,
+          14168.125,
+          12943.125,
+          13158.125,
+          14127.5,
+          12942.438,
+          14365.562,
+          13763.75,
+          13175.0,
+          13958.125,
+          12922.5,
+          12966.875,
+          13136.812,
+          12943.75,
+          12938.125,
+          13843.125,
+          13161.25,
+          12945.0,
+          13938.125,
+          13173.125,
+          15556.25,
+          12937.5,
+          13015.562,
+          13695.0,
+          13367.438,
+          13170.0,
+          12950.0,
+          13194.938,
+          12938.125
+        ],
+        "parent_over_dual": 1.007658067,
+        "width": 16384
+      }
+    ]
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "next_stage": null,
+  "parent_v21_comparison": {
+    "candidate": [
+      {
+        "mean_ns": 706030044.1428572,
+        "median_ns": 706088990,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/parent-pair-1-v24.json",
+        "samples_ns": [
+          706088990,
+          709378277,
+          701864734,
+          709878446,
+          702794992,
+          706496800,
+          705708070
+        ],
+        "sha256": "19a356dd5001fab7ae50af4bd100f284ae9285efcc7cf57808709abc4ab1be99"
+      },
+      {
+        "mean_ns": 709439347.1428572,
+        "median_ns": 705399891,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/parent-pair-2-v24.json",
+        "samples_ns": [
+          703280882,
+          705399891,
+          727326843,
+          714816003,
+          708680657,
+          703142172,
+          703428982
+        ],
+        "sha256": "d8a3346ae3d542956b0b383ff18ec11a037f9aea34adb702341046491c949476"
+      },
+      {
+        "mean_ns": 817407687,
+        "median_ns": 816169833,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/parent-pair-3-v24.json",
+        "samples_ns": [
+          805866070,
+          818644980,
+          805028171,
+          816169833,
+          847605757,
+          809286908,
+          819252090
+        ],
+        "sha256": "d47a5435756b7aac855ee2dbcfaa230d8ae934acdb2c2ab3a7dbf36290ea6320"
+      },
+      {
+        "mean_ns": 709557887.1428572,
+        "median_ns": 709398907,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/parent-pair-4-v24.json",
+        "samples_ns": [
+          706307330,
+          703782852,
+          704320191,
+          709398907,
+          711767935,
+          717113601,
+          714214394
+        ],
+        "sha256": "2147c2bc7b59b604f892a1ba6307a1134e48b0efdfc23fe5de060bceb7d28ed4"
+      },
+      {
+        "mean_ns": 701175280.8571428,
+        "median_ns": 702044204,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/parent-pair-5-v24.json",
+        "samples_ns": [
+          701577344,
+          707534158,
+          702044204,
+          702096172,
+          702093864,
+          695333838,
+          697547386
+        ],
+        "sha256": "0b5036e50705d82657c36c918e47206ff5fd65315c22fee4ddd2b5c9ad03090e"
+      },
+      {
+        "mean_ns": 702277238.5714285,
+        "median_ns": 701746992,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/parent-pair-6-v24.json",
+        "samples_ns": [
+          705749310,
+          696765108,
+          699492404,
+          700441964,
+          704480482,
+          701746992,
+          707264410
+        ],
+        "sha256": "ef15ca6ee2ef037bd2cffeb3b76a67e07cc9d53be07a5f183d047250eef523ee"
+      }
+    ],
+    "left": [
+      {
+        "mean_ns": 708216266.5714285,
+        "median_ns": 706280599,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/parent-pair-1-v21.json",
+        "samples_ns": [
+          708769318,
+          706280599,
+          714257774,
+          703473531,
+          713904944,
+          706142759,
+          704684941
+        ],
+        "sha256": "697fa3da292eb9bf74e25e3601502d5e94a446b080d56080e3959418fea6c35e"
+      },
+      {
+        "mean_ns": 708054802.4285715,
+        "median_ns": 707258520,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/parent-pair-2-v21.json",
+        "samples_ns": [
+          699277975,
+          707026549,
+          708733948,
+          713333214,
+          713509663,
+          707258520,
+          707243748
+        ],
+        "sha256": "af2865ad67b1bab3292d75467f01281a504fdffe47648e62f68939349f291339"
+      },
+      {
+        "mean_ns": 710014618,
+        "median_ns": 708511868,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/parent-pair-3-v21.json",
+        "samples_ns": [
+          708511868,
+          707764758,
+          704698591,
+          712628144,
+          713666774,
+          707565129,
+          715267062
+        ],
+        "sha256": "31970e13034c9590fe694f5b5d0e8672db54dfad63f5d8317ae2c5406eb2adaa"
+      },
+      {
+        "mean_ns": 714520636,
+        "median_ns": 713964724,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/parent-pair-4-v21.json",
+        "samples_ns": [
+          712731245,
+          720443118,
+          712398525,
+          714156234,
+          714751392,
+          713964724,
+          713199214
+        ],
+        "sha256": "ba0216ff2f8eac586a14b1b8b7be4cc0bc055edb237667d72d251e5a004584c8"
+      },
+      {
+        "mean_ns": 705728808.5714285,
+        "median_ns": 706693679,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/parent-pair-5-v21.json",
+        "samples_ns": [
+          707650329,
+          702562992,
+          704016672,
+          706693679,
+          711313396,
+          707834768,
+          700029824
+        ],
+        "sha256": "38a536432b1bdc61c3fccc992cdb80e326d548f0919ba106e04935518dbee3dc"
+      },
+      {
+        "mean_ns": 703021146.2857143,
+        "median_ns": 701907973,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/parent-pair-6-v21.json",
+        "samples_ns": [
+          703669091,
+          705558950,
+          699025276,
+          715521972,
+          701907973,
+          694936658,
+          700528104
+        ],
+        "sha256": "975b9a17d32c53f730ef59f0ff49bf1e23b98eb0b53156325f997fc34452c8a6"
+      }
+    ],
+    "left_label": "v21",
+    "paired_left_over_v24_ratios": [
+      1.0002713666445926,
+      1.0026348586436058,
+      0.8680936728520325,
+      1.006436177100002,
+      1.0066227667339307,
+      1.0002294003420538
+    ],
+    "paired_ratio_median": 1.001453112644099
+  },
+  "passed": false,
+  "promoted_control_comparison": {
+    "candidate": [
+      {
+        "mean_ns": 708579374.8571428,
+        "median_ns": 707134639,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/control-pair-1-v24.json",
+        "samples_ns": [
+          708758257,
+          707134639,
+          705119551,
+          709730906,
+          704577881,
+          718370530,
+          706363860
+        ],
+        "sha256": "a182d6edb5c287dc9a0f95f68dfcf69b31390d765f4e348cff7551f35f2dbdc5"
+      },
+      {
+        "mean_ns": 707347716,
+        "median_ns": 704936651,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/control-pair-2-v24.json",
+        "samples_ns": [
+          720614239,
+          704637220,
+          713625605,
+          708690247,
+          700292425,
+          698637625,
+          704936651
+        ],
+        "sha256": "0f9c6bc39ab17143316d23218cdbea67783f9668c8faa1e2f5e4bfc07252ea1f"
+      },
+      {
+        "mean_ns": 716072184.5714285,
+        "median_ns": 714571233,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/control-pair-3-v24.json",
+        "samples_ns": [
+          733911298,
+          709276306,
+          707297120,
+          716204391,
+          714571233,
+          716879882,
+          714365062
+        ],
+        "sha256": "ab5675a800c1dd8ffc5578d09170513b2dc96329e6700259e47bb6eb4e2ecc3e"
+      },
+      {
+        "mean_ns": 723893201.4285715,
+        "median_ns": 719509779,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/control-pair-4-v24.json",
+        "samples_ns": [
+          717369661,
+          721263858,
+          719509779,
+          707944698,
+          763088385,
+          724238865,
+          713837164
+        ],
+        "sha256": "eee52dfe98bd9efc2c4d7505e3e4e4219b0389967313917549471bc802a5ad26"
+      },
+      {
+        "mean_ns": 709328621.4285715,
+        "median_ns": 708005389,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/control-pair-5-v24.json",
+        "samples_ns": [
+          711113096,
+          701009394,
+          704810030,
+          708005389,
+          729420571,
+          708806958,
+          702134912
+        ],
+        "sha256": "1aeff7afd5d85cf378913c569830ac23f2d7ae949c9ae3a48ab5b90cb365b976"
+      },
+      {
+        "mean_ns": 705239795.8571428,
+        "median_ns": 704476801,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/control-pair-6-v24.json",
+        "samples_ns": [
+          703393621,
+          704476801,
+          714143323,
+          705363850,
+          700366345,
+          704765201,
+          704169430
+        ],
+        "sha256": "de166eb93e232ec324105630a5d27e35772793c5bdd9bb9e203eb3a992fae039"
+      }
+    ],
+    "left": [
+      {
+        "mean_ns": 812398979.5714285,
+        "median_ns": 811877726,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/control-pair-1-control.json",
+        "samples_ns": [
+          827175993,
+          811877726,
+          822866687,
+          800629696,
+          803149652,
+          808632128,
+          812460975
+        ],
+        "sha256": "abd49fa554fc463000072c174ab923f44e5f32b1244e69e74994be9c4e51358c"
+      },
+      {
+        "mean_ns": 805135105.5714285,
+        "median_ns": 802947024,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/control-pair-2-control.json",
+        "samples_ns": [
+          802947024,
+          829942061,
+          806263030,
+          796629388,
+          792520171,
+          809087839,
+          798556226
+        ],
+        "sha256": "42d188b6f7873e498d3b30f726d1d64bd9e564da83bc49a3c7abbec56a3bac99"
+      },
+      {
+        "mean_ns": 803839300.7142857,
+        "median_ns": 803606902,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/control-pair-3-control.json",
+        "samples_ns": [
+          804691891,
+          803606902,
+          808092430,
+          795968718,
+          799598716,
+          799714745,
+          815201703
+        ],
+        "sha256": "e9402a424b7ad8c2d0d09772542dd84abe1e836afd3510cfa8750d5da82597ce"
+      },
+      {
+        "mean_ns": 806571971.4285715,
+        "median_ns": 807427759,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/control-pair-4-control.json",
+        "samples_ns": [
+          823342657,
+          808237559,
+          797039917,
+          798940327,
+          807677838,
+          803337743,
+          807427759
+        ],
+        "sha256": "94516f49e0825c2ac4e8f9a68cdac316bffc0ba52bb8c9e81237ef6a126eb327"
+      },
+      {
+        "mean_ns": 802952074.2857143,
+        "median_ns": 802878403,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/control-pair-5-control.json",
+        "samples_ns": [
+          802878403,
+          804260752,
+          809692057,
+          800901435,
+          794204510,
+          807048639,
+          801678724
+        ],
+        "sha256": "1066cdbba6d7f4004f66e037548d72e8368bd7c38984c16d8fa43cd5cd80ba83"
+      },
+      {
+        "mean_ns": 803758945.1428572,
+        "median_ns": 803705052,
+        "path": "/workspace/quant-state/qwen38-27b-q4-k-dual-layout-producer-v24/control-pair-6-control.json",
+        "samples_ns": [
+          803705052,
+          808319149,
+          799472805,
+          799425806,
+          804538052,
+          807331769,
+          803519983
+        ],
+        "sha256": "e3904963dd2db3c11fbfaa11a38692e0da09df4bab99e414f89dd1c7e3c85327"
+      }
+    ],
+    "left_label": "control",
+    "paired_left_over_v24_ratios": [
+      1.1481232586033732,
+      1.1390342988422657,
+      1.1246001306632505,
+      1.1221915011665184,
+      1.1340004122482745,
+      1.140853823517178
+    ],
+    "paired_ratio_median": 1.1365173555452701
+  },
+  "provenance": {
+    "backend_log_sha256": "578b1ab4d8f6dc29d32764ab0cf3f7de859388d5d7cade76debcd21ad249cf83",
+    "candidate_binary_sha256": "9bb22f05267682fbd9435fa980f6aefdb7103e26e4ab6130e92e87e3cc2819d5",
+    "candidate_patch_sha256": "0c0a8242adc3b1a4a912d8211ad16d42ae28c8004047a4f89733ae0e72a14704",
+    "control_binary_sha256": "61aa042a8bcea910c52043b6128ddb725c84c64f144d0fe8868ee24394376c35",
+    "execution_amendment_sha256": "9cb82f44ff82d8676de9b34b163d2ccd506a29bf7c231092b78b0b205cf63e5e",
+    "micro_log_sha256": "5e62073ee4d493f4cfd9ffbef4164093a4387564c6bd0a25b7e2914fc12b54a9",
+    "microbenchmark_source_sha256": "98e243c56ad79855faea4dd8d2c27577ee9bd4c5becf2017e9574ec1826c178b",
+    "parent_binary_sha256": "90a08eb2f1a70d540c117b9db563c28fa9bb0b03eedca48d061cc147aab79a28",
+    "preregistration_sha256": "d5bb4a17b7af476c0ec284bdf32f09e59fc9397b4957db41adf1d7a793c9fbd2",
+    "property_log_sha256": "ce170886548138c5da547f61788502cd20a5fca838e7c06d84f1f78e042e7a70",
+    "property_test_sha256": "17698f7333ff9486274f22c9bb9bebbc3f0d7a8fccd4d6c1e719b0c24e0575e7"
+  },
+  "schema": "qwen38_27b_q4_k_dual_layout_q8_producer_graph_result_v24",
+  "stage": "property_microkernel_and_four_row_graph",
+  "terminal": true
+}

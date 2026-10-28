@@ -1,0 +1,99 @@
+{
+  "schema": "qwen38_27b_static_entropy_full_preregistration_v1",
+  "receipt_schema": "qwen38_27b_static_entropy_full_receipt_v1",
+  "status": "frozen_before_authoritative_full_mapped_code_export",
+  "frozen_at_utc": "2026-08-17T19:43:31Z",
+  "hypothesis": "After the frozen real-chunk CQ3S1 gate passes, a four-worker native encoder can restartably and exactly re-encode all 26,869,760,000 authenticated mapped Qwen3.8-27B ternary codes into 402 real 64-byte-aligned tensor sections at no more than 1.55 bits per mapped trit including frame headers, alignment, and the runtime artifact manifest",
+  "admission": {
+    "required_rate_receipt_schema": "qwen38_27b_ternary_type_class_rate_receipt_v1",
+    "required_rate_gate_pass": true,
+    "required_sample_receipt_schema": "qwen38_27b_static_entropy_codec_sample_receipt_v1",
+    "required_sample_gate_pass": true,
+    "scientific_rejection_of_either_parent_skips_this_export": true
+  },
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "source_manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4",
+    "mapped_tensors": 402,
+    "mapped_chunks": 34344,
+    "mapped_trits": 26869760000,
+    "supplemental_rank_ge_2_tensors_not_in_this_export": 264,
+    "claim_boundary": "complete actual mapped-code export only; supplemental tensor codes, row-normalized scales, retained tensors, model metadata, tokenizer, and final complete-model container remain separate"
+  },
+  "artifact": {
+    "codec": "CQ3S1 deterministic 15-bit per-frame static arithmetic model",
+    "staging": "one independently authenticated frame and hash-chained JSON receipt per source chunk",
+    "restart": "atomic frame, receipt, and compact progress replacement after every chunk; every staged frame is rehashed on resume",
+    "deployable_sections": "concatenate each tensor's frames in source order and pad each of 402 section files to 64 bytes",
+    "runtime_manifest": "actual JSON index with section paths, byte counts, hashes, trit counts, and frame indices",
+    "byte_accounting": "count all CQ3S1 23-byte headers, payload byte rounding, tensor-section padding, and the actual runtime manifest bytes",
+    "staging_boundary": "staging frames are redundant provenance and excluded from deployable byte rate after tensor sections are materialized"
+  },
+  "measurement": {
+    "authenticate_every_source_frame_sha256": true,
+    "decode_every_source_frame_with_native_uniform_decoder": true,
+    "authenticate_every_raw_trit_sha256": true,
+    "encode_and_decode_every_CQ3S1_frame_natively": true,
+    "require_exact_trit_equality_before_commit": true,
+    "hash_chain_every_committed_chunk": true,
+    "rehash_full_staging_prefix_on_resume_and_finalize": true,
+    "materialize_and_hash_every_tensor_section": true,
+    "record_native_encode_and_decode_cpu_seconds": true,
+    "workers": 4,
+    "chunks_per_worker_task": 16
+  },
+  "gate": {
+    "required_chunks": 34344,
+    "required_tensors": 402,
+    "required_trits": 26869760000,
+    "maximum_static_mapped_bits_per_trit": 1.55,
+    "minimum_saving_vs_uniform_bits_per_trit": 0.04,
+    "maximum_static_over_entropy_bits_per_trit": 0.001,
+    "minimum_native_encode_mtrits_per_cpu_second": 25.0,
+    "minimum_native_decode_mtrits_per_cpu_second": 25.0
+  },
+  "frozen_inputs": {
+    "native_codec": {
+      "path": "clark_quantize/base3_native.c",
+      "sha256": "ef4968a764d48a8a954a095d34c83d5a25e891ecb49f20883818b1c9504028ff"
+    },
+    "static_codec": {
+      "path": "clark_quantize/qwen38_static_ternary_codec.py",
+      "sha256": "23f53c3295aaa18385a62f655ce0c02a2885f44dd086c55ed6e13bf60a0a974e"
+    },
+    "restartable_store": {
+      "path": "clark_quantize/qwen38_static_chunk_store.py",
+      "sha256": "5bbe09f94a4da14cc904546eaad461a2202ba1f2e09caf9cf2918d1099e00060"
+    },
+    "codec_tests": {
+      "path": "clark_quantize/test_qwen38_static_ternary_codec.py",
+      "sha256": "ae8299d738a67afacf5f9dea200bc34d8b936ca276a756e63772c34e9f65fce9"
+    },
+    "store_tests": {
+      "path": "clark_quantize/test_qwen38_static_chunk_store.py",
+      "sha256": "96b1aef7cb58dbaf5ec07570c2fd094cde386b44a72e8fead068bc113db302bb"
+    },
+    "exporter": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/export_qwen38_27b_static_entropy_full_v1.py",
+      "sha256": "6b18a907ba9bca09a778c7898f237784158a175f0d8b107523944f4d0f4042e1"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 6,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 20,
+    "maximum_new_persistent_artifact_gib": 12,
+    "run_after_sample_and_before_activation_QAT": true
+  },
+  "promotion_rules": [
+    "a pass proves actual exact mapped-code artifact bytes and native load-time codec feasibility, not a complete whole-model artifact",
+    "supplemental 264 tensor codes and every scale, retained tensor, metadata field, and auxiliary file must be physically bundled before a complete-rate representation can promote",
+    "the static codec is a distribution/load-time format and does not claim hot-path direct-decode throughput",
+    "exact trit identity means this export alone does not change capability, but whole-artifact equality still requires complete hashes",
+    "a failed frozen gate is retained without changing thresholds, source chunks, frequency precision, or layout",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this lane",
+    "this mapped-code export alone cannot establish a scientific breakthrough"
+  ]
+}

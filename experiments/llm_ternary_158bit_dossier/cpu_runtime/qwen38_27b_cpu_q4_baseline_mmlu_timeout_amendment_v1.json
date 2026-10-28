@@ -1,0 +1,31 @@
+{
+  "schema": "qwen38_27b_cpu_q4_baseline_mmlu_timeout_amendment_v1",
+  "created_at": "2026-08-17T10:38:14Z",
+  "parent_preregistration": "qwen38_27b_cpu_q4_baseline_preregistration_v1.json",
+  "parent_preregistration_sha256": "66ab9467b366b43afe1eb373a721f1d39578a486ace5dc53e3c7131ae29dc919",
+  "status": "frozen_before_the_first_MMLU_request",
+  "observed_runtime_evidence": {
+    "source": "valid Qwen3.8-27B load smoke and first CUTE request",
+    "prompt_tokens_per_second": 5.69,
+    "decode_tokens_per_second": 1.88,
+    "largest_frozen_mmlu_prompt_tokens": 2789,
+    "estimated_largest_prompt_seconds": 490.16,
+    "original_request_timeout_seconds": 240,
+    "risk": "valid long MMLU prompts can exceed the client timeout despite a healthy model and server"
+  },
+  "sole_contract_change": {
+    "field": "MMLU evaluator request timeout",
+    "from_seconds": 240,
+    "to_seconds": 900
+  },
+  "unchanged": [
+    "Qwen3.8-27B model and Q4_K_M artifact",
+    "8K server context",
+    "MMLU dataset revision, manifest, 64 rows, five-shot prompts, and seed",
+    "exact-option likelihood scorer, grammar, labels, and scoring",
+    "one MMLU worker and checkpoint every four rows",
+    "CUTE, MATH/code, and WikiText contracts",
+    "all quality thresholds and reporting rules"
+  ],
+  "validity_rule": "A timeout remains infrastructure-invalid and is never scored as an incorrect answer"
+}

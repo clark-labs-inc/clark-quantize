@@ -1,0 +1,26 @@
+[Unit]
+Description=Run Qwen3.8-27B MATH-500 quick-8 on the aligned-2 CPU graph
+After=network-online.target quant-qwen38-27b-aligned2-cute-watch-v1.service
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-eb0f4b4.bundle
+Environment=EXPECTED_COMMIT=eb0f4b40e51228ea017a4b409e24919524202e3c
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/bin/bash /workspace/tmp/watch-qwen38-27b-aligned2-math500-v1-eb0f4b4.sh
+CPUAffinity=0 2 4 6
+CPUQuota=400%
+MemoryMax=12G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

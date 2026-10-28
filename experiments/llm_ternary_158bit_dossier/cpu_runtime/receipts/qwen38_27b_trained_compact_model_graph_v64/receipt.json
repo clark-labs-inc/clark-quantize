@@ -1,0 +1,67 @@
+{
+  "claim_boundary": "Bounded all-64-layer trained CQ3 plus AFF3 graph execution only; semantic correctness, benchmark quality, throughput, memory efficiency, energy efficiency, novelty, and scientific breakthrough remain unmeasured.",
+  "complete": true,
+  "execution": {
+    "actual_all_layer_model_graph_execution_passed": true,
+    "batch": 128,
+    "bounded_free_generation_nonempty": true,
+    "context": 128,
+    "elapsed_seconds": 18.00367564,
+    "exit_code": 0,
+    "file_size_max_bytes_per_stream": 1048576,
+    "greedy": true,
+    "ignore_eos": true,
+    "interactive_mode_ran": true,
+    "no_conversation": true,
+    "no_warmup": true,
+    "performance_timing_ran": false,
+    "physical_cpu_list": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "requested_generated_tokens": 8,
+    "runtime_max_seconds": 420,
+    "seed": 20260819,
+    "service_exec_status": 0,
+    "service_memory_peak_bytes": null,
+    "service_result": "success",
+    "single_turn": true,
+    "stream_bounds_respected": true,
+    "threads": 4,
+    "ubatch": 64
+  },
+  "high_precision_weight_materialization": false,
+  "inputs": {
+    "active_aff3_layers": "0-63",
+    "aff3_images": 64,
+    "candidate_bytes": 13893519712,
+    "candidate_sha256": "506505935f82bade12ab4b51bd1ca9b6e1b5cc11eeae99a6e230b9a7b9044ffc",
+    "input_authentication_sha256": "98af5dff0199a0f6f69856761b9b865e7ad271e1399d444bda82b25e5b030c75",
+    "llama_cli_sha256": "66cd0e0b0a1276dd7caceac64fbaf7c2cd05111b8f31e0375bd89cb2ccffc12d",
+    "prompt_sha256": "6a99a6c8bea78dbf96e4c9c7b64f1f7cf2535177b9a659523765bcd482a870fc",
+    "residual_payload_bytes": 0,
+    "v62_marker_sha256": "ade3256aa4851403b8c6467a0642bb9eb2c7fc973cbcad97412cc935bd6a8291",
+    "v63_receipt_sha256": "38fc523deb2754371a0b3a2c310e3f499d6c25d2931cb83b1203d8bb2350725d",
+    "v64_parent_retry_amendment_sha256": "2fb2a935709f4c7f703911c1532a142ed56a7310f3f0c1aae0424c1b1ebc7758"
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "passed": false,
+  "performance_measurement_ran": false,
+  "preregistration_sha256": "a33e3ddf4e70c139ea5e6325b3e55276672dd4955272fc8ddf38efec187db4ce",
+  "repository_commit": "aded9c85fb22dd63230f9730bff743feb01a7257",
+  "schema": "qwen38_27b_trained_compact_model_graph_v64",
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdout": {
+    "bytes": 1080,
+    "preview": "\n\nLoading model... \n\n\u2584\u2584 \u2584\u2584\n\u2588\u2588 \u2588\u2588\n\u2588\u2588 \u2588\u2588  \u2580\u2580\u2588\u2584 \u2588\u2588\u2588\u2584\u2588\u2588\u2588\u2584  \u2580\u2580\u2588\u2584    \u2584\u2588\u2588\u2588\u2588 \u2588\u2588\u2588\u2588\u2584 \u2588\u2588\u2588\u2588\u2584\n\u2588\u2588 \u2588\u2588 \u2584\u2588\u2580\u2588\u2588 \u2588\u2588 \u2588\u2588 \u2588\u2588 \u2584\u2588\u2580\u2588\u2588    \u2588\u2588    \u2588\u2588 \u2588\u2588 \u2588\u2588 \u2588\u2588\n\u2588\u2588 \u2588\u2588 \u2580\u2588\u2584\u2588\u2588 \u2588\u2588 \u2588\u2588 \u2588\u2588 \u2580\u2588\u2584\u2588\u2588 \u2588\u2588 \u2580\u2588\u2588\u2588\u2588 \u2588\u2588\u2588\u2588\u2580 \u2588\u2588\u2588\u2588\u2580\n                                    \u2588\u2588    \u2588\u2588\n                                    \u2580\u2580    \u2580\u2580\n\nbuild      : b1-4df29be4f\nmodel      : /workspace/models/candidates/Qwen3.8-27B-trained-CQ3-AFF3-base-v62.gguf\nftype      : Q4_K - Medium\nmodalities : text\n\navailable commands:\n  /exit or Ctrl+C     stop or exit\n  /regen              regenerate",
+    "sha256": "f55f184a7e33133711c0a7609768120d1c76c9cd41cddad43eb6c77e1ab90ce0"
+  },
+  "terminal": true,
+  "whole_model_quality_ran": false
+}

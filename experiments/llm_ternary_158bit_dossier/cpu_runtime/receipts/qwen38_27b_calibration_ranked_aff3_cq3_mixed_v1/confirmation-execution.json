@@ -1,0 +1,41 @@
+{
+  "schema": "qwen38_27b_calibration_ranked_mixed_confirmation_execution_v1",
+  "host": "ubuntu-32gb-hel1-1",
+  "unit": "quant-qwen38-27b-mixed-confirmation-v1.service",
+  "invocation_id": "ff501a22d3c4499c983cdba515369dbc",
+  "repository_commit": "08187ed1fd24a6936d4998a5d660f3ae8ee1abff",
+  "artifact_repository_commit": "46c044f0ce645056e9c31e73a7f90a44659077da",
+  "runner_receipt": {
+    "path": "confirmation.json",
+    "sha256": "0b6935d03cfd62b19c7e6cb178bd74c431b2b064db56d20603064f68401f10ce"
+  },
+  "launch_observation": {
+    "cpu_affinity": [0, 2, 4, 6],
+    "memory_max_bytes": 30000000000,
+    "memory_swap_max_bytes": 0,
+    "restart": "on-failure",
+    "restart_prevent_exit_status": 2,
+    "n_restarts": 0
+  },
+  "terminal_observation": {
+    "active_state": "failed",
+    "sub_state": "failed",
+    "result": "exit-code",
+    "exec_main_code": 1,
+    "exec_main_status": 2,
+    "n_restarts": 0,
+    "systemd_cpu_time_seconds": 130.139,
+    "systemd_wall_clock_seconds": 86.054,
+    "systemd_memory_peak_bytes_observed": 1261645824,
+    "systemd_memory_peak_text": "1.1G"
+  },
+  "classification": {
+    "infrastructure_valid": true,
+    "scientific_gate_passed": false,
+    "reason": "Layer 63 final fresh-confirmation complete-block NMSE was 0.07016447242365172, above the frozen 0.05 maximum.",
+    "stop_before_full_conversion": true
+  },
+  "complete": true,
+  "terminal": true,
+  "claim_boundary": "Terminal negative fresh-confirmation three-block numeric gate; not a zero, infrastructure failure, complete-model result, or breakthrough."
+}

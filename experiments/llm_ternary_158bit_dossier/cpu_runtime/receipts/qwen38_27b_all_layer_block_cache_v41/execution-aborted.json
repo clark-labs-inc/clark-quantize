@@ -1,0 +1,60 @@
+{
+  "schema": "qwen38_27b_all_layer_block_cache_execution_aborted_v41",
+  "experiment_id": "qwen38_27b_all_layer_block_cache_v41",
+  "host": "quant",
+  "hostname": "ubuntu-32gb-hel1-1",
+  "unit": "quant-qwen38-27b-all-layer-block-cache-v41.service",
+  "invocation_id": "44f9790d1fd243ac93ca95b2641d9c5f",
+  "repository_commit": "241595dafad72dd43de86a0b9d31fd263da698ff",
+  "started_at_utc": "2026-08-19T07:44:03Z",
+  "stopped_at_utc": "2026-08-19T07:46:17Z",
+  "wall_seconds": 134.475,
+  "cpu_seconds": 508.9,
+  "journal_reported_peak_memory": "12.6G",
+  "cpu_affinity": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "memory_max_bytes": 31000000000,
+  "memory_swap_max_bytes": 0,
+  "restarts": 0,
+  "manual_stop": true,
+  "runner_exit_was_not_a_terminal_receipt": true,
+  "checkpoint": {
+    "path": "/workspace/quant-runs/qwen38-all-layer-block-cache-v41/checkpoint.pt",
+    "bytes": 39341472,
+    "sha256": "de42be9925ae294b6ec0ddb01c718500a0f0257f2f45768512206d84c1f08ce8",
+    "next_layer": 16,
+    "cached_layer_prefix": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "retained_for_provenance": true
+  },
+  "terminal_artifacts": {
+    "cache_exists": false,
+    "receipt_exists": false,
+    "completion_marker_exists": false,
+    "scientific_gate_evaluated": false
+  },
+  "classification": "manually_aborted_preterminal_semantic_design_invalid",
+  "reason": "The selected-row cache preserves enough information for a later low-rank residual fit but cannot train or evaluate the mixed AFF3 attention block. Full attention and recurrent linear attention require the complete 64-token hidden-state sequence, so promotion to all-layer mixed training would have been invalid.",
+  "next_design": "Store one atomic full-context input/output BF16 shard per layer. This retains attention context, provides a restart boundary after every layer, avoids rewriting a monolithic checkpoint, and lets later training load one layer shard at a time.",
+  "status_boundary": "v41 is neither a completed cache nor a zero score. Its frozen gate did not run, and it provides no quality, model, runtime, novelty, or breakthrough evidence."
+}

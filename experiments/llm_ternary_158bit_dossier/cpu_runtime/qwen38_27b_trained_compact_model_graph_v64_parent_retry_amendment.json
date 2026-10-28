@@ -1,0 +1,31 @@
+{
+  "schema": "qwen38_27b_trained_compact_model_graph_v64_parent_retry_amendment",
+  "experiment_id": "qwen38_27b_trained_compact_model_graph_v64",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_after_v63_compile_only_incident_before_v63_retry_or_v64_execution",
+  "frozen_at_utc": "2026-08-19T17:20:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "parent_v64_preregistration_sha256": "a33e3ddf4e70c139ea5e6325b3e55276672dd4955272fc8ddf38efec187db4ce",
+  "v63_infrastructure_incident_sha256": "7102e7b464dc1b4fbd99869deb543c029fb7cacf51c63be8ca67cb68ad34d32c",
+  "v63_retry_amendment_sha256": "9693a0fd01b4927942fbc395cde487b58d51cdb41c015ab4704de562cd1ffaec",
+  "v63_retry_runner_sha256": "3077e063f333958d4da7ad73b121294f0188a048f985bfce1fa780c89a27a850",
+  "v63_retry_launcher_sha256": "80708591b3ed5525ccfcdade9b35617f0190aea2d9f6705ed3961f837ddb86b4",
+  "parent_resolution": {
+    "original_v63_compile_cannot_satisfy_the_v64_parent_gate": true,
+    "one_terminal_pass_from_the_exact_v63_retry_runner_is_required": true,
+    "retry_receipt_must_bind_the_incident_and_retry_amendment": true,
+    "retry_receipt_must_confirm_no_runtime_or_numerical_source_changes": true,
+    "all_original_v63_compile_test_cq3_and_aff3_parity_gates_remain_unchanged": true
+  },
+  "unchanged_v64_contract": {
+    "candidate_sha256": "506505935f82bade12ab4b51bd1ca9b6e1b5cc11eeae99a6e230b9a7b9044ffc",
+    "active_aff3_layers": "0-63",
+    "residual_payload_bytes": 0,
+    "prompt_sampling_token_count_resource_and_stream_bounds": "exactly the original v64 preregistration",
+    "quality_measurement_forbidden": true,
+    "performance_measurement_forbidden": true,
+    "v59_lut_runtime_forbidden": true,
+    "v45_residual_runtime_forbidden": true
+  },
+  "claim_boundary": "This amendment only substitutes an authenticated non-numerical infrastructure retry for the impossible original v63 parent. It changes no v64 model, graph, output, quality, performance, or novelty gate."
+}

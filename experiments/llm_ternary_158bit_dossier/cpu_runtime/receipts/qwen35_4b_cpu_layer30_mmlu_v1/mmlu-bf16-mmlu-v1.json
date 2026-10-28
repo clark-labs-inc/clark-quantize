@@ -1,0 +1,2977 @@
+{
+  "schema": "llama_cpp_mmlu_exact_choice_v1",
+  "status": "completed",
+  "valid": true,
+  "created_at": "2026-08-17T09:03:49.453311+00:00",
+  "started_at": "2026-08-17T08:50:20.654368+00:00",
+  "elapsed_seconds_this_invocation": 808.798943,
+  "resumed_from_records": 20,
+  "contract": {
+    "manifest_sha256": "e3e38ccb1bf35c56b600f1cf39bbd0ea38072f2b4bdd5fc36146c143fb658dba",
+    "manifest_content_sha256": "16a5adedb84a9bd7463b65eedf7eb0bf21d688a762ceda49310b0434f795b198",
+    "model": "/workspace/models/controls/Qwen3.5-4B-BF16.gguf",
+    "model_label": "bf16-mmlu-v1",
+    "model_sha256": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974",
+    "server": "http://127.0.0.1:8095",
+    "workers": 4,
+    "timeout": 240.0,
+    "checkpoint_every": 4,
+    "evaluator_sha256": "a604ca9a528231fa17de78ab2a7ffed7c1b9a0b9a9ca74459c2d894f1f3612d3",
+    "tokenizer_contract": {
+      "labels": {
+        "A": 357,
+        "B": 417,
+        "C": 351,
+        "D": 414
+      },
+      "standalone_space": {
+        "id": 220,
+        "piece": " "
+      },
+      "pieces": {
+        " A": {
+          "id": 357,
+          "piece": " A"
+        },
+        " B": {
+          "id": 417,
+          "piece": " B"
+        },
+        " C": {
+          "id": 351,
+          "piece": " C"
+        },
+        " D": {
+          "id": 414,
+          "piece": " D"
+        },
+        " ": {
+          "id": 220,
+          "piece": " "
+        }
+      }
+    },
+    "completion": {
+      "endpoint": "/v1/chat/completions",
+      "max_tokens": 1,
+      "temperature": 1.0,
+      "samplers": [
+        "temperature"
+      ],
+      "grammar": "root ::= \" A\" | \" B\" | \" C\" | \" D\"",
+      "post_sampling_probs": true,
+      "top_logprobs": 4,
+      "standalone_space_logit_bias": false,
+      "enable_thinking": false,
+      "seed_formula": "manifest_seed_plus_dataset_index"
+    }
+  },
+  "dataset": {
+    "id": "cais/mmlu",
+    "config": "all",
+    "split": "test",
+    "revision": "c30699e8356da336a370243923dbaf21066bb9fe",
+    "fingerprint": "436299c1c09696bb",
+    "support_fingerprint": "ca7a71e4c243f30b",
+    "shots": 5,
+    "sampling": {
+      "method": "stratified_equal",
+      "seed": 20260816,
+      "stratum_key": "subject"
+    },
+    "subjects": 57,
+    "subject_counts": {
+      "abstract_algebra": 2,
+      "anatomy": 2,
+      "astronomy": 2,
+      "business_ethics": 2,
+      "clinical_knowledge": 2,
+      "college_biology": 2,
+      "college_chemistry": 2,
+      "college_computer_science": 1,
+      "college_mathematics": 1,
+      "college_medicine": 1,
+      "college_physics": 1,
+      "computer_security": 1,
+      "conceptual_physics": 1,
+      "econometrics": 1,
+      "electrical_engineering": 1,
+      "elementary_mathematics": 1,
+      "formal_logic": 1,
+      "global_facts": 1,
+      "high_school_biology": 1,
+      "high_school_chemistry": 1,
+      "high_school_computer_science": 1,
+      "high_school_european_history": 1,
+      "high_school_geography": 1,
+      "high_school_government_and_politics": 1,
+      "high_school_macroeconomics": 1,
+      "high_school_mathematics": 1,
+      "high_school_microeconomics": 1,
+      "high_school_physics": 1,
+      "high_school_psychology": 1,
+      "high_school_statistics": 1,
+      "high_school_us_history": 1,
+      "high_school_world_history": 1,
+      "human_aging": 1,
+      "human_sexuality": 1,
+      "international_law": 1,
+      "jurisprudence": 1,
+      "logical_fallacies": 1,
+      "machine_learning": 1,
+      "management": 1,
+      "marketing": 1,
+      "medical_genetics": 1,
+      "miscellaneous": 1,
+      "moral_disputes": 1,
+      "moral_scenarios": 1,
+      "nutrition": 1,
+      "philosophy": 1,
+      "prehistory": 1,
+      "professional_accounting": 1,
+      "professional_law": 1,
+      "professional_medicine": 1,
+      "professional_psychology": 1,
+      "public_relations": 1,
+      "security_studies": 1,
+      "sociology": 1,
+      "us_foreign_policy": 1,
+      "virology": 1,
+      "world_religions": 1
+    }
+  },
+  "summary": {
+    "task": "mmlu",
+    "correct": 41,
+    "n": 64,
+    "accuracy": 0.640625,
+    "accuracy_wilson_95_ci": [
+      0.518208506097791,
+      0.7471159770854825
+    ]
+  },
+  "records": [
+    {
+      "position": 0,
+      "sample_id": "mmlu:33",
+      "dataset_index": 33,
+      "subject": "abstract_algebra",
+      "row_sha256": "e92221969252606fe3bcf6e11c78b235287a3957b4a1b70d5ea237d94d46a3ef",
+      "correct": true,
+      "prediction": "C",
+      "gold": "C",
+      "choice_probabilities": {
+        "A": 0.17709298431873322,
+        "B": 0.1663864701986313,
+        "C": 0.5933606028556824,
+        "D": 0.06315992772579193
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.1663864701986313,
+        "message_content": "B"
+      },
+      "prompt_sha256": "8e25ac47ccbcb37b8c09bdc93c4c3d77888148e321766c74149cd9670f4d7ef3",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 399,
+        "total_tokens": 400,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 399,
+        "prompt_ms": 50358.77,
+        "prompt_per_token_ms": 126.21245614035087,
+        "prompt_per_second": 7.92314824210361,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 50365.268155001104
+    },
+    {
+      "position": 1,
+      "sample_id": "mmlu:124",
+      "dataset_index": 124,
+      "subject": "anatomy",
+      "row_sha256": "8000ec53795c926517412f048eabbbe9ba0c6aed94ec1fb96eb4f4d7d0bbf571",
+      "correct": true,
+      "prediction": "B",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.11875427514314651,
+        "B": 0.5301435589790344,
+        "C": 0.03631069138646126,
+        "D": 0.3147914707660675
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.5301435589790344,
+        "message_content": "B"
+      },
+      "prompt_sha256": "d6d0889474668c6574e0c2e93a3e2c11c810f25801774038b3bdf10482d03ffd",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 364,
+        "total_tokens": 365,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 364,
+        "prompt_ms": 41410.949,
+        "prompt_per_token_ms": 113.7663434065934,
+        "prompt_per_second": 8.789945866732008,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 50687.8739820022
+    },
+    {
+      "position": 2,
+      "sample_id": "mmlu:311",
+      "dataset_index": 311,
+      "subject": "astronomy",
+      "row_sha256": "d675bd6a14b84477dab72a1520903f5cd8cb9e28b1ebe7c4cfcce63f07a635b9",
+      "correct": false,
+      "prediction": "C",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.31156793236732483,
+        "B": 0.03175828233361244,
+        "C": 0.6522926688194275,
+        "D": 0.0043811253271996975
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.03175828233361244,
+        "message_content": "B"
+      },
+      "prompt_sha256": "ca01ce7ae05fe975f710d81a6646c468a3ddd235c6f1e96a7d733d68861c73a3",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 631,
+        "total_tokens": 632,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 631,
+        "prompt_ms": 40234.068,
+        "prompt_per_token_ms": 63.76238985736926,
+        "prompt_per_second": 15.683226463702352,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 49510.930295000435
+    },
+    {
+      "position": 3,
+      "sample_id": "mmlu:436",
+      "dataset_index": 436,
+      "subject": "business_ethics",
+      "row_sha256": "52aea5755f56340550f36140bf6bd446fe99292c5d7e5993e26c24e81f6ee331",
+      "correct": false,
+      "prediction": "A",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.781671404838562,
+        "B": 0.023173391819000244,
+        "C": 0.18438252806663513,
+        "D": 0.010772681795060635
+      },
+      "sampled": {
+        "id": 357,
+        "token": " A",
+        "prob": 0.781671404838562,
+        "message_content": "A"
+      },
+      "prompt_sha256": "7cff65fa6d773408f659213f57e3c10912f2c1e36f0717092328b442dc1a36a0",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 560,
+        "total_tokens": 561,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 560,
+        "prompt_ms": 41045.99,
+        "prompt_per_token_ms": 73.29641071428571,
+        "prompt_per_second": 13.643232871225667,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 50321.97105499654
+    },
+    {
+      "position": 4,
+      "sample_id": "mmlu:575",
+      "dataset_index": 575,
+      "subject": "clinical_knowledge",
+      "row_sha256": "8930dcaa491f8a9b477eacb3fab82134217757c17772831634abdc311f86051c",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.006704170722514391,
+        "B": 0.0019365288317203522,
+        "C": 0.12910322844982147,
+        "D": 0.8622560501098633
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.8622560501098633,
+        "message_content": "D"
+      },
+      "prompt_sha256": "472f4401d11bfce56ab4682d0769febb26b5ad64c890915f043b0d217087402b",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 421,
+        "total_tokens": 422,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 421,
+        "prompt_ms": 27716.878,
+        "prompt_per_token_ms": 65.83581472684085,
+        "prompt_per_second": 15.18930090178266,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 28047.033186994668
+    },
+    {
+      "position": 5,
+      "sample_id": "mmlu:883",
+      "dataset_index": 883,
+      "subject": "college_biology",
+      "row_sha256": "d6dcf2bbe8e930922830dbc1c4292da611388e7472da2084b5480e06cfd8c99d",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.020936323329806328,
+        "B": 0.21467529237270355,
+        "C": 0.003303107339888811,
+        "D": 0.7610852718353271
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.7610852718353271,
+        "message_content": "D"
+      },
+      "prompt_sha256": "9eb6f7c53daff02a4d7f9deebbee271c90eb6cc70d8d646e7507d343c2e07b75",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 516,
+        "total_tokens": 517,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 516,
+        "prompt_ms": 37283.906,
+        "prompt_per_token_ms": 72.25563178294574,
+        "prompt_per_second": 13.839751661212748,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 37620.55003699788
+    },
+    {
+      "position": 6,
+      "sample_id": "mmlu:981",
+      "dataset_index": 981,
+      "subject": "college_chemistry",
+      "row_sha256": "b6a5816f1972620e77fc89db10e37661a4d4082a0a2c676cd2dda4ec24bcf7ba",
+      "correct": false,
+      "prediction": "B",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.13129058480262756,
+        "B": 0.6141723990440369,
+        "C": 0.05486929416656494,
+        "D": 0.19966772198677063
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.05486929416656494,
+        "message_content": "C"
+      },
+      "prompt_sha256": "ea92ed2c9df9300c9c63346535e2519e67feac279ecfa53cda0b7eea9e5860a6",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 691,
+        "total_tokens": 692,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 691,
+        "prompt_ms": 35891.329,
+        "prompt_per_token_ms": 51.94114182344428,
+        "prompt_per_second": 19.25256097371039,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 63962.1734359971
+    },
+    {
+      "position": 7,
+      "sample_id": "mmlu:1032",
+      "dataset_index": 1032,
+      "subject": "college_computer_science",
+      "row_sha256": "a3def0a21c53094fdb400fae298df969943e79332d5c2a56f98d4a4f481075e7",
+      "correct": true,
+      "prediction": "C",
+      "gold": "C",
+      "choice_probabilities": {
+        "A": 0.012275556102395058,
+        "B": 0.03268761560320854,
+        "C": 0.7047242522239685,
+        "D": 0.25031256675720215
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.7047242522239685,
+        "message_content": "C"
+      },
+      "prompt_sha256": "e778c1e2c43ef2a34d6d84b2fd4d749daade23cfb86be9e92969ed65788d930c",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 785,
+        "total_tokens": 786,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 785,
+        "prompt_ms": 63278.132,
+        "prompt_per_token_ms": 80.60908535031847,
+        "prompt_per_second": 12.405549519066083,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 63623.46687399986
+    },
+    {
+      "position": 8,
+      "sample_id": "mmlu:1161",
+      "dataset_index": 1161,
+      "subject": "college_mathematics",
+      "row_sha256": "426a7d12f79a3a2a181a6f76ca62c9ec31bcabd50b8749cb31dc628874ad33cd",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.02221297286450863,
+        "B": 0.11280592530965805,
+        "C": 0.01009448990225792,
+        "D": 0.8548865914344788
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.8548865914344788,
+        "message_content": "D"
+      },
+      "prompt_sha256": "ccdb0014b8e5adf2387025359c6665164ad63e837d4c249260a074e16b44c79e",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 608,
+        "total_tokens": 609,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 608,
+        "prompt_ms": 41310.108,
+        "prompt_per_token_ms": 67.94425657894737,
+        "prompt_per_second": 14.717947481521955,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 41629.77201800095
+    },
+    {
+      "position": 9,
+      "sample_id": "mmlu:1263",
+      "dataset_index": 1263,
+      "subject": "college_medicine",
+      "row_sha256": "53d839d8ee00019bbec3160bec28ee2e7227c40cdf884d349b94a80a07935968",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.030415596440434456,
+        "B": 0.003674693638458848,
+        "C": 0.010254980996251106,
+        "D": 0.9556547403335571
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.9556547403335571,
+        "message_content": "D"
+      },
+      "prompt_sha256": "5512ac8b482a3505e35fa20bc403e7be61543406162ff960962a34d057b151b3",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 541,
+        "total_tokens": 542,
+        "prompt_tokens_details": {
+          "cached_tokens": 4
+        }
+      },
+      "timings": {
+        "cache_n": 4,
+        "prompt_n": 537,
+        "prompt_ms": 55118.58,
+        "prompt_per_token_ms": 102.64167597765363,
+        "prompt_per_second": 9.742631250659942,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 55441.39460600127
+    },
+    {
+      "position": 10,
+      "sample_id": "mmlu:1398",
+      "dataset_index": 1398,
+      "subject": "college_physics",
+      "row_sha256": "608fad493ba31dfea54304cd2abe8a5a69572ce7b74aea7214d9624fec044307",
+      "correct": false,
+      "prediction": "B",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.13388019800186157,
+        "B": 0.6931768655776978,
+        "C": 0.05820133164525032,
+        "D": 0.11474159359931946
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.6931768655776978,
+        "message_content": "B"
+      },
+      "prompt_sha256": "3d5843b47635506e807d03dee30e6c3bbd8f42b42b3f07a50a82e52af2195067",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 531,
+        "total_tokens": 532,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 531,
+        "prompt_ms": 55548.479,
+        "prompt_per_token_ms": 104.61107156308852,
+        "prompt_per_second": 9.559217634023787,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 55877.43242700526
+    },
+    {
+      "position": 11,
+      "sample_id": "mmlu:1491",
+      "dataset_index": 1491,
+      "subject": "computer_security",
+      "row_sha256": "c094d4a2bc02e9411d493bed1beb02739f04782df961bc47d28bad44a9cb0aab",
+      "correct": false,
+      "prediction": "A",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.5294944047927856,
+        "B": 0.06600872427225113,
+        "C": 0.009220333769917488,
+        "D": 0.3952765464782715
+      },
+      "sampled": {
+        "id": 357,
+        "token": " A",
+        "prob": 0.5294944047927856,
+        "message_content": "A"
+      },
+      "prompt_sha256": "d4c10c2b328d7674ae56ddc1952f5168b86d4dcf0582360005c8f11bf1f88bfa",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 379,
+        "total_tokens": 380,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 379,
+        "prompt_ms": 55584.461,
+        "prompt_per_token_ms": 146.66084696569922,
+        "prompt_per_second": 6.818452372867302,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 55919.54934599926
+    },
+    {
+      "position": 12,
+      "sample_id": "mmlu:1714",
+      "dataset_index": 1714,
+      "subject": "conceptual_physics",
+      "row_sha256": "0dcae281f4c4cb85c2afa0ce27710e91f0d3c23f5c3ed9db9c34a2e4782eeb69",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.02220316417515278,
+        "B": 0.006607490126043558,
+        "C": 0.0018425070447847247,
+        "D": 0.969346821308136
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.969346821308136,
+        "message_content": "D"
+      },
+      "prompt_sha256": "5cc1e065347fa599b0b08539eb2f2fc166b4d77c0c9035bb39294acda845ddc2",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 308,
+        "total_tokens": 309,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 308,
+        "prompt_ms": 27485.986,
+        "prompt_per_token_ms": 89.24021428571429,
+        "prompt_per_second": 11.205710430035145,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 43416.84286200325
+    },
+    {
+      "position": 13,
+      "sample_id": "mmlu:1808",
+      "dataset_index": 1808,
+      "subject": "econometrics",
+      "row_sha256": "56683c7a49495e6827247facb18c58a0b6f0869da91ef06ea4122d8c0822ca93",
+      "correct": true,
+      "prediction": "A",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.9972429871559143,
+        "B": 0.00041396761662326753,
+        "C": 0.0021243798546493053,
+        "D": 0.00021864078007638454
+      },
+      "sampled": {
+        "id": 357,
+        "token": " A",
+        "prob": 0.9972429871559143,
+        "message_content": "A"
+      },
+      "prompt_sha256": "1f853dab002c83ad67b8cbc3f9efcd20bfde5bb3c070864e4a519f6d83f14b8d",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 620,
+        "total_tokens": 621,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 620,
+        "prompt_ms": 41577.514,
+        "prompt_per_token_ms": 67.06050645161291,
+        "prompt_per_second": 14.911906469444036,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 57519.46542200312
+    },
+    {
+      "position": 14,
+      "sample_id": "mmlu:2039",
+      "dataset_index": 2039,
+      "subject": "electrical_engineering",
+      "row_sha256": "e1d72b0ed213c647760cdb78a812b515e4a5fddbe5a88ddc10261d5b001cf279",
+      "correct": true,
+      "prediction": "A",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.9454470872879028,
+        "B": 0.022321792319417,
+        "C": 0.013729515485465527,
+        "D": 0.01850157417356968
+      },
+      "sampled": {
+        "id": 357,
+        "token": " A",
+        "prob": 0.9454470872879028,
+        "message_content": "A"
+      },
+      "prompt_sha256": "fb021b64f00acf4570b55ba026b36daea34eb51e78d457903b916dfe08ab1f68",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 462,
+        "total_tokens": 463,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 462,
+        "prompt_ms": 29540.81,
+        "prompt_per_token_ms": 63.94114718614719,
+        "prompt_per_second": 15.639381587708662,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 29926.445221004542
+    },
+    {
+      "position": 15,
+      "sample_id": "mmlu:2286",
+      "dataset_index": 2286,
+      "subject": "elementary_mathematics",
+      "row_sha256": "22ffe9cd85fecbdf0c744985bd8baaad7474c37a5fe8830590eaadaeb65ab738",
+      "correct": false,
+      "prediction": "B",
+      "gold": "C",
+      "choice_probabilities": {
+        "A": 0.1878928691148758,
+        "B": 0.6244314908981323,
+        "C": 0.08206012845039368,
+        "D": 0.10561548918485641
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.6244314908981323,
+        "message_content": "B"
+      },
+      "prompt_sha256": "b9a9a9dc69f77951d296074af20ffa8085c7a9d45ef8bd3d86b4afc3bd310916",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 586,
+        "total_tokens": 587,
+        "prompt_tokens_details": {
+          "cached_tokens": 4
+        }
+      },
+      "timings": {
+        "cache_n": 4,
+        "prompt_n": 582,
+        "prompt_ms": 56788.96,
+        "prompt_per_token_ms": 97.5755326460481,
+        "prompt_per_second": 10.248470829541516,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 57181.09827100125
+    },
+    {
+      "position": 16,
+      "sample_id": "mmlu:2501",
+      "dataset_index": 2501,
+      "subject": "formal_logic",
+      "row_sha256": "56d628a9d587d6ac2442f46b50aeab5233dfa6a0fa8ab80e192c84efdb6bd9dc",
+      "correct": true,
+      "prediction": "B",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.01526446919888258,
+        "B": 0.8086676001548767,
+        "C": 0.11379145830869675,
+        "D": 0.06227647885680199
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.8086676001548767,
+        "message_content": "B"
+      },
+      "prompt_sha256": "b0c320ac7e7d2b513ef0f0797f3d76a41dd61a30405dd70dd0255c18c5114c3e",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 563,
+        "total_tokens": 564,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 563,
+        "prompt_ms": 52713.916,
+        "prompt_per_token_ms": 93.63040142095915,
+        "prompt_per_second": 10.680291708929385,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 53014.69960800023
+    },
+    {
+      "position": 17,
+      "sample_id": "mmlu:2580",
+      "dataset_index": 2580,
+      "subject": "global_facts",
+      "row_sha256": "2cd5041d5d5421e5bc9e097623fea34a652538a3dc9d4ac325644373e3852b5f",
+      "correct": false,
+      "prediction": "A",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.46256861090660095,
+        "B": 0.3525966703891754,
+        "C": 0.060568638145923615,
+        "D": 0.12426608800888062
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.3525966703891754,
+        "message_content": "B"
+      },
+      "prompt_sha256": "eda0bc60603f56eae047d0bb4b7af3fb1de3c269885e63956c0b1c76cd0e3957",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 447,
+        "total_tokens": 448,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 447,
+        "prompt_ms": 25024.675,
+        "prompt_per_token_ms": 55.983612975391495,
+        "prompt_per_second": 17.862369840966966,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 25311.73212399881
+    },
+    {
+      "position": 18,
+      "sample_id": "mmlu:2786",
+      "dataset_index": 2786,
+      "subject": "high_school_biology",
+      "row_sha256": "125a51df9c4df988e246d51132469d64751a0c1239fffb7ac294e514bcedd76f",
+      "correct": true,
+      "prediction": "A",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.9665647149085999,
+        "B": 0.020803315564990044,
+        "C": 0.005264671519398689,
+        "D": 0.007367302663624287
+      },
+      "sampled": {
+        "id": 357,
+        "token": " A",
+        "prob": 0.9665647149085999,
+        "message_content": "A"
+      },
+      "prompt_sha256": "06b91967fa1cd6198ff5618b13fc342a1fd16ad08f498b23343ac21d3c0b62f5",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 528,
+        "total_tokens": 529,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 528,
+        "prompt_ms": 28013.672,
+        "prompt_per_token_ms": 53.05619696969697,
+        "prompt_per_second": 18.84793967745464,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 53349.96533799858
+    },
+    {
+      "position": 19,
+      "sample_id": "mmlu:3170",
+      "dataset_index": 3170,
+      "subject": "high_school_chemistry",
+      "row_sha256": "f588c2ca4f1fe5a8802dd0fb385d03029a2b7fb2a1b9c22336e9b2214d5c7a90",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.3287133574485779,
+        "B": 0.11077220737934113,
+        "C": 0.0389372743666172,
+        "D": 0.5215771794319153
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.11077220737934113,
+        "message_content": "B"
+      },
+      "prompt_sha256": "6f240c26acfa168d813c06f6d4a0c697c959a00476aad77cf5066d57734f93c3",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 543,
+        "total_tokens": 544,
+        "prompt_tokens_details": {
+          "cached_tokens": 4
+        }
+      },
+      "timings": {
+        "cache_n": 4,
+        "prompt_n": 539,
+        "prompt_ms": 26121.505,
+        "prompt_per_token_ms": 48.462903525046386,
+        "prompt_per_second": 20.634339407319754,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 26411.471633000474
+    },
+    {
+      "position": 20,
+      "sample_id": "mmlu:3241",
+      "dataset_index": 3241,
+      "subject": "high_school_computer_science",
+      "row_sha256": "dc276892613dac9fe94ac3b74b04db7fa5e2db3efba2ef8f905fe41ad8b17025",
+      "correct": false,
+      "prediction": "D",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.4470653235912323,
+        "B": 0.08747317641973495,
+        "C": 0.008673855103552341,
+        "D": 0.456787645816803
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.456787645816803,
+        "message_content": "D"
+      },
+      "prompt_sha256": "b3f69db3236bdb6cb588b5e6a07209d6b6448a94344b3de0ac7a896be70ea7d8",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 855,
+        "total_tokens": 856,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 855,
+        "prompt_ms": 27060.07,
+        "prompt_per_token_ms": 31.649204678362572,
+        "prompt_per_second": 31.596370593276365,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 116292.62118000042
+    },
+    {
+      "position": 21,
+      "sample_id": "mmlu:3304",
+      "dataset_index": 3304,
+      "subject": "high_school_european_history",
+      "row_sha256": "11cf16efd6647bfbebd22c4cf608d92490b9d975ea7819fd57e386889cb353a5",
+      "correct": false,
+      "prediction": "D",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.019683538004755974,
+        "B": 0.28276729583740234,
+        "C": 0.03128150850534439,
+        "D": 0.6662676334381104
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.6662676334381104,
+        "message_content": "D"
+      },
+      "prompt_sha256": "ec39fbf4ea2f9bf55b279dbe56491da8b0d1c616d2be445fe9348097c0305e6c",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 2789,
+        "total_tokens": 2790,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 2789,
+        "prompt_ms": 92634.418,
+        "prompt_per_token_ms": 33.21420509143062,
+        "prompt_per_second": 30.107599963547024,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 101911.33580400492
+    },
+    {
+      "position": 22,
+      "sample_id": "mmlu:3546",
+      "dataset_index": 3546,
+      "subject": "high_school_geography",
+      "row_sha256": "610465428625a4b304a64d473ef65c3f9e525fdc044fbecee611d4af210a30f3",
+      "correct": true,
+      "prediction": "C",
+      "gold": "C",
+      "choice_probabilities": {
+        "A": 0.017473185434937477,
+        "B": 0.0006760521791875362,
+        "C": 0.9797045588493347,
+        "D": 0.002146186539903283
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.9797045588493347,
+        "message_content": "C"
+      },
+      "prompt_sha256": "136a01444550d1649c1c9030e8f02ce5eae6439502414dca00c6a9b64df40c40",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 376,
+        "total_tokens": 377,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 376,
+        "prompt_ms": 101939.743,
+        "prompt_per_token_ms": 271.11633776595744,
+        "prompt_per_second": 3.6884534817789367,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 101945.68779900146
+    },
+    {
+      "position": 23,
+      "sample_id": "mmlu:3835",
+      "dataset_index": 3835,
+      "subject": "high_school_government_and_politics",
+      "row_sha256": "d4d3af9dc9f88d25d7bf4368c9c922ec895adc324fd0a386c2a49ba96b6c5967",
+      "correct": true,
+      "prediction": "C",
+      "gold": "C",
+      "choice_probabilities": {
+        "A": 0.2435421198606491,
+        "B": 0.25347205996513367,
+        "C": 0.4340566396713257,
+        "D": 0.06892917305231094
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.4340566396713257,
+        "message_content": "C"
+      },
+      "prompt_sha256": "e304fe168d1685872e0406f2a55c1556c94e7032b0040c906c22a4d2579bfd46",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 447,
+        "total_tokens": 448,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 447,
+        "prompt_ms": 57268.003,
+        "prompt_per_token_ms": 128.11633780760627,
+        "prompt_per_second": 7.8054057516201505,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 115951.89181000023
+    },
+    {
+      "position": 24,
+      "sample_id": "mmlu:4009",
+      "dataset_index": 4009,
+      "subject": "high_school_macroeconomics",
+      "row_sha256": "42354083e1d849b21d9e55cf261861669792418dcd4eb1060d7afe1f166694c4",
+      "correct": false,
+      "prediction": "C",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.19569310545921326,
+        "B": 0.14646044373512268,
+        "C": 0.4295499920845032,
+        "D": 0.2282964438199997
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.4295499920845032,
+        "message_content": "C"
+      },
+      "prompt_sha256": "58f01f2a466b61bebc5c7c2144145402f84aa5f5ebde48f1f324aed22cd3bd0f",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 375,
+        "total_tokens": 376,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 375,
+        "prompt_ms": 25681.722,
+        "prompt_per_token_ms": 68.484592,
+        "prompt_per_second": 14.601824597275836,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 26020.365739001136
+    },
+    {
+      "position": 25,
+      "sample_id": "mmlu:4371",
+      "dataset_index": 4371,
+      "subject": "high_school_mathematics",
+      "row_sha256": "de2729e59b031f230389194867864b5eea8e4fd7ca5fbd542dda1cde8e11f713",
+      "correct": false,
+      "prediction": "D",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.23187722265720367,
+        "B": 0.3004150390625,
+        "C": 0.10175220668315887,
+        "D": 0.36595553159713745
+      },
+      "sampled": {
+        "id": 357,
+        "token": " A",
+        "prob": 0.23187722265720367,
+        "message_content": "A"
+      },
+      "prompt_sha256": "6598e506fa71e69481192ab9d01a73d6b93ad8048f48b713102dfa41625ccea2",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 584,
+        "total_tokens": 585,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 584,
+        "prompt_ms": 38808.92,
+        "prompt_per_token_ms": 66.4536301369863,
+        "prompt_per_second": 15.048086883118625,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 39153.9454570011
+    },
+    {
+      "position": 26,
+      "sample_id": "mmlu:4622",
+      "dataset_index": 4622,
+      "subject": "high_school_microeconomics",
+      "row_sha256": "28d906cf6ea081f6b41d4f0a410df535ed75853fd474b1c0b25e4e585392afde",
+      "correct": false,
+      "prediction": "D",
+      "gold": "C",
+      "choice_probabilities": {
+        "A": 0.04236612841486931,
+        "B": 0.0860975831747055,
+        "C": 0.06410522013902664,
+        "D": 0.8074310421943665
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.8074310421943665,
+        "message_content": "D"
+      },
+      "prompt_sha256": "ea3f72b2d75f76d8e7ab44fab916a4da40f30ce3b1c595a0edd39046deb8cc32",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 492,
+        "total_tokens": 493,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 492,
+        "prompt_ms": 51387.789,
+        "prompt_per_token_ms": 104.44672560975609,
+        "prompt_per_second": 9.574258974247755,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 51741.76089600223
+    },
+    {
+      "position": 27,
+      "sample_id": "mmlu:4814",
+      "dataset_index": 4814,
+      "subject": "high_school_physics",
+      "row_sha256": "f5552bb1b9770a98ed19d3262c508e5809fe790349d592e191e611c7bbaeac04",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.00035200704587623477,
+        "B": 0.01132768765091896,
+        "C": 0.0003936326247639954,
+        "D": 0.9879266619682312
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.9879266619682312,
+        "message_content": "D"
+      },
+      "prompt_sha256": "7fe3b1951e511b480f546a235e720d0565d1ae1b1f3520228ff74c6a14b108a6",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 581,
+        "total_tokens": 582,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 581,
+        "prompt_ms": 26013.524,
+        "prompt_per_token_ms": 44.7737074010327,
+        "prompt_per_second": 22.334536451116733,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 52078.98429499619
+    },
+    {
+      "position": 28,
+      "sample_id": "mmlu:5161",
+      "dataset_index": 5161,
+      "subject": "high_school_psychology",
+      "row_sha256": "82c2f4eb0d23a1bb4b975bbd2b7006e3955cf03fe514aad609aa45977f671aa4",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.0024547355715185404,
+        "B": 0.00042691215639933944,
+        "C": 0.005305509082973003,
+        "D": 0.9918128252029419
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.9918128252029419,
+        "message_content": "D"
+      },
+      "prompt_sha256": "16a88732ef2ab7569cfa361a6f4655994d055f945312b8bc642ed28aafb1fe47",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 478,
+        "total_tokens": 479,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 478,
+        "prompt_ms": 32875.785,
+        "prompt_per_token_ms": 68.77779288702929,
+        "prompt_per_second": 14.539576773604036,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 33160.18041499774
+    },
+    {
+      "position": 29,
+      "sample_id": "mmlu:5553",
+      "dataset_index": 5553,
+      "subject": "high_school_statistics",
+      "row_sha256": "44fb88edcf6cd9d7d6ce7f74134fdc9b6114d1e5bfae6b046afaafee6c19cf2c",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.04397863149642944,
+        "B": 0.015638086944818497,
+        "C": 0.005586196202784777,
+        "D": 0.9347971081733704
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.9347971081733704,
+        "message_content": "D"
+      },
+      "prompt_sha256": "6c15a2ba1052d4fb63726e2c7e718c0c38b24725483d15b59aa79523304c1ead",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 925,
+        "total_tokens": 926,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 925,
+        "prompt_ms": 58948.328,
+        "prompt_per_token_ms": 63.727922162162166,
+        "prompt_per_second": 15.691708847110979,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 59235.35193799762
+    },
+    {
+      "position": 30,
+      "sample_id": "mmlu:5834",
+      "dataset_index": 5834,
+      "subject": "high_school_us_history",
+      "row_sha256": "b2c81eeb056b774d33dd64c71d4c91eca0eab1b4291f2521b76646e7a14bfa9b",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.005810543894767761,
+        "B": 0.011036201380193233,
+        "C": 0.018189113587141037,
+        "D": 0.9649641513824463
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.9649641513824463,
+        "message_content": "D"
+      },
+      "prompt_sha256": "ed17fe687f755007915b679ca6f4a30487b4b3975b365a554ef28cab14122ac1",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 2414,
+        "total_tokens": 2415,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 2414,
+        "prompt_ms": 91366.456,
+        "prompt_per_token_ms": 37.84857332228666,
+        "prompt_per_second": 26.421075148192244,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 150603.99938999763
+    },
+    {
+      "position": 31,
+      "sample_id": "mmlu:5891",
+      "dataset_index": 5891,
+      "subject": "high_school_world_history",
+      "row_sha256": "ceadf80454beeec9b90c8196ea36ac48ca10d72f6fccc54a3abcd5a706f47dcd",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.00012132372648920864,
+        "B": 0.00021016345999669284,
+        "C": 0.00011119486589450389,
+        "D": 0.9995573163032532
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.9995573163032532,
+        "message_content": "D"
+      },
+      "prompt_sha256": "51bca730f51d163d7a7e46d8878b4f7fc3bde235fd8b4b50527b4d2028459ed0",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 1629,
+        "total_tokens": 1630,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 1629,
+        "prompt_ms": 85356.355,
+        "prompt_per_token_ms": 52.39800798035604,
+        "prompt_per_second": 19.084694982582143,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 101195.06717800687
+    },
+    {
+      "position": 32,
+      "sample_id": "mmlu:6159",
+      "dataset_index": 6159,
+      "subject": "human_aging",
+      "row_sha256": "8c6e13f4eda7a881ff2bda8e256e6531ba4dd4e7e3b930de5b980a34716683d0",
+      "correct": false,
+      "prediction": "C",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.10342356562614441,
+        "B": 0.013281891122460365,
+        "C": 0.8638131022453308,
+        "D": 0.019481444731354713
+      },
+      "sampled": {
+        "id": 357,
+        "token": " A",
+        "prob": 0.10342356562614441,
+        "message_content": "A"
+      },
+      "prompt_sha256": "ad4fdec7c40d955d49d78542d2923c306ab8b5fbc5207f84dd8f060a609b135f",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 308,
+        "total_tokens": 309,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 308,
+        "prompt_ms": 29764.311,
+        "prompt_per_token_ms": 96.63737337662339,
+        "prompt_per_second": 10.347963371300615,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 30105.25738400611
+    },
+    {
+      "position": 33,
+      "sample_id": "mmlu:6338",
+      "dataset_index": 6338,
+      "subject": "human_sexuality",
+      "row_sha256": "913ac00d473ffe891ec3e1cae9cdd4ebfb0d9cf1555a77147cfbae1a5480ae60",
+      "correct": true,
+      "prediction": "B",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.0016508882399648428,
+        "B": 0.995657742023468,
+        "C": 0.0024786952417343855,
+        "D": 0.00021270147408358753
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.995657742023468,
+        "message_content": "B"
+      },
+      "prompt_sha256": "d71e638f28431ed1772afeab82d3faa008dcf17d5886e2a847210e6b0a22911e",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 349,
+        "total_tokens": 350,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 349,
+        "prompt_ms": 36989.388,
+        "prompt_per_token_ms": 105.98678510028653,
+        "prompt_per_second": 9.435138532164956,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 51152.69954800169
+    },
+    {
+      "position": 34,
+      "sample_id": "mmlu:6458",
+      "dataset_index": 6458,
+      "subject": "international_law",
+      "row_sha256": "c4f773b9351576020f083da1aadd0ce7ad14d630a0b01ee3eecf6a10be823d7f",
+      "correct": true,
+      "prediction": "A",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.5865011811256409,
+        "B": 0.16386805474758148,
+        "C": 0.23843525350093842,
+        "D": 0.011195524595677853
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.23843525350093842,
+        "message_content": "C"
+      },
+      "prompt_sha256": "45adde18cac3c9a759ea15fb754d7f7195fa615eceb24555067af7a403ab5c41",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 650,
+        "total_tokens": 651,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 650,
+        "prompt_ms": 21343.735,
+        "prompt_per_token_ms": 32.83651538461539,
+        "prompt_per_second": 30.453901343883814,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 51493.55774799915
+    },
+    {
+      "position": 35,
+      "sample_id": "mmlu:6610",
+      "dataset_index": 6610,
+      "subject": "jurisprudence",
+      "row_sha256": "52f315d4d1d6183a7ebd07cd319fc6bc953720cd87b8cf19e92b97898aee0bba",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.39612552523612976,
+        "B": 0.0002364043757552281,
+        "C": 0.0015109915984794497,
+        "D": 0.6021270751953125
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.6021270751953125,
+        "message_content": "D"
+      },
+      "prompt_sha256": "192624d53625a669efcacc1493e77943e2d0d6e7ee6707ca69bc3455142e2e0a",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 401,
+        "total_tokens": 402,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 401,
+        "prompt_ms": 37559.6,
+        "prompt_per_token_ms": 93.66483790523691,
+        "prompt_per_second": 10.676365030511509,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 37907.85962100199
+    },
+    {
+      "position": 36,
+      "sample_id": "mmlu:6780",
+      "dataset_index": 6780,
+      "subject": "logical_fallacies",
+      "row_sha256": "50a9b0524902f0328a195678aa9ed99d0cea1b78c275160306b498574b6b2258",
+      "correct": false,
+      "prediction": "C",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.015383543446660042,
+        "B": 0.1678123027086258,
+        "C": 0.5981010794639587,
+        "D": 0.21870306134223938
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.5981010794639587,
+        "message_content": "C"
+      },
+      "prompt_sha256": "1e8376305e2a4bbf03f5ff25e7a6dcca7967e8c86fc8c9c80fd724d87c166ff3",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 435,
+        "total_tokens": 436,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 435,
+        "prompt_ms": 30584.697,
+        "prompt_per_token_ms": 70.30964827586207,
+        "prompt_per_second": 14.222799068436089,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 30865.71032700158
+    },
+    {
+      "position": 37,
+      "sample_id": "mmlu:6857",
+      "dataset_index": 6857,
+      "subject": "machine_learning",
+      "row_sha256": "69014eb8964a11b13644647ddea823006499a5bd4822d439c8bf0a916df3d6ce",
+      "correct": true,
+      "prediction": "B",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.026031462475657463,
+        "B": 0.9382178783416748,
+        "C": 0.008597148582339287,
+        "D": 0.027153538540005684
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.9382178783416748,
+        "message_content": "B"
+      },
+      "prompt_sha256": "00f65848a223111e9e21a9e073fc7ed55ee8228acda7a7686086c0e4c7a6602f",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 672,
+        "total_tokens": 673,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 672,
+        "prompt_ms": 37549.42,
+        "prompt_per_token_ms": 55.877113095238094,
+        "prompt_per_second": 17.896414911335516,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 53454.91697000398
+    },
+    {
+      "position": 38,
+      "sample_id": "mmlu:6977",
+      "dataset_index": 6977,
+      "subject": "management",
+      "row_sha256": "684e78f919a27fa57f3cb2d5c48f77bf97cdebf4a3a64c09d83da0e19df40a40",
+      "correct": true,
+      "prediction": "A",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.8242836594581604,
+        "B": 0.03609997779130936,
+        "C": 0.03290143236517906,
+        "D": 0.10671490430831909
+      },
+      "sampled": {
+        "id": 357,
+        "token": " A",
+        "prob": 0.8242836594581604,
+        "message_content": "A"
+      },
+      "prompt_sha256": "5bbe0ca92364f1fa2a6ec82eaa756aa2401197bd25f43b51bd474f4a853bdfd3",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 278,
+        "total_tokens": 279,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 278,
+        "prompt_ms": 44240.558,
+        "prompt_per_token_ms": 159.1386978417266,
+        "prompt_per_second": 6.2838267094189915,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 44524.52377699956
+    },
+    {
+      "position": 39,
+      "sample_id": "mmlu:7248",
+      "dataset_index": 7248,
+      "subject": "marketing",
+      "row_sha256": "4708f95dd2bc0c4ba98fb2546e12af0c8479d3b3ad95f5499a9a34206f051366",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.005614296067506075,
+        "B": 0.09213102608919144,
+        "C": 0.021548312157392502,
+        "D": 0.8807063698768616
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.8807063698768616,
+        "message_content": "D"
+      },
+      "prompt_sha256": "571ca8046d1eda3d0cb09410347495f8a8de8153a646d9976f28fd0221894ada",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 435,
+        "total_tokens": 436,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 435,
+        "prompt_ms": 37874.878,
+        "prompt_per_token_ms": 87.06868505747126,
+        "prompt_per_second": 11.485185510036496,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 53785.869653998816
+    },
+    {
+      "position": 40,
+      "sample_id": "mmlu:7308",
+      "dataset_index": 7308,
+      "subject": "medical_genetics",
+      "row_sha256": "ae2d031202b86ba958cc14489939880ca6a80e68d6fa7f29b206d0223e544d39",
+      "correct": false,
+      "prediction": "C",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.34598222374916077,
+        "B": 0.022858044132590294,
+        "C": 0.5630390048027039,
+        "D": 0.06812074035406113
+      },
+      "sampled": {
+        "id": 357,
+        "token": " A",
+        "prob": 0.34598222374916077,
+        "message_content": "A"
+      },
+      "prompt_sha256": "4c3668342264f3c7f36a64697b7129075b5902bca5d300689041cca1b62091c7",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 388,
+        "total_tokens": 389,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 388,
+        "prompt_ms": 30499.75,
+        "prompt_per_token_ms": 78.6076030927835,
+        "prompt_per_second": 12.72141574930942,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 30782.207301002927
+    },
+    {
+      "position": 41,
+      "sample_id": "mmlu:7834",
+      "dataset_index": 7834,
+      "subject": "miscellaneous",
+      "row_sha256": "ebd01673ba9d35913c5965cb497291a0b9b3e434ed62179a76be358e21e253bb",
+      "correct": true,
+      "prediction": "A",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.6994447112083435,
+        "B": 0.021800868213176727,
+        "C": 0.015600716695189476,
+        "D": 0.26315367221832275
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.26315367221832275,
+        "message_content": "D"
+      },
+      "prompt_sha256": "7f301db5291e1957637ecf194f2eac87b89c6c44b814de63155ba0498d66f66a",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 295,
+        "total_tokens": 296,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 295,
+        "prompt_ms": 37858.158,
+        "prompt_per_token_ms": 128.33273898305086,
+        "prompt_per_second": 7.792243880433907,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 38143.49682300235
+    },
+    {
+      "position": 42,
+      "sample_id": "mmlu:8445",
+      "dataset_index": 8445,
+      "subject": "moral_disputes",
+      "row_sha256": "cecf3e39e411723b1bcb1d8b9d16a0d66579422580100e553039b64ad9cc433d",
+      "correct": false,
+      "prediction": "C",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.07846228778362274,
+        "B": 0.11149459332227707,
+        "C": 0.5585737824440002,
+        "D": 0.25146934390068054
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.25146934390068054,
+        "message_content": "D"
+      },
+      "prompt_sha256": "597d605a8c82ee8723fd8154e4e41c61ccac79e7fffac0120038864eb32ab704",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 475,
+        "total_tokens": 476,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 475,
+        "prompt_ms": 34796.152,
+        "prompt_per_token_ms": 73.25505684210526,
+        "prompt_per_second": 13.650934735542021,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 49691.76186600089
+    },
+    {
+      "position": 43,
+      "sample_id": "mmlu:8685",
+      "dataset_index": 8685,
+      "subject": "moral_scenarios",
+      "row_sha256": "e0b5b37475799c6327dc3035a4d99d03714a52fa8a78e8902a5f8ca3f4480785",
+      "correct": false,
+      "prediction": "D",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.0037427262868732214,
+        "B": 0.3031599819660187,
+        "C": 0.29670125246047974,
+        "D": 0.39639604091644287
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.3031599819660187,
+        "message_content": "B"
+      },
+      "prompt_sha256": "305af4e0d95da3635afbab532a46ec095aa99798871a5425538a900e62c7333d",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 664,
+        "total_tokens": 665,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 664,
+        "prompt_ms": 19196.304,
+        "prompt_per_token_ms": 28.910096385542168,
+        "prompt_per_second": 34.58999190677539,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 50024.63965300558
+    },
+    {
+      "position": 44,
+      "sample_id": "mmlu:9438",
+      "dataset_index": 9438,
+      "subject": "nutrition",
+      "row_sha256": "b94ade06cf8f91fc275dbd9e5fe0917e80e7fd695e09ff492b96b70cdb2bee62",
+      "correct": false,
+      "prediction": "A",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.4876426160335541,
+        "B": 0.11863657832145691,
+        "C": 0.0011072104098275304,
+        "D": 0.39261358976364136
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.11863657832145691,
+        "message_content": "B"
+      },
+      "prompt_sha256": "1305027ae4df91b6e3000e84db9a7328d9bb50d579d22ba57194516aef999b80",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 637,
+        "total_tokens": 638,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 637,
+        "prompt_ms": 48696.336,
+        "prompt_per_token_ms": 76.44636734693879,
+        "prompt_per_second": 13.081066304454609,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 61196.75493200339
+    },
+    {
+      "position": 45,
+      "sample_id": "mmlu:9809",
+      "dataset_index": 9809,
+      "subject": "philosophy",
+      "row_sha256": "40acc846d6097e1290c2df45b31e804c1f7e8ff2cc46e6a9c53a986000c63dcb",
+      "correct": true,
+      "prediction": "B",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.0009117779554799199,
+        "B": 0.9924336075782776,
+        "C": 0.0013525752583518624,
+        "D": 0.00530202453956008
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.9924336075782776,
+        "message_content": "B"
+      },
+      "prompt_sha256": "6716b5a57d6656b4cba9407036d9f6060cd2b1dd430c5ca880fea719afa24056",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 324,
+        "total_tokens": 325,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 324,
+        "prompt_ms": 20199.09,
+        "prompt_per_token_ms": 62.34287037037037,
+        "prompt_per_second": 16.040326569167224,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 20481.075675998
+    },
+    {
+      "position": 46,
+      "sample_id": "mmlu:10072",
+      "dataset_index": 10072,
+      "subject": "prehistory",
+      "row_sha256": "532acef5cab351eb9390ff81f40e7995d6a4f55fe5b67631c339c03be324c3ce",
+      "correct": true,
+      "prediction": "B",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.17566609382629395,
+        "B": 0.4799388647079468,
+        "C": 0.32558807730674744,
+        "D": 0.018806958571076393
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.4799388647079468,
+        "message_content": "B"
+      },
+      "prompt_sha256": "8cdafb12cb975c035b8a435431856c527f6898412797785d1e4f8f0a30c96a55",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 553,
+        "total_tokens": 554,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 553,
+        "prompt_ms": 48366.138,
+        "prompt_per_token_ms": 87.46137070524412,
+        "prompt_per_second": 11.433619115919488,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 60859.29221499828
+    },
+    {
+      "position": 47,
+      "sample_id": "mmlu:10605",
+      "dataset_index": 10605,
+      "subject": "professional_accounting",
+      "row_sha256": "9aa56557cb31e823dbc59a8ff4523255af152c4e451c1fc01f8877aa8010c6f4",
+      "correct": true,
+      "prediction": "C",
+      "gold": "C",
+      "choice_probabilities": {
+        "A": 0.017812592908740044,
+        "B": 0.0008151420042850077,
+        "C": 0.978036642074585,
+        "D": 0.003335630754008889
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.978036642074585,
+        "message_content": "C"
+      },
+      "prompt_sha256": "668c5bd8fb0b37a98a2ae207ed15b2dcbbce4fb3ba3994b0f6e7585f8c58c4b7",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 726,
+        "total_tokens": 727,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 726,
+        "prompt_ms": 46893.24,
+        "prompt_per_token_ms": 64.59123966942148,
+        "prompt_per_second": 15.48197565363366,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 47178.24276499596
+    },
+    {
+      "position": 48,
+      "sample_id": "mmlu:11755",
+      "dataset_index": 11755,
+      "subject": "professional_law",
+      "row_sha256": "016f1435585cb33675f438f545f09ce69cf269c378e6f063143787253b56d28b",
+      "correct": false,
+      "prediction": "C",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.026753468438982964,
+        "B": 0.3346270024776459,
+        "C": 0.6328075528144836,
+        "D": 0.005811987444758415
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.6328075528144836,
+        "message_content": "C"
+      },
+      "prompt_sha256": "1ad0485b6cea0ddb571d1a66cf6e0c760b7089b24cd00f91e24443130b1c819d",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 1557,
+        "total_tokens": 1558,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 1557,
+        "prompt_ms": 59317.385,
+        "prompt_per_token_ms": 38.097228644829805,
+        "prompt_per_second": 26.248628458587646,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 100034.27055900102
+    },
+    {
+      "position": 49,
+      "sample_id": "mmlu:12266",
+      "dataset_index": 12266,
+      "subject": "professional_medicine",
+      "row_sha256": "0257d8dd39b0c1ff8f3748a75a87c3b76f1e40925a467928990b9786e4fbbfdf",
+      "correct": false,
+      "prediction": "C",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.03997933492064476,
+        "B": 0.023940419778227806,
+        "C": 0.4721561074256897,
+        "D": 0.4639241397380829
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.4721561074256897,
+        "message_content": "C"
+      },
+      "prompt_sha256": "0ba4ea49f735c3fbd7f25685ce3db4dd9198432a9d5738d5e1da6e185336f309",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 1065,
+        "total_tokens": 1066,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 1065,
+        "prompt_ms": 67966.755,
+        "prompt_per_token_ms": 63.81854929577465,
+        "prompt_per_second": 15.669425441894349,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 81933.92233399936
+    },
+    {
+      "position": 50,
+      "sample_id": "mmlu:13031",
+      "dataset_index": 13031,
+      "subject": "professional_psychology",
+      "row_sha256": "6885c178c00480147c508ccfdd6bbe04303222b16664cbdabc64cefb9155a456",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.09445390105247498,
+        "B": 0.00037902710027992725,
+        "C": 0.00031178363133221865,
+        "D": 0.9048553109169006
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.9048553109169006,
+        "message_content": "D"
+      },
+      "prompt_sha256": "6a286d57785627387b5df096be8c75a1875c2de2cf91f96cf0a27d567d9f535a",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 615,
+        "total_tokens": 616,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 615,
+        "prompt_ms": 54694.729,
+        "prompt_per_token_ms": 88.934518699187,
+        "prompt_per_second": 11.244227940136609,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 55040.22137800348
+    },
+    {
+      "position": 51,
+      "sample_id": "mmlu:13100",
+      "dataset_index": 13100,
+      "subject": "public_relations",
+      "row_sha256": "4d71b75548be7467237722bdb1442e5124601b22a3855b6f930f7c1152d19455",
+      "correct": true,
+      "prediction": "C",
+      "gold": "C",
+      "choice_probabilities": {
+        "A": 0.002480396069586277,
+        "B": 0.0011303622741252184,
+        "C": 0.9878795742988586,
+        "D": 0.00850965641438961
+      },
+      "sampled": {
+        "id": 357,
+        "token": " A",
+        "prob": 0.002480396069586277,
+        "message_content": "A"
+      },
+      "prompt_sha256": "00f0437e86e4aebda3f740b563d037e74a318f5a78ae240247ace05c725f6087",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 422,
+        "total_tokens": 423,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 422,
+        "prompt_ms": 27245.136,
+        "prompt_per_token_ms": 64.5619336492891,
+        "prompt_per_second": 15.48900324813941,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 27586.854138004128
+    },
+    {
+      "position": 52,
+      "sample_id": "mmlu:13311",
+      "dataset_index": 13311,
+      "subject": "security_studies",
+      "row_sha256": "d818c2b14b2bc3afbf3ccd2dafba622b7f2e011d09219be7494dcec8c5f6ac92",
+      "correct": true,
+      "prediction": "C",
+      "gold": "C",
+      "choice_probabilities": {
+        "A": 0.0009986012009903789,
+        "B": 0.0009926094207912683,
+        "C": 0.9954454302787781,
+        "D": 0.0025633303448557854
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.9954454302787781,
+        "message_content": "C"
+      },
+      "prompt_sha256": "fc8d87136c920d23d8d76fd19b504d7d60486b389d94786d20cdae02478df50f",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 1214,
+        "total_tokens": 1215,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 1214,
+        "prompt_ms": 37303.73,
+        "prompt_per_token_ms": 30.727948929159805,
+        "prompt_per_second": 32.54366252382805,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 69310.54060699535
+    },
+    {
+      "position": 53,
+      "sample_id": "mmlu:13522",
+      "dataset_index": 13522,
+      "subject": "sociology",
+      "row_sha256": "593d82024d8a2263644f918022ccbc1421838baf699d50e47629fbb6a436c40b",
+      "correct": true,
+      "prediction": "B",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.04631491005420685,
+        "B": 0.9339373111724854,
+        "C": 0.015443273819983006,
+        "D": 0.004304508212953806
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.9339373111724854,
+        "message_content": "B"
+      },
+      "prompt_sha256": "e1df6379cf7c3b926e6c526c4aa1d50262d48f477a1ba60b87246e6916806d3a",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 437,
+        "total_tokens": 438,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 437,
+        "prompt_ms": 37960.639,
+        "prompt_per_token_ms": 86.86645080091535,
+        "prompt_per_second": 11.51192423288765,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 55102.35918399849
+    },
+    {
+      "position": 54,
+      "sample_id": "mmlu:13654",
+      "dataset_index": 13654,
+      "subject": "us_foreign_policy",
+      "row_sha256": "a7f339369b14d298bbdd985e781222c117cda2cb8bd136d05c29a0575f4eae15",
+      "correct": true,
+      "prediction": "B",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.0009034433751367033,
+        "B": 0.6315084099769592,
+        "C": 0.015572491101920605,
+        "D": 0.3520156741142273
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.6315084099769592,
+        "message_content": "B"
+      },
+      "prompt_sha256": "bf6b49977b91d6f0d78bbcbd0f7e11d539580ad0c76b581d1c0a74ced6972623",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 414,
+        "total_tokens": 415,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 414,
+        "prompt_ms": 45296.349,
+        "prompt_per_token_ms": 109.41147101449276,
+        "prompt_per_second": 9.139809480009083,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 45606.15150800004
+    },
+    {
+      "position": 55,
+      "sample_id": "mmlu:13828",
+      "dataset_index": 13828,
+      "subject": "virology",
+      "row_sha256": "8c92a9c51940cb981cb2b7ed3b21b5a2aca866ce97aa1d4cf23e00d2321b3d59",
+      "correct": false,
+      "prediction": "A",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.5110598206520081,
+        "B": 0.17185662686824799,
+        "C": 0.3020719587802887,
+        "D": 0.015011589042842388
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.3020719587802887,
+        "message_content": "C"
+      },
+      "prompt_sha256": "a3cffcb0f323712c9c9b75aa1307db192fab33019a408b565a30d0fbd817a31a",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 337,
+        "total_tokens": 338,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 337,
+        "prompt_ms": 31642.286,
+        "prompt_per_token_ms": 93.8940237388724,
+        "prompt_per_second": 10.650305101218036,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 31952.73853400431
+    },
+    {
+      "position": 56,
+      "sample_id": "mmlu:13916",
+      "dataset_index": 13916,
+      "subject": "world_religions",
+      "row_sha256": "cdb39e7a9b1734dd25ef64590bdc49624958d06da21fd986c01c3ca1ba97dfab",
+      "correct": true,
+      "prediction": "C",
+      "gold": "C",
+      "choice_probabilities": {
+        "A": 0.007002097554504871,
+        "B": 0.08128747344017029,
+        "C": 0.9068641066551208,
+        "D": 0.004846290685236454
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.9068641066551208,
+        "message_content": "C"
+      },
+      "prompt_sha256": "672661d82a4d0f2fe61590e390fbfbc59d1287249f77e586eae0c6c10fa1e224",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 270,
+        "total_tokens": 271,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 270,
+        "prompt_ms": 35151.82,
+        "prompt_per_token_ms": 130.19192592592591,
+        "prompt_per_second": 7.680967870226919,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 35488.2312119953
+    },
+    {
+      "position": 57,
+      "sample_id": "mmlu:90",
+      "dataset_index": 90,
+      "subject": "abstract_algebra",
+      "row_sha256": "4b07c0b1fcff1995bccb6fd608189c47d868c185606ae1ce4216c2ed4c79b255",
+      "correct": false,
+      "prediction": "A",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.4448224604129791,
+        "B": 0.2815934717655182,
+        "C": 0.16597245633602142,
+        "D": 0.10761163383722305
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.10761163383722305,
+        "message_content": "D"
+      },
+      "prompt_sha256": "b3492cfb057483608ac27bf4681fdf22aeba3d51244a95c847888164a61a4fc8",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 387,
+        "total_tokens": 388,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 387,
+        "prompt_ms": 31488.216,
+        "prompt_per_token_ms": 81.36489922480621,
+        "prompt_per_second": 12.290312032920507,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 31820.93376200646
+    },
+    {
+      "position": 58,
+      "sample_id": "mmlu:193",
+      "dataset_index": 193,
+      "subject": "anatomy",
+      "row_sha256": "3617a46536aa5de1aa9b39c2a3b94d4535c44af13d2960b28177d1b14e2fe73c",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.0015961476601660252,
+        "B": 0.0030957728158682585,
+        "C": 0.000894883880391717,
+        "D": 0.9944131970405579
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.9944131970405579,
+        "message_content": "D"
+      },
+      "prompt_sha256": "d8d38538657fe6d60b9ad7d89711bcd8d91bb4b936a3208e10a9b4198bdad769",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 370,
+        "total_tokens": 371,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 370,
+        "prompt_ms": 20890.864,
+        "prompt_per_token_ms": 56.4617945945946,
+        "prompt_per_second": 17.711091317238004,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 35530.526711001585
+    },
+    {
+      "position": 59,
+      "sample_id": "mmlu:354",
+      "dataset_index": 354,
+      "subject": "astronomy",
+      "row_sha256": "ed69764b40fcebc4ea50dbf47880aa0af4289a26f1fb56ef934c01ef98b3b5b3",
+      "correct": true,
+      "prediction": "D",
+      "gold": "D",
+      "choice_probabilities": {
+        "A": 0.07408632338047028,
+        "B": 0.10847610235214233,
+        "C": 0.17448638379573822,
+        "D": 0.6429511904716492
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.6429511904716492,
+        "message_content": "D"
+      },
+      "prompt_sha256": "b95098ce7e69795c063ae727715f73cd7bd01139f44cc9c83add40c1ac91595d",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 626,
+        "total_tokens": 627,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 626,
+        "prompt_ms": 34668.61,
+        "prompt_per_token_ms": 55.38116613418531,
+        "prompt_per_second": 18.05668009187562,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 49314.65211699833
+    },
+    {
+      "position": 60,
+      "sample_id": "mmlu:405",
+      "dataset_index": 405,
+      "subject": "business_ethics",
+      "row_sha256": "60a6f0be8621126886859c32519ed40cdd4f0e620b001ee33cbfba94d26d0a80",
+      "correct": true,
+      "prediction": "C",
+      "gold": "C",
+      "choice_probabilities": {
+        "A": 0.005113213788717985,
+        "B": 0.1292746514081955,
+        "C": 0.8641103506088257,
+        "D": 0.0015018018893897533
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.8641103506088257,
+        "message_content": "C"
+      },
+      "prompt_sha256": "5a801e2b8ca0c8ac6f5d28f4a7fe3fb737a133fa453d6ccb59abafc87e84d8bc",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 541,
+        "total_tokens": 542,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 541,
+        "prompt_ms": 26199.767,
+        "prompt_per_token_ms": 48.42840480591497,
+        "prompt_per_second": 20.649038596411945,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 54643.861800002924
+    },
+    {
+      "position": 61,
+      "sample_id": "mmlu:651",
+      "dataset_index": 651,
+      "subject": "clinical_knowledge",
+      "row_sha256": "8f34cab3a0e4ceb4e338f43e9ae7b8cd7746cbb11bae5db94bd4ce1196815af3",
+      "correct": true,
+      "prediction": "B",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.11510789394378662,
+        "B": 0.6689744591712952,
+        "C": 0.12190752476453781,
+        "D": 0.09401009976863861
+      },
+      "sampled": {
+        "id": 351,
+        "token": " C",
+        "prob": 0.12190752476453781,
+        "message_content": "C"
+      },
+      "prompt_sha256": "45865989356fcc5edb313ffd6993ca7554ed112e9d6ad41a8da0e3912b5f1c87",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 428,
+        "total_tokens": 429,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 428,
+        "prompt_ms": 28138.28,
+        "prompt_per_token_ms": 65.74364485981309,
+        "prompt_per_second": 15.210595672514454,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 28398.96264699928
+    },
+    {
+      "position": 62,
+      "sample_id": "mmlu:810",
+      "dataset_index": 810,
+      "subject": "college_biology",
+      "row_sha256": "da2e0d9c7af2395e3ec394822118b275491fe7dd7125f33cebdf6f2f0a092850",
+      "correct": true,
+      "prediction": "B",
+      "gold": "B",
+      "choice_probabilities": {
+        "A": 0.14877763390541077,
+        "B": 0.6007529497146606,
+        "C": 0.0333232581615448,
+        "D": 0.2171461433172226
+      },
+      "sampled": {
+        "id": 414,
+        "token": " D",
+        "prob": 0.2171461433172226,
+        "message_content": "D"
+      },
+      "prompt_sha256": "fad3b46874a4a6c8f46bb8c240d012de9c974f89029952bbe6355c748e376f40",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 459,
+        "total_tokens": 460,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 459,
+        "prompt_ms": 54046.661,
+        "prompt_per_token_ms": 117.74871677559914,
+        "prompt_per_second": 8.49266155405974,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 54313.85497700103
+    },
+    {
+      "position": 63,
+      "sample_id": "mmlu:930",
+      "dataset_index": 930,
+      "subject": "college_chemistry",
+      "row_sha256": "11dce95455cddb1e6cf454328cb93988fd093c0cdfe527c051ea9076201286bc",
+      "correct": false,
+      "prediction": "D",
+      "gold": "A",
+      "choice_probabilities": {
+        "A": 0.31513747572898865,
+        "B": 0.22282810509204865,
+        "C": 0.054220397025346756,
+        "D": 0.40781402587890625
+      },
+      "sampled": {
+        "id": 417,
+        "token": " B",
+        "prob": 0.22282810509204865,
+        "message_content": "B"
+      },
+      "prompt_sha256": "0e31a0d401098f2ab8db10d7270184a5b7b836448fab77137af5b5dfce7fc275",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 599,
+        "total_tokens": 600,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 599,
+        "prompt_ms": 41177.546,
+        "prompt_per_token_ms": 68.743816360601,
+        "prompt_per_second": 14.546762937257116,
+        "predicted_n": 1,
+        "predicted_ms": 0.001,
+        "predicted_per_token_ms": 0.0,
+        "predicted_per_second": 0.0
+      },
+      "system_fingerprint": "b1-4df29be4f",
+      "latency_ms": 41434.46178400336
+    }
+  ],
+  "runtime": {
+    "python": "3.13.15",
+    "platform": "Linux-7.0.0-29-generic-x86_64-with-glibc2.43",
+    "workers": 4
+  },
+  "report_content_sha256": "86f45339928231083cfcebc905a3b32fbe1095aca09cc564ecd555fe58223d87"
+}

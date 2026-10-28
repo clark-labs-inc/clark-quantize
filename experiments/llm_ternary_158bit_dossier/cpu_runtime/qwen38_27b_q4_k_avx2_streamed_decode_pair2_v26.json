@@ -1,0 +1,126 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_streamed_decode_pair2_preregistration_v26",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_avx2_streamed_decode_pair2_v26",
+  "frozen_at": "2026-08-19T01:55:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true,
+    "parent_runtime": "/workspace/build/llama.cpp-q4k-native-x4-deinterleave-v21",
+    "parent_source": "/workspace/src/llama.cpp-q4k-native-x4-deinterleave-v21",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "parent_evidence": {
+    "v21_four_row_graph_speedup": 1.137261437618061,
+    "v21_mtp3_speedup": 1.146572084561092,
+    "v21_quality_qualified_by_v22": true,
+    "parent_libggml_cpu_sha256": "f6a1b46830bda9e322ff77d8d203eeb835b48cda0986cb547ea6141d08f95029",
+    "parent_symbol_bytes": 2756,
+    "parent_stack_frame_bytes": 1472,
+    "parent_vector_stack_moves": 63,
+    "v25_terminal_decision_sha256": "a4cd0376525c2eebd708a3a06ac03be1e720692ef412d3da3db88a5dfda3a8f2",
+    "v25_observed_stack_frame_bytes": 1024,
+    "v25_observed_vector_stack_moves": 67,
+    "v25_result": "rejected before timing because row-count specialization left the decoded-weight live range intact"
+  },
+  "hypothesis": "For the exact two-row AVX2 tile, loading one Q4 raw-vector pair, deriving its low and high nibbles, and consuming both rows before loading the next pair will remove the dominant decoded-weight live range. Manual named row accumulators will also prevent runtime-indexed arrays. This can retain the cache-local two-pass geometry while eliminating enough stack traffic to outperform v21.",
+  "implementation_contract": {
+    "strategy": "Start again from v21. For nr=4, run consecutive two-row passes inside each eight-output-column tile. In the two-row helper, retain named row accumulators and stream raw Q4 vector pairs j=0..3: derive only that pair's low/high vectors, apply its two maddubs contributions to row 0 and row 1 in the original per-row order, then discard it before loading pair j+1.",
+    "maximum_simultaneously_live_q4_raw_vectors": 2,
+    "maximum_simultaneously_live_decoded_q4_vectors": 4,
+    "runtime_indexed_row_accumulator_arrays_forbidden": true,
+    "weight_representation_unchanged": true,
+    "activation_representation_unchanged": true,
+    "v21_native_x4_to_row_major_bridge_unchanged": true,
+    "integer_dot_addition_order_per_row_unchanged": true,
+    "floating_accumulation_order_per_row_unchanged": true,
+    "no_approximation_or_weight_change": true,
+    "no_hand_written_assembly": true
+  },
+  "codegen_measurement": {
+    "tool": "objdump -d -C --disassemble=<exact symbol>",
+    "stack_frame_definition": "largest immediate subtraction from rsp in the aligned function prologue",
+    "vector_stack_move_definition": "disassembly lines containing %rsp whose mnemonic matches vmov, vmovd, vmovq, vmovss, or vmovsd",
+    "parent_same_method_vector_stack_moves": 63,
+    "v25_same_method_vector_stack_moves": 67
+  },
+  "sequential_gates": {
+    "gate_0_source_property_backend_and_codegen": {
+      "seeded_random_four_row_cases": 1024,
+      "special_cases": [
+        "all-zero activations",
+        "signed int8 extrema",
+        "alternating activation signs",
+        "distinct row scales",
+        "distinct row group sums"
+      ],
+      "candidate_outputs_must_be_bit_exact_to_parent": true,
+      "source_inputs_must_remain_byte_identical": true,
+      "backend_reference_cases": 3,
+      "backend_all_must_pass": true,
+      "maximum_streamed_pair2_stack_frame_bytes": 768,
+      "maximum_streamed_pair2_vector_stack_moves": 24,
+      "codegen_is_diagnostic_and_cannot_replace_timing": true
+    },
+    "gate_1_paired_native_microkernel": {
+      "shape_families": [
+        [10240, 4, 5120],
+        [6144, 4, 5120],
+        [5120, 4, 6144],
+        [12288, 4, 5120],
+        [1024, 4, 5120]
+      ],
+      "warmup_pairs": 2,
+      "measured_pairs_per_shape": 31,
+      "cache_eviction_bytes": 268435456,
+      "minimum_geometric_mean_parent_over_candidate_latency_ratio": 1.08,
+      "no_shape_may_regress_below_ratio": 0.98,
+      "maximum_pairwise_ratio_mad_fraction": 0.03
+    },
+    "gate_2_paired_real_model_four_row_graph": {
+      "model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+      "cpu_affinity": "0,2,4,6",
+      "unscored_warmup_processes_per_runtime": 1,
+      "paired_processes_per_runtime": 6,
+      "samples_per_process": 7,
+      "minimum_parent_over_candidate_latency_ratio": 1.05,
+      "maximum_candidate_process_median_mad_fraction": 0.03,
+      "maximum_frequency_range_mhz": 100
+    },
+    "gate_3_target_and_mtp3_system": {
+      "target_model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+      "draft_model": "/workspace/models/controls/mtp-Qwen3.8-27B-Q4_0.gguf",
+      "prompts_per_runtime": 4,
+      "tokens_per_prompt": 96,
+      "candidate_target_tokens_must_match_parent": true,
+      "candidate_mtp3_tokens_must_match_its_own_target": true,
+      "candidate_zero_token_fraction_maximum": 0.01,
+      "minimum_candidate_over_parent_target_tps": 0.99,
+      "minimum_candidate_over_parent_mtp3_accepted_tps": 1.04
+    },
+    "gate_4_same_weights_capability_tripwire": {
+      "run_only_after_all_prior_gates_pass": true,
+      "cute_quick_minimum_correct": 9,
+      "cute_quick_denominator": 20,
+      "math500_minimum_correct": 5,
+      "math500_denominator": 8,
+      "code_trace_minimum_correct": 5,
+      "code_trace_denominator": 6,
+      "maximum_wikitext_ppl_ratio_vs_stock": 1.005,
+      "wikitext_chunks": 4
+    }
+  },
+  "stop_rules": [
+    "Reject before timing if source preservation, bit-exact property, backend, stack-frame, or vector-stack-move checks fail.",
+    "Reject before the real-model graph if native microkernel geometric mean is below 1.08, any shape regresses below 0.98, or stability fails.",
+    "Reject before serving if paired graph gain is below 1.05 or stability or frequency gates fail.",
+    "Reject before capability evaluation if target tokens differ, candidate MTP3 differs from its own target, or MTP3 gains less than 1.04.",
+    "Do not reinterpret prior experiment receipts and do not tune thresholds after observing v26 results."
+  ],
+  "promotion_boundary": "A pass promotes an exact same-weights streamed-decode AVX2 kernel for the four-row Q4_K path. It does not establish the 2.75 tok/s conventional-decode breakthrough gate, final-node scaling, 100 tok/s, or novelty."
+}

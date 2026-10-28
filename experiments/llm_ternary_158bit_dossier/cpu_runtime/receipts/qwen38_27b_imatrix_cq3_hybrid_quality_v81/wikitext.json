@@ -1,0 +1,75 @@
+{
+  "schema": "cpu_wikitext_quick_result_v1",
+  "status": "completed",
+  "valid": true,
+  "model_label": "qwen38-v80-imatrix-cq3",
+  "model": "/workspace/models/candidates/Qwen3.8-27B-imatrix-Q4-trained-CQ3-sensitivity32-v80.gguf",
+  "model_sha256": "09880f4d1b740f29b5e0cf0daf70ea649b7f5d2b57fb27df064fc1d03c9fab7d",
+  "corpus": "/workspace/quant-runs/cq3-4b-ptq-scope-20260817/wikitext-2-raw/wiki.test.raw",
+  "corpus_sha256": "173c87a53759e0201f33e0ccf978e510c2042d7f2cb78229d9a50d79b9e7dd08",
+  "llama_perplexity": "/workspace/build/llama.cpp-qwen38-cq3-aff3-v63/bin/llama-perplexity",
+  "llama_perplexity_sha256": "be9149ccdc77343087fff7de7d2370f3285cb0082ac23c20b458445053101c34",
+  "evaluator_sha256": "54458dc377a1d07aaf26df90823f65f973b625f55a6ac73895d0c6ec9a666b07",
+  "parameters": {
+    "chunks": 4,
+    "context": 512,
+    "batch": 512,
+    "ubatch": 512,
+    "threads": 4,
+    "ppl_output_type": 1
+  },
+  "command": [
+    "/workspace/build/llama.cpp-qwen38-cq3-aff3-v63/bin/llama-perplexity",
+    "-m",
+    "/workspace/models/candidates/Qwen3.8-27B-imatrix-Q4-trained-CQ3-sensitivity32-v80.gguf",
+    "-f",
+    "/workspace/quant-runs/cq3-4b-ptq-scope-20260817/wikitext-2-raw/wiki.test.raw",
+    "-c",
+    "512",
+    "-b",
+    "512",
+    "-ub",
+    "512",
+    "-t",
+    "4",
+    "--chunks",
+    "4",
+    "--ppl-output-type",
+    "1"
+  ],
+  "returncode": 0,
+  "started_at": "2026-08-19T21:56:10.223063+00:00",
+  "finished_at": "2026-08-19T22:00:12.199468+00:00",
+  "elapsed_seconds": 241.97638508400996,
+  "maximum_resident_kib": 24217904,
+  "chunks": [
+    {
+      "offset": 0,
+      "running_ppl": 4.8853,
+      "running_log_ppl": 1.586233,
+      "running_uncertainty": 0.152703
+    },
+    {
+      "offset": 512,
+      "running_ppl": 6.6358,
+      "running_log_ppl": 1.892481,
+      "running_uncertainty": 0.120923
+    },
+    {
+      "offset": 1024,
+      "running_ppl": 6.268,
+      "running_log_ppl": 1.835464,
+      "running_uncertainty": 0.095465
+    },
+    {
+      "offset": 1536,
+      "running_ppl": 6.3088,
+      "running_log_ppl": 1.841947,
+      "running_uncertainty": 0.079103
+    }
+  ],
+  "final_ppl": 6.3088,
+  "final_uncertainty": 0.49905,
+  "raw_output": "0.08.094.447 I cmn          init: llama threadpool init, n_threads = 4\n0.08.566.138 I \n0.08.566.285 I system_info: n_threads = 4 (n_threads_batch = 4) / 8 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | \n0.08.566.302 I perplexity: tokenizing the input ..\n0.09.059.800 I perplexity: tokenization took 493.489 ms\n0.09.059.903 I perplexity: calculating perplexity over 4 chunks, n_ctx=512, batch_size=512, n_seq=1\n1.07.101.791 I perplexity: 58.04 seconds per pass - ETA 3.87 minutes\n       0  4.8853  1.586233  0.152703\n     512  6.6358  1.892481  0.120923\n    1024  6.2680  1.835464  0.095465\n    1536  6.3088  1.841947  0.079103\n\n4.01.051.042 I Final estimate: PPL = 6.3088 +/- 0.49905\n\n",
+  "report_content_sha256": "6c0ea7d64e1010f5d569639a38f9ebc28eeca26877290c29aa1d1760928c8058"
+}

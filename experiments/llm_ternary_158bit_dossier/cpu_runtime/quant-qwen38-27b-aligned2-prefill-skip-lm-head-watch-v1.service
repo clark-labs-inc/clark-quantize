@@ -1,0 +1,26 @@
+[Unit]
+Description=Benchmark exact Qwen3.8-27B prompt advance without redundant LM heads
+After=network-online.target quant-qwen38-27b-aligned2-math500-watch-v1.service
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-4b13022.bundle
+Environment=EXPECTED_COMMIT=4b13022484b1946dd21d8a8fbaf8685005556b82
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/bin/bash /workspace/tmp/watch-qwen38-27b-aligned2-prefill-skip-lm-head-v1-4b13022.sh
+CPUAffinity=0 2 4 6
+CPUQuota=400%
+MemoryMax=12G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

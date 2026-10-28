@@ -1,0 +1,159 @@
+{
+  "schema": "qwen38_27b_gain_hash_routing_preregistration_v1",
+  "receipt_schema": "qwen38_27b_gain_hash_routing_receipt_v1",
+  "status": "frozen_before_authoritative_real_weight_run",
+  "frozen_at_utc": "2026-08-17T22:42:00Z",
+  "hypothesis": "At the same exact-half-support ternary and ratio-128 INT4 correction dimensions, adding a three-bit shared per-input gain to learned one-sparse signed Clark-Hash routing reduces heldout exported Qwen3.8-27B weight error by at least 0.5 percent against learned bucket-and-sign routing, with no tensor regressing by more than 1 percent, while counting every gain index and codebook byte and remaining below 1.57 component bits per weight",
+  "clark_hash_source": {
+    "repository": "clark-labs-inc/clark-hash",
+    "paper_path": "arxiv_submission/main.tex",
+    "paper_blob_sha": "4a7c7ffa06ac9c650c6b822cd0bc111d501c3818",
+    "publication_commit": "de609c2c55dcbf727deea8bdf7bcc657743ce120",
+    "method_reused": "sparse signed input-to-sketch routing plus a compact magnitude side channel",
+    "important_change": "the paper stores one norm for a complete embedding; this experiment learns and quantizes one positive gain per input coordinate so residual columns can share direction without being forced to share magnitude"
+  },
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+    "qwen_4b_compute_forbidden": true,
+    "train_and_evaluation_rows_disjoint": true,
+    "tensors": [
+      {
+        "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+        "shape": [17408, 5120],
+        "shard": "model-00001-of-00018.safetensors",
+        "train_row_span": [8640, 8704],
+        "evaluation_row_span": [8704, 8720]
+      },
+      {
+        "name": "model.language_model.layers.0.mlp.up_proj.weight",
+        "shape": [17408, 5120],
+        "shard": "model-00001-of-00018.safetensors",
+        "train_row_span": [8640, 8704],
+        "evaluation_row_span": [8704, 8720]
+      },
+      {
+        "name": "model.language_model.layers.0.mlp.down_proj.weight",
+        "shape": [5120, 17408],
+        "shard": "model-00001-of-00018.safetensors",
+        "train_row_span": [2496, 2560],
+        "evaluation_row_span": [2560, 2576]
+      }
+    ],
+    "shared_routing_groups": [
+      {
+        "name": "gate_up",
+        "members": [
+          "model.language_model.layers.0.mlp.gate_proj.weight",
+          "model.language_model.layers.0.mlp.up_proj.weight"
+        ]
+      },
+      {
+        "name": "down",
+        "members": [
+          "model.language_model.layers.0.mlp.down_proj.weight"
+        ]
+      }
+    ]
+  },
+  "candidate": {
+    "representation": "W approximately equals T plus A R_gain, where each R_gain column has one learned bucket, sign, and quantized positive gain",
+    "group_size": 128,
+    "nonzero_per_group": 64,
+    "input_to_sketch_ratio": 128,
+    "gain_bits": 3,
+    "gain_codebook": "eight deterministic weighted-Lloyd FP16 levels shared across an input route",
+    "coordinate_iterations": 3,
+    "routing_iterations": 6,
+    "routing_training": "fit one exact-half-support ternary baseline on training rows, then fit gain-aware signed prototype routing to its residual columns",
+    "heldout_fit": "freeze route and gains, then alternate exact fixed-support ternary projection and exact gain-weighted coefficient means on evaluation rows",
+    "hash_coefficient_export": "signed per-output-row INT4 with one FP16 scale",
+    "ternary_scale_export_for_error": "FP16 per group",
+    "ternary_scale_storage_projection": "one FP16 row anchor plus four-bit group ratio indices and one sixteen-entry FP16 tensor codebook",
+    "probe_seed": 15802739
+  },
+  "control": {
+    "representation": "identical learned one-sparse bucket-and-sign routing without per-input gains",
+    "training_residual": "byte-identical training tensors and the same fixed-half-support ternary baseline as the gain candidate",
+    "routing_iterations": 6,
+    "heldout_fit": "the same three fixed-route ternary and coefficient coordinate iterations",
+    "export": "the same ternary FP16 scales and signed per-row INT4 coefficient quantizer"
+  },
+  "storage": {
+    "route": "bit-pack ceil(log2(sketch_dim)) bucket bits, one sign bit, and three gain-index bits per input coordinate",
+    "gain_codebook": "eight FP16 positive levels per route, conservatively charged independently to every tensor",
+    "ternary_codes": "exact fixed-support enumerative width ceil(log2(binomial(128,64) times 2^64))",
+    "hash_codes": "row-aligned signed INT4",
+    "per_tensor_header_bytes": 64,
+    "route_sharing_savings_assumed": false,
+    "projected_gate_or_up_component_bits_per_weight": 1.5458970013786764,
+    "projected_down_component_bits_per_weight": 1.5432545381433824
+  },
+  "gate": {
+    "required_evaluation_spans": 3,
+    "minimum_aggregate_error_reduction_vs_sign_only": 0.005,
+    "maximum_per_tensor_error_regression": 0.01,
+    "maximum_component_bits_per_weight": 1.57,
+    "maximum_kernel_identity_error": 0.0005,
+    "minimum_used_gain_levels": 2
+  },
+  "resources": {
+    "cpu_threads": 4,
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 2,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 10,
+    "persistent_output_bytes": "less than 2 MiB",
+    "run_after_complete_half_support_ledger": true
+  },
+  "promotion_rules": [
+    "train and evaluation row spans are immutable and disjoint",
+    "candidate and control must use identical source rows ternary support sketch dimensions iterations and export quantizers",
+    "gain indices codebook routing coefficient and scale bytes must all remain in the storage denominator",
+    "a pass only promotes gain-aware routing to an activation-weighted and native-kernel screen",
+    "a failed gate is a valid negative result and does not authorize gain-bit threshold span or validation tuning",
+    "CUTE MMLU-type MATH WikiText code and paired CPU throughput remain mandatory before any model-quality claim",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "this screen cannot establish semi-lossless compression or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "gain_hash_module": {
+      "path": "clark_quantize/qwen38_gain_hash_residual.py",
+      "sha256": "b76d2c7baf823ad42548dab59b0e851e05ce1568c8b1901d779d365045818561"
+    },
+    "gain_hash_tests": {
+      "path": "clark_quantize/test_qwen38_gain_hash_residual.py",
+      "sha256": "a78a7aaa799093208361b1e83eb09d8482805cdb45a679f69fc9ea46ac1638af"
+    },
+    "preregistration_tests": {
+      "path": "clark_quantize/test_qwen38_gain_hash_preregistration.py",
+      "sha256": "5f6268b1d1d8a70b3eb4215241d978f04d607d875c3910f60b6448714bd4ae0d"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_gain_hash_routing_v1.py",
+      "sha256": "8dd87077e4abd0ae897083ebc70ac78eaf6a82c4e3c9facd0d04a860139b03de"
+    },
+    "watcher": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/watch_qwen38_27b_gain_hash_routing_v1.sh",
+      "sha256": "3381e87af0a35cd52f5b51d2780230bc02a1ab23a4d3afbcc9a166f064330f03"
+    },
+    "service": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/quant-qwen38-27b-gain-hash-routing-v1.service",
+      "sha256": "d11d4aae27b26d6f2ecf8bc824b7ce2d60d80997f74ea4403607b8bf8cb218f5"
+    },
+    "sign_only_control": {
+      "path": "clark_quantize/qwen38_learned_hash_residual.py",
+      "sha256": "7e0a51f7596fbd9e6a4dd4483a67f8ee0324f69f7d30490bedb081fc7a658762"
+    },
+    "ternary_and_int4_helpers": {
+      "path": "clark_quantize/qwen38_hash_residual.py",
+      "sha256": "896583e383b2b94128934903ff2015ee40bbfdfcd48b35e3540121ef7bca62cf"
+    },
+    "fixed_support_storage": {
+      "path": "clark_quantize/qwen38_fixed_support_codec.py",
+      "sha256": "e5e1f17bceed2334e3a57087c3c2e9ff090123b964012d18038545fcc14d6678"
+    }
+  }
+}

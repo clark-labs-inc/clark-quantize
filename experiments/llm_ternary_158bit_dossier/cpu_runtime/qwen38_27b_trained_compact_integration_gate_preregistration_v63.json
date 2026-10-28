@@ -1,0 +1,82 @@
+{
+  "schema": "qwen38_27b_trained_compact_integration_gate_preregistration_v63",
+  "experiment_id": "qwen38_27b_trained_compact_integration_gate_v63",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_after_v62_launch_before_terminal_materialization_compile_or_model_graph_observation",
+  "frozen_at_utc": "2026-08-19T16:52:04Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "repository_parent_commit": "e6b269ba78cd2abf7bb1f2dc7efaa83e0ee2bba7",
+  "objective": "Compile the already-frozen residual-free trained CQ3 plus AFF3 candidate with the accepted storage-neutral CQ3 x8 dataflow and establish exact primitive and GGML graph parity before any whole-model generation or performance observation.",
+  "parent_materialization": {
+    "preregistration_sha256": "146a554da68fb3bec2f24a0c2230a6e282511af32f84cf6a0431652fd044674b",
+    "runner_sha256": "182b4a3dd383f794c36397fc703cb1236730612e1026b1344c2f9aecfa30da0f",
+    "terminal_marker_required": true,
+    "artifact_manifest_required": true,
+    "candidate_target_tensor_count": 192,
+    "aff3_layer_count": 64,
+    "residual_payload_bytes": 0
+  },
+  "authenticated_runtime_source": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "tracked_diff_sha256": "f76b42067337f35d8f5721b92faffcff90f4e1cd15afe8e4aa22ec4fdf67eb4a",
+    "v54_execution_receipt_sha256": "d39ea1addfdec7758cd39ac0fa55d6f5732ee622ebff85499249fab3b7a58b3c",
+    "v54_transform_receipt_sha256": "6f2fc0d2877e430926c5dce039e44e59a6acb6994217f43a6a3e70773d739401",
+    "accepted_cq3_x8_receipt_sha256": "dd63851b9480545fefc4dd77a8fdd117768c954c1f36c4005f1914dea5cc2d43",
+    "aff3_runtime_smoke_source_sha256": "d32d4a157d19e25f8bc7ab673a5d114133cf20fc4aef71406423dca2f9fc50b8",
+    "aff3_runtime_smoke_builder_sha256": "fe5d490215f18a6f15092f386310beb3a3aa66e0843f0ab958689c452528742d"
+  },
+  "compile_contract": {
+    "generator": "Ninja",
+    "build_type": "Release",
+    "build_shared_libraries": true,
+    "ggml_native": true,
+    "ggml_openmp": true,
+    "llama_curl": false,
+    "llama_build_server": true,
+    "llama_build_tests": true,
+    "llama_build_examples": true,
+    "parallel_jobs": 4,
+    "targets": [
+      "test-cq3",
+      "llama-cli",
+      "llama-server",
+      "llama-perplexity"
+    ],
+    "host": "quant",
+    "physical_cpu_list": [0, 2, 4, 6],
+    "memory_max_bytes": 14000000000,
+    "memory_swap_max_bytes": 0
+  },
+  "correctness_gate": {
+    "test_cq3_must_pass": true,
+    "test_cq3_benchmark_environment_must_be_unset": true,
+    "trained_aff3_layers": [0, 32, 63],
+    "token_counts": [1, 8],
+    "ggml_graph_output_must_be_bit_exact_to_direct_v47": true,
+    "maximum_absolute_error": 0.0,
+    "observed_four_task_mask": 15,
+    "persistent_dense_weight_bytes": 0,
+    "decoded_group_scale_matrix_bytes": 0,
+    "residual_environment_must_be_unset": true,
+    "ordinary_non_avx2_fallback_must_remain_compiled": true,
+    "performance_timing_permitted": false
+  },
+  "execution_order": [
+    "wait for and authenticate the terminal v62 materialization manifest",
+    "compile the exact v54 source composition without another Qwen workload",
+    "run test-cq3 with benchmark environment variables absent",
+    "run exact trained AFF3 direct-versus-GGML parity at layers 0, 32, and 63 for one and eight tokens",
+    "hash the candidate, source, binaries, libraries, logs, and terminal receipt",
+    "only after a pass freeze and run a separately bounded all-64-layer model-graph generation gate"
+  ],
+  "decision_rules": {
+    "fail_closed_on_any_source_artifact_compile_or_parity_change": true,
+    "retain_negative_results": true,
+    "whole_model_generation_forbidden_inside_v63": true,
+    "performance_claim_forbidden_inside_v63": true,
+    "v59_lut_runtime_remains_forbidden": true,
+    "v45_residual_runtime_remains_forbidden": true
+  },
+  "claim_boundary": "A v63 pass establishes only that the exact trained residual-free CQ3 plus AFF3 artifacts compile and preserve primitive and representative GGML graph algebra. It is not whole-model generation, quality, throughput, memory, energy, 100 tokens per second, novelty, or scientific-breakthrough evidence."
+}

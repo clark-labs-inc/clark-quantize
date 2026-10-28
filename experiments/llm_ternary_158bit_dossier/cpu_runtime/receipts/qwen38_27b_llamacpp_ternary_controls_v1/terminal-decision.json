@@ -1,0 +1,112 @@
+{
+  "schema": "qwen38_27b_llamacpp_ternary_controls_terminal_decision_v1",
+  "created_at_utc": "2026-08-18T05:52:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "logical_scope": {
+    "description": "llama.cpp text graph with vision and MTP/NextN excluded for candidate and control alike",
+    "parameters": 26895998464
+  },
+  "source_commit": "b2fa92a76b172f9a187cba5f96e7af695c847153",
+  "service_terminal_observation": {
+    "observed_at_utc": "2026-08-18T05:51:04Z",
+    "unit": "quant-qwen38-27b-tq-controls-peg-resume-v1.service",
+    "active_state": "inactive",
+    "sub_state": "dead",
+    "result": "success",
+    "exec_main_status": 0
+  },
+  "receipts": {
+    "controls": {
+      "path": "state/controls/receipt.json",
+      "bytes": 13750,
+      "sha256": "4b5ecef1dbadb0bf325e156f8e581569b0aec0fddfe2b8fd80157cbdc83205ba"
+    },
+    "scoring_resume": {
+      "path": "state/peg-resume/receipt.json",
+      "bytes": 1398,
+      "sha256": "b490a9a1010940e6bcb9dd9d0e1c4d40453d09d2034bc006056d2d47951fee01"
+    }
+  },
+  "scoring_continuation": {
+    "peg_native_http_500_events": 64,
+    "tq1_events": 32,
+    "tq2_events": 32,
+    "all_scored_incorrect": true,
+    "thresholds_changed": false,
+    "promotability_increased": false
+  },
+  "controls": {
+    "TQ1_0": {
+      "artifact_bytes": 10243615104,
+      "artifact_sha256": "68896f948b0ac299e8f1e67101fffcc84f04eda2d716fac15f78c52008b645d3",
+      "honest_file_bpw": 3.0468815255803845,
+      "cute": {
+        "correct": 0,
+        "attempted": 20
+      },
+      "math500": {
+        "correct": 0,
+        "attempted": 8
+      },
+      "code_trace": {
+        "correct": 0,
+        "attempted": 6
+      },
+      "wikitext_4x512_ppl": 1930869.5275,
+      "wikitext_ratio_vs_q4": 333789.0517226477,
+      "mmlu": {
+        "launched": false,
+        "reason": "frozen quick gate rejected"
+      },
+      "descriptive_not_paired_t4": {
+        "prefill_tokens_per_second": 4.840747,
+        "decode_tokens_per_second": 3.220446
+      },
+      "summary": {
+        "path": "state/tq1_0/summary.json",
+        "sha256": "e467414eb926d4546e5f8b079120c12b262b001aa077d75f49177522629dfd6e"
+      }
+    },
+    "TQ2_0": {
+      "artifact_bytes": 11385047424,
+      "artifact_sha256": "51dfbc9b889d42086b2ac588805fec2c4fad4333894d7a33856a52c07cdcc3d3",
+      "honest_file_bpw": 3.386391455736811,
+      "cute": {
+        "correct": 0,
+        "attempted": 20
+      },
+      "math500": {
+        "correct": 0,
+        "attempted": 8
+      },
+      "code_trace": {
+        "correct": 0,
+        "attempted": 6
+      },
+      "wikitext_4x512_ppl": 1930869.5275,
+      "wikitext_ratio_vs_q4": 333789.0517226477,
+      "mmlu": {
+        "launched": false,
+        "reason": "frozen quick gate rejected"
+      },
+      "descriptive_not_paired_t4": {
+        "prefill_tokens_per_second": 11.100166,
+        "decode_tokens_per_second": 3.732836
+      },
+      "summary": {
+        "path": "state/tq2_0/summary.json",
+        "sha256": "e48a2183179006e1d1657a54e88f92f93d8e0ce8ef5cfacaad9303988faf9df4"
+      }
+    }
+  },
+  "decision": {
+    "valid_terminal_negative_control": true,
+    "TQ1_0": "rejected",
+    "TQ2_0": "rejected",
+    "reason": "Both complete controls catastrophically forgot every quick capability task and exceeded the target storage rate by a wide margin",
+    "rescue_tuning_authorized": false,
+    "next": "complete the 851-tensor text-graph row-scale storage gate, then execute the frozen three-complete-block affine-butterfly falsification gate"
+  },
+  "claim_boundary": "Valid complete upstream-control rejection only; throughput is descriptive and no Clark candidate, paired speedup, or breakthrough is claimed"
+}

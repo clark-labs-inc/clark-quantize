@@ -1,0 +1,84 @@
+{
+  "claim_boundary": {
+    "canonical_gain_route_body_proven": true,
+    "capability_or_token_throughput_proven": false,
+    "exact_Qwen_projection_shapes_covered": true,
+    "real_model_routes_or_weights_encoded": false,
+    "semi_lossless_or_breakthrough_proven": false
+  },
+  "complete": true,
+  "created_at_utc": "2026-08-17T23:21:25Z",
+  "gate": {
+    "observed_cases": 2,
+    "passed": true,
+    "require_compute_layout_count_identity": true,
+    "require_exact_repack": true,
+    "require_exact_roundtrip": true,
+    "require_storage_ledger_identity": true,
+    "required_cases": 2
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "records": [
+    {
+      "bits_per_input": 10,
+      "body_matches_storage_ledger": true,
+      "body_sha256": "74f424835f41485d1e3735c8f976b8264a21797e091569b0156ebad1fb27ccf5",
+      "bucket_bits": 6,
+      "canonical_body_bytes": 6416,
+      "compute_expansion_ratio": 3.197007481296758,
+      "compute_layout_bytes": 20512,
+      "compute_layout_count_matches": true,
+      "exact_repack": true,
+      "exact_roundtrip": true,
+      "gain_codebook_bytes": 16,
+      "input_dim": 5120,
+      "ledger_body_bytes": 6416,
+      "name": "gate_or_up_projection",
+      "output_rows": 17408,
+      "route_payload_bytes": 6400,
+      "sketch_dim": 40
+    },
+    {
+      "bits_per_input": 12,
+      "body_matches_storage_ledger": true,
+      "body_sha256": "a4339294a409a26aea0f96e230cbf39f5a2a5c9857599e555af14c4f0394b339",
+      "bucket_bits": 8,
+      "canonical_body_bytes": 26128,
+      "compute_expansion_ratio": 2.666258420085732,
+      "compute_layout_bytes": 69664,
+      "compute_layout_count_matches": true,
+      "exact_repack": true,
+      "exact_roundtrip": true,
+      "gain_codebook_bytes": 16,
+      "input_dim": 17408,
+      "ledger_body_bytes": 26128,
+      "name": "down_projection",
+      "output_rows": 5120,
+      "route_payload_bytes": 26112,
+      "sketch_dim": 136
+    }
+  ],
+  "repository_commit": "20a168930cb144228aa303a2a9a1503aea8c0f69",
+  "representation": {
+    "compute_expansion": "uint16 buckets int8 signs uint8 gain indices and FP32 codebook",
+    "coordinate_order": "bucket LSB first then sign bit then three-bit gain index",
+    "gain_codebook": "eight sorted little-endian FP16 values",
+    "padding": "zero high bits in the final route byte"
+  },
+  "schema": "qwen38_27b_gain_route_codec_receipt_v1",
+  "sources": {
+    "codec": {
+      "path": "clark_quantize/qwen38_gain_route_codec.py",
+      "sha256": "bdc13b6eeed333f842334011934c8f0b879f159a2ced4cc610946ee726b37bd3"
+    },
+    "fused_adapter": {
+      "path": "clark_quantize/qwen38_mask64_packed_gain_hash_fused_cpu.py",
+      "sha256": "b0a1516ddb0a3a761daea7be483fc30ea290e30809d0007da146073b37be8005"
+    },
+    "verifier": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/verify_qwen38_27b_gain_route_codec_v1.py",
+      "sha256": "9d0bdf36b706dc1c21ac66d76474690beabb1b410e68bee22f6482b929bb396d"
+    }
+  },
+  "terminal": true
+}

@@ -1,0 +1,78 @@
+{
+  "schema": "qwen38_27b_scale_codebook4_preregistration_v1",
+  "status": "frozen_before_authoritative_fit",
+  "frozen_at_utc": "2026-08-17T11:43:43Z",
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df"
+  },
+  "source_artifact": {
+    "path": "/workspace/quant-runs/qwen38-base3-full/artifacts/qwen38-optimal.cq3q",
+    "pack_receipt": "/workspace/quant-state/qwen38-base3-full.json",
+    "pack_receipt_sha256": "ef6b8608411ba48abc85b0da390e3e8dec2b8cfad8290739c0c17557bf14cef5",
+    "code_manifest_sha256": "c98d878d0c5e3ea92be27c5ba59da2c9d7d0154c839dd89a17d0e94eb18b75b4",
+    "scale_source_sha256": "06811e6e823a375e41101780dc1d0b6e37caaace0d20561379afc6e5d0703543",
+    "mapped_tensors": 402,
+    "mapped_ternary_parameters": 26869760000,
+    "group_size": 128,
+    "fp16_scale_count": 209920000,
+    "fp16_scale_bytes": 419840000
+  },
+  "frozen_inputs": {
+    "implementation": {
+      "path": "clark_quantize/scale_codebook.py",
+      "sha256": "806b46c18c5caa1597031696f9d0433c20b33c785f0a9c18caa9fd14e8ac1ae7"
+    },
+    "tests": {
+      "path": "clark_quantize/test_scale_codebook.py",
+      "sha256": "b3207f41ca16d991cdb138fef394c01e766a66a4a0e2b301f1b4fb9852a1c031"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_scale_codebook4_v1.py",
+      "sha256": "6aa2b999a1d580a4c7fa17293a4e34374589b52dbda93a789488e6b756e794cf"
+    }
+  },
+  "fit": {
+    "scope": "all 402 mapped tensors in the completed Qwen3.8-27B base-3 artifact",
+    "entries_per_tensor": 16,
+    "zero_entry": "fixed exact zero",
+    "positive_entries": 15,
+    "algorithm": "deterministic unweighted linear-scale Lloyd k-means",
+    "initialization": "weighted quantiles with unit weights",
+    "iterations": 50,
+    "stored_codebook_dtype": "float16",
+    "stored_indices": "two 4-bit indices per byte",
+    "exact_index_pack_roundtrip_required": true,
+    "restart": "one authenticated codebook and index file per tensor plus an atomically replaced prefix manifest"
+  },
+  "gate": {
+    "maximum_global_normalized_rmse": 0.02,
+    "maximum_per_tensor_normalized_rmse": 0.05,
+    "maximum_per_tensor_p99_relative_error_nonzero_scales": 0.10,
+    "require_all_209920000_scales": true,
+    "require_all_402_tensor_outputs_authenticated": true,
+    "valid_threshold_miss_is_a_negative_result": true,
+    "infrastructure_invalid_is_not_a_zero_or_completed_result": true
+  },
+  "resources": {
+    "do_not_run_while_authoritative_qwen38_27b_quality_throughput_or_kernel_services_are_active": true,
+    "minimum_available_memory_gib": 8,
+    "minimum_free_disk_gib": 2,
+    "swap_must_remain_zero": true,
+    "artifact_output": "/workspace/quant-runs/qwen38-scale-codebook4-v1",
+    "receipt_output": "/workspace/quant-state/qwen38-27b-scale-codebook4-v1.json"
+  },
+  "claim_boundary": {
+    "this_gate_can_prove": "scale-reconstruction and exact 4-bit index-packing feasibility on the existing mapped Qwen3.8-27B ternary tensors",
+    "this_gate_cannot_prove": [
+      "coverage of the additional visual MTP and convolution tensors in the 1.624562-bpw projection",
+      "ternary-code pack correctness",
+      "model capability retention",
+      "direct-decode speed",
+      "end-to-end token throughput",
+      "a scientific breakthrough"
+    ],
+    "next_if_passed": "generate and fit scales for the remaining projected tensors, export the exact whole-checkpoint artifact, then require Qwen3.8-27B CUTE and MMLU-type parity"
+  }
+}

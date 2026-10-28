@@ -1,0 +1,90 @@
+{
+  "schema": "qwen35_4b_cpu_layer30_qat_v4_infrastructure_v1",
+  "created_at": "2026-08-17T08:20:00Z",
+  "host": {
+    "alias": "quant",
+    "hostname": "ubuntu-32gb-hel1-1",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "smt_threads": 8,
+    "ram_gib": 30,
+    "accelerator": null
+  },
+  "source_commits": {
+    "cache": "cd05561901766912ddbc54cec5ca0cbda1c508ee",
+    "training_and_export": "ef9c0fe874e0187919854899a8ae00276c5852b7",
+    "decision_evaluator": "16eeabf532de1f1260be4c0521b5e9704fb44118",
+    "llama_cpp": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "services": [
+    {
+      "unit": "quant-qwen35-cpu-layer30-cache-v4.service",
+      "invocation_id": "b0af72fd9e3a4c65a5dabd8065471035",
+      "result": "success",
+      "exit_status": 0,
+      "wall_seconds": 1715.136,
+      "cpu_time": "1h 53min 36.857s",
+      "observed_memory_peak_bytes": 7984701440,
+      "journal_memory_peak": "7.4G",
+      "swaps": 0
+    },
+    {
+      "unit": "quant-qwen35-cpu-layer30-qat-v4.service",
+      "invocation_id": "bae2c7cf59c843b6ae47224038fd3f33",
+      "result": "success",
+      "exit_status": 0,
+      "wall_seconds": 364.790,
+      "cpu_time": "22min 51.970s",
+      "observed_memory_peak_bytes": 3610779648,
+      "journal_memory_peak": "3.3G",
+      "swaps": 0
+    },
+    {
+      "unit": "quant-qwen35-cpu-layer30-export-v4.service",
+      "invocation_id": "16c188e270a84058b25c0b04dd021c0e",
+      "result": "success",
+      "exit_status": 0,
+      "wall_seconds": 178.862,
+      "cpu_time": "3min 11.297s",
+      "observed_memory_peak_bytes": 24342519808,
+      "journal_memory_peak": "22.6G"
+    },
+    {
+      "unit": "quant-qwen35-cpu-layer30-quick-v4.service",
+      "invocation_id": "51d0141474d74efba0dd2a94f13b2e30",
+      "result": "success",
+      "exit_status": 0,
+      "wall_seconds": 201.376,
+      "cpu_time": "29.146s",
+      "journal_memory_peak": "22.3M"
+    },
+    {
+      "unit": "llama-cpu-eval-qat-v4-l30.service",
+      "invocation_id": "394fc215f5e64b19b5f2f7a0834c19ab",
+      "result": "success",
+      "wall_seconds": 172.490,
+      "cpu_time": "14min 27.490s",
+      "journal_memory_peak": "2.3G"
+    },
+    {
+      "unit": "quant-qwen35-cpu-layer30-ppl-v4.service",
+      "invocation_id": "4de94a10724f414284d4ac7c6c41f08b",
+      "result": "success",
+      "exit_status": 0,
+      "wall_seconds": 71.269,
+      "cpu_time": "4min 22.979s",
+      "observed_memory_peak_bytes": 3294601216,
+      "journal_memory_peak": "3G"
+    }
+  ],
+  "infrastructure_only_events": [
+    {
+      "stage": "post_ppl_read_only_inspection",
+      "event": "a separately issued Python one-liner had a shell-quoting SyntaxError after the successful PPL service ended",
+      "model_work_affected": false,
+      "evaluation_receipt_affected": false,
+      "classification": "inspection_command_invalid_not_a_benchmark_result"
+    }
+  ],
+  "all_model_services_succeeded": true
+}

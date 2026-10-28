@@ -1,0 +1,119 @@
+diff --git a/ggml/src/ggml-cpu/llamafile/sgemm.cpp b/ggml/src/ggml-cpu/llamafile/sgemm.cpp
+--- a/ggml/src/ggml-cpu/llamafile/sgemm.cpp
++++ b/ggml/src/ggml-cpu/llamafile/sgemm.cpp
+@@ -54,6 +54,11 @@
+ #include <array>
+ #include <type_traits>
+ 
++#ifdef CLARK_Q8_SHAPE_PROFILE
++#include <cstdio>
++#include <mutex>
++#endif
++
+ #ifdef _MSC_VER
+ #define NOINLINE __declspec(noinline)
+ #else
+@@ -75,6 +80,93 @@
+ 
+ namespace {
+ 
++#ifdef CLARK_Q8_SHAPE_PROFILE
++// Instrumentation only: this code is excluded from all scoreable runtimes.
++// Count one logical dispatch on thread zero and emit bounded JSONL at exit.
++constexpr size_t CLARK_Q8_PROFILE_MAX_SHAPES = 128;
++
++struct clark_q8_profile_shape {
++    int64_t m;
++    int64_t n;
++    int64_t k;
++    int64_t lda;
++    int64_t ldb;
++    int64_t ldc;
++    int nth;
++    uint64_t calls;
++    uint64_t gemm4xn2_tiles;
++};
++
++struct clark_q8_profile_state {
++    std::mutex mutex;
++    clark_q8_profile_shape shapes[CLARK_Q8_PROFILE_MAX_SHAPES] = {};
++    size_t distinct = 0;
++    uint64_t overflow = 0;
++};
++
++static clark_q8_profile_state clark_q8_profile;
++
++static void clark_record_q8_shape(int64_t m, int64_t n, int64_t k,
++                                  int64_t lda, int64_t ldb, int64_t ldc,
++                                  int nth) {
++    const uint64_t gemm4xn2_tiles =
++        static_cast<uint64_t>(m / 4) * static_cast<uint64_t>(n / 2);
++    std::lock_guard<std::mutex> lock(clark_q8_profile.mutex);
++    for (size_t i = 0; i < clark_q8_profile.distinct; ++i) {
++        clark_q8_profile_shape &shape = clark_q8_profile.shapes[i];
++        if (shape.m == m && shape.n == n && shape.k == k &&
++            shape.lda == lda && shape.ldb == ldb && shape.ldc == ldc &&
++            shape.nth == nth) {
++            ++shape.calls;
++            shape.gemm4xn2_tiles += gemm4xn2_tiles;
++            return;
++        }
++    }
++    if (clark_q8_profile.distinct == CLARK_Q8_PROFILE_MAX_SHAPES) {
++        ++clark_q8_profile.overflow;
++        return;
++    }
++    clark_q8_profile.shapes[clark_q8_profile.distinct++] = {
++        m, n, k, lda, ldb, ldc, nth, 1, gemm4xn2_tiles,
++    };
++}
++
++struct clark_q8_profile_dumper {
++    ~clark_q8_profile_dumper() {
++        std::lock_guard<std::mutex> lock(clark_q8_profile.mutex);
++        uint64_t calls = 0;
++        uint64_t gemm4xn2_tiles = 0;
++        for (size_t i = 0; i < clark_q8_profile.distinct; ++i) {
++            const clark_q8_profile_shape &shape = clark_q8_profile.shapes[i];
++            calls += shape.calls;
++            gemm4xn2_tiles += shape.gemm4xn2_tiles;
++            std::fprintf(stderr,
++                "CLARK_Q8_SHAPE {\"m\":%lld,\"n\":%lld,\"k\":%lld,"
++                "\"lda\":%lld,\"ldb\":%lld,\"ldc\":%lld,\"nth\":%d,"
++                "\"calls\":%llu,\"gemm4xn2_tiles\":%llu}\n",
++                static_cast<long long>(shape.m),
++                static_cast<long long>(shape.n),
++                static_cast<long long>(shape.k),
++                static_cast<long long>(shape.lda),
++                static_cast<long long>(shape.ldb),
++                static_cast<long long>(shape.ldc), shape.nth,
++                static_cast<unsigned long long>(shape.calls),
++                static_cast<unsigned long long>(shape.gemm4xn2_tiles));
++        }
++        std::fprintf(stderr,
++            "CLARK_Q8_SUMMARY {\"distinct\":%llu,\"overflow\":%llu,"
++            "\"calls\":%llu,\"gemm4xn2_tiles\":%llu}\n",
++            static_cast<unsigned long long>(clark_q8_profile.distinct),
++            static_cast<unsigned long long>(clark_q8_profile.overflow),
++            static_cast<unsigned long long>(calls),
++            static_cast<unsigned long long>(gemm4xn2_tiles));
++    }
++};
++
++// Declared after the state so shutdown destroys the dumper first.
++static clark_q8_profile_dumper clark_q8_profile_dump_at_exit;
++#endif
++
+ inline float unhalf(ggml_fp16_t d) {
+     return GGML_CPU_FP16_TO_FP32(d);
+ }
+@@ -4028,5 +4120,9 @@ bool llamafile_sgemm(const struct ggml_compute_params * params,
+            return false;
+ #if defined(__AVX2__) || defined(__AVX512F__) || defined(__AVX__)
++#ifdef CLARK_Q8_SHAPE_PROFILE
++        if (params->ith == 0)
++            clark_record_q8_shape(m, n, k, lda, ldb, ldc, params->nth);
++#endif
+         tinyBLAS_Q0_AVX<block_q8_0, block_q8_0, float> tb{
+             k, (const block_q8_0 *)A, lda,
+             (const block_q8_0 *)B, ldb,

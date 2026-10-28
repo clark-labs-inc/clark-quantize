@@ -1,0 +1,27 @@
+{
+  "schema": "clark_qwen35_4b_qat_resource_preregistration_v1",
+  "model": "Qwen/Qwen3.5-4B",
+  "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "recipe": "NORMCOMP_fullKL_anchorDecay",
+  "memory_accounting": {
+    "ternary_master_bytes_per_parameter": 4,
+    "hard_forward_cache_bytes_per_parameter": 2,
+    "gradient_bytes_per_parameter": 4,
+    "muon_momentum_bytes_per_parameter": 2,
+    "teacher_bytes_per_parameter": 2,
+    "minimum_headroom_fraction": 0.1,
+    "interpretation": "persistent lower bound only; activations, allocator workspace, framework overhead, and transient model surgery require additional memory"
+  },
+  "checkpoint_accounting": {
+    "complete_checkpoints": 2,
+    "maximum_hidden_in_progress_saves": 1,
+    "reserve_bytes": 10737418240
+  },
+  "admission": {
+    "require_complete_model_file_sha256": true,
+    "require_full_teacher_recipe_lower_bound_to_fit_available_memory": true,
+    "require_teacher_cache_recipe_lower_bound_to_fit_available_memory": true,
+    "require_checkpoint_retention_peak_to_fit_available_disk": true,
+    "failure_is_not_a_training_result": true
+  }
+}

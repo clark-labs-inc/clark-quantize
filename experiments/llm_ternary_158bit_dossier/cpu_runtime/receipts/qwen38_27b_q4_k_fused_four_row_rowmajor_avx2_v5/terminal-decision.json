@@ -1,0 +1,101 @@
+{
+  "schema": "qwen38_27b_q4_k_fused_four_row_rowmajor_avx2_result_v5",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "host_scope": "four physical AMD EPYC Milan cores",
+  "passed": false,
+  "kernel_promoted": false,
+  "decision": "reject_numerical_parity_and_predeclared_timing_gate",
+  "checks": {
+    "backend_reference_cases_pass": true,
+    "ordinary_decode_4x32_exact_prefix_parity": true,
+    "ordinary_decode_zero_token_fraction_below_0_01": true,
+    "predeclared_14_sample_graph_speedup_at_least_1_10": false,
+    "expanded_28_sample_graph_diagnostic_speedup_at_least_1_10": true,
+    "one_prompt_mtp3_exact_canary": true,
+    "terminal_target_4x96_exact_token_parity": false,
+    "terminal_mtp3_4x96_exact_token_parity": false,
+    "terminal_draft_behavior_unchanged": false,
+    "target_only_regression_at_most_0_02": true,
+    "whole_model_mtp3_speedup_at_least_1_05": true
+  },
+  "provenance": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "base_patch_sha256": "7ed408aaa908f070f95ba2a567175b196c0e1619fb0b987fc1faded282e211d3",
+    "fused_patch_sha256": "4fab46f823b5980f7292c101d3051719a633b9dda2db304c10c8836d4b156b2e",
+    "four_row_patch_sha256": "41fac22043304854d4b21562d3b5fb6c5bbbc880b339a4af9c7aae8bb849c5ab",
+    "rowmajor_patch_sha256": "b5834cf68f4c3625500181d249240779e77666c4231d15818b8fa1fd84eec127",
+    "executed_rowmajor_patch_sha256": "b5834cf68f4c3625500181d249240779e77666c4231d15818b8fa1fd84eec127",
+    "repository_normalized_rowmajor_patch_sha256": "d9e2d67a3122773b2d2568c0456079ecf4f85f368888ee18c4d594130d8d051e",
+    "patch_normalization": "Repository copy removes whitespace-only added lines; executable C++ tokens are unchanged.",
+    "candidate_server_sha256": "b516eea709e917b504fdc34154c1e62ef67d6182f9ce3bb9d97242538a1c71bd",
+    "candidate_bench_sha256": "645ef27f4bfe4e030e40c258d21dbecc2d587e4583b0cfdb47b18ddf1b3dcc90",
+    "backend_log_sha256": "578b1ab4d8f6dc29d32764ab0cf3f7de859388d5d7cade76debcd21ad249cf83",
+    "control_summary_sha256": "ca85c1de02dd9766978ce6a5cda82ede40e72c1bcffcd801223115fbeddcbfea",
+    "candidate_summary_sha256": "598d48f2a6505696fd2b2d62df1eec5430c1ebb4fd715aa781c7a9319daab642",
+    "candidate_mtp3_canary_summary_sha256": "fc1bb279a0cdb774de2d8940dd8d69df9b8209d3d1dccad8e3c9f3997dcd42fc",
+    "candidate_target32_summary_sha256": "365179429c62b602194ed19c8c3e23d4b0e9520d6ce4428b359ebe6a505510da"
+  },
+  "ordinary_decode_canary": {
+    "prompts": 4,
+    "tokens_per_prompt": 32,
+    "exact_control_prefix_pattern": [true, true, true, true],
+    "candidate_total_tokens": 128,
+    "candidate_zero_token_fraction": 0.0,
+    "candidate_unique_token_count": 93
+  },
+  "real_model_four_row_graph": {
+    "predeclared_14_samples": {
+      "control_median_ns": 787488551.0,
+      "candidate_median_ns": 752855769.5,
+      "control_over_candidate": 1.0460018809751581,
+      "passed": false
+    },
+    "expanded_diagnostic_28_samples": {
+      "control_median_ns": 783109531.5,
+      "candidate_median_ns": 691308687.5,
+      "control_over_candidate": 1.1327928401015501,
+      "passed": true,
+      "classification": "post-gate diagnostic; does not replace the predeclared result",
+      "stability_note": "Candidate process 1 occupied a distinct 810-835 ms slow mode; three later candidate processes were stable near 679-711 ms. All 28 samples are included."
+    }
+  },
+  "mtp3_canary": {
+    "prompts": 1,
+    "tokens_per_prompt": 96,
+    "target_exact": true,
+    "mtp3_exact": true,
+    "control_draft_n": 75,
+    "candidate_draft_n": 75,
+    "control_draft_n_accepted": 69,
+    "candidate_draft_n_accepted": 69,
+    "control_mtp3_accepted_tps": 3.87124547257842,
+    "candidate_mtp3_accepted_tps": 4.345007698210218
+  },
+  "whole_model": {
+    "prompts": 4,
+    "tokens_per_prompt": 96,
+    "control_target_weighted_tps": 1.7914316803302934,
+    "candidate_target_weighted_tps": 1.8784158002687994,
+    "candidate_over_control_target": 1.0485556445682978,
+    "control_mtp3_weighted_tps": 3.058454863451902,
+    "candidate_mtp3_weighted_tps": 3.4523108992389555,
+    "candidate_over_control_mtp3": 1.128776147882245,
+    "control_draft_n": 384,
+    "candidate_draft_n": 386,
+    "control_draft_n_accepted": 250,
+    "candidate_draft_n_accepted": 249,
+    "target_exact_pattern": [true, true, false, false],
+    "mtp3_exact_pattern": [true, true, true, false],
+    "target_first_mismatch": [null, null, 35, 54],
+    "mtp3_first_mismatch": [null, null, null, 54]
+  },
+  "cute": {
+    "required": false,
+    "ran": false,
+    "reason": "Terminal exact-parity and predeclared timing gates failed."
+  },
+  "next_experiment": "qwen38_27b_q4_k_gemm_half_permute_avx2_v6",
+  "claim_boundary": "The row-major repair removed the catastrophic token-zero failure and produced a 12.9% MTP3 throughput diagnostic, but it is rejected because full-generation outputs and draft behavior changed and the predeclared 14-sample graph gate failed. No quality or promotion claim is made."
+}

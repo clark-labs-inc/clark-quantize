@@ -1,0 +1,26 @@
+[Unit]
+Description=Run Qwen3.8-27B CUTE-Quick-20 on the aligned-2 CPU graph
+After=network-online.target quant-qwen38-27b-aligned2-full-text-watch-v1.service
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-e99f99d.bundle
+Environment=EXPECTED_COMMIT=e99f99d20ec1a9ba7d05208d00c0cbd4ac060e25
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/bin/bash /workspace/tmp/watch-qwen38-27b-aligned2-cute-v1-e99f99d.sh
+CPUAffinity=0 2 4 6
+CPUQuota=400%
+MemoryMax=12G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

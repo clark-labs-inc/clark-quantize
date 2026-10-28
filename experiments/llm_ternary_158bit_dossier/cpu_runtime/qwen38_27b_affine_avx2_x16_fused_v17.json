@@ -1,0 +1,165 @@
+{
+  "schema": "qwen38_27b_affine_avx2_x16_fused_preregistration_v17",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_affine_avx2_x16_fused_v17",
+  "frozen_at": "2026-08-18T17:31:27Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "microbenchmark_cores": 1,
+    "qwen_4b_compute_forbidden": true,
+    "source_artifact_schema": "qwen38_affine_base3_tensor_v1",
+    "activation_type": "CQ8_0",
+    "required_isa": [
+      "AVX2",
+      "F16C",
+      "FMA"
+    ],
+    "forbidden_isa_assumptions": [
+      "AVX512",
+      "AVX512_VNNI",
+      "AMX"
+    ]
+  },
+  "scientific_dependency": {
+    "parent_ptq_receipt": "/workspace/quant-state/qwen38-affine-butterfly-block-gate-v1.json",
+    "parent_qat_receipt": "/workspace/quant-state/qwen38-affine-butterfly-block-qat-v1.json",
+    "prototype_may_use_authenticated_layer0_ptq_payload": true,
+    "model_promotion_requires_three_block_qat_gate_pass": true,
+    "finding_available_before_freeze": "The authenticated layer-0 complete-block PTQ candidate reduced validation NMSE by 80.3356% versus direct ternary. The three-block PTQ and QAT gates were still running or unrun when this kernel experiment was frozen.",
+    "kernel_result_cannot_override_a_failed_representation_gate": true
+  },
+  "hypothesis": "Fuse the deployable affine-base3 equation into the successful output-row SIMD schedule: interleave sixteen output rows, broadcast each CQ8 activation word once, compute exact centered ternary dots in two AVX2 vectors, and add the mu times group-sum term before applying the shared activation scale. Decode the compressed alpha and mu ratios directly from one combined index byte per row/group, so no FP16/BF16 weight matrix or per-group scale matrix is materialized.",
+  "runtime_layout": {
+    "name": "AFF3_X16",
+    "rows_per_tile": 16,
+    "weights_per_group": 128,
+    "two_bit_code_bytes_per_row_group": 32,
+    "combined_alpha_mu_index_bytes_per_row_group": 1,
+    "tile_bytes_per_group": 528,
+    "tile_payload_bits_per_weight_excluding_row_anchors": 2.0625,
+    "row_anchor_bytes_per_row": 4,
+    "row_anchors": "one FP16 alpha anchor and one signed FP16 mu anchor per output row",
+    "codebooks": "one 16-entry FP16 alpha ratio table and one 16-entry signed FP16 mu ratio table per tensor",
+    "index_byte": "low nibble is alpha ratio index; high nibble is mu ratio index",
+    "code_layout": "group-major, then sixteen-weight input chunk, then output row; each chunk has two adjacent 32-byte AVX2 vectors for rows 0-7 and 8-15",
+    "canonical_file_maximum_projected_bpw": 1.6673542778500956,
+    "runtime_compute_image_maximum_bpw_at_5120_columns": 2.06875,
+    "canonical_to_compute_repack_is_lossless": true,
+    "canonical_mapping_must_round_trip": true,
+    "repack_is_one_time_and_untimed": true,
+    "source_file_must_remain_mmap_backed_and_may_not_be_copied": true,
+    "tail_policy": "Use an eight-row affine tile, then an ordinary affine row kernel for output-row tails.",
+    "high_precision_weights_materialized": false
+  },
+  "kernel_algebra": {
+    "stored_weight": "w[g,j] = mu_anchor[row] * mu_codebook[mu_index[row,g]] + alpha_anchor[row] * alpha_codebook[alpha_index[row,g]] * trit[row,g,j]",
+    "integer_dot": "dot[row,g] = sum_j trit[row,g,j] * q8_activation[g,j]",
+    "integer_group_sum": "sum_q8[g] = sum_j q8_activation[g,j]",
+    "group_contribution": "activation_scale[g] * (alpha[row,g] * dot[row,g] + mu[row,g] * sum_q8[g])",
+    "lane_mapping": "two AVX2 vectors hold sixteen independent output rows",
+    "shared_per_input_chunk": [
+      "four CQ8 activation word loads",
+      "four AVX2 activation broadcasts",
+      "activation group sum",
+      "activation group scale"
+    ],
+    "ratio_decode": "split sixteen combined index bytes into alpha and mu nibbles, gather FP32-converted codebook entries, and multiply by FP32-converted row anchors",
+    "butterfly_execution": "apply six sparse Givens stages once to the normalized activation at each fan-out site, then quantize the rotated activation once and reuse it for every consumer",
+    "butterfly_dense_matrix_materialized": false,
+    "group_order_must_match_reference": true
+  },
+  "sequential_gates": {
+    "gate_0_artifact_and_repack": {
+      "required": true,
+      "authenticate_every_source_blob": true,
+      "trits_must_round_trip_exactly": true,
+      "alpha_indices_must_round_trip_exactly": true,
+      "mu_indices_must_round_trip_exactly": true,
+      "reserved_two_bit_code_must_be_rejected": true,
+      "maximum_runtime_compute_image_bpw_at_5120_columns": 2.06875,
+      "no_high_precision_weight_materialization": true
+    },
+    "gate_1_native_correctness": {
+      "required": true,
+      "test_shapes": [
+        {
+          "rows": 16,
+          "columns": 128
+        },
+        {
+          "rows": 32,
+          "columns": 512
+        },
+        {
+          "rows": 48,
+          "columns": 5120
+        }
+      ],
+      "integer_trit_dot_must_match_scalar_exactly": true,
+      "integer_group_sum_must_match_scalar_exactly": true,
+      "decoded_alpha_and_mu_must_match_artifact_replay_bits": true,
+      "maximum_scaled_float_error_vs_same_q8_scalar_algebra": 0.0001,
+      "all_outputs_finite": true
+    },
+    "gate_2_exact_shape_microbenchmark": {
+      "matrices": 2,
+      "rows_per_matrix": 17408,
+      "columns": 5120,
+      "warmups": 3,
+      "timed_batches": 11,
+      "inner_iterations_per_timed_batch": 8,
+      "cache_eviction_bytes": 268435456,
+      "alternating_order": true,
+      "pin_to_one_physical_core": true,
+      "repack_time_excluded": true,
+      "minimum_affine_x8_over_affine_x16_speedup": 1.06,
+      "minimum_affine_ordinary_over_affine_x16_speedup": 1.35,
+      "maximum_candidate_median_absolute_deviation_fraction": 0.03,
+      "maximum_candidate_p90_over_p10_ratio": 1.08
+    },
+    "gate_3_rotation_and_fanout": {
+      "run_only_if_native_gates_pass": true,
+      "dimensions": [
+        5120
+      ],
+      "stages": 6,
+      "minimum_consumers": 2,
+      "maximum_rotation_plus_q8_fraction_of_fanout_gemv_time": 0.08,
+      "rotation_must_be_shared_once_per_site": true
+    },
+    "gate_4_model_integration": {
+      "run_only_if_three_block_qat_gate_passes_and_native_gates_pass": true,
+      "required_before_promotion": true,
+      "minimum_deeper_coverage": "all rank-2 text projection tensors in a separately authenticated candidate",
+      "minimum_tokens_per_second": 2.75,
+      "minimum_speedup_vs_same_harness_q4_k_m": 1.4,
+      "minimum_speedup_vs_same_weights_scalar_affine": 1.35,
+      "maximum_resident_compute_image_bpw": 2.06875
+    },
+    "gate_5_quality": {
+      "run_only_if_model_integration_performance_passes": true,
+      "cute_quick_denominator": 20,
+      "minimum_cute_correct": 9,
+      "math500_quick_denominator": 32,
+      "minimum_math500_correct": 8,
+      "mmlu_denominator": 64,
+      "maximum_mmlu_correct_loss_vs_q4_control": 1,
+      "maximum_wikitext_perplexity_ratio_vs_q4_control": 1.05,
+      "free_generation_must_be_non_degenerate": true
+    }
+  },
+  "stop_rules": [
+    "Stop before timing on any artifact authentication, exact mapping, integer algebra, finiteness, or runtime-memory failure.",
+    "Reject the native candidate if either frozen material speed threshold or either frozen stability threshold fails.",
+    "Do not benchmark while the affine PTQ or QAT service is consuming the four-core host.",
+    "Do not promote into the full model unless the separately preregistered three-block QAT gate passes.",
+    "Do not run capability evaluation unless the integrated performance gate passes.",
+    "Do not infer a score for an unrun gate and do not convert a primitive pass into a model-level claim."
+  ],
+  "claim_boundary": "A native pass would establish a fused low-bit affine-base3 AVX2 GEMV primitive with bounded runtime memory for Qwen3.8-27B shapes. Only a separately authenticated all-text-projection artifact plus end-to-end speed, memory, free-generation, CUTE, MATH, MMLU, and WikiText receipts can support a CPU-inference breakthrough claim."
+}

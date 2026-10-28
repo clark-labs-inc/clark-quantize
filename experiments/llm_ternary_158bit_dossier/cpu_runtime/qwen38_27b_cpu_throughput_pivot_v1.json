@@ -1,0 +1,129 @@
+{
+  "schema": "qwen38_27b_cpu_throughput_pivot_v1",
+  "frozen_at_utc": "2026-08-18T07:00:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "directive": "Optimize quality-qualified end-to-end CPU tokens per second; ternary and base-3 are optional mechanisms, not the target.",
+  "supersedes": {
+    "policy": "qwen38_27b_materiality_priority_amendment_v4",
+    "changes": [
+      "remove the fixed 1.70-bit candidate ceiling",
+      "promote CPU throughput from side quest to primary objective",
+      "permit sensitivity-selected 2/3/4/6-bit tensor modes",
+      "keep whole-model capability and honest byte accounting mandatory"
+    ]
+  },
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "text_graph_parameters": 26895998464,
+    "qwen_4b_compute_forbidden": true
+  },
+  "observed_anchors": {
+    "q4_k_m": {
+      "sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+      "bytes": 18973870432,
+      "four_physical_core_decode_tokens_per_second": 1.88559,
+      "four_physical_core_prefill_512_tokens_per_second": 7.046852,
+      "cute_correct_of_20": 9,
+      "math500_correct_of_8": 5,
+      "code_correct_of_6": 5,
+      "mmlu_correct_of_64": 52,
+      "wikitext_ppl": 5.7847
+    },
+    "tq2_0": {
+      "bytes": 11385047424,
+      "four_physical_core_decode_tokens_per_second": 3.732836,
+      "cute_correct_of_20": 0,
+      "math500_correct_of_8": 0,
+      "code_correct_of_6": 0,
+      "classification": "runtime ceiling only; rejected for catastrophic forgetting"
+    },
+    "direct_base3_vs_aligned2": {
+      "maximum_observed_four_core_throughput_fraction": 0.6821671810986987,
+      "decision": "base-3 may be a portable storage encoding but may not be the hot compute layout"
+    }
+  },
+  "first_practical_baseline": {
+    "format": "Q3_K_M",
+    "source": {
+      "repository": "ggml-org/Qwen3.8-27B-GGUF",
+      "revision": "0669b98607d47046c7c2b3f801011d54a08cfccf",
+      "bf16_filename": "Qwen3.8-27B-BF16.gguf",
+      "bf16_bytes": 53808281952,
+      "bf16_sha256": "5a3eedc837bcbd1365cdbf5b71e698df3122e76586ba872f07ce3ed4a9bfa97e"
+    },
+    "purpose": "measure the strongest immediately deployable CPU point below Q4 before judging custom mixed precision",
+    "not_a_breakthrough_claim": true
+  },
+  "research_candidate": {
+    "name": "activation-sensitive trained mixed aligned2",
+    "runtime_modes": [
+      "aligned two-bit ternary for trained low-sensitivity bulk tensors",
+      "Q3 for moderate-sensitivity tensors",
+      "Q4 or Q6 for sensitive layers tensor families or activation modes"
+    ],
+    "selection_evidence": [
+      "held-out complete-block output error",
+      "whole-model free-generation and likelihood ablations",
+      "measured end-to-end byte and wall-time contribution"
+    ],
+    "post_training_required_for_two_bit_bulk": true,
+    "deployed_state_must_match_training_forward": true,
+    "base3_hot_decode_forbidden": true
+  },
+  "promotion_gate": {
+    "classification": "admission floor for a practical baseline or research candidate; not sufficient for a breakthrough claim",
+    "quality": {
+      "minimum_cute_correct_of_20": 7,
+      "minimum_math500_correct_of_8": 4,
+      "minimum_code_correct_of_6": 4,
+      "minimum_mmlu_correct_of_64": 49,
+      "maximum_wikitext_ppl_ratio_vs_q4": 1.1
+    },
+    "performance": {
+      "minimum_four_physical_core_decode_tokens_per_second": 2.25,
+      "minimum_decode_speedup_vs_q4": 1.15,
+      "minimum_paired_decode_row_speedup_vs_q4": 1.05,
+      "minimum_prefill_speed_fraction_vs_q4": 0.9
+    },
+    "memory_and_storage": {
+      "maximum_model_file_bytes": 18973870432,
+      "maximum_short_context_peak_rss_bytes": 23622320128,
+      "fixed_bits_per_weight_ceiling": null,
+      "all_modes_scales_metadata_and_compute_images_counted": true
+    }
+  },
+  "breakthrough_gate": {
+    "quality": {
+      "minimum_cute_correct_of_20": 8,
+      "minimum_math500_correct_of_8": 4,
+      "minimum_code_correct_of_6": 4,
+      "minimum_mmlu_correct_of_64": 50,
+      "maximum_wikitext_ppl_ratio_vs_q4": 1.05,
+      "near_bf16_validation_required_when_memory_appropriate_host_is_available": true
+    },
+    "performance": {
+      "minimum_four_physical_core_decode_tokens_per_second": 2.75,
+      "minimum_decode_speedup_vs_q4": 1.4,
+      "stretch_four_physical_core_decode_tokens_per_second": 3.2,
+      "minimum_paired_decode_row_speedup_vs_q4": 1.1,
+      "minimum_prefill_speed_fraction_vs_q4": 0.95
+    },
+    "claim_requirements": [
+      "complete runnable Qwen3.8-27B text model",
+      "exact trained algebra executed by native AMD CPU kernels",
+      "strong Q3_K_M and Q4_K_M controls on the same node",
+      "honest model compute-image RSS startup and energy accounting",
+      "literature audit supporting a precisely bounded novelty statement",
+      "independent reproduction from pinned source and model artifacts"
+    ]
+  },
+  "stop_rules": [
+    "raw full-model ternary PTQ cannot promote regardless of speed",
+    "microkernel speed cannot promote without a runnable whole-model consumer",
+    "teacher-forced error cannot replace free-generation capability gates",
+    "accuracy and throughput arms run alone on the measurement node",
+    "infrastructure-invalid work is neither a zero nor a completed result"
+  ],
+  "claim_boundary": "Strategy and frozen promotion thresholds only; no Q3 or mixed-model result is claimed."
+}

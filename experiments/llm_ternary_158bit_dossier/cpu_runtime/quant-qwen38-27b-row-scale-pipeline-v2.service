@@ -1,0 +1,22 @@
+[Unit]
+Description=Run mapped then complete Qwen3.8-27B text-graph row-scale gates
+After=network-online.target quant-qwen38-27b-llamacpp-ternary-controls-v1.service
+Before=quant-qwen38-27b-activation-hash-residual-v1.service quant-qwen38-27b-layer0-mlp-activation-qat-watch-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-cpu-qat
+Environment=BUNDLE=/workspace/tmp/clark-quantize-qwen38-row-scale-v2.bundle
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/tmp/watch_qwen38_27b_row_scale_pipeline_v2.sh
+CPUQuota=400%
+MemoryMax=20G
+MemorySwapMax=0
+Nice=5
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

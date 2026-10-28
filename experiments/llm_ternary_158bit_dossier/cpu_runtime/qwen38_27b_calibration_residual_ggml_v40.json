@@ -1,0 +1,183 @@
+{
+  "schema": "qwen38_27b_calibration_residual_ggml_preregistration_v40",
+  "receipt_schema": "qwen38_27b_calibration_residual_ggml_receipt_v40",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "experiment_id": "qwen38_27b_calibration_residual_ggml_v40",
+  "status": "frozen_after_validation_only_preflight_before_any_timing_execution",
+  "frozen_at_utc": "2026-08-19T07:19:16Z",
+  "hypothesis": "The unchanged v39 rank-16 INT8/FP16 correction can be scheduled as a real ggml CPU graph node that consumes the exact compact trained payload by pointer, produces bit-identical output to the admitted direct AVX2 call, adds no more than 4x graph-dispatch overhead at one-token decode, retains the original 7.272727 ms conservative all-64-layer residual budget, and gains useful per-token efficiency on an eight-token microbatch.",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "qwen_4b_compute_forbidden": true,
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "graph_backend": "clean pinned llama.cpp ggml CPU backend",
+    "claim_boundary": "exact compact residual ggml graph-node parity and isolated graph overhead only; not adapter-file loading, attachment to a Qwen linear, whole-model execution, quality, end-to-end throughput, resident memory, energy, novelty, or breakthrough evidence"
+  },
+  "parent": {
+    "terminal_decision_path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_calibration_residual_stability_v39/terminal-decision.json",
+    "terminal_decision_sha256": "b6108a74bca38744c4e02398794514adebb2d6c09050742b1f1ffa12e02eeb31",
+    "required_decision": "admit_unchanged_exact_residual_kernel_to_llama_cpp_integration_gate",
+    "required_gate_passed": true,
+    "v38_remains_terminally_rejected": true
+  },
+  "llama_cpp": {
+    "revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "source": "https://github.com/ggml-org/llama.cpp.git",
+    "source_must_be_clean": true,
+    "build_type": "Release shared libraries with GGML_NATIVE=ON",
+    "integration_seam": "ggml_map_custom2(base_output, live_input, compact_residual_callback)",
+    "tasking": "one ggml task for decode; token-count tasks capped by backend threads for microbatch",
+    "model_loader_change_in_v40": false
+  },
+  "runtime_algebra": {
+    "exported_form": "output = base + bias_FP16 + ((input_FP32 @ left_INT8) * left_scale_FP16 * right_scale_FP16) @ right_INT8",
+    "rank": 16,
+    "input_features": 5120,
+    "output_features": 5120,
+    "persistent_bytes_per_active_layer": 174144,
+    "rank_scratch_bytes_per_task": 64,
+    "payload_storage": "one 64-byte-aligned copy of the exact serialized INT8/FP16 payload; graph userdata points directly into that storage",
+    "high_precision_factor_materialization_forbidden": true,
+    "dense_5120_by_5120_residual_materialization_forbidden": true,
+    "separate_dense_low_rank_ggml_matmuls_forbidden": true
+  },
+  "payloads": [
+    {
+      "layer": 0,
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-0.csr",
+      "bytes": 174144,
+      "sha256": "20f632aada5aca1fba88d8505744f8148bddeed43b171c75c42b97434e4517d9"
+    },
+    {
+      "layer": 63,
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-63.csr",
+      "bytes": 174144,
+      "sha256": "47b759bb0a16ce987a412727ce68d275fa607e3df29f38d3a4bca0bddd2124e6"
+    }
+  ],
+  "disclosed_preflight": {
+    "timing_samples_collected": 0,
+    "thresholds_adjusted_from_timing": false,
+    "first_compile": "a move-forbidden GraphRuntime return failed compilation before execution; it was replaced with a stable unique_ptr so ggml userdata cannot point at a moved object",
+    "older_dirty_build_validation": "before the clean build existed, layer 0 validation-only calls at one and eight tokens were bit-identical; this was engineering preflight and is not evidence",
+    "clean_pinned_build_validation": "after a clean detached 4df29be build, layer 63 validation-only calls at one and eight tokens were bit-identical; no timing loop was entered",
+    "authoritative_cases_still_untouched": "neither exact payload has been timed through the v40 harness"
+  },
+  "measurement": {
+    "seed": 20260819,
+    "token_counts": [
+      1,
+      8
+    ],
+    "threads": 4,
+    "physical_cpu_affinity": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "blocks_per_arm_per_case": 7,
+    "warmups_per_arm_per_block": 3,
+    "samples_per_arm_per_block": 9,
+    "inner_batch_calls_per_sample": 128,
+    "block_order": "even blocks direct then ggml; odd blocks ggml then direct",
+    "primary_latency_statistic": "median of seven per-block medians",
+    "primary_stability_statistic": "maximum block median minus minimum block median divided by median of block medians",
+    "direct_arm": "unchanged v39 trusted AVX2 kernel called once per token outside ggml",
+    "graph_arm": "ggml_backend_graph_compute over the custom binary node; graph scheduler, task dispatch, base copy, and exact kernel are all inside timing",
+    "graph_construction_excluded": true,
+    "raw_samples": "retain all 504 batch timing samples across two payloads, two token counts, and two arms without deletion or modification",
+    "run_order": "layer 0 decode, layer 0 eight-token, layer 63 decode, layer 63 eight-token",
+    "execution_count": "one authoritative invocation per frozen case"
+  },
+  "gate": {
+    "required_exact_payloads": 2,
+    "required_token_counts": [
+      1,
+      8
+    ],
+    "maximum_absolute_error_vs_direct": 0.0,
+    "maximum_decode_graph_overhead_ratio_vs_direct": 4.0,
+    "maximum_projected_all_64_layers_decode_ns": 7272727,
+    "maximum_graph_block_median_range_fraction": 0.1,
+    "maximum_eight_token_per_token_vs_decode_ratio": 0.5,
+    "required_payload_bytes_each": 174144,
+    "required_rank_scratch_bytes_per_task": 64
+  },
+  "gate_rationale": {
+    "parity": "the graph callback calls the exact admitted kernel on identical bytes, so any nonzero difference indicates graph data or layout corruption",
+    "overhead": "4x permits ggml scheduling overhead on a roughly 12 microsecond direct node but rejects an integration dominated by dispatch",
+    "all_layer_budget": "7.272727 ms is the unchanged two-percent budget at the 2.75 tok/s breakthrough target",
+    "microbatch": "four physical cores should reduce per-token correction time by at least 2x at eight tokens; this is a tasking correctness and usefulness gate, not a prefill throughput claim",
+    "stability": "the unchanged robust ten-percent block-median threshold from v39 is retained"
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_mib": 1024,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 20,
+    "concurrent_training_or_benchmark_processes": 0,
+    "persistent_output_bytes": "less than 1 MiB"
+  },
+  "promotion_rules": [
+    "execute all four frozen cases exactly once against the exact frozen harness and clean pinned ggml libraries",
+    "a parity, overhead, latency, stability, microbatch, payload, or scratch gate failure is a terminal scientific rejection and must be retained",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "a pass admits only adapter-file loading and attachment of this exact compact node at the llama.cpp build_lora_mm seam",
+    "the next integration must retain compact INT8/FP16 payloads and may not materialize FP factors or a dense residual matrix",
+    "whole-model export still requires sensitivity classification and training across every selected Qwen3.8-27B layer and matrix",
+    "whole-model free generation, WikiText, CUTE, MATH-500, code, MMLU, Q3_K_M/Q4_K_M throughput, resident memory, and energy gates remain mandatory",
+    "v40 cannot establish the 2.75 tok/s target, novelty, or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "native_c": {
+      "path": "clark_quantize/qwen38_calibration_residual_cpu.c",
+      "sha256": "dc99b3899c8c9946d4a9e38fe07bafd31161fc1df6ca62ebd99989aaf748137a"
+    },
+    "native_header": {
+      "path": "clark_quantize/qwen38_calibration_residual_cpu.h",
+      "sha256": "d53f8c2d4c14f306da57c35f3efc3d93d27bc5a8969bf472ad8dbf8e50d1a4af"
+    },
+    "ggml_harness": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_calibration_residual_ggml_v40.cpp",
+      "sha256": "3bc207053de3dd796fc6b9f743f1a3c2ae56be55eb623535b852da20f89d2c37"
+    },
+    "runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_calibration_residual_ggml_v40.py",
+      "sha256": "98e6d5ed521cfb081021b89977a06b62f7ad95abf8cd2a92c3d5a19dfbf26590"
+    },
+    "build_script": {
+      "path": "scripts/cpu/build_qwen38_calibration_residual_ggml_v40.sh",
+      "sha256": "b17fcaecf49e1a3c0d8b99d2fea43104a5f01abb16f5e19f0b1e2dd70f6f700c"
+    },
+    "parent_terminal_decision": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_calibration_residual_stability_v39/terminal-decision.json",
+      "sha256": "b6108a74bca38744c4e02398794514adebb2d6c09050742b1f1ffa12e02eeb31"
+    },
+    "layer0_payload": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-0.csr",
+      "sha256": "20f632aada5aca1fba88d8505744f8148bddeed43b171c75c42b97434e4517d9"
+    },
+    "layer63_payload": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/qwen38_27b_sensitivity_gated_residual_v37/artifacts/layer-63.csr",
+      "sha256": "47b759bb0a16ce987a412727ce68d275fa607e3df29f38d3a4bca0bddd2124e6"
+    }
+  },
+  "frozen_external_binaries": {
+    "harness": {
+      "build_path": "/workspace/tmp/qwen38-v40-preflight/qwen38-v40-clean",
+      "sha256": "051c0dd0e6956766bf8983a592ea322623fe53b1042a5c60c19332155a5f5b2a"
+    },
+    "ggml_cpu": {
+      "build_path": "/workspace/build/llama.cpp-residual-graph-v40/bin/libggml-cpu.so.0.20.0",
+      "sha256": "3979b1f2f8cc15c60e6ffe56427493782515beb0edb77115416a957f6a321a7e"
+    },
+    "ggml_base": {
+      "build_path": "/workspace/build/llama.cpp-residual-graph-v40/bin/libggml-base.so.0.20.0",
+      "sha256": "9c72be64bb6b21675dfc40c9950d0e265c2fdc38d638157f46bbc4e202bebc8b"
+    }
+  },
+  "claim_boundary": "A pass proves only that the exact two trained v37 compact payloads execute with exact parity and bounded isolated graph overhead through a clean pinned ggml CPU graph. It does not prove adapter loading, placement on a real Qwen linear, whole-model quality or speed, resident-memory or energy improvement, novelty, or the requested scientific breakthrough."
+}

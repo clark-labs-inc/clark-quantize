@@ -1,0 +1,119 @@
+{
+  "schema": "qwen38_27b_half_support_tail_hash_fused_preregistration_v1",
+  "receipt_schema": "qwen38_27b_half_support_tail_hash_fused_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T22:25:24Z",
+  "hypothesis": "The Clark-Hash correction can be fused with the exact 1.5-bit half-support tail kernel for Qwen3.8-27B vision FC2 layers in one native CPU call while retaining at least 95 percent of tail-only AVX2 throughput, agreeing with explicit T x plus A times R x within 5e-4 absolute error, and keeping the complete independently aligned component at no more than 1.58 bits per weight",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "qwen_4b_compute_forbidden": true,
+    "affected_checkpoint_tensors": 27,
+    "affected_parameters": 133871616,
+    "claim_boundary": "synthetic exact-support and learned-route data on the real vision FC2 shape; not real-weight approximation quality, model capability, token throughput, semi-lossless compression, or a scientific breakthrough"
+  },
+  "formula": {
+    "weight_approximation": "W approximately equals T plus A R",
+    "runtime": "y equals T x plus A times R x",
+    "ternary_runtime": "33 byte-compatible mask64 groups plus one exact width-80 half-support tail with row-anchor scale4",
+    "route": "one bucket and sign per input coordinate; R x is computed once from groupwise-dequantized Q8 activation",
+    "correction": "signed INT4 A with one FP16 scale per output row",
+    "fusion_boundary": "one public C call with a 34-float projection scratch and 1152-float correction scratch; no dense residual is materialized"
+  },
+  "case": {
+    "name": "qwen_vision_fc2",
+    "rows": 1152,
+    "columns": 4304,
+    "full_groups": 33,
+    "tail_width": 80,
+    "sketch_dim": 34,
+    "row_code_bytes": 807,
+    "raw_code_bits_per_weight": 1.5,
+    "projected_complete_component_bits_per_weight": 1.5769310202395703
+  },
+  "measurement": {
+    "seed": 158430427,
+    "ternary_codes": "deterministic synthetic exact-half-support codes in every full and tail group",
+    "route": "deterministic synthetic one-sparse signed routing with the exact learned-route dimensions",
+    "correction_codes": "deterministic signed INT4 in [-7,7] with FP16 row scales",
+    "activation": "deterministic signed INT8 with 34 per-group FP32 scales",
+    "warmups": 3,
+    "repetitions": 11,
+    "statistic": "median monotonic wall-clock nanoseconds",
+    "threading": "one process pinned to one physical CPU; kernels are single-threaded",
+    "comparison": "one-call fused AVX2 BMI2 kernel versus the identical half-support tail AVX2 BMI2 base call without correction",
+    "timing_order": "base and fused calls are paired and alternated for every repetition",
+    "compiler": "system C compiler with C11 O3 Wall Wextra Werror shared PIC and mtune=native"
+  },
+  "gate": {
+    "maximum_absolute_error": 0.0005,
+    "minimum_fused_throughput_fraction_of_tail_only": 0.95,
+    "maximum_complete_component_bits_per_weight": 1.58
+  },
+  "resources": {
+    "required_isa": [
+      "AVX2",
+      "FMA",
+      "F16C",
+      "BMI2"
+    ],
+    "cpu_quota_percent": 100,
+    "memory_max_mib": 512,
+    "swap_must_remain_zero": true,
+    "minimum_free_disk_gib": 10,
+    "persistent_output_bytes": "less than 1 MiB",
+    "run_after_half_support_tail_gate_and_before_complete_ledger": true
+  },
+  "promotion_rules": [
+    "the real 1152-by-4304 shape must meet correctness storage and fused-overhead thresholds",
+    "the control and candidate must use identical half-support codes scales and activation",
+    "the correction must be checked against an explicit dequantized T x plus A times R x oracle",
+    "a pass closes only the fused runtime gap for even-tail tensors in the projected complete ledger",
+    "real learned routes coefficients model weights capability and end-to-end token throughput require separate gates",
+    "a failed gate remains a terminal useful result and requires a separately versioned optimization",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "Qwen 4B compute is forbidden in this research lane",
+    "this benchmark cannot establish semi-lossless compression or a scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "mask64_native_c": {
+      "path": "clark_quantize/qwen38_fixed_support_mask64_cpu.c",
+      "sha256": "af12f49bfb975541ff5030ec50ffe6abb7df96a203dbdd9a014e170bfce85644"
+    },
+    "tail_native_c": {
+      "path": "clark_quantize/qwen38_half_support_tail_cpu.c",
+      "sha256": "8dd75aba04178d9dc617b9fd3acc8f68f8f0dbd0883cb243d5c04c6f0c685257"
+    },
+    "hash_native_c": {
+      "path": "clark_quantize/qwen38_hash_residual_cpu.c",
+      "sha256": "6292674dc99a94c1563d073facc9d01c4fa24df77b90f3db745e21f05c21719e"
+    },
+    "fused_native_c": {
+      "path": "clark_quantize/qwen38_half_support_tail_hash_fused_cpu.c",
+      "sha256": "d4963a33fa40d80f47e38b60a2ccd13c86a650e846828479eb9805cb183a34f3"
+    },
+    "tail_binding": {
+      "path": "clark_quantize/qwen38_half_support_tail_cpu.py",
+      "sha256": "cb745b97ab56a9a7008f4faefdeb6ceba698d55b810b074947b3e41d7f6eff3b"
+    },
+    "fused_binding": {
+      "path": "clark_quantize/qwen38_half_support_tail_hash_fused_cpu.py",
+      "sha256": "4d6ed3380fc930fdefeab479c6cd471ba54d5e434b557aca19430f8b8397bfc0"
+    },
+    "int4_packer": {
+      "path": "clark_quantize/qwen38_hash_residual_cpu.py",
+      "sha256": "ed2d8b44491d3483ef0ae59e342db69c541b5e87837bf77b1385481aa403f6ca"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_qwen38_half_support_tail_hash_fused_cpu.py",
+      "sha256": "aaa642a4d6ba94fcd15f247b4204e9b60a292c229adf790e6006d375981d8860"
+    },
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_half_support_tail_hash_fused_v1.py",
+      "sha256": "59d9726ac24e63e8dad26fc65b2ae8e4595532a9aa96196ffd9ca5f7197c6693"
+    },
+    "build_script": {
+      "path": "scripts/cpu/build_qwen38_half_support_tail_hash_fused_cpu.sh",
+      "sha256": "4bd0760f241df5b4955184c37062b81a63f252394ac31cd75b01799b050f7a13"
+    }
+  }
+}

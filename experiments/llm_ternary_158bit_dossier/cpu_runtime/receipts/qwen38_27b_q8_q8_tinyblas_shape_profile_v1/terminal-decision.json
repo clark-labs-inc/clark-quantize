@@ -1,0 +1,104 @@
+{
+  "schema": "qwen38_27b_q8_q8_tinyblas_shape_profile_receipt_v1",
+  "experiment_id": "qwen38_27b_q8_q8_tinyblas_shape_profile_v1",
+  "completed_at": "2026-08-18T12:22:57Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "decision": "select_q8_q8_n4_orientation_kernel",
+  "passed": true,
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "target": "Qwen3.8-27B-Q4_K_M.gguf",
+    "draft": "mtp-Qwen3.8-27B-Q4_0.gguf",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "cpu_list": "0,2,4,6",
+    "qwen_4b_compute_forbidden": true
+  },
+  "workload": {
+    "requests": 1,
+    "draft_width": 3,
+    "n_predict": 96,
+    "returned_tokens": 96,
+    "prompt_class": "code",
+    "draft_n": 75,
+    "draft_n_accepted": 69,
+    "instrumented_predicted_tokens_per_second_not_scoreable": 3.9839743583022984
+  },
+  "counter_receipt": {
+    "distinct_shapes": 18,
+    "maximum_distinct_shapes": 128,
+    "overflow": 0,
+    "logical_dispatches": 8352,
+    "gemm4xn2_tiles": 18043008,
+    "thread_deduplication": "recorded only when params->ith == 0"
+  },
+  "shape_families": [
+    {
+      "n": 2,
+      "distinct_shapes": 6,
+      "calls": 576,
+      "call_fraction": 0.06896551724137931,
+      "gemm4xn2_tiles": 633088,
+      "tile_fraction": 0.03508771929824561
+    },
+    {
+      "n": 4,
+      "distinct_shapes": 6,
+      "calls": 7488,
+      "call_fraction": 0.896551724137931,
+      "gemm4xn2_tiles": 16460288,
+      "tile_fraction": 0.9122807017543859
+    },
+    {
+      "n": 6,
+      "distinct_shapes": 6,
+      "calls": 288,
+      "call_fraction": 0.034482758620689655,
+      "gemm4xn2_tiles": 949632,
+      "tile_fraction": 0.05263157894736842
+    }
+  ],
+  "selected_n4_shapes": [
+    {"m": 10240, "n": 4, "k": 160, "lda": 160, "ldb": 160, "ldc": 10240, "nth": 4, "calls": 1248, "gemm4xn2_tiles": 6389760},
+    {"m": 48, "n": 4, "k": 160, "lda": 160, "ldb": 160, "ldc": 48, "nth": 4, "calls": 2496, "gemm4xn2_tiles": 59904},
+    {"m": 6144, "n": 4, "k": 160, "lda": 160, "ldb": 160, "ldc": 6144, "nth": 4, "calls": 1248, "gemm4xn2_tiles": 3833856},
+    {"m": 5120, "n": 4, "k": 192, "lda": 192, "ldb": 192, "ldc": 5120, "nth": 4, "calls": 1248, "gemm4xn2_tiles": 3194880},
+    {"m": 12288, "n": 4, "k": 160, "lda": 160, "ldb": 160, "ldc": 12288, "nth": 4, "calls": 416, "gemm4xn2_tiles": 2555904},
+    {"m": 1024, "n": 4, "k": 160, "lda": 160, "ldb": 160, "ldc": 1024, "nth": 4, "calls": 832, "gemm4xn2_tiles": 425984}
+  ],
+  "uninstrumented_profile_anchor": {
+    "symbol": "tinyBLAS_Q0_AVX<block_q8_0, block_q8_0, float>::gemm4xN<2>",
+    "exclusive_cycle_fraction": 0.2399,
+    "perf_report_sha256": "69ecd549349a37fc9fab584dbd872aa8000741cbb9ce6b5e1922cd522046d2d7"
+  },
+  "amdahl": {
+    "n4_zero_cost_ceiling_from_call_fraction": 1.2740196638345356,
+    "n4_zero_cost_ceiling_from_tile_fraction": 1.2801739239801282,
+    "n4_two_x_subkernel_whole_request_projection_from_tile_fraction": 1.1228739268674182,
+    "selection_rule_call_fraction_at_least_0_70": true,
+    "selection_rule_whole_request_ceiling_above_1_10": true
+  },
+  "backend_reference": {
+    "filter": "type_a=q8_0,type_b=f32,m=16,n=4,k=256",
+    "passed": 3,
+    "denominator": 3
+  },
+  "provenance": {
+    "profile_patch_sha256": "a92988d1507fc63217cf19a2139a8ed1e0a943bf3f213b6357dc9e4427b3da36",
+    "base_patch_sha256": "7ed408aaa908f070f95ba2a567175b196c0e1619fb0b987fc1faded282e211d3",
+    "fused_patch_sha256": "4fab46f823b5980f7292c101d3051719a633b9dda2db304c10c8836d4b156b2e",
+    "profile_binary_sha256": "03d16df4d9dd7d9a07e40383e943299aa8afff0a7442999c39797239b563cd39",
+    "source_diff_sha256": "f6a05120b0d5246e96327fff7a28e42f92caa340f6fa4e0771841bfc98882dc6",
+    "backend_log_sha256": "66ce78cf4dc6b73b4e538f47432c1c147ff6860bd70f851e803a7d401a730bb6",
+    "shape_profile_jsonl_sha256": "381f02cb4eab879d156bc659a044c22f303b551fd2dd881b3f3d000c7648944b",
+    "shape_family_summary_sha256": "c587dbdd38f1f90f750feee2d1698834cd15cf8e54d6390ab51ee4940c05733e",
+    "amdahl_json_sha256": "95de822e19caa09e38fa8215012228302f33454567a72047ec04f09187a03c7e",
+    "server_log_sha256": "952d82875bf300ae6083a167c0ab273509d8c4477d27a0793935a89efca15b94",
+    "prompt_receipt_sha256": "60b101cc64145211b9a75de66d160279059f5992b6d6b25af59ed81b04b5b109",
+    "tokens_canonical_json_sha256": "83d74be9af5847e45f63ec32f485619e9573b97921922313042842106c7ad484"
+  },
+  "claim_boundary": "Shape-selection evidence only. Instrumented timing is not a performance score, the selected kernel has not yet been built or measured, and no quality, final-node, 100 accepted tok/s, novelty, or breakthrough claim is made."
+}

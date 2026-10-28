@@ -1,0 +1,66 @@
+{
+  "schema": "qwen38_27b_q4_k_fused_ragged_avx2_preregistration_v2",
+  "goal_id": "qwen38_27b_amd_100tps_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_q4_k_fused_ragged_avx2_v2",
+  "frozen_at": "2026-08-18T10:06:00Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "target_quantization": "Q4_K_M",
+    "official_mtp_draft_quantization": "Q4_0",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true
+  },
+  "hypothesis": "For two- and three-row target verification, keeping independent Q8_K accumulators inside one Q4_K decode loop will reduce repeated nibble and scale extraction without changing each row's arithmetic order.",
+  "implementation": {
+    "base_patch": "kernels/llama_cpp_q4_k_ragged_rows_v1.patch",
+    "candidate_patch": "kernels/llama_cpp_q4_k_fused_ragged_avx2_v2.patch",
+    "shared_work": [
+      "Q4_K quant loads",
+      "low/high nibble extraction",
+      "Q4_K scale and minimum unpack"
+    ],
+    "row_specific_work": [
+      "Q8_K activation loads",
+      "integer dot products",
+      "row-scale multiplication",
+      "output stores"
+    ]
+  },
+  "controls": {
+    "control": "Pinned llama.cpp plus cache-order ragged dispatch v1",
+    "candidate": "Same source and dispatch plus fused AVX2 Q4_K decode",
+    "cpu_affinity": "0,2,4,6",
+    "threads": 4,
+    "paired_order": "control,candidate,candidate,control"
+  },
+  "observational_feasibility_result": {
+    "status": "observed before this whole-model MTP gate was frozen",
+    "benchmark": "Real Qwen3.8-27B Q4_K_M prompt-only graphs, 14 samples per width",
+    "widths": [1, 2, 3],
+    "interpretation": "These measurements motivated the full MTP run and are descriptive rather than a preregistered discovery test."
+  },
+  "promotion_gate": {
+    "correctness": {
+      "control_vs_candidate_target_exact_greedy_tokens": true,
+      "control_vs_candidate_mtp3_exact_greedy_tokens": true,
+      "control_vs_candidate_internal_parity_pattern_unchanged": true,
+      "prompts": 4,
+      "tokens_per_prompt": 96
+    },
+    "performance": {
+      "minimum_whole_model_mtp3_accepted_tps_speedup_vs_control": 1.05,
+      "maximum_target_only_tps_regression_fraction": 0.02
+    }
+  },
+  "stop_rules": [
+    "Reject on any cross-runtime exact-greedy token mismatch.",
+    "Reject if target-only accepted throughput regresses by more than two percent.",
+    "Reject if MTP3 accepted throughput improves by less than five percent.",
+    "Treat an unchanged target-versus-MTP parity pattern in both runtimes as upstream speculative behavior, not a candidate regression."
+  ],
+  "claim_boundary": "A pass promotes this AVX2 Q4_K verification kernel on the four-core Milan development host only. It does not establish model quality, final-node scaling, or 100 accepted tokens per second."
+}

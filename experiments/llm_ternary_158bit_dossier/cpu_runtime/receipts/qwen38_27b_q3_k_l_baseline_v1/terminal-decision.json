@@ -1,0 +1,67 @@
+{
+  "schema": "qwen38_27b_q3_k_l_baseline_terminal_decision_v1",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "decision": "reject_before_speed_and_mmlu",
+  "reason": "The one preregistered adjacent Q3_K_L stock control met CUTE, code, and WikiText practical floors but missed the complete MATH-500 quick floor. Runtime and MMLU were intentionally not run after this terminal screen failure.",
+  "model": {
+    "id": "Qwen/Qwen3.8-27B",
+    "quantization": "Q3_K_L",
+    "gguf_bytes": 14344776032,
+    "gguf_sha256": "809088a4c4842a9f8a0755c3e8b64b74ac473d776ccecea4c103736892e4be80",
+    "bf16_parent_sha256": "5a3eedc837bcbd1365cdbf5b71e698df3122e76586ba872f07ce3ed4a9bfa97e"
+  },
+  "provenance": {
+    "repository_commit": "9a80cfbd9bcbbc17e50e0cf05b669c00bde5afbf",
+    "llama_cpp_commit": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "service": "quant-qwen38-q3-k-l-baseline-v1.service",
+    "service_result": "success",
+    "service_exec_main_status": 0,
+    "service_restarts": 0
+  },
+  "quality": {
+    "cute": {
+      "correct": 7,
+      "n": 20,
+      "required": 7,
+      "passed": true,
+      "breakdown": {
+        "contains_char": "4/4",
+        "ins_char": "0/4",
+        "del_char": "2/4",
+        "swap_char": "0/4",
+        "sub_char": "1/4"
+      },
+      "report_content_sha256": "bb730d0870232581bece986b2fbbc255d5d14253462cd33b69f168b9bb27ce67"
+    },
+    "math500": {
+      "correct": 3,
+      "n": 8,
+      "required": 4,
+      "passed": false
+    },
+    "code_trace": {
+      "correct": 4,
+      "n": 6,
+      "required": 4,
+      "passed": true
+    },
+    "math_code_report_content_sha256": "bb17f1e3ffb45175a6850472b0299d0658fb80e324056ee955b5034d6b696676",
+    "wikitext": {
+      "ppl": 6.2307,
+      "ppl_ratio_vs_q4": 1.0770999360381697,
+      "maximum_ratio": 1.1,
+      "passed": true,
+      "report_content_sha256": "a432f60b45c215c6a1f3cae9d40a80f67c41d44f8c156e37dd8abf5725470523"
+    }
+  },
+  "gates": {
+    "quick_quality_passed": false,
+    "speed_run": false,
+    "mmlu_run": false,
+    "promotion_passed": false
+  },
+  "stock_three_bit_sweep_closed": true,
+  "next_kernel": "Continue the nearly-lossless Q4_K or trained mixed-precision CPU kernel path; do not build a Q3_K runtime around a target that failed practical admission.",
+  "claim_boundary": "Terminal negative whole-model quality result for the pinned Q3_K_L artifact on the four-core Milan node. It closes only the preregistered stock three-bit sweep; it is not a trained mixed-precision result, a final-node result, or evidence that all three-bit methods fail."
+}

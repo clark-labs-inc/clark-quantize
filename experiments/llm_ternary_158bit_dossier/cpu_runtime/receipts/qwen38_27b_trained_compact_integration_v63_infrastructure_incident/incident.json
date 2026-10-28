@@ -1,0 +1,45 @@
+{
+  "schema": "qwen38_27b_trained_compact_integration_v63_infrastructure_incident",
+  "observed_at_utc": "2026-08-19T17:16:31Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "repository_commit": "93f59886826552e7d62eb0c3135d45d3bf0b6f37",
+  "preregistration_sha256": "7797caa49c8553e545edf7a3b1990bb4935818792868d765046dd99e69132125",
+  "runner_sha256": "93147b2d7b80c42515506482c569c8f447fa4edaf87b4fb7312c11ee0f5a82ff",
+  "v62_materialization_passed": true,
+  "v62_candidate_sha256": "506505935f82bade12ab4b51bd1ca9b6e1b5cc11eeae99a6e230b9a7b9044ffc",
+  "source_and_artifact_authentication_passed": true,
+  "compile": {
+    "last_completed_ninja_step": 327,
+    "total_ninja_steps": 334,
+    "failed_target": "tests/CMakeFiles/test-cq3.dir/test-cq3.cpp.o",
+    "compiler_exit_code": 1,
+    "diagnostic": "fatal error: qwen38_27b_cq3_x86_pair_bench_v1.inc: No such file or directory",
+    "build_log_sha256": "bee01284f8570353e438f99616d6ad8345f16d569e0e2529945ec854e009d30a",
+    "source_and_artifact_authentication_sha256": "7a082809473ca06b699ab7937bcb0aab3ced3ca6e62716c776d54cd08bf32c75"
+  },
+  "root_cause": {
+    "classification": "authenticated_source_composition_omission",
+    "detail": "The v54 composition applied llama_cpp_4df29be_cq3_x86_pair_v1.patch, which adds the include directive, but unlike the original accepted pair-kernel runner it did not install the separately frozen benchmark include into llama.cpp/tests.",
+    "missing_source_path": "tests/qwen38_27b_cq3_x86_pair_bench_v1.inc",
+    "frozen_repair_source": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_cq3_x86_pair_bench_v1.inc",
+    "frozen_repair_source_sha256": "18ad5425d182c8aec18d895e2ba649604ff3e6028c78d3dbc7c81369dabd354a",
+    "runtime_or_numerical_code_involved": false
+  },
+  "execution_boundary": {
+    "test_cq3_ran": false,
+    "aff3_graph_parity_ran": false,
+    "whole_model_load_ran": false,
+    "whole_model_generation_ran": false,
+    "quality_evaluation_ran": false,
+    "performance_measurement_ran": false
+  },
+  "service": {
+    "failed_wall_seconds": 242.598,
+    "failed_cpu_seconds": 679.69,
+    "failed_memory_peak_bytes_approx": 8697308774,
+    "one_automatic_restart_began": true,
+    "automatic_restart_was_manually_stopped_before_repeat_compile": true
+  },
+  "classification": "infrastructure_invalid_no_model_result",
+  "terminal": true
+}

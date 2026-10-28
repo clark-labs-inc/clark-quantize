@@ -1,0 +1,224 @@
+{
+  "adapter": {
+    "bias_sha256": "c8cb86a4a1d8d313b8f0a71156d05e0d38467e1c61a990dae69935da6c42392d",
+    "fit_rows": 64,
+    "high_precision_factor_materialization_at_runtime": false,
+    "input_features": 17408,
+    "left_codes_sha256": "6a7538fa48e48ccf32672220d7324be9c3a63ab6932c6da5c05d7cf3b30864b3",
+    "left_scales_sha256": "57d38ad7c24fa96a2f1ac76533f39efacbee74980d08574b9b00fd7a48366a18",
+    "macs_per_token": 360448,
+    "output_features": 5120,
+    "payload": {
+      "bytes": 370752,
+      "path": "/workspace/quant-runs/qwen38-hierarchical-cell-subspace-residual-v79/blk.59.ffn_down.v75-residual-rank16-int8",
+      "sha256": "6b05aea0a6182990c6daaef77e078cfe64dfb73a5bad8ca66456eaa208131af0"
+    },
+    "rank": 16,
+    "rank_or_ridge_sweep": false,
+    "rank_scratch_bytes_per_task": 64,
+    "ridge_fraction": 0.01,
+    "right_codes_sha256": "980465cbc8c1c7a7e5d960ae97ff6a5ac96c07b9ac77a3eb2cc86bf3bed10c7a",
+    "right_scales_sha256": "80073c6ad8530c75041e5edbcdc1bb07377597111ca1286c2668a93aaacc3105"
+  },
+  "authenticated_inputs": {
+    "full_context_receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+    "prior_exact_kernel_evidence": {
+      "v37_terminal_decision_sha256": "26dae44ab53bf194b89c46e7a175808865b8c8eb40207dd83ef4edaefec7ba36",
+      "v39_stability_receipt_sha256": "52949a764b1e940ecf6171b07e592bc08244ef4509ce91ce6f1df8f4fd264a9a",
+      "v40_ggml_receipt_sha256": "8d4bab4e636582a2235035a6969a55046c49538d73e6284db479113b34ae3f7a"
+    },
+    "source_tensor_sha256": {
+      "mlp.down_proj.weight": "ce8eaece6fd48b996ff5328840d7b75d5d91dc23acf358711388973b5c9584ca",
+      "mlp.gate_proj.weight": "af5f1f3627acd6ed1a1e3ff71defaeb4433b1dc280efdb01b6d8ebf9086ab1c3",
+      "mlp.up_proj.weight": "2d3f11424f7705452380d1c7a2df4e625929ab9c460882e9c81ce5effadc7feb"
+    },
+    "v44_payload_sha256": {
+      "down": "faa8661738f9c0bdcadc2dcd7eac7723ca39c1d99486523b2e8b21e636c76356",
+      "gate": "ca349cd022d248a29fae502d523430b50fa5894f1e5deff549e222b159a02599",
+      "up": "1592cd2858371645fd8e236113caa1c39d733a959b3a54ab0bbe4f6d550de4bc"
+    },
+    "v44_training_receipt_sha256": "1f33a04cf6d5433724e5d37d12fa0bfa3edfd710ab365033a8db69b517f73c1f",
+    "v75_hybrid_payload_sha256": "a5ddaf51d97c3534e2ef2e4da2f9ad5702e0473951a7a29cbbd2b2efc4172ef9",
+    "v75_receipt_sha256": "7028466f1798e425f2fa9a9574214aeef96864db754797590133115c7f8ef5e5",
+    "v76_checkpoint_sha256": "cd05845eb77f7671adabae0113c4a6fc92b835f92d43378d582f51db5de1d0d8",
+    "v76_receipt_sha256": "444d249cf32b3a7a3f440250988b2fd44e191b80a62a1c6110ed3f5b87502fc8",
+    "v77_receipt_sha256": "39fc77889d7ff6f190b0b67289ad4738b0e8e688301c2c0cea22951ccd00a838",
+    "v78_receipt_sha256": "ce26ac4e9e4e0b7f98b8cdc881489abca4a18297a75cee2912ecad949017b0a3"
+  },
+  "checks": {
+    "adapter_payload_bytes_exact": true,
+    "adapter_payload_roundtrip_exact": true,
+    "all_parent_artifacts_authenticated": true,
+    "all_values_finite": true,
+    "maximum_payload_increase_met": true,
+    "minimum_fit_improvement_met": true,
+    "minimum_v42_gain_over_v75_met": false,
+    "minimum_v42_validation_improvement_met": false,
+    "minimum_v76_development_improvement_met": false,
+    "minimum_v76_gain_over_v75_met": false,
+    "minimum_v76_improved_prompt_fraction_met": true,
+    "minimum_v76_median_directional_capacity_met": false,
+    "minimum_v76_positive_tile_fraction_met": true,
+    "packed_v75_roundtrip_exact": true,
+    "v42_exact_layer_replay": true,
+    "v42_validation_used_for_refit": false,
+    "v75_v42_fit_metric_reproduced": true,
+    "v75_v42_validation_metric_reproduced": true,
+    "v75_v76_metric_reproduced": true,
+    "v76_exact_layer_replay": true,
+    "v76_used_for_refit": false
+  },
+  "claim_boundary": "Development-only layer-59 screen of a hierarchical mixed-cell plus rank-16 INT8 activation-subspace residual. A pass only authorizes a new-prompt replication; it does not establish whole-model quality, benchmark retention, CPU throughput, energy, novelty, 100 tokens per second, or a breakthrough.",
+  "complete": true,
+  "data_status": {
+    "allowed_use": "Reject or admit this exact composition to a second untouched prompt cache only.",
+    "both_development_sets_are_architecture_contaminated": true,
+    "promotion_or_scientific_claim_from_v79_forbidden": true
+  },
+  "gate": {
+    "decision": "reject_rank16_residual_after_v75_cell_path",
+    "passed": false
+  },
+  "metrics": {
+    "fit": {
+      "baseline_complete_mlp_nmse": 0.22874139249324799,
+      "candidate_complete_mlp_nmse": 0.011148825287818909,
+      "relative_improvement": 0.9512601319494547,
+      "v75_cell_only_relative_improvement": 0.8991770748001296
+    },
+    "v42_validation_development": {
+      "absolute_improvement_over_v75": 0.006987828225681114,
+      "baseline_complete_mlp_nmse": 0.33426132798194885,
+      "candidate_complete_mlp_nmse": 0.05655877664685249,
+      "per_prompt": [
+        {
+          "baseline_complete_mlp_nmse": 0.4129975438117981,
+          "candidate_complete_mlp_nmse": 0.22487501800060272,
+          "directional_capacity": 0.4600962529040089,
+          "environment": 0,
+          "relative_improvement": 0.45550519277887597,
+          "rows": 11
+        },
+        {
+          "baseline_complete_mlp_nmse": 0.34612783789634705,
+          "candidate_complete_mlp_nmse": 0.05802115797996521,
+          "directional_capacity": 0.8613781738184884,
+          "environment": 1,
+          "relative_improvement": 0.8323707265714337,
+          "rows": 7
+        },
+        {
+          "baseline_complete_mlp_nmse": 0.3240883946418762,
+          "candidate_complete_mlp_nmse": 0.02163444086909294,
+          "directional_capacity": 0.942308386278333,
+          "environment": 2,
+          "relative_improvement": 0.9332452465846566,
+          "rows": 6
+        },
+        {
+          "baseline_complete_mlp_nmse": 0.31849008798599243,
+          "candidate_complete_mlp_nmse": 0.054163508117198944,
+          "directional_capacity": 0.8329617916475346,
+          "environment": 3,
+          "relative_improvement": 0.8299365972118381,
+          "rows": 8
+        }
+      ],
+      "relative_improvement": 0.8307947348013084,
+      "reproduced_v75_cell_only_relative_improvement": 0.8238068954307834,
+      "v75_reference": 0.8238069065756273
+    },
+    "v76_development": {
+      "absolute_improvement_over_v75": 0.031393461082080965,
+      "baseline_complete_mlp_nmse": 0.3305761218070984,
+      "candidate_complete_mlp_nmse": 0.09782443940639496,
+      "improved_prompt_fraction": 1.0,
+      "median_prompt_directional_capacity": 0.22115792312798382,
+      "per_prompt": [
+        {
+          "baseline_complete_mlp_nmse": 0.3931940793991089,
+          "candidate_complete_mlp_nmse": 0.12482056021690369,
+          "directional_capacity": 0.6993236081004889,
+          "environment": 0,
+          "relative_improvement": 0.6825472031327169,
+          "rows": 8
+        },
+        {
+          "baseline_complete_mlp_nmse": 0.3340575098991394,
+          "candidate_complete_mlp_nmse": 0.3135621249675751,
+          "directional_capacity": 0.09964712522567121,
+          "environment": 1,
+          "relative_improvement": 0.06135286387590094,
+          "rows": 8
+        },
+        {
+          "baseline_complete_mlp_nmse": 0.34593483805656433,
+          "candidate_complete_mlp_nmse": 0.2547253370285034,
+          "directional_capacity": 0.2651420934934351,
+          "environment": 2,
+          "relative_improvement": 0.26366092973020283,
+          "rows": 8
+        },
+        {
+          "baseline_complete_mlp_nmse": 0.35187235474586487,
+          "candidate_complete_mlp_nmse": 0.32893726229667664,
+          "directional_capacity": 0.08704684860110519,
+          "environment": 3,
+          "relative_improvement": 0.0651801488234357,
+          "rows": 8
+        },
+        {
+          "baseline_complete_mlp_nmse": 0.3448604643344879,
+          "candidate_complete_mlp_nmse": 0.3333284258842468,
+          "directional_capacity": 0.08842913732577513,
+          "environment": 4,
+          "relative_improvement": 0.033439723142795245,
+          "rows": 8
+        },
+        {
+          "baseline_complete_mlp_nmse": 0.3338695764541626,
+          "candidate_complete_mlp_nmse": 0.06912487745285034,
+          "directional_capacity": 0.8013180230570314,
+          "environment": 5,
+          "relative_improvement": 0.7929584414759019,
+          "rows": 8
+        },
+        {
+          "baseline_complete_mlp_nmse": 0.3427770137786865,
+          "candidate_complete_mlp_nmse": 0.28990572690963745,
+          "directional_capacity": 0.17717375276253258,
+          "environment": 6,
+          "relative_improvement": 0.1542439683636002,
+          "rows": 7
+        },
+        {
+          "baseline_complete_mlp_nmse": 0.31221112608909607,
+          "candidate_complete_mlp_nmse": 0.031425829976797104,
+          "directional_capacity": 0.8997101222748365,
+          "environment": 7,
+          "relative_improvement": 0.8993442982943886,
+          "rows": 9
+        }
+      ],
+      "positive_output_tile_fraction": 0.995312511920929,
+      "relative_improvement": 0.7040789308325222,
+      "reproduced_v75_cell_only_relative_improvement": 0.6726854697504412,
+      "v75_reference": 0.6726854697504412
+    }
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "preregistration_sha256": "21f12e777d3ee5ffc885495f7c9a54ed4201569a0c257a6acf819d910b31c386",
+  "repository_commit": "bedc5a991397550b67a39166f0bdbcfec29330ec",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_hierarchical_cell_subspace_residual_receipt_v79",
+  "storage_and_compute": {
+    "adapter_payload_bytes": 370752,
+    "additional_macs_per_token_vs_v75": 360448,
+    "additional_runtime_passes_vs_v75": 2,
+    "baseline_three_cq3_mlp_payload_bytes": 71024640,
+    "composed_three_projection_mlp_payload_bytes": 74027776,
+    "relative_full_mlp_payload_increase": 0.04228301614763552,
+    "v75_three_projection_mlp_payload_bytes": 73657024
+  },
+  "terminal": true
+}

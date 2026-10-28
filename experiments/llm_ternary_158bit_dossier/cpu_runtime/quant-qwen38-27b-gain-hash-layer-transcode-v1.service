@@ -1,0 +1,23 @@
+[Unit]
+Description=Benchmark direct complete-layer Qwen3.8-27B gain-hash transcode
+After=network-online.target quant-qwen38-27b-infrastructure-retry-v1.service
+Requires=quant-qwen38-27b-infrastructure-retry-v1.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/workspace/clark-quantize-gain-transcode
+Environment=PYTHON_BIN=/workspace/venvs/quant-cpu/bin/python
+ExecStart=/workspace/clark-quantize-gain-transcode/experiments/llm_ternary_158bit_dossier/cpu_runtime/watch_qwen38_27b_gain_hash_layer_transcode_v1.sh
+CPUQuota=100%
+AllowedCPUs=0
+MemoryMax=1G
+MemorySwapMax=0
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=infinity
+KillSignal=SIGTERM
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,22 @@
+{
+  "complete": true,
+  "format": "left_INT8_per_column_scale_FP16_then_right_INT8_per_row_scale_FP16_then_bias_FP16",
+  "input_features": 5120,
+  "layer": 0,
+  "model": "Qwen/Qwen3.8-27B",
+  "output_features": 5120,
+  "payload": {
+    "bytes": 174144,
+    "path": "/workspace/quant-runs/qwen38-sensitivity-gated-residual-v37/artifacts/layer-0.csr",
+    "sha256": "20f632aada5aca1fba88d8505744f8148bddeed43b171c75c42b97434e4517d9"
+  },
+  "preregistration_sha256": "4d5b8646887ccee1959fcd12fb8056deaa57ce06941a0f721c57843ba15dbd36",
+  "rank": 16,
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "ridge_fraction": 0.01,
+  "schema": "qwen38_27b_calibration_span_residual_payload_v36",
+  "sensitivity_admitted": true,
+  "sensitivity_threshold": 0.001,
+  "terminal": true,
+  "training_receipt_sha256": "4454761a8519db03ca88a91c21cf8344cab12445266f1936767c04ebe3b76128"
+}

@@ -1,0 +1,83 @@
+{
+  "schema": "qwen38_27b_layer0_mlp_direct_cq3_terminal_decision_v1",
+  "completed_at_utc": "2026-08-18T04:10:29Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "scope": {
+    "changed_tensors": 3,
+    "changed_component": "layer-0 MLP gate up and down projections",
+    "whole_text_model_ternary": false,
+    "whole_model_storage_claim": false
+  },
+  "authenticated_inputs": {
+    "conversion_receipt": {
+      "path": "../qwen38_27b_layer0_mlp_direct_cq3_v1/conversion-receipt.json",
+      "sha256": "75f1b242e5b5534d4526b615c65bfda5398658b72bcdfe1dfe1622ded08dc151"
+    },
+    "quality_summary": {
+      "path": "../qwen38_27b_layer0_mlp_direct_cq3_quality_v1/summary.json",
+      "sha256": "b207856ccb19223fef45cf4295696d4fd6d3ca0747cc40434d5431369230c6fe"
+    },
+    "paired_throughput_summary": {
+      "path": "summary.json",
+      "sha256": "83b1b4aa885b21d465acc723f6cbc43b539a039ed3c8c6af6a139100f050828e"
+    },
+    "exact_shape_x86_pair_receipt": {
+      "path": "../qwen38_27b_cq3_x86_pair_v1/receipt.json",
+      "sha256": "3b0c235ef28b6ae6e618229a433b114e5ff796854ff4f72197042264feb442f5"
+    },
+    "infrastructure_tail_receipt": {
+      "path": "../qwen38_27b_infrastructure_retry_v1/receipt.json",
+      "sha256": "80ab4542cb27788ffc9b1d79812d10d379401e90cc447f400b01286743126361"
+    }
+  },
+  "quality": {
+    "gate_passed": true,
+    "candidate": {
+      "cute_correct": 10,
+      "math500_correct": 5,
+      "code_trace_correct": 5,
+      "mmlu_correct": 51,
+      "wikitext_ppl": 5.8297
+    },
+    "q4_control": {
+      "cute_correct": 9,
+      "math500_correct": 5,
+      "code_trace_correct": 5,
+      "mmlu_correct": 52,
+      "wikitext_ppl": 5.7847
+    }
+  },
+  "cpu_throughput": {
+    "rows": 12,
+    "repetitions_per_row": 5,
+    "geometric_mean_candidate_over_q4": 1.0056260467178355,
+    "minimum_candidate_over_q4": 0.9882568461389509,
+    "required_geometric_mean": 1.05,
+    "required_minimum": 1.0,
+    "gate_passed": false
+  },
+  "native_x86_pair_kernel": {
+    "bit_exact": true,
+    "rows": 17408,
+    "columns": 5120,
+    "repetitions": 9,
+    "control_median_microseconds": 2593.318,
+    "candidate_median_microseconds": 4906.497,
+    "candidate_over_control_speedup": 0.52854776,
+    "required_speedup": 1.03,
+    "gate_passed": false
+  },
+  "decision": {
+    "promotion_passed": false,
+    "classification": "terminal_valid_rejection",
+    "stop_selective_layer0_direct_cq3_lane": true,
+    "reason": "capability remained inside the quick frozen tolerances, but the paired CPU speed effect was mixed and immaterial and the exact-shape x86 pair kernel was substantially slower than its control",
+    "does_not_imply": [
+      "a whole-text ternary model cannot be faster",
+      "the final near-1.58-bit representation is quality-qualified",
+      "the final near-1.58-bit representation is throughput-qualified"
+    ]
+  },
+  "claim_boundary": "Terminal decision for one selectively converted MLP triplet only; no whole-model, storage, energy, novelty, or breakthrough claim."
+}

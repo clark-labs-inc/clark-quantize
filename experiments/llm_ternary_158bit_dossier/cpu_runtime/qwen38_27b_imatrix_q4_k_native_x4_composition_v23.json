@@ -1,0 +1,137 @@
+{
+  "schema": "qwen38_27b_imatrix_q4_k_native_x4_composition_preregistration_v23",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_kernel_program_v1",
+  "experiment_id": "qwen38_27b_imatrix_q4_k_native_x4_composition_v23",
+  "frozen_at": "2026-08-18T22:55:47Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true,
+    "stock_model": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "stock_model_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "candidate_model": "/workspace/models/candidates/Qwen3.8-27B-Q4_K_M-imatrix-Q4_K-v10.gguf",
+    "candidate_model_sha256": "6176472b7d039a6d911b34eea78dd4507256b4a22b3003d40b8587b711014f2a",
+    "stock_runtime": "/workspace/build/llama.cpp-q4k-fused-ragged-avx2-v2",
+    "candidate_runtime": "/workspace/build/llama.cpp-q4k-native-x4-deinterleave-v21",
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+  },
+  "conditional_prerequisites": [
+    {
+      "receipt": "receipts/qwen38_27b_q4_k_native_x4_deinterleave_fused_avx2_v21/system-decision.json",
+      "required_terminal_decision": "reject_system_gate",
+      "reason": "The token-identity rejection remains immutable; v23 uses only the retained speed signal."
+    },
+    {
+      "receipt": "receipts/qwen38_27b_q4_k_native_x4_quality_adjudication_v22/terminal-decision.json",
+      "required_passed": true,
+      "reason": "The fused kernel must preserve the frozen same-weights capability gates before it may consume an approximate model."
+    },
+    {
+      "receipt": "receipts/qwen38_27b_imatrix_q4_k_rowmajor_v10/terminal-decision.json",
+      "required_terminal_decision": "reject_graph_gate_but_retain_activation_calibration_quality_signal",
+      "reason": "V10 remains rejected; v23 tests a new composition rather than rewriting that outcome."
+    }
+  ],
+  "retained_anchors": {
+    "v21_same_weights_four_row_graph_speedup": 1.137261437618061,
+    "v21_same_weights_mtp3_speedup": 1.146572084561092,
+    "v10_candidate_cute_correct": 9,
+    "v10_candidate_cute_n": 20,
+    "v10_candidate_bytes": 15606631072,
+    "v10_selected_q8_to_q4_tensor_count": 288,
+    "v10_selected_q8_to_q4_weight_count": 6734479360,
+    "v10_remaining_q8_tensor_count": 0,
+    "v10_graph_speedup_over_stock_model": 1.1849456731841976,
+    "v10_target_tps_diagnostic": 2.1737250063168165
+  },
+  "hypothesis": "The activation-calibrated v10 compute image makes all 6.734B formerly-Q8 weights eligible for the quality-adjudicated native-x4 Q4_K kernel. Combining fewer streamed bytes with shared four-row Q4 decode should produce a material end-to-end MTP3 gain beyond either retained signal alone, while the frozen calibration can preserve control-level capability.",
+  "scientific_boundary": "This is a predeclared systems-composition test of two independently retained signals. It is not presumed multiplicative, novel, semi-lossless, or a breakthrough.",
+  "artifact_contract": {
+    "candidate_bytes": 15606631072,
+    "candidate_sha256": "6176472b7d039a6d911b34eea78dd4507256b4a22b3003d40b8587b711014f2a",
+    "selected_source_type": "Q8_0",
+    "selected_target_type": "Q4_K",
+    "selected_tensor_count": 288,
+    "selected_weight_count": 6734479360,
+    "remaining_q8_tensor_count": 0,
+    "nonselected_payloads_byte_identical": true,
+    "imatrix_sha256": "ce6d09c077b22189846861735fd65bb9738a27e947576e23baf887d6c1da4209",
+    "deterministic_regeneration_required_if_candidate_was_cleaned": true,
+    "maximum_retained_full_model_candidates": 1
+  },
+  "sequential_gates": {
+    "gate_0_prerequisites_artifact_and_backend": {
+      "v22_quality_receipt_must_pass": true,
+      "exact_candidate_hash_and_size_required": true,
+      "exact_selected_tensor_inventory_required": true,
+      "nonselected_payload_hash_parity_required": true,
+      "v21_layout_property_required": true,
+      "v21_backend_reference_required": "3/3",
+      "free_generation_prompts": 4,
+      "free_generation_tokens_per_prompt": 96,
+      "minimum_unique_token_ids": 32,
+      "noncollapsed_and_coherent_required": true
+    },
+    "gate_1_three_arm_four_row_graph": {
+      "arm_a": "stock model on stock v2 runtime",
+      "arm_b": "stock model on quality-qualified v21 runtime",
+      "arm_c": "imatrix candidate on quality-qualified v21 runtime",
+      "cpu_affinity": "0,2,4,6",
+      "unscored_warmup_processes_per_arm": 1,
+      "latin_square_rotations": 6,
+      "samples_per_process": 7,
+      "minimum_b_over_a_speedup": 1.08,
+      "minimum_c_over_b_speedup": 1.12,
+      "minimum_c_over_a_speedup": 1.25,
+      "maximum_arm_c_process_median_mad_fraction": 0.03,
+      "maximum_frequency_range_mhz": 100
+    },
+    "gate_2_paired_serving": {
+      "systems": {
+        "control": "stock model plus official Q4_0 MTP sidecar on stock v2 runtime",
+        "candidate": "imatrix model plus the same byte-identical MTP sidecar on v21 runtime"
+      },
+      "prompts_per_system": 4,
+      "tokens_per_prompt": 96,
+      "target_and_mtp3_both_required": true,
+      "minimum_candidate_over_control_target_tps": 1.12,
+      "minimum_candidate_over_control_mtp3_accepted_tps": 1.20,
+      "minimum_candidate_mtp3_accepted_tps": 3.75,
+      "candidate_mtp3_must_match_its_own_target_tokens": true,
+      "maximum_zero_token_fraction": 0.01,
+      "cross_model_token_identity_not_required": true
+    },
+    "gate_3_always_run_quick_quality_after_valid_artifact": {
+      "cute_quick_minimum_correct": 9,
+      "cute_quick_denominator": 20,
+      "math500_minimum_correct": 5,
+      "math500_denominator": 8,
+      "code_trace_minimum_correct": 5,
+      "code_trace_denominator": 6,
+      "maximum_wikitext_ppl_ratio_vs_stock": 1.01,
+      "wikitext_chunks": 4,
+      "all_receipts_run_even_if_one_fails": true,
+      "run_even_if_graph_or_serving_gate_rejects": true
+    },
+    "gate_4_conditional_mmlu": {
+      "run_only_if_all_prior_gates_pass": true,
+      "minimum_correct": 51,
+      "denominator": 64,
+      "maximum_loss_vs_stock_correct": 1
+    }
+  },
+  "stop_rules": [
+    "Do not execute v23 unless v22 terminates with every frozen quality gate passed.",
+    "Do not reinterpret the v10 or v21 terminal rejections.",
+    "Reject before serving if any artifact, backend, graph, stability, or frequency gate fails.",
+    "Run all quick-quality denominators after a valid noncollapsed artifact even if graph, serving, or another quick-quality gate fails.",
+    "Do not run MMLU-64 unless every prior performance and quick-quality gate passes.",
+    "Do not tune calibration, prompts, thresholds, tensor selection, artifact bytes, or kernel arithmetic after observing v23 results.",
+    "Preserve terminal negative receipts and remove surplus regenerated candidates after hashing."
+  ],
+  "promotion_boundary": "A pass would establish a reproducible quality-qualified Qwen3.8-27B CPU composition with at least a 1.20x MTP3 accepted-throughput gain over the stock system on four Milan cores. It would not satisfy the 2.75 tok/s conventional-decode breakthrough gate, establish final-node or energy scaling, reach 100 tok/s, or support novelty or scientific-breakthrough claims."
+}

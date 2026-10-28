@@ -9,6 +9,7 @@ from clark_quantize.bonsai_qat8 import (
     _dequantize_blockwise_int8,
     _quantize_blockwise_int8,
 )
+from clark_quantize.qwen_qat import state_tree_equal
 
 
 class BonsaiQAT8Tests(unittest.TestCase):
@@ -63,6 +64,8 @@ class BonsaiQAT8Tests(unittest.TestCase):
         resumed.load_state_dict(optimizer.state_dict())
 
         self.assertEqual(resumed.global_step, 3)
+        self.assertEqual(resumed.state[resumed_parameter]["m_q"].dtype, torch.int8)
+        self.assertTrue(state_tree_equal(resumed.state_dict(), optimizer.state_dict()))
         resumed_parameter.grad = torch.ones_like(resumed_parameter)
         resumed.step()
         self.assertEqual(resumed.global_step, 4)

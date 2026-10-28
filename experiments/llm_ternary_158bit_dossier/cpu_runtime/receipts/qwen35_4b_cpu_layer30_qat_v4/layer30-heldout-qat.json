@@ -1,0 +1,748 @@
+{
+  "out": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/layer30-heldout-selected.safetensors",
+  "activation_cache": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/layer30-activations.pt",
+  "base_patch": null,
+  "layers": [
+    30
+  ],
+  "mode": "ternary",
+  "group_size": 128,
+  "artifact_exact_ternary": true,
+  "runtime_device": "cpu",
+  "torch_threads": 4,
+  "activation_cache_sha256": "343cb5e4ce786d4f7b65ee58c6519c83c420fe8c9bb623db0bca0f5ed1a25c10",
+  "inventory_sha256": "793d872a2b75fb51e640afec9472fba2c605e03b610ffae9c5d171d33851f344",
+  "base_patch_sha256": null,
+  "train_row_indices": [
+    0,
+    1,
+    2,
+    3,
+    8,
+    9,
+    10,
+    11,
+    16,
+    17,
+    18,
+    19,
+    24,
+    25,
+    26,
+    27,
+    32,
+    33,
+    34,
+    35,
+    40,
+    41,
+    42,
+    43
+  ],
+  "validation_row_indices": [
+    4,
+    5,
+    12,
+    13,
+    20,
+    21,
+    28,
+    29,
+    36,
+    37,
+    44,
+    45
+  ],
+  "train_rows": [
+    {
+      "task": "knowledge",
+      "id": "knowledge-v4-01",
+      "tokens": 56,
+      "positions": 24
+    },
+    {
+      "task": "knowledge",
+      "id": "knowledge-v4-02",
+      "tokens": 54,
+      "positions": 24
+    },
+    {
+      "task": "knowledge",
+      "id": "knowledge-v4-03",
+      "tokens": 51,
+      "positions": 24
+    },
+    {
+      "task": "knowledge",
+      "id": "knowledge-v4-04",
+      "tokens": 53,
+      "positions": 24
+    },
+    {
+      "task": "math",
+      "id": "math-v4-01",
+      "tokens": 63,
+      "positions": 19
+    },
+    {
+      "task": "math",
+      "id": "math-v4-02",
+      "tokens": 66,
+      "positions": 24
+    },
+    {
+      "task": "math",
+      "id": "math-v4-03",
+      "tokens": 69,
+      "positions": 24
+    },
+    {
+      "task": "math",
+      "id": "math-v4-04",
+      "tokens": 61,
+      "positions": 24
+    },
+    {
+      "task": "code",
+      "id": "code-v4-01",
+      "tokens": 54,
+      "positions": 24
+    },
+    {
+      "task": "code",
+      "id": "code-v4-02",
+      "tokens": 61,
+      "positions": 24
+    },
+    {
+      "task": "code",
+      "id": "code-v4-03",
+      "tokens": 53,
+      "positions": 24
+    },
+    {
+      "task": "code",
+      "id": "code-v4-04",
+      "tokens": 58,
+      "positions": 24
+    },
+    {
+      "task": "instruct",
+      "id": "instruct-v4-01",
+      "tokens": 55,
+      "positions": 23
+    },
+    {
+      "task": "instruct",
+      "id": "instruct-v4-02",
+      "tokens": 58,
+      "positions": 23
+    },
+    {
+      "task": "instruct",
+      "id": "instruct-v4-03",
+      "tokens": 53,
+      "positions": 18
+    },
+    {
+      "task": "instruct",
+      "id": "instruct-v4-04",
+      "tokens": 55,
+      "positions": 24
+    },
+    {
+      "task": "multilingual",
+      "id": "multilingual-v4-01",
+      "tokens": 43,
+      "positions": 14
+    },
+    {
+      "task": "multilingual",
+      "id": "multilingual-v4-02",
+      "tokens": 48,
+      "positions": 24
+    },
+    {
+      "task": "multilingual",
+      "id": "multilingual-v4-03",
+      "tokens": 42,
+      "positions": 13
+    },
+    {
+      "task": "multilingual",
+      "id": "multilingual-v4-04",
+      "tokens": 43,
+      "positions": 14
+    },
+    {
+      "task": "reasoning",
+      "id": "reasoning-v4-01",
+      "tokens": 61,
+      "positions": 24
+    },
+    {
+      "task": "reasoning",
+      "id": "reasoning-v4-02",
+      "tokens": 59,
+      "positions": 24
+    },
+    {
+      "task": "reasoning",
+      "id": "reasoning-v4-03",
+      "tokens": 63,
+      "positions": 24
+    },
+    {
+      "task": "reasoning",
+      "id": "reasoning-v4-04",
+      "tokens": 62,
+      "positions": 24
+    }
+  ],
+  "validation_rows": [
+    {
+      "task": "knowledge",
+      "id": "knowledge-v4-05",
+      "tokens": 50,
+      "positions": 24
+    },
+    {
+      "task": "knowledge",
+      "id": "knowledge-v4-06",
+      "tokens": 59,
+      "positions": 24
+    },
+    {
+      "task": "math",
+      "id": "math-v4-05",
+      "tokens": 71,
+      "positions": 24
+    },
+    {
+      "task": "math",
+      "id": "math-v4-06",
+      "tokens": 62,
+      "positions": 24
+    },
+    {
+      "task": "code",
+      "id": "code-v4-05",
+      "tokens": 68,
+      "positions": 24
+    },
+    {
+      "task": "code",
+      "id": "code-v4-06",
+      "tokens": 53,
+      "positions": 24
+    },
+    {
+      "task": "instruct",
+      "id": "instruct-v4-05",
+      "tokens": 54,
+      "positions": 24
+    },
+    {
+      "task": "instruct",
+      "id": "instruct-v4-06",
+      "tokens": 58,
+      "positions": 22
+    },
+    {
+      "task": "multilingual",
+      "id": "multilingual-v4-05",
+      "tokens": 43,
+      "positions": 18
+    },
+    {
+      "task": "multilingual",
+      "id": "multilingual-v4-06",
+      "tokens": 37,
+      "positions": 10
+    },
+    {
+      "task": "reasoning",
+      "id": "reasoning-v4-05",
+      "tokens": 61,
+      "positions": 24
+    },
+    {
+      "task": "reasoning",
+      "id": "reasoning-v4-06",
+      "tokens": 78,
+      "positions": 24
+    }
+  ],
+  "validation_every": 4,
+  "checkpoint_dir": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/checkpoints",
+  "checkpoint_every": 4,
+  "reports": [
+    {
+      "layer": 30,
+      "samples": 532,
+      "validation_samples": 266,
+      "history": [
+        {
+          "step": 1,
+          "loss": 0.39175543189048767,
+          "local_loss": 0.3915630280971527,
+          "codebook_loss": 0.19241376221179962
+        },
+        {
+          "step": 2,
+          "loss": 0.3556874692440033,
+          "local_loss": 0.35549503564834595,
+          "codebook_loss": 0.19242893159389496
+        },
+        {
+          "step": 3,
+          "loss": 0.3348289728164673,
+          "local_loss": 0.33463653922080994,
+          "codebook_loss": 0.19244520366191864
+        },
+        {
+          "step": 4,
+          "loss": 0.32824400067329407,
+          "local_loss": 0.32805153727531433,
+          "codebook_loss": 0.19246257841587067
+        },
+        {
+          "step": 5,
+          "loss": 0.32350313663482666,
+          "local_loss": 0.32331064343452454,
+          "codebook_loss": 0.19248066842556
+        },
+        {
+          "step": 6,
+          "loss": 0.3063279688358307,
+          "local_loss": 0.30613547563552856,
+          "codebook_loss": 0.19249862432479858
+        },
+        {
+          "step": 7,
+          "loss": 0.3084351718425751,
+          "local_loss": 0.30824264883995056,
+          "codebook_loss": 0.19251684844493866
+        },
+        {
+          "step": 8,
+          "loss": 0.27941519021987915,
+          "local_loss": 0.27922266721725464,
+          "codebook_loss": 0.19253511726856232
+        },
+        {
+          "step": 9,
+          "loss": 0.2915795147418976,
+          "local_loss": 0.2913869619369507,
+          "codebook_loss": 0.19255323708057404
+        },
+        {
+          "step": 10,
+          "loss": 0.2830786108970642,
+          "local_loss": 0.2828860282897949,
+          "codebook_loss": 0.19257134199142456
+        },
+        {
+          "step": 11,
+          "loss": 0.2788489758968353,
+          "local_loss": 0.27865639328956604,
+          "codebook_loss": 0.19258959591388702
+        },
+        {
+          "step": 12,
+          "loss": 0.25565066933631897,
+          "local_loss": 0.2554580569267273,
+          "codebook_loss": 0.19260777533054352
+        },
+        {
+          "step": 13,
+          "loss": 0.24335014820098877,
+          "local_loss": 0.2431575208902359,
+          "codebook_loss": 0.19262589514255524
+        },
+        {
+          "step": 14,
+          "loss": 0.2601831555366516,
+          "local_loss": 0.25999051332473755,
+          "codebook_loss": 0.192643940448761
+        },
+        {
+          "step": 15,
+          "loss": 0.2780446708202362,
+          "local_loss": 0.27785199880599976,
+          "codebook_loss": 0.19266171753406525
+        },
+        {
+          "step": 16,
+          "loss": 0.25698795914649963,
+          "local_loss": 0.2567952871322632,
+          "codebook_loss": 0.19267933070659637
+        },
+        {
+          "step": 17,
+          "loss": 0.23610398173332214,
+          "local_loss": 0.2359112799167633,
+          "codebook_loss": 0.19269680976867676
+        },
+        {
+          "step": 18,
+          "loss": 0.22685959935188293,
+          "local_loss": 0.2266668826341629,
+          "codebook_loss": 0.19271419942378998
+        },
+        {
+          "step": 19,
+          "loss": 0.2336820363998413,
+          "local_loss": 0.23348930478096008,
+          "codebook_loss": 0.19273151457309723
+        },
+        {
+          "step": 20,
+          "loss": 0.2023058384656906,
+          "local_loss": 0.2021130919456482,
+          "codebook_loss": 0.19274866580963135
+        },
+        {
+          "step": 21,
+          "loss": 0.22285209596157074,
+          "local_loss": 0.22265933454036713,
+          "codebook_loss": 0.192765474319458
+        },
+        {
+          "step": 22,
+          "loss": 0.21061334013938904,
+          "local_loss": 0.21042056381702423,
+          "codebook_loss": 0.19278208911418915
+        },
+        {
+          "step": 23,
+          "loss": 0.21489886939525604,
+          "local_loss": 0.21470607817173004,
+          "codebook_loss": 0.19279848039150238
+        },
+        {
+          "step": 24,
+          "loss": 0.20101724565029144,
+          "local_loss": 0.20082442462444305,
+          "codebook_loss": 0.19281478226184845
+        },
+        {
+          "step": 25,
+          "loss": 0.21213847398757935,
+          "local_loss": 0.21194563806056976,
+          "codebook_loss": 0.19283108413219452
+        },
+        {
+          "step": 26,
+          "loss": 0.2069607824087143,
+          "local_loss": 0.20676793158054352,
+          "codebook_loss": 0.19284747540950775
+        },
+        {
+          "step": 27,
+          "loss": 0.20167149603366852,
+          "local_loss": 0.20147863030433655,
+          "codebook_loss": 0.19286392629146576
+        },
+        {
+          "step": 28,
+          "loss": 0.1698722541332245,
+          "local_loss": 0.16967937350273132,
+          "codebook_loss": 0.192880317568779
+        },
+        {
+          "step": 29,
+          "loss": 0.18664312362670898,
+          "local_loss": 0.18645022809505463,
+          "codebook_loss": 0.19289655983448029
+        },
+        {
+          "step": 30,
+          "loss": 0.18343037366867065,
+          "local_loss": 0.1832374632358551,
+          "codebook_loss": 0.19291281700134277
+        },
+        {
+          "step": 31,
+          "loss": 0.17261716723442078,
+          "local_loss": 0.17242424190044403,
+          "codebook_loss": 0.19292908906936646
+        },
+        {
+          "step": 32,
+          "loss": 0.1663292795419693,
+          "local_loss": 0.16613633930683136,
+          "codebook_loss": 0.19294540584087372
+        },
+        {
+          "step": 33,
+          "loss": 0.17298616468906403,
+          "local_loss": 0.1727932095527649,
+          "codebook_loss": 0.19296175241470337
+        },
+        {
+          "step": 34,
+          "loss": 0.18021969497203827,
+          "local_loss": 0.18002671003341675,
+          "codebook_loss": 0.19297797977924347
+        },
+        {
+          "step": 35,
+          "loss": 0.1675722897052765,
+          "local_loss": 0.16737928986549377,
+          "codebook_loss": 0.19299425184726715
+        },
+        {
+          "step": 36,
+          "loss": 0.15026046335697174,
+          "local_loss": 0.15006744861602783,
+          "codebook_loss": 0.19301064312458038
+        },
+        {
+          "step": 37,
+          "loss": 0.14935722947120667,
+          "local_loss": 0.14916419982910156,
+          "codebook_loss": 0.1930268555879593
+        },
+        {
+          "step": 38,
+          "loss": 0.1780109703540802,
+          "local_loss": 0.1778179258108139,
+          "codebook_loss": 0.19304299354553223
+        },
+        {
+          "step": 39,
+          "loss": 0.15816496312618256,
+          "local_loss": 0.15797190368175507,
+          "codebook_loss": 0.19305913150310516
+        },
+        {
+          "step": 40,
+          "loss": 0.1538737267255783,
+          "local_loss": 0.15368065237998962,
+          "codebook_loss": 0.1930752843618393
+        },
+        {
+          "step": 41,
+          "loss": 0.19648461043834686,
+          "local_loss": 0.19629152119159698,
+          "codebook_loss": 0.19309140741825104
+        },
+        {
+          "step": 42,
+          "loss": 0.14346487820148468,
+          "local_loss": 0.1432717740535736,
+          "codebook_loss": 0.19310753047466278
+        },
+        {
+          "step": 43,
+          "loss": 0.16488678753376007,
+          "local_loss": 0.1646936684846878,
+          "codebook_loss": 0.1931234747171402
+        },
+        {
+          "step": 44,
+          "loss": 0.13986247777938843,
+          "local_loss": 0.13966934382915497,
+          "codebook_loss": 0.19313932955265045
+        },
+        {
+          "step": 45,
+          "loss": 0.14146451652050018,
+          "local_loss": 0.14127136766910553,
+          "codebook_loss": 0.19315505027770996
+        },
+        {
+          "step": 46,
+          "loss": 0.16715100407600403,
+          "local_loss": 0.16695784032344818,
+          "codebook_loss": 0.19317080080509186
+        },
+        {
+          "step": 47,
+          "loss": 0.13984937965869904,
+          "local_loss": 0.1396561861038208,
+          "codebook_loss": 0.19318659603595734
+        },
+        {
+          "step": 48,
+          "loss": 0.16557486355304718,
+          "local_loss": 0.16538165509700775,
+          "codebook_loss": 0.1932021826505661
+        },
+        {
+          "step": 49,
+          "loss": 0.15071973204612732,
+          "local_loss": 0.1505265086889267,
+          "codebook_loss": 0.1932176947593689
+        },
+        {
+          "step": 50,
+          "loss": 0.15214604139328003,
+          "local_loss": 0.1519528031349182,
+          "codebook_loss": 0.19323326647281647
+        },
+        {
+          "step": 51,
+          "loss": 0.1234423816204071,
+          "local_loss": 0.12324913591146469,
+          "codebook_loss": 0.19324903190135956
+        },
+        {
+          "step": 52,
+          "loss": 0.1428605318069458,
+          "local_loss": 0.1426672637462616,
+          "codebook_loss": 0.19326460361480713
+        },
+        {
+          "step": 53,
+          "loss": 0.13223829865455627,
+          "local_loss": 0.13204501569271088,
+          "codebook_loss": 0.1932801604270935
+        },
+        {
+          "step": 54,
+          "loss": 0.14169585704803467,
+          "local_loss": 0.14150255918502808,
+          "codebook_loss": 0.1932957023382187
+        },
+        {
+          "step": 55,
+          "loss": 0.1443430483341217,
+          "local_loss": 0.14414973556995392,
+          "codebook_loss": 0.19331131875514984
+        },
+        {
+          "step": 56,
+          "loss": 0.11628509312868118,
+          "local_loss": 0.1160917654633522,
+          "codebook_loss": 0.1933269500732422
+        },
+        {
+          "step": 57,
+          "loss": 0.1251274049282074,
+          "local_loss": 0.12493406981229782,
+          "codebook_loss": 0.1933424323797226
+        },
+        {
+          "step": 58,
+          "loss": 0.14399097859859467,
+          "local_loss": 0.1437976211309433,
+          "codebook_loss": 0.19335786998271942
+        },
+        {
+          "step": 59,
+          "loss": 0.12482824176549911,
+          "local_loss": 0.12463486939668655,
+          "codebook_loss": 0.193373441696167
+        },
+        {
+          "step": 60,
+          "loss": 0.13361704349517822,
+          "local_loss": 0.13342365622520447,
+          "codebook_loss": 0.193388894200325
+        },
+        {
+          "step": 61,
+          "loss": 0.12933075428009033,
+          "local_loss": 0.12913735210895538,
+          "codebook_loss": 0.19340455532073975
+        },
+        {
+          "step": 62,
+          "loss": 0.1263478845357895,
+          "local_loss": 0.12615446746349335,
+          "codebook_loss": 0.19342021644115448
+        },
+        {
+          "step": 63,
+          "loss": 0.11226515471935272,
+          "local_loss": 0.11207171529531479,
+          "codebook_loss": 0.19343583285808563
+        },
+        {
+          "step": 64,
+          "loss": 0.11528418958187103,
+          "local_loss": 0.1150907352566719,
+          "codebook_loss": 0.1934514194726944
+        }
+      ],
+      "validation_history": [
+        {
+          "step": 0,
+          "normalized_loss": 0.3590984162815898
+        },
+        {
+          "step": 4,
+          "normalized_loss": 0.33227041461692947
+        },
+        {
+          "step": 8,
+          "normalized_loss": 0.31682867499160045
+        },
+        {
+          "step": 12,
+          "normalized_loss": 0.308710350260529
+        },
+        {
+          "step": 16,
+          "normalized_loss": 0.3026099930252305
+        },
+        {
+          "step": 20,
+          "normalized_loss": 0.2976192931847158
+        },
+        {
+          "step": 24,
+          "normalized_loss": 0.2931790629960026
+        },
+        {
+          "step": 28,
+          "normalized_loss": 0.2890665425843587
+        },
+        {
+          "step": 32,
+          "normalized_loss": 0.28598958608974423
+        },
+        {
+          "step": 36,
+          "normalized_loss": 0.2832553478672593
+        },
+        {
+          "step": 40,
+          "normalized_loss": 0.2805469978365393
+        },
+        {
+          "step": 44,
+          "normalized_loss": 0.2781427553878191
+        },
+        {
+          "step": 48,
+          "normalized_loss": 0.2760041770588351
+        },
+        {
+          "step": 52,
+          "normalized_loss": 0.2740965445322091
+        },
+        {
+          "step": 56,
+          "normalized_loss": 0.27217085551492903
+        },
+        {
+          "step": 60,
+          "normalized_loss": 0.2706881358162057
+        },
+        {
+          "step": 64,
+          "normalized_loss": 0.2694470801551567
+        }
+      ],
+      "selected_best_step": 64,
+      "selected_best_validation_loss": 0.2694470801551567,
+      "resumed": false,
+      "checkpoint": "/workspace/quant-runs/qwen35-4b-cpu-layer30-qat-v4/checkpoints/layer-30-latest.pt",
+      "checkpoint_sha256": "650e83e932e312b5a087aee0a6255bbbd2387983effde5c52e431dbbfaa47853"
+    }
+  ],
+  "out_sha256": "793cfc84332a6749a07cae2cb72ef16e4bc2b6e50577755b362cb2074f25182e"
+}

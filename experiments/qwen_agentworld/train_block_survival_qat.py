@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 import argparse
+import gc
+import hashlib
 import json
+import os
+import random
 import re
 import sys
 from pathlib import Path
@@ -11,19 +15,19 @@ from typing import Any
 
 import torch
 import torch.nn.functional as F
-from safetensors.torch import save_file
+from safetensors.torch import load_file, save_file
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from clark_air.quant.master_weight_qat import ste_quantized_weight
+from clark_quantize.qwen_qat import hard_ternary_ste
 from train_mlp_triplet_survival_qat import (
     QuantSwiGLUMLP,
     anti_collapse_loss,
     freeze_quant_mlp,
     get_parent_and_attr,
-    hidden_loss,
     load_model,
     parse_layers,
     register_hidden_hooks,
@@ -31,7 +35,39 @@ from train_mlp_triplet_survival_qat import (
     row_to_inputs,
     topk_teacher_kl,
 )
+from train_all2d_ternary_qat import projected_or_full_hidden_loss
 from weight_patch import apply_weight_patch
+
+
+def atomic_save_patch(path: Path, tensors: dict[str, torch.Tensor]) -> None:
+    temporary = path.with_name(f".{path.name}.tmp")
+    save_file(tensors, str(temporary))
+    os.replace(temporary, path)
+
+
+def atomic_write_json(path: Path, value: dict[str, Any]) -> None:
+    temporary = path.with_name(f".{path.name}.tmp")
+    temporary.write_text(json.dumps(value, indent=2) + "\n")
+    os.replace(temporary, path)
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(8 * 1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def release_non_text_modules(model: torch.nn.Module) -> None:
+    core = getattr(model, "model", model)
+    for attribute in ("visual", "vision_model", "vision_tower"):
+        if getattr(core, attribute, None) is not None:
+            setattr(core, attribute, None)
+    if getattr(model, "mtp", None) is not None:
+        model.mtp = None
+    gc.collect()
+    torch.cuda.empty_cache()
 
 
 def layer_prefix(layer_id: int) -> str:
@@ -73,17 +109,29 @@ def available_norm_names(model: torch.nn.Module, layer_id: int) -> list[str]:
 
 
 class QuantLinear(torch.nn.Module):
-    def __init__(self, source: torch.nn.Linear, *, mode: str, group_size: int) -> None:
+    def __init__(
+        self,
+        source: torch.nn.Linear,
+        *,
+        mode: str,
+        group_size: int,
+        artifact_exact_ternary: bool = False,
+    ) -> None:
         super().__init__()
         self.master = torch.nn.Parameter(source.weight.detach().float().clone())
         self.mode = mode
         self.group_size = group_size
+        self.artifact_exact_ternary = artifact_exact_ternary
         if source.bias is None:
             self.register_buffer("bias", None)
         else:
             self.register_buffer("bias", source.bias.detach().clone())
 
     def quantized(self) -> torch.Tensor:
+        if self.mode == "ternary" and self.artifact_exact_ternary:
+            return hard_ternary_ste(
+                self.master, group_size=self.group_size, row_batch=128
+            ).to(torch.bfloat16).float()
         return ste_quantized_weight(self.master, mode=self.mode, group_size=self.group_size)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -107,9 +155,15 @@ def replace_linear_with_quant(
     *,
     mode: str,
     group_size: int,
+    artifact_exact_ternary: bool = False,
 ) -> QuantLinear:
     source = model.get_submodule(module_name)
-    quant = QuantLinear(source, mode=mode, group_size=group_size).to(next(source.parameters()).device)
+    quant = QuantLinear(
+        source,
+        mode=mode,
+        group_size=group_size,
+        artifact_exact_ternary=artifact_exact_ternary,
+    ).to(next(source.parameters()).device)
     parent, attr = get_parent_and_attr(model, module_name)
     setattr(parent, attr, quant)
     return quant
@@ -140,8 +194,36 @@ def selected_rows(cache: dict[str, Any], args: argparse.Namespace) -> list[dict[
     if args.failures:
         wanted = {part.strip() for part in args.failures.split(",") if part.strip()}
         rows = [row for row in rows if row.get("failure_kind") in wanted or row.get("collapse", {}).get("failure_kind") in wanted]
+    if args.shuffle_rows:
+        random.Random(args.row_seed).shuffle(rows)
+    if args.max_rows_per_task is not None:
+        counts: dict[str, int] = {}
+        balanced = []
+        for row in rows:
+            task = str(row.get("task"))
+            if counts.get(task, 0) >= args.max_rows_per_task:
+                continue
+            balanced.append(row)
+            counts[task] = counts.get(task, 0) + 1
+        rows = balanced
     if args.max_train_rows is not None:
         rows = rows[: args.max_train_rows]
+    if getattr(args, "interleave_tasks", False):
+        task_order = list(dict.fromkeys(str(row.get("task")) for row in rows))
+        by_task = {task: [row for row in rows if str(row.get("task")) == task] for task in task_order}
+        interleaved = []
+        offset = 0
+        while True:
+            appended = False
+            for task in task_order:
+                task_rows = by_task[task]
+                if offset < len(task_rows):
+                    interleaved.append(task_rows[offset])
+                    appended = True
+            if not appended:
+                break
+            offset += 1
+        rows = interleaved
     if not rows:
         raise RuntimeError("no cache rows selected")
     return rows
@@ -156,14 +238,32 @@ def train_block(
     hidden_layers: list[int],
     format_ids: torch.Tensor,
     collapse_ids: torch.Tensor,
+    hidden_projection_dim: int,
+    hidden_projection_seed: int,
 ) -> tuple[dict[str, torch.Tensor], dict[str, Any]]:
-    quant_mlp = replace_mlp_with_quant(model, layer_id, mode=args.mode, group_size=args.group_size) if args.train_mlp else None
+    quant_mlp = (
+        replace_mlp_with_quant(
+            model,
+            layer_id,
+            mode=args.mode,
+            group_size=args.group_size,
+            artifact_exact_ternary=args.artifact_exact_ternary,
+        )
+        if args.train_mlp
+        else None
+    )
     quant_linears: dict[str, QuantLinear] = {}
     if args.train_projections:
         for name in available_projection_names(model, layer_id):
             if args.projection_regex and not re.search(args.projection_regex, name):
                 continue
-            quant_linears[name] = replace_linear_with_quant(model, name, mode=args.mode, group_size=args.group_size)
+            quant_linears[name] = replace_linear_with_quant(
+                model,
+                name,
+                mode=args.mode,
+                group_size=args.group_size,
+                artifact_exact_ternary=args.artifact_exact_ternary,
+            )
 
     norm_params: list[torch.nn.Parameter] = []
     norm_names = available_norm_names(model, layer_id) if args.train_norms else []
@@ -185,6 +285,7 @@ def train_block(
     optimizer = torch.optim.AdamW(params, lr=args.lr, betas=(0.9, 0.95), weight_decay=args.weight_decay)
     keep_ref = {"keep": 1}
     handles, captured = register_hidden_hooks(model, hidden_layers, keep_ref)
+    hidden_projection_cache: dict[tuple[int, int, int], torch.Tensor] = {}
     history = []
     try:
         for step in range(1, args.steps_per_layer + 1):
@@ -199,9 +300,23 @@ def train_block(
                 temperature=args.temperature,
                 format_ids=format_ids,
                 format_boost=args.format_boost,
+                teacher_logsumexp=row.get("teacher_logsumexp"),
+                use_other_bucket=row.get("teacher_logsumexp") is not None,
             )
             anti = anti_collapse_loss(outputs.logits, row["top_values"], row["top_indices"], collapse_ids, margin=args.anti_margin)
-            h_loss = hidden_loss(captured, row, hidden_layers, device) if args.hidden_weight > 0 else kl.detach().new_zeros(())
+            h_loss = (
+                projected_or_full_hidden_loss(
+                    captured,
+                    row,
+                    hidden_layers,
+                    device,
+                    projected_dim=hidden_projection_dim,
+                    projection_seed=hidden_projection_seed,
+                    projection_cache=hidden_projection_cache,
+                )
+                if args.hidden_weight > 0
+                else kl.detach().new_zeros(())
+            )
             code_terms = []
             if args.code_weight > 0:
                 if quant_mlp is not None:
@@ -256,11 +371,16 @@ def main() -> None:
     parser.add_argument("--model-dir", default="/workspace/models/Qwen3.5-9B", type=Path)
     parser.add_argument("--cache", required=True, type=Path)
     parser.add_argument("--base-patch", action="append", type=Path)
+    parser.add_argument("--include-base-in-output", action="store_true")
     parser.add_argument("--out-patch", required=True, type=Path)
     parser.add_argument("--out-report", required=True, type=Path)
     parser.add_argument("--layers", default="0,1,10,12,27,28,30,31")
     parser.add_argument("--max-train-tokens", type=int, default=3500)
     parser.add_argument("--max-train-rows", type=int)
+    parser.add_argument("--max-rows-per-task", type=int)
+    parser.add_argument("--shuffle-rows", action="store_true")
+    parser.add_argument("--interleave-tasks", action="store_true")
+    parser.add_argument("--row-seed", type=int, default=20260816)
     parser.add_argument("--failures")
     parser.add_argument("--mode", choices=("ternary", "binary"), default="ternary")
     parser.add_argument("--group-size", type=int, default=32)
@@ -279,19 +399,37 @@ def main() -> None:
     parser.add_argument("--train-projections", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--projection-regex")
     parser.add_argument("--train-norms", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--artifact-exact-ternary", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
+    parser.add_argument("--torch-threads", type=int, default=0)
     args = parser.parse_args()
 
-    if not torch.cuda.is_available():
-        raise RuntimeError("CUDA is required")
+    if args.torch_threads < 0:
+        raise ValueError("torch-threads must be non-negative")
+    if args.torch_threads:
+        torch.set_num_threads(args.torch_threads)
     cache = torch.load(args.cache, map_location="cpu")
-    if cache.get("format") != "qwen_onpolicy_survival_cache_v1":
+    if cache.get("format") not in {"qwen_onpolicy_survival_cache_v1", "qwen_agentworld_teacher_behavior_v1"}:
         raise ValueError(f"unsupported cache format: {cache.get('format')!r}")
     rows = selected_rows(cache, args)
-    selected_layers = parse_layers(args.layers, set(range(32)))
-    hidden_layers = [layer for layer in cache.get("hidden_layers", []) if layer in selected_layers and args.hidden_weight > 0]
+    hidden_layers = [int(layer) for layer in cache.get("hidden_layers", [])] if args.hidden_weight > 0 else []
+    hidden_projection_dim = int(cache.get("hidden_projection_dim") or 0)
+    hidden_projection_seed = int(cache.get("hidden_projection_seed") or 0)
+    if args.hidden_weight > 0 and any("teacher_hidden_proj" in row for row in rows) and hidden_projection_dim <= 0:
+        raise ValueError("projected hidden labels require hidden_projection_dim metadata")
 
-    model = load_model(args.model_dir)
+    model = load_model(args.model_dir, device=args.device)
+    release_non_text_modules(model)
     model.eval()
+    available_layers = {
+        int(match.group(1))
+        for name, _module in model.named_modules()
+        if (match := re.match(r"^model\.(?:language_model\.)?layers\.(\d+)$", name))
+    }
+    selected_layers = parse_layers(args.layers, available_layers)
+    unknown_layers = sorted(set(selected_layers) - available_layers)
+    if unknown_layers:
+        raise ValueError(f"unknown layer ids: {unknown_layers}; available={sorted(available_layers)}")
     for param in model.parameters():
         param.requires_grad_(False)
     patch_reports = [apply_weight_patch(model, patch) for patch in args.base_patch or []]
@@ -300,37 +438,63 @@ def main() -> None:
     collapse_ids = torch.tensor(cache.get("collapse_token_ids", []), device=device, dtype=torch.long)
 
     output: dict[str, torch.Tensor] = {}
+    if args.include_base_in_output:
+        for patch in args.base_patch or []:
+            output.update(load_file(str(patch), device="cpu"))
     reports = []
     args.out_patch.parent.mkdir(parents=True, exist_ok=True)
     args.out_report.parent.mkdir(parents=True, exist_ok=True)
     for layer_id in selected_layers:
-        hard, report = train_block(model, rows, layer_id, args, device, hidden_layers, format_ids, collapse_ids)
+        hard, report = train_block(
+            model,
+            rows,
+            layer_id,
+            args,
+            device,
+            hidden_layers,
+            format_ids,
+            collapse_ids,
+            hidden_projection_dim,
+            hidden_projection_seed,
+        )
         output.update(hard)
         reports.append(report)
-        save_file(output, str(args.out_patch))
-        args.out_report.write_text(json.dumps({"partial": True, "completed_layers": [r["layer"] for r in reports], "reports": reports}, indent=2) + "\n")
+        atomic_save_patch(args.out_patch, output)
+        atomic_write_json(
+            args.out_report,
+            {"partial": True, "completed_layers": [r["layer"] for r in reports], "reports": reports},
+        )
         torch.cuda.empty_cache()
 
     result = {
         "cache": str(args.cache),
         "base_patches": [str(path) for path in args.base_patch or []],
+        "included_base_in_output": args.include_base_in_output,
         "out_patch": str(args.out_patch),
         "patch_reports": patch_reports,
         "layers": selected_layers,
         "hidden_layers": hidden_layers,
         "mode": args.mode,
         "group_size": args.group_size,
+        "artifact_exact_ternary": args.artifact_exact_ternary,
         "steps_per_layer": args.steps_per_layer,
         "lr": args.lr,
         "projection_regex": args.projection_regex,
+        "runtime_device": str(device),
+        "torch_threads": torch.get_num_threads(),
         "train_rows": [
             {"index": row.get("index"), "task": row.get("task"), "id": row.get("id"), "tokens": int(row["tokens"]), "keep": int(row["keep"])}
             for row in rows
         ],
+        "shuffle_rows": args.shuffle_rows,
+        "interleave_tasks": args.interleave_tasks,
+        "row_seed": args.row_seed,
+        "max_rows_per_task": args.max_rows_per_task,
         "reports": reports,
     }
-    save_file(output, str(args.out_patch))
-    args.out_report.write_text(json.dumps(result, indent=2) + "\n")
+    result["patch_size_bytes"] = args.out_patch.stat().st_size
+    result["patch_sha256"] = sha256_file(args.out_patch)
+    atomic_write_json(args.out_report, result)
     print(json.dumps({"out_patch": str(args.out_patch), "out_report": str(args.out_report), "layers": selected_layers}, indent=2))
 
 

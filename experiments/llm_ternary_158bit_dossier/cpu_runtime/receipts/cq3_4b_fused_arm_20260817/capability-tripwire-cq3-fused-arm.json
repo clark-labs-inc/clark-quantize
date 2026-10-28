@@ -1,0 +1,65 @@
+{
+  "schema": "cpu_capability_tripwire_decision_v1",
+  "created_at": "2026-08-17T04:51:53.950760+00:00",
+  "candidate_label": "qwen3.5-4b-cq3-fused-arm",
+  "baseline_model_sha256": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974",
+  "candidate_model_sha256": "072ffb19ae20fdabb0a64f4e49097f8a77fbabd49fd5eb47bc705b5012950476",
+  "policy": {
+    "purpose": "cheap catastrophic-forgetting stop gate before longer evaluation or scale-up",
+    "minimum_retention": 0.6,
+    "full_promotion_gate": "separate and stricter; this receipt cannot authorize promotion"
+  },
+  "pass": false,
+  "decision": "stop_for_catastrophic_forgetting",
+  "gates": [
+    {
+      "task": "math500",
+      "status": "catastrophic_forgetting",
+      "pass": false,
+      "minimum_retention": 0.6,
+      "required_candidate_correct": 3,
+      "retained_control_correct_fraction": 0.0,
+      "absolute_accuracy_delta": -0.625,
+      "baseline": {
+        "task": "math500",
+        "correct": 5,
+        "n": 8,
+        "accuracy": 0.625
+      },
+      "candidate": {
+        "task": "math500",
+        "correct": 0,
+        "n": 8,
+        "accuracy": 0.0
+      }
+    },
+    {
+      "task": "cute_quick_20",
+      "status": "catastrophic_forgetting",
+      "pass": false,
+      "minimum_retention": 0.6,
+      "required_candidate_correct": 5,
+      "retained_control_correct_fraction": 0.0,
+      "absolute_accuracy_delta": -0.4,
+      "baseline": {
+        "task": "cute_quick_20",
+        "correct": 8,
+        "n": 20,
+        "accuracy": 0.4
+      },
+      "candidate": {
+        "task": "cute_quick_20",
+        "correct": 0,
+        "n": 20,
+        "accuracy": 0.0
+      }
+    }
+  ],
+  "inputs": {
+    "baseline_math": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/cq3_4b_ptq_20260817/canary-bf16.json",
+    "candidate_math": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/cq3_4b_fused_arm_20260817/canary-cq3-fused-arm.json",
+    "baseline_cute": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/cq3_4b_ptq_20260817/cute-quick-bf16.json",
+    "candidate_cute": "experiments/llm_ternary_158bit_dossier/cpu_runtime/receipts/cq3_4b_fused_arm_20260817/cute-quick-cq3-fused-arm.json"
+  },
+  "report_content_sha256": "458985dc459b83f712c6da35132c46e8914db83ebc8d60e787f315257c255f67"
+}

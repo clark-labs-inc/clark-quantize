@@ -1,0 +1,34 @@
+{
+  "schema": "qwen38_27b_q4_k_avx2_register_pressure_pair2_terminal_result_v25",
+  "experiment_id": "qwen38_27b_q4_k_avx2_register_pressure_pair2_v25",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "passed": false,
+  "decision": "reject_codegen_gate",
+  "failed_gate": "gate_0_source_property_backend_and_codegen",
+  "failed_checks": [
+    "maximum_pair2_specialization_stack_frame_bytes",
+    "maximum_pair2_specialization_vector_stack_moves"
+  ],
+  "observed": {
+    "stack_frame_bytes": 1024,
+    "vector_stack_moves": 67
+  },
+  "required": {
+    "maximum_stack_frame_bytes": 768,
+    "maximum_vector_stack_moves": 24
+  },
+  "scientific_measurements_started": false,
+  "build_stopped_before_completion": true,
+  "provenance": {
+    "preregistration_sha256": "52b7ec445b557089df246a9363dbc62829aaf8f53dd93340a39b08267ad9e606",
+    "source_parent_sha256": "c171a06d5a5d5d5221a6167c7039b759e38efd073dca7ba33a46afa8ed6b1ec2",
+    "source_candidate_sha256": "728bef5c1d6502d80d66aac2ada1003c314ab24db336a7a691fff25d6c84ee5e",
+    "source_patch_sha256": "e73860dc3ce63c28fbd26ce987ac64dcc07a998c5bda2a5bb868990e9b208043",
+    "candidate_libggml_cpu_sha256": "7c30535539d1bc17555e3d811a8da6601d3a386be77c70a9adf8735f2f6c6978",
+    "pair2_disassembly_sha256": "ffbb9f113c7959f8dfd28e5327e6e73bde144fcccaf323aafa47e604a5047799",
+    "parent_disassembly_sha256": "b453d78136b15c2cadd28df236dccfca4e859e408b23f359879a7ec6f5499d3b"
+  },
+  "next_hypothesis": "Shorten decoded-weight live ranges by streaming one Q4 raw-vector pair through both rows before loading the next pair; row-count specialization alone is insufficient.",
+  "claim_boundary": "A terminal negative for v25 only; it does not reject streamed-decode kernels or alter prior model-quality receipts."
+}

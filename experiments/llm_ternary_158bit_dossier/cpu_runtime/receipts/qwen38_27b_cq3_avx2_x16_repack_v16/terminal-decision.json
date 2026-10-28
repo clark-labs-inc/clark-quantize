@@ -1,0 +1,84 @@
+{
+  "schema": "qwen38_27b_cq3_avx2_x16_repack_result_v16",
+  "completed_at": "2026-08-18T17:19:03Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "classification": "correct_and_fast_but_frozen_stability_gate_failure",
+  "passed": false,
+  "kernel_promoted": false,
+  "decision": "reject_x16_under_v16_contract_and_require_paired_confirmation_before_reconsideration",
+  "measurement": {
+    "matrices": 2,
+    "rows_per_matrix": 17408,
+    "columns": 5120,
+    "warmups": 2,
+    "repetitions": 9,
+    "cache_eviction_bytes": 268435456,
+    "ordinary_samples_us": [2703.831, 2655.801, 2650.93, 2556.83, 2582.861, 2805.96, 2584.991, 2635.39, 2711.281],
+    "x8_samples_us": [2064.201, 2036.13, 1994.54, 2019.621, 2082.291, 2109.89, 1960.66, 1968.86, 2008.91],
+    "x16_samples_us": [1921.31, 1940.851, 1815.361, 1849.6, 1844.8, 1926.84, 1855.44, 1848.28, 1905.11],
+    "ordinary_median_us": 2650.93,
+    "x8_median_us": 2019.621,
+    "x16_median_us": 1855.44,
+    "ordinary_over_x16_speedup": 1.42873389,
+    "x8_over_x16_speedup": 1.08848629,
+    "ordinary_sample_range_fraction": 0.09397833967701906,
+    "x8_sample_range_fraction": 0.07389010116254474,
+    "x16_sample_range_fraction": 0.06763355322726686,
+    "x8_x16_bit_exact": true,
+    "maximum_scaled_delta_vs_ordinary": 0.0000349350776,
+    "source_bytes": 47349760,
+    "x8_bytes": 47349760,
+    "x16_bytes": 47349760,
+    "x16_repack_us_excluded_from_timing": 9117.351
+  },
+  "checks": {
+    "test_cq3_exit_code_zero": true,
+    "lossless_repack_mapping_passed": true,
+    "integer_group_dots_exact": true,
+    "x16_output_matches_x8_bits": true,
+    "maximum_scaled_float_error_0_00005_met": true,
+    "minimum_x8_over_x16_speedup_1_08_met": true,
+    "minimum_ordinary_over_x16_speedup_1_40_met": true,
+    "maximum_x16_sample_range_fraction_0_05_met": false,
+    "runtime_bytes_equal_source_bytes": true,
+    "model_deployment_required": false,
+    "quality_required": false
+  },
+  "non_gating_diagnostic": {
+    "paired_x8_over_x16_ratios_by_recorded_index": [
+      1.0743716526744773,
+      1.049091352195506,
+      1.098701580567171,
+      1.0919231185121108,
+      1.1287353642671294,
+      1.0950001037968902,
+      1.0567089207950675,
+      1.065239033046941,
+      1.0544850428584178
+    ],
+    "paired_ratio_median": 1.0743716526744773,
+    "paired_ratio_range_fraction": 0.07413078321022544,
+    "claim_use": "none; this diagnostic was not the preregistered v16 statistic and only motivates a separately frozen confirmation"
+  },
+  "provenance": {
+    "benchmark_sha256": "bb82382b016b7f2e2f009c948639e75202ba6a3d406b6672293b25cf053baed9",
+    "benchmark_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "correctness_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "correctness_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "test_binary_sha256": "de5b03a89c7675e63272a7719ef2238c287426e67b9bcf0d247801cb9d35c5fa",
+    "ggml_cpu_library_sha256": "e830a2bc9c5cfc095319c6991622e683850b40b73f579ce0fa21b7ef2496d1b8",
+    "candidate_patch_sha256": "8e8ad180217a761c8f4931dd90036164330a090e95b8f61716e2611fc970c6d5"
+  },
+  "model_deployment": {
+    "ran": false,
+    "reason": "The primitive-only preregistration forbade model deployment, and the native stability gate failed."
+  },
+  "quality": {
+    "ran": false,
+    "reason": "The candidate is bit-identical to x8 and no model weights changed; capability scoring was outside this primitive-only experiment."
+  },
+  "next_lane": "Freeze an AB/BA paired x8-versus-x16 confirmation with pairwise ratios as the primary statistic, CPU-frequency telemetry, and no code changes. Require the original 1.08 speed threshold and a tight paired-ratio distribution before reconsidering x16.",
+  "claim_boundary": "x16 was bit-identical to x8, storage-neutral, and had encouraging medians, but it failed the preregistered stability ceiling and is not promoted. No model-level throughput, target-floor, quality, energy, novelty, 100 accepted tok/s, or breakthrough claim follows."
+}

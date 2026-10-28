@@ -1,0 +1,83 @@
+{
+  "claim_boundary": "This preregistration defines an exact CQ3 x CQ8 native-kernel test motivated by T-MAC prior art. A pass would establish only a storage-neutral, integer-exact primitive and authorize all-MLP graph integration. It cannot establish whole-model quality, throughput, energy, novelty, 100 tokens per second, or a scientific breakthrough.",
+  "comparators": [
+    "accepted storage-neutral CQ3_0x8 AVX2 kernel from v15",
+    "ordinary row-major CQ3_0 AVX2 kernel"
+  ],
+  "decision_rules": {
+    "pass": "All exactness, storage, stability, and shape gates pass; geometric-mean candidate speedup is at least 1.15x over x8 and 1.45x over ordinary, with every shape at least 1.10x over x8.",
+    "reject": "Any exactness or storage gate fails, any shape is below 1.10x x8, geometric-mean x8 speedup is below 1.15x, or paired MAD exceeds 0.03. Stop before graph integration.",
+    "retain_diagnostic_only": "A numerically exact result below the speed gate may be retained as negative evidence but cannot be integrated or tuned post hoc."
+  },
+  "experiment_id": "qwen38_27b_cq3_exact_lut32_avx2_v58",
+  "frozen_shapes": [
+    {
+      "columns": 5120,
+      "role": "MLP gate and up",
+      "rows": 17408
+    },
+    {
+      "columns": 17408,
+      "role": "MLP down",
+      "rows": 5120
+    }
+  ],
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "hypothesis": "On AMD Milan AVX2, a storage-neutral 32-output-row layout using activation-built signed-INT16 group-of-four subset tables can replace repeated CQ3 unpack and multiply-add work while keeping all row accumulators register-resident. If the lookup schedule is material, it will beat the accepted x8 kernel on both Qwen3.8 MLP shapes without changing a single trained code, CQ8 activation, group scale, or integer group dot.",
+  "implementation_contract": {
+    "activation_lut": "For each CQ8 group-128 activation, build 32 tables of all 16 signed INT16 subset sums; 1024 temporary bytes per group.",
+    "accumulator": "Keep 32 output-row INT16 group accumulators and FP32 cross-group accumulators in AVX2 registers; no output scratch read-modify-write loop.",
+    "exact_identity": "For digit d=code+1=b0+2*b1, compute L(b0)+2*L(b1)-sum(q8). This must equal sum(code*q8) as INT32 for every row and group.",
+    "high_precision_weight_materialization": false,
+    "offline_weight_layout": "One byte per four weights: low-nibble bit0 mask and high-nibble bit1 mask, tiled over 32 output rows.",
+    "persistent_storage_expansion_fraction": 0.0,
+    "weight_domain": [-1, 0, 1]
+  },
+  "literature_boundary": {
+    "difference_under_test": "The registered candidate preserves Clark CQ3 group-128 scales and CQ8 integer algebra exactly through signed-INT16 subset tables; it does not use T-MAC's quantized INT8 activation LUT algebra or claim a new lookup-table principle.",
+    "primary_prior_art": [
+      {
+        "commit": "7042f8f73330bd083bc1e4bc5ccb3f88a4904aee",
+        "name": "Microsoft T-MAC",
+        "url": "https://github.com/microsoft/T-MAC"
+      },
+      {
+        "name": "T-MAC: CPU Renaissance via Table Lookup for Low-Bit LLM Deployment on Edge",
+        "url": "https://arxiv.org/abs/2407.00088"
+      }
+    ]
+  },
+  "measurement": {
+    "cache_eviction_bytes": 268435456,
+    "logical_cpus": [0, 2, 4, 6],
+    "measured_abba_pairs_per_shape": 21,
+    "paired_ratio_mad_fraction_maximum": 0.03,
+    "processes": 1,
+    "threads": 1,
+    "warmup_pairs": 2
+  },
+  "model": "Qwen/Qwen3.8-27B",
+  "next_step_if_passed": "Integrate the unchanged v44 trained CQ3 codes across all 192 MLP tensors, then run exact graph parity and whole-model decode gates. Do not infer model speed from the primitive.",
+  "numerical_gates": {
+    "adversarial_groups": 8,
+    "all_reserved_code_checks_pass": true,
+    "integer_group_dot_bit_exact": true,
+    "random_groups": 1024,
+    "scaled_fp32_output_bit_exact_vs_x8": true
+  },
+  "resources": {
+    "host": "quant",
+    "memory_swap_bytes": 0,
+    "physical_cpu": "AMD EPYC Milan",
+    "run_only_when_v44_v45_and_authoritative_benchmarks_are_inactive": true
+  },
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_cq3_exact_lut32_avx2_preregistration_v58",
+  "status": "frozen_before_native_implementation",
+  "stop_rules": [
+    "Do not tune quartet width, output tile, lookup precision, or thresholds after observing v58 timing.",
+    "Do not run model integration unless the frozen native gates pass.",
+    "Do not overlap the benchmark with v44, v45, evaluation, or another performance process.",
+    "Do not call the method novel or a breakthrough from a primitive result."
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "qwen38_27b_trained_compact_integration_v63_infrastructure_retry_amendment",
+  "experiment_id": "qwen38_27b_trained_compact_integration_gate_v63_retry1",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_after_compile_only_infrastructure_incident_before_retry",
+  "frozen_at_utc": "2026-08-19T17:19:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "parent_preregistration_sha256": "7797caa49c8553e545edf7a3b1990bb4935818792868d765046dd99e69132125",
+  "incident_sha256": "7102e7b464dc1b4fbd99869deb543c029fb7cacf51c63be8ca67cb68ad34d32c",
+  "classification": "infrastructure_retry_only",
+  "repair_contract": {
+    "source": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_cq3_x86_pair_bench_v1.inc",
+    "source_sha256": "18ad5425d182c8aec18d895e2ba649604ff3e6028c78d3dbc7c81369dabd354a",
+    "destination": "tests/qwen38_27b_cq3_x86_pair_bench_v1.inc",
+    "destination_must_be_absent_or_exact": true,
+    "installation_mode": "0644",
+    "runtime_source_changes_permitted": false,
+    "numerical_source_changes_permitted": false,
+    "kernel_source_changes_permitted": false,
+    "test_source_changes_permitted": false,
+    "only_the_exact_previously_frozen_benchmark_include_may_be_installed": true
+  },
+  "unchanged_contract": {
+    "v54_tracked_diff_sha256": "f76b42067337f35d8f5721b92faffcff90f4e1cd15afe8e4aa22ec4fdf67eb4a",
+    "v62_candidate_sha256": "506505935f82bade12ab4b51bd1ca9b6e1b5cc11eeae99a6e230b9a7b9044ffc",
+    "compile_flags_targets_and_resources": "exactly v63",
+    "test_cq3_gate": "exactly v63",
+    "trained_aff3_layers": [0, 32, 63],
+    "token_counts": [1, 8],
+    "bit_exact_and_task_mask_gates": "exactly v63",
+    "whole_model_generation_forbidden": true,
+    "performance_timing_forbidden": true,
+    "residual_runtime_forbidden": true,
+    "v59_lut_runtime_forbidden": true
+  },
+  "retry_rules": {
+    "retain_original_build_log_and_incident": true,
+    "use_a_separate_state_directory_and_service_unit": true,
+    "resuming_the_partially_compiled_build_directory_is_permitted": true,
+    "all_required_binaries_are_rehashed_after_terminal_link": true,
+    "a_retry_compile_or_parity_failure_is_a_retained_terminal_negative": true
+  },
+  "claim_boundary": "A retry pass has exactly the original v63 claim boundary. The repair adds no model capability, performance, numerical, or novelty evidence."
+}

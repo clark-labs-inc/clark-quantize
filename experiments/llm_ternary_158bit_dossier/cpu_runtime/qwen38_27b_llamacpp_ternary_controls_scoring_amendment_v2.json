@@ -1,0 +1,85 @@
+{
+  "schema": "qwen38_27b_llamacpp_ternary_controls_scoring_amendment_v2",
+  "frozen_at_utc": "2026-08-18T04:40:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "post_observation_amendment": true,
+  "observation": {
+    "format": "TQ1_0",
+    "artifact": "/workspace/models/controls/Qwen3.8-27B-TQ1_0.gguf",
+    "artifact_bytes": 10243615104,
+    "artifact_sha256": "68896f948b0ac299e8f1e67101fffcc84f04eda2d716fac15f78c52008b645d3",
+    "effective_file_bits_per_26895998464_parameters": 3.0468815255803845,
+    "load_smoke_passed": true,
+    "first_attempt": {
+      "benchmark": "CUTE-Quick-20",
+      "attempted_items": 1,
+      "completed_items": 0,
+      "upstream_http_status": 500,
+      "upstream_error_code": 500,
+      "upstream_error_type": "server_error",
+      "upstream_error_message": "The model produced output that does not match the expected peg-native format",
+      "server_generated_tokens": 48,
+      "server_reported_generation_tokens_per_second": 3.17,
+      "server_log_sha256": "187b4c258de7e3aee468582551e36df63a819de754c6905e45905acc6584cd22",
+      "evaluator_log_sha256": "ea66da489c104f69569d734afa14e0d65ab868ba194db68edc2e7c4cd760196c",
+      "classification": "model_originated_capability_failure_with_incomplete_suite_due_to_unhandled_scorer_exception",
+      "infrastructure_invalid": false,
+      "terminal_suite_result": false
+    }
+  },
+  "scoring_clarification": {
+    "rule": "Only the exact llama.cpp HTTP 500 emitted after generation for a PEG-native output mismatch is converted to a deterministic scorer sentinel and counted incorrect.",
+    "rationale": "The model completed token generation but emitted an answer that the model-specific chat grammar could not parse. Aborting would lose the attempted item and shrink the frozen denominator; counting it incorrect is the conservative capability interpretation.",
+    "all_other_http_errors": "re-raise with the original response body preserved",
+    "denominators_changed": false,
+    "promotability_increased": false,
+    "thresholds_changed": false,
+    "benchmark_items_changed": false,
+    "prompts_changed": false,
+    "decoding_changed": false,
+    "model_or_artifact_changed": false,
+    "error_handling_changed_after_observation": true
+  },
+  "continuation": {
+    "reuse_authenticated_tq1_artifact": true,
+    "rerun_tq1_conversion": false,
+    "attempt_all_frozen_quick_suite_items": true,
+    "run_wikitext_and_descriptive_throughput_after_quick_rejection": true,
+    "skip_mmlu_only_under_the_original_quick_gate": true,
+    "continue_to_tq2_control": true,
+    "preserve_initial_attempt_before_resume": true
+  },
+  "frozen_sources": {
+    "preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_llamacpp_ternary_controls_preregistration_v1.json",
+      "sha256": "47dd08c797dae1bd94a0f9df67f1de854dcb427508ea71929c407b3a9e623a7b"
+    },
+    "conversion_runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/run_qwen38_27b_llamacpp_ternary_controls_v1.sh",
+      "sha256": "f0fca50757e696b2f41c4fd06b768c6fd3aa95fe8040b5e03208deeef2f36e29"
+    },
+    "evaluation_runner": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_qwen38_27b_llamacpp_ternary_control_v1.sh",
+      "sha256": "0b0387ecc90df41952fa4cd95b0496da603c7f802c0e344928b66141a59fe148"
+    },
+    "cute_evaluator": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_cute_quick.py",
+      "sha256": "9c40a48a0c3f0544156a20ccccdc12f7e90bbae8afd391bf640ead1ff234c8ab"
+    },
+    "math_code_evaluator": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_math_code_canary.py",
+      "sha256": "fa3d0f870b3b0ed1d7d907cc8d146854b164e6d75cfa9d2bd20743979af74677"
+    },
+    "wikitext_evaluator": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/eval_llama_cpp_wikitext_quick.py",
+      "sha256": "54458dc377a1d07aaf26df90823f65f973b625f55a6ac73895d0c6ec9a666b07"
+    },
+    "scoring_adapter": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/scoring_adapter_v1/sitecustomize.py",
+      "sha256": "6599b48059be52c29a3f2146dafc8a91522d1917362be2edce4388ee0b8066c8"
+    }
+  },
+  "continuation_authorized": true,
+  "claim_boundary": "Conservative post-observation scoring clarification for a model-originated unparseable generation; it cannot turn any failed item into a correct item and does not support a quality, performance, novelty, or breakthrough claim."
+}

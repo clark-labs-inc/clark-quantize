@@ -1,0 +1,131 @@
+{
+  "schema": "qwen38_27b_dflash2_amd_cpu_feasibility_preregistration_v1",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_speculative_program_v1",
+  "experiment_id": "qwen38_27b_dflash2_amd_cpu_feasibility_v1",
+  "frozen_at": "2026-08-19T02:12:30Z",
+  "scope": {
+    "model": "Qwen/Qwen3.8-27B",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan AVX2",
+    "physical_cores": 4,
+    "logical_cpus": 8,
+    "usable_ram_gib": 30,
+    "cpu_only": true,
+    "qwen_4b_compute_forbidden": true
+  },
+  "artifacts": {
+    "target_path": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+    "target_size_bytes": 18973870432,
+    "target_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+    "dflash2_repository": "incoai/Qwen3.8-27B-DFlash2-GGUF",
+    "dflash2_repository_revision": "6cb5872e2cee6b4e780a8414922350be8e42d65c",
+    "dflash2_filename": "Qwen3.8-27B-DFlash2-Q4_K_M.gguf",
+    "dflash2_size_bytes": 1143006752,
+    "dflash2_sha256": "18a380efc9b7ed8d88677fc895f5c11ae170653434ee378f7348f715c14d0594",
+    "mtp3_control_path": "/workspace/models/controls/mtp-Qwen3.8-27B-Q4_0.gguf",
+    "mtp3_control_size_bytes": 1680271648,
+    "mtp3_control_sha256": "051a1764cff8c4f3ee6ae8b00593a0364c7539c67fa50ffc58f3f96509fca38e"
+  },
+  "runtime": {
+    "source": "/workspace/src/llama.cpp-dflash2-pr27342",
+    "build": "/workspace/build/llama.cpp-dflash2-pr27342",
+    "llama_cpp_pull_request": 27342,
+    "llama_cpp_revision": "5ecbe1ac17ec0484c5b44af0bd580cdc9c428ed4",
+    "pull_request_state_when_frozen": "open_unmerged_awaiting_review",
+    "backend": "ggml CPU only with GGML_NATIVE and OpenMP",
+    "cpu_affinity": "0,2,4,6",
+    "threads": 4,
+    "dflash2_spec_type": "draft-dflash",
+    "dflash2_draft_n_max": 7,
+    "verification_block_tokens": 8
+  },
+  "external_evidence": {
+    "inco_blog": "https://inco.ai/blog/dflash2/",
+    "model_card": "https://huggingface.co/incoai/Qwen3.8-27B-DFlash2",
+    "gguf_model_card": "https://huggingface.co/incoai/Qwen3.8-27B-DFlash2-GGUF",
+    "llama_cpp_pr": "https://github.com/ggml-org/llama.cpp/pull/27342",
+    "reported_h200_single_request_speedup_range": [2.67, 3.43],
+    "reported_apple_m5_pro_q4_speedup": 1.81,
+    "reported_apple_m5_pro_q4_acceptance_length": 5.03,
+    "transfer_warning": "Neither GPU nor Apple Silicon performance is evidence of AMD Milan CPU performance. The local paired gate is authoritative."
+  },
+  "hypothesis": "A 2B Q4_K_M DFlash2 block drafter can use its approximately five-token mean acceptance to amortize Qwen3.8-27B target verification on AMD CPU more effectively than the existing one-layer MTP3 sidecar. If the eight-token target verification path is not yet efficient, acceptance and phase timing will identify an n=8 Q4_K kernel target with more leverage than further n=4-only tuning.",
+  "controls": [
+    "autoregressive target-only on the exact same PR binary and target GGUF",
+    "official MTP sidecar at frozen best width 3 on the exact same PR binary and target GGUF",
+    "DFlash2 Q4_K_M sidecar with seven proposed tokens on the exact same PR binary and target GGUF"
+  ],
+  "sequential_gates": {
+    "gate_0_artifact_build_and_memory": {
+      "cpu_build_must_complete": true,
+      "draft_sha256_must_match": true,
+      "target_sha256_must_match": true,
+      "server_must_load_without_swap_or_oom": true,
+      "maximum_server_vm_hwm_gib": 28.5
+    },
+    "gate_1_deterministic_correctness_smoke": {
+      "fixed_prompts": 3,
+      "generated_tokens_per_prompt": 64,
+      "temperature": 0.0,
+      "dflash2_output_must_match_same_runtime_target_only_byte_for_byte": true,
+      "normal_stop_required": true,
+      "nonzero_token_required": true
+    },
+    "gate_2_paired_serving": {
+      "fixed_prompts": 4,
+      "generated_tokens_per_prompt": 96,
+      "unscored_warmup_per_configuration": 1,
+      "configuration_rotation": [
+        "target",
+        "mtp3",
+        "dflash2",
+        "dflash2",
+        "mtp3",
+        "target"
+      ],
+      "minimum_dflash2_over_target_ratio_for_promotion": 1.65,
+      "minimum_dflash2_over_mtp3_ratio_for_promotion": 1.05,
+      "minimum_dflash2_accepted_tokens_per_second_for_promotion": 3.75,
+      "minimum_dflash2_over_target_ratio_for_diagnostic_retention": 1.40,
+      "minimum_mean_committed_tokens_per_target_call_for_diagnostic_retention": 4.0,
+      "maximum_process_median_mad_fraction": 0.05
+    },
+    "gate_3_capability_tripwire": {
+      "run_when": "promotion or diagnostic-retention conditions pass",
+      "cute_quick_minimum_correct": 9,
+      "cute_quick_denominator": 20,
+      "math500_minimum_correct": 5,
+      "math500_denominator": 8,
+      "code_trace_minimum_correct": 5,
+      "code_trace_denominator": 6,
+      "same_runtime_target_only_is_the_text_parity_control": true
+    }
+  },
+  "decision_rules": {
+    "promote": "All infrastructure and deterministic parity checks pass, DFlash2 is at least 1.65x target-only, at least 1.05x MTP3, at least 3.75 accepted tok/s, and capability tripwires pass.",
+    "retain_for_n8_kernel_work": "All correctness checks pass, DFlash2 is at least 1.40x target-only, mean committed tokens per target call is at least 4.0, but one or more promotion throughput gates fail.",
+    "reject": "Any infrastructure or parity check fails, or DFlash2 is below 1.40x target-only, or it fails to outperform MTP3 without phase evidence of a removable n=8 target-verification bottleneck."
+  },
+  "required_receipts": [
+    "source and binary revisions and hashes",
+    "model revisions, sizes, and hashes",
+    "build log",
+    "peak memory receipt",
+    "per-prompt output and timing receipts",
+    "draft proposed and accepted counts",
+    "target verification call count and mean committed tokens per target call",
+    "server logs for every configuration",
+    "CUTE plus MATH/code tripwire receipts when admitted",
+    "terminal decision"
+  ],
+  "stop_rules": [
+    "Do not download BF16 or Q8 drafts before Q4_K_M passes the isolated AMD feasibility gate.",
+    "Do not port the v21 n=4 kernel into the PR before measuring the stock PR baseline.",
+    "Do not interpret the public H200 or M5 Pro numbers as expected AMD performance.",
+    "Do not claim a quality improvement: speculative verification is intended to preserve the target distribution.",
+    "Do not claim 100 tok/s or final-node scaling from this four-core feasibility node."
+  ],
+  "promotion_boundary": "A pass establishes a practical lossless speculative-decoding direction for Qwen3.8-27B on this AMD CPU and a basis for n=8 kernel work. It does not establish conventional autoregressive 2.75 tok/s, 100 tok/s, final-node scaling, or algorithmic novelty."
+}

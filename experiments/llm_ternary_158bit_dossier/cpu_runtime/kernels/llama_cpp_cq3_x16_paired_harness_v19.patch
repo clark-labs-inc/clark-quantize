@@ -1,0 +1,21 @@
+diff --git a/tests/test-cq3.cpp b/tests/test-cq3.cpp
+index e763c24..ecf97a1 100644
+--- a/tests/test-cq3.cpp
++++ b/tests/test-cq3.cpp
+@@ -185,6 +185,7 @@ static void test_x86_paired_gemv() {
+ #include "qwen38_27b_cq3_x86_pair_bench_v1.inc"
+ #include "qwen38_27b_cq3_x8_repack_bench_v15.inc"
+ #include "qwen38_27b_cq3_x16_repack_bench_v16.inc"
++#include "qwen38_27b_cq3_x16_paired_bench_v19.inc"
+ 
+ int main() {
+     ggml_cpu_init();
+@@ -204,6 +205,9 @@ int main() {
+     if (std::getenv("CLARK_QWEN38_27B_CQ3_X16_BENCH") != nullptr) {
+         run_qwen38_27b_cq3_x16_repack_benchmark();
+     }
++    if (std::getenv("CLARK_QWEN38_27B_CQ3_X16_PAIRED_V19") != nullptr) {
++        run_qwen38_27b_cq3_x16_paired_confirmation_v19();
++    }
+     return 0;
+ }

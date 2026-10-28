@@ -1,0 +1,138 @@
+{
+  "schema": "qwen38_27b_aligned2_full_text_preregistration_v1",
+  "receipt_schema": "qwen38_27b_aligned2_full_text_receipt_v1",
+  "status": "frozen_before_authoritative_x86_run",
+  "frozen_at_utc": "2026-08-17T16:50:00Z",
+  "objective": "Establish that the complete authenticated Qwen3.8-27B text graph can execute one token over all 64 real-weight decoder layers and produce a streaming top-k result exactly matching the full-logit path before any generation or capability claim",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "decoder_layers": 64,
+    "linear_attention_layers": 48,
+    "full_attention_layers": 16,
+    "aligned_weight_tensors": 666,
+    "hidden_size": 5120,
+    "vocabulary_size": 248320,
+    "batch": 1,
+    "tokens": 1,
+    "context_capacity": 1,
+    "state_dtype": "FP32",
+    "storage_container_target_bits_per_model_parameter": 1.64,
+    "active_runtime_weight_bits_per_model_parameter": 2.0349056937489127
+  },
+  "input": {
+    "kind": "authenticated aligned2 embedding row",
+    "token_id": 248045,
+    "token": "<|im_start|>",
+    "position": 0,
+    "batch": 1,
+    "state": "fresh zeros",
+    "context_capacity": 1
+  },
+  "parents": {
+    "complete_aligned2_cache": "/workspace/quant-state/qwen38-27b-aligned2-full-cache-v1.json",
+    "real_layer_parity": "/workspace/quant-state/qwen38-27b-aligned2-real-layers-v1.json",
+    "both_must_pass": true,
+    "source_container_and_cache_sha256_must_match": true,
+    "manifest_sha256_must_be_reverified": true,
+    "all_666_aligned_tensor_sha256_values_must_be_reverified": true
+  },
+  "candidate": {
+    "graph": "all 64 text decoder layers, final norm, and streaming LM-head top-k",
+    "gemv_implementation": "avx2 aligned group128 2-bit plus row-scale4",
+    "elementwise_implementation": "avx2 where implemented",
+    "physical_threads": 4,
+    "streaming_topk_count": 64,
+    "streaming_row_chunk": 4096,
+    "materialized_full_logits": false
+  },
+  "reference": {
+    "graph": "the same full 64-layer AVX2 hidden graph with a materialized 248320-logit LM head",
+    "purpose": "internal streaming-LM-head and state parity only",
+    "teacher_or_upstream_model_reference": false,
+    "topk_count": 64
+  },
+  "measurement": {
+    "physical_threads": 4,
+    "reuse_thread_pool": true,
+    "reference_full_logits_first_to_warm_mapped_weights": true,
+    "candidate_timing_includes_all_64_layers_final_norm_streamed_lm_head_and_Python_dispatch": true,
+    "candidate_timing_excludes_runtime_construction_tensor_authentication_and_state_allocation": true,
+    "candidate_page_faults_measured_after_reference_pass": true,
+    "state_digest_and_full_state_comparison_outside_timed_region": true
+  },
+  "gate": {
+    "require_exact_streaming_topk_indices": true,
+    "require_exact_streaming_topk_values": true,
+    "require_exact_final_state": true,
+    "required_authenticated_aligned_tensor_count": 666,
+    "maximum_candidate_seconds_per_token": 600.0,
+    "maximum_process_peak_rss_bytes": 10737418240,
+    "require_zero_major_page_faults_during_candidate": true,
+    "require_all_outputs_and_states_finite": true,
+    "performance_is_diagnostic_not_a_promotion_condition": true
+  },
+  "frozen_inputs": {
+    "benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_aligned2_full_text_v1.py",
+      "sha256": "d15e5a44f8eb9bf02866393bbf13e0874322ad6daba86549ddbac6cb9ab23533"
+    },
+    "real_layer_preregistration": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_aligned2_real_layers_preregistration_v1.json",
+      "sha256": "638a88d8c8650c3f427f0ec3d7800ece42246024e4edabfa75548a5836185164"
+    },
+    "real_layer_benchmark": {
+      "path": "experiments/llm_ternary_158bit_dossier/cpu_runtime/benchmark_qwen38_27b_aligned2_real_layers_v1.py",
+      "sha256": "2a33ae0ea37d990dc706a5ea0ddfeeebdc84f7badec59bba3ce8646742ce33c1"
+    },
+    "aligned_cache_runtime": {
+      "path": "clark_quantize/qwen38_aligned2_cache.py",
+      "sha256": "714d0c6ef3e1d3fe53036651f2d733cbd848e5811e61b1c6989501a1a6042ef4"
+    },
+    "model_runtime": {
+      "path": "clark_quantize/qwen38_cq3_runtime.py",
+      "sha256": "0c0353d8b82ac8924724449ba0b7b53fa049cd6b2ca1fb6137d81c9dcaeb6cb2"
+    },
+    "aligned_cache_tests": {
+      "path": "clark_quantize/test_qwen38_aligned2_cache.py",
+      "sha256": "1644e9e77a188e63305f3c6e04b59066eebd0d00a66e9b2ad6186565b2b5975b"
+    },
+    "model_runtime_tests": {
+      "path": "clark_quantize/test_qwen38_cq3_runtime.py",
+      "sha256": "c35735e33ce4226c2381de7e7d717fd26ccfe04f1455cb57aa8708437e3742c6"
+    },
+    "native_wrapper": {
+      "path": "clark_quantize/ternary_cpu.py",
+      "sha256": "ce706e66ac61d2919a80f0c838432b9df31ff469412ce95a3d61c56c15bed7a9"
+    },
+    "native_source": {
+      "path": "clark_quantize/ternary_cpu.c",
+      "sha256": "00acb5674e1ae2de188d7d7dfefcf5cf33776ca634c597469dc5e3b168248488"
+    },
+    "native_tests": {
+      "path": "clark_quantize/test_ternary_cpu.py",
+      "sha256": "b2da7716b78c5094360299a635ac2ac030412f9bea7ca726cc4c0856170e4a03"
+    },
+    "native_build": {
+      "path": "scripts/cpu/build_ternary_cpu.sh",
+      "sha256": "273db81adcefce5525288927cbcdde5f4beff65b136e35235ba8c4909c22e75b"
+    }
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_gib": 12,
+    "swap_must_remain_zero": true,
+    "new_persistent_artifact_bytes": 0,
+    "run_only_after_real_layer_gate_is_terminal": true
+  },
+  "promotion_rules": [
+    "a pass establishes only that the complete text graph runs one token and that streaming top-k equals its own full-logit path",
+    "a pass does not establish upstream teacher parity or model quality because both paths use the same quantized graph",
+    "a valid graph correctness latency memory or fault miss is retained as a negative result",
+    "a pass immediately requires quick CUTE plus MMLU-type or MATH-500 capability evaluation before any model promotion",
+    "multi-token generation and steady-state decode throughput remain open",
+    "infrastructure-invalid work is neither a zero nor a completed result",
+    "no scientific breakthrough claim can come from this single-token graph gate",
+    "Qwen 4B compute is forbidden in this research lane"
+  ]
+}

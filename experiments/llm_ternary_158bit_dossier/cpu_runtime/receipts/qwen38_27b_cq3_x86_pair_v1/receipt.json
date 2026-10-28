@@ -1,0 +1,106 @@
+{
+  "artifacts": {
+    "benchmark.json": {
+      "path": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1/benchmark.json",
+      "sha256": "5e34994d2af9fba394540ebf1aa9b6d643661fa0457760a6fe17b309aada65fa"
+    },
+    "benchmark.stderr": {
+      "path": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1/benchmark.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "benchmark.stdout": {
+      "path": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1/benchmark.stdout",
+      "sha256": "5e34994d2af9fba394540ebf1aa9b6d643661fa0457760a6fe17b309aada65fa"
+    },
+    "binary.sha256": {
+      "path": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1/binary.sha256",
+      "sha256": "011356e9e96c8fa6de5b2773f56a634270d4b2b69136de10d2297c68bd86daf8"
+    },
+    "cmake.version": {
+      "path": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1/cmake.version",
+      "sha256": "a24e1ae7f8f715ef1f0121cd749052d73c6a4315dba5bb885c584553d826eb79"
+    },
+    "compiler.version": {
+      "path": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1/compiler.version",
+      "sha256": "e3bac80fa6d4e3a292f39091c2f4f2e33986cc7c91cbcb034c0de3cd27560881"
+    },
+    "correctness.stderr": {
+      "path": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1/correctness.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "correctness.stdout": {
+      "path": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1/correctness.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inputs.sha256": {
+      "path": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1/inputs.sha256",
+      "sha256": "57d01c2ce8c66480d20af9add831e422c39ab6a628296a41ce953158fce9eca3"
+    },
+    "lscpu.json": {
+      "path": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1/lscpu.json",
+      "sha256": "068bb3fb35e1d25c0f559cd090524f0d5551976e0fa00334c483aac9bfb34d8c"
+    },
+    "source-files.sha256": {
+      "path": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1/source-files.sha256",
+      "sha256": "d6c38568eecacc69ea31138364eabd2e6cc2b6232deef81b93ffe98d657d2548"
+    }
+  },
+  "benchmark": {
+    "cache_eviction_bytes": 268435456,
+    "candidate_median_us": 4906.497,
+    "candidate_us": [
+      4919.537,
+      4947.428,
+      4846.437,
+      4808.268,
+      4853.237,
+      4906.497,
+      4926.168,
+      4885.407,
+      4928.718
+    ],
+    "columns": 5120,
+    "control_median_us": 2593.318,
+    "control_us": [
+      2602.708,
+      2593.309,
+      2593.318,
+      2593.499,
+      2578.369,
+      2583.189,
+      2607.799,
+      2611.968,
+      2569.918
+    ],
+    "exact_control_candidate": true,
+    "repetitions": 9,
+    "rows": 17408,
+    "schema": "qwen38_27b_cq3_x86_pair_benchmark_v1",
+    "sink": -1025.18237,
+    "speedup": 0.52854776,
+    "warmups": 2
+  },
+  "completed_at_utc": "2026-08-18T04:17:26Z",
+  "correctness": {
+    "bit_exact_control_candidate": true,
+    "marker": "/workspace/quant-state/qwen38-27b-cq3-x86-pair-v1/CORRECTNESS_PASS",
+    "test_cq3_exit_code": 0
+  },
+  "infrastructure": {
+    "swap_active_after": false,
+    "valid": true
+  },
+  "preregistration": {
+    "path": "/workspace/clark-quantize-infra-tail-v2/experiments/llm_ternary_158bit_dossier/cpu_runtime/qwen38_27b_cq3_x86_pair_preregistration_v1.json",
+    "sha256": "d6f88e95efe1f104715021e4a8262e4601ae07ac9eb641d49eb860dbb0ae7fe9"
+  },
+  "promotion": {
+    "breakthrough_claim": false,
+    "minimum_speedup": 1.03,
+    "observed_speedup": 0.52854776,
+    "pass": false,
+    "scope": "Qwen3.8-27B exact-shape AVX2 paired gate/up microkernel only"
+  },
+  "repository_commit": "c1aa3b13610acbc49495c91405ebb437261ab2aa",
+  "schema": "qwen38_27b_cq3_x86_pair_receipt_v1"
+}

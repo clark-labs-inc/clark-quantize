@@ -1,0 +1,67 @@
+{
+  "schema": "qwen35_cpu_layer30_qat_decision_v3",
+  "status": "completed_positive_diagnostic",
+  "run_date_utc": "2026-08-17",
+  "candidate_sha256": "e3790341b0946801a881419e37beb02bf784653b336668f4366d28f7717de8e2",
+  "candidate_patch_sha256": "9f1c71d44c3eec637a6eb929ecf197282a51f00c17d7bb2b5485b77f0ada7013",
+  "bf16_sha256": "594f6572cebaa26b8cb8a72a675e81f9a27133bbc52fa5d202310b6196a3b974",
+  "direct_ptq_sha256": "3e1ba3a29a38de8ff67f7b508563a74b3ea84cdabfa385f0a0b3a749d75e7a9b",
+  "scope": {
+    "quantized_tensors": 3,
+    "byte_identical_non_target_tensors": 438,
+    "scope_receipt_valid": true
+  },
+  "artifact_selection": {
+    "selected_step": 32,
+    "initial_validation_loss": 0.3868153845274225,
+    "selected_validation_loss": 0.3444310472833866,
+    "relative_validation_improvement_percent": 10.957252203352096
+  },
+  "independent_reconstruction": {
+    "direct_ptq_loss": 0.3462574009037044,
+    "candidate_loss": 0.250436115559057,
+    "relative_improvement_percent": 27.67342592376696,
+    "passes_one_percent_gate": true
+  },
+  "quality": {
+    "bf16": {
+      "cute_correct": 8,
+      "cute_n": 20,
+      "math500_correct": 5,
+      "math500_n": 8,
+      "code_trace_correct": 4,
+      "code_trace_n": 6,
+      "wikitext_ppl": 8.496
+    },
+    "direct_ptq": {
+      "cute_correct": 6,
+      "cute_n": 20,
+      "math500_correct": 5,
+      "math500_n": 8,
+      "code_trace_correct": 4,
+      "code_trace_n": 6,
+      "wikitext_ppl": 8.6975
+    },
+    "v3_qat": {
+      "cute_correct": 7,
+      "cute_n": 20,
+      "math500_correct": 5,
+      "math500_n": 8,
+      "code_trace_correct": 4,
+      "code_trace_n": 6,
+      "wikitext_ppl": 8.6523
+    },
+    "v3_vs_direct_ptq": {
+      "cute_exclusive_wins": 1,
+      "cute_exclusive_losses": 0,
+      "cute_exact_outputs": 17,
+      "math_code_exact_outputs": 14,
+      "wikitext_ppl_relative_delta_percent": -0.5196895659672296
+    }
+  },
+  "preregistered_training_value_gate_pass": true,
+  "research_decision": "authorize_broader_calibration_rung_but_do_not_expand_depth",
+  "claim_boundary": "positive one-layer diagnostic, not a whole-model result and not a breakthrough",
+  "next_discriminating_experiment": "larger non-evaluation train-validation-test prompt bank at the same layer-30 scope with replicated CUTE and MATH capability gates",
+  "report_content_sha256": "d279edecaba394f7f039e26f30f38385936e5c2638f9c4cd8a288871cd31ff3a"
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "qwen38_27b_dflash2_amd_cpu_feasibility_launch_amendment_v1",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "study_id": "qwen38_27b_cpu_speculative_program_v1",
+  "experiment_id": "qwen38_27b_dflash2_amd_cpu_feasibility_v1",
+  "parent_run_id": "qwen38_27b_dflash2_smoke_20260819T022056Z",
+  "run_id": "qwen38_27b_dflash2_smoke_20260819T022320Z",
+  "frozen_at": "2026-08-19T02:23:20Z",
+  "reason": "The first launch command supplied a mistyped target hash metadata argument. It was interrupted during target load before readiness or model inference, and its empty trajectory plus partial server log are retained as infrastructure-invalid evidence.",
+  "changes_from_parent": {
+    "runner_sha256": "545c097d527201958ab45bfe0dadd14c0b6f35e4890a5bbf66cf176d9d433fae",
+    "runner_change": "Fail closed unless the command-line target hash and the on-disk DFlash2 hash match the frozen values.",
+    "output_directory": "/workspace/quant-state/qwen38-27b-dflash2-amd-cpu-feasibility-v1/run/smoke-attempt2",
+    "trajectory_jsonl": "/workspace/quant-state/qwen38-27b-dflash2-amd-cpu-feasibility-v1/run/smoke-attempt2/trajectory.jsonl",
+    "target_sha256_argument": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34"
+  },
+  "unchanged_contract": "All preregistered artifact, correctness, memory, and stop gates remain unchanged.",
+  "invalid_parent_artifacts": [
+    "/workspace/quant-state/qwen38-27b-dflash2-amd-cpu-feasibility-v1/run/smoke/trajectory.jsonl",
+    "/workspace/quant-state/qwen38-27b-dflash2-amd-cpu-feasibility-v1/run/smoke/target/server.log"
+  ]
+}

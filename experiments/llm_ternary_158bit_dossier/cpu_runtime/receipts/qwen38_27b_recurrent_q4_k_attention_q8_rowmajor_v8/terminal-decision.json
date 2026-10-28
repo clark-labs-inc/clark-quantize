@@ -1,0 +1,100 @@
+{
+  "schema": "qwen38_27b_recurrent_q4_k_attention_q8_rowmajor_result_v8",
+  "completed_at": "2026-08-18T14:48:00Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": false,
+  "candidate_promoted": false,
+  "decision": "reject_mtp_gate_but_retain_attention_precision_quality_result",
+  "checks": {
+    "artifact_valid": true,
+    "free_generation_noncollapsed_and_coherent": true,
+    "graph_speedup_over_control_at_least_1_15": true,
+    "graph_retains_at_least_0_95_of_all_q4_k_v7_speed": true,
+    "candidate_process_median_range_at_most_0_05": true,
+    "target_tps_speedup_over_control_at_least_1_15": true,
+    "mtp3_tps_speedup_over_control_at_least_1_18": false,
+    "mtp3_exact_parity_with_own_target": true,
+    "cute_quick_at_least_9_of_20": true,
+    "wikitext_required": false,
+    "mmlu_required": false,
+    "math500_required": false
+  },
+  "artifact": {
+    "candidate_sha256": "76bd4e5f6a266101765a74666ff092dca4a4d5d9860b3bd88dfe6cf8946522c0",
+    "candidate_bytes": 16193833312,
+    "bytes_saved": 2780037120,
+    "selected_tensor_count": 240,
+    "selected_weight_count": 5560074240,
+    "remaining_q8_tensor_count": 48,
+    "candidate_type_counts": {"F32": 353, "Q4_K": 433, "Q6_K": 17, "Q8_0": 48},
+    "nonselected_payloads_byte_identical": true
+  },
+  "transcode": {
+    "elapsed_seconds": 103,
+    "dry_run_selected_tensor_count": 240,
+    "dry_run_remaining_attention_q8_tensor_count": 48,
+    "dry_run_stdout_sha256": "b04ba9117b5ae994624e6410091a58f50ae63e1612847b31b1a6c59e808cba38",
+    "dry_run_stderr_sha256": "2cff9bee58e0d647384e52232089c88834986e1be28584618651835479087ae1",
+    "stdout_sha256": "a6c7ad1eb3401a0e6c61fee4d7edf39fab85884ad0062aa2c7f64afdbf1e4a39",
+    "stderr_sha256": "6fb70e528c6c738845756a7cd4a6f182b9db2a1cae1e4e383dd6c2dd652e17e2"
+  },
+  "free_generation": {
+    "prompts": 4,
+    "tokens_per_prompt": 96,
+    "total_tokens": 384,
+    "unique_token_ids": 206,
+    "zero_token_count": 0,
+    "coherent_outputs": true
+  },
+  "real_model_four_token_graph": {
+    "unscored_warmup_processes_per_system": 1,
+    "measured_processes_per_system": 4,
+    "samples_per_process": 7,
+    "control_median_ns": 801501627,
+    "candidate_median_ns": 624804499,
+    "candidate_over_control_speedup": 1.2828038663018655,
+    "prior_all_q4_k_v7_median_ns": 598993944,
+    "candidate_over_all_q4_k_v7_speed_fraction": 0.9586901902254068,
+    "control_process_medians_ns": [815912095, 798989391, 795164741, 792608820],
+    "candidate_process_medians_ns": [642776148, 629072025, 617688103, 616170983],
+    "candidate_process_median_range_fraction": 0.04267888329518347
+  },
+  "paired_serving": {
+    "prompts": 4,
+    "tokens_per_prompt": 96,
+    "accepted_decode_tokens_per_configuration": 380,
+    "control_target_tps": 1.916623595174799,
+    "control_mtp3_tps": 3.141130583824583,
+    "candidate_target_tps": 2.217095907519842,
+    "candidate_mtp3_tps": 3.6015898213612396,
+    "candidate_over_control_target": 1.156771685948925,
+    "candidate_over_control_mtp3": 1.1465902881936254,
+    "draft_n": 402,
+    "draft_n_accepted": 243,
+    "estimated_target_verification_calls": 137,
+    "mtp3_exact_token_parity_with_own_target": true
+  },
+  "quick_quality_diagnostic": {
+    "classification": "post-performance-rejection diagnostic required by the standing quick-eval practice; it does not override the MTP rejection",
+    "cute_quick": {
+      "candidate_correct": 10,
+      "candidate_denominator": 20,
+      "control_correct": 9,
+      "blanket_q4_k_correct": 8,
+      "task_correct": {"contains_char": 4, "ins_char": 2, "del_char": 2, "swap_char": 0, "sub_char": 2},
+      "candidate_sha256": "8e55751e1898a659c29fc57d65d3b968e5ac9b77dba2d5e69cd2f037f9484e51"
+    },
+    "wikitext": {"ran": false, "reason": "The MTP gate had already failed."},
+    "mmlu": {"ran": false, "reason": "The MTP gate had already failed."},
+    "math500": {"ran": false, "reason": "The MTP gate had already failed."}
+  },
+  "provenance": {
+    "artifact_verification_sha256": "0210fad3d7d7036ccf60abb24a84675710c6f885d4dba4f46c9220bc7365e598",
+    "canary_and_paired_summary_sha256": "9ec9a6c6ef1ab54d4ee7c333d0821731ded729a8e90400f5b2ce3399fd4cd5db",
+    "graph_gate_sha256": "74eeaa5607646c372b07e354512813bbd5102d219167a2c87f92c5cdb8e23e69"
+  },
+  "next_lane": "Preserve only the full-attention K/V memory subspaces in Q8, while quantizing full-attention Q and all recurrent/SSM tensors to Q4_K under the validated row-major n=4 kernel.",
+  "claim_boundary": "Restoring all full-attention Q/K/V tensors recovers and exceeds control CUTE quality while retaining a 28.3% graph gain, but MTP3 reaches only 1.147x control versus the frozen 1.18x gate. It is not promoted and does not establish broad near-lossless quality, final-node behavior, energy gains, 100 accepted tok/s, novelty, or a breakthrough."
+}

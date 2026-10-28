@@ -1,0 +1,31 @@
+{
+  "schema": "clark_qwen_global_qat_resume_preregistration_v1",
+  "seed": 20260817,
+  "arms": ["math", "code"],
+  "matrix_shape": [16, 16],
+  "checkpoint_after_step": 3,
+  "comparison_step": 4,
+  "optimizer": {
+    "name": "BonsaiMuonFast",
+    "master_dtype": "torch.float32",
+    "momentum_dtype": "torch.bfloat16"
+  },
+  "required_exact_matches": [
+    "next sampled arm",
+    "next NumPy arm sample",
+    "next Python random value",
+    "next Torch random tensor",
+    "next loss",
+    "complete model state",
+    "complete optimizer state",
+    "bandit state",
+    "servo state",
+    "KL history"
+  ],
+  "promotion": {
+    "require_atomic_checkpoint_manifest": true,
+    "require_state_sha256_validation": true,
+    "require_all_exact_matches": true,
+    "scope": "restart harness only; no model-quality claim"
+  }
+}

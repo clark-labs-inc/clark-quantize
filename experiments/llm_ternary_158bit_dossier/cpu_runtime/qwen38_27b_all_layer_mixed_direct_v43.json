@@ -1,0 +1,247 @@
+{
+  "schema": "qwen38_27b_all_layer_mixed_direct_preregistration_v43",
+  "experiment_id": "qwen38_27b_all_layer_mixed_direct_v43",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "status": "frozen_before_all_layer_direct_execution",
+  "frozen_at_utc": "2026-08-19T08:26:16Z",
+  "objective": "Expand the already-selected mixed representation to a complete 64-layer direct candidate before optimizer work: fit the unchanged calibration-only AFF3 attention-output algebra, pack each MLP triplet in unchanged direct CQ3_0, reproduce the authenticated pilot algebra and scores at layers 0, 32, and 63, and measure complete-block calibration NMSE at every Qwen3.8-27B text layer under one fixed gate.",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "architecture": "Qwen3_5ForConditionalGeneration dense 27B text trunk",
+    "hidden_size": 5120,
+    "text_layers": 64,
+    "target_layers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63
+    ],
+    "layer_pattern": "three linear_attention blocks followed by one full_attention block, repeated sixteen times",
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true
+  },
+  "parent_evidence": {
+    "full_context_cache": {
+      "receipt_path": "receipts/qwen38_27b_full_context_block_cache_v42/receipt.json",
+      "receipt_sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28",
+      "terminal_decision_path": "receipts/qwen38_27b_full_context_block_cache_v42/terminal-decision.json",
+      "terminal_decision_sha256": "3c330c9d65a367031c045fdcfcc26b7957b0a9c470702f211f45c60a5a770fd5",
+      "layers": 64,
+      "complete_context_shape_per_endpoint": [
+        12,
+        64,
+        5120
+      ],
+      "pilot_layers_bit_exact": [
+        0,
+        32,
+        63
+      ]
+    },
+    "mixed_representation_preregistration": {
+      "path": "qwen38_27b_calibration_ranked_aff3_cq3_mixed_v1.json",
+      "sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c",
+      "converted_parameters": 19126026240,
+      "selected_candidate_compute_image_bytes": 5068296192
+    },
+    "original_aff3_fit": {
+      "path": "qwen38_27b_affine_butterfly_blocks_preregistration_v1.json",
+      "sha256": "8fa0b3159a0b6b7bdea1b00a0373b946a73e4ce0cd860bb303d1eb8ad3d63b09"
+    },
+    "pilot_direct_receipt": {
+      "path": "receipts/qwen38_27b_calibration_ranked_aff3_cq3_mixed_v1/direct-screen.json",
+      "sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320",
+      "scores": {
+        "0": 0.008026277310677076,
+        "32": 0.007745945129903145,
+        "63": 0.11622622538543384
+      }
+    }
+  },
+  "representation": {
+    "attention_input": "unchanged Q4_K_M control types in the eventual complete image; exact BF16 source is retained only inside this local block screen",
+    "attention_output": {
+      "format": "affine base-3",
+      "runtime_layout": "AFF3_X16 register-lookup v18",
+      "parameters": 2013265920,
+      "group_size": 128,
+      "rotation_stages": 6,
+      "rotation_steps": 8,
+      "rotation_learning_rate": 0.002,
+      "row_shard": 128,
+      "seed": 20260818,
+      "fit": "the original hard-forward shared-rotation and affine-codebook fit using calibration inputs only"
+    },
+    "mlp": {
+      "format": "CQ3_0",
+      "runtime_layout": "CQ3_0x16",
+      "parameters": 17112760320,
+      "group_size": 128,
+      "row_shard": 128,
+      "stage": "deterministic direct optimal-MSE step zero; no optimizer in this experiment"
+    },
+    "all_other_tensors": "unchanged from the complete Q4_K_M control in the eventual deployable image",
+    "dense_reconstructed_weights_persisted": false,
+    "optimizer_or_shadow_state_persisted": false
+  },
+  "data_protocol": {
+    "source": "the authenticated v42 complete BF16 block input/output shard at each layer",
+    "calibration_sequences": 8,
+    "tokens_per_sequence": 64,
+    "selected_calibration_rows_per_layer": 64,
+    "complete_sequence_context_required_for_forward": true,
+    "internal_validation_sequences_used": 0,
+    "fresh_confirmation_sequences_used": 0,
+    "aff3_reporting_argument": "the calibration matrix is deliberately supplied a second time to the legacy reporting-only validation argument; the actual internal-validation rows are never loaded into fitting or scoring",
+    "benchmark_contamination_forbidden": "No CUTE, MATH-500, code, MMLU, WikiText, fresh-confirmation text, or generated model output enters the direct fit or gate."
+  },
+  "pilot_reproduction": {
+    "layers": [
+      0,
+      32,
+      63
+    ],
+    "aff3_requirement": "angles plus every codes, index, anchor, and codebook payload hash must equal the authenticated pilot algebra",
+    "cq3_requirement": "all three CQ3 payload hashes per pilot layer must equal the authenticated direct pilot",
+    "score_requirement": "complete-block calibration NMSE must equal the authenticated pilot within absolute 1e-8",
+    "purpose": "detect any batch-context, source, fit, packing, or runtime drift before treating the remaining 61 layers as the same experiment"
+  },
+  "execution": {
+    "seed": 20260819,
+    "threads": 4,
+    "fixed_layer_order": "ascending 0 through 63",
+    "per_layer_order": [
+      "authenticate the full-context shard and replay the exact BF16 block over all 12 sequences",
+      "capture 64 calibration attention-output consumer rows",
+      "fit or authenticate the frozen calibration-only AFF3 attention-output payload",
+      "pack or authenticate the three direct CQ3 MLP tensors",
+      "execute the mixed block over all eight calibration sequences and score exactly 64 selected rows",
+      "atomically write and authenticate one terminal layer result"
+    ],
+    "restart_boundary": "one complete layer; a gap-free terminal result prefix defines progress and all referenced AFF3/CQ3 payloads are reauthenticated before reuse",
+    "allocator_control": "run garbage collection and libc malloc_trim after every terminal layer",
+    "expected_wall_hours": 3,
+    "no_sweep": "one representation, one fit, one row set, one layer order, and one gate are frozen"
+  },
+  "gate": {
+    "required_layers": 64,
+    "required_calibration_rows_per_layer": 64,
+    "maximum_calibration_nmse_per_layer": 0.12,
+    "all_values_must_be_finite": true,
+    "all_pilot_aff3_algebras_must_be_exact": true,
+    "all_pilot_cq3_algebras_must_be_exact": true,
+    "all_pilot_scores_must_match_within_absolute_1e_8": true,
+    "maximum_selected_payload_bytes": 5100000000,
+    "failure_policy": "finish the complete 64-layer denominator and seal the distribution, but admit no training if any layer fails"
+  },
+  "resources": {
+    "cpu_quota_percent": 400,
+    "memory_max_bytes": 31000000000,
+    "memory_swap_max_bytes": 0,
+    "host_swap_must_remain_zero": true,
+    "minimum_free_disk_bytes": 21474836480,
+    "concurrent_training_or_benchmark_processes": 0,
+    "restart": "on-failure",
+    "restart_prevent_exit_status": 2,
+    "maximum_restarts": 2
+  },
+  "promotion_rules": [
+    "a pass requires all 64 terminal complete-block calibration scores and exact reproduction of all three pilot payload algebras and scores",
+    "a pass admits one calibration-only all-layer training execution amendment using the already-frozen CQ3 and AFF3 hyperparameters",
+    "no failing layer may silently fall back to Q4, Q6, BF16, another bit tier, another mode, or a changed threshold",
+    "the old internal validation becomes available only after the complete 64-layer trained base candidate is frozen, and only for the already-frozen sensitivity threshold",
+    "fresh confirmation and whole-model benchmarks remain sealed",
+    "the direct screen is not a trained model, quality result, runtime result, novelty result, or scientific breakthrough"
+  ],
+  "frozen_inputs": {
+    "runner": {
+      "path": "run_qwen38_27b_all_layer_mixed_direct_v43.py",
+      "sha256": "313094b4f63f75fa91f63a946a30466940cbcfc7a1a5fb9435c04b848c727ca2"
+    },
+    "full_context_receipt": {
+      "path": "receipts/qwen38_27b_full_context_block_cache_v42/receipt.json",
+      "sha256": "8653749c9616d88cec3509cfd3c87262145d370da2fc613aab88ee02263aca28"
+    },
+    "full_context_terminal_decision": {
+      "path": "receipts/qwen38_27b_full_context_block_cache_v42/terminal-decision.json",
+      "sha256": "3c330c9d65a367031c045fdcfcc26b7957b0a9c470702f211f45c60a5a770fd5"
+    },
+    "mixed_representation_preregistration": {
+      "path": "qwen38_27b_calibration_ranked_aff3_cq3_mixed_v1.json",
+      "sha256": "0808c1a11b1036f76cb923e13fc3ef233ea4132f32a1160a9f89c8906d9eb06c"
+    },
+    "original_aff3_preregistration": {
+      "path": "qwen38_27b_affine_butterfly_blocks_preregistration_v1.json",
+      "sha256": "8fa0b3159a0b6b7bdea1b00a0373b946a73e4ce0cd860bb303d1eb8ad3d63b09"
+    },
+    "pilot_direct_receipt": {
+      "path": "receipts/qwen38_27b_calibration_ranked_aff3_cq3_mixed_v1/direct-screen.json",
+      "sha256": "cbf2adb0a26522ecb03c4225f91df67e03b3c694bc3af342d059987775ec3320"
+    }
+  },
+  "next_if_passed": "Freeze a pre-execution amendment, then run the original six-step calibration-only CQ3 row-shard training followed by the original eight-step continuous-only AFF3 trust-region descent at all 64 layers. Keep internal validation and the sensitivity-gated rank-16 residual sealed until every trained base layer is terminal.",
+  "claim_boundary": "A pass proves only that one fixed direct AFF3/CQ3 representation was constructed, authenticated, pilot-reproduced, and calibration-screened across all 64 Qwen3.8-27B text layers. It does not establish training success, internal-validation stability, residual benefit, a complete deployable model, end-to-end capability or speed, novelty, or a scientific breakthrough."
+}

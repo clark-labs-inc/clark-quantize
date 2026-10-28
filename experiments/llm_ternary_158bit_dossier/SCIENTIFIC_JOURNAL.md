@@ -1,6 +1,6 @@
 # LLM 1.58-bit Ternary Research Journal
 
-Status date: 2026-07-30
+Status date: 2026-08-16
 
 ## Scope and record policy
 
@@ -11,9 +11,10 @@ or the frozen large-model protocol under `experiments/large_scale_ternary/`.
 Those linked artifacts remain authoritative for commands, metrics, and
 checkpoint provenance.
 
-The large-model program is inactive. BackdropKit's Swin2SR work is the sole
-active optimization target; LLM results are retained only as scientific
-reference.
+The historical records below retain their original evidence boundaries. As of
+2026-08-16, the LLM lane is active again with a CPU-first objective. The active
+plan is [the CPU runtime research program](cpu_runtime/RESEARCH_PROGRAM.md);
+past GPU experiments are inputs to it, not CPU performance evidence.
 
 ## Verified findings
 
@@ -187,3 +188,129 @@ No LLM model is being loaded, evaluated, or trained under the BackdropKit
 program. The Qwen and large-scale ternary material remains archived as
 scientific reference for optimizer, schedule, packing, and evaluation design.
 Its unresolved gates and evidence boundaries above are unchanged.
+
+## 2026-08-16 — CPU-first reorientation
+
+The user explicitly reoriented the Qwen ternary program around pure CPU
+deployment. The runtime contract now precedes another large training run.
+
+The exact Qwen3.8-27B text graph requires more than ternary GEMM: 48 Gated
+DeltaNet blocks need depthwise causal-convolution and FP32 recurrent-state
+kernels, while 16 full-attention blocks need GQA, partial multimodal RoPE,
+q/k normalization, a query-derived output gate, and a bounded KV cache. The
+untied embedding and LM head are also material 1.27B-parameter surfaces each
+and cannot remain hidden BF16 exceptions in a compact CPU artifact.
+
+The active plan separates a 1.6-bit canonical radix-5 artifact from an
+ISA-specific compute image, begins with a scalar oracle and ARM64 decode
+kernels on the available M5 Max 64 GB host, proves the complete 4B graph, then
+makes GPU QAT emulate the exact CPU numerics before scaling to 27B. No new 27B
+bulk training spend is promoted before the 4B packed runtime gate.
+
+Evidence and contracts:
+
+- [CPU-first research program](cpu_runtime/RESEARCH_PROGRAM.md)
+- [CPU kernel contracts](cpu_runtime/KERNEL_CONTRACTS.md)
+
+## 2026-08-16 — first x86 CPU node and stock ternary control
+
+The Hetzner CCX33 bring-up proved the Qwen3.5 hybrid graph on a four-core Milan
+CPU and established stock llama.cpp BF16 and TQ1_0 controls. TQ1_0 reduced the
+4B GGUF from 8.67 GB to 1.31 GB and improved measured decode from 4.02 to 17.84
+tokens/second, but produced gibberish on the deterministic first canary. It is
+therefore a runtime/performance control, not a quality candidate.
+
+The CPU-enabled Qwen3.8 preflight retained the historical 2.178900571 effective
+bits/parameter ledger. The one-million-trit ideal arithmetic reference promoted
+at 1.584964 payload bits/trit with exact round-trip evidence. A bounded four-
+worker full pack was launched and remains unpromoted until its independent final
+decode and receipt complete.
+
+Evidence: [Hetzner CCX33 bring-up and controls](cpu_runtime/HETZNER_CCX33_RUN_20260816.md)
+
+## 2026-08-17 — Qwen3.8-27B-only scope and frozen CPU controls
+
+The active compute boundary is now `Qwen/Qwen3.8-27B` only. Historical 4B
+receipts remain useful for experiment design, but no new 4B training,
+evaluation, export, or optimization can satisfy this lane. On the `quant` CPU
+node, re-downloadable 4B weight artifacts were removed after confirming that no
+4B process or service was active; code, receipts, logs, and all 27B assets were
+retained. This reclaimed about 68 GiB of physical disk and left 105 GiB free
+for the restartable 27B transaction.
+
+The frozen Qwen3.8-27B `Q4_K_M` control, model SHA-256
+`31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34`,
+completed its quick capability suite with all receipts valid: CUTE-Quick-20
+`9/20`, MATH quick-8 `5/8`, code trace `5/6`, MMLU quick-64 `52/64`, and
+WikiText perplexity `5.7847`. These are frozen development denominators, not
+leaderboard-comparable scores.
+
+On the four-physical-core AMD EPYC Milan CCX33, the same Q4 control completed
+five-repeat llama.cpp measurements. Four-thread mean prefill was `5.478380`,
+`7.046852`, and `6.913716` tokens/second for 128, 512, and 2,048 prompt tokens;
+four-thread 128-token decode was `1.885590` tokens/second. The corresponding
+one-thread decode was `1.069560`, and two-thread decode was `1.735790`
+tokens/second. This is a CPU throughput control only; it does not establish a
+CQ3 advantage.
+
+The first direct Q4-to-CQ3 candidate then changed exactly
+`blk.0.ffn_{down,gate,up}.weight` from GGUF type 12 to type 43. All 848
+non-target tensors matched byte-for-byte, all three target payloads changed,
+and the 18,894,489,952-byte candidate passed a real load/generation smoke with
+zero swap and 28,442,764 KiB peak RSS. Its independent CUTE, math/code, MMLU,
+and perplexity gate is still required before any capability or promotion claim.
+
+Evidence:
+
+- [Qwen3.8-27B-only scope](cpu_runtime/QWEN38_27B_ONLY_SCOPE.md)
+- [Q4 quality control](cpu_runtime/receipts/qwen38_27b_cpu_q4_baseline_v1/summary.json)
+- [Q4 throughput control](cpu_runtime/receipts/qwen38_27b_cpu_throughput_v1/summary.json)
+- [selective CQ3 conversion receipt](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_v1/conversion-receipt.json)
+- [selective tensor-scope proof](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_v1/gguf-scope.json)
+
+## 2026-08-17 — selective-CQ3 capability checkpoint and CPU profiling contract
+
+The layer-0 MLP direct-CQ3 candidate completed the first three independent
+quick gates: CUTE-Quick-20 `10/20` versus the Q4 control's `9/20`, MATH quick-8
+`5/8` versus `5/8`, and code trace `5/6` versus `5/6`. At the durable MMLU
+checkpoint of 28 examples it is `21/28`, while the frozen Q4 control is `22/28`
+on the identical prefix. Only two predictions differ: one Q4-correct answer
+became incorrect, and one already-incorrect answer changed to a different
+incorrect choice. This is interim evidence only. The full 64-example MMLU and
+WikiText gates remain mandatory, so the candidate is not promoted.
+
+Two Qwen3.8-27B-only CPU diagnostics are frozen behind the existing correctness
+and capability transaction. The persistent-worker-affinity gate requires exact
+top-k and recurrent-state parity, at least `1.05x` median full-token speedup,
+and no losing paired repetition. The subsequent full-graph profile must account
+for exactly 557 aligned projection calls across all 64 layers and the streamed
+LM head while preserving exact output and state. Neither preregistration is a
+performance result; the profile exists to choose the next kernel family from
+measured full-graph time.
+
+Evidence and contracts:
+
+- [selective-CQ3 MMLU checkpoint](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_quality_v1/mmlu.json.partial)
+- [persistent-affinity preregistration](cpu_runtime/qwen38_27b_persistent_affinity_preregistration_v1.json)
+- [full-graph profile preregistration](cpu_runtime/qwen38_27b_full_graph_profile_preregistration_v1.json)
+
+## 2026-08-17 — selective-CQ3 quick capability gate completed
+
+The direct selective-CQ3 candidate completed the frozen quick capability gate.
+Against the identical Q4 control it scored CUTE-Quick-20 `10/20` versus `9/20`,
+MATH quick-8 `5/8` versus `5/8`, code trace `5/6` versus `5/6`, and MMLU
+quick-64 `51/64` versus `52/64`. WikiText perplexity was `5.8297` versus
+`5.7847`, a `1.007779` ratio under the frozen `1.05` ceiling. All receipt and
+threshold checks passed.
+
+This only establishes that directly ternarizing
+`blk.0.ffn_{down,gate,up}.weight` did not catastrophically damage the quick
+development suite. It does not establish whole-model quality, a CPU speedup,
+or a Pareto improvement. The independent paired throughput gate remains the
+decisive result for this narrow candidate.
+
+Evidence:
+
+- [terminal selective-CQ3 quality summary](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_quality_v1/summary.json)
+- [completed MMLU-64 receipt](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_quality_v1/mmlu.json)
+- [WikiText receipt](cpu_runtime/receipts/qwen38_27b_layer0_mlp_direct_cq3_quality_v1/wikitext.json)

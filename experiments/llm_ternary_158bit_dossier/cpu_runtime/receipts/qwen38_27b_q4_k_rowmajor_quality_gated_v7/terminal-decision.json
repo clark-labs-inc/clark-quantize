@@ -1,0 +1,106 @@
+{
+  "schema": "qwen38_27b_q4_k_rowmajor_quality_gated_result_v7",
+  "completed_at": "2026-08-18T14:31:00Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "passed": false,
+  "system_promoted": false,
+  "kernel_candidate_retained": true,
+  "decision": "retain_n4_kernel_gain_but_reject_all_q8_family_transcode_on_target_and_cute_gates",
+  "checks": {
+    "artifact_valid": true,
+    "backend_reference_cases_3_of_3": true,
+    "same_weights_kernel_graph_speedup_at_least_1_05": true,
+    "candidate_process_median_range_at_most_0_05": true,
+    "free_generation_noncollapsed_and_coherent": true,
+    "c_over_a_target_tps_at_least_1_20": false,
+    "c_over_a_mtp3_tps_at_least_1_08": true,
+    "c_over_b_target_tps_at_least_1_03": false,
+    "c_over_b_mtp3_tps_at_least_1_03": true,
+    "cute_quick_at_least_9_of_20": false,
+    "wikitext_required": false,
+    "mmlu_required": false,
+    "math500_required": false
+  },
+  "artifact": {
+    "candidate_sha256": "464ab3406cfbd13eec5033e6176ec222321f7145ee1b2c2f1630180589b672e6",
+    "candidate_bytes": 15606630752,
+    "bytes_saved": 3367239680,
+    "selected_tensor_count": 288,
+    "selected_weight_count": 6734479360,
+    "nonselected_payloads_byte_identical": true,
+    "reproduced_prior_artifact_sha256_exactly": true
+  },
+  "runtime": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "candidate_server_sha256": "b516eea709e917b504fdc34154c1e62ef67d6182f9ce3bb9d97242538a1c71bd",
+    "candidate_bench_sha256": "645ef27f4bfe4e030e40c258d21dbecc2d587e4583b0cfdb47b18ddf1b3dcc90",
+    "frozen_source_diff_sha256": "cb0499cb796af36ca18a4f8e80f7d8a9d3d0a2e6f24ce44db4b383d8d82e1087",
+    "backend_reference_cases": "3/3"
+  },
+  "same_weights_four_token_graph": {
+    "b_runtime": "fused-ragged AVX2 v2",
+    "c_runtime": "row-major four-row AVX2 v5",
+    "unscored_warmup_processes_per_runtime": 1,
+    "measured_processes_per_runtime": 4,
+    "samples_per_process": 7,
+    "b_median_ns": 728493473,
+    "c_median_ns": 598993944,
+    "c_over_b_speedup": 1.2161950555546852,
+    "b_process_medians_ns": [728550408, 737785811, 727457668, 727785028],
+    "c_process_medians_ns": [600302224, 610781316, 593454073, 598425914],
+    "c_process_median_range_fraction": 0.028909378950442224
+  },
+  "free_generation": {
+    "prompts": 4,
+    "tokens_per_prompt": 96,
+    "total_tokens": 384,
+    "unique_token_ids": 200,
+    "zero_token_count": 0,
+    "coherent_outputs": true,
+    "exact_prompt_trajectories_vs_b": [true, true, false, false],
+    "first_difference_indices_vs_b": [null, null, 71, 18]
+  },
+  "paired_serving": {
+    "a_b_baseline_classification": "reused exact pinned terminal summaries from qwen38_27b_q8_family_q4_k_transcode_v1 on the same host, day, models, runtime, prompts, and denominators",
+    "prompts_per_system": 4,
+    "tokens_per_prompt": 96,
+    "accepted_decode_tokens_per_configuration": 380,
+    "a_control_target_tps": 1.916623595174799,
+    "a_control_mtp3_tps": 3.141130583824583,
+    "b_q4_k_v2_target_tps": 2.272463261968518,
+    "b_q4_k_v2_mtp3_tps": 3.3012480402966324,
+    "c_q4_k_rowmajor_target_tps": 2.275384737020972,
+    "c_q4_k_rowmajor_mtp3_tps": 3.861452232027104,
+    "c_over_a_target": 1.187183932593428,
+    "c_over_a_mtp3": 1.2293192304426488,
+    "c_over_b_target": 1.0012855983642717,
+    "c_over_b_mtp3": 1.169694668468515,
+    "c_mtp3_draft_n": 390,
+    "c_mtp3_draft_n_accepted": 246,
+    "c_mtp3_estimated_target_verification_calls": 134,
+    "c_mtp3_exact_token_parity_with_own_target": true
+  },
+  "quality": {
+    "cute_quick": {
+      "candidate_correct": 8,
+      "candidate_denominator": 20,
+      "control_correct": 9,
+      "prior_q4_k_v2_correct": 8,
+      "task_correct": {"contains_char": 4, "ins_char": 1, "del_char": 2, "swap_char": 0, "sub_char": 1},
+      "candidate_sha256": "cf55b4435f391a8f117e3c68760047c3c1a4d9f433f4c2eb06b05aef21064dca"
+    },
+    "wikitext": {"ran": false, "reason": "The target and CUTE gates failed."},
+    "mmlu": {"ran": false, "reason": "The target and CUTE gates failed."},
+    "math500": {"ran": false, "reason": "The target and CUTE gates failed."}
+  },
+  "provenance": {
+    "artifact_verification_sha256": "ff1e5e246bfcc1015567512d48d411a8c4cee88ba15d6a3ee39c72a8912911ce",
+    "backend_log_sha256": "578b1ab4d8f6dc29d32764ab0cf3f7de859388d5d7cade76debcd21ad249cf83",
+    "graph_gate_sha256": "3bab2339b87b48f2f24edc81f0ba9a91917961a19335b2b6151362b22d4001d0",
+    "candidate_paired_summary_sha256": "d93246cd98fcb83f4cbd72cb3a7495a80572682bdf10e1af801936d1fd2edb00"
+  },
+  "next_lane": "Keep the validated row-major n=4 kernel and test a sensitivity boundary that leaves the 16 full-attention blocks in Q8 while converting the 48 recurrent/SSM blocks to Q4_K.",
+  "claim_boundary": "The row-major kernel is a stable 21.6% same-weights n=4 graph gain and raises MTP3 by 17.0% over the Q4_K v2 system, but the combined system misses target-only and CUTE gates. It is not promoted and does not establish near-lossless quality, final-node behavior, energy gains, 100 accepted tok/s, novelty, or a breakthrough."
+}

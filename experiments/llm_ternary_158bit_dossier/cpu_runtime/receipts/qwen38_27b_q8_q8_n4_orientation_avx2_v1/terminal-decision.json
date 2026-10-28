@@ -1,0 +1,84 @@
+{
+  "schema": "qwen38_27b_q8_q8_n4_orientation_avx2_result_v1",
+  "completed_at": "2026-08-18T12:45:31Z",
+  "terminal": true,
+  "infrastructure_valid": true,
+  "model": "Qwen/Qwen3.8-27B",
+  "host_scope": "four physical AMD EPYC Milan cores",
+  "passed": false,
+  "kernel_promoted": false,
+  "decision": "reject_below_predeclared_speed_gate",
+  "checks": {
+    "q8_n4_backend_reference_3_of_3": true,
+    "all_six_profiled_shapes_bit_exact": true,
+    "graph_speedup_at_least_1_08": false,
+    "candidate_process_median_range_at_most_0_05": true,
+    "terminal_generation_required": false,
+    "cute_required": false
+  },
+  "exactness": {
+    "profiled_shapes": 6,
+    "threads": 4,
+    "control_bytes": 557968,
+    "candidate_bytes": 557968,
+    "control_sha256": "de822706356de57bdb654f46b0aadf0e86c022db5a6a941585928b1b594cf244",
+    "candidate_sha256": "de822706356de57bdb654f46b0aadf0e86c022db5a6a941585928b1b594cf244",
+    "byte_identical": true
+  },
+  "real_model_four_token_graph": {
+    "unscored_warmup_processes_per_runtime": 1,
+    "measured_processes_per_runtime": 4,
+    "samples_per_process": 7,
+    "control_sample_count": 28,
+    "candidate_sample_count": 28,
+    "control_median_ns": 786743324,
+    "candidate_median_ns": 784138104,
+    "control_over_candidate": 1.0033223994430451,
+    "control_process_medians_ns": [789508854, 784230284, 792511846, 782852354],
+    "candidate_process_medians_ns": [785090284, 780052182, 784132064, 797273336],
+    "candidate_process_median_range_fraction": 0.021948647394613833
+  },
+  "diagnosis": {
+    "why_the_memory_hypothesis_failed": "The control schedules the two 4x2 column-pair jobs consecutively for each four-row tile. A four-row Q8 panel is about 22 KiB at k=160, so its second logical scan is cache-hot rather than a second DRAM stream.",
+    "candidate_assembly_observation": "gemmMx4<2> retains eight YMM accumulators, loads four activation vectors, and reloads part of that activation panel for the second row under AVX2 register pressure. The orientation change therefore exchanges cache-local work instead of removing the profiled signed-int8 arithmetic.",
+    "implication": "Do not pursue more dispatcher-only Q8 tile rotations on 16-register AVX2. Reduce the 6.734B Q8 weights with a quality-gated trained format or move the exact kernel to VNNI-class hardware."
+  },
+  "q8_tensor_inventory": {
+    "tensor_count": 288,
+    "weight_count": 6734479360,
+    "families": [
+      {"shape": [5120, 10240], "count": 48, "examples": "attn_qkv.weight"},
+      {"shape": [5120, 1024], "count": 32, "examples": "full-attention k/v"},
+      {"shape": [5120, 12288], "count": 16, "examples": "full-attention q"},
+      {"shape": [5120, 48], "count": 96, "examples": "ssm_alpha/ssm_beta"},
+      {"shape": [5120, 6144], "count": 48, "examples": "attn_gate.weight"},
+      {"shape": [6144, 5120], "count": 48, "examples": "ssm_out.weight"}
+    ]
+  },
+  "provenance": {
+    "llama_cpp_revision": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+    "base_patch_sha256": "7ed408aaa908f070f95ba2a567175b196c0e1619fb0b987fc1faded282e211d3",
+    "fused_patch_sha256": "4fab46f823b5980f7292c101d3051719a633b9dda2db304c10c8836d4b156b2e",
+    "candidate_patch_sha256": "9561bcbe096f41ae54dbb7b0f67ed98259f27556ce1b3b5d566417fbfdbfecb3",
+    "source_diff_sha256": "f7d3e82c19bbea5eab9f85d7e0585e495ea918b0df844b60ea720f457078bd66",
+    "candidate_server_sha256": "7c847faa81a9f5ca9df9a8110efc3cb90b4f995a24a0bff516f2670d3906a34b",
+    "candidate_bench_sha256": "f26baf4ff15b3305e0585bbc5ae435714aec4015215885dfdb31464938ab4b8f",
+    "exact_harness_source_sha256": "4b8eb5803e225446d3c868b5cfa905278f11624fd5f71db53912165c15489e9f",
+    "exact_harness_binary_sha256": "9692ee858d22a1c7c100bd0c73482f601ef0570cbf12b1297f46aaa94dbd179d",
+    "backend_log_sha256": "b2b32a20e22dbdfefbaf1633892bba9d3dda29af998065f99c9b1ef74d7db31d",
+    "control_graph_summary_sha256": "5215dd4d05d8809f9b1aa6981732d50fa06a306701423b607bea779560e4999a",
+    "candidate_graph_summary_sha256": "b8b60371a894254693f02b34a57d8ecab6859094fd480757e0284ab7abae18ad",
+    "graph_decision_sha256": "7ca6ab865a3508649fcdbee9e86c8564dfe933f5897f5ebae59434748cb4c550",
+    "target_gguf_metadata_sha256": "86e8a31d2c409f80d739c6520486bc8682f5978d30fc30a4141a97976143d859"
+  },
+  "terminal_generation": {
+    "ran": false,
+    "reason": "The sequential graph-speed gate failed."
+  },
+  "cute": {
+    "ran": false,
+    "reason": "The sequential graph-speed gate failed."
+  },
+  "next_lane": "Quality-gated selective compression of the 288 Q8_0 tensors into a fused lower-bit CPU path, using PTQ only as a ceiling screen and training or sensitivity-based mixed precision for recovery.",
+  "claim_boundary": "This exact AVX2 tile-orientation candidate is a stable 0.33% graph diagnostic, below its predeclared 8% gate. It is rejected and makes no whole-model speed, quality, final-node, 100 accepted tok/s, novelty, or breakthrough claim."
+}

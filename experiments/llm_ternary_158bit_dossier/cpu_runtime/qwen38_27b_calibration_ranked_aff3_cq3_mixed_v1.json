@@ -1,0 +1,305 @@
+{
+  "schema": "qwen38_27b_calibration_ranked_aff3_cq3_mixed_preregistration_v1",
+  "status": "frozen_after_terminal_qat_before_mixed_execution",
+  "frozen_at_utc": "2026-08-18T19:33:17Z",
+  "goal_id": "qwen38_27b_amd_cpu_breakthrough_v1",
+  "experiment_id": "qwen38_27b_calibration_ranked_aff3_cq3_mixed_v1",
+  "objective": "Test one large, deployable mixed-mode approximation of the complete Qwen3.8-27B text model: retain the calibration-most-sensitive attention-input family at the pinned Q4/Q8 control precision, train the 17.113B-parameter MLP body in storage-neutral CQ3_0, and train the 2.013B-parameter attention-output family in gather-free affine base-3, then execute both stored algebras directly in fused AMD kernels without reconstructing high-precision weights.",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "text_layers": 64,
+    "text_graph_parameters": 26895998464,
+    "pilot_layers": [
+      0,
+      32,
+      63
+    ],
+    "pilot_layer_types": [
+      "linear_attention",
+      "linear_attention",
+      "full_attention"
+    ],
+    "host": "quant",
+    "cpu": "AMD EPYC Milan",
+    "physical_cores": 4,
+    "qwen_4b_compute_forbidden": true,
+    "claim_boundary": "One three-block falsification gate followed, only on pass, by one complete 64-layer mixed artifact and whole-model capability/runtime evaluation; no result below the final gates is a breakthrough."
+  },
+  "frozen_evidence": {
+    "terminal_qat_receipt": {
+      "path": "receipts/qwen38_27b_affine_butterfly_block_qat_v1/terminal-decision.json",
+      "sha256": "12ad3a00a764aa27055be93b4f62a0d14b6ea7d97a8b82a8bdfdc2df7ff143ee",
+      "result": "all three all-sites affine-QAT blocks failed"
+    },
+    "aff3_v18_exact_shape_receipt": {
+      "path": "receipts/qwen38_27b_affine_avx2_register_lookup_v18/exact-shape-benchmark.json",
+      "sha256": "1ade0150e8a79ba23d241d46b506bc5d9afa41b30b627f1397a877d71a5c60fc",
+      "v17_over_v18_speedup": 1.3550532315249815,
+      "bit_exact": true
+    },
+    "aff3_v18_actual_artifact_receipt": {
+      "path": "receipts/qwen38_27b_affine_avx2_register_lookup_v18/actual-artifact.json",
+      "sha256": "3c648f0f8e1f5846da2e4b7fd65d5fbaeae37dbb3cc5a69bf8fbd5b8987df837",
+      "bit_exact": true
+    },
+    "cq3_x8_receipt": {
+      "path": "receipts/qwen38_27b_cq3_avx2_x8_repack_v15/terminal-decision.json",
+      "sha256": "dd63851b9480545fefc4dd77a8fdd117768c954c1f36c4005f1914dea5cc2d43",
+      "ordinary_over_x8_speedup": 1.30177569,
+      "storage_expansion_fraction": 0.0
+    },
+    "cq3_x16_receipt": {
+      "path": "receipts/qwen38_27b_cq3_avx2_x16_repack_v16/terminal-decision.json",
+      "sha256": "7c2cae7b2313746bee8bf6b1d7db8d297c16540da6d31d70e313cf0b4d2613ce",
+      "ordinary_over_x16_speedup": 1.42873389,
+      "status": "correct and fast but not promoted because the unpaired sample-range stability gate failed"
+    },
+    "one_layer_cq3_quality_receipt": {
+      "path": "receipts/qwen38_27b_layer0_mlp_direct_cq3_quality_v1/summary.json",
+      "sha256": "b207856ccb19223fef45cf4295696d4fd6d3ca0747cc40434d5431369230c6fe",
+      "wikitext_ratio_vs_q4": 1.0077791415285149,
+      "mmlu_correct_of_64": 51,
+      "claim_boundary": "only one direct layer-0 MLP triplet"
+    },
+    "q4_control": {
+      "path": "/workspace/models/controls/Qwen3.8-27B-Q4_K_M.gguf",
+      "bytes": 18973870432,
+      "sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34",
+      "source_types": {
+        "mlp": {
+          "tensors": 192,
+          "type": "Q4_K",
+          "parameters": 17112760320,
+          "bytes": 9625927680
+        },
+        "attention_output": {
+          "tensors": 64,
+          "parameters": 2013265920,
+          "bytes": 2017198080,
+          "types": {
+            "Q8_0": 48,
+            "Q6_K": 16
+          }
+        }
+      }
+    }
+  },
+  "calibration_only_mode_selection": {
+    "source": "The calibration single-site complete-block NMSE values in the terminal QAT receipt. The old validation values are prior-study evidence and are forbidden from selecting a mode, training checkpoint, exception, or threshold in this experiment.",
+    "eligible_shared_site_families": [
+      "attention_input",
+      "attention_output",
+      "mlp_input",
+      "mlp_down"
+    ],
+    "aggregate_calibration_nmse_across_layers_0_32_63": {
+      "attention_input": 0.008991690870489021,
+      "attention_output": 0.0017272144657360425,
+      "mlp_input": 0.0024296334949730825,
+      "mlp_down": 0.003570128140460463
+    },
+    "rule": "Keep the highest-error family at its control precision; assign AFF3 only to the lowest-error shared family; assign the intermediate MLP families one additional runtime bit tier through CQ3_0. Depthwise convolution, norms, embeddings, output head, and all non-selected tensors remain byte-identical to the Q4 control.",
+    "selected_modes": {
+      "attention_input": "unchanged Q4_K_M control types",
+      "attention_output": "AFF3_X16 register-lookup v18",
+      "mlp_input": "CQ3_0x16 after activation-aware row-shard training",
+      "mlp_down": "CQ3_0x16 after activation-aware row-shard training",
+      "all_other_tensors": "byte-identical Q4_K_M control payloads"
+    },
+    "selection_was_frozen_before_new_confirmation_collection": true
+  },
+  "representation": {
+    "converted_parameters": 19126026240,
+    "converted_fraction_of_text_graph": 0.7111104748760295,
+    "mlp": {
+      "tensors": 192,
+      "parameters": 17112760320,
+      "format": "CQ3_0",
+      "runtime_layout": "CQ3_0x16",
+      "group_weights": 128,
+      "block_weights": 256,
+      "block_bytes": 68,
+      "effective_runtime_bpw": 2.125,
+      "projected_runtime_bytes": 4545576960,
+      "stored_algebra": "one symmetric FP16 scale per 128-weight group times a hard {-1,0,+1} code"
+    },
+    "attention_output": {
+      "tensors": 64,
+      "parameters": 2013265920,
+      "format": "affine base-3",
+      "runtime_layout": "AFF3_X16 register-lookup v18",
+      "runtime_bpw_including_anchors_codebooks_and_rotations": 2.077099609375,
+      "projected_runtime_bytes": 522719232,
+      "stored_algebra": "mu[row,group] plus alpha[row,group] times a hard {-1,0,+1} code after a six-stage shared sparse Givens rotation"
+    },
+    "forbidden_deployable_state": [
+      "BF16 or FP32 reconstructed weight matrix",
+      "decoded per-group floating scale matrix",
+      "optimizer or shadow tensors",
+      "dense residual matrix",
+      "calibration or teacher activations"
+    ]
+  },
+  "complete_runtime_storage_accounting": {
+    "q4_control_file_bytes": 18973870432,
+    "selected_control_payload_bytes": 11643125760,
+    "selected_candidate_compute_image_bytes": 5068296192,
+    "projected_complete_compute_image_bytes_before_alignment": 12399040864,
+    "maximum_complete_compute_image_bytes_after_alignment": 12500000000,
+    "maximum_short_context_peak_rss_bytes": 18000000000,
+    "selected_candidate_effective_runtime_bpw": 2.119957853618421,
+    "all_layouts_anchors_codebooks_rotations_alignment_metadata_and_unchanged_tensors_count": true,
+    "persistent_file_may_be_smaller_than_compute_image": true
+  },
+  "data": {
+    "training_cache": {
+      "path": "/workspace/quant-runs/qwen38-affine-butterfly-blocks-v1/block-cache.pt",
+      "sha256": "564b41507542ef041600c7c2a8f57c01ad012e5b099ec5b002d5829865ec0d19",
+      "calibration_rows": 64,
+      "old_validation_rows": 32,
+      "old_validation_use": "reporting prior all-sites results only; forbidden for the new mixed-mode gate"
+    },
+    "fresh_confirmation": {
+      "texts": [
+        "A greenhouse records temperatures of 18, 21, 19, 24, and 23 degrees. Compute the mean and explain one reason the median may also be useful.",
+        "Write language-agnostic pseudocode that merges two already sorted integer arrays while preserving duplicate values.",
+        "Explique en francais la difference entre une mesure reproductible et une anecdote, en deux phrases.",
+        "Given a JSON event with fields timestamp, service, latency_ms, and status, describe a deterministic rule for selecting only slow successful requests."
+      ],
+      "maximum_sequence_tokens": 64,
+      "selected_rows_per_layer": 32,
+      "target_layers": [
+        0,
+        32,
+        63
+      ],
+      "collected_after_preregistration": true,
+      "may_score_only_the_final_frozen_candidate": true,
+      "checkpoint_or_hyperparameter_selection_forbidden": true,
+      "evaluation_contamination_forbidden": "No CUTE, MATH-500, code-trace, MMLU, WikiText, or copied benchmark item may enter training or confirmation."
+    }
+  },
+  "training": {
+    "pilot_order": [
+      0,
+      32,
+      63
+    ],
+    "one_block_at_a_time": true,
+    "restart_boundary": "one fully authenticated block",
+    "retain_completed_payloads": 1,
+    "mlp_cq3": {
+      "method": "activation-aware row-sharded hard-forward straight-through training",
+      "row_shard": 128,
+      "group_size": 128,
+      "steps_per_row_shard": 6,
+      "optimizer": "AdamW",
+      "learning_rate": 0.0001,
+      "weight_decay": 0.0,
+      "gradient_clip_norm": 1.0,
+      "weight_reconstruction_weight": 0.01,
+      "selection": "Retain the lowest calibration-loss hard-packed state among step zero through six; the old validation and fresh confirmation rows are never evaluated until the complete pilot is frozen.",
+      "maximum_weighted_code_churn_fraction": 0.05
+    },
+    "attention_output_aff3": {
+      "method": "continuous-only hard-FP16 trust-region descent from the authenticated PTQ payload",
+      "frozen_state": "ternary codes and both four-bit index matrices",
+      "trainable_state": "alpha and mu anchors, alpha and mu codebooks, and six Givens angle stages",
+      "outer_steps": 8,
+      "initial_global_l2_radius": 0.02,
+      "backtracking_factors": [
+        1.0,
+        0.5,
+        0.25,
+        0.125,
+        0.0625,
+        0.03125
+      ],
+      "proposal": "normalized negative calibration gradient evaluated through the exact hard-FP16 forward",
+      "acceptance": "accept the first proposal whose hard-packed calibration NMSE is no greater than the prior accepted state; otherwise restore the prior state",
+      "checkpoint_selection": "lowest calibration NMSE only; fresh confirmation remains sealed"
+    },
+    "seed": 20260818,
+    "no_sweep": "One mode map, one layer set, one row shard, one CQ3 optimizer, one AFF3 trust radius schedule, one data split, and one set of gates are frozen."
+  },
+  "sequential_gates": {
+    "gate_0_identity_and_direct_screen": {
+      "authenticate_q4_bf16_cache_and_every_parent_payload": true,
+      "all_pack_unpack_and_repack_mappings_exact": true,
+      "all_values_finite": true,
+      "maximum_direct_mixed_calibration_complete_block_nmse_per_layer": 0.12,
+      "stop_before_training_on_failure": true
+    },
+    "gate_1_trained_three_block_numeric": {
+      "all_three_calibration_nmse_values_must_not_regress_vs_direct_mixed": true,
+      "minimum_mean_relative_calibration_nmse_reduction_vs_direct_mixed": 0.01,
+      "all_three_fresh_confirmation_nmse_values_must_not_regress_vs_direct_mixed": true,
+      "minimum_mean_relative_fresh_confirmation_nmse_reduction_vs_direct_mixed": 0.01,
+      "maximum_final_fresh_confirmation_complete_block_nmse_per_layer": 0.05,
+      "all_discrete_and_fp16_payloads_must_roundtrip": true,
+      "maximum_complete_compute_image_bytes": 12500000000,
+      "stop_before_full_conversion_on_failure": true
+    },
+    "gate_2_native_kernel": {
+      "aff3_v18_receipt_already_passed": true,
+      "cq3_x16_requires_fresh_paired_ab_ba_confirmation": true,
+      "minimum_cq3_x8_over_x16_speedup": 1.08,
+      "minimum_cq3_ordinary_over_x16_speedup": 1.4,
+      "maximum_pairwise_ratio_mad_fraction": 0.03,
+      "both_kernels_must_match_the_exported_payload_algebra": true,
+      "small_batch_widths": [
+        1,
+        2,
+        4,
+        6,
+        8
+      ]
+    },
+    "gate_3_complete_model_quality": {
+      "free_generation_prompts": 8,
+      "free_generation_must_be_non_degenerate": true,
+      "cute_correct_of_20_minimum": 9,
+      "math500_correct_of_32_minimum": 8,
+      "sealed_code_correct_of_6_minimum": 4,
+      "mmlu_correct_of_64_minimum": 50,
+      "mmlu_maximum_correct_loss_vs_q4": 2,
+      "wikitext_maximum_perplexity_ratio_vs_q4": 1.05,
+      "exact_denominators_required": true
+    },
+    "gate_4_complete_model_performance": {
+      "paired_same_harness_required": true,
+      "four_physical_core_decode_tokens_per_second_admission_floor": 2.25,
+      "minimum_decode_speedup_vs_q4_admission": 1.15,
+      "minimum_prefill_speed_fraction_vs_q4": 0.9,
+      "breakthrough_minimum_decode_tokens_per_second": 2.75,
+      "breakthrough_minimum_decode_speedup_vs_q4": 1.4,
+      "stretch_decode_tokens_per_second": 3.2,
+      "maximum_complete_compute_image_bytes": 12500000000,
+      "maximum_short_context_peak_rss_bytes": 18000000000,
+      "energy_joules_per_generated_token_must_improve_vs_q4": true,
+      "energy_measurement_required_for_breakthrough_claim": true
+    }
+  },
+  "execution_policy": {
+    "systemd_restart": "on-failure",
+    "restart_prevent_exit_status": 2,
+    "memory_max_bytes": 30000000000,
+    "swap_forbidden": true,
+    "minimum_free_disk_bytes": 21474836480,
+    "concurrent_training_or_benchmark_processes": 0,
+    "terminal_scientific_rejection_exit_status": 2,
+    "checkpoint_limit": "one active block plus one terminal receipt; no optimizer checkpoint retained after a block"
+  },
+  "stop_rules": [
+    "Stop and preserve a terminal negative before training on any identity, direct-screen, finite-value, or storage failure.",
+    "Stop before full conversion if any of the three trained blocks fails any calibration or fresh-confirmation gate.",
+    "Do not use the old validation or fresh confirmation rows to choose modes, exceptions, steps, learning rates, trust radii, shards, or checkpoints.",
+    "Do not silently fall back a selected MLP or attention-output tensor to a higher precision; any exception requires a new preregistration and therefore terminates this candidate.",
+    "Do not time while training, evaluation, or another benchmark consumes the host.",
+    "Do not run capability evaluation before complete-model artifact authentication and the kernel correctness gate.",
+    "Infrastructure-invalid work is neither a zero nor a completed score.",
+    "Do not infer an unrun score or convert a block, kernel, storage, or training result into a whole-model claim."
+  ],
+  "claim_boundary": "This candidate can be called a CPU-inference breakthrough only after one authenticated complete 64-layer artifact passes free generation, the exact CUTE/MATH/code/MMLU/WikiText denominators, paired Q4 decode and prefill, resident-memory accounting, and measured energy on AMD. The preregistration, three-block gate, storage projection, or native primitive alone cannot support that claim."
+}

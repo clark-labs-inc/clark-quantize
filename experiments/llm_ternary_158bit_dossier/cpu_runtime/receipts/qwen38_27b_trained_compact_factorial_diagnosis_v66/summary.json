@@ -1,0 +1,46 @@
+{
+  "arms": {
+    "cq3_mlp_q4_attention": {
+      "canary_sha256": "d133f22ef1b473e4bfd12d79145930a5d6e6f565a9c0cb91f09e54cbbfa96822",
+      "cute_correct": 3,
+      "cute_denominator": 20,
+      "cute_sha256": "390aeb7a770170a25b27da2e3a8a2b4e920c1f98997c32461222a7829835338e",
+      "france_canary_contains_paris": true,
+      "france_canary_content": "Paris.",
+      "functional_at_frozen_tripwire": false,
+      "model_sha256": "506505935f82bade12ab4b51bd1ca9b6e1b5cc11eeae99a6e230b9a7b9044ffc"
+    },
+    "q4_mlp_aff3_attention": {
+      "canary_sha256": "a4635d0a646cfa0c193f802809dd20d2007070cbe5e6f7c30f0bd81627ab0b40",
+      "cute_correct": 0,
+      "cute_denominator": 20,
+      "cute_sha256": "a823ea4e53be3badc495dc2fcf6e5c1163b8c2d9e45a4f279aa3db633d0043ce",
+      "france_canary_contains_paris": false,
+      "france_canary_content": "][][][][][][][][",
+      "functional_at_frozen_tripwire": false,
+      "model_sha256": "31629f53165ab6a7dad8c9847dcfd1fdf55829dac1e6e748f4a68581b0033d34"
+    }
+  },
+  "claim_boundary": "Causal CUTE-Quick-20 catastrophic-forgetting diagnosis only; no promotion, full benchmark, performance, energy, or novelty claim.",
+  "classification": "both_approximations_independently_fail",
+  "complete": true,
+  "full_cq3_aff3_candidate_remains_rejected": true,
+  "functional_tripwire": {
+    "cute_correct_minimum": 7,
+    "cute_n": 20,
+    "requires_france_paris": true
+  },
+  "mmlu_ran": false,
+  "model": "Qwen/Qwen3.8-27B",
+  "performance_measurement_ran": false,
+  "preregistration_sha256": "944cfe3b29b568bd8a7bee5702bd04f30d4e450c1333221c9c32072e9d993a58",
+  "q4_cute_control": {
+    "correct": 9,
+    "n": 20
+  },
+  "repository_commit": "41687ed6891d4887564d650cecfbae7cc475ca7e",
+  "schema": "qwen38_27b_trained_compact_factorial_diagnosis_v66",
+  "terminal": true,
+  "v63_receipt_sha256": "38fc523deb2754371a0b3a2c310e3f499d6c25d2931cb83b1203d8bb2350725d",
+  "v65_receipt_sha256": "96ddd46b37ad135193d11774fa214ee0430e9b81e15e6f1f29c28318a1284b9f"
+}

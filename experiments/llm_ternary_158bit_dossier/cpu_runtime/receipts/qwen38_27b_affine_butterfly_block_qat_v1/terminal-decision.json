@@ -1,0 +1,352 @@
+{
+  "cache_receipt_sha256": "f07e1e9634a1a5282ecc40b6f7bf4c46be5927f2d9378ed3c4a10181bdd5eebb",
+  "claim_boundary": "terminal sensitivity-aware three-block QAT result only; not a whole-model artifact, capability result, CPU runtime result, or breakthrough",
+  "complete": true,
+  "elapsed_seconds": 1396.6984407529817,
+  "gate": {
+    "all_payloads_terminal": true,
+    "all_selected_blocks_passed": false,
+    "all_values_finite": true,
+    "maximum_projected_complete_text_file_bpw": 1.7,
+    "maximum_validation_nmse_change_vs_parent_ptq": 0.0,
+    "minimum_relative_validation_nmse_reduction_vs_direct_ternary": 0.3,
+    "observed_projected_complete_text_file_bpw": 1.6673542778500956,
+    "passed": false
+  },
+  "layers": [
+    {
+      "actual_packed_tensor_and_rotation_bytes": 79474272,
+      "complete": true,
+      "direct_parent_validation_nmse": 0.1384394376807489,
+      "elapsed_seconds": 477.95621264202055,
+      "final_packed_qat_metrics": {
+        "calibration_complete_block_nmse": 4.875902943584707,
+        "validation_complete_block_nmse": 0.19439284105417548
+      },
+      "initial_packed_ptq_metrics": {
+        "calibration_complete_block_nmse": 0.0036235696933146393,
+        "validation_complete_block_nmse": 0.02722308614510827
+      },
+      "layer": 0,
+      "parent_receipt_sha256": "fe79cc236e91e4868724dcd23aaae79b2972633a2da868e507894bf29edf58b9",
+      "passed": false,
+      "preregistration_sha256": "28d7ef3ca0eca806fc25e8a0b7de315a82e9e295fb2302210ad9720a1fdd0a26",
+      "relative_validation_nmse_reduction_vs_direct": -0.4041724259416531,
+      "repository_commit": "1343f9616fc145ec9dbfb6716f6f8c9e21006cca",
+      "sensitivity": [
+        {
+          "calibration_complete_block_nmse": 0.0022036329926912335,
+          "calibration_sensitivity_rank": 1,
+          "site": "attention_input",
+          "validation_complete_block_nmse": 0.005122758817624275
+        },
+        {
+          "calibration_complete_block_nmse": 0.0012140814033859847,
+          "calibration_sensitivity_rank": 2,
+          "site": "attention_output",
+          "validation_complete_block_nmse": 0.012223297234367086
+        },
+        {
+          "calibration_complete_block_nmse": 0.00012287663604295483,
+          "calibration_sensitivity_rank": 5,
+          "site": "mlp_input",
+          "validation_complete_block_nmse": 0.0029166538665884472
+        },
+        {
+          "calibration_complete_block_nmse": 0.0003929659142254011,
+          "calibration_sensitivity_rank": 4,
+          "site": "mlp_down",
+          "validation_complete_block_nmse": 0.005917039770274794
+        },
+        {
+          "calibration_complete_block_nmse": 0.00044993038906047147,
+          "calibration_sensitivity_rank": 3,
+          "site": "depthwise_conv",
+          "validation_complete_block_nmse": 0.0008396403629277344
+        }
+      ],
+      "site_manifests": [
+        "layers/0/sites/attention_input/manifest.json",
+        "layers/0/sites/attention_output/manifest.json",
+        "layers/0/sites/mlp_input/manifest.json",
+        "layers/0/sites/mlp_down/manifest.json",
+        "layers/0/sites/depthwise_conv/manifest.json"
+      ],
+      "terminal": true,
+      "training": {
+        "continuous_parameters": 245216,
+        "history": [
+          {
+            "gradient_norm_before_clip": 0.7626312375068665,
+            "hard_forward_calibration_nmse": 0.003623569617047906,
+            "step": 1
+          },
+          {
+            "gradient_norm_before_clip": 745.2808837890625,
+            "hard_forward_calibration_nmse": 4.5451154708862305,
+            "step": 2
+          },
+          {
+            "gradient_norm_before_clip": 772.378662109375,
+            "hard_forward_calibration_nmse": 2.245002269744873,
+            "step": 3
+          },
+          {
+            "gradient_norm_before_clip": 585.01318359375,
+            "hard_forward_calibration_nmse": 3.718416690826416,
+            "step": 4
+          },
+          {
+            "gradient_norm_before_clip": 66.41022491455078,
+            "hard_forward_calibration_nmse": 0.5499617457389832,
+            "step": 5
+          },
+          {
+            "gradient_norm_before_clip": 20.372468948364258,
+            "hard_forward_calibration_nmse": 0.3230820298194885,
+            "step": 6
+          },
+          {
+            "gradient_norm_before_clip": 427.26629638671875,
+            "hard_forward_calibration_nmse": 2.322643518447876,
+            "step": 7
+          },
+          {
+            "gradient_norm_before_clip": 375.1533508300781,
+            "hard_forward_calibration_nmse": 5.303114891052246,
+            "step": 8
+          }
+        ],
+        "index_shadow_parameters": 6008320,
+        "ternary_shadow_parameters": 383262720
+      },
+      "type": "linear_attention",
+      "validation_nmse_change_vs_packed_ptq": 0.16716975490906721
+    },
+    {
+      "actual_packed_tensor_and_rotation_bytes": 79474272,
+      "complete": true,
+      "direct_parent_validation_nmse": 0.013325089759614505,
+      "elapsed_seconds": 469.33853409500443,
+      "final_packed_qat_metrics": {
+        "calibration_complete_block_nmse": 0.004952069374034667,
+        "validation_complete_block_nmse": 0.020109446927863928
+      },
+      "initial_packed_ptq_metrics": {
+        "calibration_complete_block_nmse": 0.001562721184183518,
+        "validation_complete_block_nmse": 0.0181654956934789
+      },
+      "layer": 32,
+      "parent_receipt_sha256": "fe79cc236e91e4868724dcd23aaae79b2972633a2da868e507894bf29edf58b9",
+      "passed": false,
+      "preregistration_sha256": "28d7ef3ca0eca806fc25e8a0b7de315a82e9e295fb2302210ad9720a1fdd0a26",
+      "relative_validation_nmse_reduction_vs_direct": -0.5091415735758387,
+      "repository_commit": "1343f9616fc145ec9dbfb6716f6f8c9e21006cca",
+      "sensitivity": [
+        {
+          "calibration_complete_block_nmse": 0.0009693544209485424,
+          "calibration_sensitivity_rank": 1,
+          "site": "attention_input",
+          "validation_complete_block_nmse": 0.00386687231239911
+        },
+        {
+          "calibration_complete_block_nmse": 4.856653216757006e-05,
+          "calibration_sensitivity_rank": 5,
+          "site": "attention_output",
+          "validation_complete_block_nmse": 0.0026953985275124637
+        },
+        {
+          "calibration_complete_block_nmse": 0.0001892498797111722,
+          "calibration_sensitivity_rank": 3,
+          "site": "mlp_input",
+          "validation_complete_block_nmse": 0.009099432563818873
+        },
+        {
+          "calibration_complete_block_nmse": 0.00012313157331996587,
+          "calibration_sensitivity_rank": 4,
+          "site": "mlp_down",
+          "validation_complete_block_nmse": 0.0071957783701146905
+        },
+        {
+          "calibration_complete_block_nmse": 0.00033951531442980856,
+          "calibration_sensitivity_rank": 2,
+          "site": "depthwise_conv",
+          "validation_complete_block_nmse": 0.0003920947500037369
+        }
+      ],
+      "site_manifests": [
+        "layers/32/sites/attention_input/manifest.json",
+        "layers/32/sites/attention_output/manifest.json",
+        "layers/32/sites/mlp_input/manifest.json",
+        "layers/32/sites/mlp_down/manifest.json",
+        "layers/32/sites/depthwise_conv/manifest.json"
+      ],
+      "terminal": true,
+      "training": {
+        "continuous_parameters": 245216,
+        "history": [
+          {
+            "gradient_norm_before_clip": 0.06870830059051514,
+            "hard_forward_calibration_nmse": 0.0015627212123945355,
+            "step": 1
+          },
+          {
+            "gradient_norm_before_clip": 2.4444992542266846,
+            "hard_forward_calibration_nmse": 0.03716689720749855,
+            "step": 2
+          },
+          {
+            "gradient_norm_before_clip": 0.2152610570192337,
+            "hard_forward_calibration_nmse": 0.006188543047755957,
+            "step": 3
+          },
+          {
+            "gradient_norm_before_clip": 0.15161363780498505,
+            "hard_forward_calibration_nmse": 0.00786342192441225,
+            "step": 4
+          },
+          {
+            "gradient_norm_before_clip": 0.0994739904999733,
+            "hard_forward_calibration_nmse": 0.007427776698023081,
+            "step": 5
+          },
+          {
+            "gradient_norm_before_clip": 0.05949614569544792,
+            "hard_forward_calibration_nmse": 0.006693896371871233,
+            "step": 6
+          },
+          {
+            "gradient_norm_before_clip": 0.1376948356628418,
+            "hard_forward_calibration_nmse": 0.006747452076524496,
+            "step": 7
+          },
+          {
+            "gradient_norm_before_clip": 0.04134523123502731,
+            "hard_forward_calibration_nmse": 0.005511199589818716,
+            "step": 8
+          }
+        ],
+        "index_shadow_parameters": 6008320,
+        "ternary_shadow_parameters": 383262720
+      },
+      "type": "linear_attention",
+      "validation_nmse_change_vs_packed_ptq": 0.001943951234385028
+    },
+    {
+      "actual_packed_tensor_and_rotation_bytes": 77143488,
+      "complete": true,
+      "direct_parent_validation_nmse": 0.13613106952633344,
+      "elapsed_seconds": 448.32154519000323,
+      "final_packed_qat_metrics": {
+        "calibration_complete_block_nmse": 0.3685204264893581,
+        "validation_complete_block_nmse": 0.37963696942446346
+      },
+      "initial_packed_ptq_metrics": {
+        "calibration_complete_block_nmse": 0.013223969826042148,
+        "validation_complete_block_nmse": 0.06870869250868399
+      },
+      "layer": 63,
+      "parent_receipt_sha256": "fe79cc236e91e4868724dcd23aaae79b2972633a2da868e507894bf29edf58b9",
+      "passed": false,
+      "preregistration_sha256": "28d7ef3ca0eca806fc25e8a0b7de315a82e9e295fb2302210ad9720a1fdd0a26",
+      "relative_validation_nmse_reduction_vs_direct": -1.788760646231651,
+      "repository_commit": "1343f9616fc145ec9dbfb6716f6f8c9e21006cca",
+      "sensitivity": [
+        {
+          "calibration_complete_block_nmse": 0.005818703456849245,
+          "calibration_sensitivity_rank": 1,
+          "site": "attention_input",
+          "validation_complete_block_nmse": 0.020199906689686367
+        },
+        {
+          "calibration_complete_block_nmse": 0.00046456653018248767,
+          "calibration_sensitivity_rank": 4,
+          "site": "attention_output",
+          "validation_complete_block_nmse": 0.00968005270442588
+        },
+        {
+          "calibration_complete_block_nmse": 0.0021175069792189554,
+          "calibration_sensitivity_rank": 3,
+          "site": "mlp_input",
+          "validation_complete_block_nmse": 0.02445266040966543
+        },
+        {
+          "calibration_complete_block_nmse": 0.003054030652915096,
+          "calibration_sensitivity_rank": 2,
+          "site": "mlp_down",
+          "validation_complete_block_nmse": 0.025163238070878623
+        }
+      ],
+      "site_manifests": [
+        "layers/63/sites/attention_input/manifest.json",
+        "layers/63/sites/attention_output/manifest.json",
+        "layers/63/sites/mlp_input/manifest.json",
+        "layers/63/sites/mlp_down/manifest.json"
+      ],
+      "terminal": true,
+      "training": {
+        "continuous_parameters": 220384,
+        "history": [
+          {
+            "gradient_norm_before_clip": 1.4446136951446533,
+            "hard_forward_calibration_nmse": 0.013223969377577305,
+            "step": 1
+          },
+          {
+            "gradient_norm_before_clip": 32.90039825439453,
+            "hard_forward_calibration_nmse": 0.5704436898231506,
+            "step": 2
+          },
+          {
+            "gradient_norm_before_clip": 11.313385963439941,
+            "hard_forward_calibration_nmse": 0.19772982597351074,
+            "step": 3
+          },
+          {
+            "gradient_norm_before_clip": 5829.400390625,
+            "hard_forward_calibration_nmse": 58.3474235534668,
+            "step": 4
+          },
+          {
+            "gradient_norm_before_clip": 93.33348083496094,
+            "hard_forward_calibration_nmse": 2.0002355575561523,
+            "step": 5
+          },
+          {
+            "gradient_norm_before_clip": 72.03421783447266,
+            "hard_forward_calibration_nmse": 1.72885262966156,
+            "step": 6
+          },
+          {
+            "gradient_norm_before_clip": 8.59688949584961,
+            "hard_forward_calibration_nmse": 0.6385324597358704,
+            "step": 7
+          },
+          {
+            "gradient_norm_before_clip": 20.458431243896484,
+            "hard_forward_calibration_nmse": 0.4212722182273865,
+            "step": 8
+          }
+        ],
+        "index_shadow_parameters": 5816320,
+        "ternary_shadow_parameters": 372244480
+      },
+      "type": "full_attention",
+      "validation_nmse_change_vs_packed_ptq": 0.31092827691577946
+    }
+  ],
+  "model": "Qwen/Qwen3.8-27B",
+  "parent_receipt_sha256": "fe79cc236e91e4868724dcd23aaae79b2972633a2da868e507894bf29edf58b9",
+  "preregistration_sha256": "28d7ef3ca0eca806fc25e8a0b7de315a82e9e295fb2302210ad9720a1fdd0a26",
+  "repository_commit": "1343f9616fc145ec9dbfb6716f6f8c9e21006cca",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_affine_butterfly_block_qat_receipt_v1",
+  "terminal": true,
+  "whole_model_budget": {
+    "absolute_ceiling_bpw": 1.7,
+    "accounting": "All codes, anchors, indices, codebooks, rotations, exact tensors, mixed-mode exceptions, descriptors, alignment, metadata, and auxiliary model files count",
+    "base_projected_complete_bundle_bpw": 1.6673542778500956,
+    "base_projected_complete_bundle_bytes": 5605644762,
+    "remaining_bytes_below_ceiling": 109754911
+  }
+}

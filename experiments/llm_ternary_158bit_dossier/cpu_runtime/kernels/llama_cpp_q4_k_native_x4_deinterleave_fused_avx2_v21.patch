@@ -1,0 +1,133 @@
+--- a/ggml/src/ggml-cpu/repack.h
++++ b/ggml/src/ggml-cpu/repack.h
+@@ -101,6 +101,13 @@
+ 
+ static_assert(sizeof(block_q8_Kx4) == sizeof(float) * 4 + QK_K * 4 + (QK_K / 4) * sizeof(int16_t), "wrong q8_K block size/padding");
+ 
++// Exact inverse of the native four-row Q8_K packing used by
++// ggml_quantize_mat_q8_K_4x8.  The destination holds four contiguous
++// block_q8_K rows.  No floating-point requantization is performed.
++void ggml_repack_q8_K_4x8_to_q8_K_rows(const void * GGML_RESTRICT vx,
++                                       void * GGML_RESTRICT vy,
++                                       int64_t k);
++
+ struct block_iq4_nlx4 {
+     ggml_half d[4];            // deltas for 4 iq4_nl blocks
+     uint8_t   qs[QK4_NL * 2];  // nibbles / quants for 4 iq4_nl blocks
+--- a/ggml/src/ggml-cpu/repack.cpp
++++ b/ggml/src/ggml-cpu/repack.cpp
+@@ -311,7 +311,40 @@
+ }
+ 
+ } // extern "C"
++
++void ggml_repack_q8_K_4x8_to_q8_K_rows(const void * GGML_RESTRICT vx,
++                                       void * GGML_RESTRICT vy,
++                                       int64_t k) {
++    assert(QK_K == 256);
++    assert(k % QK_K == 0);
+ 
++    const int nb = k / QK_K;
++    const block_q8_Kx4 * GGML_RESTRICT x = (const block_q8_Kx4 *) vx;
++    block_q8_K * GGML_RESTRICT y = (block_q8_K *) vy;
++
++    static_assert(sizeof(block_q8_Kx4) == 4 * sizeof(block_q8_K));
++
++    for (int b = 0; b < nb; ++b) {
++        for (int row = 0; row < 4; ++row) {
++            block_q8_K & dst = y[row * nb + b];
++            dst.d = x[b].d[row];
++            for (int group16 = 0; group16 < QK_K / 16; ++group16) {
++                const int tiled = (group16 / 4) * 16 + row * 4 + (group16 % 4);
++                dst.bsums[group16] = x[b].bsums[tiled];
++            }
++
++            // Native 4x8 Q8_K stores one eight-byte group from each row in
++            // every 32-byte vector.  Constant-size copies compile to scalar
++            // 64-bit loads/stores on AVX2 and preserve every signed code bit.
++            for (int group8 = 0; group8 < QK_K / 8; ++group8) {
++                memcpy(dst.qs + group8 * 8,
++                       x[b].qs + group8 * 32 + row * 8,
++                       8);
++            }
++        }
++    }
++}
++
+ template <int64_t INTER_SIZE, ggml_type PARAM_TYPE>
+ void ggml_quantize_mat_t(const float * GGML_RESTRICT x, void * GGML_RESTRICT vy, int64_t nrow, int64_t n_per_row);
+ 
+@@ -4166,6 +4199,15 @@
+             case GGML_OP_MUL_MAT:
+                 {
+                     size = ggml_row_size(PARAM_TYPE, ggml_nelements(op->src[1]));
++                    constexpr bool q4_k_8x8 =
++                        std::is_same_v<BLOC_TYPE, block_q4_K> && INTER_SIZE == 8 && NB_COLS == 8;
++                    if constexpr (q4_k_8x8) {
++                        if (op->src[1]->ne[1] == 4) {
++                            // Keep native block_q8_Kx4 plus one exact
++                            // row-major Q8_K view for the four-row kernel.
++                            size *= 2;
++                        }
++                    }
+                     return true;
+                 }
+             case GGML_OP_MUL_MAT_ID:
+@@ -4232,7 +4274,13 @@
+         const int64_t i2 = i12;
+ 
+         const char * src0_ptr = (const char *) src0->data + i02 * nb02;
+-        const char * src1_ptr = (const char *) params->wdata + (i11 + i12 * ne11) * src1_col_stride;
++        constexpr bool q4_k_8x8 =
++            std::is_same_v<BLOC_TYPE, block_q4_K> && INTER_SIZE == 8 && NB_COLS == 8;
++        const bool exact_four_rows = q4_k_8x8 && ne11 == 4;
++        const size_t native_wdata_size = ggml_row_size(PARAM_TYPE, ggml_nelements(src1));
++        const char * src1_base = (const char *) params->wdata +
++                                 (exact_four_rows ? native_wdata_size : 0);
++        const char * src1_ptr = src1_base + (i11 + i12 * ne11) * src1_col_stride;
+         char *       dst_ptr  = ((char *) dst->data + (i1 * nb1 + i2 * nb2));
+ 
+         const int64_t nrows = src1_end - src1_start;
+@@ -4243,8 +4291,6 @@
+         // The dedicated four-row Q4_K path reuses the same decoded weight tile
+         // across four independent Q8_K accumulators. Larger multiples retain
+         // the existing GEMM implementation.
+-        constexpr bool q4_k_8x8 =
+-            std::is_same_v<BLOC_TYPE, block_q4_K> && INTER_SIZE == 8 && NB_COLS == 8;
+         const bool fused_four_rows = q4_k_8x8 && nrows == 4;
+         if (nrows > 3 && !fused_four_rows) {
+             gemm<BLOC_TYPE, INTER_SIZE, NB_COLS, PARAM_TYPE>(ne00, (float *) (dst_ptr) + src0_start, nb1 / nb0,
+@@ -4305,8 +4351,13 @@
+         const size_t nbw1  = ggml_row_size(PARAM_TYPE, ne10);
+         const size_t nbw2  = nbw1 * ne11;
+ 
+-        assert(params->wsize >= nbw2 * ne12);
++        constexpr bool q4_k_8x8 =
++            std::is_same_v<BLOC_TYPE, block_q4_K> && INTER_SIZE == 8 && NB_COLS == 8;
++        const bool exact_four_rows = q4_k_8x8 && ne11 == 4;
++        const size_t native_wdata_size = nbw2 * ne12;
+ 
++        assert(params->wsize >= native_wdata_size * (exact_four_rows ? 2 : 1));
++
+         const ggml_from_float_t from_float = ggml_get_type_traits_cpu(PARAM_TYPE)->from_float;
+ 
+         // INFO: Quantization is done in planes to avoid extra complexity in chunking.
+@@ -4327,6 +4378,18 @@
+             }
+         }
+ 
++        if (exact_four_rows) {
++            // Only the owner of a four-row plane writes its native x4 block.
++            // Wait for those producers, then split planes across threads and
++            // construct the lossless row-major view once per operator.
++            ggml_barrier(params->threadpool);
++            for (int64_t i12 = ith; i12 < ne12; i12 += nth) {
++                const char * native_plane = wdata + i12 * nbw2;
++                char * row_major_plane = wdata + native_wdata_size + i12 * nbw2;
++                ggml_repack_q8_K_4x8_to_q8_K_rows(native_plane, row_major_plane, ne10);
++            }
++        }
++
+         // disable for NUMA
+         const bool disable_chunking = ggml_is_numa();
+ 

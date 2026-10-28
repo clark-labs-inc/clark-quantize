@@ -113,6 +113,40 @@ DEFAULT_PROTECT = ("time_embed", "caption_projection", "proj_out",
 
 
 @torch.no_grad()
+def ternary_codes_scales(W: torch.Tensor, group: int = 128, method: str = "optimal"):
+    """Return exact int8 trits and FP16 group scales without materializing Wq.
+
+    This is the export path for bounded-memory packing. Groups run along the
+    last/input dimension and are padded only for scale selection; returned
+    codes retain the original matrix shape.
+    """
+    if W.ndim != 2:
+        raise ValueError("ternary export expects a two-dimensional weight matrix")
+    out, in_features = W.shape
+    pad = (-in_features) % group
+    padded = W
+    if pad:
+        padded = torch.cat([W, torch.zeros(out, pad, device=W.device, dtype=W.dtype)], dim=1)
+    grouped = padded.reshape(out, -1, group)
+    absolute = grouped.abs()
+    if method == "absmean":
+        scales = absolute.mean(-1, keepdim=True).clamp_min(1e-8)
+        threshold = 0.5 * scales
+    elif method == "optimal":
+        ordered, _ = torch.sort(absolute, dim=-1, descending=True)
+        cumulative = ordered.cumsum(-1)
+        counts = torch.arange(1, group + 1, device=W.device, dtype=cumulative.dtype)
+        best = (cumulative * cumulative / counts).argmax(-1)
+        scales = (cumulative.gather(-1, best[..., None]) /
+                  (best[..., None].to(cumulative.dtype) + 1)).clamp_min(1e-8)
+        threshold = ordered.gather(-1, best[..., None])
+    else:
+        raise ValueError(f"unknown method {method!r}")
+    codes = (torch.sign(grouped) * (absolute >= threshold)).to(torch.int8)
+    return codes.reshape(out, -1)[:, :in_features].contiguous(), scales.squeeze(-1).to(torch.float16).contiguous()
+
+
+@torch.no_grad()
 def quantize_module(model: nn.Module, group: int = 128, method: str = "optimal",
                     error_feedback: bool = False, row_gain: bool = False,
                     protect=DEFAULT_PROTECT, keep_blocks: int = 0,

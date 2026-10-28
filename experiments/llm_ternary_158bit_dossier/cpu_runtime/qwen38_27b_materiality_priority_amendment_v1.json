@@ -1,0 +1,38 @@
+{
+  "schema": "qwen38_27b_materiality_priority_amendment_v1",
+  "frozen_at_utc": "2026-08-18T02:48:00Z",
+  "model": "Qwen/Qwen3.8-27B",
+  "scope": "orchestration priority only",
+  "reason": "Prevent narrow codec, routing, and microkernel screens from delaying the experiments that can establish or reject a whole-model quality-storage-throughput Pareto result.",
+  "priority_sequence": [
+    "terminal paired Q4-versus-selective-CQ3 result",
+    "complete real gate-up binary-low-rank residual screen",
+    "complete llama.cpp TQ1_0 and TQ2_0 whole-model controls",
+    "complete 666-tensor row-scale gate"
+  ],
+  "queue_policy": {
+    "high_materiality_first": true,
+    "deferred_lanes": "narrow codec, hash-routing, and isolated microkernel screens may resume only after the priority sequence is terminal",
+    "deferred_work_deleted": false,
+    "existing_terminal_receipts_preserved": true
+  },
+  "supersedes": {
+    "document": "qwen38_27b_row_scale_orchestration_amendment_v2",
+    "field": "repair.mapped_serialization_parent",
+    "old_parent": "quant-qwen38-27b-activation-hash-residual-v1.service",
+    "new_parent": "quant-qwen38-27b-llamacpp-ternary-controls-v1.service"
+  },
+  "science_changed": false,
+  "unchanged": [
+    "model revision",
+    "weight tensors",
+    "ternary codes",
+    "scale fitting algorithm",
+    "reconstruction thresholds",
+    "storage thresholds",
+    "quality gates",
+    "control definitions",
+    "promotion rules"
+  ],
+  "claim_boundary": "This amendment changes scheduling only and is not scientific evidence."
+}

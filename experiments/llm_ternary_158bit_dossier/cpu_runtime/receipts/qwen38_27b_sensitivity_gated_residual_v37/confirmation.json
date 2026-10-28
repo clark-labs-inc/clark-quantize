@@ -1,0 +1,68 @@
+{
+  "calibration_receipt_sha256": "6871879dd4413419bfb36e233275481bce291d6bac1c884770c2514c876eeb73",
+  "claim_boundary": "A pass establishes a three-block sensitivity-gated geometric correction signal and deployable projection only. It is not a whole-model quality or speed result, does not establish 2.75 or 100 tok/s, and does not support novelty, lossless, DFlash3, or scientific-breakthrough claims.",
+  "complete": true,
+  "confirmation_cache_receipt_sha256": "fa3fe548de7218f6d583efbca76c9d4a9bb3927ac2286bddffebcb994f9b9a0e",
+  "confirmation_cache_sha256": "37c0681fea4bcba7205e9bf81fdca9a663e16406fe95f40b528b15067eaaa69a",
+  "elapsed_seconds": 61.99715634601307,
+  "gate": {
+    "checks": {
+      "all_final_nmse_at_most_0_05": true,
+      "both_active_layers_not_regressed": true,
+      "bypass_layer_exactly_identical": true,
+      "exactly_two_candidates_per_layer": true,
+      "mean_relative_reduction_all_three_at_least_0_1": true
+    },
+    "passed": true
+  },
+  "layers": [
+    {
+      "base_trained_mixed_nmse": 0.01685277931392193,
+      "bypass_tensor_exact": null,
+      "candidates_scored": [
+        "frozen_trained_mixed",
+        "frozen_trained_mixed_plus_rank16_int8_residual"
+      ],
+      "confirmation_rows": 32,
+      "layer": 0,
+      "mode": "rank16_int8_residual",
+      "relative_reduction": 0.04034896124093381,
+      "sensitivity_candidate_nmse": 0.01617278717458248
+    },
+    {
+      "base_trained_mixed_nmse": 0.013671082444489002,
+      "bypass_tensor_exact": true,
+      "candidates_scored": [
+        "frozen_trained_mixed",
+        "frozen_trained_mixed_exact_bypass"
+      ],
+      "confirmation_rows": 32,
+      "layer": 32,
+      "mode": "exact_bypass",
+      "relative_reduction": 0.0,
+      "sensitivity_candidate_nmse": 0.013671082444489002
+    },
+    {
+      "base_trained_mixed_nmse": 0.06460540741682053,
+      "bypass_tensor_exact": null,
+      "candidates_scored": [
+        "frozen_trained_mixed",
+        "frozen_trained_mixed_plus_rank16_int8_residual"
+      ],
+      "confirmation_rows": 32,
+      "layer": 63,
+      "mode": "rank16_int8_residual",
+      "relative_reduction": 0.34102524093864384,
+      "sensitivity_candidate_nmse": 0.04257333278656006
+    }
+  ],
+  "model": "Qwen/Qwen3.8-27B",
+  "next_stage": "implement_fused_avx2_rank16_residual_with_exact_bypass",
+  "preregistration_sha256": "4d5b8646887ccee1959fcd12fb8056deaa57ce06941a0f721c57843ba15dbd36",
+  "repository_commit": "391ed4d5e5aa5cee101b66f3e88b3985fa2bd70b",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "schema": "qwen38_27b_sensitivity_gated_residual_confirmation_result_v37",
+  "terminal": true,
+  "training_receipt_sha256": "4454761a8519db03ca88a91c21cf8344cab12445266f1936767c04ebe3b76128",
+  "v36_receipt_sha256": "4afd259111d19993b1605ac9ae84947bcf775efe087d4174832128d3d8573969"
+}

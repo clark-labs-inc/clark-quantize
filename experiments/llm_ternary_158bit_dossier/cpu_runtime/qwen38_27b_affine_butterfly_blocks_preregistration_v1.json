@@ -1,0 +1,138 @@
+{
+  "schema": "qwen38_27b_affine_butterfly_blocks_preregistration_v1",
+  "status": "frozen_before_activation_collection_or_fit",
+  "frozen_at_utc": "2026-08-18T05:35:00Z",
+  "pre_execution_correction": {
+    "corrected_at_utc": "2026-08-18T05:42:00Z",
+    "execution_had_started": false,
+    "change": "Corrected the textual packing description from five-trits-per-byte radix-5 to the 203-bit-per-128-trit base-3 layout used by the already-frozen byte projection; no numeric gate, byte count, model scope, data, or fit setting changed"
+  },
+  "objective": "Falsify or promote one CPU-runnable whole-model representation by quantizing every rank-2-or-higher weight in complete early, middle, and late Qwen3.8-27B transformer blocks and measuring disjoint held-out block-output error",
+  "scope": {
+    "active_model_only": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "text_graph_parameters": 26895998464,
+    "text_graph_tensors": 851,
+    "pilot_layers": [
+      0,
+      32,
+      63
+    ],
+    "pilot_layer_types": [
+      "linear_attention",
+      "linear_attention",
+      "full_attention"
+    ],
+    "coverage": "Every rank-2-or-higher weight in each selected block, including all attention or linear-attention projections, linear-attention convolution weights, and all MLP projections; rank-1 norms remain exact",
+    "qwen_4b_compute_forbidden": true,
+    "claim_boundary": "A three-complete-block falsification gate for a representation intended to cover all 64 text blocks; not a whole-model artifact, capability result, runtime result, or breakthrough"
+  },
+  "representation": {
+    "name": "group128 affine base3 plus shared learned Givens butterfly",
+    "weight_equation": "For each 128-weight group, W_hat[g,j] = mu[g] + alpha[g] * t[g,j], with t in {-1,0,+1}; every group therefore has exactly three reconstructed values and exactly one base-3 code per weight",
+    "rotation_equation": "For a shared activation site with orthogonal R, replace each consumer W by Q_affine(W * R^T) and evaluate it on R * x; R is a product of six disjoint-pair Givens stages and is never materialized as a dense matrix",
+    "fanout_sharing": "One rotation is shared by every projection consuming the same normalized activation, including q/k/v-style fanout and gate/up fanout",
+    "convolution_rule": "Small linear-attention convolution kernels use the same affine base-3 group algebra after row flattening but no activation rotation",
+    "ternary_packing": "Each complete 128-trit group is one canonical 203-bit base-3 integer with digits 0,1,2; groups reset at rows and no padding is counted between rows",
+    "alpha_storage": "One FP16 row anchor and one per-tensor 16-entry FP16 log-ratio codebook with packed 4-bit group indices",
+    "mu_storage": "One signed FP16 row anchor and one per-tensor 16-entry FP16 signed-ratio codebook with packed 4-bit group indices",
+    "rotation_storage": "Three FP16 angle equivalents, or six bytes, per activation dimension because each of six stages contains dimension/2 angles; deterministic pairings and signs are regenerated from model revision, layer, site, and stage",
+    "runtime_equation": "For each group, accumulate alpha[g] * dot(t[g], x[g]) + mu[g] * sum(x[g]); apply each shared Givens product once per activation site and never reconstruct BF16 or FP16 weights",
+    "complete_text_projection": {
+      "base_row_normalized_bundle_bytes": 5471531964,
+      "base_row_normalized_bundle_bpw": 1.6274634968688255,
+      "additional_mu_index_bytes": 105297920,
+      "additional_mu_row_anchor_bytes": 9784320,
+      "additional_mu_codebook_bytes": 17472,
+      "maximum_mu_section_alignment_bytes": 2235870,
+      "maximum_rotation_and_descriptor_bytes": 16777216,
+      "maximum_projected_complete_bundle_bytes": 5605644762,
+      "maximum_projected_complete_bundle_bpw": 1.6673542778500956,
+      "maximum_rotation_and_auxiliary_bpw": 0.0055,
+      "accounting_rule": "Codes, alpha and mu indices, anchors, codebooks, rotations, descriptors, exact retained tensors, headers, alignment, metadata, and auxiliary model files all count"
+    }
+  },
+  "activation_protocol": {
+    "source": "Exact authenticated BF16 parent, streamed one complete transformer block at a time on CPU",
+    "maximum_sequence_tokens": 64,
+    "maximum_calibration_rows_per_layer": 64,
+    "maximum_validation_rows_per_layer": 32,
+    "row_selection": "Deterministic equally spaced token rows after separately tokenizing the frozen calibration and validation texts",
+    "separation": "Calibration and validation texts are disjoint; neither split contains a CUTE, MATH-500, sealed code-trace, MMLU, or WikiText evaluation item",
+    "cache_contents": "Exact input and exact output of each complete selected block plus authenticated position and mask inputs required to replay that block",
+    "propagation": "Layer 32 and layer 63 inputs are produced by sequential exact BF16 block propagation, not by embedding-only or synthetic proxies",
+    "calibration_texts": [
+      "Explain why a reversible storage codec and a lossy weight quantizer require different correctness tests.",
+      "Compute 73 times 29 and verify the answer using subtraction from 73 times 30.",
+      "Write a Python function that returns the indices of all local maxima in a numeric list.",
+      "Describe two reasons a language model can have lower reconstruction error but worse free generation.",
+      "En espanol, explica por que una evaluacion debe permanecer separada de los datos de entrenamiento.",
+      "A machine completes five ninths of a job in 35 minutes at constant speed. Find the total time.",
+      "Give JSON arguments for a weather tool that requests a three day forecast for Helsinki.",
+      "Contrast memory bandwidth and arithmetic throughput for single-token transformer decoding."
+    ],
+    "validation_texts": [
+      "A jar contains red, blue, and green marbles in the ratio 2:3:5. What fraction are not green?",
+      "Implement a stable deduplication function that preserves the first appearance of each item.",
+      "Why can selecting hyperparameters on a benchmark invalidate the final benchmark conclusion?",
+      "Summarize how per-group scales affect the honest bits-per-weight of a ternary model."
+    ],
+    "text_manifest_note": "The exact disjoint text lists were added before activation collection or fit; row ceilings, optimization settings, thresholds, and storage accounting were already frozen and did not change"
+  },
+  "fit": {
+    "baseline": "Direct symmetric group-128 optimal-MSE ternary weights with one alpha and zero mu, evaluated over the same complete blocks and held-out rows",
+    "candidate": "Affine group-128 ternary weights plus six-stage shared Givens rotations",
+    "initial_codes": "Deterministic weighted three-cluster assignment around the activation-weighted group mean",
+    "affine_update": "For fixed trits, solve the two-parameter activation-metric least-squares system for mu and alpha; alpha must remain non-negative",
+    "code_update": "One deterministic coordinate pass over -1,0,+1 under the exact cached activation residual followed by one final affine solve",
+    "rotation_update": "Eight full-coverage hard-forward straight-through steps over all consumer rows at each activation site; accumulate gradients across deterministic output-row shards before one angle update",
+    "rotation_stages": 6,
+    "rotation_steps": 8,
+    "rotation_learning_rate": 0.002,
+    "row_shard": 128,
+    "group_size": 128,
+    "seed": 20260818,
+    "no_sweep": "Layer set, row counts, stage count, steps, learning rate, group size, threshold, and storage ceiling are frozen for this family"
+  },
+  "falsification_gate": {
+    "metric": "sum squared candidate-minus-parent complete-block output divided by sum squared parent complete-block output on the disjoint validation rows",
+    "minimum_relative_validation_nmse_reduction_vs_direct_ternary": 0.30,
+    "requires_reduction_on_every_selected_block": true,
+    "maximum_projected_complete_text_file_bpw": 1.70,
+    "maximum_projected_rotation_and_auxiliary_bpw": 0.10,
+    "all_payload_pack_unpack_roundtrips_exact": true,
+    "all_values_finite": true,
+    "pass_action": "Run one restartable 64-layer sequential conversion, export one complete packed artifact, then run CUTE, MATH-500, sealed code, WikiText, MMLU-type, and paired CPU throughput gates",
+    "reject_action": "Terminate affine-butterfly as a hypothesis family without changing thresholds, layer choices, rank, stage count, calibration items, or optimizer settings"
+  },
+  "whole_model_promotion_gates": {
+    "quality_order": [
+      "CUTE_Quick_20",
+      "MATH_500_quick_8",
+      "sealed_code_trace_6",
+      "WikiText_4x512",
+      "MMLU_64_five_shot_exact_option_likelihood"
+    ],
+    "runtime": {
+      "minimum_paired_end_to_end_speedup": 1.15,
+      "minimum_every_authoritative_pair_ratio": 1.0,
+      "required": [
+        "single-token decode",
+        "prompt prefill",
+        "resident memory",
+        "cold and warm load",
+        "energy and cost per generated token"
+      ]
+    },
+    "breakthrough_claim_requires": "A complete runnable 26895998464-parameter text artifact passing honest storage, free-generation capability, perplexity, and paired CPU runtime gates"
+  },
+  "stop_conditions": [
+    "Any selected block fails to improve held-out complete-block NMSE by at least 30 percent",
+    "Projected honest complete-text storage exceeds 1.70 bits per parameter",
+    "Rotation and auxiliary storage exceeds 0.10 bits per parameter",
+    "Any selected block or linear family is omitted",
+    "Any source, cache, denominator, payload, or repository identity is unauthenticated",
+    "Any non-finite value, incomplete row shard, or pack-unpack mismatch occurs",
+    "Infrastructure-invalid execution is recorded and retried without being scored as a scientific rejection"
+  ]
+}
